@@ -3,13 +3,19 @@
  * Copyright (C) 2007-2012 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the GPL v3.0 or later
  * 
- * VERSION: 1.1
+ * VERSION: 1.1.1
  */
 
 /* CHANGELOG
+ * v1.1.1, 120814
+ * [NEW] Settings format version implemented @v3
+ * - Deprecated values no longer occupy space
+ * - *Craft INT values split to *Craft BYTE and *IFF BYTE
+ * - renamed a bunch of stuff
+ * [FIX] Waypoints correctly save BRF2-8
  * v1.1, 120715
- * - added ConfirmTest, DeleteTestPilots and VerifyTest
- * - Deprecated values now write 0x00
+ * [NEW] ConfirmTest, DeleteTestPilots and VerifyTest
+ * [UPD] Deprecated values now write 0x00
  * - File trims to last value
  * v1.0, 110921
  * - Release
@@ -26,14 +32,10 @@ namespace Idmr.Yogeme
 		#region defaults
 		string _verifyLocation = System.Windows.Forms.Application.StartupPath + "\\MissionVerify.exe";
 		string _lastMission = "";
-		int _waypoints = 1;
 		string _tiePath = "";
-		int _tieCraft = 0x85;
 		string _xvtPath = "";
-		int _xvtCraft = 0x85;
 		string _bopPath = "";
 		string _xwaPath = "";
-		int _xwaCraft = 0x105;
 		string _settingsDir = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) 
 			+ "\\Imperial Department of Military Research\\YOGEME\\";
 		#endregion
@@ -44,11 +46,11 @@ namespace Idmr.Yogeme
 
 		public Settings()
 		{
-			_loadDefaults();
+			loadDefaults();
 			LoadSettings();
 		}
 		
-		void _loadDefaults()
+		void loadDefaults()
 		{
 			RestrictPlatforms = true;
 			ConfirmExit = true;
@@ -58,8 +60,11 @@ namespace Idmr.Yogeme
 			LastPlatform = Platform.None;
 			MapOptions = MapOpts.FGTags | MapOpts.Traces;
 			Startup = StartupMode.Normal;
+			TieCraft = XvtCraft = XwaCraft = 5;
+			TieIff  = XvtIff = XwaIff = 1;
 			Verify = true;
 			VerifyTest = true;
+			Waypoints = 1;
 		}
 		
 		public void LoadSettings()
@@ -76,34 +81,60 @@ namespace Idmr.Yogeme
 				#region read from file
 				FileStream fs = File.OpenRead(settingsFile);
 				BinaryReader br = new BinaryReader(fs);
+				byte version = 0xFF;
+				if (fs.ReadByte() == 0xFF) version = br.ReadByte();
+				else fs.Position = 0;
 				BopInstalled = br.ReadBoolean();
 				_bopPath = br.ReadString();
-				fs.Position++;	// CheckInstall **DEPRECATED**
+				if (version == 0xFF) fs.Position++;	// CheckInstall **DEPRECATED**
 				ConfirmExit = br.ReadBoolean();
 				ConfirmSave = br.ReadBoolean();
 				_lastMission = br.ReadString();
 				LastPlatform = (Platform)br.ReadByte();
 				MapOptions = (MapOpts)br.ReadByte();
 				RestrictPlatforms = br.ReadBoolean();
-				fs.Position++;	// ShowDebug **DEPRECATED**
+				if (version == 0xFF) fs.Position++;	// ShowDebug **DEPRECATED**
 				Startup = (StartupMode)br.ReadByte();
 				TieInstalled = br.ReadBoolean();
-				_tieCraft = br.ReadInt32();
+				if (version == 0xFF)
+				{
+					int tieCraft = br.ReadInt32();
+					TieCraft = (byte)(tieCraft & 0x7F);
+					TieIff = (byte)(tieCraft >> 7);
+				}
+				else
+				{
+					TieCraft = br.ReadByte();
+					TieIff = br.ReadByte();
+				}
 				_tiePath = br.ReadString();
 				Verify = br.ReadBoolean();
-				_waypoints = br.ReadInt32();
+				Waypoints = br.ReadInt32();
 				XvtInstalled = br.ReadBoolean();
-				_xvtCraft = br.ReadInt32();
+				if (version == 0xFF)
+				{
+					int xvtCraft = br.ReadInt32();
+					XvtCraft = (byte)(xvtCraft & 0x7F);
+					XvtIff = (byte)(xvtCraft >> 7);
+				}
+				else
+				{
+					XvtCraft = br.ReadByte();
+					XvtIff = br.ReadByte();
+				}
 				_xvtPath = br.ReadString();
 				XwaInstalled = br.ReadBoolean();
-				_xwaCraft = br.ReadInt32();
+				XwaCraft = br.ReadByte();
+				XwaIff = br.ReadByte();
+				if (version == 0xFF) fs.Position += 2;
 				_xwaPath = br.ReadString();
 				try
 				{
-					_verifyLocation = br.ReadString();	// added after v0.9.1
-					ConfirmTest = br.ReadBoolean();	// added after v1.0
-					DeleteTestPilots = br.ReadBoolean();	// added after 1.0
-					VerifyTest = br.ReadBoolean();	// added after v1.0
+					// requires try block for no version (0xFF), so just leave it
+					_verifyLocation = br.ReadString();	// added in v1.0 (settings v1)
+					ConfirmTest = br.ReadBoolean();	// added in v1.1 (settings v2)
+					DeleteTestPilots = br.ReadBoolean();	// added in 1.1
+					VerifyTest = br.ReadBoolean();	// added in v1.1
 				}	
 				catch { /*do nothing*/ }
 				fs.Close();
@@ -123,15 +154,21 @@ namespace Idmr.Yogeme
 				RestrictPlatforms = Convert.ToBoolean(key.GetValue("RestrictPlatforms", true));
 				Startup = (StartupMode)key.GetValue("Startup", 0);
 				TieInstalled = Convert.ToBoolean(key.GetValue("TIE", false));
-				_tieCraft = (int)key.GetValue("TIECraft", 0x85);
+				int tieCraft = (int)key.GetValue("TIECraft", 0x85);
+				TieCraft = (byte)(tieCraft & 0x7F);
+				TieIff = (byte)(tieCraft >> 7);
 				_tiePath = (string)key.GetValue("TIEInstall", "");
 				Verify = Convert.ToBoolean(key.GetValue("Verify", true));
-				_waypoints = (int)key.GetValue("Waypoints", 1);
+				Waypoints = (int)key.GetValue("Waypoints", 1);
 				XvtInstalled = Convert.ToBoolean(key.GetValue("XvT", false));
-				_xvtCraft = (int)key.GetValue("XvTCraft", 0x85);
+				int xvtCraft = (int)key.GetValue("XvTCraft", 0x85);
+				XvtCraft = (byte)(xvtCraft & 0x7F);
+				XvtIff = (byte)(xvtCraft >> 7);
 				_xvtPath = (string)key.GetValue("XvTInstall", "");
 				XwaInstalled = Convert.ToBoolean(key.GetValue("XWA", false));
-				_xwaCraft = (int)key.GetValue("XWACraft", 0x85);
+				int xwaCraft = (int)key.GetValue("XWACraft", 0x85);
+				XwaCraft = (byte)(xwaCraft & 0xFF);
+				XwaIff = (byte)(xwaCraft >> 8);
 				_xwaPath = (string)key.GetValue("XWAInstall", "");
 				key.Close();
 				#endregion
@@ -251,27 +288,30 @@ namespace Idmr.Yogeme
 			if (!Directory.Exists(_settingsDir)) Directory.CreateDirectory(_settingsDir);
 			FileStream fs = File.OpenWrite(_settingsDir + "\\Settings.dat");
 			BinaryWriter bw = new BinaryWriter(fs);
+			fs.WriteByte(0xFF);
+			fs.WriteByte(0x03);
 			bw.Write(BopInstalled);
 			bw.Write(_bopPath);
-			fs.WriteByte(0);	// CheckInstall **DEPRECATED**
 			bw.Write(ConfirmExit);
 			bw.Write(ConfirmSave);
 			bw.Write(_lastMission);
 			bw.Write((byte)LastPlatform);
 			bw.Write((byte)MapOptions);
 			bw.Write(RestrictPlatforms);
-			fs.WriteByte(0);	// ShowDebug **DEPRECATED**
 			bw.Write((byte)Startup);
 			bw.Write(TieInstalled);
-			bw.Write(_tieCraft);
+			bw.Write(TieCraft);
+			bw.Write(TieIff);
 			bw.Write(_tiePath);
 			bw.Write(Verify);
-			bw.Write(_waypoints);
+			bw.Write(Waypoints);
 			bw.Write(XvtInstalled);
-			bw.Write(_xvtCraft);
+			bw.Write(XvtCraft);
+			bw.Write(XvtIff);
 			bw.Write(_xvtPath);
 			bw.Write(XwaInstalled);
-			bw.Write(_xwaCraft);
+			bw.Write(XwaCraft);
+			bw.Write(XwaIff);
 			bw.Write(_xwaPath);
 			bw.Write(_verifyLocation);
 			bw.Write(ConfirmTest);
@@ -286,7 +326,7 @@ namespace Idmr.Yogeme
 
 		#region Properties
 		public bool BopInstalled { get; set; }
-		public string BoPPath
+		public string BopPath
 		{
 			get { return _bopPath; }
 			set { if (Directory.Exists(value)) { _bopPath = value; } }
@@ -304,18 +344,10 @@ namespace Idmr.Yogeme
 		public MapOpts MapOptions { get; set; }
 		public bool RestrictPlatforms { get; set; }
 		public StartupMode Startup { get; set; }
-		public byte TIECraft
-		{
-			get { return (byte)(_tieCraft & 0x7F); }
-			set { if ((value & 0x7F) <= 0x57) { _tieCraft = (_tieCraft & 0x380) + value; } }
-		}
-		public byte TIEIFF
-		{
-			get { return (byte)((_tieCraft & 0x380) >> 7); }
-			set { if (value <= 5) { _tieCraft = (_tieCraft & 0x7F) + (value << 7); } }
-		}
+		public byte TieCraft { get; set; }
+		public byte TieIff { get; set; }
 		public bool TieInstalled { get; set; }
-		public string TIEPath
+		public string TiePath
 		{
 			get { return _tiePath; }
 			set { if (Directory.Exists(value)) { _tiePath = value; } }
@@ -327,39 +359,19 @@ namespace Idmr.Yogeme
 			set { if (File.Exists(value)) _verifyLocation = value; }
 		}
 		public bool VerifyTest { get; set; }
-		public int Waypoints
-		{
-			get { return _waypoints; }
-			set { if (value <= 0x7FFF) { _waypoints = value; } }
-		}
-		public byte XvTCraft
-		{
-			get { return (byte)(_xvtCraft & 0x7F); }
-			set { if ((value & 0x7F) <= 0x5C) { _xvtCraft = (_xvtCraft & 0x380) + value; } }
-		}
-		public byte XvTIFF
-		{
-			get { return (byte)((_xvtCraft & 0x380) >> 7); }
-			set { if (value <= 5) { _xvtCraft = (_xvtCraft & 0x7F) + (value << 7); } }
-		}
+		public int Waypoints { get; set; }
+		public byte XvtCraft { get; set; }
+		public byte XvtIff { get; set; }
 		public bool XvtInstalled { get; set; }
-		public string XvTPath
+		public string XvtPath
 		{
 			get { return _xvtPath; }
 			set { if (Directory.Exists(value)) { _xvtPath = value; } }
 		}
-		public byte XWACraft
-		{
-			get { return (byte)(_xwaCraft & 0xFF); }
-			set { if ((value & 0xFF) <= 0xE7) { _xwaCraft = (_xwaCraft & 0x700) + value; } }
-		}
-		public byte XWAIFF
-		{
-			get { return (byte)((_xwaCraft & 0x700) >> 8); }
-			set { if (value <= 5) { _xwaCraft = (_xwaCraft & 0xFF) + (value << 8); } }
-		}
+		public byte XwaCraft { get; set; }
+		public byte XwaIff { get; set; }
 		public bool XwaInstalled { get; set; }
-		public string XWAPath
+		public string XwaPath
 		{
 			get { return _xwaPath; }
 			set { if (Directory.Exists(value)) { _xwaPath = value; } }
@@ -367,32 +379,38 @@ namespace Idmr.Yogeme
 		#endregion
 	}
 	/* Settings and values
-	 * (Registry) (AppData type)
-	 * RESERVED BYTE: 0xFF
-	 * Version BYTE
+	 * (version) Name TYPE: notes
+	 * (v3+) RESERVED BYTE: 0xFF
+	 * (v3+) Version BYTE: 0x03
 	 * BopInstalled BOOL:
-	 * BoPPath STR: path to BoP directory
-	 * CheckInstall BOOL: **DEPRECATED**
+	 * BopPath STR: path to BoP directory
+	 * (v-3) CheckInstall BOOL: **DEPRECATED**
 	 * ConfirmExit BOOL:
 	 * ConfirmSave BOOL:
 	 * LastMission STR: path to last open mission file
 	 * LastPlatform BYTE: last platform edited; 0=none, 1=TIE, 2=XvT, 3=BoP, 4=XWA
-	 * MapOptions BYTE: 1+=FG Tags, 2+=Traces
+	 * MapOptions BYTE [Flags]: 1<<0=FG Tags, 1<<1=Traces
 	 * RestrictPlatforms BOOL: false=all platforms editable, true=only installed platforms editable
-	 * ShowDebug BYTE: **DEPRECATED**
+	 * (v-3) ShowDebug BYTE: **DEPRECATED**
 	 * Startup BYTE: 0=normal, 1=open to last platform, 2=open last mission
-	 * TIECraft INT: &0x7F=Default Craft, &0x380>>7=Default IFF
 	 * TieInstalled BOOL:
-	 * TIEPath STR: path to TIE directory
+	 * (v-3) TIECraft INT: &0x7F=Default Craft, &0x380>>7=Default IFF
+	 * (v3+) TieCraft BYTE:
+	 * (v3+) TieIFF BYTE:
+	 * TiePath STR: path to TIE directory
 	 * Verify BOOL: false=no action, true=run MissVerify on Save
-	 * Waypoints INT: 1+=SP1, 2+=SP2, 4+=SP4, 8+=SP4, 16+=WP1, 32+=WP2, 64+=WP3, 128+=WP4, 256+=WP5, 512+=WP6, 1024+=WP7, 2048+=WP8, 4096+=RND, 8192+=HYP, 16384+=BRF
-	 * XvTCraft INT: &0x7F=Default Craft, &0x380>>7=Default IFF
+	 * Waypoints INT [Flags]: 1<<0=SP1... 1<<4=WP1... 1<<12=RND, 1<<13=HYP, 1<<14=BRF1... 1<<21=BRF8
 	 * XvtInstalled BOOL:
-	 * XvTPath STR: path to XvT directory
-	 * XWACraft INT: &0xFF=Default Craft, &0x700>>8=Default IFF
+	 * (v-3) XvTCraft INT: &0x7F=Default Craft, &0x380>>7=Default IFF
+	 * (v3+) XvtCraft BYTE:
+	 * (v3+) XvtIff BYTE:
+	 * XvtPath STR: path to XvT directory
 	 * XwaInstalled BOOL:
-	 * XWAPath STR: path to XWA directory
-	 * VerifyLocation STR: path to mission verification file (MissionVerify.exe)
+	 * XwaCraft BYTE:
+	 * XwaIff BYTE:
+	 * (v-3) RESERVED SHORT: 0x0000
+	 * XwaPath STR: path to XWA directory
+	 * VerifyLocation STR: path to mission verification program (MissionVerify.exe)
 	 * ConfirmTest BOOL: show confirm dialog before executing test function
 	 * DeleteTestPilots BOOL: after done flying, delete the testing pilot file
 	 * VerifyTest BOOL: ignored if (Verify), Verify mission before launching test

@@ -14,11 +14,30 @@ original mainstream editors were created.
 ==========
 Version History
 
+v1.1.1 - 14 Aug 2012
+ - (All) Waypoint.Enabled now updates when changing state instead of when
+   losing focus
+ - (Map) Changed how waypoints were handled, will now interact with platform
+   GUI properly
+ - (Settings) BRF2-8 now save properly
+ - (TIE) Added controls for FlightGroup.Unknowns 19-21
+ - (XvT) FG list once again displays properly
+ - (XWA) Fixed unhandled exception when changing Regions on the Orders tab 
+ - Idmr.Platform.dll updated to v2.0.1
+ -- (BaseBriefing) Fixed bug regarding StartLength calculation
+ -- (*.FlightGroup) Fixed bug preventing proper SpecialCargoCraft handling during Load/Save
+ -- (Tie.FlightGroup) Added Unknowns 19-21
+ -- (Tie.Officers) Fixed bug in Save() causing '[' and ']' to save as characters instead of the appropriate highlighiting codes
+ -- (Xvt.Briefing) Fixed bug in Save() prevent proper Events writing
+ -- (Xvt.Mission) Fixed critical bug in LoadMission() that resulted in unhandled exception
+ -- (Xwa.Mission) Fixed critical bug in Save() causing infinite loop and filesize
+ - Back-end updates
+
 v1.1 - 15 July 2012
  - (XWA) Backdrop interface will detect and load custom backdrops for XWA only
  - (TIE) Briefing and Debriefing officer question preview added, displays as it
 would in-game.
- - Various code updates
+ - Back-end updates
 
 v1.0 - 21 Sept 2011
  - Release
