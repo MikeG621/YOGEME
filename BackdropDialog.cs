@@ -229,18 +229,15 @@ namespace Idmr.Yogeme
 				System.Collections.Generic.List<string> resdata = new System.Collections.Generic.List<string>(50);
 				string line = "";
 				while((line = sr.ReadLine()) != null) if (line != "") resdata.Add(line);
-				//System.Diagnostics.Debug.WriteLine("resdata total: " + resdata.Count);
 				for (int i = 0; i < resdata.Count - 38; i++)
 				{
 					DatFile temp = new DatFile(_installDirectory + "\\" + resdata[i]);
-					//System.Diagnostics.Debug.WriteLine(temp.FilePath);
 					int index = 0;
 					for (int g = 0; g < temp.NumberOfGroups; g++)
 					{
 						index = _planets.Groups.GetIndex(temp.Groups[g].ID);
 						if (index != -1)
 						{
-							//System.Diagnostics.Debug.WriteLine("yahtzee! index: " + index);
 							_planets.Groups[index] = temp.Groups[g];
 							thumbs[index].BackgroundImage = temp.Groups[g].Subs[0].Image;
 						}

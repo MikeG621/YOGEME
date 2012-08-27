@@ -579,6 +579,12 @@ namespace Idmr.Yogeme
 			this.savXvT = new System.Windows.Forms.SaveFileDialog();
 			this.dataWaypoints = new System.Data.DataView();
 			this.dataWaypoints_Raw = new System.Data.DataView();
+			this.menuRecent = new System.Windows.Forms.MenuItem();
+			this.menuRec1 = new System.Windows.Forms.MenuItem();
+			this.menuRec2 = new System.Windows.Forms.MenuItem();
+			this.menuRec3 = new System.Windows.Forms.MenuItem();
+			this.menuRec4 = new System.Windows.Forms.MenuItem();
+			this.menuRec5 = new System.Windows.Forms.MenuItem();
 			this.tabMain.SuspendLayout();
 			this.tabFG.SuspendLayout();
 			this.tabFGMinor.SuspendLayout();
@@ -4827,7 +4833,7 @@ namespace Idmr.Yogeme
 			this.txtGlobalInc.Name = "txtGlobalInc";
 			this.txtGlobalInc.Size = new System.Drawing.Size(272, 20);
 			this.txtGlobalInc.TabIndex = 32;
-			this.txtGlobalInc.Leave += new System.EventHandler(this.txtGlobalInc_Leave);
+			this.txtGlobalInc.Leave += new System.EventHandler(this.txtGlobal_Leave);
 			// 
 			// label32
 			// 
@@ -5320,7 +5326,7 @@ namespace Idmr.Yogeme
 			this.txtGlobalComp.Name = "txtGlobalComp";
 			this.txtGlobalComp.Size = new System.Drawing.Size(272, 20);
 			this.txtGlobalComp.TabIndex = 32;
-			this.txtGlobalComp.Leave += new System.EventHandler(this.txtGlobalComp_Leave);
+			this.txtGlobalComp.Leave += new System.EventHandler(this.txtGlobal_Leave);
 			// 
 			// txtGlobalFail
 			// 
@@ -5331,7 +5337,7 @@ namespace Idmr.Yogeme
 			this.txtGlobalFail.Name = "txtGlobalFail";
 			this.txtGlobalFail.Size = new System.Drawing.Size(272, 20);
 			this.txtGlobalFail.TabIndex = 32;
-			this.txtGlobalFail.Leave += new System.EventHandler(this.txtGlobalFail_Leave);
+			this.txtGlobalFail.Leave += new System.EventHandler(this.txtGlobal_Leave);
 			// 
 			// label34
 			// 
@@ -6225,6 +6231,7 @@ namespace Idmr.Yogeme
 			this.menuFile.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
             this.menuNew,
             this.menuOpen,
+            this.menuRecent,
             this.menuSave,
             this.menuSaveAs,
             this.menuItem23,
@@ -6275,14 +6282,14 @@ namespace Idmr.Yogeme
 			// 
 			// menuSave
 			// 
-			this.menuSave.Index = 2;
+			this.menuSave.Index = 3;
 			this.menuSave.Shortcut = System.Windows.Forms.Shortcut.CtrlS;
 			this.menuSave.Text = "&Save";
 			this.menuSave.Click += new System.EventHandler(this.menuSave_Click);
 			// 
 			// menuSaveAs
 			// 
-			this.menuSaveAs.Index = 3;
+			this.menuSaveAs.Index = 4;
 			this.menuSaveAs.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
             this.menuSaveAsTIE,
             this.menuSaveAsXvT,
@@ -6316,12 +6323,12 @@ namespace Idmr.Yogeme
 			// 
 			// menuItem23
 			// 
-			this.menuItem23.Index = 4;
+			this.menuItem23.Index = 5;
 			this.menuItem23.Text = "-";
 			// 
 			// menuExit
 			// 
-			this.menuExit.Index = 5;
+			this.menuExit.Index = 6;
 			this.menuExit.Shortcut = System.Windows.Forms.Shortcut.CtrlShiftX;
 			this.menuExit.Text = "E&xit";
 			this.menuExit.Click += new System.EventHandler(this.menuExit_Click);
@@ -6474,6 +6481,48 @@ namespace Idmr.Yogeme
 			// 
 			this.dataWaypoints_Raw.AllowDelete = false;
 			this.dataWaypoints_Raw.AllowNew = false;
+			// 
+			// menuRecent
+			// 
+			this.menuRecent.Enabled = false;
+			this.menuRecent.Index = 2;
+			this.menuRecent.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+            this.menuRec1,
+            this.menuRec2,
+            this.menuRec3,
+            this.menuRec4,
+            this.menuRec5});
+			this.menuRecent.Text = "Open &Recent...";
+			// 
+			// menuRec1
+			// 
+			this.menuRec1.Index = 0;
+			this.menuRec1.Text = "1.";
+			this.menuRec1.Visible = false;
+			// 
+			// menuRec2
+			// 
+			this.menuRec2.Index = 1;
+			this.menuRec2.Text = "2.";
+			this.menuRec2.Visible = false;
+			// 
+			// menuRec3
+			// 
+			this.menuRec3.Index = 2;
+			this.menuRec3.Text = "3.";
+			this.menuRec3.Visible = false;
+			// 
+			// menuRec4
+			// 
+			this.menuRec4.Index = 3;
+			this.menuRec4.Text = "4.";
+			this.menuRec4.Visible = false;
+			// 
+			// menuRec5
+			// 
+			this.menuRec5.Index = 4;
+			this.menuRec5.Text = "5.";
+			this.menuRec5.Visible = false;
 			// 
 			// XvtForm
 			// 
@@ -7176,5 +7225,11 @@ namespace Idmr.Yogeme
 		private Button cmdBackdrop;
 		private NumericUpDown numBackdrop;
 		private Label label122;
+		private MenuItem menuRecent;
+		private MenuItem menuRec1;
+		private MenuItem menuRec2;
+		private MenuItem menuRec3;
+		private MenuItem menuRec4;
+		private MenuItem menuRec5;
 	}
 }

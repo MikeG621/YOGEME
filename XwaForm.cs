@@ -7,6 +7,9 @@
  */
 
 /* CHANGELOG
+ * [UPD] lblStarting now only applies to Normal difficulty
+ * [UPD] opn/sav dialogs default to \MISSIONS
+ * [NEW] Open Recent menu
  * v1.1.1, 120814
  * [FIX] Unhandled exception when switching Order Regions
  * [UPD] chkWPArr_Leave to chkWPArr_CheckedChanged
@@ -53,6 +56,7 @@ namespace Idmr.Yogeme
 		byte _activeOptionCraft = 0;
 		#endregion
 		#region control arrays
+		MenuItem[] menuRecentMissions = new MenuItem[6];
 		// FG AD
 		Label[] lblADTrig = new Label[6];
 		RadioButton[] optADAndOr = new RadioButton[8];
@@ -171,11 +175,9 @@ namespace Idmr.Yogeme
 		}
 		void craftStart(FlightGroup fg, bool bAdd)
 		{
-			if (fg.ArrivesIn30Seconds)
-			{
-				if (bAdd) _startingShips += fg.NumberOfCraft;
-				else _startingShips -= fg.NumberOfCraft;
-			}
+			if (fg.Difficulty == 1 || fg.Difficulty == 3 || fg.Difficulty == 6 || !fg.ArrivesIn30Seconds) return;
+			if (bAdd) _startingShips += fg.NumberOfCraft;
+			else _startingShips -= fg.NumberOfCraft;
 			lblStarting.Text = _startingShips.ToString() + " craft at 30 seconds";
 			if (_startingShips > Mission.CraftLimit) lblStarting.ForeColor = Color.Red;
 			else lblStarting.ForeColor = SystemColors.ControlText;
@@ -320,6 +322,7 @@ namespace Idmr.Yogeme
 		}
 		void promptSave()
 		{
+			_config.SaveSettings();
 			if (_config.ConfirmSave && (this.Text.IndexOf("*") != -1))
 			{
 				DialogResult res = MessageBox.Show("Mission has been edited without saving, would you like to save?", "Confirm", MessageBoxButtons.YesNo);
@@ -329,6 +332,15 @@ namespace Idmr.Yogeme
 					else saveMission(_mission.MissionPath);
 				}
 			}
+		}
+		void refreshRecent()
+		{
+			for (int i = 1; i < 6; i++)
+			{
+				menuRecentMissions[i].Text = "&" + i + ": " + _config.RecentMissions[i] + " (" + _config.RecentPlatforms[i].ToString() + ")";
+				menuRecentMissions[i].Visible = (_config.RecentMissions[i] != "");
+			}
+			menuRecentMissions[0].Enabled = menuRecentMissions[1].Visible;
 		}
 		void saveMission(string fileMission)
 		{
@@ -354,10 +366,24 @@ namespace Idmr.Yogeme
 			}
 			if (Directory.Exists(_config.XwaPath))
 			{
-				opnXWA.InitialDirectory = _config.XwaPath;
-				savXWA.InitialDirectory = _config.XwaPath;
+				opnXWA.InitialDirectory = _config.XwaPath + "\\MISSIONS";
+				savXWA.InitialDirectory = _config.XwaPath + "\\MISSIONS";
 			}
 			_iffs = Strings.IFF;
+			#region Menu
+			menuRecentMissions[0] = menuRecent;
+			menuRecentMissions[1] = menuRec1;
+			menuRecentMissions[2] = menuRec2;
+			menuRecentMissions[3] = menuRec3;
+			menuRecentMissions[4] = menuRec4;
+			menuRecentMissions[5] = menuRec5;
+			for (int i = 1; i < 6; i++)
+			{
+				menuRecentMissions[i].Click += new EventHandler(menuRecentMissions_Click);
+				menuRecentMissions[i].Tag = i;
+			}
+			refreshRecent();
+			#endregion
 			#region FlightGroups
 			#region Craft
 			cboCraft.Items.AddRange(Strings.CraftType); cboCraft.SelectedIndex = _mission.FlightGroups[0].CraftType;
@@ -774,7 +800,6 @@ namespace Idmr.Yogeme
 				if (res == DialogResult.No) { e.Cancel = true; return; }
 			}
 			closeForms();
-			_config.SaveSettings();
 			if (_applicationExit) Application.Exit();
 		}
 
@@ -788,7 +813,7 @@ namespace Idmr.Yogeme
 				tabFGMinor.SelectedIndex = 0;
 				lstFG.SelectedIndex = 0;
 				try { lstMessages.SelectedIndex = 0; }
-				catch { /* do nothing */}
+				catch { System.Diagnostics.Debug.WriteLine("messages DNE"); }
 			}
 			_loading = false;
 		}
@@ -1058,6 +1083,7 @@ namespace Idmr.Yogeme
 		void menuOpen_Click(object sender, EventArgs e)
 		{
 			promptSave();
+			opnXWA.FileName = _mission.MissionFileName;
 			opnXWA.ShowDialog();
 		}
 		void menuOptions_Click(object sender, EventArgs e)
@@ -1227,6 +1253,22 @@ namespace Idmr.Yogeme
 			}
 			#endregion
 			stream.Close();
+		}
+		void menuRecentMissions_Click(object sender, EventArgs e)
+		{
+			string mission = _config.RecentMissions[(int)((MenuItem)sender).Tag];
+			promptSave();
+			initializeMission();
+			if (loadMission(mission))
+			{
+				tabMain.SelectedIndex = 0;
+				tabFGMinor.SelectedIndex = 0;
+				_activeFG = 0;
+				lstFG.SelectedIndex = 0;
+				_loading = true;		//turned false in previous line
+				if (_mission.Messages.Count != 0) lstMessages.SelectedIndex = 0;
+			}
+			_loading = false;
 		}
 		void menuSave_Click(object sender, EventArgs e)
 		{

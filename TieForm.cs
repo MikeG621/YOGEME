@@ -7,6 +7,9 @@
  */
 
 /* CHANGELOG
+ * [UPD] lblStarting now only applies to Normal difficulty
+ * [UPD] opn/sav dialogs default to \MISSION
+ * [NEW] Open Recent menu
  * v1.1.1, 120814
  * [UPD] chkWPArr_Leave to chkWPArr_CheckedChanged
  * [NEW] FG.Unknowns 19-21
@@ -59,6 +62,7 @@ namespace Idmr.Yogeme
 		CheckBox[] chkWP = new CheckBox[15];
 		NumericUpDown[] numUnk = new NumericUpDown[9];
 		RadioButton[] optOfficers = new RadioButton[4];
+		MenuItem[] menuRecentMissions = new MenuItem[6];
 		#endregion
 
 		public TieForm()
@@ -146,11 +150,9 @@ namespace Idmr.Yogeme
 		}
 		void craftStart(FlightGroup fg, bool bAdd)
 		{
-			if (fg.ArrivesIn30Seconds)
-			{
-				if (bAdd) _startingShips += fg.NumberOfCraft;
-				else _startingShips -= fg.NumberOfCraft;
-			}
+			if (fg.Difficulty == 1 || fg.Difficulty == 3 || !fg.ArrivesIn30Seconds) return;
+			if (bAdd) _startingShips += fg.NumberOfCraft;
+			else _startingShips -= fg.NumberOfCraft;
 			lblStarting.Text = _startingShips.ToString() + " Craft at 30 seconds";
 			if (_startingShips > Mission.CraftLimit) lblStarting.ForeColor = Color.Red;
 			else lblStarting.ForeColor = SystemColors.ControlText;
@@ -213,6 +215,7 @@ namespace Idmr.Yogeme
 					switch (Platform.MissionFile.GetPlatform(fs))
 					{
 						case Platform.MissionFile.Platform.TIE:
+							initializeMission();
 							break;
 						case Platform.MissionFile.Platform.XvT:
 							_applicationExit = false;
@@ -264,13 +267,14 @@ namespace Idmr.Yogeme
 			for (int i = 0; i < t.Length; i++) t[i] = _mission.IFFs[i];
 			comboReset(cboIFF, t, 0);
 			updateMissionTabs();
-			_mission.MissionPath = fileMission;
 			this.Text = "Ye Olde Galactic Empire Mission Editor - TIE - " + _mission.MissionFileName;
 			_config.LastMission = fileMission;
+			refreshRecent();
 			return true;
 		}
 		void promptSave()
 		{
+			_config.SaveSettings();
 			if (_config.ConfirmSave && (this.Text.IndexOf("*") != -1))
 			{
 				DialogResult res = MessageBox.Show("Mission has been edited without saving, would you like to save?", "Confirm", MessageBoxButtons.YesNo);
@@ -280,6 +284,15 @@ namespace Idmr.Yogeme
 					else saveMission(_mission.MissionPath);
 				}
 			}
+		}
+		void refreshRecent()
+		{
+			for (int i = 1; i < 6; i++)
+			{
+				menuRecentMissions[i].Text = "&" + i + ": " + _config.RecentMissions[i] + " (" + _config.RecentPlatforms[i].ToString() + ")";
+				menuRecentMissions[i].Visible = (_config.RecentMissions[i] != "");
+			}
+			menuRecentMissions[0].Enabled = menuRecentMissions[1].Visible;
 		}
 		void saveMission(string fileMission)
 		{
@@ -303,16 +316,30 @@ namespace Idmr.Yogeme
 			menuTest.Enabled = _config.TieInstalled;
 			if (Directory.Exists(_config.TiePath))
 			{
-				opnTIE.InitialDirectory = _config.TiePath;
-				savTIE.InitialDirectory = _config.TiePath;
+				opnTIE.InitialDirectory = _config.TiePath + "\\MISSION";
+				savTIE.InitialDirectory = _config.TiePath + "\\MISSION";
 			}
 			_applicationExit = true;	//becomes false if selecting "New Mission" from menu
 			if (_config.RestrictPlatforms)
 			{
-				if (!_config.XvtInstalled) { menuNewXvT.Enabled = false; }
-				if (!_config.BopInstalled) { menuNewBoP.Enabled = false; }
-				if (!_config.XwaInstalled) { menuNewXWA.Enabled = false; }
+				menuNewXvT.Enabled = _config.XvtInstalled;
+				menuNewBoP.Enabled = _config.BopInstalled;
+				menuNewXWA.Enabled = _config.XwaInstalled;
 			}
+			#region Menu
+			menuRecentMissions[0] = menuRecent;
+			menuRecentMissions[1] = menuRec1;
+			menuRecentMissions[2] = menuRec2;
+			menuRecentMissions[3] = menuRec3;
+			menuRecentMissions[4] = menuRec4;
+			menuRecentMissions[5] = menuRec5;
+			for (int i = 1; i < 6; i++)
+			{
+				menuRecentMissions[i].Click += new EventHandler(menuRecentMissions_Click);
+				menuRecentMissions[i].Tag = i;
+			}
+			refreshRecent();
+			#endregion
 			#region Craft
 			cboCraft.Items.AddRange(Strings.CraftType); cboCraft.SelectedIndex = _mission.FlightGroups[0].CraftType;
 			cboIFF.SelectedIndex = _mission.FlightGroups[0].IFF;	// already loaded default IFFs at start of function through txtIFF#.Text
@@ -499,6 +526,8 @@ namespace Idmr.Yogeme
 			#endregion
 			updateMissionTabs();
 		}
+
+		
 		void updateMissionTabs()
 		{
 			#region Globals tab
@@ -547,14 +576,12 @@ namespace Idmr.Yogeme
 				if (res == DialogResult.No) { e.Cancel = true; return; }
 			}
 			closeForms();
-			_config.SaveSettings();
 			if (_applicationExit) Application.Exit();
 		}
 
 		void opnTIE_FileOk(object sender, System.ComponentModel.CancelEventArgs e)
 		{
 			_loading = true;
-			initializeMission();
 			if (loadMission(opnTIE.FileName))
 			{
 				tabMain.SelectedIndex = 0;
@@ -797,6 +824,7 @@ namespace Idmr.Yogeme
 		void menuOpen_Click(object sender, EventArgs e)
 		{
 			promptSave();
+			opnTIE.FileName = _mission.MissionFileName;
 			opnTIE.ShowDialog();
 		}
 		void menuOptions_Click(object sender, EventArgs e)
@@ -930,6 +958,22 @@ namespace Idmr.Yogeme
 			}
 			#endregion
 			stream.Close();
+		}
+		void menuRecentMissions_Click(object sender, EventArgs e)
+		{
+			string mission = _config.RecentMissions[(int)((MenuItem)sender).Tag];
+			promptSave();
+			initializeMission();
+			if (loadMission(mission))
+			{
+				tabMain.SelectedIndex = 0;
+				tabFGMinor.SelectedIndex = 0;
+				_activeFG = 0;
+				lstFG.SelectedIndex = 0;
+				_loading = true;		//turned false in previous line
+				if (_mission.Messages.Count != 0) lstMessages.SelectedIndex = 0;
+			}
+			_loading = false;
 		}
 		void menuSave_Click(object sender, EventArgs e)
 		{
@@ -1372,7 +1416,9 @@ namespace Idmr.Yogeme
 		}
 		void cboDiff_Leave(object sender, EventArgs e)
 		{
+			craftStart(_mission.FlightGroups[_activeFG], false);
 			_mission.FlightGroups[_activeFG].Difficulty = Convert.ToByte(Common.Update(this, _mission.FlightGroups[_activeFG].Difficulty, cboDiff.SelectedIndex));
+			craftStart(_mission.FlightGroups[_activeFG], true);
 		}
 
 		void cmdCopyAD_Click(object sender, EventArgs e)
@@ -2036,6 +2082,8 @@ namespace Idmr.Yogeme
 			_fOfficers = new OfficerPreviewForm(_mission.BriefingQuestions);
 			_fOfficers.Show();
 		}
+
+		
 
 		
 	}

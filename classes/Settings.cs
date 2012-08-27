@@ -7,6 +7,8 @@
  */
 
 /* CHANGELOG
+ * [NEW] RecentMissions, RecentPlatforms
+ * [UPD] v4
  * v1.1.1, 120814
  * [NEW] Settings format version implemented @v3
  * - Deprecated values no longer occupy space
@@ -39,6 +41,8 @@ namespace Idmr.Yogeme
 		string _settingsDir = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) 
 			+ "\\Imperial Department of Military Research\\YOGEME\\";
 		#endregion
+		string[] _recentMissions = new string[6];
+		Platform[] _recentPlatforms = new Platform[6];
 		public enum Platform { None, TIE, XvT, BoP, XWA }
 		public enum StartupMode { Normal, LastPlatform, LastMission }
 		[Flags]
@@ -57,8 +61,8 @@ namespace Idmr.Yogeme
 			ConfirmSave = true;
 			ConfirmTest = true;
 			DeleteTestPilots = true;
-			LastPlatform = Platform.None;
 			MapOptions = MapOpts.FGTags | MapOpts.Traces;
+			for (int i = 0; i < 5; i++) _recentMissions[i] = "";
 			Startup = StartupMode.Normal;
 			TieCraft = XvtCraft = XwaCraft = 5;
 			TieIff  = XvtIff = XwaIff = 1;
@@ -89,9 +93,15 @@ namespace Idmr.Yogeme
 				if (version == 0xFF) fs.Position++;	// CheckInstall **DEPRECATED**
 				ConfirmExit = br.ReadBoolean();
 				ConfirmSave = br.ReadBoolean();
-				_lastMission = br.ReadString();
-				LastPlatform = (Platform)br.ReadByte();
+				_recentMissions[0] = br.ReadString();
+				_recentPlatforms[0] = (Platform)br.ReadByte();
 				MapOptions = (MapOpts)br.ReadByte();
+				if (version >= 4 && version != 0xFF)
+					for (int i = 1; i < 6; i++)
+					{
+						_recentMissions[i] = br.ReadString();
+						_recentPlatforms[i] = (Platform)br.ReadByte();
+					}
 				RestrictPlatforms = br.ReadBoolean();
 				if (version == 0xFF) fs.Position++;	// ShowDebug **DEPRECATED**
 				Startup = (StartupMode)br.ReadByte();
@@ -289,14 +299,19 @@ namespace Idmr.Yogeme
 			FileStream fs = File.OpenWrite(_settingsDir + "\\Settings.dat");
 			BinaryWriter bw = new BinaryWriter(fs);
 			fs.WriteByte(0xFF);
-			fs.WriteByte(0x03);
+			fs.WriteByte(0x04);
 			bw.Write(BopInstalled);
 			bw.Write(_bopPath);
 			bw.Write(ConfirmExit);
 			bw.Write(ConfirmSave);
-			bw.Write(_lastMission);
-			bw.Write((byte)LastPlatform);
+			bw.Write(_recentMissions[0]);
+			bw.Write((byte)_recentPlatforms[0]);
 			bw.Write((byte)MapOptions);
+			for (int i = 1; i < 6; i++)
+			{
+				bw.Write(_recentMissions[i]);
+				bw.Write((byte)_recentPlatforms[i]);
+			}
 			bw.Write(RestrictPlatforms);
 			bw.Write((byte)Startup);
 			bw.Write(TieInstalled);
@@ -337,11 +352,40 @@ namespace Idmr.Yogeme
 		public bool DeleteTestPilots { get; set; }
 		public string LastMission
 		{
-			get { return _lastMission; }
-			set { if (File.Exists(value)) { _lastMission = value; } }
+			get { return _recentMissions[0]; }
+			set
+			{
+				if (_recentMissions[0] != value && _recentMissions[0] != "")
+				{
+					for (int i = 4; i >= 0; i--)
+					{
+						_recentMissions[i+1] = _recentMissions[i];
+						_recentPlatforms[i+1] = _recentPlatforms[i];
+					}
+				}
+				_recentMissions[0] = value;
+				for (int i = 1; i < 6; i++)
+				{
+					if (_recentMissions[i] == _recentMissions[0])
+					{
+						for (int j = i; j < 5; j++)
+						{
+							_recentMissions[j] = _recentMissions[j + 1];
+							_recentPlatforms[j] = _recentPlatforms[j + 1];
+						}
+						_recentMissions[5] = "";
+					}
+				}
+			}
 		}
-		public Platform LastPlatform { get; set; }
+		public Platform LastPlatform
+		{
+			get { return _recentPlatforms[0]; }
+			set { _recentPlatforms[0] = value; }
+		}
 		public MapOpts MapOptions { get; set; }
+		public string[] RecentMissions { get { return (string[])_recentMissions.Clone(); } }
+		public Platform[] RecentPlatforms { get { return (Platform[])_recentPlatforms.Clone(); } }
 		public bool RestrictPlatforms { get; set; }
 		public StartupMode Startup { get; set; }
 		public byte TieCraft { get; set; }
@@ -381,15 +425,20 @@ namespace Idmr.Yogeme
 	/* Settings and values
 	 * (version) Name TYPE: notes
 	 * (v3+) RESERVED BYTE: 0xFF
-	 * (v3+) Version BYTE: 0x03
+	 * (v3+) Version BYTE: 0x04
 	 * BopInstalled BOOL:
 	 * BopPath STR: path to BoP directory
 	 * (v-3) CheckInstall BOOL: **DEPRECATED**
 	 * ConfirmExit BOOL:
 	 * ConfirmSave BOOL:
-	 * LastMission STR: path to last open mission file
-	 * LastPlatform BYTE: last platform edited; 0=none, 1=TIE, 2=XvT, 3=BoP, 4=XWA
+	 * LastMission STR: path to last open mission file; =RecentMission0
+	 * LastPlatform BYTE: last platform edited; 0=none, 1=TIE, 2=XvT, 3=BoP, 4=XWA; =RecentPlatform0
 	 * MapOptions BYTE [Flags]: 1<<0=FG Tags, 1<<1=Traces
+	 * (v4+) RecentMission1 STR: automatically updated through LastMission.set
+	 * (v4+) RecentPlatform1 BYTE:
+	 * (v4+) RecentMission2 STR:
+	 * ...
+	 * (v4+) RecentPlatform5 BYTE:
 	 * RestrictPlatforms BOOL: false=all platforms editable, true=only installed platforms editable
 	 * (v-3) ShowDebug BYTE: **DEPRECATED**
 	 * Startup BYTE: 0=normal, 1=open to last platform, 2=open last mission

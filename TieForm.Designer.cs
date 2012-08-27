@@ -203,6 +203,9 @@ namespace Idmr.Yogeme
 			this.numOVar2 = new System.Windows.Forms.NumericUpDown();
 			this.cmdPasteOrder = new System.Windows.Forms.Button();
 			this.tabUnk = new System.Windows.Forms.TabPage();
+			this.chkUnk21 = new System.Windows.Forms.CheckBox();
+			this.chkUnk19 = new System.Windows.Forms.CheckBox();
+			this.numUnk20 = new System.Windows.Forms.NumericUpDown();
 			this.numUnk17 = new System.Windows.Forms.NumericUpDown();
 			this.numUnk16 = new System.Windows.Forms.NumericUpDown();
 			this.numUnk15 = new System.Windows.Forms.NumericUpDown();
@@ -221,6 +224,7 @@ namespace Idmr.Yogeme
 			this.label46 = new System.Windows.Forms.Label();
 			this.label49 = new System.Windows.Forms.Label();
 			this.label50 = new System.Windows.Forms.Label();
+			this.label81 = new System.Windows.Forms.Label();
 			this.label51 = new System.Windows.Forms.Label();
 			this.label68 = new System.Windows.Forms.Label();
 			this.label69 = new System.Windows.Forms.Label();
@@ -344,6 +348,12 @@ namespace Idmr.Yogeme
 			this.menuNewBoP = new System.Windows.Forms.MenuItem();
 			this.menuNewXWA = new System.Windows.Forms.MenuItem();
 			this.menuOpen = new System.Windows.Forms.MenuItem();
+			this.menuRecent = new System.Windows.Forms.MenuItem();
+			this.menuRec1 = new System.Windows.Forms.MenuItem();
+			this.menuRec2 = new System.Windows.Forms.MenuItem();
+			this.menuRec3 = new System.Windows.Forms.MenuItem();
+			this.menuRec4 = new System.Windows.Forms.MenuItem();
+			this.menuRec5 = new System.Windows.Forms.MenuItem();
 			this.menuSave = new System.Windows.Forms.MenuItem();
 			this.menuSaveAs = new System.Windows.Forms.MenuItem();
 			this.menuSaveAsTIE = new System.Windows.Forms.MenuItem();
@@ -375,10 +385,6 @@ namespace Idmr.Yogeme
 			this.savTIE = new System.Windows.Forms.SaveFileDialog();
 			this._dataWaypoints = new System.Data.DataView();
 			this._dataWaypointsRaw = new System.Data.DataView();
-			this.label81 = new System.Windows.Forms.Label();
-			this.numUnk20 = new System.Windows.Forms.NumericUpDown();
-			this.chkUnk19 = new System.Windows.Forms.CheckBox();
-			this.chkUnk21 = new System.Windows.Forms.CheckBox();
 			this.tabMain.SuspendLayout();
 			this.tabFG.SuspendLayout();
 			this.tabFGMinor.SuspendLayout();
@@ -424,6 +430,7 @@ namespace Idmr.Yogeme
 			this.groupBox11.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numOVar2)).BeginInit();
 			this.tabUnk.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.numUnk20)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numUnk17)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numUnk16)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numUnk15)).BeginInit();
@@ -451,7 +458,6 @@ namespace Idmr.Yogeme
 			this.groupBox21.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this._dataWaypoints)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this._dataWaypointsRaw)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.numUnk20)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// tabMain
@@ -2428,6 +2434,42 @@ namespace Idmr.Yogeme
 			this.tabUnk.TabIndex = 5;
 			this.tabUnk.Text = "Unknowns";
 			// 
+			// chkUnk21
+			// 
+			this.chkUnk21.AutoSize = true;
+			this.chkUnk21.Location = new System.Drawing.Point(269, 391);
+			this.chkUnk21.Name = "chkUnk21";
+			this.chkUnk21.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+			this.chkUnk21.Size = new System.Drawing.Size(105, 17);
+			this.chkUnk21.TabIndex = 10;
+			this.chkUnk21.Text = "      Unknown 21";
+			this.chkUnk21.UseVisualStyleBackColor = true;
+			this.chkUnk21.Leave += new System.EventHandler(this.chkUnk21_Leave);
+			// 
+			// chkUnk19
+			// 
+			this.chkUnk19.AutoSize = true;
+			this.chkUnk19.Location = new System.Drawing.Point(269, 327);
+			this.chkUnk19.Name = "chkUnk19";
+			this.chkUnk19.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+			this.chkUnk19.Size = new System.Drawing.Size(105, 17);
+			this.chkUnk19.TabIndex = 10;
+			this.chkUnk19.Text = "      Unknown 19";
+			this.chkUnk19.UseVisualStyleBackColor = true;
+			this.chkUnk19.Leave += new System.EventHandler(this.chkUnk19_Leave);
+			// 
+			// numUnk20
+			// 
+			this.numUnk20.Location = new System.Drawing.Point(360, 358);
+			this.numUnk20.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+			this.numUnk20.Name = "numUnk20";
+			this.numUnk20.Size = new System.Drawing.Size(48, 20);
+			this.numUnk20.TabIndex = 9;
+			// 
 			// numUnk17
 			// 
 			this.numUnk17.Location = new System.Drawing.Point(360, 294);
@@ -2607,6 +2649,14 @@ namespace Idmr.Yogeme
 			this.label50.Size = new System.Drawing.Size(72, 16);
 			this.label50.TabIndex = 1;
 			this.label50.Text = "Unknown 16";
+			// 
+			// label81
+			// 
+			this.label81.Location = new System.Drawing.Point(272, 360);
+			this.label81.Name = "label81";
+			this.label81.Size = new System.Drawing.Size(72, 16);
+			this.label81.TabIndex = 1;
+			this.label81.Text = "Unknown 20";
 			// 
 			// label51
 			// 
@@ -3780,6 +3830,7 @@ namespace Idmr.Yogeme
 			this.menuFile.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
             this.menuNew,
             this.menuOpen,
+            this.menuRecent,
             this.menuSave,
             this.menuSaveAs,
             this.menuItem7,
@@ -3828,16 +3879,58 @@ namespace Idmr.Yogeme
 			this.menuOpen.Text = "&Open...";
 			this.menuOpen.Click += new System.EventHandler(this.menuOpen_Click);
 			// 
+			// menuRecent
+			// 
+			this.menuRecent.Enabled = false;
+			this.menuRecent.Index = 2;
+			this.menuRecent.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+            this.menuRec1,
+            this.menuRec2,
+            this.menuRec3,
+            this.menuRec4,
+            this.menuRec5});
+			this.menuRecent.Text = "Open &Recent...";
+			// 
+			// menuRec1
+			// 
+			this.menuRec1.Index = 0;
+			this.menuRec1.Text = "1.";
+			this.menuRec1.Visible = false;
+			// 
+			// menuRec2
+			// 
+			this.menuRec2.Index = 1;
+			this.menuRec2.Text = "2.";
+			this.menuRec2.Visible = false;
+			// 
+			// menuRec3
+			// 
+			this.menuRec3.Index = 2;
+			this.menuRec3.Text = "3.";
+			this.menuRec3.Visible = false;
+			// 
+			// menuRec4
+			// 
+			this.menuRec4.Index = 3;
+			this.menuRec4.Text = "4.";
+			this.menuRec4.Visible = false;
+			// 
+			// menuRec5
+			// 
+			this.menuRec5.Index = 4;
+			this.menuRec5.Text = "5.";
+			this.menuRec5.Visible = false;
+			// 
 			// menuSave
 			// 
-			this.menuSave.Index = 2;
+			this.menuSave.Index = 3;
 			this.menuSave.Shortcut = System.Windows.Forms.Shortcut.CtrlS;
 			this.menuSave.Text = "&Save";
 			this.menuSave.Click += new System.EventHandler(this.menuSave_Click);
 			// 
 			// menuSaveAs
 			// 
-			this.menuSaveAs.Index = 3;
+			this.menuSaveAs.Index = 4;
 			this.menuSaveAs.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
             this.menuSaveAsTIE,
             this.menuSaveAsXvT,
@@ -3872,12 +3965,12 @@ namespace Idmr.Yogeme
 			// 
 			// menuItem7
 			// 
-			this.menuItem7.Index = 4;
+			this.menuItem7.Index = 5;
 			this.menuItem7.Text = "-";
 			// 
 			// menuExit
 			// 
-			this.menuExit.Index = 5;
+			this.menuExit.Index = 6;
 			this.menuExit.Shortcut = System.Windows.Forms.Shortcut.CtrlShiftX;
 			this.menuExit.Text = "E&xit";
 			this.menuExit.Click += new System.EventHandler(this.menuExit_Click);
@@ -3975,7 +4068,6 @@ namespace Idmr.Yogeme
 			// 
 			// menuTest
 			// 
-			this.menuTest.Enabled = false;
 			this.menuTest.Index = 3;
 			this.menuTest.Text = "Te&st";
 			this.menuTest.Click += new System.EventHandler(this.menuTest_Click);
@@ -4037,50 +4129,6 @@ namespace Idmr.Yogeme
 			// 
 			this._dataWaypointsRaw.AllowDelete = false;
 			this._dataWaypointsRaw.AllowNew = false;
-			// 
-			// label81
-			// 
-			this.label81.Location = new System.Drawing.Point(272, 360);
-			this.label81.Name = "label81";
-			this.label81.Size = new System.Drawing.Size(72, 16);
-			this.label81.TabIndex = 1;
-			this.label81.Text = "Unknown 20";
-			// 
-			// numUnk20
-			// 
-			this.numUnk20.Location = new System.Drawing.Point(360, 358);
-			this.numUnk20.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
-			this.numUnk20.Name = "numUnk20";
-			this.numUnk20.Size = new System.Drawing.Size(48, 20);
-			this.numUnk20.TabIndex = 9;
-			// 
-			// chkUnk19
-			// 
-			this.chkUnk19.AutoSize = true;
-			this.chkUnk19.Location = new System.Drawing.Point(269, 327);
-			this.chkUnk19.Name = "chkUnk19";
-			this.chkUnk19.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-			this.chkUnk19.Size = new System.Drawing.Size(105, 17);
-			this.chkUnk19.TabIndex = 10;
-			this.chkUnk19.Text = "      Unknown 19";
-			this.chkUnk19.UseVisualStyleBackColor = true;
-			this.chkUnk19.Leave += new System.EventHandler(this.chkUnk19_Leave);
-			// 
-			// chkUnk21
-			// 
-			this.chkUnk21.AutoSize = true;
-			this.chkUnk21.Location = new System.Drawing.Point(269, 391);
-			this.chkUnk21.Name = "chkUnk21";
-			this.chkUnk21.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-			this.chkUnk21.Size = new System.Drawing.Size(105, 17);
-			this.chkUnk21.TabIndex = 10;
-			this.chkUnk21.Text = "      Unknown 21";
-			this.chkUnk21.UseVisualStyleBackColor = true;
-			this.chkUnk21.Leave += new System.EventHandler(this.chkUnk21_Leave);
 			// 
 			// TieForm
 			// 
@@ -4147,6 +4195,7 @@ namespace Idmr.Yogeme
 			((System.ComponentModel.ISupportInitialize)(this.numOVar2)).EndInit();
 			this.tabUnk.ResumeLayout(false);
 			this.tabUnk.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.numUnk20)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.numUnk17)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.numUnk16)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.numUnk15)).EndInit();
@@ -4180,7 +4229,6 @@ namespace Idmr.Yogeme
 			this.groupBox21.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this._dataWaypoints)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this._dataWaypointsRaw)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.numUnk20)).EndInit();
 			this.ResumeLayout(false);
 
 		}
@@ -4543,5 +4591,11 @@ namespace Idmr.Yogeme
 		private NumericUpDown numUnk20;
 		private Label label81;
 		private CheckBox chkUnk21;
+		private MenuItem menuRecent;
+		private MenuItem menuRec1;
+		private MenuItem menuRec2;
+		private MenuItem menuRec3;
+		private MenuItem menuRec4;
+		private MenuItem menuRec5;
 	}
 }

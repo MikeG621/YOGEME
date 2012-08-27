@@ -7,6 +7,7 @@
  */
 
 /* CHANGELOG
+ * [NEW] RecentMission functionality
  * v1.0, 110921
  * - Release
  */
@@ -21,11 +22,11 @@ namespace Idmr.Yogeme
 		[STAThread]
 		static void Main(string[] Args)
 		{
-			Settings start = new Settings();
-			if (Args.Length != 1 && start.Startup == (byte)Settings.StartupMode.Normal) Application.Run(new StartForm());
-			else if (Args.Length != 1 && start.Startup == Settings.StartupMode.LastPlatform)
+			Settings config = new Settings();
+			if (Args.Length != 1 && config.Startup == Settings.StartupMode.Normal) Application.Run(new StartForm());
+			else if (Args.Length != 1 && config.Startup == Settings.StartupMode.LastPlatform)
 			{
-				switch (start.LastPlatform)	//open the last platform directly
+				switch (config.LastPlatform)	//open the last platform directly
 				{
 					case Settings.Platform.TIE:
 						new TieForm().Show();
@@ -41,12 +42,48 @@ namespace Idmr.Yogeme
 						break;
 				}
 			}
-			else if (Args.Length != 1 && start.Startup == Settings.StartupMode.LastMission)	//open the last mission directly
+			else if (Args.Length != 1 && config.Startup == Settings.StartupMode.LastMission)	//open the last mission directly
 			{
-				if (start.LastMission == "")	//if errors occur or new mission, LM could be blank
+				if (config.LastMission != "")
+				{
+					switch (config.LastPlatform)
+					{
+						case Settings.Platform.TIE:
+							new TieForm(config.LastMission).Show();
+							break;
+						case Settings.Platform.XvT:
+							new XvtForm(config.LastMission).Show();
+							break;
+						case Settings.Platform.BoP:
+							new XvtForm(config.LastMission).Show();
+							break;
+						case Settings.Platform.XWA:
+							new XwaForm(config.LastMission).Show();
+							break;
+					}
+				}
+				else if (config.RecentMissions[0] != "")
+				{
+					switch (config.RecentPlatforms[0])
+					{
+						case Settings.Platform.TIE:
+							new TieForm(config.RecentMissions[0]).Show();
+							break;
+						case Settings.Platform.XvT:
+							new XvtForm(config.RecentMissions[0]).Show();
+							break;
+						case Settings.Platform.BoP:
+							new XvtForm(config.RecentMissions[0]).Show();
+							break;
+						case Settings.Platform.XWA:
+							new XwaForm(config.RecentMissions[0]).Show();
+							break;
+					}
+				}
+				else
 				{
 					MessageBox.Show("Last Mission value not set, taking you to last platform", "Error");
-					switch (start.LastPlatform)
+					switch (config.LastPlatform)
 					{
 						case Settings.Platform.TIE:
 							new TieForm().Show();
@@ -59,24 +96,6 @@ namespace Idmr.Yogeme
 							break;
 						case Settings.Platform.XWA:
 							new XwaForm().Show();
-							break;
-					}
-				}
-				else
-				{
-					switch (start.LastPlatform)
-					{
-						case Settings.Platform.TIE:
-							new TieForm(start.LastMission).Show();
-							break;
-						case Settings.Platform.XvT:
-							new XvtForm(start.LastMission).Show();
-							break;
-						case Settings.Platform.BoP:
-							new XvtForm(start.LastMission).Show();
-							break;
-						case Settings.Platform.XWA:
-							new XwaForm(start.LastMission).Show();
 							break;
 					}
 				}

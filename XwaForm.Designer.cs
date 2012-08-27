@@ -751,6 +751,12 @@ namespace Idmr.Yogeme
 			this.txtNotes = new System.Windows.Forms.TextBox();
 			this.dataOrders = new System.Data.DataView();
 			this.dataOrders_Raw = new System.Data.DataView();
+			this.menuRecent = new System.Windows.Forms.MenuItem();
+			this.menuRec1 = new System.Windows.Forms.MenuItem();
+			this.menuRec2 = new System.Windows.Forms.MenuItem();
+			this.menuRec3 = new System.Windows.Forms.MenuItem();
+			this.menuRec4 = new System.Windows.Forms.MenuItem();
+			this.menuRec5 = new System.Windows.Forms.MenuItem();
 			((System.ComponentModel.ISupportInitialize)(this.dataWaypoints)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.dataWaypoints_Raw)).BeginInit();
 			this.tabMain.SuspendLayout();
@@ -937,6 +943,7 @@ namespace Idmr.Yogeme
 			this.menuFile.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
             this.menuNew,
             this.menuOpen,
+            this.menuRecent,
             this.menuSave,
             this.menuSaveAs,
             this.menuItem23,
@@ -987,14 +994,14 @@ namespace Idmr.Yogeme
 			// 
 			// menuSave
 			// 
-			this.menuSave.Index = 2;
+			this.menuSave.Index = 3;
 			this.menuSave.Shortcut = System.Windows.Forms.Shortcut.CtrlS;
 			this.menuSave.Text = "&Save";
 			this.menuSave.Click += new System.EventHandler(this.menuSave_Click);
 			// 
 			// menuSaveAs
 			// 
-			this.menuSaveAs.Index = 3;
+			this.menuSaveAs.Index = 4;
 			this.menuSaveAs.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
             this.menuSaveAsTIE,
             this.menuSaveAsXvT,
@@ -1028,12 +1035,12 @@ namespace Idmr.Yogeme
 			// 
 			// menuItem23
 			// 
-			this.menuItem23.Index = 4;
+			this.menuItem23.Index = 5;
 			this.menuItem23.Text = "-";
 			// 
 			// menuExit
 			// 
-			this.menuExit.Index = 5;
+			this.menuExit.Index = 6;
 			this.menuExit.Shortcut = System.Windows.Forms.Shortcut.CtrlShiftX;
 			this.menuExit.Text = "E&xit";
 			this.menuExit.Click += new System.EventHandler(this.menuExit_Click);
@@ -8853,6 +8860,48 @@ namespace Idmr.Yogeme
 			this.dataOrders_Raw.AllowDelete = false;
 			this.dataOrders_Raw.AllowNew = false;
 			// 
+			// menuRecent
+			// 
+			this.menuRecent.Enabled = false;
+			this.menuRecent.Index = 2;
+			this.menuRecent.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+            this.menuRec1,
+            this.menuRec2,
+            this.menuRec3,
+            this.menuRec4,
+            this.menuRec5});
+			this.menuRecent.Text = "Open &Recent...";
+			// 
+			// menuRec1
+			// 
+			this.menuRec1.Index = 0;
+			this.menuRec1.Text = "1.";
+			this.menuRec1.Visible = false;
+			// 
+			// menuRec2
+			// 
+			this.menuRec2.Index = 1;
+			this.menuRec2.Text = "2.";
+			this.menuRec2.Visible = false;
+			// 
+			// menuRec3
+			// 
+			this.menuRec3.Index = 2;
+			this.menuRec3.Text = "3.";
+			this.menuRec3.Visible = false;
+			// 
+			// menuRec4
+			// 
+			this.menuRec4.Index = 3;
+			this.menuRec4.Text = "4.";
+			this.menuRec4.Visible = false;
+			// 
+			// menuRec5
+			// 
+			this.menuRec5.Index = 4;
+			this.menuRec5.Text = "5.";
+			this.menuRec5.Visible = false;
+			// 
 			// XwaForm
 			// 
 			this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
@@ -9816,5 +9865,11 @@ namespace Idmr.Yogeme
 		private TextBox txtDescNote;
 		private TextBox txtMessNote;
 		private Label label149;
+		private MenuItem menuRecent;
+		private MenuItem menuRec1;
+		private MenuItem menuRec2;
+		private MenuItem menuRec3;
+		private MenuItem menuRec4;
+		private MenuItem menuRec5;
 	}
 }

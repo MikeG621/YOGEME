@@ -223,7 +223,6 @@ namespace Idmr.Yogeme
 			// 
 			this.chkVerifyTest.Checked = true;
 			this.chkVerifyTest.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.chkVerifyTest.Enabled = false;
 			this.chkVerifyTest.Location = new System.Drawing.Point(157, 152);
 			this.chkVerifyTest.Name = "chkVerifyTest";
 			this.chkVerifyTest.Size = new System.Drawing.Size(224, 24);
@@ -234,7 +233,6 @@ namespace Idmr.Yogeme
 			// 
 			this.chkDeletePilot.Checked = true;
 			this.chkDeletePilot.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.chkDeletePilot.Enabled = false;
 			this.chkDeletePilot.Location = new System.Drawing.Point(157, 181);
 			this.chkDeletePilot.Name = "chkDeletePilot";
 			this.chkDeletePilot.Size = new System.Drawing.Size(224, 24);
@@ -245,7 +243,6 @@ namespace Idmr.Yogeme
 			// 
 			this.chkTest.Checked = true;
 			this.chkTest.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.chkTest.Enabled = false;
 			this.chkTest.Location = new System.Drawing.Point(157, 122);
 			this.chkTest.Name = "chkTest";
 			this.chkTest.Size = new System.Drawing.Size(224, 24);
@@ -857,7 +854,7 @@ namespace Idmr.Yogeme
 			// 
 			this.dirPlatform.Description = "Select the root install directory of the platform";
 			// 
-			// dlgOptions
+			// OptionsDialog
 			// 
 			this.AcceptButton = this.cmdOK;
 			this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
@@ -870,7 +867,7 @@ namespace Idmr.Yogeme
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
-			this.Name = "dlgOptions";
+			this.Name = "OptionsDialog";
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "YOGEME - Options";

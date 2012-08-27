@@ -7,6 +7,11 @@
  */
 
 /* CHANGELOG
+ * [FIX] Global Goal text boxes saving contents of Completed for all
+ * - txtGlobal_Leave now single function instead of Comp/Inc/Fail
+ * [UPD] lblStarting now only applies to Normal difficulty
+ * [UPD] opn/sav dialogs default to \Train
+ * [NEW] Open Recent menu
  * v1.1.1, 120814
  * [UPD] chkWPArr_Leave to chkWPArr_CheckedChanged
  * [FIX] FG list display
@@ -65,6 +70,7 @@ namespace Idmr.Yogeme
 		Label[] lblOptCraft = new Label[10];
 		ComboBox[] cboEoMColor = new ComboBox[6];
 		TextBox[] txtEoM = new TextBox[6];
+		MenuItem[] menuRecentMissions = new MenuItem[6];
 		#endregion
 
 		public XvtForm(bool bBoP)
@@ -91,12 +97,9 @@ namespace Idmr.Yogeme
 
 		void closeForms()
 		{
-			try { fMap.Close(); }
-			catch { /* do nothing */ }
-			try { fBrief.Close(); }
-			catch { /* do nothing */ }
-			try { fLST.Close(); }
-			catch { /* do nothing */ }
+			if (fMap != null) fMap.Close();
+			if (fBrief != null) fBrief.Close();
+			if (fLST != null) fLST.Close();
 		}
 		void comboVarRefresh(int index, ComboBox cbo)
 		{	//index is usually cboTrigType.SelectedIndex, cbo = cboTrigVar
@@ -153,11 +156,9 @@ namespace Idmr.Yogeme
 		}
 		void craftStart(FlightGroup fg, bool bAdd)
 		{
-			if (fg.ArrivesIn30Seconds)
-			{
-				if (bAdd) _startingShips += fg.NumberOfCraft;
-				else _startingShips -= fg.NumberOfCraft;
-			}
+			if (fg.Difficulty == 1 || fg.Difficulty == 3 || !fg.ArrivesIn30Seconds) return;
+			if (bAdd) _startingShips += fg.NumberOfCraft;
+			else _startingShips -= fg.NumberOfCraft;
 			lblStarting.Text = _startingShips.ToString() + " craft at 30 seconds";
 			if (_startingShips > Mission.CraftLimit) lblStarting.ForeColor = Color.Red;
 			else lblStarting.ForeColor = SystemColors.ControlText;
@@ -274,6 +275,7 @@ namespace Idmr.Yogeme
 			updateMissionTabs();
 			cboGlobalTeam.SelectedIndex = -1;	// otherwise it doesn't trigger an index change
 			cboGlobalTeam.SelectedIndex = 0;
+			System.Diagnostics.Debug.WriteLine("teams");
 			for (_activeTeam=0;_activeTeam<10;_activeTeam++) teamRefresh();
 			lblTeamArr_Click(0, new EventArgs());
 			this.Text = "Ye Olde Galactic Empire Mission Editor - " + (_mission.IsBop ? "BoP" : "XvT") + " - " + _mission.MissionFileName;
@@ -282,6 +284,7 @@ namespace Idmr.Yogeme
 		}
 		void promptSave()
 		{
+			_config.SaveSettings();
 			if (_config.ConfirmSave && (this.Text.IndexOf("*") != -1))
 			{
 				DialogResult res = MessageBox.Show("Mission has been edited without saving, would you like to save?", "Confirm", MessageBoxButtons.YesNo);
@@ -291,6 +294,15 @@ namespace Idmr.Yogeme
 					else saveMission(_mission.MissionPath);
 				}
 			}
+		}
+		void refreshRecent()
+		{
+			for (int i = 1; i < 6; i++)
+			{
+				menuRecentMissions[i].Text = "&" + i + ": " + _config.RecentMissions[i] + " (" + _config.RecentPlatforms[i].ToString() + ")";
+				menuRecentMissions[i].Visible = (_config.RecentMissions[i] != "");
+			}
+			menuRecentMissions[0].Enabled = menuRecentMissions[1].Visible;
 		}
 		void saveMission(string fileMission)
 		{
@@ -314,6 +326,8 @@ namespace Idmr.Yogeme
 				_config.LastPlatform = Settings.Platform.BoP;
 				Text = Text.Substring(0, 41) + "BoP" + Text.Substring(44);
 				txtMissDesc.MaxLength = 0x1000;
+				opnXvT.InitialDirectory = _config.BopPath + "\\TRAIN";
+				savXvT.InitialDirectory = _config.BopPath + "\\TRAIN";
 			}
 			else
 			{
@@ -330,6 +344,8 @@ namespace Idmr.Yogeme
 				txtMissDesc.MaxLength = 0x400;
 				txtMissSucc.Text = "";
 				txtMissFail.Text = "";
+				opnXvT.InitialDirectory = _config.XvtPath + "\\Train";
+				savXvT.InitialDirectory = _config.XvtPath + "\\Train";
 			}
 			optBoP.Checked = _mission.IsBop;
 			optXvT.Checked = !optBoP.Checked;
@@ -355,9 +371,23 @@ namespace Idmr.Yogeme
 			}
 			if (Directory.Exists(_config.XvtPath))
 			{
-				opnXvT.InitialDirectory = _config.XvtPath;
-				savXvT.InitialDirectory = _config.XvtPath;
+				opnXvT.InitialDirectory = _config.XvtPath + "\\Train";
+				savXvT.InitialDirectory = _config.XvtPath + "\\Train";
 			}
+			#region Menu
+			menuRecentMissions[0] = menuRecent;
+			menuRecentMissions[1] = menuRec1;
+			menuRecentMissions[2] = menuRec2;
+			menuRecentMissions[3] = menuRec3;
+			menuRecentMissions[4] = menuRec4;
+			menuRecentMissions[5] = menuRec5;
+			for (int i = 1; i < 6; i++)
+			{
+				menuRecentMissions[i].Click += new EventHandler(menuRecentMissions_Click);
+				menuRecentMissions[i].Tag = i;
+			}
+			refreshRecent();
+			#endregion
 			#region FlightGroups
 			#region Craft
 			cboCraft.Items.AddRange(Strings.CraftType); cboCraft.SelectedIndex = _mission.FlightGroups[0].CraftType;
@@ -625,6 +655,9 @@ namespace Idmr.Yogeme
 				optGlobAndOr[i].CheckedChanged += new EventHandler(optGlobAndOrArr_CheckedChanged);
 				optGlobAndOr[i].Tag = i;
 			}
+			txtGlobalComp.Tag = Globals.GoalState.Complete;
+			txtGlobalFail.Tag = Globals.GoalState.Failed;
+			txtGlobalInc.Tag = Globals.GoalState.Incomplete;
 			#endregion
 			#region Teams
 			lblTeam[0] = lblTeam1;
@@ -676,7 +709,6 @@ namespace Idmr.Yogeme
 			for (_activeTeam=0;_activeTeam<10;_activeTeam++) teamRefresh();
 			#endregion
 			cboGlobalTeam.SelectedIndex = 0;
-			//cboMissType.Items.AddRange(Strings.MissType);
 			cboMissType.Items.AddRange(Enum.GetNames(typeof(Mission.MissionTypeEnum)));
 			cboMissType.SelectedIndex = 0;
 		}
@@ -713,7 +745,6 @@ namespace Idmr.Yogeme
 				if (res == DialogResult.No) { e.Cancel = true; return; }
 			}
 			closeForms();
-			_config.SaveSettings();
 			if (_applicationExit) Application.Exit();
 		}
 
@@ -999,6 +1030,7 @@ namespace Idmr.Yogeme
 		void menuOpen_Click(object sender, EventArgs e)
 		{
 			promptSave();
+			opnXvT.FileName = _mission.MissionFileName;
 			opnXvT.ShowDialog();
 		}
 		void menuOptions_Click(object sender, EventArgs e)
@@ -1163,6 +1195,22 @@ namespace Idmr.Yogeme
 			}
 			#endregion
 			stream.Close();
+		}
+		void menuRecentMissions_Click(object sender, EventArgs e)
+		{
+			string mission = _config.RecentMissions[(int)((MenuItem)sender).Tag];
+			promptSave();
+			initializeMission();
+			if (loadMission(mission))
+			{
+				tabMain.SelectedIndex = 0;
+				tabFGMinor.SelectedIndex = 0;
+				_activeFG = 0;
+				lstFG.SelectedIndex = 0;
+				_loading = true;		//turned false in previous line
+				if (_mission.Messages.Count != 0) lstMessages.SelectedIndex = 0;
+			}
+			_loading = false;
 		}
 		void menuSave_Click(object sender, EventArgs e)
 		{
@@ -2553,12 +2601,15 @@ namespace Idmr.Yogeme
 			lblTeamArr_Click(_activeTeam, new EventArgs());	// link the Globals and Team tabs to share GlobTeam
 			bool btemp = _loading;
 			_loading = true;
+			System.Diagnostics.Debug.WriteLine("label refresh");
 			for (int i=0;i<12;i++) labelRefresh(_mission.Globals[_activeTeam].Goals[i/4].Triggers[i%4], lblGlobTrig[i]);
+			System.Diagnostics.Debug.WriteLine("and or");
 			for (int i=0;i<9;i++)
 			{
 				optGlobAndOr[i].Checked = _mission.Globals[_activeTeam].Goals[i/3].AndOr[i%3];	// OR
 				optGlobAndOr[i+9].Checked = !optGlobAndOr[i].Checked;	// AND
 			}
+			System.Diagnostics.Debug.WriteLine("trig refresh");
 			lblGlobTrigArr_Click(0, new EventArgs());
 			_loading = btemp;
 		}
@@ -2641,21 +2692,12 @@ namespace Idmr.Yogeme
 		{
 			_mission.Globals[_activeTeam].Goals[_activeGlobalTrigger/4].Points = (short)Common.Update(this, _mission.Globals[_activeTeam].Goals[_activeGlobalTrigger/4].Points, (short)numGlobalPoints.Value);
 		}
-		// TODO: make this one function, store GoalState as txt.Tag
-		void txtGlobalComp_Leave(object sender, EventArgs e)
+
+		void txtGlobal_Leave(object sender, EventArgs e)
 		{
 			int g = _activeGlobalTrigger / 4, t = _activeGlobalTrigger % 4;
-			_mission.Globals[_activeTeam].Goals[g].GoalStrings[t, Globals.GoalState.Complete] = Common.Update(this, _mission.Globals[_activeTeam].Goals[g].GoalStrings[t, Globals.GoalState.Complete], txtGlobalComp.Text).ToString();
-		}
-		void txtGlobalFail_Leave(object sender, EventArgs e)
-		{
-			int g = _activeGlobalTrigger / 4, t = _activeGlobalTrigger % 4;
-			_mission.Globals[_activeTeam].Goals[g].GoalStrings[t, Globals.GoalState.Failed] = Common.Update(this, _mission.Globals[_activeTeam].Goals[g].GoalStrings[t, Globals.GoalState.Failed], txtGlobalComp.Text).ToString();
-		}
-		void txtGlobalInc_Leave(object sender, EventArgs e)
-		{
-			int g = _activeGlobalTrigger / 4, t = _activeGlobalTrigger % 4;
-			_mission.Globals[_activeTeam].Goals[g].GoalStrings[t, Globals.GoalState.Incomplete] = Common.Update(this, _mission.Globals[_activeTeam].Goals[g].GoalStrings[t, Globals.GoalState.Incomplete], txtGlobalComp.Text).ToString();
+			Globals.GoalState gs = (Globals.GoalState)((TextBox)sender).Tag;
+			_mission.Globals[_activeTeam].Goals[g].GoalStrings[t, gs] = Common.Update(this, _mission.Globals[_activeTeam].Goals[g].GoalStrings[t, gs], ((TextBox)(sender)).Text).ToString();
 		}
 		#endregion
 		#region Teams
@@ -2730,12 +2772,14 @@ namespace Idmr.Yogeme
 			_loading = true;
 			txtTeamName.Text = _mission.Teams[_activeTeam].Name;
 			for (int i=0;i<10;i++) chkAllies[i].Checked = _mission.Teams[_activeTeam].AlliedWithTeam[i];
+			System.Diagnostics.Debug.WriteLine("more text");
 			for (int i=0;i<6;i++)
 			{
 				txtEoM[i].Text = _mission.Teams[_activeTeam].EndOfMissionMessages[i];
 				cboEoMColor[i].SelectedIndex = _mission.Teams[_activeTeam].EndOfMissionMessageColor[i];
 			}
 			_loading = btemp;
+			System.Diagnostics.Debug.WriteLine("lbl click complete");
 		}
 		void txtEoMArr_Leave(object sender, EventArgs e)
 		{
