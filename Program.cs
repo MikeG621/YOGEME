@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2012 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the GPL v3.0 or later
  * 
- * VERSION: 1.1.1
+ * VERSION: 1.2.1
  */
 
 /* CHANGELOG
+ * v1.2, 121006
  * - Settings initialized here, passed on
  * [NEW] RecentMission functionality
  * v1.0, 110921

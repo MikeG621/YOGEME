@@ -3,10 +3,12 @@
  * Copyright (C) 2007-2012 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the GPL v3.0 or later
  * 
- * VERSION: 1.2
+ * VERSION: 1.2.1
  */
 
 /* CHANGELOG
+ * v1.2.1, 121007
+ * [FIX] Crash that occured during first run.
  * v1.2, 121006
  * [NEW] RecentMissions, RecentPlatforms
  * [UPD] v4
@@ -64,7 +66,7 @@ namespace Idmr.Yogeme
 			ConfirmTest = true;
 			DeleteTestPilots = true;
 			MapOptions = MapOpts.FGTags | MapOpts.Traces;
-			for (int i = 0; i < 5; i++) _recentMissions[i] = "";
+			for (int i = 0; i < 6; i++) _recentMissions[i] = "";
 			Startup = StartupMode.Normal;
 			TieCraft = XvtCraft = XwaCraft = 5;
 			TieIff  = XvtIff = XwaIff = 1;
