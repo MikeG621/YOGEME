@@ -3,10 +3,14 @@
  * Copyright (C) 2007-2012 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the GPL v3.0 or later
  * 
- * VERSION: 1.1.1
+ * VERSION: 1.2
  */
 
 /* CHANGELOG
+ * v1.2, 121006
+ * - removed try{} in opnXvT_FileOk
+ * - Settings passed in and out
+ * [NEW] Test menu
  * [FIX] Global Goal text boxes saving contents of Completed for all
  * - txtGlobal_Leave now single function instead of Comp/Inc/Fail
  * [UPD] lblStarting now only applies to Normal difficulty
@@ -34,7 +38,7 @@ namespace Idmr.Yogeme
 	public partial class XvtForm : Form
 	{
 		#region vars and stuff
-		Settings _config = new Settings();
+		Settings _config;
 		Mission _mission;
 		bool _applicationExit;
 		int _activeFG = 0;
@@ -43,9 +47,9 @@ namespace Idmr.Yogeme
 		int _activeMessage = 0;
 		DataTable _table = new DataTable("Waypoints");
 		DataTable _tableRaw = new DataTable("Waypoints_Raw");
-		MapForm fMap;
-		BriefingForm fBrief;
-		LstForm fLST;
+		MapForm _fMap;
+		BriefingForm _fBrief;
+		LstForm _fLST;
 		byte _activeMessageTrigger = 0;
 		byte _activeGlobalTrigger = 0;
 		byte _activeTeam = 0;
@@ -73,8 +77,9 @@ namespace Idmr.Yogeme
 		MenuItem[] menuRecentMissions = new MenuItem[6];
 		#endregion
 
-		public XvtForm(bool bBoP)
+		public XvtForm(Settings settings, bool bBoP)
 		{
+			_config = settings;
 			InitializeComponent();
 			_loading = true;
 			initializeMission();
@@ -83,8 +88,9 @@ namespace Idmr.Yogeme
 			lstFG.SelectedIndex = 0;
 			_loading = false;
 		}
-		public XvtForm(string path)
+		public XvtForm(Settings settings, string path)
 		{
+			_config = settings;
 			InitializeComponent();
 			_loading = true;
 			initializeMission();
@@ -97,9 +103,9 @@ namespace Idmr.Yogeme
 
 		void closeForms()
 		{
-			if (fMap != null) fMap.Close();
-			if (fBrief != null) fBrief.Close();
-			if (fLST != null) fLST.Close();
+			if (_fMap != null) _fMap.Close();
+			if (_fBrief != null) _fBrief.Close();
+			if (_fLST != null) _fLST.Close();
 		}
 		void comboVarRefresh(int index, ComboBox cbo)
 		{	//index is usually cboTrigType.SelectedIndex, cbo = cboTrigVar
@@ -227,7 +233,7 @@ namespace Idmr.Yogeme
 					{
 						case Platform.MissionFile.Platform.TIE:
 							_applicationExit = false;
-							new TieForm(fileMission).Show();
+							new TieForm(_config, fileMission).Show();
 							Close();
 							return false;
 						case Platform.MissionFile.Platform.XvT:
@@ -238,7 +244,7 @@ namespace Idmr.Yogeme
 							break;
 						case Platform.MissionFile.Platform.XWA:
 							_applicationExit = false;
-							new XwaForm(fileMission).Show();
+							new XwaForm(_config, fileMission).Show();
 							Close();
 							return false;
 						default:
@@ -275,7 +281,6 @@ namespace Idmr.Yogeme
 			updateMissionTabs();
 			cboGlobalTeam.SelectedIndex = -1;	// otherwise it doesn't trigger an index change
 			cboGlobalTeam.SelectedIndex = 0;
-			System.Diagnostics.Debug.WriteLine("teams");
 			for (_activeTeam=0;_activeTeam<10;_activeTeam++) teamRefresh();
 			lblTeamArr_Click(0, new EventArgs());
 			this.Text = "Ye Olde Galactic Empire Mission Editor - " + (_mission.IsBop ? "BoP" : "XvT") + " - " + _mission.MissionFileName;
@@ -306,7 +311,7 @@ namespace Idmr.Yogeme
 		}
 		void saveMission(string fileMission)
 		{
-			try { fBrief.Save(); }
+			try { _fBrief.Save(); }
 			catch { /* do nothing */ }
 			lblTeamArr_Click(lblTeam[_activeTeam], new EventArgs());
 			try { _mission.Save(fileMission); }
@@ -328,6 +333,7 @@ namespace Idmr.Yogeme
 				txtMissDesc.MaxLength = 0x1000;
 				opnXvT.InitialDirectory = _config.BopPath + "\\TRAIN";
 				savXvT.InitialDirectory = _config.BopPath + "\\TRAIN";
+				menuTest.Enabled = _config.BopInstalled;
 			}
 			else
 			{
@@ -337,6 +343,7 @@ namespace Idmr.Yogeme
 					if (r == DialogResult.Cancel) { optBoP.Checked = true; return; }
 					if (txtMissDesc.Text.Length > 0x400) txtMissDesc.Text = txtMissDesc.Text.Substring(0, 0x400);
 				}
+				menuTest.Enabled = _config.XvtInstalled;
 				menuNewXvT.Shortcut = Shortcut.CtrlN;
 				menuNewBoP.Shortcut = Shortcut.None;
 				_config.LastPlatform = Settings.Platform.XvT;
@@ -363,18 +370,19 @@ namespace Idmr.Yogeme
 			tabFGMinor.SelectedIndex = 0;
 			_config.LastMission = "";
 			_applicationExit = true;	//becomes false if selecting "New Mission" from menu
-			if (_config.RestrictPlatforms)
-			{
-				if (!_config.TieInstalled) { menuNewTIE.Enabled = false; }
-				if (!_config.BopInstalled) { menuNewBoP.Enabled = false; }
-				if (!_config.XwaInstalled) { menuNewXWA.Enabled = false; }
-			}
 			if (Directory.Exists(_config.XvtPath))
 			{
 				opnXvT.InitialDirectory = _config.XvtPath + "\\Train";
 				savXvT.InitialDirectory = _config.XvtPath + "\\Train";
 			}
 			#region Menu
+			// menuTest has already been taken care of
+			if (_config.RestrictPlatforms)
+			{
+				if (!_config.TieInstalled) { menuNewTIE.Enabled = false; }
+				if (!_config.BopInstalled) { menuNewBoP.Enabled = false; }
+				if (!_config.XwaInstalled) { menuNewXWA.Enabled = false; }
+			}
 			menuRecentMissions[0] = menuRecent;
 			menuRecentMissions[1] = menuRec1;
 			menuRecentMissions[2] = menuRec2;
@@ -730,7 +738,7 @@ namespace Idmr.Yogeme
 
 		void frmXvT_Activated(object sender, EventArgs e)
 		{
-			if (fMap != null)
+			if (_fMap != null)
 			{
 				lstFG.SelectedIndex = -1;
 				lstFG.SelectedIndex = _activeFG;
@@ -756,8 +764,7 @@ namespace Idmr.Yogeme
 				tabMain.SelectedIndex = 0;
 				tabFGMinor.SelectedIndex = 0;
 				lstFG.SelectedIndex = 0;
-				try { lstMessages.SelectedIndex = 0; }
-				catch { /* do nothing */ }
+				if (_mission.Messages.Count != 0) lstMessages.SelectedIndex = 0;
 			}
 			_loading = false;
 		}
@@ -877,10 +884,10 @@ namespace Idmr.Yogeme
 		void menuBrief_Click(object sender, EventArgs e)
 		{
 			Common.Title(this, false);
-			try { fBrief.Close(); }
+			try { _fBrief.Close(); }
 			catch { /* do nothing */ }
-			fBrief = new BriefingForm(_mission.FlightGroups, _mission.Briefings);
-			fBrief.Show();
+			_fBrief = new BriefingForm(_mission.FlightGroups, _mission.Briefings);
+			_fBrief.Show();
 		}
 		void menuCopy_Click(object sender, EventArgs e)
 		{
@@ -978,18 +985,18 @@ namespace Idmr.Yogeme
 		}
 		void menuLST_Click(object sender, EventArgs e)
 		{
-			try { fLST.Close(); }
+			try { _fLST.Close(); }
 			catch { /* do nothing */ }
-			if (_mission.IsBop) fLST = new LstForm(Settings.Platform.BoP);
-			else fLST = new LstForm(Settings.Platform.XvT);
-			fLST.Show();
+			if (_mission.IsBop) _fLST = new LstForm(Settings.Platform.BoP);
+			else _fLST = new LstForm(Settings.Platform.XvT);
+			_fLST.Show();
 		}
 		void menuMap_Click(object sender, EventArgs e)
 		{
-			try { fMap.Close(); }
+			try { _fMap.Close(); }
 			catch { /* do nothing */ }
-			fMap = new MapForm(_mission.FlightGroups);
-			fMap.Show();
+			_fMap = new MapForm(_config, _mission.FlightGroups);
+			_fMap.Show();
 		}
 		void menuNewBoP_Click(object sender, EventArgs e)
 		{
@@ -1000,7 +1007,7 @@ namespace Idmr.Yogeme
 			promptSave();
 			closeForms();
 			_applicationExit = false;
-			new TieForm().Show();
+			new TieForm(_config).Show();
 			Close();
 		}
 		void menuNewXvT_Click(object sender, EventArgs e)
@@ -1016,7 +1023,7 @@ namespace Idmr.Yogeme
 			lstFG.SelectedIndex = 0;
 			for (_activeTeam=0;_activeTeam<10;_activeTeam++) teamRefresh();
 			lblTeamArr_Click(0, new EventArgs());
-			setBop((sender.ToString() == "BoP"));
+			setBop(sender.ToString() == "BoP");
 			if (this.Text.EndsWith("*")) this.Text = this.Text.Substring(0, this.Text.Length-1);
 		}
 		void menuNewXWA_Click(object sender, EventArgs e)
@@ -1024,7 +1031,7 @@ namespace Idmr.Yogeme
 			promptSave();
 			closeForms();
 			_applicationExit = false;
-			new XwaForm().Show();
+			new XwaForm(_config).Show();
 			Close();
 		}
 		void menuOpen_Click(object sender, EventArgs e)
@@ -1245,6 +1252,117 @@ namespace Idmr.Yogeme
 			menuSave_Click("SaveAsXWA", new System.EventArgs());
 			Common.RunConverter(_mission.MissionPath, 2);
 		}
+		void menuTest_Click(object sender, EventArgs e)
+		{
+			if (_config.ConfirmTest)
+			{
+				DialogResult res = new TestDialog(_config).ShowDialog();
+				if (res == DialogResult.Cancel) return;
+			}
+			// prep stuff
+			menuSave_Click("menuTest_Click", new EventArgs());
+			if (_config.VerifyTest && !_config.Verify) Common.RunVerify(_mission.MissionPath, _config.VerifyLocation);
+			/*Version os = Environment.OSVersion.Version;
+			bool isWin7 = (os.Major == 6 && os.Minor == 1);
+			System.Diagnostics.Process explorer = null;
+			int restart = 1;
+			Microsoft.Win32.RegistryKey key = Microsoft.Win32.Registry.LocalMachine.OpenSubKey("SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon", true);*/
+
+			// configure XvT/BoP
+			int index = 0;
+			string path = (_mission.IsBop ? _config.BopPath : _config.XvtPath);
+			while (File.Exists(path + "\\test" + index + "0.plt")) index++;
+			string pilot = "\\test" + index + "0.plt";
+			string bopPilot = "\\test" + index + "0.pl2";
+			string lst = "\\Train\\IMPERIAL.LST";
+			string backup = "\\Train\\IMPERIAL_" + index + ".bak";
+
+			File.Copy(Application.StartupPath + "\\xvttest0.plt", _config.XvtPath + pilot);
+			if (_config.BopInstalled) File.Copy(Application.StartupPath + "\\xvttest0.pl2", _config.BopPath + bopPilot, true);
+			// XvT pilot edit
+			FileStream pilotFile = File.OpenWrite(_config.XvtPath + pilot);
+			pilotFile.Position = 4;
+			char[] indexBytes = index.ToString().ToCharArray();
+			new BinaryWriter(pilotFile).Write(indexBytes);
+			for (int i = (int)pilotFile.Position; i < 0xC; i++) pilotFile.WriteByte(0);
+			pilotFile.Close();
+			// BoP pilot edit
+			if (_config.BopInstalled)
+			{
+				pilotFile = File.OpenWrite(_config.BopPath + bopPilot);
+				pilotFile.Position = 4;
+				indexBytes = index.ToString().ToCharArray();
+				new BinaryWriter(pilotFile).Write(indexBytes);
+				for (int i = (int)pilotFile.Position; i < 0xC; i++) pilotFile.WriteByte(0);
+				pilotFile.Close();
+			}
+
+			// configure XvT
+			System.Diagnostics.Process xvt = new System.Diagnostics.Process();
+			xvt.StartInfo.FileName = path + "\\Z_XVT__.exe";
+			xvt.StartInfo.Arguments = "/skipintro";
+			xvt.StartInfo.UseShellExecute = false;
+			xvt.StartInfo.WorkingDirectory = path;
+			File.Copy(path + lst, path + backup, true);
+			StreamReader sr = File.OpenText(_config.XvtPath + "\\Config.cfg");
+			string contents = sr.ReadToEnd();
+			sr.Close();
+			int lastpilot = contents.IndexOf("lastpilot ") + 10;
+			int nextline = contents.IndexOf("\r\n", lastpilot);
+			string modified = contents.Substring(0, lastpilot) + "test" + index + contents.Substring(nextline);
+			StreamWriter sw = new FileInfo(_config.XvtPath + "\\Config.cfg").CreateText();
+			sw.Write(modified);
+			sw.Close();
+			if (_config.BopInstalled)
+			{
+				sr = File.OpenText(_config.BopPath + "\\config2.cfg");
+				contents = sr.ReadToEnd();
+				sr.Close();
+				lastpilot = contents.IndexOf("lastpilot ") + 10;
+				nextline = contents.IndexOf("\r\n", lastpilot);
+				modified = contents.Substring(0, lastpilot) + "test" + index + contents.Substring(nextline);
+				sw = new FileInfo(_config.BopPath + "\\config2.cfg").CreateText();
+				sw.Write(modified);
+				sw.Close();
+			}
+			sr = File.OpenText(path + lst);
+			contents = sr.ReadToEnd();
+			sr.Close();
+			string[] expanded = contents.Replace("\r\n", "\0").Split('\0');
+			expanded[4] = _mission.MissionFileName;
+			expanded[5] = "YOGEME: " + expanded[4];
+			modified = String.Join("\r\n", expanded);
+			sw = new FileInfo(path + lst).CreateText();
+			sw.Write(modified);
+			sw.Close();
+
+			/*if (isWin7)	// explorer kill so colors work right
+			{
+				restart = (int)key.GetValue("AutoRestartShell", 1);
+				key.SetValue("AutoRestartShell", 0, Microsoft.Win32.RegistryValueKind.DWord);
+				explorer = System.Diagnostics.Process.GetProcessesByName("explorer")[0];
+				explorer.Kill();
+				explorer.WaitForExit();
+			}*/
+
+			xvt.Start();
+			xvt.WaitForExit();
+
+			/*if (isWin7)	// restart
+			{
+				key.SetValue("AutoRestartShell", restart, Microsoft.Win32.RegistryValueKind.DWord);
+				explorer.StartInfo.UseShellExecute = false;
+				explorer.StartInfo.FileName = "explorer.exe";
+				explorer.Start();
+			}*/
+			if (_config.DeleteTestPilots)
+			{
+				File.Delete(_config.XvtPath + pilot);
+				File.Delete(_config.BopPath + bopPilot);
+			}
+			File.Copy(path + backup, path + lst, true);
+			File.Delete(path + backup);
+		}
 		void menuVerify_Click(object sender, EventArgs e)
 		{
 			menuSave_Click("Verify", new System.EventArgs());
@@ -1269,14 +1387,14 @@ namespace Idmr.Yogeme
 			lstFG.SelectedIndex = _activeFG;
 			try
 			{
-				fMap.Import(_mission.FlightGroups);
-				fMap.MapPaint(true);
+				_fMap.Import(_mission.FlightGroups);
+				_fMap.MapPaint(true);
 			}
 			catch { /* do nothing */ }
 			try
 			{
-				fBrief.Import(_mission.FlightGroups);
-				fBrief.MapPaint();
+				_fBrief.Import(_mission.FlightGroups);
+				_fBrief.MapPaint();
 			}
 			catch { /* do nothing */ }
 			Common.Title(this, _loading);
@@ -1303,14 +1421,14 @@ namespace Idmr.Yogeme
 			_loading = false;
 			try
 			{
-				fMap.Import(_mission.FlightGroups);
-				fMap.MapPaint(true);
+				_fMap.Import(_mission.FlightGroups);
+				_fMap.MapPaint(true);
 			}
 			catch { /* do nothing */ }
 			try
 			{
-				fBrief.Import(_mission.FlightGroups);
-				fBrief.MapPaint();
+				_fBrief.Import(_mission.FlightGroups);
+				_fBrief.MapPaint();
 			}
 			catch { /* do nothing */ }
 			Common.Title(this, _loading);
@@ -2601,15 +2719,12 @@ namespace Idmr.Yogeme
 			lblTeamArr_Click(_activeTeam, new EventArgs());	// link the Globals and Team tabs to share GlobTeam
 			bool btemp = _loading;
 			_loading = true;
-			System.Diagnostics.Debug.WriteLine("label refresh");
 			for (int i=0;i<12;i++) labelRefresh(_mission.Globals[_activeTeam].Goals[i/4].Triggers[i%4], lblGlobTrig[i]);
-			System.Diagnostics.Debug.WriteLine("and or");
 			for (int i=0;i<9;i++)
 			{
 				optGlobAndOr[i].Checked = _mission.Globals[_activeTeam].Goals[i/3].AndOr[i%3];	// OR
 				optGlobAndOr[i+9].Checked = !optGlobAndOr[i].Checked;	// AND
 			}
-			System.Diagnostics.Debug.WriteLine("trig refresh");
 			lblGlobTrigArr_Click(0, new EventArgs());
 			_loading = btemp;
 		}
@@ -2772,14 +2887,12 @@ namespace Idmr.Yogeme
 			_loading = true;
 			txtTeamName.Text = _mission.Teams[_activeTeam].Name;
 			for (int i=0;i<10;i++) chkAllies[i].Checked = _mission.Teams[_activeTeam].AlliedWithTeam[i];
-			System.Diagnostics.Debug.WriteLine("more text");
 			for (int i=0;i<6;i++)
 			{
 				txtEoM[i].Text = _mission.Teams[_activeTeam].EndOfMissionMessages[i];
 				cboEoMColor[i].SelectedIndex = _mission.Teams[_activeTeam].EndOfMissionMessageColor[i];
 			}
 			_loading = btemp;
-			System.Diagnostics.Debug.WriteLine("lbl click complete");
 		}
 		void txtEoMArr_Leave(object sender, EventArgs e)
 		{

@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2012 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the GPL v3.0 or later
  * 
- * VERSION: 1.1.1
+ * VERSION: 1.2
  */
 
 /* CHANGELOG
+ * v1.2, 121006
  * [NEW] RecentMissions, RecentPlatforms
  * [UPD] v4
  * v1.1.1, 120814
@@ -48,6 +49,7 @@ namespace Idmr.Yogeme
 		[Flags]
 		public enum MapOpts { None, FGTags, Traces }
 
+		/// <summary>Creates a new Settings object and loads saved settings</summary>
 		public Settings()
 		{
 			loadDefaults();
@@ -71,6 +73,8 @@ namespace Idmr.Yogeme
 			Waypoints = 1;
 		}
 		
+		/// <summary>Loads saved settings</summary>
+		/// <remarks>If no saved settings exist, will save defaults in the user's settings file</remarks>
 		public void LoadSettings()
 		{
 			RegistryKey key = Registry.CurrentUser.OpenSubKey("Software\\IDMR\\MissionEditor");
@@ -266,6 +270,8 @@ namespace Idmr.Yogeme
 				}
 			}
 		}
+		/// <summary>Saves current settings to user's settings file</summary>
+		/// <remarks>Registry use has been deprecated</remarks>
 		public void SaveSettings()
 		{
 			#region save registry (DEPRECATED)
@@ -340,16 +346,25 @@ namespace Idmr.Yogeme
 		}
 
 		#region Properties
+		/// <summary>Gets or sets if Balance of Power is installed</summary>
 		public bool BopInstalled { get; set; }
+		/// <summary>Gets or sets the install directory for Balance of Power</summary>
+		/// <remarks>No action is taken when using set if the directory does not exist</remarks>
 		public string BopPath
 		{
 			get { return _bopPath; }
 			set { if (Directory.Exists(value)) { _bopPath = value; } }
 		}
+		/// <summary>Gets or sets if the confirmation dialog is shown when exiting YOGEME</summary>
 		public bool ConfirmExit { get; set; }
+		/// <summary>Gets or sets if a confirmation dialog is shown when closing an unsaved mission</summary>
 		public bool ConfirmSave { get; set; }
+		/// <summary>Gets or sets if the Test dialog is shown</summary>
 		public bool ConfirmTest { get; set; }
+		/// <summary>Gets or sets if pilot files created during Test are deleted when the platform is closed</summary>
 		public bool DeleteTestPilots { get; set; }
+		/// <summary>Gets or sets the path to last opened mission</summary>
+		/// <remarks>Updates <see cref="RecentMissions"/> and <see cref="RecentPlatforms"/> during set</remarks>
 		public string LastMission
 		{
 			get { return _recentMissions[0]; }
@@ -378,43 +393,70 @@ namespace Idmr.Yogeme
 				}
 			}
 		}
+		/// <summary>Gets or sets the most recent platform used in YOGEME</summary>
 		public Platform LastPlatform
 		{
 			get { return _recentPlatforms[0]; }
 			set { _recentPlatforms[0] = value; }
 		}
+		/// <summary>Gets or sets the map options</summary>
 		public MapOpts MapOptions { get; set; }
+		/// <summary>Gets a copy of the five most recent missions</summary>
 		public string[] RecentMissions { get { return (string[])_recentMissions.Clone(); } }
+		/// <summary>Gets a copy of the platforms pertaining to <see cref="RecentMissions"/></summary>
 		public Platform[] RecentPlatforms { get { return (Platform[])_recentPlatforms.Clone(); } }
+		/// <summary>Gets or sets if the user can only platform that have been installed</summary>
 		public bool RestrictPlatforms { get; set; }
+		/// <summary>Gets or sets the initial mode of YOGEME</summary>
 		public StartupMode Startup { get; set; }
+		/// <summary>Gets or sets the default craft type in TIE Fighter</summary>
 		public byte TieCraft { get; set; }
+		/// <summary>Gets or sets the default IFF for new ships in TIE Fighter</summary>
 		public byte TieIff { get; set; }
+		/// <summary>Gets or sets if TIE95 is installed</summary>
 		public bool TieInstalled { get; set; }
+		/// <summary>Gets or sets the install directoy for TIE95</summary>
+		/// <remarks>No action is taken when using set if the directory does not exist</remarks>
 		public string TiePath
 		{
 			get { return _tiePath; }
 			set { if (Directory.Exists(value)) { _tiePath = value; } }
 		}
+		/// <summary>Gets or sets if the missions will be verified when saving</summary>
 		public bool Verify { get; set; }
+		/// <summary>Gets or sets the path to the verify application</summary>
+		/// <remarks>No action is taken when using set if the file does not exist</remarks>
 		public string VerifyLocation
 		{
 			get { return _verifyLocation; }
 			set { if (File.Exists(value)) _verifyLocation = value; }
 		}
+		/// <summary>Gets or sets if the mission will be verified before testing</summary>
+		/// <remarks>If <see "Verify"/> is <b>true</b>, this value is ignored such that the verification only occurs once</remarks>
 		public bool VerifyTest { get; set; }
+		/// <summary>Gets or sets the default enabled waypoints in the Map interface</summary>
 		public int Waypoints { get; set; }
+		/// <summary>Gets or sets the default craft type for X-wing vs TIE Fighter</summary>
 		public byte XvtCraft { get; set; }
+		/// <summary>Gets or sets the default IFF for new ships in X-wing vs TIE Fighter</summary>
 		public byte XvtIff { get; set; }
+		/// <summary>Gets or sets if X-wing vs TIE Fighter is installed</summary>
 		public bool XvtInstalled { get; set; }
+		/// <summary>Gets or sets the install directory for X-wing vs TIE Fighter</summary>
+		/// <remarks>No action is taken when using set if the directory does not exist</remarks>
 		public string XvtPath
 		{
 			get { return _xvtPath; }
 			set { if (Directory.Exists(value)) { _xvtPath = value; } }
 		}
+		/// <summary>Gets or sets the default craft type for X-wing Alliance</summary>
 		public byte XwaCraft { get; set; }
+		/// <summary>Gets or sets the default IFF for new ships in X-wing Alliance</summary>
 		public byte XwaIff { get; set; }
+		/// <summary>Gets or sets if X-wing Alliance is installed</summary>
 		public bool XwaInstalled { get; set; }
+		/// <summary>Gets or sets the install directory for X-wing Alliance</summary>
+		/// <remarks>No action is taken when using set if the directory does not exist</remarks>
 		public string XwaPath
 		{
 			get { return _xwaPath; }

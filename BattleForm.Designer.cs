@@ -545,7 +545,7 @@ namespace Idmr.Yogeme
 			this.opnMission.Filter = "Mission Files|*.tie";
 			this.opnMission.FileOk += new System.ComponentModel.CancelEventHandler(this.opnMission_FileOk);
 			// 
-			// frmBattle
+			// BattleForm
 			// 
 			this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
 			this.ClientSize = new System.Drawing.Size(560, 302);
@@ -557,7 +557,8 @@ namespace Idmr.Yogeme
 			this.Controls.Add(this.cmdNext);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MaximizeBox = false;
-			this.Name = "frmBattle";
+			this.Name = "BattleForm";
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "YOGEME TIE Battle Editor";
 			this.tcBattle.ResumeLayout(false);
 			this.tabBattle.ResumeLayout(false);

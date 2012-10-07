@@ -3,10 +3,13 @@
  * Copyright (C) 2007-2012 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the GPL v3.0 or later
  * 
- * VERSION: 1.1.1
+ * VERSION: 1.2
  */
 
 /* CHANGELOG
+ * v1.2, 121006
+ * - Settings passed in
+ * [FIX] Bug in Lfd image processing that corrupted the system image when saving
  * v1.1.1, 120814
  * - class renamed
  * - renamed some things
@@ -39,11 +42,10 @@ namespace Idmr.Yogeme
 		bool _dragging = false;
 		LfdFile _battle;
 
-		public BattleForm()
+		public BattleForm(Settings config)
 		{
 			InitializeComponent();
 			this.Height = 326;
-			Settings config = new Settings();
 			if (!config.TieInstalled)
 			{
 				MessageBox.Show("TIE95 installation not found, Battle function not available", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -53,26 +55,15 @@ namespace Idmr.Yogeme
 			{
 				_installPath = config.TiePath;
 				// dummy bitmap to create a 256 color palette
-				/*Bitmap bm = new Bitmap(1, 1, PixelFormat.Format8bppIndexed);
-				_systemPalette = bm.Palette;
-				bm.Dispose();*/
 				//palette definition
 				// start with EMPIRE.PLTTstandard
 				Pltt standard = (Pltt)(new LfdFile(_installPath + "\\RESOURCE\\EMPIRE.LFD").Resources["PLTTstandard"]);
-				/*Rmap empire = new Rmap(_installPath + "\\RESOURCE\\EMPIRE.LFD");
-				Pltt standard = new Pltt(_installPath + "\\RESOURCE\\EMPIRE.LFD", empire.SubHeaders[2].Offset);*/
 				// then open up TOURDESK for the rest
 				LfdFile tourdesk = new LfdFile(_installPath + "\\RESOURCE\\TOURDESK.LFD");
 				Pltt toddesk = (Pltt)tourdesk.Resources["PLTTtoddesk"];
 				_systemPalette = Pltt.ConvertToPalette(new Pltt[]{standard, toddesk});
 				Delt galaxy = (Delt)tourdesk.Resources["DELTgalaxy"];
 				galaxy.Palette = _systemPalette;
-				/*FileStream fs = File.OpenRead(_installPath + "\\RESOURCE\\TOURDESK.LFD");
-				Rmap tourdesk = new Rmap(fs);
-				Pltt toddesk = new Pltt(fs, tourdesk.SubHeaders[1].Offset);	//PLTTtoddesk
-				//galaxy map
-				Delt galaxy = new Delt(fs, tourdesk.SubHeaders[7].Offset, new Pltt[]{standard, toddesk});
-				fs.Close();*/
 				_galaxyImage = galaxy.Image;
 				picGalaxy.Image = _galaxyImage;
 				picGalaxy.Size = _galaxyImage.Size;
@@ -84,7 +75,7 @@ namespace Idmr.Yogeme
 			try { loadFile(_battlePath); }
 			catch(Exception x)
 			{
-				MessageBox.Show(x.Message + "  Battle function not available", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				MessageBox.Show(x.Message + " Battle function not available", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return;
 			}
 		}
@@ -212,7 +203,6 @@ namespace Idmr.Yogeme
 			Text tex = (Text)_battle.Resources[0];
 			Delt del = (Delt)_battle.Resources[1];
 			del.Image = _systemImage;
-			_battle.Resources[1] = del;
 			tex.NumberOfStrings = (short)(_numMiss+4);
 			tex.Strings[0] = txtBattle.Text + '\0' + txtCutscene.Text;
 			tex.Strings[1] = txtBTitle1.Text + '\0' + txtBTitle2.Text + '\0' + txtCTitle1.Text + '\0' + txtCTitle2.Text;
@@ -220,7 +210,6 @@ namespace Idmr.Yogeme
 				+ ' ' + numFrameLeft.Value + ' ' + numFrameWidth.Value;
 			tex.Strings[3] = String.Join("\0",_missionFiles);
 			for(int i=0;i<_numMiss;i++) tex.Strings[4+i] = _missionDescriptions[i].Replace("\r\n", "\0");
-			_battle.Resources[0] = tex;
 			try { _battle.Write(); }
 			catch (Exception x) { System.Diagnostics.Debug.WriteLine("Battle save failure"); throw x; }
 		}

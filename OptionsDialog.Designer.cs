@@ -25,6 +25,7 @@ namespace Idmr.Yogeme
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(OptionsDialog));
 			this.tabOptions = new System.Windows.Forms.TabControl();
 			this.tabOpt1 = new System.Windows.Forms.TabPage();
+			this.label7 = new System.Windows.Forms.Label();
 			this.cmdVerify = new System.Windows.Forms.Button();
 			this.txtVerify = new System.Windows.Forms.TextBox();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
@@ -128,6 +129,7 @@ namespace Idmr.Yogeme
 			// 
 			// tabOpt1
 			// 
+			this.tabOpt1.Controls.Add(this.label7);
 			this.tabOpt1.Controls.Add(this.cmdVerify);
 			this.tabOpt1.Controls.Add(this.txtVerify);
 			this.tabOpt1.Controls.Add(this.groupBox1);
@@ -143,6 +145,15 @@ namespace Idmr.Yogeme
 			this.tabOpt1.Size = new System.Drawing.Size(384, 238);
 			this.tabOpt1.TabIndex = 0;
 			this.tabOpt1.Text = "Overall";
+			// 
+			// label7
+			// 
+			this.label7.AutoSize = true;
+			this.label7.Location = new System.Drawing.Point(13, 198);
+			this.label7.Name = "label7";
+			this.label7.Size = new System.Drawing.Size(91, 13);
+			this.label7.TabIndex = 11;
+			this.label7.Text = "Verify executable:";
 			// 
 			// cmdVerify
 			// 
@@ -969,5 +980,6 @@ namespace Idmr.Yogeme
 		private CheckBox chkDeletePilot;
 		private CheckBox chkTest;
 		private CheckBox chkVerifyTest;
+		private Label label7;
 	}
 }

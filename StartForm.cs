@@ -3,10 +3,12 @@
  * Copyright (C) 2007-2012 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the GPL v3.0 or later
  * 
- * VERSION: 1.1.1
+ * VERSION: 1.2
  */
 
 /* CHANGELOG
+ * v1.2, 121006
+ * - Settings passed in from Program
  * v1.1.1, 120814
  * - condensed
  * - class renamed
@@ -23,12 +25,12 @@ namespace Idmr.Yogeme
 	/// <summary>The initial interface and effective program start</summary>
 	public partial class StartForm : Form
 	{
-		Settings _config = new Settings();
+		Settings _config;
 
-		public StartForm()
+		public StartForm(Settings settings)
 		{
+			_config = settings;
 			InitializeComponent();
-			//load _config, create if needed
 
 			// Settings.LoadSettings already called, so has Settings.CheckPlatforms
 			if (_config.RestrictPlatforms && !_config.TieInstalled && !_config.XvtInstalled && !_config.XwaInstalled) _config.RestrictPlatforms = false;
@@ -44,8 +46,9 @@ namespace Idmr.Yogeme
 
 		/// <summary>From the command line or if Settings.Startup == LastMission</summary>
 		/// <param name="missionPath">Path to the mission file</param>
-		public StartForm(string missionPath)
+		public StartForm(Settings settings, string missionPath)
 		{
+			_config = settings;
 			InitializeComponent();
 
 			Hide();
@@ -57,16 +60,16 @@ namespace Idmr.Yogeme
 				switch (t)
 				{
 					case 12:
-						new XvtForm(missionPath).Show();
+						new XvtForm(_config, missionPath).Show();
 						break;
 					case 14:
-						new XvtForm(missionPath).Show();
+						new XvtForm(_config, missionPath).Show();
 						break;
 					case 18:
-						new XwaForm(missionPath).Show();
+						new XwaForm(_config, missionPath).Show();
 						break;
 					case -1:
-						new TieForm(missionPath).Show();
+						new TieForm(_config, missionPath).Show();
 						break;
 					default:
 						throw new Exception("File is either invalid or corrupted.\nPlease ensure the correct file was selected.");
@@ -93,17 +96,17 @@ namespace Idmr.Yogeme
 			if (optTIE.Checked)
 			{
 				Hide();
-				new TieForm().Show();
+				new TieForm(_config).Show();
 			}
 			if (optXvT.Checked)
 			{
 				Hide();
-				new XvtForm(chkBoP.Checked).Show();
+				new XvtForm(_config, chkBoP.Checked).Show();
 			}
 			if (optXWA.Checked)
 			{
 				Hide();
-				new XwaForm().Show();
+				new XwaForm(_config).Show();
 			}
 		}
 

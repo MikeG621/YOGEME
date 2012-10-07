@@ -3,14 +3,14 @@
  * Copyright (C) 2007-2012 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the GPL v3.0 or later
  * 
- * VERSION: 1.1.1
+ * VERSION: 1.2
  */
 
 /* CHANGELOG
- * v1.1.1, XXXXXX
+ * v1.1.1, 120814
  * - class renamed
  * v1.1, 120715
- * - Created, currently disabled
+ * - Created, enabled in v1.2
  */
 
 using System;
@@ -39,7 +39,6 @@ namespace Idmr.Yogeme
 			_config.VerifyTest = chkVerify.Checked;
 			_config.DeleteTestPilots = chkDelete.Checked;
 			_config.ConfirmTest = !chkDoNotShow.Checked;
-			// TODO: Test Dialog
 			Close();
 		}
 	}

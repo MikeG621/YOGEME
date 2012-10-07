@@ -2,8 +2,8 @@
 ======================================
 
 Author: Michael Gaisser (mjgaisser@gmail.com)
-Version: 1.1
-Date: 2012.07.15
+Version: 1.2
+Date: 2012.10.06
 
 Thank you for downloading YOGEME, the all-in-one mission editor for the X-Wing
 series, TIE95 through X-wing Alliance.  This program allows easy mission
@@ -14,6 +14,15 @@ original mainstream editors were created.
 ==========
 Version History
 
+v1.2 - 06 Oct 2012
+ - (All) Test menu item added, Options Dialog has Test options enabled
+ - (All) Label with number of starting craft now only applies to Normal difficulty
+ - (All) Open/Save dialogs now default to the appropriate mission directory
+ - (All) "Open Recent" menu added, remembers the last five missions opened
+ - (XvT) Global Goal text boxes now save properly
+ - (Battle) Fixed bug in image processing that would corrupt LFD file
+ - Back-end updates
+ 
 v1.1.1 - 14 Aug 2012
  - (All) Waypoint.Enabled now updates when changing state instead of when
    losing focus

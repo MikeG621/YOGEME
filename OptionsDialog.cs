@@ -3,14 +3,16 @@
  * Copyright (C) 2007-2012 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the GPL v3.0 or later
  * 
- * VERSION: 1.1.1
+ * VERSION: 1.2
  */
 
 /* CHANGELOG
+ * v1.2, 121006
+ * [UPD] Test controls enabled
  * v1.1.1, 120814
  * - class renamed
  * v1.1, 120715
- * - Controls (Disabled) added for ConfirmTest, DeleteTestPilots and Verify Test
+ * [NEW] Controls (Disabled) added for ConfirmTest, DeleteTestPilots and Verify Test
  * v1.0, 110921
  * - Release
  */

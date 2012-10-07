@@ -3,10 +3,12 @@
  * Copyright (C) 2007-2012 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the GPL v3.0 or later
  * 
- * VERSION: 1.1.1
+ * VERSION: 1.2
  */
 
 /* CHANGELOG
+ * v1.2, 121006
+ * - Settings passed in
  * v1.1.1, 120814
  * [FIX] MapData.Waypoints now based on BaseFlightGroup.BaseWaypoint, now updates back and forth with parent Form
  * - MapPaint() Orientation switch{} removed and condensed
@@ -39,7 +41,7 @@ namespace Idmr.Yogeme
 		int _wpSetCount = 1;
 
 		/// <param name="fg">TFlights array</param>
-		public MapForm(Platform.Tie.FlightGroupCollection fg)
+		public MapForm(Settings settings, Platform.Tie.FlightGroupCollection fg)
 		{
 			_platform = Settings.Platform.TIE;
 			Import(fg);
@@ -50,11 +52,11 @@ namespace Idmr.Yogeme
 				MessageBox.Show(x.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				Close();
 			}
-			startup();
+			startup(settings);
 		}
 
 		/// <param name="fg">XFlights array</param>
-		public MapForm(Platform.Xvt.FlightGroupCollection fg)
+		public MapForm(Settings settings, Platform.Xvt.FlightGroupCollection fg)
 		{
 			_platform = Settings.Platform.XvT;
 			Import(fg);
@@ -65,11 +67,11 @@ namespace Idmr.Yogeme
 				MessageBox.Show(x.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				Close();
 			}
-			startup();
+			startup(settings);
 		}
 
 		/// <param name="fg">WFlights array</param>
-		public MapForm(Platform.Xwa.FlightGroupCollection fg)
+		public MapForm(Settings settings, Platform.Xwa.FlightGroupCollection fg)
 		{
 			_platform = Settings.Platform.XWA;
 			Import(fg);
@@ -80,11 +82,11 @@ namespace Idmr.Yogeme
 				MessageBox.Show(x.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				Close();
 			}
-			startup();
+			startup(settings);
 		}
 
 		/// <summary>Intialization routine, loads settings and config per platform</summary>
-		void startup()
+		void startup(Settings config)
 		{
 			#region checkbox array
 			chkWP[0] = chkSP1;
@@ -121,7 +123,6 @@ namespace Idmr.Yogeme
 			mapY = h/2;
 			mapZ = h/2;
 			_dragIcon[0] = -1;
-			Settings config = new Settings();
 			_loading = true;
 			chkTags.Checked = Convert.ToBoolean(config.MapOptions & Settings.MapOpts.FGTags);
 			chkTrace.Checked = Convert.ToBoolean(config.MapOptions & Settings.MapOpts.Traces);

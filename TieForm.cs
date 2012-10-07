@@ -3,10 +3,14 @@
  * Copyright (C) 2007-2012 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the GPL v3.0 or later
  * 
- * VERSION: 1.1.1
+ * VERSION: 1.2
  */
 
 /* CHANGELOG
+ * v1.2, 121006
+ * - Settings passed in and out
+ * [NEW] Test menu
+ * - comboReset() to static
  * [UPD] lblStarting now only applies to Normal difficulty
  * [UPD] opn/sav dialogs default to \MISSION
  * [NEW] Open Recent menu
@@ -32,7 +36,7 @@ namespace Idmr.Yogeme
 	public partial class TieForm : Form
 	{
 		#region vars and stuff
-		Settings _config = new Settings();
+		Settings _config;
 		Mission _mission;
 		bool _applicationExit;				//for frmTIE_Closing, confirms application exit vs switching platforms
 		int _activeFG = 0;			//counter to keep track of current FG being displayed
@@ -65,8 +69,9 @@ namespace Idmr.Yogeme
 		MenuItem[] menuRecentMissions = new MenuItem[6];
 		#endregion
 
-		public TieForm()
+		public TieForm(Settings settings)
 		{
+			_config = settings;
 			InitializeComponent();
 			_loading = true;
 			initializeMission();
@@ -74,8 +79,9 @@ namespace Idmr.Yogeme
 			lstFG.SelectedIndex = 0;
 			_loading = false;
 		}
-		public TieForm(string path)
+		public TieForm(Settings settings, string path)
 		{	//this is the command line and "Open..." support
+			_config = settings;
 			InitializeComponent();
 			_loading = true;
 			initializeMission();
@@ -142,7 +148,7 @@ namespace Idmr.Yogeme
 					break;
 			}
 		}
-		void comboReset(ComboBox cbo, string[] items, int index)
+		static void comboReset(ComboBox cbo, string[] items, int index)
 		{
 			cbo.Items.Clear();
 			cbo.Items.AddRange(items);
@@ -203,9 +209,6 @@ namespace Idmr.Yogeme
 			/* return true if successful, returns false if aborted or failed
 			 * code is fairly straight-forward. read the crap and save it */
 			closeForms();
-			lstFG.Items.Clear();
-			lstMessages.Items.Clear();
-			_startingShips = 0;
 			try
 			{
 				FileStream fs = File.OpenRead(fileMission);
@@ -219,17 +222,17 @@ namespace Idmr.Yogeme
 							break;
 						case Platform.MissionFile.Platform.XvT:
 							_applicationExit = false;
-							new XvtForm(fileMission).Show();
+							new XvtForm(_config, fileMission).Show();
 							Close();
 							return false;
 						case Platform.MissionFile.Platform.BoP:
 							_applicationExit = false;
-							new XvtForm(fileMission).Show();
+							new XvtForm(_config, fileMission).Show();
 							Close();
 							return false;
 						case Platform.MissionFile.Platform.XWA:
 							_applicationExit = false;
-							new XwaForm(fileMission).Show();
+							new XwaForm(_config, fileMission).Show();
 							Close();
 							return false;
 						default:
@@ -251,6 +254,9 @@ namespace Idmr.Yogeme
 				MessageBox.Show(x.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return false;
 			}
+			lstFG.Items.Clear();
+			lstMessages.Items.Clear();
+			_startingShips = 0;
 			for (int i=0;i<_mission.FlightGroups.Count;i++)
 			{
 				lstFG.Items.Add(_mission.FlightGroups[i].ToString(true));
@@ -313,20 +319,20 @@ namespace Idmr.Yogeme
 			comboReset(cboIFF, t, 0);
 			_config.LastMission = "";
 			_config.LastPlatform = Settings.Platform.TIE;
-			menuTest.Enabled = _config.TieInstalled;
 			if (Directory.Exists(_config.TiePath))
 			{
 				opnTIE.InitialDirectory = _config.TiePath + "\\MISSION";
 				savTIE.InitialDirectory = _config.TiePath + "\\MISSION";
 			}
 			_applicationExit = true;	//becomes false if selecting "New Mission" from menu
+			#region Menu
+			menuTest.Enabled = _config.TieInstalled;
 			if (_config.RestrictPlatforms)
 			{
 				menuNewXvT.Enabled = _config.XvtInstalled;
 				menuNewBoP.Enabled = _config.BopInstalled;
 				menuNewXWA.Enabled = _config.XwaInstalled;
 			}
-			#region Menu
 			menuRecentMissions[0] = menuRecent;
 			menuRecentMissions[1] = menuRec1;
 			menuRecentMissions[2] = menuRec2;
@@ -588,7 +594,6 @@ namespace Idmr.Yogeme
 				tabFGMinor.SelectedIndex = 0;
 				_activeFG = 0;
 				lstFG.SelectedIndex = 0;
-				_loading = true;		//turned false in previous line
 				if (_mission.Messages.Count != 0) lstMessages.SelectedIndex = 0;
 			}
 			_loading = false;
@@ -699,7 +704,7 @@ namespace Idmr.Yogeme
 		}
 		void menuBattle_Click(object sender, EventArgs e)
 		{
-			_fBattle = new BattleForm();
+			_fBattle = new BattleForm(_config);
 			_fBattle.Show();
 		}
 		void menuBriefing_Click(object sender, EventArgs e)
@@ -781,7 +786,9 @@ namespace Idmr.Yogeme
 		}
 		void menuMap_Click(object sender, EventArgs e)
 		{
-			_fMap = new MapForm(_mission.FlightGroups);
+			try { _fMap.Close(); }
+			catch { /* do nothing */ }
+			_fMap = new MapForm(_config, _mission.FlightGroups);
 			_fMap.Show();
 		}
 		void menuNewBoP_Click(object sender, EventArgs e)
@@ -808,9 +815,8 @@ namespace Idmr.Yogeme
 		{
 			promptSave();
 			closeForms();
-			bool BoP = (sender.ToString() == "BoP" ? true : false);
 			_applicationExit = false;
-			new XvtForm(BoP).Show();
+			new XvtForm(_config, sender.ToString() == "BoP").Show();
 			Close();
 		}
 		void menuNewXWA_Click(object sender, EventArgs e)
@@ -818,7 +824,7 @@ namespace Idmr.Yogeme
 			promptSave();
 			closeForms();
 			_applicationExit = false;
-			new XwaForm().Show();
+			new XwaForm(_config).Show();
 			Close();
 		}
 		void menuOpen_Click(object sender, EventArgs e)
@@ -970,7 +976,6 @@ namespace Idmr.Yogeme
 				tabFGMinor.SelectedIndex = 0;
 				_activeFG = 0;
 				lstFG.SelectedIndex = 0;
-				_loading = true;		//turned false in previous line
 				if (_mission.Messages.Count != 0) lstMessages.SelectedIndex = 0;
 			}
 			_loading = false;
@@ -1010,9 +1015,56 @@ namespace Idmr.Yogeme
 				DialogResult res = new TestDialog(_config).ShowDialog();
 				if (res == DialogResult.Cancel) return;
 			}
+			// prep stuff
 			menuSave_Click("menuTest_Click", new EventArgs());
 			if (_config.VerifyTest && !_config.Verify) Common.RunVerify(_mission.MissionPath, _config.VerifyLocation);
-			// TODO: test code
+			Version os = Environment.OSVersion.Version;
+			bool isWin7 = (os.Major == 6 && os.Minor == 1);
+			System.Diagnostics.Process explorer = null;
+			int restart = 1;
+			Microsoft.Win32.RegistryKey key = Microsoft.Win32.Registry.LocalMachine.OpenSubKey("SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon", true);
+
+			// configure TIE
+			int index = 0;
+			while (File.Exists(_config.TiePath + "\\TEST" + index + ".tfr")) index++;
+			string pilot = "\\TEST" + index + ".tfr";
+			string battle = "\\RESOURCE\\BATTLE1.LFD";
+			string backup = "\\RESOURCE\\BATTLE1_" + index + ".bak";
+			File.Copy(Application.StartupPath + "\\TEST.tfr", _config.TiePath + pilot);
+			System.Diagnostics.Process tie = new System.Diagnostics.Process();
+			tie.StartInfo.FileName = _config.TiePath + "\\TIE95.exe";
+			tie.StartInfo.UseShellExecute = false;
+			tie.StartInfo.WorkingDirectory = _config.TiePath;
+			File.Copy(_config.TiePath + battle, _config.TiePath + backup, true);
+			Idmr.LfdReader.LfdFile battleLfd = new Idmr.LfdReader.LfdFile(_config.TiePath + battle);
+			Idmr.LfdReader.Text txt = (Idmr.LfdReader.Text)battleLfd.Resources[0];
+			string[] missions = txt.Strings[3].Split('\0');
+			missions[0] = _mission.MissionFileName.Replace(".tie", "");
+			txt.Strings[3] = String.Join("\0", missions);
+			battleLfd.Write();
+
+			if (isWin7)	// explorer kill so colors work right
+			{
+				restart = (int)key.GetValue("AutoRestartShell", 1);
+				key.SetValue("AutoRestartShell", 0, Microsoft.Win32.RegistryValueKind.DWord);
+				explorer = System.Diagnostics.Process.GetProcessesByName("explorer")[0];
+				explorer.Kill();
+				explorer.WaitForExit();
+			}
+
+			tie.Start();
+			tie.WaitForExit();
+
+			if (isWin7)	// restart
+			{
+				key.SetValue("AutoRestartShell", restart, Microsoft.Win32.RegistryValueKind.DWord);
+				explorer.StartInfo.UseShellExecute = false;
+				explorer.StartInfo.FileName = "explorer.exe";
+				explorer.Start();
+			}
+			if (_config.DeleteTestPilots) File.Delete(_config.TiePath + pilot);
+			File.Copy(_config.TiePath + backup, _config.TiePath + battle, true);
+			File.Delete(_config.TiePath + backup);
 		}
 		#endregion
 		#region FlightGroups
@@ -1202,7 +1254,7 @@ namespace Idmr.Yogeme
 			chkUnk19.Checked = _mission.FlightGroups[_activeFG].Unknowns.Unknown19;
 			numUnk20.Value = _mission.FlightGroups[_activeFG].Unknowns.Unknown20;
 			chkUnk21.Checked = _mission.FlightGroups[_activeFG].Unknowns.Unknown21;
-			_loading = btemp; ;
+			_loading = btemp;
 			enableBackdrop((_mission.FlightGroups[_activeFG].CraftType == 0x57 ? true : false));
 		}
 
@@ -2017,6 +2069,14 @@ namespace Idmr.Yogeme
 			_loading = bTemp;
 		}
 
+		void cmdPreview_Click(object sender, EventArgs e)
+		{
+			txtAnswer_Leave("cmdPreview", new EventArgs());
+			txtQuestion_Leave("cmdPreview", new EventArgs());
+			_fOfficers = new OfficerPreviewForm(_mission.BriefingQuestions);
+			_fOfficers.Show();
+		}
+
 		void optOfficers_Leave(object sender, EventArgs e)
 		{
 			RadioButton o = (RadioButton)sender;
@@ -2074,17 +2134,5 @@ namespace Idmr.Yogeme
 				_mission.CapturedOnEjection = (bool)Common.Update(this, _mission.CapturedOnEjection, optCapture.Checked);
 		}
 		#endregion
-
-		void cmdPreview_Click(object sender, EventArgs e)
-		{
-			txtAnswer_Leave("cmdPreview", new EventArgs());
-			txtQuestion_Leave("cmdPreview", new EventArgs());
-			_fOfficers = new OfficerPreviewForm(_mission.BriefingQuestions);
-			_fOfficers.Show();
-		}
-
-		
-
-		
 	}
 }

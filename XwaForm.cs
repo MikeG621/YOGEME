@@ -3,10 +3,14 @@
  * Copyright (C) 2007-2012 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the GPL v3.0 or later
  * 
- * VERSION: 1.1.1
+ * VERSION: 1.2
  */
 
 /* CHANGELOG
+ * v1.2, 121006
+ * - removed try{} in opnXWA_FileOk
+ * - Settings passed in and out
+ * [NEW] Test menu
  * [UPD] lblStarting now only applies to Normal difficulty
  * [UPD] opn/sav dialogs default to \MISSIONS
  * [NEW] Open Recent menu
@@ -32,7 +36,7 @@ namespace Idmr.Yogeme
 	public partial class XwaForm : Form
 	{
 		#region vars and stuff
-		Settings _config = new Settings();
+		Settings _config;
 		bool _loading;
 		MapForm _fMap;
 		BriefingForm _fBrief;
@@ -87,8 +91,9 @@ namespace Idmr.Yogeme
 		TextBox[] txtRegions = new TextBox[4];
 		#endregion
 
-		public XwaForm()
+		public XwaForm(Settings settings)
 		{
+			_config = settings;
 			InitializeComponent();
 			_loading = true;
 			initializeMission();
@@ -96,8 +101,9 @@ namespace Idmr.Yogeme
 			lstFG.SelectedIndex = 0;
 			_loading = false;
 		}
-		public XwaForm(string path)
+		public XwaForm(Settings settings, string path)
 		{
+			_config = settings;
 			InitializeComponent();
 			_loading = true;
 			initializeMission();
@@ -252,17 +258,17 @@ namespace Idmr.Yogeme
 					{
 						case Platform.MissionFile.Platform.TIE:
 							_applicationExit = false;
-							new TieForm(fileMission).Show();
+							new TieForm(_config, fileMission).Show();
 							Close();
 							return false;
 						case Platform.MissionFile.Platform.XvT:
 							_applicationExit = false;
-							new XvtForm(fileMission).Show();
+							new XvtForm(_config, fileMission).Show();
 							Close();
 							return false;
 						case Platform.MissionFile.Platform.BoP:
 							_applicationExit = false;
-							new XvtForm(fileMission).Show();
+							new XvtForm(_config, fileMission).Show();
 							Close();
 							return false;
 						case Platform.MissionFile.Platform.XWA:
@@ -358,12 +364,6 @@ namespace Idmr.Yogeme
 		{
 			_config.LastPlatform = Settings.Platform.XWA;
 			_applicationExit = true;	//becomes false if selecting "New Mission" from menu
-			if (_config.RestrictPlatforms)
-			{
-				if (!_config.TieInstalled) { menuNewTIE.Enabled = false; }
-				if (!_config.XvtInstalled) { menuNewXvT.Enabled = false; }
-				if (!_config.BopInstalled) { menuNewBoP.Enabled = false; }
-			}
 			if (Directory.Exists(_config.XwaPath))
 			{
 				opnXWA.InitialDirectory = _config.XwaPath + "\\MISSIONS";
@@ -371,6 +371,13 @@ namespace Idmr.Yogeme
 			}
 			_iffs = Strings.IFF;
 			#region Menu
+			menuText.Enabled = _config.XwaInstalled;
+			if (_config.RestrictPlatforms)
+			{
+				if (!_config.TieInstalled) { menuNewTIE.Enabled = false; }
+				if (!_config.XvtInstalled) { menuNewXvT.Enabled = false; }
+				if (!_config.BopInstalled) { menuNewBoP.Enabled = false; }
+			}
 			menuRecentMissions[0] = menuRecent;
 			menuRecentMissions[1] = menuRec1;
 			menuRecentMissions[2] = menuRec2;
@@ -812,8 +819,7 @@ namespace Idmr.Yogeme
 				tabMain.SelectedIndex = 0;
 				tabFGMinor.SelectedIndex = 0;
 				lstFG.SelectedIndex = 0;
-				try { lstMessages.SelectedIndex = 0; }
-				catch { System.Diagnostics.Debug.WriteLine("messages DNE"); }
+				if (_mission.Messages.Count != 0) lstMessages.SelectedIndex = 0;
 			}
 			_loading = false;
 		}
@@ -1038,23 +1044,21 @@ namespace Idmr.Yogeme
 		}
 		void menuMap_Click(object sender, EventArgs e)
 		{
-			_fMap = new MapForm(_mission.FlightGroups);
+			try { _fMap.Close(); }
+			catch { /* do nothing */ }
+			_fMap = new MapForm(_config, _mission.FlightGroups);
 			_fMap.Show();
 		}
 		void menuNewBoP_Click(object sender, EventArgs e)
 		{
-			promptSave();
-			closeForms();
-			_applicationExit = false;
-			new XvtForm(true).Show();
-			Close();
+			menuNewXvT_Click("BoP", new EventArgs());
 		}
 		void menuNewTIE_Click(object sender, EventArgs e)
 		{
 			promptSave();
 			closeForms();
 			_applicationExit = false;
-			new TieForm().Show();
+			new TieForm(_config).Show();
 			Close();
 		}
 		void menuNewXvT_Click(object sender, EventArgs e)
@@ -1062,7 +1066,7 @@ namespace Idmr.Yogeme
 			promptSave();
 			closeForms();
 			_applicationExit = false;
-			new XvtForm(false).Show();
+			new XvtForm(_config, sender.ToString() == "BoP").Show();
 			Close();
 		}
 		void menuNewXWA_Click(object sender, EventArgs e)
@@ -1277,16 +1281,7 @@ namespace Idmr.Yogeme
 		}
 		void menuSaveAsBoP_Click(object sender, EventArgs e)
 		{
-			promptSave();
-			try
-			{
-				Platform.Xvt.Mission converted = Platform.Converter.XwaToXvtBop(_mission, true);
-				converted.Save();
-			}
-			catch (ArgumentException x)
-			{
-				MessageBox.Show(x.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-			}
+			menuSaveAsXvT_Click("BoP", new EventArgs());
 		}
 		void menuSaveAsTIE_Click(object sender, EventArgs e)
 		{
@@ -1306,7 +1301,7 @@ namespace Idmr.Yogeme
 			promptSave();
 			try
 			{
-				Platform.Xvt.Mission converted = Platform.Converter.XwaToXvtBop(_mission, false);
+				Platform.Xvt.Mission converted = Platform.Converter.XwaToXvtBop(_mission, sender.ToString() == "BoP");
 				converted.Save();
 			}
 			catch (ArgumentException x)
@@ -1317,6 +1312,70 @@ namespace Idmr.Yogeme
 		void menuSaveAsXWA_Click(object sender, EventArgs e)
 		{
 			savXWA.ShowDialog();
+		}
+		void menuText_Click(object sender, EventArgs e)
+		{
+			if (_config.ConfirmTest)
+			{
+				DialogResult res = new TestDialog(_config).ShowDialog();
+				if (res == DialogResult.Cancel) return;
+			}
+			// prep stuff
+			menuSave_Click("menuTest_Click", new EventArgs());
+			if (_config.VerifyTest && !_config.Verify) Common.RunVerify(_mission.MissionPath, _config.VerifyLocation);
+			int index = 0;
+			while (File.Exists(_config.XwaPath + "\\test" + index + "0.plt")) index++;
+			string pilot = "\\test" + index + "0.plt";
+			string lst = "\\MISSIONS\\MISSION.LST";
+			string backup = "\\MISSIONS\\MISSION_" + index + ".bak";
+
+			// pilot file edit
+			File.Copy(Application.StartupPath + "\\xwatest0.plt", _config.XwaPath + pilot);
+			FileStream pilotFile = File.OpenWrite(_config.XwaPath + pilot);
+			pilotFile.Position = 4;
+			char[] indexBytes = index.ToString().ToCharArray();
+			BinaryWriter bw = new BinaryWriter(pilotFile);
+			bw.Write(indexBytes);
+			for (int i = (int)pilotFile.Position; i < 0xC; i++) pilotFile.WriteByte(0);
+			pilotFile.Position = 0x010F54;
+			bw.Write(indexBytes);
+			for (int i = (int)pilotFile.Position; i < 0x010F50 + 0xC; i++) pilotFile.WriteByte(0);
+			pilotFile.Close();
+
+			// configure XWA
+			System.Diagnostics.Process xwa = new System.Diagnostics.Process();
+			xwa.StartInfo.FileName = _config.XwaPath + "\\XWINGALLIANCE.exe";
+			xwa.StartInfo.Arguments = "/skipintro";
+			xwa.StartInfo.UseShellExecute = false;
+			xwa.StartInfo.WorkingDirectory = _config.XwaPath;
+			File.Copy(_config.XwaPath + lst, _config.XwaPath + backup, true);
+			StreamReader sr = File.OpenText(_config.XwaPath + "\\CONFIG.CFG");
+			string contents = sr.ReadToEnd();
+			sr.Close();
+			int lastpilot = contents.IndexOf("lastpilot ") + 10;
+			int nextline = contents.IndexOf("\r\n", lastpilot);
+			string modified = contents.Substring(0, lastpilot) + "test" + index + contents.Substring(nextline);
+			StreamWriter sw = new FileInfo(_config.XwaPath + "\\CONFIG.CFG").CreateText();
+			sw.Write(modified);
+			sw.Close();
+			sr = File.OpenText(_config.XwaPath + lst);
+			contents = sr.ReadToEnd();
+			sr.Close();
+			string[] expanded = contents.Replace("\r\n", "\0").Split('\0');
+			expanded[3] = "7";
+			expanded[4] = _mission.MissionFileName;
+			expanded[5] = "!MISSION_7_DESC!YOGEME: " + expanded[4];
+			modified = String.Join("\r\n", expanded);
+			sw = new FileInfo(_config.XwaPath + lst).CreateText();
+			sw.Write(modified);
+			sw.Close();
+
+			xwa.Start();
+			xwa.WaitForExit();
+
+			if (_config.DeleteTestPilots) File.Delete(_config.XwaPath + pilot);
+			File.Copy(_config.XwaPath + backup, _config.XwaPath + lst, true);
+			File.Delete(_config.XwaPath + backup);
 		}
 		void menuVerify_Click(object sender, EventArgs e)
 		{
@@ -3174,7 +3233,6 @@ namespace Idmr.Yogeme
 			}
 			catch (InvalidCastException)
 			{
-				System.Diagnostics.Debug.WriteLine("InvalidCastException - lblGGArr_Click");
 				i = (int)sender;
 				l = lblGG[i];
 			}

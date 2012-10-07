@@ -549,6 +549,12 @@ namespace Idmr.Yogeme
 			this.menuNewBoP = new System.Windows.Forms.MenuItem();
 			this.menuNewXWA = new System.Windows.Forms.MenuItem();
 			this.menuOpen = new System.Windows.Forms.MenuItem();
+			this.menuRecent = new System.Windows.Forms.MenuItem();
+			this.menuRec1 = new System.Windows.Forms.MenuItem();
+			this.menuRec2 = new System.Windows.Forms.MenuItem();
+			this.menuRec3 = new System.Windows.Forms.MenuItem();
+			this.menuRec4 = new System.Windows.Forms.MenuItem();
+			this.menuRec5 = new System.Windows.Forms.MenuItem();
 			this.menuSave = new System.Windows.Forms.MenuItem();
 			this.menuSaveAs = new System.Windows.Forms.MenuItem();
 			this.menuSaveAsTIE = new System.Windows.Forms.MenuItem();
@@ -579,12 +585,7 @@ namespace Idmr.Yogeme
 			this.savXvT = new System.Windows.Forms.SaveFileDialog();
 			this.dataWaypoints = new System.Data.DataView();
 			this.dataWaypoints_Raw = new System.Data.DataView();
-			this.menuRecent = new System.Windows.Forms.MenuItem();
-			this.menuRec1 = new System.Windows.Forms.MenuItem();
-			this.menuRec2 = new System.Windows.Forms.MenuItem();
-			this.menuRec3 = new System.Windows.Forms.MenuItem();
-			this.menuRec4 = new System.Windows.Forms.MenuItem();
-			this.menuRec5 = new System.Windows.Forms.MenuItem();
+			this.menuTest = new System.Windows.Forms.MenuItem();
 			this.tabMain.SuspendLayout();
 			this.tabFG.SuspendLayout();
 			this.tabFGMinor.SuspendLayout();
@@ -6223,6 +6224,7 @@ namespace Idmr.Yogeme
             this.menuFile,
             this.menuEdit,
             this.menuTools,
+            this.menuTest,
             this.menuHelp});
 			// 
 			// menuFile
@@ -6279,6 +6281,48 @@ namespace Idmr.Yogeme
 			this.menuOpen.Shortcut = System.Windows.Forms.Shortcut.CtrlO;
 			this.menuOpen.Text = "&Open";
 			this.menuOpen.Click += new System.EventHandler(this.menuOpen_Click);
+			// 
+			// menuRecent
+			// 
+			this.menuRecent.Enabled = false;
+			this.menuRecent.Index = 2;
+			this.menuRecent.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+            this.menuRec1,
+            this.menuRec2,
+            this.menuRec3,
+            this.menuRec4,
+            this.menuRec5});
+			this.menuRecent.Text = "Open &Recent...";
+			// 
+			// menuRec1
+			// 
+			this.menuRec1.Index = 0;
+			this.menuRec1.Text = "1.";
+			this.menuRec1.Visible = false;
+			// 
+			// menuRec2
+			// 
+			this.menuRec2.Index = 1;
+			this.menuRec2.Text = "2.";
+			this.menuRec2.Visible = false;
+			// 
+			// menuRec3
+			// 
+			this.menuRec3.Index = 2;
+			this.menuRec3.Text = "3.";
+			this.menuRec3.Visible = false;
+			// 
+			// menuRec4
+			// 
+			this.menuRec4.Index = 3;
+			this.menuRec4.Text = "4.";
+			this.menuRec4.Visible = false;
+			// 
+			// menuRec5
+			// 
+			this.menuRec5.Index = 4;
+			this.menuRec5.Text = "5.";
+			this.menuRec5.Visible = false;
 			// 
 			// menuSave
 			// 
@@ -6426,7 +6470,7 @@ namespace Idmr.Yogeme
 			// 
 			// menuHelp
 			// 
-			this.menuHelp.Index = 3;
+			this.menuHelp.Index = 4;
 			this.menuHelp.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
             this.menuHelpInfo,
             this.menuAbout,
@@ -6482,47 +6526,11 @@ namespace Idmr.Yogeme
 			this.dataWaypoints_Raw.AllowDelete = false;
 			this.dataWaypoints_Raw.AllowNew = false;
 			// 
-			// menuRecent
+			// menuTest
 			// 
-			this.menuRecent.Enabled = false;
-			this.menuRecent.Index = 2;
-			this.menuRecent.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-            this.menuRec1,
-            this.menuRec2,
-            this.menuRec3,
-            this.menuRec4,
-            this.menuRec5});
-			this.menuRecent.Text = "Open &Recent...";
-			// 
-			// menuRec1
-			// 
-			this.menuRec1.Index = 0;
-			this.menuRec1.Text = "1.";
-			this.menuRec1.Visible = false;
-			// 
-			// menuRec2
-			// 
-			this.menuRec2.Index = 1;
-			this.menuRec2.Text = "2.";
-			this.menuRec2.Visible = false;
-			// 
-			// menuRec3
-			// 
-			this.menuRec3.Index = 2;
-			this.menuRec3.Text = "3.";
-			this.menuRec3.Visible = false;
-			// 
-			// menuRec4
-			// 
-			this.menuRec4.Index = 3;
-			this.menuRec4.Text = "4.";
-			this.menuRec4.Visible = false;
-			// 
-			// menuRec5
-			// 
-			this.menuRec5.Index = 4;
-			this.menuRec5.Text = "5.";
-			this.menuRec5.Visible = false;
+			this.menuTest.Index = 3;
+			this.menuTest.Text = "Te&st";
+			this.menuTest.Click += new System.EventHandler(this.menuTest_Click);
 			// 
 			// XvtForm
 			// 
@@ -7231,5 +7239,6 @@ namespace Idmr.Yogeme
 		private MenuItem menuRec3;
 		private MenuItem menuRec4;
 		private MenuItem menuRec5;
+		private MenuItem menuTest;
 	}
 }
