@@ -3,10 +3,12 @@
  * Copyright (C) 2007-2012 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the GPL v3.0 or later
  * 
- * VERSION: 1.2.1
+ * VERSION: 1.2.2
  */
 
 /* CHANGELOG
+ * v1.2.2, 121022
+ * [FIX] Mission files opened from command line or "Open with" will no longer show StartForm
  * v1.2, 121006
  * - Settings initialized here, passed on
  * [NEW] RecentMission functionality
@@ -15,6 +17,7 @@
  */
 
 using System;
+using System.IO;
 using System.Windows.Forms;
 
 namespace Idmr.Yogeme
@@ -113,7 +116,39 @@ namespace Idmr.Yogeme
 				else if (Args[0].ToUpper() == "/XVT") new XvtForm(config, false).Show();
 				else if (Args[0].ToUpper() == "/BOP") new XvtForm(config, true).Show();
 				else if (Args[0].ToUpper() == "/XWA") new XwaForm(config).Show();
-				else new StartForm(config, Args[0]).Show();
+				else
+				{
+					try
+					{
+						FileStream fsPlat = File.OpenRead(Args[0]);
+						short t = new BinaryReader(fsPlat).ReadInt16();
+						fsPlat.Close();
+						System.Diagnostics.Debug.WriteLine("about to fire");
+						switch (t)
+						{
+							case 12:
+								new XvtForm(config, Args[0]).Show();
+								break;
+							case 14:
+								new XvtForm(config, Args[0]).Show();
+								break;
+							case 18:
+								new XwaForm(config, Args[0]).Show();
+								break;
+							case -1:
+								new TieForm(config, Args[0]).Show();
+								break;
+							default:
+								throw new Exception("File is either invalid or corrupted.\nPlease ensure the correct file was selected.");
+						}
+						System.Diagnostics.Debug.WriteLine("fired");
+					}
+					catch (Exception e)
+					{
+						MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+						Application.Run(new StartForm(config));
+					}
+				}
 			}
 			Application.Run();
 		}

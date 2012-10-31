@@ -3,10 +3,12 @@
  * Copyright (C) 2007-2012 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the GPL v3.0 or later
  * 
- * VERSION: 1.2.1
+ * VERSION: 1.2.2
  */
 
 /* CHANGELOG
+ * v1.2.2, 121022
+ * [DEL] ctr(Settings, string)
  * v1.2, 121006
  * - Settings passed in from Program
  * v1.1.1, 120814
@@ -26,6 +28,7 @@ namespace Idmr.Yogeme
 	public partial class StartForm : Form
 	{
 		Settings _config;
+		bool _exit = true;
 
 		public StartForm(Settings settings)
 		{
@@ -42,45 +45,6 @@ namespace Idmr.Yogeme
 			optXvT.Checked = (_config.LastPlatform == Settings.Platform.XvT);
 			chkBoP.Checked = (_config.LastPlatform == Settings.Platform.BoP);
 			optXWA.Checked = (_config.LastPlatform == Settings.Platform.XWA);
-		}
-
-		/// <summary>From the command line or if Settings.Startup == LastMission</summary>
-		/// <param name="missionPath">Path to the mission file</param>
-		public StartForm(Settings settings, string missionPath)
-		{
-			_config = settings;
-			InitializeComponent();
-
-			Hide();
-			try
-			{
-				FileStream fsPlat = File.OpenRead(missionPath);
-				short t = new BinaryReader(fsPlat).ReadInt16();
-				fsPlat.Close();
-				switch (t)
-				{
-					case 12:
-						new XvtForm(_config, missionPath).Show();
-						break;
-					case 14:
-						new XvtForm(_config, missionPath).Show();
-						break;
-					case 18:
-						new XwaForm(_config, missionPath).Show();
-						break;
-					case -1:
-						new TieForm(_config, missionPath).Show();
-						break;
-					default:
-						throw new Exception("File is either invalid or corrupted.\nPlease ensure the correct file was selected.");
-				}
-			}
-			catch (Exception e)
-			{
-				Show();
-				MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				return;
-			}
 		}
 
 		void chkBoP_CheckedChanged(object sender, EventArgs e) { if (chkBoP.Checked) optXvT.Checked = true; }
@@ -112,12 +76,15 @@ namespace Idmr.Yogeme
 
 		void frmStart_Closing(object sender, System.ComponentModel.CancelEventArgs e)
 		{
-			if (_config.ConfirmExit)
+			if (_exit)
 			{
-				DialogResult res = MessageBox.Show("Do you really want to exit?", "Confirm Exit", MessageBoxButtons.YesNo);
-				if (res == DialogResult.No) { e.Cancel = true; return; }
+				if (_config.ConfirmExit)
+				{
+					DialogResult res = MessageBox.Show("Do you really want to exit?", "Confirm Exit", MessageBoxButtons.YesNo);
+					if (res == DialogResult.No) { e.Cancel = true; return; }
+				}
+				Application.Exit();
 			}
-			Application.Exit();
 		}
 	}
 }

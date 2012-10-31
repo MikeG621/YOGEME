@@ -2,8 +2,8 @@
 ======================================
 
 Author: Michael Gaisser (mjgaisser@gmail.com)
-Version: 1.2.1
-Date: 2012.10.07
+Version: 1.2.2
+Date: 2012.10.22
 
 Thank you for downloading YOGEME, the all-in-one mission editor for the X-Wing
 series, TIE95 through X-wing Alliance.  This program allows easy mission
@@ -14,6 +14,9 @@ original mainstream editors were created.
 ==========
 Version History
 
+v1.2.2 - 22 Oct 2012
+ - Opening a mission file from the command line or "Open With..." no longer shows the Start dialog
+ 
 v1.2.1 - 07 Oct 2012
  - Fixed a crash that occurs during a first run, had to do with initializing the Settings properly
  

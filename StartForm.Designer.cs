@@ -30,14 +30,14 @@ namespace Idmr.Yogeme
 			this.grpPlatform.SuspendLayout();
 			this.SuspendLayout();
 			// 
-			// gpPlatform
+			// grpPlatform
 			// 
 			this.grpPlatform.Controls.Add(this.chkBoP);
 			this.grpPlatform.Controls.Add(this.optTIE);
 			this.grpPlatform.Controls.Add(this.optXvT);
 			this.grpPlatform.Controls.Add(this.optXWA);
 			this.grpPlatform.Location = new System.Drawing.Point(24, 48);
-			this.grpPlatform.Name = "gpPlatform";
+			this.grpPlatform.Name = "grpPlatform";
 			this.grpPlatform.Size = new System.Drawing.Size(200, 96);
 			this.grpPlatform.TabIndex = 0;
 			this.grpPlatform.TabStop = false;
@@ -108,7 +108,7 @@ namespace Idmr.Yogeme
 			this.cmdCancel.Text = "&Cancel";
 			this.cmdCancel.Click += new System.EventHandler(this.cmdCancel_Click);
 			// 
-			// frmStart
+			// StartForm
 			// 
 			this.AcceptButton = this.cmdOK;
 			this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
@@ -122,7 +122,7 @@ namespace Idmr.Yogeme
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
-			this.Name = "frmStart";
+			this.Name = "StartForm";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "Ye Olde Galactic Empire Mission Editor";
 			this.Closing += new System.ComponentModel.CancelEventHandler(this.frmStart_Closing);
