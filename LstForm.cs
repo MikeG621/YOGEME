@@ -1,12 +1,15 @@
 ﻿/*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, TIE through XWA
- * Copyright (C) 2007-2012 Michael Gaisser (mjgaisser@gmail.com)
- * Licensed under the GPL v3.0 or later
+ * Copyright (C) 2007-2014 Michael Gaisser (mjgaisser@gmail.com)
+ * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.2.2
+ * VERSION: 1.2.3
  */
 
 /* CHANGELOG
+ * v1.2.3, 141214
+ * [UPD] change to MPL
+ * [FIX] close the form if platform isn't isntalled
  * v1.1.1, 120814
  * - class renamed
  * v1.0, 110921
@@ -39,6 +42,7 @@ namespace Idmr.Yogeme
 			if (!Directory.Exists(_installPath))
 			{
 				MessageBox.Show("Error reading install path for platform, LST editor unavailable", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				this.Close();
 				return;
 			}
 			if (platform==Settings.Platform.XWA) 

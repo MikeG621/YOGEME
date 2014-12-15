@@ -1,12 +1,15 @@
 /*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, TIE through XWA
- * Copyright (C) 2007-2012 Michael Gaisser (mjgaisser@gmail.com)
- * Licensed under the GPL v3.0 or later
+ * Copyright (C) 2007-2014 Michael Gaisser (mjgaisser@gmail.com)
+ * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.2.2
+ * VERSION: 1.2.3
  */
 
 /* CHANGELOG
+ * v1.2.3, 141214
+ * [UPD] change to MPL
+ * [FIX] crash trying to use BattleForm when TIE isn't installed
  * v1.2, 121006
  * - Settings passed in and out
  * [NEW] Test menu
@@ -705,7 +708,8 @@ namespace Idmr.Yogeme
 		void menuBattle_Click(object sender, EventArgs e)
 		{
 			_fBattle = new BattleForm(_config);
-			_fBattle.Show();
+			try { _fBattle.Show(); }
+			catch (ObjectDisposedException) { _fBattle = null; }
 		}
 		void menuBriefing_Click(object sender, EventArgs e)
 		{

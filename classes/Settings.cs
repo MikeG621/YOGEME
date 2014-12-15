@@ -1,12 +1,15 @@
 ﻿/*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, TIE through XWA
- * Copyright (C) 2007-2012 Michael Gaisser (mjgaisser@gmail.com)
- * Licensed under the GPL v3.0 or later
+ * Copyright (C) 2007-2014 Michael Gaisser (mjgaisser@gmail.com)
+ * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.2.2
+ * VERSION: 1.2.3
  */
 
 /* CHANGELOG
+ * v1.2.3, 141214
+ * [UPD] change to MPL
+ * [FIX] crash in CheckPlatforms during Markus checks (registry)
  * v1.2.1, 121007
  * [FIX] Crash that occured during first run.
  * v1.2, 121006
@@ -239,6 +242,7 @@ namespace Idmr.Yogeme
 			{
 				// 64-bit detection of platforms using the MSI installers from Markus Egger (http://www.markusegger.at/Software/Games.aspx)
 				keyplat = Registry.LocalMachine.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Installer\\UserData\\S-1-5-18\\Products");
+				if (keyplat == null) return;
 				string[] subs = keyplat.GetSubKeyNames();
 				foreach (string k in subs)
 				{

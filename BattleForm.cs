@@ -1,12 +1,15 @@
 /*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, TIE through XWA
- * Copyright (C) 2007-2012 Michael Gaisser (mjgaisser@gmail.com)
- * Licensed under the GPL v3.0 or later
+ * Copyright (C) 2007-2014 Michael Gaisser (mjgaisser@gmail.com)
+ * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.2.2
+ * VERSION: 1.2.3
  */
 
 /* CHANGELOG
+ * v1.2.3, 141214
+ * [UPD] change to MPL
+ * [FIX] ctor continued running if TIE wasn't installed
  * v1.2, 121006
  * - Settings passed in
  * [FIX] Bug in Lfd image processing that corrupted the system image when saving
@@ -50,6 +53,7 @@ namespace Idmr.Yogeme
 			{
 				MessageBox.Show("TIE95 installation not found, Battle function not available", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				this.Close();
+				return;
 			}
 			else
 			{

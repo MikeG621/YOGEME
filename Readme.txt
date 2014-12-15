@@ -2,8 +2,8 @@
 ======================================
 
 Author: Michael Gaisser (mjgaisser@gmail.com)
-Version: 1.2.2
-Date: 2012.10.22
+Version: 1.2.4
+Date: 2014.12.14
 
 Thank you for downloading YOGEME, the all-in-one mission editor for the X-Wing
 series, TIE95 through X-wing Alliance.  This program allows easy mission
@@ -14,8 +14,17 @@ original mainstream editors were created.
 ==========
 Version History
 
+v1.2.3 - 14 Dec 2014
+ - Updated install.log so the uninstaller will remove the test pilot files
+ - Changed license to MPL
+ - (Settings) Fixed crash looking for installed platforms in Win 8
+ - (Battle) Fixed crash when TIE is not installed
+ - (LST) Fixed blank windows/crashes when XvT/XWA is not installed
+ - All included .dlls have been updated
+ 
 v1.2.2 - 22 Oct 2012
  - Opening a mission file from the command line or "Open With..." no longer shows the Start dialog
+ - Packaged the pilot files so the Test function can work
  
 v1.2.1 - 07 Oct 2012
  - Fixed a crash that occurs during a first run, had to do with initializing the Settings properly
@@ -85,9 +94,10 @@ others who did the initial research into the mission file formats.
 Copyright Information
 
 Copyright © 2007- Michael Gaisser
-Portions of this program and related files are licensed under the GNU Public
-License or GNU Free Documentation License.  See GPL.txt or FDL.txt as
-appropriate.
+This program and related files are licensed under the Mozilla Public License.
+See MPL.txt for the full text. If for some reason MPL.txt was not distributed
+with this program, you can obtain the full text of the license at
+http://mozilla.org/MPL/2.0/.
 
 The Galactic Empire: Empire Reborn is Copyright © 2004- Tiberius Fel
 
