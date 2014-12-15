@@ -38,7 +38,7 @@ namespace Idmr.Yogeme
 	public class Settings
 	{
 		#region defaults
-		string _verifyLocation = System.Windows.Forms.Application.StartupPath + "\\MissionVerify.exe";
+		string _verifyLocation = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location), "MissionVerify.exe");
 		string _lastMission = "";
 		string _tiePath = "";
 		string _xvtPath = "";
