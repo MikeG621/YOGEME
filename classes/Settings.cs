@@ -201,6 +201,12 @@ namespace Idmr.Yogeme
 			if (!TieInstalled)
 			{
 				keyplat = Registry.LocalMachine.OpenSubKey("SOFTWARE\\LucasArts Entertainment Company LLC\\TIE95\\1.0");
+				
+				if (keyplat == null)
+				{
+					keyplat = Registry.LocalMachine.OpenSubKey("SOFTWARE\\Wow6432Node\\LucasArts Entertainment Company LLC\\TIE95\\1.0");
+				}
+
 				if (keyplat != null)
 				{
 					TieInstalled = true;
@@ -211,6 +217,12 @@ namespace Idmr.Yogeme
 			if (!XvtInstalled)
 			{
 				keyplat = Registry.LocalMachine.OpenSubKey("SOFTWARE\\LucasArts Entertainment Company\\X-Wing vs. TIE Fighter\\1.0");
+				
+				if (keyplat == null)
+				{
+					keyplat = Registry.LocalMachine.OpenSubKey("SOFTWARE\\Wow6432Node\\LucasArts Entertainment Company\\X-Wing vs. TIE Fighter\\1.0");
+				}
+
 				if (keyplat != null)
 				{
 					XvtInstalled = true;
@@ -221,6 +233,12 @@ namespace Idmr.Yogeme
 			if (!BopInstalled)
 			{
 				keyplat = Registry.LocalMachine.OpenSubKey("SOFTWARE\\LucasArts Entertainment Company\\X-Wing vs. TIE Fighter\\2.0");
+				
+				if (keyplat == null)
+				{
+					keyplat = Registry.LocalMachine.OpenSubKey("SOFTWARE\\Wow6432Node\\LucasArts Entertainment Company\\X-Wing vs. TIE Fighter\\2.0");
+				}
+
 				if (keyplat != null)
 				{
 					BopInstalled = true;
@@ -231,6 +249,12 @@ namespace Idmr.Yogeme
 			if (!XwaInstalled)
 			{
 				keyplat = Registry.LocalMachine.OpenSubKey("SOFTWARE\\LucasArts Entertainment Company LLC\\X-Wing Alliance\\v1.0");
+				
+				if (keyplat == null)
+				{
+					keyplat = Registry.LocalMachine.OpenSubKey("SOFTWARE\\Wow6432Node\\LucasArts Entertainment Company LLC\\X-Wing Alliance\\v1.0");
+				}
+
 				if (keyplat != null)
 				{
 					XwaInstalled = true;
@@ -248,6 +272,12 @@ namespace Idmr.Yogeme
 				{
 					string s = keyplat.Name + "\\" + k + "\\InstallProperties";
 					RegistryKey sub = Registry.LocalMachine.OpenSubKey(s.Substring(19));
+
+					if (sub == null)
+					{
+						continue;
+					}
+
 					string comm = (string)sub.GetValue("DisplayName");
 					if (comm == "Star Wars: X. C. S. - TIE Fighter 95" && !TieInstalled)
 					{
