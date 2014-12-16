@@ -3,10 +3,12 @@
  * Copyright (C) 2007-2014 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.2.3
+ * VERSION: 1.2.4
  */
 
 /* CHANGELOG
+ * v1.2.4, 141215
+ * [FIX] x64 registry values in CheckPlatforms and null check for sub (via JeremyAnsel)
  * v1.2.3, 141214
  * [UPD] change to MPL
  * [FIX] crash in CheckPlatforms during Markus checks (registry)
