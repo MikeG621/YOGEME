@@ -3,10 +3,12 @@
  * Copyright (C) 2007-2014 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.2.3
+ * VERSION: 1.2.4
  */
 
 /* CHANGELOG
+ * v1.2.4, 141215
+ * [FIX] x64 registry values in CheckPlatforms and null check for sub (via JeremyAnsel)
  * v1.2.3, 141214
  * [UPD] change to MPL
  * [FIX] crash in CheckPlatforms during Markus checks (registry)
@@ -38,7 +40,7 @@ namespace Idmr.Yogeme
 	public class Settings
 	{
 		#region defaults
-		string _verifyLocation = System.Windows.Forms.Application.StartupPath + "\\MissionVerify.exe";
+		string _verifyLocation = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location), "MissionVerify.exe");
 		string _lastMission = "";
 		string _tiePath = "";
 		string _xvtPath = "";
@@ -201,6 +203,12 @@ namespace Idmr.Yogeme
 			if (!TieInstalled)
 			{
 				keyplat = Registry.LocalMachine.OpenSubKey("SOFTWARE\\LucasArts Entertainment Company LLC\\TIE95\\1.0");
+				
+				if (keyplat == null)
+				{
+					keyplat = Registry.LocalMachine.OpenSubKey("SOFTWARE\\Wow6432Node\\LucasArts Entertainment Company LLC\\TIE95\\1.0");
+				}
+
 				if (keyplat != null)
 				{
 					TieInstalled = true;
@@ -211,6 +219,12 @@ namespace Idmr.Yogeme
 			if (!XvtInstalled)
 			{
 				keyplat = Registry.LocalMachine.OpenSubKey("SOFTWARE\\LucasArts Entertainment Company\\X-Wing vs. TIE Fighter\\1.0");
+				
+				if (keyplat == null)
+				{
+					keyplat = Registry.LocalMachine.OpenSubKey("SOFTWARE\\Wow6432Node\\LucasArts Entertainment Company\\X-Wing vs. TIE Fighter\\1.0");
+				}
+
 				if (keyplat != null)
 				{
 					XvtInstalled = true;
@@ -221,6 +235,12 @@ namespace Idmr.Yogeme
 			if (!BopInstalled)
 			{
 				keyplat = Registry.LocalMachine.OpenSubKey("SOFTWARE\\LucasArts Entertainment Company\\X-Wing vs. TIE Fighter\\2.0");
+				
+				if (keyplat == null)
+				{
+					keyplat = Registry.LocalMachine.OpenSubKey("SOFTWARE\\Wow6432Node\\LucasArts Entertainment Company\\X-Wing vs. TIE Fighter\\2.0");
+				}
+
 				if (keyplat != null)
 				{
 					BopInstalled = true;
@@ -231,6 +251,12 @@ namespace Idmr.Yogeme
 			if (!XwaInstalled)
 			{
 				keyplat = Registry.LocalMachine.OpenSubKey("SOFTWARE\\LucasArts Entertainment Company LLC\\X-Wing Alliance\\v1.0");
+				
+				if (keyplat == null)
+				{
+					keyplat = Registry.LocalMachine.OpenSubKey("SOFTWARE\\Wow6432Node\\LucasArts Entertainment Company LLC\\X-Wing Alliance\\v1.0");
+				}
+
 				if (keyplat != null)
 				{
 					XwaInstalled = true;
@@ -248,6 +274,12 @@ namespace Idmr.Yogeme
 				{
 					string s = keyplat.Name + "\\" + k + "\\InstallProperties";
 					RegistryKey sub = Registry.LocalMachine.OpenSubKey(s.Substring(19));
+
+					if (sub == null)
+					{
+						continue;
+					}
+
 					string comm = (string)sub.GetValue("DisplayName");
 					if (comm == "Star Wars: X. C. S. - TIE Fighter 95" && !TieInstalled)
 					{
