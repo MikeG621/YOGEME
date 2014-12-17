@@ -2082,13 +2082,13 @@ namespace Idmr.Yogeme
 		void optOT1T2OR_CheckedChanged(object sender, EventArgs e)
 		{
 			if (_loading) return;
-			_mission.FlightGroups[_activeFG].Orders[_activeOrder].T1AndOrT2 = (bool)Common.Update(this, _mission.FlightGroups[_activeFG].Orders[_activeOrder].T1AndOrT2, Convert.ToByte(optOT1T2OR.Checked));
+			_mission.FlightGroups[_activeFG].Orders[_activeOrder].T1AndOrT2 = Common.Update(this, _mission.FlightGroups[_activeFG].Orders[_activeOrder].T1AndOrT2, optOT1T2OR.Checked);
 			orderLabelRefresh();
 		}
 		void optOT3T4OR_CheckedChanged(object sender, EventArgs e)
 		{
 			if (_loading) return;
-			_mission.FlightGroups[_activeFG].Orders[_activeOrder].T3AndOrT4 = (bool)Common.Update(this, _mission.FlightGroups[_activeFG].Orders[_activeOrder].T3AndOrT4, Convert.ToByte(optOT3T4OR.Checked));
+			_mission.FlightGroups[_activeFG].Orders[_activeOrder].T3AndOrT4 = Common.Update(this, _mission.FlightGroups[_activeFG].Orders[_activeOrder].T3AndOrT4, optOT3T4OR.Checked);
 			orderLabelRefresh();
 		}
 
@@ -2392,7 +2392,7 @@ namespace Idmr.Yogeme
 		void cboOptCat_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (!_loading)
-				_mission.FlightGroups[_activeFG].OptCraftCategory = (FlightGroup.OptionalCraftCategory)Common.Update(this, _mission.FlightGroups[_activeFG].OptCraftCategory, cboOptCat.SelectedIndex);
+				_mission.FlightGroups[_activeFG].OptCraftCategory = Common.Update(this, _mission.FlightGroups[_activeFG].OptCraftCategory, (FlightGroup.OptionalCraftCategory)cboOptCat.SelectedIndex);
 			enableOptCat((cboOptCat.SelectedIndex == 4));
 		}
 		void cboOptCraft_Leave(object sender, EventArgs e)
