@@ -68,20 +68,12 @@ namespace Idmr.Yogeme
 		public static void Title(Form form, bool loading) { if (form.Text.IndexOf("*") == -1 && !loading) form.Text += "*"; }
 
 		/// <summary>Adds an asterik to the window title if change detected</summary>
-<<<<<<< HEAD
 		/// <typeparam name="T">Type of value</typeparam>
-=======
-        /// <typeparam name="T">Type of value</typeparam>
->>>>>>> b4bfdccab83f29867f9dac87dbc675a7de597c47
 		/// <param name="form"></param>
 		/// <param name="oldValue">Original value to compare against</param>
 		/// <param name="newValue">New value from the UI</param>
 		/// <returns>newValue</returns>
-<<<<<<< HEAD
-		public static T Update<T>(Form form, T oldValue, T newValue)
-=======
         public static T Update<T>(Form form, T oldValue, T newValue)
->>>>>>> b4bfdccab83f29867f9dac87dbc675a7de597c47
 		{
 			if (form.Text.IndexOf("*") == -1 && oldValue.ToString() != newValue.ToString()) form.Text += "*";
 			return newValue;
