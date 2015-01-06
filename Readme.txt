@@ -16,6 +16,7 @@ Version History
 
 v1.2.4 - 15 Dec 2015
  - (Settings) Fixed another crash point for x64 installs (JeremyAnsel)
+ 
 v1.2.3 - 14 Dec 2014
  - Updated install.log so the uninstaller will remove the test pilot files
  - Changed license to MPL

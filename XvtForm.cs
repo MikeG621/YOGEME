@@ -1,12 +1,13 @@
 /*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, TIE through XWA
- * Copyright (C) 2007-2014 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2015 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.2.3
+ * VERSION: 1.2.3+
  */
 
 /* CHANGELOG
+ * [FIX] some type corrections near Update calls [JeremyAnsel]
  * v1.2.3, 141214
  * [UPD] change to MPL
  * [FIX] blank form when trying to use LstForm when TIE isn't installed
@@ -2082,13 +2083,13 @@ namespace Idmr.Yogeme
 		void optOT1T2OR_CheckedChanged(object sender, EventArgs e)
 		{
 			if (_loading) return;
-			_mission.FlightGroups[_activeFG].Orders[_activeOrder].T1AndOrT2 = (bool)Common.Update(this, _mission.FlightGroups[_activeFG].Orders[_activeOrder].T1AndOrT2, Convert.ToByte(optOT1T2OR.Checked));
+			_mission.FlightGroups[_activeFG].Orders[_activeOrder].T1AndOrT2 = Common.Update(this, _mission.FlightGroups[_activeFG].Orders[_activeOrder].T1AndOrT2, optOT1T2OR.Checked);
 			orderLabelRefresh();
 		}
 		void optOT3T4OR_CheckedChanged(object sender, EventArgs e)
 		{
 			if (_loading) return;
-			_mission.FlightGroups[_activeFG].Orders[_activeOrder].T3AndOrT4 = (bool)Common.Update(this, _mission.FlightGroups[_activeFG].Orders[_activeOrder].T3AndOrT4, Convert.ToByte(optOT3T4OR.Checked));
+			_mission.FlightGroups[_activeFG].Orders[_activeOrder].T3AndOrT4 = Common.Update(this, _mission.FlightGroups[_activeFG].Orders[_activeOrder].T3AndOrT4, optOT3T4OR.Checked);
 			orderLabelRefresh();
 		}
 
@@ -2392,7 +2393,7 @@ namespace Idmr.Yogeme
 		void cboOptCat_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (!_loading)
-				_mission.FlightGroups[_activeFG].OptCraftCategory = (FlightGroup.OptionalCraftCategory)Common.Update(this, _mission.FlightGroups[_activeFG].OptCraftCategory, cboOptCat.SelectedIndex);
+				_mission.FlightGroups[_activeFG].OptCraftCategory = Common.Update(this, _mission.FlightGroups[_activeFG].OptCraftCategory, (FlightGroup.OptionalCraftCategory)cboOptCat.SelectedIndex);
 			enableOptCat((cboOptCat.SelectedIndex == 4));
 		}
 		void cboOptCraft_Leave(object sender, EventArgs e)
