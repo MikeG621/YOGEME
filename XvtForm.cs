@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2015 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.2.3+
+ * VERSION: 1.2.5
  */
 
 /* CHANGELOG
+ * v1.2.5, 150110
  * [FIX] some type corrections near Update calls [JeremyAnsel]
  * [UPD] modified Common.Update calls for generics
  * v1.2.3, 141214
