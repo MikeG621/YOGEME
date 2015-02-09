@@ -3,10 +3,13 @@
  * Copyright (C) 2007-2015 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.2.5
+ * VERSION: 1.2.6
  */
 
 /* CHANGELOG
+ * v1.2.6, 150209
+ * [FIX #6] Exit/Save confirmation was shown twice
+ * [FIX] Initialized cboMessPara so it wouldn't crash on initial message
  * v1.2.5, 150110
  * [UPD] modified Common.Update calls for generics
  * v1.2.3, 141214
@@ -595,6 +598,7 @@ namespace Idmr.Yogeme
 			cboMessAmount.Items.AddRange(Strings.Amount);
 			cboMessTrig.Items.AddRange(Strings.Trigger);
 			cboMessType.Items.AddRange(Strings.VariableType);
+			parameterRefresh(cboMessPara);
 			chkSendTo[0] = chkMess1;
 			chkSendTo[1] = chkMess2;
 			chkSendTo[2] = chkMess3;
@@ -805,6 +809,7 @@ namespace Idmr.Yogeme
 		}
 		void frmXWA_Closing(object sender, FormClosingEventArgs e)
 		{
+			if (e.CloseReason == CloseReason.ApplicationExitCall) return;
 			promptSave();
 			if (_config.ConfirmExit && _applicationExit)
 			{
@@ -2777,6 +2782,7 @@ namespace Idmr.Yogeme
 			for (int i=0;i<6;i++) if (i!=_activeMessageTrigger) lblMessTrig[i].ForeColor = SystemColors.ControlText;
 			bool btemp = _loading;
 			_loading = true;
+			//parameterRefresh(cboMessPara);
 			cboMessTrig.SelectedIndex = _mission.Messages[_activeMessage].Triggers[_activeMessageTrigger].Condition;
 			cboMessType.SelectedIndex = -1;
 			cboMessType.SelectedIndex = _mission.Messages[_activeMessage].Triggers[_activeMessageTrigger].VariableType;

@@ -2,8 +2,8 @@
 ======================================
 
 Author: Michael Gaisser (mjgaisser@gmail.com)
-Version: 1.2.5
-Date: 2015.01.10
+Version: 1.2.6
+Date: 2015.02.09
 
 Thank you for downloading YOGEME, the all-in-one mission editor for the X-Wing
 series, TIE95 through X-wing Alliance.  This program allows easy mission
@@ -14,6 +14,10 @@ original mainstream editors were created.
 ==========
 Version History
 
+v1.2.6 - 09 Feb 2015
+ - (XWA) Fixed a bug where the Save/Exit dialogs would prompt twice. [Issue #6]
+ - Rebuilt with latest Idmr.Platform.dll [Issues #5 and #8]
+ 
 v1.2.5 - 10 Jan 2015
  - (All) Common.Update changed to generic, appropriate changes made (JeremyAnsel)
 

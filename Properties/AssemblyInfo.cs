@@ -3,7 +3,7 @@
  * Copyright (C) 2007-2015 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.2.5
+ * VERSION: 1.2.6
  */
 
 using System.Reflection;
@@ -19,7 +19,7 @@ using System.Runtime.CompilerServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Imperial Department of Military Research")]
 [assembly: AssemblyProduct("YOGEME")]
-[assembly: AssemblyCopyright("Copyright © Michael Gaisser 2007-2012")]
+[assembly: AssemblyCopyright("Copyright © Michael Gaisser 2007-2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]		
 
@@ -34,7 +34,7 @@ using System.Runtime.CompilerServices;
 // You can specify all the values or you can default the Revision and Build Numbers 
 // by using the '*' as shown below:
 
-[assembly: AssemblyVersion("1.2.5.*")]
+[assembly: AssemblyVersion("1.2.6.*")]
 
 //
 // In order to sign your assembly you must specify a key to use. Refer to the 
