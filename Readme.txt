@@ -19,10 +19,10 @@ v1.2.6 - 09 Feb 2015
  - Rebuilt with latest Idmr.Platform.dll [Issues #5 and #8]
  
 v1.2.5 - 10 Jan 2015
- - (All) Common.Update changed to generic, appropriate changes made (JeremyAnsel)
+ - (All) Common.Update changed to generic, appropriate changes made (JeremyAnsel) [Issue #3]
 
 v1.2.4 - 15 Dec 2014
- - (Settings) Fixed another crash point for x64 installs (JeremyAnsel)
+ - (Settings) Fixed another crash point for x64 installs (JeremyAnsel) [Issue #1]
  
 v1.2.3 - 14 Dec 2014
  - Updated install.log so the uninstaller will remove the test pilot files

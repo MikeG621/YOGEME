@@ -3,12 +3,13 @@
  * Copyright (C) 2007-2015 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.2.5
+ * VERSION: 1.2.5+
  */
 
 /* CHANGELOG
+ * [FIX #7] Added quotes to Verify arguments
  * v1.2.5, 150110
- * [UPD] Update changed to generic [JeremyAnsel]
+ * [UPD #3] Update changed to generic [JeremyAnsel]
  * v1.2.3, 141214
  * [UPD] change to MPL
  * v1.0, 110921
@@ -42,7 +43,7 @@ namespace Idmr.Yogeme
 			{
 				Process MV = new Process();
 				MV.StartInfo.FileName = verifyPath;
-				MV.StartInfo.Arguments = missionPath;
+				MV.StartInfo.Arguments = "\"" + missionPath + "\"";
 				MV.Start();
 			}
 			catch (Exception x) { MessageBox.Show(x.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); }

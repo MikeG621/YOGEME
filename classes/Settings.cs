@@ -8,7 +8,7 @@
 
 /* CHANGELOG
  * v1.2.4, 141215
- * [FIX] x64 registry values in CheckPlatforms and null check for sub (via JeremyAnsel)
+ * [FIX #1] x64 registry values in CheckPlatforms and null check for sub (via JeremyAnsel)
  * v1.2.3, 141214
  * [UPD] change to MPL
  * [FIX] crash in CheckPlatforms during Markus checks (registry)

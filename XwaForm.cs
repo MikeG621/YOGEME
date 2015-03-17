@@ -11,7 +11,7 @@
  * [FIX #6] Exit/Save confirmation was shown twice
  * [FIX] Initialized cboMessPara so it wouldn't crash on initial message
  * v1.2.5, 150110
- * [UPD] modified Common.Update calls for generics
+ * [UPD #3] modified Common.Update calls for generics
  * v1.2.3, 141214
  * [UPD] change to MPL
  * [FIX] blank form when trying to use LstForm when TIE isn't installed
