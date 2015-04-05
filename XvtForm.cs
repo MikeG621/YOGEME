@@ -3,10 +3,16 @@
  * Copyright (C) 2007-2015 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.2.5
+ * VERSION: 1.2.7
  */
 
 /* CHANGELOG
+ * v1.2.7, 150405
+ * [FIX] Team copy/paste
+ * [FIX] FG Goal copy/paste now gets entire goal with strings and points, not just trigger
+ * [FIX] FG Goal strings were saving in the wrong order
+ * [UPD] new Globals.Goal.Trigger implementation
+ * [ADD] copy/paste mouse functions to Team listing
  * v1.2.5, 150110
  * [FIX] some type corrections near Update calls [JeremyAnsel]
  * [UPD] modified Common.Update calls for generics
@@ -697,6 +703,8 @@ namespace Idmr.Yogeme
 			for (int i=0;i<10;i++)
 			{
 				lblTeam[i].Click += new EventHandler(lblTeamArr_Click);
+				lblTeam[i].DoubleClick += new EventHandler(lblTeamArr_DoubleClick);
+				lblTeam[i].MouseUp += new MouseEventHandler(lblTeamArr_MouseUp);
 				lblTeam[i].Tag = i;
 				chkAllies[i].Leave += new EventHandler(chkAlliesArr_Leave);
 				chkAllies[i].Tag = i;
@@ -910,9 +918,7 @@ namespace Idmr.Yogeme
 			#region FG Goal
 			if (sender.ToString() == "Goal")
 			{
-				byte[] g = new byte[6];
-				for (int i=0;i<6;i++) g[i] = _mission.FlightGroups[_activeFG].Goals[_activeFGGoal][i];
-				formatter.Serialize(stream, g);
+				formatter.Serialize(stream, _mission.FlightGroups[_activeFG].Goals[_activeFGGoal]);
 				stream.Close();
 				return;
 			}
@@ -1093,9 +1099,9 @@ namespace Idmr.Yogeme
 			{
 				try
 				{
-					byte[] g = (byte[])formatter.Deserialize(stream);
-					if (g.Length != 6) throw new Exception();
-					for (int i=0;i<6;i++) _mission.FlightGroups[_activeFG].Goals[_activeFGGoal][i] = g[i];
+					FlightGroup.Goal g = (FlightGroup.Goal)formatter.Deserialize(stream);
+					if (g == null) throw new Exception();
+					_mission.FlightGroups[_activeFG].Goals[_activeFGGoal] = g;
 					lblGoalArr_Click(_activeFGGoal, new EventArgs());
 					goalLabelRefresh();
 					Common.Title(this, false);
@@ -1187,8 +1193,8 @@ namespace Idmr.Yogeme
 				case 2:
 					try
 					{
-						Mission.Trigger t = (Mission.Trigger)formatter.Deserialize(stream);
-						_mission.Globals[_activeTeam].Goals[_activeGlobalTrigger/4].Triggers[_activeGlobalTrigger%4] = t;
+						Globals.Goal.Trigger t = (Globals.Goal.Trigger)formatter.Deserialize(stream);
+						_mission.Globals[_activeTeam].Goals[_activeGlobalTrigger / 4].Triggers[_activeGlobalTrigger % 4] = t;
 						lblGlobTrigArr_Click(_activeGlobalTrigger, new EventArgs());
 						Common.Title(this, false);
 					}
@@ -1201,6 +1207,7 @@ namespace Idmr.Yogeme
 						if (t == null) throw new Exception();
 						_mission.Teams[_activeTeam] = t;
 						teamRefresh();
+						lblTeamArr_Click(_activeTeam, new EventArgs());
 						Common.Title(this, false);
 					}
 					catch { /* do nothing */ }
@@ -2137,8 +2144,9 @@ namespace Idmr.Yogeme
 			if (e.Button == MouseButtons.Right) menuCopy_Click("Goal", new EventArgs());
 		}
 
-		void chkGoalEnable_Leave(object sender, EventArgs e)
+		void chkGoalEnable_CheckedChanged(object sender, EventArgs e)
 		{
+			if (_loading) return;
 			_mission.FlightGroups[_activeFG].Goals[_activeFGGoal].Enabled = Common.Update(this, _mission.FlightGroups[_activeFG].Goals[_activeFGGoal].Enabled, chkGoalEnable.Checked);
 			goalLabelRefresh();
 		}
@@ -2163,15 +2171,15 @@ namespace Idmr.Yogeme
 
 		void txtGoalComp_Leave(object sender, EventArgs e)
 		{
-			_mission.FlightGroups[_activeFG].Goals[_activeFGGoal].IncompleteText = Common.Update(this, _mission.FlightGroups[_activeFG].Goals[_activeFGGoal].IncompleteText, txtGoalComp.Text);
+			_mission.FlightGroups[_activeFG].Goals[_activeFGGoal].CompleteText = Common.Update(this, _mission.FlightGroups[_activeFG].Goals[_activeFGGoal].CompleteText, txtGoalComp.Text);
 		}
 		void txtGoalFail_Leave(object sender, EventArgs e)
 		{
-			_mission.FlightGroups[_activeFG].Goals[_activeFGGoal].CompleteText = Common.Update(this, _mission.FlightGroups[_activeFG].Goals[_activeFGGoal].CompleteText, txtGoalFail.Text);
+			_mission.FlightGroups[_activeFG].Goals[_activeFGGoal].FailedText = Common.Update(this, _mission.FlightGroups[_activeFG].Goals[_activeFGGoal].FailedText, txtGoalFail.Text);
 		}
 		void txtGoalInc_Leave(object sender, EventArgs e)
 		{
-			_mission.FlightGroups[_activeFG].Goals[_activeFGGoal].FailedText = Common.Update(this, _mission.FlightGroups[_activeFG].Goals[_activeFGGoal].FailedText, txtGoalInc.Text);
+			_mission.FlightGroups[_activeFG].Goals[_activeFGGoal].IncompleteText = Common.Update(this, _mission.FlightGroups[_activeFG].Goals[_activeFGGoal].IncompleteText, txtGoalInc.Text);
 		}
 		#endregion
 		#region Waypoints
@@ -2722,7 +2730,7 @@ namespace Idmr.Yogeme
 			lblTeamArr_Click(_activeTeam, new EventArgs());	// link the Globals and Team tabs to share GlobTeam
 			bool btemp = _loading;
 			_loading = true;
-			for (int i=0;i<12;i++) labelRefresh(_mission.Globals[_activeTeam].Goals[i/4].Triggers[i%4], lblGlobTrig[i]);
+			for (int i = 0; i < 12; i++) labelRefresh(_mission.Globals[_activeTeam].Goals[i / 4].Triggers[i % 4].GoalTrigger, lblGlobTrig[i]);
 			for (int i=0;i<9;i++)
 			{
 				optGlobAndOr[i].Checked = _mission.Globals[_activeTeam].Goals[i/3].AndOr[i%3];	// OR
@@ -2748,16 +2756,17 @@ namespace Idmr.Yogeme
 			_loading = true;
 			int g = _activeGlobalTrigger / 4;
 			int t = _activeGlobalTrigger % 4;
-			cboGlobalTrig.SelectedIndex = _mission.Globals[_activeTeam].Goals[g].Triggers[t].Condition;
+			cboGlobalTrig.SelectedIndex = _mission.Globals[_activeTeam].Goals[g].Triggers[t].GoalTrigger.Condition;
 			cboGlobalType.SelectedIndex = -1;
-			cboGlobalType.SelectedIndex = _mission.Globals[_activeTeam].Goals[g].Triggers[t].VariableType;
-			cboGlobalAmount.SelectedIndex = _mission.Globals[_activeTeam].Goals[g].Triggers[t].Amount;
+			cboGlobalType.SelectedIndex = _mission.Globals[_activeTeam].Goals[g].Triggers[t].GoalTrigger.VariableType;
+			cboGlobalAmount.SelectedIndex = _mission.Globals[_activeTeam].Goals[g].Triggers[t].GoalTrigger.Amount;
 			numGlobalPoints.Value = _mission.Globals[_activeTeam].Goals[g].Points;
-			txtGlobalInc.Text = _mission.Globals[_activeTeam].Goals[g].GoalStrings[t, (int)Globals.GoalState.Incomplete];
-			txtGlobalComp.Text = _mission.Globals[_activeTeam].Goals[g].GoalStrings[t, (int)Globals.GoalState.Complete];
-			txtGlobalFail.Text = _mission.Globals[_activeTeam].Goals[g].GoalStrings[t, (int)Globals.GoalState.Failed];
+			txtGlobalInc.Text = _mission.Globals[_activeTeam].Goals[g].Triggers[t][Globals.GoalState.Incomplete];
+			txtGlobalComp.Text = _mission.Globals[_activeTeam].Goals[g].Triggers[t][Globals.GoalState.Complete];
+			txtGlobalFail.Text = _mission.Globals[_activeTeam].Goals[g].Triggers[t][Globals.GoalState.Failed];
 			txtGlobalFail.Visible = (g >= (int)Globals.GoalIndex.Prevent ? false : true);
 			txtGlobalInc.Visible = (g >= (int)Globals.GoalIndex.Secondary ? false : true);
+			labelRefresh(_mission.Globals[_activeTeam].Goals[g].Triggers[t].GoalTrigger, lblGlobTrig[_activeGlobalTrigger]);
 			_loading = btemp;
 		}
 		void lblGlobTrigArr_DoubleClick(object sender, EventArgs e)
@@ -2779,31 +2788,31 @@ namespace Idmr.Yogeme
 		void cboGlobalAmount_Leave(object sender, EventArgs e)
 		{
 			int g = _activeGlobalTrigger / 4, t = _activeGlobalTrigger % 4;
-			_mission.Globals[_activeTeam].Goals[g].Triggers[t].Amount = Common.Update(this, _mission.Globals[_activeTeam].Goals[g].Triggers[t].Amount, Convert.ToByte(cboGlobalAmount.SelectedIndex));
-			labelRefresh(_mission.Globals[_activeTeam].Goals[g].Triggers[t], lblGlobTrig[_activeGlobalTrigger]);
+			_mission.Globals[_activeTeam].Goals[g].Triggers[t].GoalTrigger.Amount = Common.Update(this, _mission.Globals[_activeTeam].Goals[g].Triggers[t].GoalTrigger.Amount, Convert.ToByte(cboGlobalAmount.SelectedIndex));
+			labelRefresh(_mission.Globals[_activeTeam].Goals[g].Triggers[t].GoalTrigger, lblGlobTrig[_activeGlobalTrigger]);
 		}
 		void cboGlobalTrig_Leave(object sender, EventArgs e)
 		{
 			int g = _activeGlobalTrigger / 4, t = _activeGlobalTrigger % 4;
-			_mission.Globals[_activeTeam].Goals[g].Triggers[t].Condition = Common.Update(this, _mission.Globals[_activeTeam].Goals[g].Triggers[t].Condition, Convert.ToByte(cboGlobalTrig.SelectedIndex));
-			labelRefresh(_mission.Globals[_activeTeam].Goals[g].Triggers[t], lblGlobTrig[_activeGlobalTrigger]);
+			_mission.Globals[_activeTeam].Goals[g].Triggers[t].GoalTrigger.Condition = Common.Update(this, _mission.Globals[_activeTeam].Goals[g].Triggers[t].GoalTrigger.Condition, Convert.ToByte(cboGlobalTrig.SelectedIndex));
+			labelRefresh(_mission.Globals[_activeTeam].Goals[g].Triggers[t].GoalTrigger, lblGlobTrig[_activeGlobalTrigger]);
 		}
 		void cboGlobalType_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (cboGlobalType.SelectedIndex == -1) return;
 			int g = _activeGlobalTrigger / 4, t = _activeGlobalTrigger % 4;
 			if (!_loading)
-				_mission.Globals[_activeTeam].Goals[g].Triggers[t].VariableType = Common.Update(this, _mission.Globals[_activeTeam].Goals[g].Triggers[t].VariableType, Convert.ToByte(cboGlobalType.SelectedIndex));
-			comboVarRefresh(_mission.Globals[_activeTeam].Goals[g].Triggers[t].VariableType, cboGlobalVar);
-			try { cboGlobalVar.SelectedIndex = _mission.Globals[_activeTeam].Goals[g].Triggers[t].Variable; }
-			catch { cboGlobalVar.SelectedIndex = 0; _mission.Globals[_activeTeam].Goals[g].Triggers[t].Variable = 0; }
-			if (!_loading) labelRefresh(_mission.Globals[_activeTeam].Goals[g].Triggers[t], lblGlobTrig[_activeGlobalTrigger]);
+				_mission.Globals[_activeTeam].Goals[g].Triggers[t].GoalTrigger.VariableType = Common.Update(this, _mission.Globals[_activeTeam].Goals[g].Triggers[t].GoalTrigger.VariableType, Convert.ToByte(cboGlobalType.SelectedIndex));
+			comboVarRefresh(_mission.Globals[_activeTeam].Goals[g].Triggers[t].GoalTrigger.VariableType, cboGlobalVar);
+			try { cboGlobalVar.SelectedIndex = _mission.Globals[_activeTeam].Goals[g].Triggers[t].GoalTrigger.Variable; }
+			catch { cboGlobalVar.SelectedIndex = 0; _mission.Globals[_activeTeam].Goals[g].Triggers[t].GoalTrigger.Variable = 0; }
+			if (!_loading) labelRefresh(_mission.Globals[_activeTeam].Goals[g].Triggers[t].GoalTrigger, lblGlobTrig[_activeGlobalTrigger]);
 		}
 		void cboGlobalVar_Leave(object sender, EventArgs e)
 		{
 			int g = _activeGlobalTrigger / 4, t = _activeGlobalTrigger % 4;
-			_mission.Globals[_activeTeam].Goals[g].Triggers[t].Variable = Common.Update(this, _mission.Globals[_activeTeam].Goals[g].Triggers[t].Variable, Convert.ToByte(cboGlobalVar.SelectedIndex));
-			labelRefresh(_mission.Globals[_activeTeam].Goals[g].Triggers[t], lblGlobTrig[_activeGlobalTrigger]);
+			_mission.Globals[_activeTeam].Goals[g].Triggers[t].GoalTrigger.Variable = Common.Update(this, _mission.Globals[_activeTeam].Goals[g].Triggers[t].GoalTrigger.Variable, Convert.ToByte(cboGlobalVar.SelectedIndex));
+			labelRefresh(_mission.Globals[_activeTeam].Goals[g].Triggers[t].GoalTrigger, lblGlobTrig[_activeGlobalTrigger]);
 		}
 
 		void numGlobalPoints_Leave(object sender, EventArgs e)
@@ -2815,7 +2824,7 @@ namespace Idmr.Yogeme
 		{
 			int g = _activeGlobalTrigger / 4, t = _activeGlobalTrigger % 4;
 			Globals.GoalState gs = (Globals.GoalState)((TextBox)sender).Tag;
-			_mission.Globals[_activeTeam].Goals[g].GoalStrings[t, gs] = Common.Update(this, _mission.Globals[_activeTeam].Goals[g].GoalStrings[t, gs], ((TextBox)(sender)).Text);
+			_mission.Globals[_activeTeam].Goals[g].Triggers[t][gs] = Common.Update(this, _mission.Globals[_activeTeam].Goals[g].Triggers[t][gs], ((TextBox)(sender)).Text);
 		}
 		#endregion
 		#region Teams
@@ -2865,6 +2874,7 @@ namespace Idmr.Yogeme
 			CheckBox c = (CheckBox)sender;
 			_mission.Teams[_activeTeam].AlliedWithTeam[(int)c.Tag] = Common.Update(this, _mission.Teams[_activeTeam].AlliedWithTeam[(int)c.Tag], c.Checked);
 		}
+
 		void lblTeamArr_Click(object sender, EventArgs e)
 		{
 			Label l = null;
@@ -2897,6 +2907,15 @@ namespace Idmr.Yogeme
 			}
 			_loading = btemp;
 		}
+		void lblTeamArr_DoubleClick(object sender, EventArgs e)
+		{
+			menuPaste_Click("Team", new EventArgs());
+		}
+		void lblTeamArr_MouseUp(object sender, MouseEventArgs e)
+		{
+			if (e.Button == MouseButtons.Right) menuCopy_Click("Team", new EventArgs());
+		}
+
 		void txtEoMArr_Leave(object sender, EventArgs e)
 		{
 			TextBox t = (TextBox)sender;
@@ -2968,5 +2987,7 @@ namespace Idmr.Yogeme
 			_mission.Unknown5 = Common.Update(this, _mission.Unknown5, txtMissUnk5.Text);
 		}
 		#endregion
+
+		
 	}
 }

@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2015 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.2.5+
+ * VERSION: 1.2.7
  */
 
 /* CHANGELOG
+ * v1.2.7, 150405
  * [FIX #7] Added quotes to Verify arguments
  * v1.2.5, 150110
  * [UPD #3] Update changed to generic [JeremyAnsel]

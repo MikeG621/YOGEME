@@ -2,8 +2,8 @@
 ======================================
 
 Author: Michael Gaisser (mjgaisser@gmail.com)
-Version: 1.2.6
-Date: 2015.02.09
+Version: 1.2.7
+Date: 2015.04.05
 
 Thank you for downloading YOGEME, the all-in-one mission editor for the X-Wing
 series, TIE95 through X-wing Alliance.  This program allows easy mission
@@ -13,6 +13,14 @@ original mainstream editors were created.
 
 ==========
 Version History
+
+v1.2.7 - 05 Apr 2015
+ - (XvT) Fixed Team copy/paste functions.
+ - (XvT) Added copy/paste mouse functions to Team listing.
+ - (XvT) FG Goal strings were saving in the wrong order.
+ - (XvT) FG Goal copy/paste now gets entire goal with strings and points, not just trigger.
+ - (XvT) Updated Platform Global Goal implementation.
+ - Fixed a bug where using the Verify tool with a space in the file path would show the full GUI instead of straight to results. [Issue #7]
 
 v1.2.6 - 09 Feb 2015
  - (XWA) Fixed a bug where the Save/Exit dialogs would prompt twice. [Issue #6]

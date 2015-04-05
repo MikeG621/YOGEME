@@ -576,6 +576,7 @@ namespace Idmr.Yogeme
 			this.menuBrief = new System.Windows.Forms.MenuItem();
 			this.menuLST = new System.Windows.Forms.MenuItem();
 			this.menuOptions = new System.Windows.Forms.MenuItem();
+			this.menuTest = new System.Windows.Forms.MenuItem();
 			this.menuHelp = new System.Windows.Forms.MenuItem();
 			this.menuHelpInfo = new System.Windows.Forms.MenuItem();
 			this.menuAbout = new System.Windows.Forms.MenuItem();
@@ -585,7 +586,6 @@ namespace Idmr.Yogeme
 			this.savXvT = new System.Windows.Forms.SaveFileDialog();
 			this.dataWaypoints = new System.Data.DataView();
 			this.dataWaypoints_Raw = new System.Data.DataView();
-			this.menuTest = new System.Windows.Forms.MenuItem();
 			this.tabMain.SuspendLayout();
 			this.tabFG.SuspendLayout();
 			this.tabFGMinor.SuspendLayout();
@@ -2158,7 +2158,7 @@ namespace Idmr.Yogeme
 			this.chkGoalEnable.Size = new System.Drawing.Size(72, 16);
 			this.chkGoalEnable.TabIndex = 46;
 			this.chkGoalEnable.Text = "Enabled";
-			this.chkGoalEnable.Leave += new System.EventHandler(this.chkGoalEnable_Leave);
+			this.chkGoalEnable.CheckedChanged += new System.EventHandler(this.chkGoalEnable_CheckedChanged);
 			// 
 			// numGoalPoints
 			// 
@@ -6468,6 +6468,12 @@ namespace Idmr.Yogeme
 			this.menuOptions.Text = "&Options";
 			this.menuOptions.Click += new System.EventHandler(this.menuOptions_Click);
 			// 
+			// menuTest
+			// 
+			this.menuTest.Index = 3;
+			this.menuTest.Text = "Te&st";
+			this.menuTest.Click += new System.EventHandler(this.menuTest_Click);
+			// 
 			// menuHelp
 			// 
 			this.menuHelp.Index = 4;
@@ -6525,12 +6531,6 @@ namespace Idmr.Yogeme
 			// 
 			this.dataWaypoints_Raw.AllowDelete = false;
 			this.dataWaypoints_Raw.AllowNew = false;
-			// 
-			// menuTest
-			// 
-			this.menuTest.Index = 3;
-			this.menuTest.Text = "Te&st";
-			this.menuTest.Click += new System.EventHandler(this.menuTest_Click);
 			// 
 			// XvtForm
 			// 
