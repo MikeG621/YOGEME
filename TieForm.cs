@@ -1732,7 +1732,7 @@ namespace Idmr.Yogeme
 			int i,j=0;
 			if (_loading) return;
 			_loading = true;
-			for (j=0;j<15;j++) if (_table.Rows[j].Equals(e.Row)) break;	//find the row index that you're changing
+			for (j = 0; j < 15; j++) if (_table.Rows[j].Equals(e.Row)) break;	//find the row index that you're changing
 			try
 			{
 				for (i=0;i<3;i++)
@@ -1747,17 +1747,17 @@ namespace Idmr.Yogeme
 		}
 		void tableRaw_RowChanged(object sender, DataRowChangeEventArgs e)
 		{
-			int i,j=0;
+			int i, j = 0;
 			if (_loading) return;
 			_loading = true;
-			for (j=0;j<15;j++) if (_tableRaw.Rows[j].Equals(e.Row)) break;	//find the row index that you're changing
+			for (j = 0; j < 15; j++) if (_tableRaw.Rows[j].Equals(e.Row)) break;	//find the row index that you're changing
 			try
 			{
-				for (i=0;i<3;i++) 
+				for (i = 0; i < 3; i++)
 				{
-					short raw = (short)_tableRaw.Rows[j][i];
+					short raw = Convert.ToInt16(_tableRaw.Rows[j][i]);
 					_mission.FlightGroups[_activeFG].Waypoints[j][i] = Common.Update(this, _mission.FlightGroups[_activeFG].Waypoints[j][i], raw);
-					_table.Rows[j][i] = Math.Round((double)raw / 160,2);
+					_table.Rows[j][i] = Math.Round((double)raw / 160, 2);
 				}
 			}
 			catch { for (i=0;i<3;i++) _tableRaw.Rows[j][i] = Convert.ToInt16(_mission.FlightGroups[_activeFG].Waypoints[j][i]); }
