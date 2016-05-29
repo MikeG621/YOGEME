@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2015 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.2.7
+ * VERSION: 1.2.7+
  */
 
 /* CHANGELOG
+ * [FIX] WaitForExit in Test replaced with named process check loop (Steam's fault)
  * v1.2.7, 150405
  * [FIX] Team copy/paste
  * [FIX] FG Goal copy/paste now gets entire goal with strings and points, not just trigger
@@ -1359,7 +1360,15 @@ namespace Idmr.Yogeme
 			}*/
 
 			xvt.Start();
-			xvt.WaitForExit();
+			System.Threading.Thread.Sleep(1000);
+			System.Diagnostics.Process[] runningXvts = System.Diagnostics.Process.GetProcessesByName("Z_XVT__");
+			while (runningXvts.Length > 0)
+			{
+				Application.DoEvents();
+				System.Diagnostics.Debug.WriteLine("sleeping...");
+				System.Threading.Thread.Sleep(1000);
+				runningXvts = System.Diagnostics.Process.GetProcessesByName("Z_XVT__");
+			}
 
 			/*if (isWin7)	// restart
 			{

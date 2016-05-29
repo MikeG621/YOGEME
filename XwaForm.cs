@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2015 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.2.6
+ * VERSION: 1.2.6+
  */
 
 /* CHANGELOG
+ * [FIX] WaitForExit in Test replaced with named process check loop (Steam's fault)
  * v1.2.6, 150209
  * [FIX #6] Exit/Save confirmation was shown twice
  * [FIX] Initialized cboMessPara so it wouldn't crash on initial message
@@ -1381,7 +1382,15 @@ namespace Idmr.Yogeme
 			sw.Close();
 
 			xwa.Start();
-			xwa.WaitForExit();
+			System.Threading.Thread.Sleep(1000);
+			System.Diagnostics.Process[] runningXwas = System.Diagnostics.Process.GetProcessesByName("XWINGALLIANCE");
+			while (runningXwas.Length > 0)
+			{
+				Application.DoEvents();
+				System.Diagnostics.Debug.WriteLine("sleeping...");
+				System.Threading.Thread.Sleep(1000);
+				runningXwas = System.Diagnostics.Process.GetProcessesByName("XWINGALLIANCE");
+			}
 
 			if (_config.DeleteTestPilots) File.Delete(_config.XwaPath + pilot);
 			File.Copy(_config.XwaPath + backup, _config.XwaPath + lst, true);

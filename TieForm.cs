@@ -3,10 +3,13 @@
  * Copyright (C) 2007-2015 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.2.5
+ * VERSION: 1.2.5+
  */
 
 /* CHANGELOG
+ * [FIX] Test now initially opens key RO (UAC's fault)
+ * [FIX] WaitForExit in Test replaced with named process check loop (Steam's fault)
+ * [UPD] Test explorer kill in Win7 now omits Steam version
  * v1.2.5, 150110
  * [UPD] modified Common.Update calls for generics
  * v1.2.3, 141214
@@ -1028,11 +1031,12 @@ namespace Idmr.Yogeme
 			bool isWin7 = (os.Major == 6 && os.Minor == 1);
 			System.Diagnostics.Process explorer = null;
 			int restart = 1;
-			Microsoft.Win32.RegistryKey key = Microsoft.Win32.Registry.LocalMachine.OpenSubKey("SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon", true);
+			Microsoft.Win32.RegistryKey key = Microsoft.Win32.Registry.LocalMachine.OpenSubKey("SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon", false);
 
 			// configure TIE
 			int index = 0;
 			while (File.Exists(_config.TiePath + "\\TEST" + index + ".tfr")) index++;
+			System.Diagnostics.Debug.WriteLine("pilot index: " + index);
 			string pilot = "\\TEST" + index + ".tfr";
 			string battle = "\\RESOURCE\\BATTLE1.LFD";
 			string backup = "\\RESOURCE\\BATTLE1_" + index + ".bak";
@@ -1042,15 +1046,16 @@ namespace Idmr.Yogeme
 			tie.StartInfo.UseShellExecute = false;
 			tie.StartInfo.WorkingDirectory = _config.TiePath;
 			File.Copy(_config.TiePath + battle, _config.TiePath + backup, true);
-			Idmr.LfdReader.LfdFile battleLfd = new Idmr.LfdReader.LfdFile(_config.TiePath + battle);
-			Idmr.LfdReader.Text txt = (Idmr.LfdReader.Text)battleLfd.Resources[0];
+			LfdReader.LfdFile battleLfd = new LfdReader.LfdFile(_config.TiePath + battle);
+			LfdReader.Text txt = (LfdReader.Text)battleLfd.Resources[0];
 			string[] missions = txt.Strings[3].Split('\0');
 			missions[0] = _mission.MissionFileName.Replace(".tie", "");
 			txt.Strings[3] = String.Join("\0", missions);
 			battleLfd.Write();
 
-			if (isWin7)	// explorer kill so colors work right
+			if (isWin7 && !_config.TiePath.ToUpper().Contains("STEAM"))	// explorer kill so colors work right
 			{
+				key = Microsoft.Win32.Registry.LocalMachine.OpenSubKey("SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon", true);
 				restart = (int)key.GetValue("AutoRestartShell", 1);
 				key.SetValue("AutoRestartShell", 0, Microsoft.Win32.RegistryValueKind.DWord);
 				explorer = System.Diagnostics.Process.GetProcessesByName("explorer")[0];
@@ -1059,9 +1064,17 @@ namespace Idmr.Yogeme
 			}
 
 			tie.Start();
-			tie.WaitForExit();
+			System.Threading.Thread.Sleep(1000);
+			System.Diagnostics.Process[] runningTies = System.Diagnostics.Process.GetProcessesByName("tie95");
+			while(runningTies.Length > 0)
+			{
+				Application.DoEvents();
+				System.Diagnostics.Debug.WriteLine("sleeping...");
+				System.Threading.Thread.Sleep(1000);
+				runningTies = System.Diagnostics.Process.GetProcessesByName("tie95");
+			}
 
-			if (isWin7)	// restart
+			if (isWin7 && !_config.TiePath.ToUpper().Contains("STEAM"))	// restart
 			{
 				key.SetValue("AutoRestartShell", restart, Microsoft.Win32.RegistryValueKind.DWord);
 				explorer.StartInfo.UseShellExecute = false;
@@ -1072,6 +1085,7 @@ namespace Idmr.Yogeme
 			File.Copy(_config.TiePath + backup, _config.TiePath + battle, true);
 			File.Delete(_config.TiePath + backup);
 		}
+
 		#endregion
 		#region FlightGroups
 		void deleteFG()
