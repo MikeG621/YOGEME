@@ -1,12 +1,13 @@
 /*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, TIE through XWA
- * Copyright (C) 2007-2015 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2016 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.2.6+
+ * VERSION: 1.2.8
  */
 
 /* CHANGELOG
+ * v1.2.8, 160606
  * [FIX] WaitForExit in Test replaced with named process check loop (Steam's fault)
  * v1.2.6, 150209
  * [FIX #6] Exit/Save confirmation was shown twice
