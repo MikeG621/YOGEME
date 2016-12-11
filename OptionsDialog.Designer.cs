@@ -25,6 +25,8 @@ namespace Idmr.Yogeme
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(OptionsDialog));
 			this.tabOptions = new System.Windows.Forms.TabControl();
 			this.tabOpt1 = new System.Windows.Forms.TabPage();
+			this.chkConfirmFGDelete = new System.Windows.Forms.CheckBox();
+			this.chkRememberPlatformFolder = new System.Windows.Forms.CheckBox();
 			this.label7 = new System.Windows.Forms.Label();
 			this.cmdVerify = new System.Windows.Forms.Button();
 			this.txtVerify = new System.Windows.Forms.TextBox();
@@ -129,6 +131,8 @@ namespace Idmr.Yogeme
 			// 
 			// tabOpt1
 			// 
+			this.tabOpt1.Controls.Add(this.chkConfirmFGDelete);
+			this.tabOpt1.Controls.Add(this.chkRememberPlatformFolder);
 			this.tabOpt1.Controls.Add(this.label7);
 			this.tabOpt1.Controls.Add(this.cmdVerify);
 			this.tabOpt1.Controls.Add(this.txtVerify);
@@ -146,6 +150,26 @@ namespace Idmr.Yogeme
 			this.tabOpt1.TabIndex = 0;
 			this.tabOpt1.Text = "Overall";
 			// 
+			// chkConfirmFGDelete
+			// 
+			this.chkConfirmFGDelete.Checked = true;
+			this.chkConfirmFGDelete.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.chkConfirmFGDelete.Location = new System.Drawing.Point(157, 179);
+			this.chkConfirmFGDelete.Name = "chkConfirmFGDelete";
+			this.chkConfirmFGDelete.Size = new System.Drawing.Size(224, 16);
+			this.chkConfirmFGDelete.TabIndex = 12;
+			this.chkConfirmFGDelete.Text = "Confirm deleting FG dependencies";
+			// 
+			// chkRememberPlatformFolder
+			// 
+			this.chkRememberPlatformFolder.Checked = true;
+			this.chkRememberPlatformFolder.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.chkRememberPlatformFolder.Location = new System.Drawing.Point(157, 157);
+			this.chkRememberPlatformFolder.Name = "chkRememberPlatformFolder";
+			this.chkRememberPlatformFolder.Size = new System.Drawing.Size(224, 16);
+			this.chkRememberPlatformFolder.TabIndex = 11;
+			this.chkRememberPlatformFolder.Text = "Remember folder when opening files";
+			// 
 			// label7
 			// 
 			this.label7.AutoSize = true;
@@ -160,7 +184,7 @@ namespace Idmr.Yogeme
 			this.cmdVerify.Location = new System.Drawing.Point(350, 211);
 			this.cmdVerify.Name = "cmdVerify";
 			this.cmdVerify.Size = new System.Drawing.Size(24, 24);
-			this.cmdVerify.TabIndex = 10;
+			this.cmdVerify.TabIndex = 14;
 			this.cmdVerify.Text = "...";
 			this.cmdVerify.UseVisualStyleBackColor = true;
 			this.cmdVerify.Click += new System.EventHandler(this.cmdVerify_Click);
@@ -170,7 +194,7 @@ namespace Idmr.Yogeme
 			this.txtVerify.Location = new System.Drawing.Point(16, 215);
 			this.txtVerify.Name = "txtVerify";
 			this.txtVerify.Size = new System.Drawing.Size(328, 20);
-			this.txtVerify.TabIndex = 9;
+			this.txtVerify.TabIndex = 13;
 			// 
 			// groupBox1
 			// 
@@ -216,47 +240,47 @@ namespace Idmr.Yogeme
 			this.chkRestrict.CheckState = System.Windows.Forms.CheckState.Checked;
 			this.chkRestrict.Location = new System.Drawing.Point(157, 3);
 			this.chkRestrict.Name = "chkRestrict";
-			this.chkRestrict.Size = new System.Drawing.Size(224, 24);
-			this.chkRestrict.TabIndex = 5;
+			this.chkRestrict.Size = new System.Drawing.Size(224, 16);
+			this.chkRestrict.TabIndex = 4;
 			this.chkRestrict.Text = "Only allow editing for installed platforms";
 			// 
 			// chkExit
 			// 
 			this.chkExit.Checked = true;
 			this.chkExit.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.chkExit.Location = new System.Drawing.Point(157, 32);
+			this.chkExit.Location = new System.Drawing.Point(157, 25);
 			this.chkExit.Name = "chkExit";
-			this.chkExit.Size = new System.Drawing.Size(224, 24);
-			this.chkExit.TabIndex = 6;
+			this.chkExit.Size = new System.Drawing.Size(224, 16);
+			this.chkExit.TabIndex = 5;
 			this.chkExit.Text = "Confirm exit";
 			// 
 			// chkVerifyTest
 			// 
 			this.chkVerifyTest.Checked = true;
 			this.chkVerifyTest.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.chkVerifyTest.Location = new System.Drawing.Point(157, 152);
+			this.chkVerifyTest.Location = new System.Drawing.Point(157, 113);
 			this.chkVerifyTest.Name = "chkVerifyTest";
-			this.chkVerifyTest.Size = new System.Drawing.Size(224, 24);
-			this.chkVerifyTest.TabIndex = 8;
+			this.chkVerifyTest.Size = new System.Drawing.Size(224, 16);
+			this.chkVerifyTest.TabIndex = 9;
 			this.chkVerifyTest.Text = "Verify mission before test";
 			// 
 			// chkDeletePilot
 			// 
 			this.chkDeletePilot.Checked = true;
 			this.chkDeletePilot.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.chkDeletePilot.Location = new System.Drawing.Point(157, 181);
+			this.chkDeletePilot.Location = new System.Drawing.Point(157, 135);
 			this.chkDeletePilot.Name = "chkDeletePilot";
-			this.chkDeletePilot.Size = new System.Drawing.Size(224, 24);
-			this.chkDeletePilot.TabIndex = 8;
+			this.chkDeletePilot.Size = new System.Drawing.Size(224, 16);
+			this.chkDeletePilot.TabIndex = 10;
 			this.chkDeletePilot.Text = "Delete Test pilot files";
 			// 
 			// chkTest
 			// 
 			this.chkTest.Checked = true;
 			this.chkTest.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.chkTest.Location = new System.Drawing.Point(157, 122);
+			this.chkTest.Location = new System.Drawing.Point(157, 91);
 			this.chkTest.Name = "chkTest";
-			this.chkTest.Size = new System.Drawing.Size(224, 24);
+			this.chkTest.Size = new System.Drawing.Size(224, 16);
 			this.chkTest.TabIndex = 8;
 			this.chkTest.Text = "Confirm before Testing";
 			// 
@@ -264,10 +288,10 @@ namespace Idmr.Yogeme
 			// 
 			this.chkVerify.Checked = true;
 			this.chkVerify.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.chkVerify.Location = new System.Drawing.Point(157, 92);
+			this.chkVerify.Location = new System.Drawing.Point(157, 69);
 			this.chkVerify.Name = "chkVerify";
-			this.chkVerify.Size = new System.Drawing.Size(224, 24);
-			this.chkVerify.TabIndex = 8;
+			this.chkVerify.Size = new System.Drawing.Size(224, 16);
+			this.chkVerify.TabIndex = 7;
 			this.chkVerify.Text = "Verify mission on save";
 			this.chkVerify.CheckedChanged += new System.EventHandler(this.chkVerify_CheckedChanged);
 			// 
@@ -275,10 +299,10 @@ namespace Idmr.Yogeme
 			// 
 			this.chkSave.Checked = true;
 			this.chkSave.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.chkSave.Location = new System.Drawing.Point(157, 62);
+			this.chkSave.Location = new System.Drawing.Point(157, 47);
 			this.chkSave.Name = "chkSave";
-			this.chkSave.Size = new System.Drawing.Size(224, 24);
-			this.chkSave.TabIndex = 7;
+			this.chkSave.Size = new System.Drawing.Size(224, 16);
+			this.chkSave.TabIndex = 6;
 			this.chkSave.Text = "Confirm save on closing";
 			// 
 			// tabMap
@@ -505,12 +529,12 @@ namespace Idmr.Yogeme
 			// cboTIEIFF
 			// 
 			this.cboTIEIFF.Items.AddRange(new object[] {
-            "Rebel",
-            "Imperial",
-            "IFF3-Blue",
-            "IFF4-Purple",
-            "IFF5-Red",
-            "IFF6-Purple"});
+			"Rebel",
+			"Imperial",
+			"IFF3-Blue",
+			"IFF4-Purple",
+			"IFF5-Red",
+			"IFF6-Purple"});
 			this.cboTIEIFF.Location = new System.Drawing.Point(8, 96);
 			this.cboTIEIFF.Name = "cboTIEIFF";
 			this.cboTIEIFF.Size = new System.Drawing.Size(96, 21);
@@ -694,12 +718,12 @@ namespace Idmr.Yogeme
 			// cboXvTIFF
 			// 
 			this.cboXvTIFF.Items.AddRange(new object[] {
-            "Rebel",
-            "Imperial",
-            "Blue",
-            "Yellow",
-            "Red",
-            "Purple"});
+			"Rebel",
+			"Imperial",
+			"Blue",
+			"Yellow",
+			"Red",
+			"Purple"});
 			this.cboXvTIFF.Location = new System.Drawing.Point(8, 96);
 			this.cboXvTIFF.Name = "cboXvTIFF";
 			this.cboXvTIFF.Size = new System.Drawing.Size(96, 21);
@@ -800,12 +824,12 @@ namespace Idmr.Yogeme
 			// cboXWAIFF
 			// 
 			this.cboXWAIFF.Items.AddRange(new object[] {
-            "Rebel",
-            "Imperial",
-            "IFF3-Blue",
-            "IFF4-Yellow",
-            "IFF5-Red",
-            "IFF6-Purple"});
+			"Rebel",
+			"Imperial",
+			"IFF3-Blue",
+			"IFF4-Yellow",
+			"IFF5-Red",
+			"IFF6-Purple"});
 			this.cboXWAIFF.Location = new System.Drawing.Point(8, 96);
 			this.cboXWAIFF.Name = "cboXWAIFF";
 			this.cboXWAIFF.Size = new System.Drawing.Size(96, 21);
@@ -981,5 +1005,7 @@ namespace Idmr.Yogeme
 		private CheckBox chkTest;
 		private CheckBox chkVerifyTest;
 		private Label label7;
+        private CheckBox chkRememberPlatformFolder;
+        private CheckBox chkConfirmFGDelete;
 	}
 }

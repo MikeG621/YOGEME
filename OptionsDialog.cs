@@ -1,12 +1,13 @@
 /*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, TIE through XWA
- * Copyright (C) 2007-2014 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2016 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.2.3
+ * VERSION: 1.2.3+
  */
 
 /* CHANGELOG
+ * RememberPlatformFolder and ConfirmFGDelete implementation [JB]
  * v1.2.3, 141214
  * [UPD] change to MPL
  * v1.2, 121006
@@ -102,7 +103,9 @@ namespace Idmr.Yogeme
 			chkFG.Checked = Convert.ToBoolean(_config.MapOptions & Settings.MapOpts.FGTags);
 			chkTrace.Checked = Convert.ToBoolean(_config.MapOptions & Settings.MapOpts.Traces);
 			chkDeletePilot.Checked = _config.DeleteTestPilots;
-			chkTest.Checked = _config.ConfirmTest;
+            chkRememberPlatformFolder.Checked = _config.RememberPlatformFolder; //[JB]
+            chkConfirmFGDelete.Checked = _config.ConfirmFGDelete;               //[JB]
+            chkTest.Checked = _config.ConfirmTest;
 			chkVerifyTest.Checked = _config.VerifyTest;
 			chkVerifyTest.Enabled = !_config.Verify;
 			int t = _config.Waypoints;
@@ -179,6 +182,8 @@ namespace Idmr.Yogeme
 			_config.XwaIff = (byte)cboXWAIFF.SelectedIndex;
 			_config.ConfirmTest = chkTest.Checked;
 			_config.DeleteTestPilots = chkDeletePilot.Checked;
+            _config.RememberPlatformFolder = chkRememberPlatformFolder.Checked;  //[JB]
+            _config.ConfirmFGDelete = chkConfirmFGDelete.Checked;  //[JB]
 			_config.VerifyTest = chkVerifyTest.Checked;
 			Close();
 		}

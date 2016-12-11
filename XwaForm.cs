@@ -3,10 +3,21 @@
  * Copyright (C) 2007-2016 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.2.8
+ * VERSION: 1.2.8+
  */
 
 /* CHANGELOG
+ * [UPD] added Ion Pulse [JB]
+ * [NEW] MRU capability [JB]
+ * [NEW] Delete menu item [JB]
+ * [NEW] FG Goal Summary [JB]
+ * [FIX] various crashes [JB]
+ * [FIX] typos [JB]
+ * [FIX] various trigger indexes [JB]
+ * [FIX] redid opnXWA process [JB]
+ * [FIX] Special Cargo assignment [JB]
+ * [FIX] copy/paste issues [JB]
+ * [FIX] added missing Active Sequence handlers [JB]
  * v1.2.8, 160606
  * [FIX] WaitForExit in Test replaced with named process check loop (Steam's fault)
  * v1.2.6, 150209
@@ -82,7 +93,7 @@ namespace Idmr.Yogeme
 		Label[] lblOrder = new Label[4];
 		// FG options
 		Label[] lblOptCraft = new Label[10];
-		CheckBox[] chkOpt = new CheckBox[15];
+		CheckBox[] chkOpt = new CheckBox[16];  //[JB] Added Ion Pulse
 		// Mess
 		Label[] lblMessTrig = new Label[6];
 		RadioButton[] optMessAndOr = new RadioButton[8];
@@ -200,6 +211,7 @@ namespace Idmr.Yogeme
 		}
 		void initializeMission()
 		{
+			tabMain.Focus(); //[JB] Exit focus from any form controls.  Fixes some crashes when Leave() events are processed after mission data has been cleared (notably from within the Messages tab).
 			_mission = new Mission();
 			_config.LastMission = "";
 			_activeFG = 0;
@@ -255,6 +267,7 @@ namespace Idmr.Yogeme
 		bool loadMission(string fileMission)
 		{
 			closeForms();
+			lstFG.SelectedIndex = 0;  //[JB] Prevents sporadic index out of range exceptions (such as when opening mission with fewer FGs than the current selected index, or opening missions of a different platform)
 			lstFG.Items.Clear();
 			lstMessages.Items.Clear();
 			_startingShips = 0;
@@ -308,7 +321,7 @@ namespace Idmr.Yogeme
 				lstFG.Items.Add(_mission.FlightGroups[i].ToString(true));
 				if (_mission.FlightGroups[i].ArrivesIn30Seconds) craftStart(_mission.FlightGroups[i], true);
 			}
-			UpdateFGList();
+			updateFGList();
 			if (_mission.Messages.Count == 0) EnableMessages(false);
 			else
 			{
@@ -324,6 +337,7 @@ namespace Idmr.Yogeme
 			int c = fileMission.LastIndexOf("\\") + 1;
 			this.Text = "Ye Olde Galactic Empire Mission Editor - XWA - " + fileMission.Substring(c);
 			_config.LastMission = fileMission;
+			refreshRecent(); //[JB] Setting _config.LastMission modifies the Recent list.  Need to refresh the menu to match.
 			return true;
 		}
 		void parameterRefresh(ComboBox cbo)
@@ -367,6 +381,7 @@ namespace Idmr.Yogeme
 			catch (Exception x) { MessageBox.Show(x.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); }
 			this.Text = "Ye Olde Galactic Empire Mission Editor - XWA - " + _mission.MissionFileName;
 			_config.LastMission = fileMission;
+   			refreshRecent();  //[JB] Setting _config.LastMission modifies the Recent list.  Need to refresh the menu to match.
 			//Verify the mission after it's been saved
 			if (_config.Verify) Common.RunVerify(_mission.MissionPath, _config.VerifyLocation);
 		}
@@ -374,11 +389,8 @@ namespace Idmr.Yogeme
 		{
 			_config.LastPlatform = Settings.Platform.XWA;
 			_applicationExit = true;	//becomes false if selecting "New Mission" from menu
-			if (Directory.Exists(_config.XwaPath))
-			{
-				opnXWA.InitialDirectory = _config.XwaPath + "\\MISSIONS";
-				savXWA.InitialDirectory = _config.XwaPath + "\\MISSIONS";
-			}
+			opnXWA.InitialDirectory = _config.GetWorkingPath(); //[JB] Updated for MRU access.  Defaults to installation and mission folder if not enabled.
+			savXWA.InitialDirectory = _config.GetWorkingPath();
 			_iffs = Strings.IFF;
 			#region Menu
 			menuText.Enabled = _config.XwaInstalled;
@@ -417,10 +429,10 @@ namespace Idmr.Yogeme
 			cboBeam.Items.AddRange(Strings.Beam); cboBeam.SelectedIndex = 0;
 			cboCounter.SelectedIndex = 0;
 			cboGlobCargo.Items.Add("None");
-			for (int i=0;i<16;i++) cboGlobCargo.Items.Add("Gobal Cargo " + (i+1).ToString());
+			for (int i=0;i<16;i++) cboGlobCargo.Items.Add("Global Cargo " + (i+1).ToString());  //[JB] Fixed typo "Gobal"
 			cboGlobCargo.SelectedIndex = 0;
 			cboGlobSpecCargo.Items.Add("None");
-			for (int i=0;i<16;i++) cboGlobSpecCargo.Items.Add("Gobal Cargo " + (i+1).ToString());
+			for (int i=0;i<16;i++) cboGlobSpecCargo.Items.Add("Global Cargo " + (i+1).ToString());
 			cboGlobSpecCargo.SelectedIndex = 0;
 			#endregion
 			#region Arr/Dep
@@ -560,21 +572,22 @@ namespace Idmr.Yogeme
 			cboRole1.Items.AddRange(Strings.Roles); cboRole1.SelectedIndex = 0;
 			cboRole2.Items.AddRange(Strings.Roles); cboRole2.SelectedIndex = 0;
 			chkOpt[0] = chkOptWNone;
-			chkOpt[1] = chkOptWRocket;
-			chkOpt[2] = chkOptWBomb;
+			chkOpt[1] = chkOptWBomb;
+			chkOpt[2] = chkOptWRocket;
 			chkOpt[3] = chkOptWMissile;
 			chkOpt[4] = chkOptWTorp;
 			chkOpt[5] = chkOptWAdvMissile;
 			chkOpt[6] = chkOptWAdvTorp;
 			chkOpt[7] = chkOptWMagPulse;
-			chkOpt[8] = chkOptBNone;
-			chkOpt[9] = chkOptBTractor;
-			chkOpt[10] = chkOptBJamming;
-			chkOpt[11] = chkOptBDecoy;
-			chkOpt[12] = chkOptCNone;
-			chkOpt[13] = chkOptCChaff;
-			chkOpt[14] = chkOptCFlare;
-			for (int i=0;i<15;i++)
+			chkOpt[8] = chkOptWIonPulse; //[JB] Added Ion Pulse, others moved down one index.
+			chkOpt[9] = chkOptBNone;
+			chkOpt[10] = chkOptBTractor;
+			chkOpt[11] = chkOptBJamming;
+			chkOpt[12] = chkOptBDecoy;
+			chkOpt[13] = chkOptCNone;
+			chkOpt[14] = chkOptCChaff;
+			chkOpt[15] = chkOptCFlare;
+			for (int i=0;i<16;i++)
 			{
 				chkOpt[i].CheckedChanged += new EventHandler(chkOptArr_CheckedChanged);
 				chkOpt[i].Tag = i;
@@ -799,6 +812,10 @@ namespace Idmr.Yogeme
 			}
 			#endregion
 			UpdateMissionTabs();
+		
+			//[JB] Added
+			//this.KeyPreview = true;  //Property is already set in .designer
+			this.KeyDown += new KeyEventHandler(XwaForm_KeyDown);
 		}
 
 		void frmXWA_Activated(object sender, EventArgs e)
@@ -820,6 +837,22 @@ namespace Idmr.Yogeme
 			}
 			closeForms();
 			if (_applicationExit) Application.Exit();
+		}
+		void XwaForm_KeyDown(object sender, KeyEventArgs e)
+		{
+			//Instead of assigning this in designer.cs
+			//  this.menuDelete.Shortcut = System.Windows.Forms.Shortcut.Del;
+			//We trap and process the key here, with few changes to the original code
+			//while allowing the delete key to remain function in other areas like text boxes.
+
+			if (e.KeyCode == Keys.Delete)
+			{
+				if (lstFG.Focused || lstMessages.Focused)
+				{
+					menuDelete_Click(0, new EventArgs());
+					e.Handled = true;
+				}
+			}
 		}
 
 		void opnXWA_FileOk(object sender, System.ComponentModel.CancelEventArgs e)
@@ -909,12 +942,11 @@ namespace Idmr.Yogeme
 					savXWA.ShowDialog();
 					break;
 				case 5:		//New Item
-					if (tabMain.SelectedIndex == 0) NewFG();
+					if (tabMain.SelectedIndex == 0) newFG();
 					else if (tabMain.SelectedIndex == 1) NewMess();
 					break;
 				case 6:		//Delete Item
-					if (tabMain.SelectedIndex == 0) DeleteFG();
-					else if (tabMain.SelectedIndex == 1) DeleteMess();
+					menuDelete_Click("toolbar", new EventArgs());  //[JB] Changed to call the function directly since that function now does more conditional checks.
 					break;
 				case 7:		//Copy Item
 					menuCopy_Click("toolbar", new EventArgs());
@@ -951,8 +983,22 @@ namespace Idmr.Yogeme
 		void menuBrief_Click(object sender, EventArgs e)
 		{
 			Common.Title(this, false);
+			try { _fBrief.Close(); }  //[JB] Prevent opening multiple dialogs. Same as XvT code.
+			catch { /* do nothing */ }
 			_fBrief = new BriefingForm(_mission.Briefings);
 			_fBrief.Show();
+		}
+		//[JB] Added function for menu item and modified for extra safety checks to prevent deleting when the list controls don't have focus.
+		void menuDelete_Click(object sender, EventArgs e)
+		{
+			if (tabMain.SelectedIndex == 0)
+			{
+				if((sender.ToString() == "toolbar") || (lstFG.Focused)) deleteFG();
+			}
+			else if (tabMain.SelectedIndex == 1)
+			{
+				if((sender.ToString() == "toolbar") || (lstMessages.Focused)) DeleteMess();
+			}
 		}
 		void menuCopy_Click(object sender, EventArgs e)
 		{
@@ -969,9 +1015,8 @@ namespace Idmr.Yogeme
 			#region FG Goal
 			if (sender.ToString() == "Goal")
 			{
-				byte[] g = new byte[9];
-				for (int i=0;i<9;i++) g[i] = _mission.FlightGroups[_activeFG].Goals[_activeFGGoal][i];
-				formatter.Serialize(stream, g);
+				//[JB] Fixed copying of goals.  The Goal class is already serializable so don't need any special code for it.
+				formatter.Serialize(stream, _mission.FlightGroups[_activeFG].Goals[_activeFGGoal]);
 				stream.Close();
 				return;
 			}
@@ -979,7 +1024,7 @@ namespace Idmr.Yogeme
 			#region Orders
 			if (sender.ToString() == "Order")
 			{
-				formatter.Serialize(stream, _mission.FlightGroups[_activeFG].Orders[_activeOrder / 4, _activeOrder % 4]);
+				formatter.Serialize(stream, _mission.FlightGroups[_activeFG].Orders[(int)numORegion.Value - 1, _activeOrder % 4]);   //[JB] Fixed copy from the appropriate region.
 				stream.Close();
 				return;
 			}
@@ -988,7 +1033,9 @@ namespace Idmr.Yogeme
 			if (sender.ToString() == "Skip")
 			{
 				int i = (lblSkipTrig1.ForeColor == SystemColors.Highlight ? 0 : 1);
-				formatter.Serialize(stream, _mission.FlightGroups[_activeFG].Orders[_activeOrder/4, _activeOrder%4].SkipTriggers[i]);
+				int order = cboSkipOrder.SelectedIndex;  //[JB] Fixed copying
+				if(order < 0) order = 0;
+				formatter.Serialize(stream, _mission.FlightGroups[_activeFG].Orders[order/4, order%4].SkipTriggers[i]);  //[JB] Fixed from _activeOrder
 				stream.Close();
 				return;
 			}
@@ -1023,7 +1070,7 @@ namespace Idmr.Yogeme
 					if (_mission.Messages.Count != 0) formatter.Serialize(stream, _mission.Messages[_activeMessage]);
 					break;
 				case 2:
-					formatter.Serialize(stream, _mission.Globals[_activeTeam].Goals[_activeGlobalTrigger/3].Triggers[_activeGlobalTrigger%3]);
+					formatter.Serialize(stream, _mission.Globals[_activeTeam].Goals[_activeGlobalTrigger/4].Triggers[_activeGlobalTrigger%4]);  //[JB] Was 3, fixed bug where the 4th trigger wouldn't copy
 					break;
 				case 3:
 					formatter.Serialize(stream, _mission.Teams[_activeTeam]);
@@ -1040,6 +1087,11 @@ namespace Idmr.Yogeme
 		void menuExit_Click(object sender, EventArgs e)
 		{
 			Close();
+		}
+		void menuGoalSummary_Click(object sender, EventArgs e)
+		{
+			string output = "(global goals not included):\r\n----------\r\n" + generateGoalSummary();
+			new GoalSummaryDialog(output).Show();
 		}
 		void menuHelpInfo_Click(object sender, EventArgs e)
 		{
@@ -1100,7 +1152,12 @@ namespace Idmr.Yogeme
 		{
 			promptSave();
 			opnXWA.FileName = _mission.MissionFileName;
-			opnXWA.ShowDialog();
+			if(opnXWA.ShowDialog() == DialogResult.OK)  //[JB] Wait until dialog is closed before loading.  Fixes bug where dialog could be stuck open.  Also update paths for last-opened folder. 
+			{
+				opnXWA_FileOk(0, new System.ComponentModel.CancelEventArgs());
+				_config.SetWorkingPath(Path.GetDirectoryName(opnXWA.FileName));
+				opnXWA.InitialDirectory = _config.GetWorkingPath(); //Update since folder may have changed
+			}
 		}
 		void menuOptions_Click(object sender, EventArgs e)
 		{
@@ -1135,7 +1192,7 @@ namespace Idmr.Yogeme
 				{
 					FlightGroup.Order order_temp = (FlightGroup.Order)formatter.Deserialize(stream);
 					// can't check against null, but maybe ^ will trip?
-					_mission.FlightGroups[_activeFG].Orders[_activeOrder / 4, _activeOrder % 4] = order_temp;
+					_mission.FlightGroups[_activeFG].Orders[(int)numORegion.Value - 1, _activeOrder % 4] = order_temp;  //[JB] Fix pasting into regions above 1.  Formerly: _activeOrder / 4
 					lblOrderArr_Click(_activeOrder, new EventArgs());
 					OrderLabelRefresh();
 					Common.Title(this, false);
@@ -1169,9 +1226,11 @@ namespace Idmr.Yogeme
 				{
 					Mission.Trigger trig_temp = (Mission.Trigger)formatter.Deserialize(stream);
 					int j = (lblSkipTrig1.ForeColor == SystemColors.Highlight ? 0 : 1);
-					_mission.FlightGroups[_activeFG].Orders[_activeOrder / 4, _activeOrder % 4].SkipTriggers[j] = trig_temp;
+					int r = cboSkipOrder.SelectedIndex / 4;  //[JB] Fix pasting to orders other than Order 1 Region 1
+					int o = cboSkipOrder.SelectedIndex % 4;
+					_mission.FlightGroups[_activeFG].Orders[r, o].SkipTriggers[j] = trig_temp;
 					lblSkipTrigArr_Click(j, new EventArgs());
-					labelRefresh(_mission.FlightGroups[_activeFG].Orders[_activeOrder / 4, _activeOrder % 4].SkipTriggers[j], (j == 0 ? lblSkipTrig1 : lblSkipTrig2));	// no array, hence explicit naming
+					labelRefresh(_mission.FlightGroups[_activeFG].Orders[r, o].SkipTriggers[j], (j == 0 ? lblSkipTrig1 : lblSkipTrig2));	// no array, hence explicit naming
 					Common.Title(this, false);
 				}
 				catch { /* do nothing */ }
@@ -1220,9 +1279,9 @@ namespace Idmr.Yogeme
 					{
 						FlightGroup fg_temp = (FlightGroup)formatter.Deserialize(stream);
 						if (fg_temp == null) throw new Exception();
-						NewFG();
+						newFG();
 						_mission.FlightGroups[_activeFG] = fg_temp;
-						ListRefresh();
+						listRefresh();
 						_startingShips--;
 						lstFG.SelectedIndex = _activeFG;
 						if (_mission.FlightGroups[_activeFG].ArrivesIn30Seconds)
@@ -1284,6 +1343,9 @@ namespace Idmr.Yogeme
 				_loading = true;		//turned false in previous line
 				if (_mission.Messages.Count != 0) lstMessages.SelectedIndex = 0;
 			}
+			_config.SetWorkingPath(Path.GetDirectoryName(mission)); //[JB] Update last-accessed
+			opnXWA.InitialDirectory = _config.GetWorkingPath();
+			savXWA.InitialDirectory = _config.GetWorkingPath();
 			_loading = false;
 		}
 		void menuSave_Click(object sender, EventArgs e)
@@ -1404,8 +1466,247 @@ namespace Idmr.Yogeme
 		}
 		#endregion
 		#region FlightGroups
-		void DeleteFG()
+		//[JB] Counts all trigger and parameter references of a flight group.  Used to populate the counters in the confirm deletion dialog.
+		int[] countFlightGroupReferences(int fgIndex)
 		{
+			int[] count = new int[9];
+			const int cMothership = 1, cArrDep = 2, cOrder = 3, cSkip = 4, cGoal = 5, cMessage = 6, cFGGoal = 8; //cBrief = 7 Not needed for XWA
+			for(int i = 0; i < _mission.FlightGroups.Count; i++)
+			{
+				if(fgIndex == i)
+					continue;
+
+				FlightGroup fg = _mission.FlightGroups[i];
+				if(fg.ArrivalMethod1 == true && fg.ArrivalCraft1 == fgIndex) count[cMothership]++;
+				if(fg.ArrivalMethod2 == true && fg.ArrivalCraft2 == fgIndex) count[cMothership]++;
+				if(fg.DepartureMethod1 == true && fg.DepartureCraft1 == fgIndex) count[cMothership]++;
+				if(fg.DepartureMethod2 == true && fg.DepartureCraft2 == fgIndex) count[cMothership]++;
+				foreach(Mission.Trigger adt in fg.ArrDepTriggers)
+				{
+					//Note: many FGs initially present in battle use the first FG for Arr/Dep condition, even though the FG isn't actually used (condition is TRUE or FALSE). In which case no need to warn.
+					if(adt.VariableType == 1 && adt.Variable == fgIndex && adt.Condition != 0 && adt.Condition != 10) count[cArrDep]++;
+					if(adt.Parameter1 == 5 + fgIndex) count[cArrDep]++;
+				}
+				foreach(FlightGroup.Order order in fg.Orders)
+				{
+					if (order.Target1Type == 1 && order.Target1 == fgIndex) count[cOrder]++;
+					if (order.Target2Type == 1 && order.Target2 == fgIndex) count[cOrder]++;
+					if (order.Target3Type == 1 && order.Target3 == fgIndex) count[cOrder]++;
+					if (order.Target4Type == 1 && order.Target4 == fgIndex) count[cOrder]++;
+					foreach (Mission.Trigger sk in order.SkipTriggers)
+					{
+						if (sk.VariableType == 1 && sk.Variable == fgIndex) count[cSkip]++;
+						if (sk.Parameter1 == 5 + fgIndex) count[cSkip]++;
+					}
+				}
+				foreach(var goal in fg.Goals)
+					if(goal.Parameter == 5 + fgIndex)
+						count[cFGGoal]++;
+			}
+
+			foreach (Globals global in _mission.Globals)
+				foreach(Globals.Goal goal in global.Goals)
+					foreach(Mission.Trigger trig in goal.Triggers)
+					{
+						if (trig.VariableType == 1 && trig.Variable == fgIndex) count[cGoal]++;
+						if (trig.Parameter1 == 5 + fgIndex) count[cGoal]++;
+					}
+
+			foreach (Idmr.Platform.Xwa.Message msg in _mission.Messages)
+			{
+				if(msg.OriginatingFG == fgIndex) count[cMessage]++;
+
+				foreach(Mission.Trigger trig in msg.Triggers)
+				{
+					if (trig.VariableType == 1 && trig.Variable == fgIndex) count[cMessage]++;
+					if (trig.Parameter1 == 5 + fgIndex) count[cMessage]++;
+				}
+			}
+
+			//XWA Briefing FGTag events don't seem to reference actual FGs.  No action necessary.
+
+			for(int i = 1; i < 8; i++)
+				count[0] += count[i];
+			return count;
+		}
+		//[JB] Removes all references and triggers to a flight group and replaces with null triggers.
+		void scrubFG(int fgIndex)
+		{
+			for (int i = 0; i < _mission.FlightGroups.Count; i++)
+			{
+				if (fgIndex == i)
+					continue;
+
+				FlightGroup fg = _mission.FlightGroups[i];
+				bool check = fg.ArrivesIn30Seconds;
+
+				//Don't check method, always scrub if referenced
+				if (fg.ArrivalCraft1 == fgIndex) { fg.ArrivalMethod1 = false; fg.ArrivalCraft1 = 0; }
+				if (fg.ArrivalCraft2 == fgIndex) { fg.ArrivalMethod2 = false; fg.ArrivalCraft2 = 0; }
+				if (fg.DepartureCraft1 == fgIndex) { fg.DepartureMethod1 = false; fg.DepartureCraft1 = 0; }
+				if (fg.DepartureCraft2 == fgIndex) { fg.DepartureMethod2 = false; fg.DepartureCraft2 = 0; }
+				for(int j = 0; j < fg.ArrDepTriggers.Length; j++)
+				{
+					Mission.Trigger adt = fg.ArrDepTriggers[j];
+					if(adt.VariableType == 1 && adt.Variable == fgIndex)
+					{
+						adt.Amount = 0;
+						adt.VariableType = 0;
+						adt.Variable = 0;
+						adt.Condition = (byte)((j < 4) ? 0 : 10); //  //First 4 are arrival.  Set those to true.  Departure set to _trigger[10] = "none (FALSE)"
+					}
+					if(adt.Parameter1 == 5 + fgIndex) adt.Parameter1 = 0;
+				}
+				foreach (FlightGroup.Order order in fg.Orders)
+				{
+					if (order.Target1Type == 1 && order.Target1 == fgIndex) { order.Target1Type = 0; order.Target1 = 0; }
+					if (order.Target2Type == 1 && order.Target2 == fgIndex) { order.Target2Type = 0; order.Target2 = 0; }
+					if (order.Target3Type == 1 && order.Target3 == fgIndex) { order.Target3Type = 0; order.Target3 = 0; }
+					if (order.Target4Type == 1 && order.Target4 == fgIndex) { order.Target4Type = 0; order.Target4 = 0; }
+
+					foreach (Mission.Trigger sk in order.SkipTriggers)
+					{
+						if (sk.VariableType == 1 && sk.Variable == fgIndex)
+						{
+							sk.Amount = 0;
+							sk.VariableType = 0;
+							sk.Variable = 0;
+							sk.Condition = 10;  //Set to false.
+						}
+						if (sk.Parameter1 == 5 + fgIndex) sk.Parameter1 = 0;
+					}				
+				}
+				foreach(var goal in fg.Goals)
+					if(goal.Parameter == 5 + fgIndex)
+						goal.Parameter = 0;
+
+				if (check != fg.ArrivesIn30Seconds)
+					craftStart(fg, fg.ArrivesIn30Seconds);  //Add or delete based on change
+
+			}
+			foreach (Globals global in _mission.Globals)
+			{
+				foreach (Globals.Goal goal in global.Goals)
+				{
+					foreach (Mission.Trigger trig in goal.Triggers)
+					{
+						if (trig.VariableType == 1 && trig.Variable == fgIndex)
+						{
+							trig.Amount = 0;
+							trig.VariableType = 0;
+							trig.Variable = 0;
+							trig.Condition = 10; //_trigger[10] = "none (FALSE)"
+						}
+						if (trig.Parameter1 == 5 + fgIndex) trig.Parameter1 = 0;
+					}
+				}
+			}
+			foreach (Idmr.Platform.Xwa.Message msg in _mission.Messages)
+			{
+				if(msg.OriginatingFG == fgIndex) msg.OriginatingFG = 0;
+
+				foreach (Mission.Trigger trig in msg.Triggers)
+				{
+					if (trig.VariableType == 1 && trig.Variable == fgIndex)
+					{
+						trig.Amount = 0;
+						trig.VariableType = 0;
+						trig.Variable = 0;
+						trig.Condition = 0; //_trigger[0] = "always (TRUE)"
+					}
+
+					if (trig.Parameter1 == 5 + fgIndex) trig.Parameter1 = 0;
+				}
+			}
+			//XWA Briefing FGTag events don't seem to reference actual FGs.  No action necessary.
+		}
+		//[JB] When a FG is deleted, all further FGs drop down one index.  This function decrements all craft references to compensate.
+		void scrubFGMove(int fgIndex)
+		{
+			for (int i = 0; i < _mission.FlightGroups.Count; i++)
+			{
+				if (fgIndex == i)
+					continue;
+
+				FlightGroup fg = _mission.FlightGroups[i];
+
+				if (fg.ArrivalCraft1 > fgIndex) { fg.ArrivalCraft1--; }
+				if (fg.ArrivalCraft2 > fgIndex) { fg.ArrivalCraft2--; }
+				if (fg.DepartureCraft1 > fgIndex) { fg.DepartureCraft1--; }
+				if (fg.DepartureCraft2 > fgIndex) { fg.DepartureCraft2--; }
+				foreach (Mission.Trigger adt in fg.ArrDepTriggers)
+				{
+					if (adt.VariableType == 1 && adt.Variable > fgIndex) adt.Variable--;
+					if(adt.Parameter1 > 5 + fgIndex) adt.Parameter1--;
+				}
+
+				foreach (FlightGroup.Order order in fg.Orders)
+				{
+					if (order.Target1Type == 1 && order.Target1 > fgIndex) { order.Target1--; }
+					if (order.Target2Type == 1 && order.Target2 > fgIndex) { order.Target2--; }
+					if (order.Target3Type == 1 && order.Target3 > fgIndex) { order.Target3--; }
+					if (order.Target4Type == 1 && order.Target4 > fgIndex) { order.Target4--; }
+
+					foreach (Mission.Trigger sk in order.SkipTriggers)
+					{
+						if (sk.VariableType == 1 && sk.Variable > fgIndex) sk.Variable--;
+						if (sk.Parameter1 > 5 + fgIndex) sk.Parameter1--;
+					}
+				}
+				foreach(var goal in fg.Goals)
+					if(goal.Parameter > 5 + fgIndex)
+						goal.Parameter--;
+			}
+			foreach (Globals global in _mission.Globals)
+				foreach (Globals.Goal goal in global.Goals)
+					foreach (Mission.Trigger trig in goal.Triggers)
+					{
+						if (trig.VariableType == 1 && trig.Variable > fgIndex) trig.Variable--;
+						if (trig.Parameter1 > 5 + fgIndex) trig.Parameter1--;
+					}
+
+			foreach (Idmr.Platform.Xwa.Message msg in _mission.Messages)
+			{
+				if(msg.OriginatingFG > fgIndex) msg.OriginatingFG--;
+
+				foreach (Mission.Trigger trig in msg.Triggers)
+				{
+					if (trig.VariableType == 1 && trig.Variable > fgIndex) trig.Variable--;
+					if (trig.Parameter1 > 5 + fgIndex) trig.Parameter1--;
+				}
+			}
+
+			//XWA Briefing FGTag events don't seem to reference actual FGs.  No action necessary.
+		}
+		void deleteFG()
+		{
+			if(_fBrief != null)  //Need to be able to examine the current briefing data if open and modified
+			{
+				_fBrief.Save();
+				_fBrief.Close();
+			}
+			//[JB] Confirm delete
+			if(_config.ConfirmFGDelete)
+			{
+				int[] count = countFlightGroupReferences(_activeFG);
+				if (count[0] > 0)
+				{
+					string[] Reasons = new string[9] { "", "Mothership reference", "Arrival/Departure trigger", "Order target reference", "'Skip to Order' trigger/param", "Global Goal trigger/param", "Message trigger/param", "Briefing FG Tag", "Goal FG Parameter" };
+					string breakdown = "";
+					for(int i = 1; i < 9; i++)
+						if(count[i] > 0) breakdown += "    " + count[i] + " " + Reasons[i] + ((count[i]>1)?"s":"") + "\n";
+
+					string s = "This Flight Group is referenced " + count[0] + " time" + ((count[1]>1)?"s":"") + " in these cases:\n" + breakdown + "\nAll references targeting this flight group will be reset to default.";
+					if(count[7] > 0) s += "\nAssociated Briefing FG Tag events will be deleted.";
+					s += "\n\nAre you sure you want to delete this Flight Group?";
+					DialogResult res = MessageBox.Show(s, "WARNING: Confirm Delete", MessageBoxButtons.YesNo);
+					if (res == DialogResult.No)
+						return;
+				}
+			}
+			scrubFG(_activeFG);
+			scrubFGMove(_activeFG);
+
 			if (_mission.FlightGroups.Count != 1) lstFG.Items.RemoveAt(_activeFG);
 			craftStart(_mission.FlightGroups[_activeFG], false);
 			if (_mission.FlightGroups.Count == 1)
@@ -1417,7 +1718,7 @@ namespace Idmr.Yogeme
 				craftStart(_mission.FlightGroups[0], true);
 			}
 			else _activeFG = _mission.FlightGroups.RemoveAt(_activeFG);
-			UpdateFGList();
+			updateFGList();
 			lstFG.SelectedIndex = 0;
 			Common.Title(this, _loading);
 			try
@@ -1426,12 +1727,17 @@ namespace Idmr.Yogeme
 				_fMap.MapPaint(true);
 			}
 			catch { /* do nothing */ }
+
+			//[JB] Need to force these tabs to refresh, otherwise the trigger controls might display outdated information
+			lstMessages_SelectedIndexChanged(0, new EventArgs());
+			cboGlobalTeam_SelectedIndexChanged(0, new EventArgs());
+			lstFG_SelectedIndexChanged(0, new EventArgs());
 		}
-		void ListRefresh()
+		void listRefresh()
 		{
 			lstFG.Items[_activeFG] = _mission.FlightGroups[_activeFG].ToString(true);
 		}
-		void NewFG()
+		void newFG()
 		{
 			if (_mission.FlightGroups.Count == Mission.FlightGroupLimit)
 			{
@@ -1443,7 +1749,7 @@ namespace Idmr.Yogeme
 			_mission.FlightGroups[_activeFG].IFF = _config.XwaIff;
 			craftStart(_mission.FlightGroups[_activeFG], true);
 			lstFG.Items.Add(_mission.FlightGroups[_activeFG].ToString(true));
-			UpdateFGList();
+			updateFGList();
 			_loading = true;
 			lstFG.SelectedIndex = _activeFG;
 			_loading = false;
@@ -1455,7 +1761,7 @@ namespace Idmr.Yogeme
 			}
 			catch { /* do nothing */ }
 		}
-		void UpdateFGList()
+		void updateFGList()
 		{
 			string[] fgList = _mission.FlightGroups.GetList();
 			bool temp = _loading;
@@ -1472,7 +1778,67 @@ namespace Idmr.Yogeme
 			parameterRefresh(cboMessPara);
 			parameterRefresh(cboGlobalPara);
 			_loading = temp;
-			ListRefresh();
+			listRefresh();
+		}
+		string generateGoalSummary()
+		{
+			//30 elements:  Primary,Prevent,Bonus, ... (repeat for each team)
+			//Each element contains a list of strings for each line of text.
+			//Was going to try and summarize global goals but the output was ugly, so removed it. Easy for the user to view those anyway.
+			System.Collections.Generic.List<string>[] goalList = new System.Collections.Generic.List<string>[30];
+
+			for (int i = 0; i < 30; i++)
+				goalList[i] = new System.Collections.Generic.List<string>();
+
+			//Iterate FGs and their goals, adding them to the proper list
+			for (int i = 0; i < _mission.FlightGroups.Count; i++)
+			{
+				FlightGroup fg = _mission.FlightGroups[i];
+				foreach (FlightGroup.Goal goal in fg.Goals)
+				{
+					if (goal.Condition == 0 || goal.Condition == 10 || goal.Team > 9)  //Avoid True, False conditions and make sure team is valid.
+						continue;
+					string c = Strings.CraftAbbrv[fg.CraftType] + " " + fg.Name;
+					string n = goal.ToString().Replace("Flight Group", c);
+					int category = (goal.Argument <= 1) ? 0 : 2;  //0 = primary, 1 = prevent, 2 = bonus
+					goalList[(goal.Team * 3) + category].Add(n);
+				}
+			}
+
+			//Compose the output by going through the teams and writing the results from each goal category
+			string output = "";
+			for (int i = 0; i < 10; i++) //Each team
+			{
+				if (goalList[(i * 3) + 0].Count == 0 && goalList[(i * 3) + 2].Count == 0)  //No primary or bonus goals
+					continue;
+
+				if (output.Length > 0)
+					output += "\r\n----------\r\n";
+				output += "TEAM #" + (i + 1) + ": " + _mission.Teams[i].Name + "\r\n";
+				output += "PRIMARY:\r\n";
+				foreach (string s in goalList[(i * 3) + 0])
+					output += s + "\r\n";
+
+				if (goalList[(i * 3) + 1].Count > 0)
+				{
+					output += "\r\n";
+					output += "SECONDARY:\r\n";
+					foreach (string s in goalList[(i * 3) + 1])
+						output += s + "\r\n";
+				}
+
+				if (goalList[(i * 3) + 2].Count > 0)
+				{
+					output += "\r\n";
+					output += "BONUS:\r\n";
+					foreach (string s in goalList[(i * 3) + 2])
+						output += s + "\r\n";
+				}
+			}
+			if (output == "") output = "Nothing here.";
+			output += "\r\n";
+
+			return output;
 		}
 
 		void lstFG_DrawItem(object sender, DrawItemEventArgs e)
@@ -1513,7 +1879,7 @@ namespace Idmr.Yogeme
 			#region Craft
 			txtName.Text = _mission.FlightGroups[_activeFG].Name;
 			txtCargo.Text = _mission.FlightGroups[_activeFG].Cargo;
-			txtSpecCargo.Text = _mission.FlightGroups[_activeFG].Cargo;
+			txtSpecCargo.Text = _mission.FlightGroups[_activeFG].SpecialCargo;  //[JB] Fixed, was Cargo
 			numSC.Value = _mission.FlightGroups[_activeFG].SpecialCargoCraft;
 			chkRandSC.Checked = _mission.FlightGroups[_activeFG].RandSpecCargo;
 			cboCraft.SelectedIndex = _mission.FlightGroups[_activeFG].CraftType;
@@ -1609,10 +1975,14 @@ namespace Idmr.Yogeme
 			txtRole.Text = _mission.FlightGroups[_activeFG].Role;
 			txtPilot.Text = _mission.FlightGroups[_activeFG].PilotID;
 			for (int i=0;i<15;i++) chkOpt[i].Checked = _mission.FlightGroups[_activeFG].OptLoadout[i];
-			lblSkipTrigArr_Click(lblSkipTrig1, new EventArgs());
+			lblSkipTrigArr_Click(lblSkipTrig2, new EventArgs());  //[JB] Added
+			lblSkipTrigArr_Click(lblSkipTrig1, new EventArgs());  //[JB] Update after the Trig2 so it also updates the region parameters
 			for (_activeOptionCraft=0;_activeOptionCraft<10;_activeOptionCraft++) OptCraftLabelRefresh();
 			lblOptCraftArr_Click(lblOptCraft[0], new EventArgs());
 			cboOptCat.SelectedIndex = (byte)_mission.FlightGroups[_activeFG].OptCraftCategory;
+			//[JB] Need to fix the Skip And/Or radio button checks.
+			optSkipOR.Checked = _mission.FlightGroups[_activeFG].Orders[0, 0].SkipT1AndOrT2;
+			optSkipAND.Checked = !optSkipOR.Checked;
 			#endregion
 			#region Unknowns
 			numUnk1.Value = _mission.FlightGroups[_activeFG].Unknowns.Unknown1;
@@ -1623,7 +1993,9 @@ namespace Idmr.Yogeme
 			numUnk7.Value = _mission.FlightGroups[_activeFG].Unknowns.Unknown7;
 			numUnk8.Value = _mission.FlightGroups[_activeFG].Unknowns.Unknown8;
 			cboUnkOrder.SelectedIndex = 0;
+			cboUnkOrder_SelectedIndexChanged(0, new EventArgs()); //[JB] Fixes bug where controls wouldn't update. Force refresh because the selection value may not have actually changed.
 			numUnkGoal.Value = 1;
+			numUnkGoal_ValueChanged(0, new EventArgs()); //[JB] Force refresh of the associated checkbox
 			numUnk16.Value = _mission.FlightGroups[_activeFG].Unknowns.Unknown16;
 			numUnk17.Value = _mission.FlightGroups[_activeFG].Unknowns.Unknown17;
 			numUnk18.Value = _mission.FlightGroups[_activeFG].Unknowns.Unknown18;
@@ -1653,6 +2025,8 @@ namespace Idmr.Yogeme
 			#endregion
 			_loading = btemp;
 			EnableBackdrop((_mission.FlightGroups[_activeFG].CraftType == 0xB7 ? true : false));
+
+			if(!lstFG.Focused) lstFG.Focus();  //[JB] Return control back to the list (helpful to maintain navigation using the arrow keys when certain tabs are open)
 		}
 
 		#region Craft
@@ -1693,7 +2067,7 @@ namespace Idmr.Yogeme
 			{
 				lblGC.Text = "Global Cargo";
 				lblCargo.Text = "Cargo";
-				lblSC.Text = "Specal Cargo";
+				lblSC.Text = "Special Cargo";	   //[JB] Fixed typo
 				lblName.Text = "Name";
 			}
 		}
@@ -1703,7 +2077,7 @@ namespace Idmr.Yogeme
 			EnableBackdrop((cboCraft.SelectedIndex == 0xB7 ? true : false));
 			if (_loading) return;
 			_mission.FlightGroups[_activeFG].CraftType = Common.Update(this, _mission.FlightGroups[_activeFG].CraftType, Convert.ToByte(cboCraft.SelectedIndex));
-			UpdateFGList();
+			updateFGList();
 		}
 		void cboFormation_SelectedIndexChanged(object sender, EventArgs e)
 		{
@@ -1751,8 +2125,11 @@ namespace Idmr.Yogeme
 		}
 		void cmdForms_Click(object sender, EventArgs e)
 		{
-			FormationDialog dlg = new FormationDialog(_mission.FlightGroups[_activeFG].Formation);
-			if (dlg.ShowDialog() == DialogResult.OK) cboFormation.SelectedIndex = dlg.Formation;
+			try
+			{
+				FormationDialog dlg = new FormationDialog(_mission.FlightGroups[_activeFG].Formation);
+				if (dlg.ShowDialog() == DialogResult.OK) cboFormation.SelectedIndex = dlg.Formation;
+			} catch { MessageBox.Show("The Formations browser could not be loaded." , "Error"); }
 		}
 
 		void grpCraft2_Leave(object sender, EventArgs e)
@@ -1766,7 +2143,7 @@ namespace Idmr.Yogeme
 			_mission.FlightGroups[_activeFG].Radio = Common.Update(this, _mission.FlightGroups[_activeFG].Radio, Convert.ToByte(cboRadio.SelectedIndex));
 			_mission.FlightGroups[_activeFG].FormDistance = Common.Update(this, _mission.FlightGroups[_activeFG].FormDistance, Convert.ToByte(numSpacing.Value));
 			_mission.FlightGroups[_activeFG].FormLeaderDist = Common.Update(this, _mission.FlightGroups[_activeFG].FormLeaderDist, Convert.ToByte(numLead.Value));
-			ListRefresh();
+			listRefresh();
 		}
 		void grpCraft3_Leave(object sender, EventArgs e)
 		{
@@ -1778,7 +2155,7 @@ namespace Idmr.Yogeme
 			_mission.FlightGroups[_activeFG].GlobalGroup = Common.Update(this, _mission.FlightGroups[_activeFG].GlobalGroup, Convert.ToByte(numGG.Value));
 			_mission.FlightGroups[_activeFG].GlobalUnit = Common.Update(this, _mission.FlightGroups[_activeFG].GlobalUnit, Convert.ToByte(numGU.Value));
 			_mission.FlightGroups[_activeFG].GlobalNumbering = Common.Update(this, _mission.FlightGroups[_activeFG].GlobalNumbering, chkGU.Checked);
-			ListRefresh();
+			listRefresh();
 		}
 		void grpCraft4_Leave(object sender, EventArgs e)
 		{
@@ -1824,7 +2201,7 @@ namespace Idmr.Yogeme
 		void txtName_Leave(object sender, EventArgs e)
 		{
 			_mission.FlightGroups[_activeFG].Name = Common.Update(this, _mission.FlightGroups[_activeFG].Name, txtName.Text);
-			UpdateFGList();
+			updateFGList();
 		}
 		void txtSpecCargo_Leave(object sender, EventArgs e)
 		{
@@ -1834,9 +2211,15 @@ namespace Idmr.Yogeme
 		#region Arr/Dep
 		void lblADTrigArr_Click(object sender, EventArgs e)
 		{
-			Label l = (Label)sender;
-			l.Focus();
-			_activeArrDepTrigger = Convert.ToByte(l.Tag);
+			//[JB] Added try/catch block from XvtForm.  This fixes a bug (failed due to exception) that prevented labels from updating after a paste operation.
+			Label l = null;
+			try
+			{
+				l = (Label)sender;
+				l.Focus();
+				_activeArrDepTrigger = Convert.ToByte(l.Tag);
+			}
+			catch (InvalidCastException) { _activeArrDepTrigger = Convert.ToByte(sender); l = lblADTrig[_activeArrDepTrigger]; }
 			l.ForeColor = SystemColors.Highlight;
 			for (int i=0;i<6;i++) if (i != _activeArrDepTrigger) lblADTrig[i].ForeColor = SystemColors.ControlText;
 			bool btemp = _loading;
@@ -1845,7 +2228,11 @@ namespace Idmr.Yogeme
 			cboADTrigType.SelectedIndex = -1;
 			cboADTrigType.SelectedIndex = _mission.FlightGroups[_activeFG].ArrDepTriggers[_activeArrDepTrigger].VariableType;
 			cboADTrigAmount.SelectedIndex = _mission.FlightGroups[_activeFG].ArrDepTriggers[_activeArrDepTrigger].Amount;
-			cboADPara.SelectedIndex = _mission.FlightGroups[_activeFG].ArrDepTriggers[_activeArrDepTrigger].Parameter1;
+			//[JB] Fixes exceptions for backdrop FGs in B4M2B.TIE, B4M3FB.TIE, B4M4B.TIE which use have Parameter1 values around 78 to 80
+			int v = _mission.FlightGroups[_activeFG].ArrDepTriggers[_activeArrDepTrigger].Parameter1;
+			if (v >= cboADPara.Items.Count)
+				v = cboADPara.Items.Count - 1;
+			cboADPara.SelectedIndex = v; //_mission.FlightGroups[_activeFG].ArrDepTriggers[_activeArrDepTrigger].Parameter1;
 			numADPara.Value = _mission.FlightGroups[_activeFG].ArrDepTriggers[_activeArrDepTrigger].Parameter2;
 			_loading = btemp;
 		}
@@ -1983,9 +2370,10 @@ namespace Idmr.Yogeme
 
 		void lblOrderArr_Click(object sender, EventArgs e)
 		{
+			//[JB] Added catch from XvT. Fixes bug where the labels wouldn't refresh after double click paste.
 			Label l = null;
 			try { l = (Label)sender; }
-			catch { l = lblOrder[(int)sender]; }
+			catch { _activeOrder = Convert.ToByte(sender); l = lblOrder[_activeOrder]; /*l = lblOrder[(int)sender];*/ }
 			l.Focus();
 			_activeOrder = Convert.ToByte(l.Tag);
 			FlightGroup.Order order = _mission.FlightGroups[_activeFG].Orders[(int)numORegion.Value - 1, _activeOrder];
@@ -2016,6 +2404,7 @@ namespace Idmr.Yogeme
 		}
 		void lblOrderArr_DoubleClick(object sender, EventArgs e)
 		{
+			if(((MouseEventArgs)e).Button != MouseButtons.Left) return;  //[JB] Fixed to help prevent rapid right clicks from triggering paste.  Seemed to affect this frequently, despite other controls with similar events not suffering the same behavior.
 			menuPaste_Click("Order", new EventArgs());
 		}
 		void lblOrderArr_MouseUp(object sender, MouseEventArgs e)
@@ -2079,7 +2468,7 @@ namespace Idmr.Yogeme
 		}
 		void cboOT3Type_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			if (cboOT3Type.SelectedIndex != -1) return;
+			if (cboOT3Type.SelectedIndex == -1) return;  //[JB] Fixed, was !=
 			int r = (int)(numORegion.Value - 1);
 			if (!_loading)
 				_mission.FlightGroups[_activeFG].Orders[r, _activeOrder].Target3Type = Common.Update(this, _mission.FlightGroups[_activeFG].Orders[r, _activeOrder].Target3Type, Convert.ToByte(cboOT3Type.SelectedIndex));
@@ -2144,12 +2533,19 @@ namespace Idmr.Yogeme
 			_mission.FlightGroups[_activeFG].Orders[r, _activeOrder].T1AndOrT2 = Common.Update(this, _mission.FlightGroups[_activeFG].Orders[r, _activeOrder].T1AndOrT2, optOT1T2OR.Checked);
 			OrderLabelRefresh();
 		}
-		void optOT3T4OR_CheckedCHanged(object sender, EventArgs e)
+		void optOT3T4OR_CheckedChanged(object sender, EventArgs e)
 		{
 			if (_loading) return;
 			int r = (int)(numORegion.Value - 1);
 			_mission.FlightGroups[_activeFG].Orders[r, _activeOrder].T3AndOrT4 = Common.Update(this, _mission.FlightGroups[_activeFG].Orders[r, _activeOrder].T3AndOrT4, optOT3T4OR.Checked);
 			OrderLabelRefresh();
+		}
+		void optSkipOR_CheckedChanged(object sender, EventArgs e)
+		{
+			if (_loading) return;
+			int r = cboSkipOrder.SelectedIndex / 4;
+			int o = cboSkipOrder.SelectedIndex % 4;
+			_mission.FlightGroups[_activeFG].Orders[r, o].SkipT1AndOrT2 = Common.Update(this, _mission.FlightGroups[_activeFG].Orders[r, o].SkipT1AndOrT2, optSkipOR.Checked);
 		}
 
 		void txtOString_Leave(object sender, EventArgs e)
@@ -2166,9 +2562,15 @@ namespace Idmr.Yogeme
 
 		void lblGoalArr_Click(object sender, EventArgs e)
 		{
-			Label l = (Label)sender;
-			l.Focus();
-			_activeFGGoal = Convert.ToByte(l.Tag);
+			//[JB] Fixes refresh on paste.  Copied from XvT code.
+			Label l = null;
+			try
+			{
+				l = (Label)sender;
+				l.Focus();
+				_activeFGGoal = Convert.ToByte(l.Tag);
+			}
+			catch (InvalidCastException) { _activeFGGoal = Convert.ToByte(sender); l = lblGoal[_activeFGGoal]; }
 			l.ForeColor = SystemColors.Highlight;
 			for (int i=0;i<8;i++) if (i!=_activeFGGoal) lblGoal[i].ForeColor = SystemColors.ControlText;
 			bool btemp = _loading;
@@ -2195,6 +2597,11 @@ namespace Idmr.Yogeme
 			if (e.Button == MouseButtons.Right) menuCopy_Click("Goal", new EventArgs());
 		}
 
+		void cboGoalPara_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			_mission.FlightGroups[_activeFG].Goals[_activeFGGoal].Parameter = (byte)cboGoalPara.SelectedIndex;
+		}
+
 		void chkGoalEnable_Leave(object sender, EventArgs e)
 		{
 			_mission.FlightGroups[_activeFG].Goals[_activeFGGoal].Enabled = Common.Update(this, _mission.FlightGroups[_activeFG].Goals[_activeFGGoal].Enabled, chkGoalEnable.Checked);
@@ -2211,6 +2618,10 @@ namespace Idmr.Yogeme
 			GoalLabelRefresh();
 		}
 
+		void numGoalActSeq_ValueChanged(object sender, EventArgs e)
+		{
+			_mission.FlightGroups[_activeFG].Goals[_activeFGGoal].ActiveSequence = (byte)numGoalActSeq.Value;
+		}
 		void numGoalPoints_Leave(object sender, EventArgs e)
 		{
 			_mission.FlightGroups[_activeFG].Goals[_activeFGGoal].Points = Common.Update(this, _mission.FlightGroups[_activeFG].Goals[_activeFGGoal].Points, (short)numGoalPoints.Value);
@@ -2380,11 +2791,12 @@ namespace Idmr.Yogeme
 			lblOptCraft[_activeOptionCraft].Text = "Craft " + (_activeOptionCraft+1).ToString() + ":";
 			if (_mission.FlightGroups[_activeFG].OptCraft[_activeOptionCraft].CraftType != 0)
 				lblOptCraft[_activeOptionCraft].Text += " " + (_mission.FlightGroups[_activeFG].OptCraft[_activeOptionCraft].NumberOfWaves+1).ToString()
-				+ " x (" + (_mission.FlightGroups[_activeFG].OptCraft[_activeOptionCraft].NumberOfCraft+1).ToString() + ") " + Strings.CraftType[cboOptCraft.SelectedIndex];
+				+ " x (" + (_mission.FlightGroups[_activeFG].OptCraft[_activeOptionCraft].NumberOfCraft+1).ToString() + ") " + Strings.CraftType[_mission.FlightGroups[_activeFG].OptCraft[_activeOptionCraft].CraftType];//[JB] Fixed Strings.CraftType[cboOptCraft.SelectedIndex];   //[JB] Fix so all labels properly refresh in load time, getting the craft name directly from the setting rather than the combobox
 		}
 
 		void chkOptArr_CheckedChanged(object sender, EventArgs e)
 		{
+			//[JB] Incremented all indexes that were 8 or higher to accomodate Ion Pulse addition.
 			if (_loading) return;
 			CheckBox c = (CheckBox)sender;
 			int i = (int)c.Tag;
@@ -2393,26 +2805,31 @@ namespace Idmr.Yogeme
 			_loading = true;
 			if (c.Checked)
 			{
-				if (i == 0) for (int j=1;j<8;j++) _mission.FlightGroups[_activeFG].OptLoadout[j] = false;	// turn off warheads
-				else if (i > 0 && i < 8) _mission.FlightGroups[_activeFG].OptLoadout[0] = false;		// clear warhead None
-				else if (i == 8) for (int j=9;j<12;j++) _mission.FlightGroups[_activeFG].OptLoadout[j] = false;	// turn off beams
-				else if (i > 8 && i < 12) _mission.FlightGroups[_activeFG].OptLoadout[8] = false;	// clear beam None
-				else if (i == 12) { _mission.FlightGroups[_activeFG].OptLoadout[13] = false; _mission.FlightGroups[_activeFG].OptLoadout[14] = false; }	// turn off CMs
-				else _mission.FlightGroups[_activeFG].OptLoadout[12] = false;	// clear CM None
+				if (i == 0) for (int j=1;j<9;j++) _mission.FlightGroups[_activeFG].OptLoadout[j] = false;	// turn off warheads
+				else if (i > 0 && i < 9) _mission.FlightGroups[_activeFG].OptLoadout[0] = false;		// clear warhead None
+				else if (i == 9) for (int j=10;j<13;j++) _mission.FlightGroups[_activeFG].OptLoadout[j] = false;	// turn off beams
+				else if (i > 9 && i < 13) _mission.FlightGroups[_activeFG].OptLoadout[9] = false;	// clear beam None
+				else if (i == 13) { _mission.FlightGroups[_activeFG].OptLoadout[14] = false; _mission.FlightGroups[_activeFG].OptLoadout[15] = false; }	// turn off CMs
+				else _mission.FlightGroups[_activeFG].OptLoadout[13] = false;	// clear CM None
 			}
 			else
 			{
+				//[JB] Changed variable in for() loop from "i" to "j" to avoid overwriting
+				//Fixed grouping for "b" since unchecking would erase other remaining groups.
 				bool b = false;
-				if (i > 0 && i < 8) for (i=1;i<8;i++) b |= _mission.FlightGroups[_activeFG].OptLoadout[i];
-				if (!b && !chkOpt[0].Checked) _mission.FlightGroups[_activeFG].OptLoadout[0] = true;
+				if (i > 0 && i < 9) {
+					for (int j = 1; j < 9; j++) b |= _mission.FlightGroups[_activeFG].OptLoadout[j];
+					if (!b && !chkOpt[0].Checked) _mission.FlightGroups[_activeFG].OptLoadout[0] = true; }
 				b = false;
-				if (i > 8 && i < 12) for (i=9;i<12;i++) b |= _mission.FlightGroups[_activeFG].OptLoadout[i];
-				if (!b && !chkOpt[8].Checked) _mission.FlightGroups[_activeFG].OptLoadout[8] = true;
+				if (i > 9 && i < 13) {
+					for (int j = 10; j < 13; j++) b |= _mission.FlightGroups[_activeFG].OptLoadout[j];
+					if (!b && !chkOpt[9].Checked) _mission.FlightGroups[_activeFG].OptLoadout[9] = true; }
 				b = false;
-				if (i > 12 && i < 15) for (i=13;i<15;i++) b |= _mission.FlightGroups[_activeFG].OptLoadout[i];
-				if (!b && !chkOpt[12].Checked) _mission.FlightGroups[_activeFG].OptLoadout[12] = true;
+				if (i > 13 && i < 16) {
+					for (int j = 14; j < 16; j++) b |= _mission.FlightGroups[_activeFG].OptLoadout[j];
+					if (!b && !chkOpt[13].Checked) _mission.FlightGroups[_activeFG].OptLoadout[13] = true; }
 			}
-			for (i=0;i<15;i++) chkOpt[i].Checked = _mission.FlightGroups[_activeFG].OptLoadout[i];
+			for (i=0;i<16;i++) chkOpt[i].Checked = _mission.FlightGroups[_activeFG].OptLoadout[i];
 			_loading = btemp;
 		}
 		void lblOptCraftArr_Click(object sender, EventArgs e)
@@ -2431,10 +2848,27 @@ namespace Idmr.Yogeme
 		}
 		void lblSkipTrigArr_Click(object sender, EventArgs e)
 		{
-			Label l = (Label)sender;
-			Label ll = (l == lblSkipTrig1 ? lblSkipTrig2 : lblSkipTrig1);
-			int i = 0, r = 0, o = 0;
-			l.Focus();
+			//[JB] Copied XvT code to fix updating on paste.
+			//Label l = (Label)sender;
+			//Label ll = (l == lblSkipTrig1 ? lblSkipTrig2 : lblSkipTrig1);
+			Label l = null; // clicked
+			Label ll = null; // other one
+			int i = 0;
+			try
+			{
+				l = (Label)sender;
+				l.Focus();
+				ll = (l==lblSkipTrig1 ? lblSkipTrig2 : lblSkipTrig1);
+				i = (l == lblSkipTrig1 ? 0 : 1);	// i = clicked trigger
+			}
+			catch (InvalidCastException)
+			{
+				i = (int)sender;	// i = clicked trigger from code
+				if (i == 0) { l = lblSkipTrig1; ; ll = lblSkipTrig2; }
+				else { l = lblSkipTrig2; ll = lblSkipTrig1; }
+			}
+			int r = 0, o = 0;
+			//l.Focus();
 			i = (l == lblSkipTrig1 ? 0 : 1);
 			r = cboSkipOrder.SelectedIndex / 4;
 			o = cboSkipOrder.SelectedIndex % 4;
@@ -2453,6 +2887,7 @@ namespace Idmr.Yogeme
 		}
 		void lblSkipTrigArr_DoubleClick(object sender, EventArgs e)
 		{
+			if(((MouseEventArgs)e).Button != MouseButtons.Left) return;  //[JB] Avoid pasting for rapid clicks that aren't Left.
 			menuPaste_Click("Skip", new EventArgs());
 		}
 		void lblSkipTrigArr_MouseUp(object sender, MouseEventArgs e)
@@ -2489,6 +2924,7 @@ namespace Idmr.Yogeme
 			lblSkipTrigArr_Click(lblSkipTrig1, new EventArgs());
 			optSkipOR.Checked = _mission.FlightGroups[_activeFG].Orders[r, o].SkipT1AndOrT2;
 			optSkipAND.Checked = !optSkipOR.Checked;
+			if(!_loading && !cboSkipOrder.Focused) cboSkipOrder.Focus();  //[JB] Return focus back to self, so it can be navigated with arrow keys without giving focus to other controls.
 		}
 		void cboSkipPara_Leave(object sender, EventArgs e)
 		{
@@ -2557,6 +2993,10 @@ namespace Idmr.Yogeme
 			_mission.FlightGroups[_activeFG].Designation2 = Common.Update(this, _mission.FlightGroups[_activeFG].Designation2, Convert.ToByte(cboRole2.SelectedIndex));
 		}
 
+		void numExplode_ValueChanged(object sender, EventArgs e)
+		{
+			_mission.FlightGroups[_activeFG].ExplosionTime = (byte)numExplode.Value;
+		}
 		void numOptCraft_Leave(object sender, EventArgs e)
 		{
 			_mission.FlightGroups[_activeFG].OptCraft[_activeOptionCraft].NumberOfCraft = Common.Update(this, _mission.FlightGroups[_activeFG].OptCraft[_activeOptionCraft].NumberOfCraft, Convert.ToByte(numOptCraft.Value - 1));
@@ -2657,7 +3097,7 @@ namespace Idmr.Yogeme
 			_mission.FlightGroups[_activeFG].Unknowns.Unknown38 = Common.Update(this, _mission.FlightGroups[_activeFG].Unknowns.Unknown38, chkUnk38.Checked);
 			_mission.FlightGroups[_activeFG].Unknowns.Unknown39 = Common.Update(this, _mission.FlightGroups[_activeFG].Unknowns.Unknown39, chkUnk39.Checked);
 			_mission.FlightGroups[_activeFG].Unknowns.Unknown40 = Common.Update(this, _mission.FlightGroups[_activeFG].Unknowns.Unknown40, chkUnk40.Checked);
-			_mission.FlightGroups[_activeFG].Unknowns.Unknown41 = Common.Update(this, _mission.FlightGroups[_activeFG].Unknowns.Unknown41, chkUnk31.Checked);
+			_mission.FlightGroups[_activeFG].Unknowns.Unknown41 = Common.Update(this, _mission.FlightGroups[_activeFG].Unknowns.Unknown41, chkUnk41.Checked);  //[JB] Fixed, was 31.
 		}
 		void grpUnkOrder_Leave(object sender, EventArgs e)
 		{
@@ -2673,6 +3113,9 @@ namespace Idmr.Yogeme
 		#region Messages
 		void DeleteMess()
 		{
+			if(_activeMessage < 0 || _activeMessage >= _mission.Messages.Count)  //[JB] Added check
+				return;
+			lstMessages.Items.RemoveAt(_activeMessage); //[JB] Need to delete from list before _activeMessage changes, otherwise it may remove the wrong index.
 			_activeMessage = _mission.Messages.RemoveAt(_activeMessage);
 			if (_mission.Messages.Count == 0)
 			{
@@ -2681,7 +3124,6 @@ namespace Idmr.Yogeme
 				lblMessage.Text = "Message #0 of 0";
 				return;
 			}
-			lstMessages.Items.RemoveAt(_activeMessage);
 			lstMessages.SelectedIndex = _activeMessage;
 			Common.Title(this, _loading);
 		}
@@ -2691,6 +3133,7 @@ namespace Idmr.Yogeme
 			grpMessCancel.Enabled = state;
 			grpMessUnk.Enabled = state;
 			txtMessage.Enabled = state;
+			txtMessNote.Enabled = state; //[JB] Fix so edit box is disabled with others, prevents exception when leaving focus when zero messages.
 			grpSend.Enabled = state;
 			numMessDelaySec.Enabled = state;
 			numMessDelayMin.Enabled = state;
@@ -2774,7 +3217,7 @@ namespace Idmr.Yogeme
 			chkMessUnk2.Checked = _mission.Messages[_activeMessage].Unknown2;
 			txtVoice.Text = _mission.Messages[_activeMessage].VoiceID;
 			cboMessFG.SelectedIndex = _mission.Messages[_activeMessage].OriginatingFG;
-			lblMessTrigArr_Click(lblMessTrig[0], new EventArgs());
+			lblMessTrigArr_Click(0, new EventArgs());  //[JB] Was lblMessTrig[0].  Changed to XvT code of "0").
 			_loading = btemp;
 		}
 
@@ -2785,9 +3228,20 @@ namespace Idmr.Yogeme
 		}
 		void lblMessTrigArr_Click(object sender, EventArgs e)
 		{
-			Label l = (Label)sender;
-			l.Focus();
-			_activeMessageTrigger = Convert.ToByte(l.Tag);
+			Label l = null;
+			try
+			{
+				l = (Label)sender;
+				l.Focus();
+				_activeMessageTrigger = Convert.ToByte(l.Tag);
+			}
+			catch (InvalidCastException) { _activeMessageTrigger = Convert.ToByte(sender); l = lblMessTrig[_activeMessageTrigger]; }
+			/* [JB] Copied try/catch code from XvT.
+			 * txtMessage_Leave() was triggering lstMessages_SelectedIndexChanged() via MessListRefresh()
+			 * lstMessages_SelectedIndexChanged() then called lblMessTrigArr_Click(lblMessTrig[0], new EventArgs());
+			 * which was causing l.Focus() to trigger a duplicate txtMessage_Leave() event which was overriding a direct user click on lstMessages
+			 * Copying this try/catch code from XvT fixes a bug where clicking lstMessages directly wouldn't update the actual selection because duplicate Leave event triggers were being fired.*/
+
 			l.ForeColor = SystemColors.Highlight;
 			for (int i=0;i<6;i++) if (i!=_activeMessageTrigger) lblMessTrig[i].ForeColor = SystemColors.ControlText;
 			bool btemp = _loading;
@@ -2872,7 +3326,7 @@ namespace Idmr.Yogeme
 		}
 		void numMessPara_Leave(object sender, EventArgs e)
 		{
-			_mission.Messages[_activeMessage].Triggers[_activeMessageTrigger].Parameter2 = Common.Update(this, _mission.Messages[_activeMessage].Triggers[_activeMessageTrigger].Parameter2, Convert.ToByte(numMessPara.Value - 1));
+			_mission.Messages[_activeMessage].Triggers[_activeMessageTrigger].Parameter2 = Common.Update(this, _mission.Messages[_activeMessage].Triggers[_activeMessageTrigger].Parameter2, Convert.ToByte(numMessPara.Value));  //[JB] Fixed exception when leaving on zero value. No other references seem to use such an offset. (numMessPara.Value - 1)
 			labelRefresh(_mission.Messages[_activeMessage].Triggers[_activeMessageTrigger], lblMessTrig[_activeMessageTrigger]);	// don't know if I need this...
 		}
 		void numMessUnk1_Leave(object sender, EventArgs e)
@@ -2915,9 +3369,15 @@ namespace Idmr.Yogeme
 
 		void lblGlobTrigArr_Click(object sender, EventArgs e)
 		{
-			Label l = (Label)sender;
-			l.Focus();
-			_activeGlobalTrigger = Convert.ToByte(l.Tag);
+			//[JB] Fixes bug where Goal pasting wouldn't refresh the label.  Copied try/catch code from XvT.
+			Label l = null;
+			try
+			{
+				l = (Label)sender;
+				l.Focus();
+				_activeGlobalTrigger = Convert.ToByte(l.Tag);
+			}
+			catch (InvalidCastException) { _activeGlobalTrigger = Convert.ToByte(sender); l = lblGlobTrig[_activeGlobalTrigger]; }
 			l.ForeColor = SystemColors.Highlight;
 			for (int i=0;i<12;i++) if (i!=_activeGlobalTrigger) lblGlobTrig[i].ForeColor = SystemColors.ControlText;
 			int goal = _activeGlobalTrigger / 4;
@@ -2928,7 +3388,7 @@ namespace Idmr.Yogeme
 			cboGlobalType.SelectedIndex = -1;
 			cboGlobalType.SelectedIndex = _mission.Globals[_activeTeam].Goals[goal].Triggers[trig].VariableType;
 			cboGlobalAmount.SelectedIndex = _mission.Globals[_activeTeam].Goals[goal].Triggers[trig].Amount;
-			cboGlobalPara.SelectedIndex = _mission.Globals[_activeTeam].Goals[goal].Triggers[trig].Parameter1 + 1;
+			cboGlobalPara.SelectedIndex = _mission.Globals[_activeTeam].Goals[goal].Triggers[trig].Parameter1; //[JB] Fixed, don't need  + 1;
 			numGlobalPara.Value = _mission.Globals[_activeTeam].Goals[goal].Triggers[trig].Parameter2;
 			numGlobalPoints.Value = _mission.Globals[_activeTeam].Goals[goal].Points;
 			txtGlobalInc.Text = _mission.Globals[_activeTeam].Goals[goal].GoalStrings[trig, (int)Globals.GoalState.Incomplete];
@@ -2947,6 +3407,7 @@ namespace Idmr.Yogeme
 		}
 		void lblGlobTrigArr_DoubleClick(object sender, EventArgs e)
 		{
+			if(((MouseEventArgs)e).Button != MouseButtons.Left) return;  //[JB] Sometimes rapid single clicks were tricking this, like left to select, right to copy would trigger a paste instead.
 			menuPaste_Click("Glob", new EventArgs());
 		}
 		void lblGlobTrigArr_MouseUp(object sender, MouseEventArgs e)
@@ -2993,6 +3454,22 @@ namespace Idmr.Yogeme
 			labelRefresh(_mission.Globals[_activeTeam].Goals[_activeGlobalTrigger / 4].Triggers[_activeGlobalTrigger % 4], lblGlobTrig[_activeGlobalTrigger]);
 		}
 
+		void grpGlobUnk_Leave(object sender, EventArgs e)
+		{
+			int goal = _activeGlobalTrigger / 4;
+			_mission.Globals[_activeTeam].Goals[goal].Unknown1 = Common.Update(this, _mission.Globals[_activeTeam].Goals[goal].Unknown1, chkGlobUnk1.Checked);
+			_mission.Globals[_activeTeam].Goals[goal].Unknown2 = Common.Update(this, _mission.Globals[_activeTeam].Goals[goal].Unknown2, chkGlobUnk2.Checked);
+			_mission.Globals[_activeTeam].Goals[goal].Unknown3 = Common.Update(this, _mission.Globals[_activeTeam].Goals[goal].Unknown3, Convert.ToByte(numGlobUnk3.Value));
+			_mission.Globals[_activeTeam].Goals[goal].Unknown4 = Common.Update(this, _mission.Globals[_activeTeam].Goals[goal].Unknown4, Convert.ToByte(numGlobUnk4.Value));
+			_mission.Globals[_activeTeam].Goals[goal].Unknown5 = Common.Update(this, _mission.Globals[_activeTeam].Goals[goal].Unknown5, Convert.ToByte(numGlobUnk5.Value));
+			_mission.Globals[_activeTeam].Goals[goal].Unknown6 = Common.Update(this, _mission.Globals[_activeTeam].Goals[goal].Unknown6, Convert.ToByte(numGlobUnk6.Value));
+		}
+
+		//[JB] Added function for inactive control
+		private void numGlobActSeq_Leave(object sender, EventArgs e)
+		{
+			_mission.Globals[_activeTeam].Goals[_activeGlobalTrigger / 4].ActiveSequence = Common.Update(this, _mission.Globals[_activeTeam].Goals[_activeGlobalTrigger / 4].ActiveSequence, Convert.ToByte(numGlobActSeq.Value));
+		}	
 		void numGlobalPara_Leave(object sender, EventArgs e)
 		{
 			_mission.Globals[_activeTeam].Goals[_activeGlobalTrigger / 4].Triggers[_activeGlobalTrigger % 4].Parameter2 = Common.Update(this, _mission.Globals[_activeTeam].Goals[_activeGlobalTrigger / 4].Triggers[_activeGlobalTrigger % 4].Parameter2, Convert.ToByte(numGlobalPara.Value));
@@ -3044,6 +3521,10 @@ namespace Idmr.Yogeme
 			for (int i=0;i<8;i++)
 				if (cboType[i].SelectedIndex == 0xC || cboType[i].SelectedIndex == 0x15)
 					cbo[i].Items[_activeTeam] = team;
+
+			//[JB] Update the Briefing's list of team names.
+			for (int i = 0; i < _mission.Teams.Count; i++)
+				BriefingForm.sharedTeamNames[i] = _mission.Teams[i].Name;
 		}
 
 		void lblTeamArr_Click(object sender, EventArgs e)

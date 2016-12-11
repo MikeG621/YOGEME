@@ -55,6 +55,8 @@ namespace Idmr.Yogeme
 			this.menuBrief = new System.Windows.Forms.MenuItem();
 			this.menuLST = new System.Windows.Forms.MenuItem();
 			this.menuOptions = new System.Windows.Forms.MenuItem();
+			this.menuGoalSummary = new System.Windows.Forms.MenuItem();
+			this.menuText = new System.Windows.Forms.MenuItem();
 			this.menuHelp = new System.Windows.Forms.MenuItem();
 			this.menuHelpInfo = new System.Windows.Forms.MenuItem();
 			this.menuAbout = new System.Windows.Forms.MenuItem();
@@ -374,12 +376,13 @@ namespace Idmr.Yogeme
 			this.chkOptBDecoy = new System.Windows.Forms.CheckBox();
 			this.groupBox19 = new System.Windows.Forms.GroupBox();
 			this.chkOptWNone = new System.Windows.Forms.CheckBox();
-			this.chkOptWRocket = new System.Windows.Forms.CheckBox();
 			this.chkOptWBomb = new System.Windows.Forms.CheckBox();
+			this.chkOptWRocket = new System.Windows.Forms.CheckBox();
 			this.chkOptWMissile = new System.Windows.Forms.CheckBox();
 			this.chkOptWTorp = new System.Windows.Forms.CheckBox();
 			this.chkOptWAdvMissile = new System.Windows.Forms.CheckBox();
 			this.chkOptWAdvTorp = new System.Windows.Forms.CheckBox();
+			this.chkOptWIonPulse = new System.Windows.Forms.CheckBox();
 			this.chkOptWMagPulse = new System.Windows.Forms.CheckBox();
 			this.tabUnk = new System.Windows.Forms.TabPage();
 			this.grpUnkOther = new System.Windows.Forms.GroupBox();
@@ -514,7 +517,7 @@ namespace Idmr.Yogeme
 			this.cboGlobalPara = new System.Windows.Forms.ComboBox();
 			this.label128 = new System.Windows.Forms.Label();
 			this.numGlobActSeq = new System.Windows.Forms.NumericUpDown();
-			this.groupBox31 = new System.Windows.Forms.GroupBox();
+			this.grpGlobUnk = new System.Windows.Forms.GroupBox();
 			this.numGlobUnk6 = new System.Windows.Forms.NumericUpDown();
 			this.numGlobUnk4 = new System.Windows.Forms.NumericUpDown();
 			this.numGlobUnk5 = new System.Windows.Forms.NumericUpDown();
@@ -757,7 +760,6 @@ namespace Idmr.Yogeme
 			this.txtNotes = new System.Windows.Forms.TextBox();
 			this.dataOrders = new System.Data.DataView();
 			this.dataOrders_Raw = new System.Data.DataView();
-			this.menuText = new System.Windows.Forms.MenuItem();
 			((System.ComponentModel.ISupportInitialize)(this.dataWaypoints)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.dataWaypoints_Raw)).BeginInit();
 			this.tabMain.SuspendLayout();
@@ -870,7 +872,7 @@ namespace Idmr.Yogeme
 			((System.ComponentModel.ISupportInitialize)(this.numMessDelaySec)).BeginInit();
 			this.tabGlob.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numGlobActSeq)).BeginInit();
-			this.groupBox31.SuspendLayout();
+			this.grpGlobUnk.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numGlobUnk6)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numGlobUnk4)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numGlobUnk5)).BeginInit();
@@ -933,33 +935,33 @@ namespace Idmr.Yogeme
 			// menuXWA
 			// 
 			this.menuXWA.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-            this.menuFile,
-            this.menuEdit,
-            this.menuTools,
-            this.menuText,
-            this.menuHelp});
+			this.menuFile,
+			this.menuEdit,
+			this.menuTools,
+			this.menuText,
+			this.menuHelp});
 			// 
 			// menuFile
 			// 
 			this.menuFile.Index = 0;
 			this.menuFile.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-            this.menuNew,
-            this.menuOpen,
-            this.menuRecent,
-            this.menuSave,
-            this.menuSaveAs,
-            this.menuItem23,
-            this.menuExit});
+			this.menuNew,
+			this.menuOpen,
+			this.menuRecent,
+			this.menuSave,
+			this.menuSaveAs,
+			this.menuItem23,
+			this.menuExit});
 			this.menuFile.Text = "&File";
 			// 
 			// menuNew
 			// 
 			this.menuNew.Index = 0;
 			this.menuNew.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-            this.menuNewTIE,
-            this.menuNewXvT,
-            this.menuNewBoP,
-            this.menuNewXWA});
+			this.menuNewTIE,
+			this.menuNewXvT,
+			this.menuNewBoP,
+			this.menuNewXWA});
 			this.menuNew.Text = "&New...";
 			// 
 			// menuNewTIE
@@ -999,11 +1001,11 @@ namespace Idmr.Yogeme
 			this.menuRecent.Enabled = false;
 			this.menuRecent.Index = 2;
 			this.menuRecent.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-            this.menuRec1,
-            this.menuRec2,
-            this.menuRec3,
-            this.menuRec4,
-            this.menuRec5});
+			this.menuRec1,
+			this.menuRec2,
+			this.menuRec3,
+			this.menuRec4,
+			this.menuRec5});
 			this.menuRecent.Text = "Open &Recent...";
 			// 
 			// menuRec1
@@ -1047,10 +1049,10 @@ namespace Idmr.Yogeme
 			// 
 			this.menuSaveAs.Index = 4;
 			this.menuSaveAs.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-            this.menuSaveAsTIE,
-            this.menuSaveAsXvT,
-            this.menuSaveAsBoP,
-            this.menuSaveAsXWA});
+			this.menuSaveAsTIE,
+			this.menuSaveAsXvT,
+			this.menuSaveAsBoP,
+			this.menuSaveAsXWA});
 			this.menuSaveAs.Text = "Save &as...";
 			// 
 			// menuSaveAsTIE
@@ -1093,12 +1095,12 @@ namespace Idmr.Yogeme
 			// 
 			this.menuEdit.Index = 1;
 			this.menuEdit.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-            this.menuUndo,
-            this.menuItem14,
-            this.menuCut,
-            this.menuCopy,
-            this.menuPaste,
-            this.menuDelete});
+			this.menuUndo,
+			this.menuItem14,
+			this.menuCut,
+			this.menuCopy,
+			this.menuPaste,
+			this.menuDelete});
 			this.menuEdit.Text = "&Edit";
 			// 
 			// menuUndo
@@ -1136,18 +1138,19 @@ namespace Idmr.Yogeme
 			// menuDelete
 			// 
 			this.menuDelete.Index = 5;
-			this.menuDelete.Shortcut = System.Windows.Forms.Shortcut.Del;
 			this.menuDelete.Text = "&Delete";
+			this.menuDelete.Click += new System.EventHandler(this.menuDelete_Click);
 			// 
 			// menuTools
 			// 
 			this.menuTools.Index = 2;
 			this.menuTools.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-            this.menuVerify,
-            this.menuMap,
-            this.menuBrief,
-            this.menuLST,
-            this.menuOptions});
+			this.menuVerify,
+			this.menuMap,
+			this.menuBrief,
+			this.menuLST,
+			this.menuOptions,
+			this.menuGoalSummary});
 			this.menuTools.Text = "&Tools";
 			// 
 			// menuVerify
@@ -1180,14 +1183,26 @@ namespace Idmr.Yogeme
 			this.menuOptions.Text = "&Options";
 			this.menuOptions.Click += new System.EventHandler(this.menuOptions_Click);
 			// 
+			// menuGoalSummary
+			// 
+			this.menuGoalSummary.Index = 5;
+			this.menuGoalSummary.Text = "FG &Goal Summary";
+			this.menuGoalSummary.Click += new System.EventHandler(this.menuGoalSummary_Click);
+			// 
+			// menuText
+			// 
+			this.menuText.Index = 3;
+			this.menuText.Text = "Te&st";
+			this.menuText.Click += new System.EventHandler(this.menuText_Click);
+			// 
 			// menuHelp
 			// 
 			this.menuHelp.Index = 4;
 			this.menuHelp.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-            this.menuHelpInfo,
-            this.menuAbout,
-            this.menuIDMR,
-            this.menuER});
+			this.menuHelpInfo,
+			this.menuAbout,
+			this.menuIDMR,
+			this.menuER});
 			this.menuHelp.Text = "&Help";
 			// 
 			// menuHelpInfo
@@ -1238,23 +1253,23 @@ namespace Idmr.Yogeme
 			// 
 			this.toolXWA.AutoSize = false;
 			this.toolXWA.Buttons.AddRange(new System.Windows.Forms.ToolBarButton[] {
-            this.toolNew,
-            this.toolOpen,
-            this.toolSave,
-            this.toolSaveAs,
-            this.toolSep1,
-            this.toolNewItem,
-            this.toolDeleteItem,
-            this.toolCopy,
-            this.toolPaste,
-            this.toolSep2,
-            this.toolMap,
-            this.toolBriefing,
-            this.toolVerify,
-            this.toolSep3,
-            this.toolOptions,
-            this.toolLst,
-            this.toolHelp});
+			this.toolNew,
+			this.toolOpen,
+			this.toolSave,
+			this.toolSaveAs,
+			this.toolSep1,
+			this.toolNewItem,
+			this.toolDeleteItem,
+			this.toolCopy,
+			this.toolPaste,
+			this.toolSep2,
+			this.toolMap,
+			this.toolBriefing,
+			this.toolVerify,
+			this.toolSep3,
+			this.toolOptions,
+			this.toolLst,
+			this.toolHelp});
 			this.toolXWA.DropDownArrows = true;
 			this.toolXWA.ImageList = this.imgToolbar;
 			this.toolXWA.Location = new System.Drawing.Point(0, 0);
@@ -1502,10 +1517,10 @@ namespace Idmr.Yogeme
 			// 
 			this.numSC.Location = new System.Drawing.Point(96, 88);
 			this.numSC.Maximum = new decimal(new int[] {
-            6,
-            0,
-            0,
-            0});
+			6,
+			0,
+			0,
+			0});
 			this.numSC.Name = "numSC";
 			this.numSC.Size = new System.Drawing.Size(32, 20);
 			this.numSC.TabIndex = 8;
@@ -1586,24 +1601,24 @@ namespace Idmr.Yogeme
 			// 
 			this.numWaves.Location = new System.Drawing.Point(68, 14);
 			this.numWaves.Maximum = new decimal(new int[] {
-            256,
-            0,
-            0,
-            0});
+			256,
+			0,
+			0,
+			0});
 			this.numWaves.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
+			1,
+			0,
+			0,
+			0});
 			this.numWaves.Name = "numWaves";
 			this.numWaves.Size = new System.Drawing.Size(40, 20);
 			this.numWaves.TabIndex = 20;
 			this.numWaves.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
 			this.numWaves.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
+			1,
+			0,
+			0,
+			0});
 			// 
 			// label10
 			// 
@@ -1639,33 +1654,33 @@ namespace Idmr.Yogeme
 			// 
 			this.numCraft.Location = new System.Drawing.Point(68, 38);
 			this.numCraft.Maximum = new decimal(new int[] {
-            256,
-            0,
-            0,
-            0});
+			256,
+			0,
+			0,
+			0});
 			this.numCraft.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
+			1,
+			0,
+			0,
+			0});
 			this.numCraft.Name = "numCraft";
 			this.numCraft.Size = new System.Drawing.Size(40, 20);
 			this.numCraft.TabIndex = 21;
 			this.numCraft.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
 			this.numCraft.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
+			1,
+			0,
+			0,
+			0});
 			// 
 			// numGG
 			// 
 			this.numGG.Location = new System.Drawing.Point(203, 14);
 			this.numGG.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
+			255,
+			0,
+			0,
+			0});
 			this.numGG.Name = "numGG";
 			this.numGG.Size = new System.Drawing.Size(40, 20);
 			this.numGG.TabIndex = 22;
@@ -1675,10 +1690,10 @@ namespace Idmr.Yogeme
 			// 
 			this.numGU.Location = new System.Drawing.Point(203, 40);
 			this.numGU.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
+			255,
+			0,
+			0,
+			0});
 			this.numGU.Name = "numGU";
 			this.numGU.Size = new System.Drawing.Size(40, 20);
 			this.numGU.TabIndex = 22;
@@ -1739,10 +1754,10 @@ namespace Idmr.Yogeme
 			// 
 			this.numLead.Location = new System.Drawing.Point(104, 240);
 			this.numLead.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
+			255,
+			0,
+			0,
+			0});
 			this.numLead.Name = "numLead";
 			this.numLead.Size = new System.Drawing.Size(40, 20);
 			this.numLead.TabIndex = 16;
@@ -1817,18 +1832,18 @@ namespace Idmr.Yogeme
 			// 
 			this.numSpacing.Location = new System.Drawing.Point(104, 264);
 			this.numSpacing.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
+			255,
+			0,
+			0,
+			0});
 			this.numSpacing.Name = "numSpacing";
 			this.numSpacing.Size = new System.Drawing.Size(40, 20);
 			this.numSpacing.TabIndex = 17;
 			this.numSpacing.Value = new decimal(new int[] {
-            2,
-            0,
-            0,
-            0});
+			2,
+			0,
+			0,
+			0});
 			// 
 			// cboIFF
 			// 
@@ -1858,15 +1873,15 @@ namespace Idmr.Yogeme
 			// 
 			this.cboPlayer.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cboPlayer.Items.AddRange(new object[] {
-            "AI",
-            "1",
-            "2",
-            "3",
-            "4",
-            "5",
-            "6",
-            "7",
-            "8"});
+			"AI",
+			"1",
+			"2",
+			"3",
+			"4",
+			"5",
+			"6",
+			"7",
+			"8"});
 			this.cboPlayer.Location = new System.Drawing.Point(88, 136);
 			this.cboPlayer.Name = "cboPlayer";
 			this.cboPlayer.Size = new System.Drawing.Size(136, 21);
@@ -1918,12 +1933,12 @@ namespace Idmr.Yogeme
 			// 
 			this.cboPosition.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cboPosition.Items.AddRange(new object[] {
-            "(Default)",
-            "2",
-            "3",
-            "4",
-            "5",
-            "6"});
+			"(Default)",
+			"2",
+			"3",
+			"4",
+			"5",
+			"6"});
 			this.cboPosition.Location = new System.Drawing.Point(88, 160);
 			this.cboPosition.Name = "cboPosition";
 			this.cboPosition.Size = new System.Drawing.Size(136, 21);
@@ -2024,10 +2039,10 @@ namespace Idmr.Yogeme
 			this.numBackdrop.Enabled = false;
 			this.numBackdrop.Location = new System.Drawing.Point(96, 160);
 			this.numBackdrop.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
+			255,
+			0,
+			0,
+			0});
 			this.numBackdrop.Name = "numBackdrop";
 			this.numBackdrop.Size = new System.Drawing.Size(48, 20);
 			this.numBackdrop.TabIndex = 30;
@@ -2072,17 +2087,17 @@ namespace Idmr.Yogeme
 			// 
 			// numExplode
 			// 
-			this.numExplode.Enabled = false;
 			this.numExplode.Location = new System.Drawing.Point(96, 136);
 			this.numExplode.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
+			255,
+			0,
+			0,
+			0});
 			this.numExplode.Name = "numExplode";
 			this.numExplode.Size = new System.Drawing.Size(48, 20);
 			this.numExplode.TabIndex = 27;
 			this.numExplode.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+			this.numExplode.ValueChanged += new System.EventHandler(this.numExplode_ValueChanged);
 			// 
 			// label67
 			// 
@@ -2166,9 +2181,9 @@ namespace Idmr.Yogeme
 			// 
 			this.cboCounter.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cboCounter.Items.AddRange(new object[] {
-            "None",
-            "Chaff",
-            "Flare"});
+			"None",
+			"Chaff",
+			"Flare"});
 			this.cboCounter.Location = new System.Drawing.Point(96, 112);
 			this.cboCounter.Name = "cboCounter";
 			this.cboCounter.Size = new System.Drawing.Size(150, 21);
@@ -2221,10 +2236,10 @@ namespace Idmr.Yogeme
 			// 
 			this.numADPara.Location = new System.Drawing.Point(486, 413);
 			this.numADPara.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
+			255,
+			0,
+			0,
+			0});
 			this.numADPara.Name = "numADPara";
 			this.numADPara.Size = new System.Drawing.Size(48, 20);
 			this.numADPara.TabIndex = 41;
@@ -2288,10 +2303,10 @@ namespace Idmr.Yogeme
 			// 
 			this.numDepMin.Location = new System.Drawing.Point(98, 328);
 			this.numDepMin.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
+			255,
+			0,
+			0,
+			0});
 			this.numDepMin.Name = "numDepMin";
 			this.numDepMin.Size = new System.Drawing.Size(48, 20);
 			this.numDepMin.TabIndex = 25;
@@ -2300,10 +2315,10 @@ namespace Idmr.Yogeme
 			// 
 			this.numDepSec.Location = new System.Drawing.Point(176, 328);
 			this.numDepSec.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
+			255,
+			0,
+			0,
+			0});
 			this.numDepSec.Name = "numDepSec";
 			this.numDepSec.Size = new System.Drawing.Size(48, 20);
 			this.numDepSec.TabIndex = 25;
@@ -2506,10 +2521,10 @@ namespace Idmr.Yogeme
 			// 
 			this.numArrSec.Location = new System.Drawing.Point(161, 344);
 			this.numArrSec.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
+			255,
+			0,
+			0,
+			0});
 			this.numArrSec.Name = "numArrSec";
 			this.numArrSec.Size = new System.Drawing.Size(48, 20);
 			this.numArrSec.TabIndex = 25;
@@ -2519,10 +2534,10 @@ namespace Idmr.Yogeme
 			// 
 			this.numArrMin.Location = new System.Drawing.Point(72, 344);
 			this.numArrMin.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
+			255,
+			0,
+			0,
+			0});
 			this.numArrMin.Name = "numArrMin";
 			this.numArrMin.Size = new System.Drawing.Size(48, 20);
 			this.numArrMin.TabIndex = 25;
@@ -2879,6 +2894,7 @@ namespace Idmr.Yogeme
 			this.cboGoalPara.Name = "cboGoalPara";
 			this.cboGoalPara.Size = new System.Drawing.Size(125, 21);
 			this.cboGoalPara.TabIndex = 44;
+			this.cboGoalPara.SelectedIndexChanged += new System.EventHandler(this.cboGoalPara_SelectedIndexChanged);
 			// 
 			// label31
 			// 
@@ -2893,14 +2909,15 @@ namespace Idmr.Yogeme
 			// 
 			this.numGoalActSeq.Location = new System.Drawing.Point(103, 76);
 			this.numGoalActSeq.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
+			255,
+			0,
+			0,
+			0});
 			this.numGoalActSeq.Name = "numGoalActSeq";
 			this.numGoalActSeq.Size = new System.Drawing.Size(46, 20);
 			this.numGoalActSeq.TabIndex = 42;
 			this.numGoalActSeq.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+			this.numGoalActSeq.ValueChanged += new System.EventHandler(this.numGoalActSeq_ValueChanged);
 			// 
 			// label61
 			// 
@@ -2924,10 +2941,10 @@ namespace Idmr.Yogeme
 			// 
 			this.cboGoalArgument.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cboGoalArgument.Items.AddRange(new object[] {
-            "must",
-            "must not",
-            "BONUS must",
-            "BONUS must not"});
+			"must",
+			"must not",
+			"BONUS must",
+			"BONUS must not"});
 			this.cboGoalArgument.Location = new System.Drawing.Point(8, 46);
 			this.cboGoalArgument.Name = "cboGoalArgument";
 			this.cboGoalArgument.Size = new System.Drawing.Size(112, 21);
@@ -2964,21 +2981,21 @@ namespace Idmr.Yogeme
 			// numGoalPoints
 			// 
 			this.numGoalPoints.Increment = new decimal(new int[] {
-            250,
-            0,
-            0,
-            0});
+			250,
+			0,
+			0,
+			0});
 			this.numGoalPoints.Location = new System.Drawing.Point(376, 285);
 			this.numGoalPoints.Maximum = new decimal(new int[] {
-            3200,
-            0,
-            0,
-            0});
+			3200,
+			0,
+			0,
+			0});
 			this.numGoalPoints.Minimum = new decimal(new int[] {
-            3175,
-            0,
-            0,
-            -2147483648});
+			3175,
+			0,
+			0,
+			-2147483648});
 			this.numGoalPoints.Name = "numGoalPoints";
 			this.numGoalPoints.Size = new System.Drawing.Size(56, 20);
 			this.numGoalPoints.TabIndex = 45;
@@ -3168,23 +3185,23 @@ namespace Idmr.Yogeme
 			// 
 			this.numGoalTeam.Location = new System.Drawing.Point(456, 317);
 			this.numGoalTeam.Maximum = new decimal(new int[] {
-            8,
-            0,
-            0,
-            0});
+			8,
+			0,
+			0,
+			0});
 			this.numGoalTeam.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
+			1,
+			0,
+			0,
+			0});
 			this.numGoalTeam.Name = "numGoalTeam";
 			this.numGoalTeam.Size = new System.Drawing.Size(56, 20);
 			this.numGoalTeam.TabIndex = 45;
 			this.numGoalTeam.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
+			1,
+			0,
+			0,
+			0});
 			this.numGoalTeam.Leave += new System.EventHandler(this.numGoalTeam_Leave);
 			// 
 			// tabWP
@@ -3229,92 +3246,92 @@ namespace Idmr.Yogeme
 			// 
 			this.numHYP.Location = new System.Drawing.Point(266, 104);
 			this.numHYP.Maximum = new decimal(new int[] {
-            4,
-            0,
-            0,
-            0});
+			4,
+			0,
+			0,
+			0});
 			this.numHYP.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
+			1,
+			0,
+			0,
+			0});
 			this.numHYP.Name = "numHYP";
 			this.numHYP.Size = new System.Drawing.Size(31, 20);
 			this.numHYP.TabIndex = 51;
 			this.numHYP.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
+			1,
+			0,
+			0,
+			0});
 			this.numHYP.Leave += new System.EventHandler(this.numWP_Leave);
 			// 
 			// numSP3
 			// 
 			this.numSP3.Location = new System.Drawing.Point(266, 84);
 			this.numSP3.Maximum = new decimal(new int[] {
-            4,
-            0,
-            0,
-            0});
+			4,
+			0,
+			0,
+			0});
 			this.numSP3.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
+			1,
+			0,
+			0,
+			0});
 			this.numSP3.Name = "numSP3";
 			this.numSP3.Size = new System.Drawing.Size(31, 20);
 			this.numSP3.TabIndex = 51;
 			this.numSP3.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
+			1,
+			0,
+			0,
+			0});
 			this.numSP3.Leave += new System.EventHandler(this.numWP_Leave);
 			// 
 			// numSP2
 			// 
 			this.numSP2.Location = new System.Drawing.Point(266, 64);
 			this.numSP2.Maximum = new decimal(new int[] {
-            4,
-            0,
-            0,
-            0});
+			4,
+			0,
+			0,
+			0});
 			this.numSP2.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
+			1,
+			0,
+			0,
+			0});
 			this.numSP2.Name = "numSP2";
 			this.numSP2.Size = new System.Drawing.Size(31, 20);
 			this.numSP2.TabIndex = 51;
 			this.numSP2.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
+			1,
+			0,
+			0,
+			0});
 			this.numSP2.Leave += new System.EventHandler(this.numWP_Leave);
 			// 
 			// numSP1
 			// 
 			this.numSP1.Location = new System.Drawing.Point(266, 44);
 			this.numSP1.Maximum = new decimal(new int[] {
-            4,
-            0,
-            0,
-            0});
+			4,
+			0,
+			0,
+			0});
 			this.numSP1.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
+			1,
+			0,
+			0,
+			0});
 			this.numSP1.Name = "numSP1";
 			this.numSP1.Size = new System.Drawing.Size(31, 20);
 			this.numSP1.TabIndex = 51;
 			this.numSP1.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
+			1,
+			0,
+			0,
+			0});
 			this.numSP1.Leave += new System.EventHandler(this.numWP_Leave);
 			// 
 			// cboWP
@@ -3322,22 +3339,22 @@ namespace Idmr.Yogeme
 			this.cboWP.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cboWP.FormattingEnabled = true;
 			this.cboWP.Items.AddRange(new object[] {
-            "1, Region 1",
-            "2, Region 1",
-            "3, Region 1",
-            "4, Region 1",
-            "1, Region 2",
-            "2, Region 2",
-            "3, Region 2",
-            "4, Region 2",
-            "1, Region 3",
-            "2, Region 3",
-            "3, Region 3",
-            "4, Region 3",
-            "1, Region 4",
-            "2, Region 4",
-            "3, Region 4",
-            "4, Region 4"});
+			"1, Region 1",
+			"2, Region 1",
+			"3, Region 1",
+			"4, Region 1",
+			"1, Region 2",
+			"2, Region 2",
+			"3, Region 2",
+			"4, Region 2",
+			"1, Region 3",
+			"2, Region 3",
+			"3, Region 3",
+			"4, Region 3",
+			"1, Region 4",
+			"2, Region 4",
+			"3, Region 4",
+			"4, Region 4"});
 			this.cboWP.Location = new System.Drawing.Point(222, 212);
 			this.cboWP.Name = "cboWP";
 			this.cboWP.Size = new System.Drawing.Size(88, 21);
@@ -3356,15 +3373,15 @@ namespace Idmr.Yogeme
 			// 
 			this.numRoll.Location = new System.Drawing.Point(480, 142);
 			this.numRoll.Maximum = new decimal(new int[] {
-            180,
-            0,
-            0,
-            0});
+			179,
+			0,
+			0,
+			0});
 			this.numRoll.Minimum = new decimal(new int[] {
-            179,
-            0,
-            0,
-            -2147483648});
+			180,
+			0,
+			0,
+			-2147483648});
 			this.numRoll.Name = "numRoll";
 			this.numRoll.Size = new System.Drawing.Size(48, 20);
 			this.numRoll.TabIndex = 49;
@@ -3374,15 +3391,15 @@ namespace Idmr.Yogeme
 			// 
 			this.numPitch.Location = new System.Drawing.Point(480, 95);
 			this.numPitch.Maximum = new decimal(new int[] {
-            180,
-            0,
-            0,
-            0});
+			179,
+			0,
+			0,
+			0});
 			this.numPitch.Minimum = new decimal(new int[] {
-            179,
-            0,
-            0,
-            -2147483648});
+			180,
+			0,
+			0,
+			-2147483648});
 			this.numPitch.Name = "numPitch";
 			this.numPitch.Size = new System.Drawing.Size(48, 20);
 			this.numPitch.TabIndex = 48;
@@ -3392,15 +3409,15 @@ namespace Idmr.Yogeme
 			// 
 			this.numYaw.Location = new System.Drawing.Point(480, 48);
 			this.numYaw.Maximum = new decimal(new int[] {
-            180,
-            0,
-            0,
-            0});
+			179,
+			0,
+			0,
+			0});
 			this.numYaw.Minimum = new decimal(new int[] {
-            179,
-            0,
-            0,
-            -2147483648});
+			180,
+			0,
+			0,
+			-2147483648});
 			this.numYaw.Name = "numYaw";
 			this.numYaw.Size = new System.Drawing.Size(48, 20);
 			this.numYaw.TabIndex = 47;
@@ -3634,23 +3651,23 @@ namespace Idmr.Yogeme
 			// 
 			this.numORegion.Location = new System.Drawing.Point(471, 12);
 			this.numORegion.Maximum = new decimal(new int[] {
-            4,
-            0,
-            0,
-            0});
+			4,
+			0,
+			0,
+			0});
 			this.numORegion.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
+			1,
+			0,
+			0,
+			0});
 			this.numORegion.Name = "numORegion";
 			this.numORegion.Size = new System.Drawing.Size(33, 20);
 			this.numORegion.TabIndex = 36;
 			this.numORegion.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
+			1,
+			0,
+			0,
+			0});
 			this.numORegion.ValueChanged += new System.EventHandler(this.numORegion_ValueChanged);
 			// 
 			// label103
@@ -3666,10 +3683,10 @@ namespace Idmr.Yogeme
 			// 
 			this.numOSpeed.Location = new System.Drawing.Point(75, 235);
 			this.numOSpeed.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
+			255,
+			0,
+			0,
+			0});
 			this.numOSpeed.Name = "numOSpeed";
 			this.numOSpeed.Size = new System.Drawing.Size(48, 20);
 			this.numOSpeed.TabIndex = 34;
@@ -3756,6 +3773,7 @@ namespace Idmr.Yogeme
 			this.optOT3T4OR.TabIndex = 13;
 			this.optOT3T4OR.TabStop = true;
 			this.optOT3T4OR.Text = "OR";
+			this.optOT3T4OR.CheckedChanged += new System.EventHandler(this.optOT3T4OR_CheckedChanged);
 			// 
 			// cboOT3
 			// 
@@ -3764,6 +3782,7 @@ namespace Idmr.Yogeme
 			this.cboOT3.Name = "cboOT3";
 			this.cboOT3.Size = new System.Drawing.Size(184, 21);
 			this.cboOT3.TabIndex = 11;
+			this.cboOT3.Leave += new System.EventHandler(this.cboOT3_Leave);
 			// 
 			// cboOT3Type
 			// 
@@ -3790,6 +3809,7 @@ namespace Idmr.Yogeme
 			this.cboOT4.Name = "cboOT4";
 			this.cboOT4.Size = new System.Drawing.Size(184, 21);
 			this.cboOT4.TabIndex = 15;
+			this.cboOT4.Leave += new System.EventHandler(this.cboOT4_Leave);
 			// 
 			// optOT3T4AND
 			// 
@@ -3835,6 +3855,7 @@ namespace Idmr.Yogeme
 			this.optOT1T2OR.TabIndex = 7;
 			this.optOT1T2OR.TabStop = true;
 			this.optOT1T2OR.Text = "OR";
+			this.optOT1T2OR.CheckedChanged += new System.EventHandler(this.optOT1T2OR_CheckedChanged);
 			// 
 			// cboOT1
 			// 
@@ -3843,6 +3864,7 @@ namespace Idmr.Yogeme
 			this.cboOT1.Name = "cboOT1";
 			this.cboOT1.Size = new System.Drawing.Size(184, 21);
 			this.cboOT1.TabIndex = 5;
+			this.cboOT1.Leave += new System.EventHandler(this.cboOT1_Leave);
 			// 
 			// cboOT1Type
 			// 
@@ -3869,6 +3891,7 @@ namespace Idmr.Yogeme
 			this.cboOT2.Name = "cboOT2";
 			this.cboOT2.Size = new System.Drawing.Size(184, 21);
 			this.cboOT2.TabIndex = 9;
+			this.cboOT2.Leave += new System.EventHandler(this.cboOT2_Leave);
 			// 
 			// optOT1T2AND
 			// 
@@ -3884,10 +3907,10 @@ namespace Idmr.Yogeme
 			// 
 			this.numOVar3.Location = new System.Drawing.Point(261, 235);
 			this.numOVar3.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
+			255,
+			0,
+			0,
+			0});
 			this.numOVar3.Name = "numOVar3";
 			this.numOVar3.Size = new System.Drawing.Size(40, 20);
 			this.numOVar3.TabIndex = 22;
@@ -3897,10 +3920,10 @@ namespace Idmr.Yogeme
 			// 
 			this.numOVar1.Location = new System.Drawing.Point(261, 209);
 			this.numOVar1.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
+			255,
+			0,
+			0,
+			0});
 			this.numOVar1.Name = "numOVar1";
 			this.numOVar1.Size = new System.Drawing.Size(40, 20);
 			this.numOVar1.TabIndex = 22;
@@ -3928,17 +3951,17 @@ namespace Idmr.Yogeme
 			// 
 			this.cboOThrottle.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cboOThrottle.Items.AddRange(new object[] {
-            "0",
-            "10",
-            "20",
-            "30",
-            "40",
-            "50",
-            "60",
-            "70",
-            "80",
-            "90",
-            "100"});
+			"0",
+			"10",
+			"20",
+			"30",
+			"40",
+			"50",
+			"60",
+			"70",
+			"80",
+			"90",
+			"100"});
 			this.cboOThrottle.Location = new System.Drawing.Point(75, 208);
 			this.cboOThrottle.Name = "cboOThrottle";
 			this.cboOThrottle.Size = new System.Drawing.Size(48, 21);
@@ -4030,10 +4053,10 @@ namespace Idmr.Yogeme
 			// 
 			this.numOVar2.Location = new System.Drawing.Point(464, 209);
 			this.numOVar2.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
+			255,
+			0,
+			0,
+			0});
 			this.numOVar2.Name = "numOVar2";
 			this.numOVar2.Size = new System.Drawing.Size(40, 20);
 			this.numOVar2.TabIndex = 23;
@@ -4197,10 +4220,10 @@ namespace Idmr.Yogeme
 			// 
 			this.numSkipPara.Location = new System.Drawing.Point(430, 145);
 			this.numSkipPara.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
+			255,
+			0,
+			0,
+			0});
 			this.numSkipPara.Name = "numSkipPara";
 			this.numSkipPara.Size = new System.Drawing.Size(48, 20);
 			this.numSkipPara.TabIndex = 54;
@@ -4212,22 +4235,22 @@ namespace Idmr.Yogeme
 			this.cboSkipOrder.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cboSkipOrder.FormattingEnabled = true;
 			this.cboSkipOrder.Items.AddRange(new object[] {
-            "1, Region 1",
-            "2, Region 1",
-            "3, Region 1",
-            "4, Region 1",
-            "1, Region 2",
-            "2, Region 2",
-            "3, Region 2",
-            "4, Region 2",
-            "1, Region 3",
-            "2, Region 3",
-            "3, Region 3",
-            "4, Region 3",
-            "1, Region 4",
-            "2, Region 4",
-            "3, Region 4",
-            "4, Region 4"});
+			"1, Region 1",
+			"2, Region 1",
+			"3, Region 1",
+			"4, Region 1",
+			"1, Region 2",
+			"2, Region 2",
+			"3, Region 2",
+			"4, Region 2",
+			"1, Region 3",
+			"2, Region 3",
+			"3, Region 3",
+			"4, Region 3",
+			"1, Region 4",
+			"2, Region 4",
+			"3, Region 4",
+			"4, Region 4"});
 			this.cboSkipOrder.Location = new System.Drawing.Point(388, 59);
 			this.cboSkipOrder.Name = "cboSkipOrder";
 			this.cboSkipOrder.Size = new System.Drawing.Size(88, 21);
@@ -4337,6 +4360,7 @@ namespace Idmr.Yogeme
 			this.optSkipOR.TabStop = true;
 			this.optSkipOR.Text = "OR";
 			this.optSkipOR.Leave += new System.EventHandler(this.optSkipOR_Leave);
+			this.optSkipOR.CheckedChanged += new System.EventHandler(this.optSkipOR_CheckedChanged);
 			// 
 			// lblSkipTrig1
 			// 
@@ -4348,7 +4372,9 @@ namespace Idmr.Yogeme
 			this.lblSkipTrig1.TabIndex = 21;
 			this.lblSkipTrig1.Text = "always (TRUE)";
 			this.lblSkipTrig1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.lblSkipTrig1.DoubleClick += new System.EventHandler(this.lblSkipTrigArr_DoubleClick);
 			this.lblSkipTrig1.Click += new System.EventHandler(this.lblSkipTrigArr_Click);
+			this.lblSkipTrig1.MouseUp += new System.Windows.Forms.MouseEventHandler(this.lblSkipTrigArr_MouseUp);
 			// 
 			// lblSkipTrig2
 			// 
@@ -4359,7 +4385,9 @@ namespace Idmr.Yogeme
 			this.lblSkipTrig2.TabIndex = 22;
 			this.lblSkipTrig2.Text = "always (TRUE)";
 			this.lblSkipTrig2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.lblSkipTrig2.DoubleClick += new System.EventHandler(this.lblSkipTrigArr_DoubleClick);
 			this.lblSkipTrig2.Click += new System.EventHandler(this.lblSkipTrigArr_Click);
+			this.lblSkipTrig2.MouseUp += new System.Windows.Forms.MouseEventHandler(this.lblSkipTrigArr_MouseUp);
 			// 
 			// groupBox22
 			// 
@@ -4421,23 +4449,23 @@ namespace Idmr.Yogeme
 			this.numOptWaves.Enabled = false;
 			this.numOptWaves.Location = new System.Drawing.Point(56, 48);
 			this.numOptWaves.Maximum = new decimal(new int[] {
-            256,
-            0,
-            0,
-            0});
+			256,
+			0,
+			0,
+			0});
 			this.numOptWaves.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
+			1,
+			0,
+			0,
+			0});
 			this.numOptWaves.Name = "numOptWaves";
 			this.numOptWaves.Size = new System.Drawing.Size(48, 20);
 			this.numOptWaves.TabIndex = 3;
 			this.numOptWaves.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
+			1,
+			0,
+			0,
+			0});
 			this.numOptWaves.Leave += new System.EventHandler(this.numOptWaves_Leave);
 			// 
 			// label69
@@ -4462,11 +4490,11 @@ namespace Idmr.Yogeme
 			// 
 			this.cboOptCat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cboOptCat.Items.AddRange(new object[] {
-            "None",
-            "All Flyable",
-            "All Rebel Flyable",
-            "All Imperial Flyable",
-            "Custom"});
+			"None",
+			"All Flyable",
+			"All Rebel Flyable",
+			"All Imperial Flyable",
+			"Custom"});
 			this.cboOptCat.Location = new System.Drawing.Point(88, 16);
 			this.cboOptCat.Name = "cboOptCat";
 			this.cboOptCat.Size = new System.Drawing.Size(120, 21);
@@ -4478,23 +4506,23 @@ namespace Idmr.Yogeme
 			this.numOptCraft.Enabled = false;
 			this.numOptCraft.Location = new System.Drawing.Point(168, 48);
 			this.numOptCraft.Maximum = new decimal(new int[] {
-            256,
-            0,
-            0,
-            0});
+			256,
+			0,
+			0,
+			0});
 			this.numOptCraft.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
+			1,
+			0,
+			0,
+			0});
 			this.numOptCraft.Name = "numOptCraft";
 			this.numOptCraft.Size = new System.Drawing.Size(48, 20);
 			this.numOptCraft.TabIndex = 3;
 			this.numOptCraft.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
+			1,
+			0,
+			0,
+			0});
 			this.numOptCraft.Leave += new System.EventHandler(this.numOptCraft_Leave);
 			// 
 			// lblOptCraft2
@@ -4666,16 +4694,17 @@ namespace Idmr.Yogeme
 			// groupBox19
 			// 
 			this.groupBox19.Controls.Add(this.chkOptWNone);
-			this.groupBox19.Controls.Add(this.chkOptWRocket);
 			this.groupBox19.Controls.Add(this.chkOptWBomb);
+			this.groupBox19.Controls.Add(this.chkOptWRocket);
 			this.groupBox19.Controls.Add(this.chkOptWMissile);
 			this.groupBox19.Controls.Add(this.chkOptWTorp);
 			this.groupBox19.Controls.Add(this.chkOptWAdvMissile);
 			this.groupBox19.Controls.Add(this.chkOptWAdvTorp);
+			this.groupBox19.Controls.Add(this.chkOptWIonPulse);
 			this.groupBox19.Controls.Add(this.chkOptWMagPulse);
 			this.groupBox19.Location = new System.Drawing.Point(262, 8);
 			this.groupBox19.Name = "groupBox19";
-			this.groupBox19.Size = new System.Drawing.Size(112, 152);
+			this.groupBox19.Size = new System.Drawing.Size(112, 168);
 			this.groupBox19.TabIndex = 0;
 			this.groupBox19.TabStop = false;
 			this.groupBox19.Text = "Warheads";
@@ -4690,21 +4719,21 @@ namespace Idmr.Yogeme
 			this.chkOptWNone.TabIndex = 0;
 			this.chkOptWNone.Text = "None";
 			// 
-			// chkOptWRocket
-			// 
-			this.chkOptWRocket.Location = new System.Drawing.Point(8, 32);
-			this.chkOptWRocket.Name = "chkOptWRocket";
-			this.chkOptWRocket.Size = new System.Drawing.Size(96, 20);
-			this.chkOptWRocket.TabIndex = 0;
-			this.chkOptWRocket.Text = "Heavy Rocket";
-			// 
 			// chkOptWBomb
 			// 
-			this.chkOptWBomb.Location = new System.Drawing.Point(8, 48);
+			this.chkOptWBomb.Location = new System.Drawing.Point(8, 32);
 			this.chkOptWBomb.Name = "chkOptWBomb";
 			this.chkOptWBomb.Size = new System.Drawing.Size(96, 20);
 			this.chkOptWBomb.TabIndex = 0;
 			this.chkOptWBomb.Text = "Space Bomb";
+			// 
+			// chkOptWRocket
+			// 
+			this.chkOptWRocket.Location = new System.Drawing.Point(8, 48);
+			this.chkOptWRocket.Name = "chkOptWRocket";
+			this.chkOptWRocket.Size = new System.Drawing.Size(96, 20);
+			this.chkOptWRocket.TabIndex = 0;
+			this.chkOptWRocket.Text = "Heavy Rocket";
 			// 
 			// chkOptWMissile
 			// 
@@ -4737,6 +4766,14 @@ namespace Idmr.Yogeme
 			this.chkOptWAdvTorp.Size = new System.Drawing.Size(96, 20);
 			this.chkOptWAdvTorp.TabIndex = 0;
 			this.chkOptWAdvTorp.Text = "Adv. Torpedo";
+			// 
+			// chkOptWIonPulse
+			// 
+			this.chkOptWIonPulse.Location = new System.Drawing.Point(8, 144);
+			this.chkOptWIonPulse.Name = "chkOptWIonPulse";
+			this.chkOptWIonPulse.Size = new System.Drawing.Size(96, 20);
+			this.chkOptWIonPulse.TabIndex = 0;
+			this.chkOptWIonPulse.Text = "Ion Pulse";
 			// 
 			// chkOptWMagPulse
 			// 
@@ -4933,10 +4970,10 @@ namespace Idmr.Yogeme
 			// 
 			this.numUnk25.Location = new System.Drawing.Point(458, 46);
 			this.numUnk25.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
+			255,
+			0,
+			0,
+			0});
 			this.numUnk25.Name = "numUnk25";
 			this.numUnk25.Size = new System.Drawing.Size(48, 20);
 			this.numUnk25.TabIndex = 6;
@@ -4946,10 +4983,10 @@ namespace Idmr.Yogeme
 			// 
 			this.numUnk20.Location = new System.Drawing.Point(458, 20);
 			this.numUnk20.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
+			255,
+			0,
+			0,
+			0});
 			this.numUnk20.Name = "numUnk20";
 			this.numUnk20.Size = new System.Drawing.Size(48, 20);
 			this.numUnk20.TabIndex = 6;
@@ -4959,10 +4996,10 @@ namespace Idmr.Yogeme
 			// 
 			this.numUnk24.Location = new System.Drawing.Point(358, 46);
 			this.numUnk24.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
+			255,
+			0,
+			0,
+			0});
 			this.numUnk24.Name = "numUnk24";
 			this.numUnk24.Size = new System.Drawing.Size(48, 20);
 			this.numUnk24.TabIndex = 6;
@@ -4972,10 +5009,10 @@ namespace Idmr.Yogeme
 			// 
 			this.numUnk19.Location = new System.Drawing.Point(358, 20);
 			this.numUnk19.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
+			255,
+			0,
+			0,
+			0});
 			this.numUnk19.Name = "numUnk19";
 			this.numUnk19.Size = new System.Drawing.Size(48, 20);
 			this.numUnk19.TabIndex = 6;
@@ -4985,10 +5022,10 @@ namespace Idmr.Yogeme
 			// 
 			this.numUnk23.Location = new System.Drawing.Point(258, 46);
 			this.numUnk23.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
+			255,
+			0,
+			0,
+			0});
 			this.numUnk23.Name = "numUnk23";
 			this.numUnk23.Size = new System.Drawing.Size(48, 20);
 			this.numUnk23.TabIndex = 6;
@@ -4998,10 +5035,10 @@ namespace Idmr.Yogeme
 			// 
 			this.numUnk18.Location = new System.Drawing.Point(258, 20);
 			this.numUnk18.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
+			255,
+			0,
+			0,
+			0});
 			this.numUnk18.Name = "numUnk18";
 			this.numUnk18.Size = new System.Drawing.Size(48, 20);
 			this.numUnk18.TabIndex = 6;
@@ -5011,10 +5048,10 @@ namespace Idmr.Yogeme
 			// 
 			this.numUnk33.Location = new System.Drawing.Point(258, 98);
 			this.numUnk33.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
+			255,
+			0,
+			0,
+			0});
 			this.numUnk33.Name = "numUnk33";
 			this.numUnk33.Size = new System.Drawing.Size(48, 20);
 			this.numUnk33.TabIndex = 6;
@@ -5024,10 +5061,10 @@ namespace Idmr.Yogeme
 			// 
 			this.numUnk27.Location = new System.Drawing.Point(158, 72);
 			this.numUnk27.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
+			255,
+			0,
+			0,
+			0});
 			this.numUnk27.Name = "numUnk27";
 			this.numUnk27.Size = new System.Drawing.Size(48, 20);
 			this.numUnk27.TabIndex = 6;
@@ -5037,10 +5074,10 @@ namespace Idmr.Yogeme
 			// 
 			this.numUnk17.Location = new System.Drawing.Point(158, 20);
 			this.numUnk17.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
+			255,
+			0,
+			0,
+			0});
 			this.numUnk17.Name = "numUnk17";
 			this.numUnk17.Size = new System.Drawing.Size(48, 20);
 			this.numUnk17.TabIndex = 6;
@@ -5131,10 +5168,10 @@ namespace Idmr.Yogeme
 			// 
 			this.numUnk28.Location = new System.Drawing.Point(258, 72);
 			this.numUnk28.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
+			255,
+			0,
+			0,
+			0});
 			this.numUnk28.Name = "numUnk28";
 			this.numUnk28.Size = new System.Drawing.Size(48, 20);
 			this.numUnk28.TabIndex = 6;
@@ -5153,10 +5190,10 @@ namespace Idmr.Yogeme
 			// 
 			this.numUnk21.Location = new System.Drawing.Point(58, 46);
 			this.numUnk21.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
+			255,
+			0,
+			0,
+			0});
 			this.numUnk21.Name = "numUnk21";
 			this.numUnk21.Size = new System.Drawing.Size(48, 20);
 			this.numUnk21.TabIndex = 6;
@@ -5166,10 +5203,10 @@ namespace Idmr.Yogeme
 			// 
 			this.numUnk32.Location = new System.Drawing.Point(158, 98);
 			this.numUnk32.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
+			255,
+			0,
+			0,
+			0});
 			this.numUnk32.Name = "numUnk32";
 			this.numUnk32.Size = new System.Drawing.Size(48, 20);
 			this.numUnk32.TabIndex = 6;
@@ -5179,10 +5216,10 @@ namespace Idmr.Yogeme
 			// 
 			this.numUnk26.Location = new System.Drawing.Point(58, 72);
 			this.numUnk26.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
+			255,
+			0,
+			0,
+			0});
 			this.numUnk26.Name = "numUnk26";
 			this.numUnk26.Size = new System.Drawing.Size(48, 20);
 			this.numUnk26.TabIndex = 6;
@@ -5219,10 +5256,10 @@ namespace Idmr.Yogeme
 			// 
 			this.numUnk16.Location = new System.Drawing.Point(58, 20);
 			this.numUnk16.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
+			255,
+			0,
+			0,
+			0});
 			this.numUnk16.Name = "numUnk16";
 			this.numUnk16.Size = new System.Drawing.Size(48, 20);
 			this.numUnk16.TabIndex = 6;
@@ -5301,10 +5338,10 @@ namespace Idmr.Yogeme
 			// 
 			this.numUnk10.Location = new System.Drawing.Point(147, 43);
 			this.numUnk10.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
+			255,
+			0,
+			0,
+			0});
 			this.numUnk10.Name = "numUnk10";
 			this.numUnk10.Size = new System.Drawing.Size(48, 20);
 			this.numUnk10.TabIndex = 56;
@@ -5323,10 +5360,10 @@ namespace Idmr.Yogeme
 			// 
 			this.numUnk9.Location = new System.Drawing.Point(48, 43);
 			this.numUnk9.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
+			255,
+			0,
+			0,
+			0});
 			this.numUnk9.Name = "numUnk9";
 			this.numUnk9.Size = new System.Drawing.Size(48, 20);
 			this.numUnk9.TabIndex = 54;
@@ -5346,22 +5383,22 @@ namespace Idmr.Yogeme
 			this.cboUnkOrder.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cboUnkOrder.FormattingEnabled = true;
 			this.cboUnkOrder.Items.AddRange(new object[] {
-            "1, Region 1",
-            "2, Region 1",
-            "3, Region 1",
-            "4, Region 1",
-            "1, Region 2",
-            "2, Region 2",
-            "3, Region 2",
-            "4, Region 2",
-            "1, Region 3",
-            "2, Region 3",
-            "3, Region 3",
-            "4, Region 3",
-            "1, Region 4",
-            "2, Region 4",
-            "3, Region 4",
-            "4, Region 4"});
+			"1, Region 1",
+			"2, Region 1",
+			"3, Region 1",
+			"4, Region 1",
+			"1, Region 2",
+			"2, Region 2",
+			"3, Region 2",
+			"4, Region 2",
+			"1, Region 3",
+			"2, Region 3",
+			"3, Region 3",
+			"4, Region 3",
+			"1, Region 4",
+			"2, Region 4",
+			"3, Region 4",
+			"4, Region 4"});
 			this.cboUnkOrder.Location = new System.Drawing.Point(54, 16);
 			this.cboUnkOrder.Name = "cboUnkOrder";
 			this.cboUnkOrder.Size = new System.Drawing.Size(88, 21);
@@ -5399,10 +5436,10 @@ namespace Idmr.Yogeme
 			// 
 			this.numUnk8.Location = new System.Drawing.Point(275, 19);
 			this.numUnk8.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
+			255,
+			0,
+			0,
+			0});
 			this.numUnk8.Name = "numUnk8";
 			this.numUnk8.Size = new System.Drawing.Size(48, 20);
 			this.numUnk8.TabIndex = 13;
@@ -5421,10 +5458,10 @@ namespace Idmr.Yogeme
 			// 
 			this.numUnk7.Location = new System.Drawing.Point(185, 19);
 			this.numUnk7.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
+			255,
+			0,
+			0,
+			0});
 			this.numUnk7.Name = "numUnk7";
 			this.numUnk7.Size = new System.Drawing.Size(48, 20);
 			this.numUnk7.TabIndex = 11;
@@ -5453,10 +5490,10 @@ namespace Idmr.Yogeme
 			// 
 			this.numUnk5.Location = new System.Drawing.Point(41, 19);
 			this.numUnk5.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
+			255,
+			0,
+			0,
+			0});
 			this.numUnk5.Name = "numUnk5";
 			this.numUnk5.Size = new System.Drawing.Size(48, 20);
 			this.numUnk5.TabIndex = 4;
@@ -5491,10 +5528,10 @@ namespace Idmr.Yogeme
 			// 
 			this.numUnk4.Location = new System.Drawing.Point(221, 19);
 			this.numUnk4.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
+			255,
+			0,
+			0,
+			0});
 			this.numUnk4.Name = "numUnk4";
 			this.numUnk4.Size = new System.Drawing.Size(48, 20);
 			this.numUnk4.TabIndex = 1;
@@ -5504,10 +5541,10 @@ namespace Idmr.Yogeme
 			// 
 			this.numUnk3.Location = new System.Drawing.Point(131, 19);
 			this.numUnk3.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
+			255,
+			0,
+			0,
+			0});
 			this.numUnk3.Name = "numUnk3";
 			this.numUnk3.Size = new System.Drawing.Size(48, 20);
 			this.numUnk3.TabIndex = 1;
@@ -5535,10 +5572,10 @@ namespace Idmr.Yogeme
 			// 
 			this.numUnk1.Location = new System.Drawing.Point(41, 19);
 			this.numUnk1.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
+			255,
+			0,
+			0,
+			0});
 			this.numUnk1.Name = "numUnk1";
 			this.numUnk1.Size = new System.Drawing.Size(48, 20);
 			this.numUnk1.TabIndex = 1;
@@ -5580,23 +5617,23 @@ namespace Idmr.Yogeme
 			// 
 			this.numUnkGoal.Location = new System.Drawing.Point(44, 19);
 			this.numUnkGoal.Maximum = new decimal(new int[] {
-            8,
-            0,
-            0,
-            0});
+			8,
+			0,
+			0,
+			0});
 			this.numUnkGoal.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
+			1,
+			0,
+			0,
+			0});
 			this.numUnkGoal.Name = "numUnkGoal";
 			this.numUnkGoal.Size = new System.Drawing.Size(40, 20);
 			this.numUnkGoal.TabIndex = 6;
 			this.numUnkGoal.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
+			1,
+			0,
+			0,
+			0});
 			this.numUnkGoal.ValueChanged += new System.EventHandler(this.numUnkGoal_ValueChanged);
 			// 
 			// label92
@@ -5625,7 +5662,7 @@ namespace Idmr.Yogeme
 			this.lstFG.ForeColor = System.Drawing.Color.Gray;
 			this.lstFG.ItemHeight = 15;
 			this.lstFG.Items.AddRange(new object[] {
-            "3 - 12 - *1x(3) Ship name"});
+			"3 - 12 - *1x(3) Ship name"});
 			this.lstFG.Location = new System.Drawing.Point(4, 24);
 			this.lstFG.Name = "lstFG";
 			this.lstFG.Size = new System.Drawing.Size(222, 480);
@@ -5735,10 +5772,10 @@ namespace Idmr.Yogeme
 			// 
 			this.numMessUnk1.Location = new System.Drawing.Point(47, 19);
 			this.numMessUnk1.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
+			255,
+			0,
+			0,
+			0});
 			this.numMessUnk1.Name = "numMessUnk1";
 			this.numMessUnk1.Size = new System.Drawing.Size(48, 20);
 			this.numMessUnk1.TabIndex = 26;
@@ -5802,12 +5839,12 @@ namespace Idmr.Yogeme
 			this.cboMessColor.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cboMessColor.Enabled = false;
 			this.cboMessColor.Items.AddRange(new object[] {
-            "Green",
-            "Red",
-            "Blue",
-            "Yellow",
-            "Red",
-            "Purple"});
+			"Green",
+			"Red",
+			"Blue",
+			"Yellow",
+			"Red",
+			"Purple"});
 			this.cboMessColor.Location = new System.Drawing.Point(657, 8);
 			this.cboMessColor.Name = "cboMessColor";
 			this.cboMessColor.Size = new System.Drawing.Size(120, 21);
@@ -6109,10 +6146,10 @@ namespace Idmr.Yogeme
 			this.numMessPara.Enabled = false;
 			this.numMessPara.Location = new System.Drawing.Point(510, 363);
 			this.numMessPara.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
+			255,
+			0,
+			0,
+			0});
 			this.numMessPara.Name = "numMessPara";
 			this.numMessPara.Size = new System.Drawing.Size(48, 20);
 			this.numMessPara.TabIndex = 25;
@@ -6124,10 +6161,10 @@ namespace Idmr.Yogeme
 			this.numMessDelayMin.Enabled = false;
 			this.numMessDelayMin.Location = new System.Drawing.Point(628, 90);
 			this.numMessDelayMin.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
+			255,
+			0,
+			0,
+			0});
 			this.numMessDelayMin.Name = "numMessDelayMin";
 			this.numMessDelayMin.Size = new System.Drawing.Size(48, 20);
 			this.numMessDelayMin.TabIndex = 25;
@@ -6139,10 +6176,10 @@ namespace Idmr.Yogeme
 			this.numMessDelaySec.Enabled = false;
 			this.numMessDelaySec.Location = new System.Drawing.Point(703, 90);
 			this.numMessDelaySec.Maximum = new decimal(new int[] {
-            59,
-            0,
-            0,
-            0});
+			59,
+			0,
+			0,
+			0});
 			this.numMessDelaySec.Name = "numMessDelaySec";
 			this.numMessDelaySec.Size = new System.Drawing.Size(40, 20);
 			this.numMessDelaySec.TabIndex = 25;
@@ -6155,7 +6192,7 @@ namespace Idmr.Yogeme
 			this.label55.Name = "label55";
 			this.label55.Size = new System.Drawing.Size(181, 17);
 			this.label55.TabIndex = 26;
-			this.label55.Text = "Delay:                  min                 sec";
+			this.label55.Text = "Delay:			      min			     sec";
 			this.label55.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
 			// 
 			// lblMessage
@@ -6168,6 +6205,7 @@ namespace Idmr.Yogeme
 			// 
 			// txtMessNote
 			// 
+			this.txtMessNote.Enabled = false;
 			this.txtMessNote.Location = new System.Drawing.Point(418, 61);
 			this.txtMessNote.MaxLength = 63;
 			this.txtMessNote.Name = "txtMessNote";
@@ -6233,7 +6271,7 @@ namespace Idmr.Yogeme
 			this.tabGlob.Controls.Add(this.cboGlobalPara);
 			this.tabGlob.Controls.Add(this.label128);
 			this.tabGlob.Controls.Add(this.numGlobActSeq);
-			this.tabGlob.Controls.Add(this.groupBox31);
+			this.tabGlob.Controls.Add(this.grpGlobUnk);
 			this.tabGlob.Controls.Add(this.numGlobalPara);
 			this.tabGlob.Controls.Add(this.label112);
 			this.tabGlob.Controls.Add(this.cboGlobalTeam);
@@ -6285,42 +6323,44 @@ namespace Idmr.Yogeme
 			// 
 			this.numGlobActSeq.Location = new System.Drawing.Point(510, 203);
 			this.numGlobActSeq.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
+			255,
+			0,
+			0,
+			0});
 			this.numGlobActSeq.Name = "numGlobActSeq";
 			this.numGlobActSeq.Size = new System.Drawing.Size(46, 20);
 			this.numGlobActSeq.TabIndex = 44;
 			this.numGlobActSeq.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+			this.numGlobActSeq.Leave += new System.EventHandler(this.numGlobActSeq_Leave);
 			// 
-			// groupBox31
+			// grpGlobUnk
 			// 
-			this.groupBox31.Controls.Add(this.numGlobUnk6);
-			this.groupBox31.Controls.Add(this.numGlobUnk4);
-			this.groupBox31.Controls.Add(this.numGlobUnk5);
-			this.groupBox31.Controls.Add(this.numGlobUnk3);
-			this.groupBox31.Controls.Add(this.label127);
-			this.groupBox31.Controls.Add(this.label125);
-			this.groupBox31.Controls.Add(this.label126);
-			this.groupBox31.Controls.Add(this.label124);
-			this.groupBox31.Controls.Add(this.chkGlobUnk2);
-			this.groupBox31.Controls.Add(this.chkGlobUnk1);
-			this.groupBox31.Location = new System.Drawing.Point(418, 384);
-			this.groupBox31.Name = "groupBox31";
-			this.groupBox31.Size = new System.Drawing.Size(333, 77);
-			this.groupBox31.TabIndex = 39;
-			this.groupBox31.TabStop = false;
-			this.groupBox31.Text = "Unknowns";
+			this.grpGlobUnk.Controls.Add(this.numGlobUnk6);
+			this.grpGlobUnk.Controls.Add(this.numGlobUnk4);
+			this.grpGlobUnk.Controls.Add(this.numGlobUnk5);
+			this.grpGlobUnk.Controls.Add(this.numGlobUnk3);
+			this.grpGlobUnk.Controls.Add(this.label127);
+			this.grpGlobUnk.Controls.Add(this.label125);
+			this.grpGlobUnk.Controls.Add(this.label126);
+			this.grpGlobUnk.Controls.Add(this.label124);
+			this.grpGlobUnk.Controls.Add(this.chkGlobUnk2);
+			this.grpGlobUnk.Controls.Add(this.chkGlobUnk1);
+			this.grpGlobUnk.Location = new System.Drawing.Point(418, 384);
+			this.grpGlobUnk.Name = "grpGlobUnk";
+			this.grpGlobUnk.Size = new System.Drawing.Size(333, 77);
+			this.grpGlobUnk.TabIndex = 39;
+			this.grpGlobUnk.TabStop = false;
+			this.grpGlobUnk.Text = "Unknowns";
+			this.grpGlobUnk.Leave += new System.EventHandler(this.grpGlobUnk_Leave);
 			// 
 			// numGlobUnk6
 			// 
 			this.numGlobUnk6.Location = new System.Drawing.Point(144, 49);
 			this.numGlobUnk6.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
+			255,
+			0,
+			0,
+			0});
 			this.numGlobUnk6.Name = "numGlobUnk6";
 			this.numGlobUnk6.Size = new System.Drawing.Size(48, 20);
 			this.numGlobUnk6.TabIndex = 13;
@@ -6330,10 +6370,10 @@ namespace Idmr.Yogeme
 			// 
 			this.numGlobUnk4.Location = new System.Drawing.Point(260, 18);
 			this.numGlobUnk4.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
+			255,
+			0,
+			0,
+			0});
 			this.numGlobUnk4.Name = "numGlobUnk4";
 			this.numGlobUnk4.Size = new System.Drawing.Size(48, 20);
 			this.numGlobUnk4.TabIndex = 13;
@@ -6343,10 +6383,10 @@ namespace Idmr.Yogeme
 			// 
 			this.numGlobUnk5.Location = new System.Drawing.Point(48, 49);
 			this.numGlobUnk5.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
+			255,
+			0,
+			0,
+			0});
 			this.numGlobUnk5.Name = "numGlobUnk5";
 			this.numGlobUnk5.Size = new System.Drawing.Size(48, 20);
 			this.numGlobUnk5.TabIndex = 13;
@@ -6356,10 +6396,10 @@ namespace Idmr.Yogeme
 			// 
 			this.numGlobUnk3.Location = new System.Drawing.Point(164, 18);
 			this.numGlobUnk3.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
+			255,
+			0,
+			0,
+			0});
 			this.numGlobUnk3.Name = "numGlobUnk3";
 			this.numGlobUnk3.Size = new System.Drawing.Size(48, 20);
 			this.numGlobUnk3.TabIndex = 13;
@@ -6427,10 +6467,10 @@ namespace Idmr.Yogeme
 			// 
 			this.numGlobalPara.Location = new System.Drawing.Point(704, 203);
 			this.numGlobalPara.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
+			255,
+			0,
+			0,
+			0});
 			this.numGlobalPara.Name = "numGlobalPara";
 			this.numGlobalPara.Size = new System.Drawing.Size(48, 20);
 			this.numGlobalPara.TabIndex = 37;
@@ -6488,21 +6528,21 @@ namespace Idmr.Yogeme
 			// numGlobalPoints
 			// 
 			this.numGlobalPoints.Increment = new decimal(new int[] {
-            25,
-            0,
-            0,
-            0});
+			25,
+			0,
+			0,
+			0});
 			this.numGlobalPoints.Location = new System.Drawing.Point(571, 229);
 			this.numGlobalPoints.Maximum = new decimal(new int[] {
-            3175,
-            0,
-            0,
-            0});
+			3175,
+			0,
+			0,
+			0});
 			this.numGlobalPoints.Minimum = new decimal(new int[] {
-            3200,
-            0,
-            0,
-            -2147483648});
+			3200,
+			0,
+			0,
+			-2147483648});
 			this.numGlobalPoints.Name = "numGlobalPoints";
 			this.numGlobalPoints.Size = new System.Drawing.Size(64, 20);
 			this.numGlobalPoints.TabIndex = 30;
@@ -7038,10 +7078,10 @@ namespace Idmr.Yogeme
 			// 
 			this.numTeamUnk6.Location = new System.Drawing.Point(243, 45);
 			this.numTeamUnk6.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
+			255,
+			0,
+			0,
+			0});
 			this.numTeamUnk6.Name = "numTeamUnk6";
 			this.numTeamUnk6.Size = new System.Drawing.Size(48, 20);
 			this.numTeamUnk6.TabIndex = 21;
@@ -7061,10 +7101,10 @@ namespace Idmr.Yogeme
 			// 
 			this.numTeamUnk5.Location = new System.Drawing.Point(145, 45);
 			this.numTeamUnk5.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
+			255,
+			0,
+			0,
+			0});
 			this.numTeamUnk5.Name = "numTeamUnk5";
 			this.numTeamUnk5.Size = new System.Drawing.Size(48, 20);
 			this.numTeamUnk5.TabIndex = 19;
@@ -7084,10 +7124,10 @@ namespace Idmr.Yogeme
 			// 
 			this.numTeamUnk4.Location = new System.Drawing.Point(49, 45);
 			this.numTeamUnk4.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
+			255,
+			0,
+			0,
+			0});
 			this.numTeamUnk4.Name = "numTeamUnk4";
 			this.numTeamUnk4.Size = new System.Drawing.Size(48, 20);
 			this.numTeamUnk4.TabIndex = 17;
@@ -7107,10 +7147,10 @@ namespace Idmr.Yogeme
 			// 
 			this.numTeamUnk3.Location = new System.Drawing.Point(243, 19);
 			this.numTeamUnk3.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
+			255,
+			0,
+			0,
+			0});
 			this.numTeamUnk3.Name = "numTeamUnk3";
 			this.numTeamUnk3.Size = new System.Drawing.Size(48, 20);
 			this.numTeamUnk3.TabIndex = 15;
@@ -7130,10 +7170,10 @@ namespace Idmr.Yogeme
 			// 
 			this.numTeamUnk2.Location = new System.Drawing.Point(146, 19);
 			this.numTeamUnk2.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
+			255,
+			0,
+			0,
+			0});
 			this.numTeamUnk2.Name = "numTeamUnk2";
 			this.numTeamUnk2.Size = new System.Drawing.Size(48, 20);
 			this.numTeamUnk2.TabIndex = 13;
@@ -7153,10 +7193,10 @@ namespace Idmr.Yogeme
 			// 
 			this.numTeamUnk1.Location = new System.Drawing.Point(49, 19);
 			this.numTeamUnk1.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
+			255,
+			0,
+			0,
+			0});
 			this.numTeamUnk1.Name = "numTeamUnk1";
 			this.numTeamUnk1.Size = new System.Drawing.Size(48, 20);
 			this.numTeamUnk1.TabIndex = 11;
@@ -8139,18 +8179,18 @@ namespace Idmr.Yogeme
 			// 
 			this.numMissUnk3.Location = new System.Drawing.Point(158, 18);
 			this.numMissUnk3.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
+			255,
+			0,
+			0,
+			0});
 			this.numMissUnk3.Name = "numMissUnk3";
 			this.numMissUnk3.Size = new System.Drawing.Size(48, 20);
 			this.numMissUnk3.TabIndex = 13;
 			this.numMissUnk3.Value = new decimal(new int[] {
-            98,
-            0,
-            0,
-            0});
+			98,
+			0,
+			0,
+			0});
 			this.numMissUnk3.Leave += new System.EventHandler(this.numMissUnk3_Leave);
 			// 
 			// label105
@@ -8175,10 +8215,10 @@ namespace Idmr.Yogeme
 			// 
 			this.numMissUnk5.Location = new System.Drawing.Point(158, 50);
 			this.numMissUnk5.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
+			255,
+			0,
+			0,
+			0});
 			this.numMissUnk5.Name = "numMissUnk5";
 			this.numMissUnk5.Size = new System.Drawing.Size(48, 20);
 			this.numMissUnk5.TabIndex = 15;
@@ -8197,10 +8237,10 @@ namespace Idmr.Yogeme
 			// 
 			this.numMissUnk4.Location = new System.Drawing.Point(55, 50);
 			this.numMissUnk4.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
+			255,
+			0,
+			0,
+			0});
 			this.numMissUnk4.Name = "numMissUnk4";
 			this.numMissUnk4.Size = new System.Drawing.Size(48, 20);
 			this.numMissUnk4.TabIndex = 14;
@@ -8232,10 +8272,10 @@ namespace Idmr.Yogeme
 			// 
 			this.numMissTimeMin.Location = new System.Drawing.Point(97, 444);
 			this.numMissTimeMin.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
+			255,
+			0,
+			0,
+			0});
 			this.numMissTimeMin.Name = "numMissTimeMin";
 			this.numMissTimeMin.Size = new System.Drawing.Size(48, 20);
 			this.numMissTimeMin.TabIndex = 7;
@@ -8362,10 +8402,10 @@ namespace Idmr.Yogeme
 			// 
 			this.numGCUnk5.Location = new System.Drawing.Point(404, 75);
 			this.numGCUnk5.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
+			255,
+			0,
+			0,
+			0});
 			this.numGCUnk5.Name = "numGCUnk5";
 			this.numGCUnk5.Size = new System.Drawing.Size(48, 20);
 			this.numGCUnk5.TabIndex = 11;
@@ -8386,10 +8426,10 @@ namespace Idmr.Yogeme
 			// 
 			this.numGCUnk4.Location = new System.Drawing.Point(307, 75);
 			this.numGCUnk4.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
+			255,
+			0,
+			0,
+			0});
 			this.numGCUnk4.Name = "numGCUnk4";
 			this.numGCUnk4.Size = new System.Drawing.Size(48, 20);
 			this.numGCUnk4.TabIndex = 9;
@@ -8410,10 +8450,10 @@ namespace Idmr.Yogeme
 			// 
 			this.numGCUnk3.Location = new System.Drawing.Point(210, 75);
 			this.numGCUnk3.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
+			255,
+			0,
+			0,
+			0});
 			this.numGCUnk3.Name = "numGCUnk3";
 			this.numGCUnk3.Size = new System.Drawing.Size(48, 20);
 			this.numGCUnk3.TabIndex = 7;
@@ -8434,10 +8474,10 @@ namespace Idmr.Yogeme
 			// 
 			this.numGCUnk2.Location = new System.Drawing.Point(114, 75);
 			this.numGCUnk2.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
+			255,
+			0,
+			0,
+			0});
 			this.numGCUnk2.Name = "numGCUnk2";
 			this.numGCUnk2.Size = new System.Drawing.Size(48, 20);
 			this.numGCUnk2.TabIndex = 5;
@@ -8481,24 +8521,24 @@ namespace Idmr.Yogeme
 			// 
 			this.numGlobCargo.Location = new System.Drawing.Point(57, 24);
 			this.numGlobCargo.Maximum = new decimal(new int[] {
-            16,
-            0,
-            0,
-            0});
+			16,
+			0,
+			0,
+			0});
 			this.numGlobCargo.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
+			1,
+			0,
+			0,
+			0});
 			this.numGlobCargo.Name = "numGlobCargo";
 			this.numGlobCargo.Size = new System.Drawing.Size(41, 20);
 			this.numGlobCargo.TabIndex = 1;
 			this.numGlobCargo.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
 			this.numGlobCargo.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
+			1,
+			0,
+			0,
+			0});
 			this.numGlobCargo.ValueChanged += new System.EventHandler(this.numGlobCargo_ValueChanged);
 			// 
 			// label138
@@ -8764,7 +8804,7 @@ namespace Idmr.Yogeme
 			this.txtRegion4.MaxLength = 131;
 			this.txtRegion4.Name = "txtRegion4";
 			this.txtRegion4.Size = new System.Drawing.Size(133, 20);
-			this.txtRegion4.TabIndex = 3;
+			this.txtRegion4.TabIndex = 7;
 			// 
 			// txtRegion3
 			// 
@@ -8772,7 +8812,7 @@ namespace Idmr.Yogeme
 			this.txtRegion3.MaxLength = 131;
 			this.txtRegion3.Name = "txtRegion3";
 			this.txtRegion3.Size = new System.Drawing.Size(133, 20);
-			this.txtRegion3.TabIndex = 4;
+			this.txtRegion3.TabIndex = 6;
 			// 
 			// txtRegion2
 			// 
@@ -8780,7 +8820,7 @@ namespace Idmr.Yogeme
 			this.txtRegion2.MaxLength = 131;
 			this.txtRegion2.Name = "txtRegion2";
 			this.txtRegion2.Size = new System.Drawing.Size(133, 20);
-			this.txtRegion2.TabIndex = 1;
+			this.txtRegion2.TabIndex = 5;
 			// 
 			// txtRegion1
 			// 
@@ -8788,7 +8828,7 @@ namespace Idmr.Yogeme
 			this.txtRegion1.MaxLength = 131;
 			this.txtRegion1.Name = "txtRegion1";
 			this.txtRegion1.Size = new System.Drawing.Size(133, 20);
-			this.txtRegion1.TabIndex = 2;
+			this.txtRegion1.TabIndex = 4;
 			// 
 			// groupBox37
 			// 
@@ -8849,7 +8889,7 @@ namespace Idmr.Yogeme
 			this.txtIFF6.MaxLength = 19;
 			this.txtIFF6.Name = "txtIFF6";
 			this.txtIFF6.Size = new System.Drawing.Size(133, 20);
-			this.txtIFF6.TabIndex = 0;
+			this.txtIFF6.TabIndex = 3;
 			// 
 			// txtIFF5
 			// 
@@ -8857,7 +8897,7 @@ namespace Idmr.Yogeme
 			this.txtIFF5.MaxLength = 19;
 			this.txtIFF5.Name = "txtIFF5";
 			this.txtIFF5.Size = new System.Drawing.Size(133, 20);
-			this.txtIFF5.TabIndex = 0;
+			this.txtIFF5.TabIndex = 2;
 			// 
 			// txtIFF4
 			// 
@@ -8865,7 +8905,7 @@ namespace Idmr.Yogeme
 			this.txtIFF4.MaxLength = 19;
 			this.txtIFF4.Name = "txtIFF4";
 			this.txtIFF4.Size = new System.Drawing.Size(133, 20);
-			this.txtIFF4.TabIndex = 0;
+			this.txtIFF4.TabIndex = 1;
 			// 
 			// txtIFF3
 			// 
@@ -8903,12 +8943,6 @@ namespace Idmr.Yogeme
 			// 
 			this.dataOrders_Raw.AllowDelete = false;
 			this.dataOrders_Raw.AllowNew = false;
-			// 
-			// menuText
-			// 
-			this.menuText.Index = 3;
-			this.menuText.Text = "Te&st";
-			this.menuText.Click += new System.EventHandler(this.menuText_Click);
 			// 
 			// XwaForm
 			// 
@@ -9056,8 +9090,8 @@ namespace Idmr.Yogeme
 			this.tabGlob.ResumeLayout(false);
 			this.tabGlob.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numGlobActSeq)).EndInit();
-			this.groupBox31.ResumeLayout(false);
-			this.groupBox31.PerformLayout();
+			this.grpGlobUnk.ResumeLayout(false);
+			this.grpGlobUnk.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numGlobUnk6)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.numGlobUnk4)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.numGlobUnk5)).EndInit();
@@ -9452,8 +9486,8 @@ namespace Idmr.Yogeme
 		private CheckBox chkOptBDecoy;
 		private GroupBox groupBox19;
 		private CheckBox chkOptWNone;
-		private CheckBox chkOptWRocket;
 		private CheckBox chkOptWBomb;
+		private CheckBox chkOptWRocket;
 		private CheckBox chkOptWMissile;
 		private CheckBox chkOptWTorp;
 		private CheckBox chkOptWAdvMissile;
@@ -9715,7 +9749,7 @@ namespace Idmr.Yogeme
 		private NumericUpDown numBackdrop;
 		private Label label122;
 		private ComboBox cboGlobCargo;
-		private GroupBox groupBox31;
+		private GroupBox grpGlobUnk;
 		private NumericUpDown numGlobUnk4;
 		private NumericUpDown numGlobUnk3;
 		private Label label125;
@@ -9880,5 +9914,7 @@ namespace Idmr.Yogeme
 		private MenuItem menuRec4;
 		private MenuItem menuRec5;
 		private MenuItem menuText;
+        private CheckBox chkOptWIonPulse;
+        private MenuItem menuGoalSummary;
 	}
 }

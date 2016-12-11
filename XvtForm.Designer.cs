@@ -297,8 +297,8 @@ namespace Idmr.Yogeme
 			this.chkOptBDecoy = new System.Windows.Forms.CheckBox();
 			this.groupBox19 = new System.Windows.Forms.GroupBox();
 			this.chkOptWNone = new System.Windows.Forms.CheckBox();
-			this.chkOptWRocket = new System.Windows.Forms.CheckBox();
 			this.chkOptWBomb = new System.Windows.Forms.CheckBox();
+			this.chkOptWRocket = new System.Windows.Forms.CheckBox();
 			this.chkOptWMissile = new System.Windows.Forms.CheckBox();
 			this.chkOptWTorp = new System.Windows.Forms.CheckBox();
 			this.chkOptWAdvMissile = new System.Windows.Forms.CheckBox();
@@ -576,6 +576,7 @@ namespace Idmr.Yogeme
 			this.menuBrief = new System.Windows.Forms.MenuItem();
 			this.menuLST = new System.Windows.Forms.MenuItem();
 			this.menuOptions = new System.Windows.Forms.MenuItem();
+			this.menuGoalSummary = new System.Windows.Forms.MenuItem();
 			this.menuTest = new System.Windows.Forms.MenuItem();
 			this.menuHelp = new System.Windows.Forms.MenuItem();
 			this.menuHelpInfo = new System.Windows.Forms.MenuItem();
@@ -1320,7 +1321,6 @@ namespace Idmr.Yogeme
 			// 
 			// numExplode
 			// 
-			this.numExplode.Enabled = false;
 			this.numExplode.Location = new System.Drawing.Point(96, 136);
 			this.numExplode.Maximum = new decimal(new int[] {
             255,
@@ -1331,6 +1331,7 @@ namespace Idmr.Yogeme
 			this.numExplode.Size = new System.Drawing.Size(48, 20);
 			this.numExplode.TabIndex = 27;
 			this.numExplode.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+			this.numExplode.ValueChanged += new System.EventHandler(this.numExplode_ValueChanged);
 			// 
 			// label67
 			// 
@@ -3333,6 +3334,7 @@ namespace Idmr.Yogeme
 			this.optSkipOR.TabIndex = 24;
 			this.optSkipOR.TabStop = true;
 			this.optSkipOR.Text = "OR";
+			this.optSkipOR.CheckedChanged += new System.EventHandler(this.optSkipOR_CheckedChanged);
 			// 
 			// lblSkipTrig1
 			// 
@@ -3344,8 +3346,8 @@ namespace Idmr.Yogeme
 			this.lblSkipTrig1.TabIndex = 21;
 			this.lblSkipTrig1.Text = "always (TRUE)";
 			this.lblSkipTrig1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-			this.lblSkipTrig1.DoubleClick += new System.EventHandler(this.lblSkipTrigArr_DoubleClick);
 			this.lblSkipTrig1.Click += new System.EventHandler(this.lblSkipTrigArr_Click);
+			this.lblSkipTrig1.DoubleClick += new System.EventHandler(this.lblSkipTrigArr_DoubleClick);
 			this.lblSkipTrig1.MouseUp += new System.Windows.Forms.MouseEventHandler(this.lblSkipTrigArr_MouseUp);
 			// 
 			// lblSkipTrig2
@@ -3357,8 +3359,8 @@ namespace Idmr.Yogeme
 			this.lblSkipTrig2.TabIndex = 22;
 			this.lblSkipTrig2.Text = "always (TRUE)";
 			this.lblSkipTrig2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-			this.lblSkipTrig2.DoubleClick += new System.EventHandler(this.lblSkipTrigArr_DoubleClick);
 			this.lblSkipTrig2.Click += new System.EventHandler(this.lblSkipTrigArr_Click);
+			this.lblSkipTrig2.DoubleClick += new System.EventHandler(this.lblSkipTrigArr_DoubleClick);
 			this.lblSkipTrig2.MouseUp += new System.Windows.Forms.MouseEventHandler(this.lblSkipTrigArr_MouseUp);
 			// 
 			// groupBox22
@@ -3666,8 +3668,8 @@ namespace Idmr.Yogeme
 			// groupBox19
 			// 
 			this.groupBox19.Controls.Add(this.chkOptWNone);
-			this.groupBox19.Controls.Add(this.chkOptWRocket);
 			this.groupBox19.Controls.Add(this.chkOptWBomb);
+			this.groupBox19.Controls.Add(this.chkOptWRocket);
 			this.groupBox19.Controls.Add(this.chkOptWMissile);
 			this.groupBox19.Controls.Add(this.chkOptWTorp);
 			this.groupBox19.Controls.Add(this.chkOptWAdvMissile);
@@ -3690,21 +3692,21 @@ namespace Idmr.Yogeme
 			this.chkOptWNone.TabIndex = 0;
 			this.chkOptWNone.Text = "None";
 			// 
-			// chkOptWRocket
-			// 
-			this.chkOptWRocket.Location = new System.Drawing.Point(8, 32);
-			this.chkOptWRocket.Name = "chkOptWRocket";
-			this.chkOptWRocket.Size = new System.Drawing.Size(96, 20);
-			this.chkOptWRocket.TabIndex = 0;
-			this.chkOptWRocket.Text = "Heavy Rocket";
-			// 
 			// chkOptWBomb
 			// 
-			this.chkOptWBomb.Location = new System.Drawing.Point(8, 48);
+			this.chkOptWBomb.Location = new System.Drawing.Point(8, 32);
 			this.chkOptWBomb.Name = "chkOptWBomb";
 			this.chkOptWBomb.Size = new System.Drawing.Size(96, 20);
 			this.chkOptWBomb.TabIndex = 0;
 			this.chkOptWBomb.Text = "Space Bomb";
+			// 
+			// chkOptWRocket
+			// 
+			this.chkOptWRocket.Location = new System.Drawing.Point(8, 48);
+			this.chkOptWRocket.Name = "chkOptWRocket";
+			this.chkOptWRocket.Size = new System.Drawing.Size(96, 20);
+			this.chkOptWRocket.TabIndex = 0;
+			this.chkOptWRocket.Text = "Heavy Rocket";
 			// 
 			// chkOptWMissile
 			// 
@@ -4318,6 +4320,7 @@ namespace Idmr.Yogeme
 			// 
 			// chkUnk15
 			// 
+			this.chkUnk15.Enabled = false;
 			this.chkUnk15.Location = new System.Drawing.Point(328, 40);
 			this.chkUnk15.Name = "chkUnk15";
 			this.chkUnk15.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
@@ -4642,7 +4645,7 @@ namespace Idmr.Yogeme
 			this.label53.Name = "label53";
 			this.label53.Size = new System.Drawing.Size(104, 24);
 			this.label53.TabIndex = 21;
-			this.label53.Text = "Notes                   (not used in game)";
+			this.label53.Text = "Notes\t\t\t       (not used in game)";
 			this.label53.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
 			// 
 			// txtShort
@@ -6424,8 +6427,8 @@ namespace Idmr.Yogeme
 			// menuDelete
 			// 
 			this.menuDelete.Index = 5;
-			this.menuDelete.Shortcut = System.Windows.Forms.Shortcut.Del;
 			this.menuDelete.Text = "&Delete";
+			this.menuDelete.Click += new System.EventHandler(this.menuDelete_Click);
 			// 
 			// menuTools
 			// 
@@ -6435,7 +6438,8 @@ namespace Idmr.Yogeme
             this.menuMap,
             this.menuBrief,
             this.menuLST,
-            this.menuOptions});
+            this.menuOptions,
+            this.menuGoalSummary});
 			this.menuTools.Text = "&Tools";
 			// 
 			// menuVerify
@@ -6467,6 +6471,12 @@ namespace Idmr.Yogeme
 			this.menuOptions.Index = 4;
 			this.menuOptions.Text = "&Options";
 			this.menuOptions.Click += new System.EventHandler(this.menuOptions_Click);
+			// 
+			// menuGoalSummary
+			// 
+			this.menuGoalSummary.Index = 5;
+			this.menuGoalSummary.Text = "FG &Goal Summary";
+			this.menuGoalSummary.Click += new System.EventHandler(this.menuGoalSummary_Click);
 			// 
 			// menuTest
 			// 
@@ -6513,7 +6523,6 @@ namespace Idmr.Yogeme
 			// 
 			this.opnXvT.DefaultExt = "tie";
 			this.opnXvT.Filter = "Mission Files|*.tie";
-			this.opnXvT.FileOk += new System.ComponentModel.CancelEventHandler(this.opnXvT_FileOk);
 			// 
 			// savXvT
 			// 
@@ -6876,8 +6885,8 @@ namespace Idmr.Yogeme
 		Label lblExplode;
 		GroupBox groupBox19;
 		CheckBox chkOptWNone;
-		CheckBox chkOptWRocket;
 		CheckBox chkOptWBomb;
+		CheckBox chkOptWRocket;
 		CheckBox chkOptWMissile;
 		CheckBox chkOptWTorp;
 		CheckBox chkOptWAdvMissile;
@@ -7240,5 +7249,6 @@ namespace Idmr.Yogeme
 		private MenuItem menuRec4;
 		private MenuItem menuRec5;
 		private MenuItem menuTest;
+        private MenuItem menuGoalSummary;
 	}
 }

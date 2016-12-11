@@ -1,12 +1,13 @@
 ﻿/*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, TIE through XWA
- * Copyright (C) 2007-2014 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2016 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.2.3
+ * VERSION: 1.2.3+
  */
 
 /* CHANGELOG
+ * [FIX] Recent mission fixes [JB]
  * v1.2.3, 141214
  * [UPD] change to MPL
  * v1.2.2, 121022
@@ -69,21 +70,21 @@ namespace Idmr.Yogeme
 							break;
 					}
 				}
-				else if (config.RecentMissions[0] != "")
+				else if (config.RecentMissions[1] != "")  //JB Fixed.  [0] is the currently loaded mission, [1..5] are the Recent missions.
 				{
-					switch (config.RecentPlatforms[0])
+					switch (config.RecentPlatforms[1])
 					{
 						case Settings.Platform.TIE:
-							new TieForm(config, config.RecentMissions[0]).Show();
+							new TieForm(config, config.RecentMissions[1]).Show();
 							break;
 						case Settings.Platform.XvT:
-							new XvtForm(config, config.RecentMissions[0]).Show();
+							new XvtForm(config, config.RecentMissions[1]).Show();
 							break;
 						case Settings.Platform.BoP:
-							new XvtForm(config, config.RecentMissions[0]).Show();
+							new XvtForm(config, config.RecentMissions[1]).Show();
 							break;
 						case Settings.Platform.XWA:
-							new XwaForm(config, config.RecentMissions[0]).Show();
+							new XwaForm(config, config.RecentMissions[1]).Show();
 							break;
 					}
 				}

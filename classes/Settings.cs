@@ -1,12 +1,13 @@
 ﻿/*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, TIE through XWA
- * Copyright (C) 2007-2014 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2016 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.2.4
+ * VERSION: 1.2.4+
  */
 
 /* CHANGELOG
+ * [ADD] RememberPlatformFolder, ConfirmFGDelete, MRU paths
  * v1.2.4, 141215
  * [FIX #1] x64 registry values in CheckPlatforms and null check for sub (via JeremyAnsel)
  * v1.2.3, 141214
@@ -46,6 +47,9 @@ namespace Idmr.Yogeme
 		string _xvtPath = "";
 		string _bopPath = "";
 		string _xwaPath = "";
+        string _mruTiePath = ""; //[JB] stores the most recently used folders
+        string _mruXvtPath = ""; //XvT and BoP share paths
+        string _mruXwaPath = "";
 		string _settingsDir = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) 
 			+ "\\Imperial Department of Military Research\\YOGEME\\";
 		#endregion
@@ -70,6 +74,8 @@ namespace Idmr.Yogeme
 			ConfirmSave = true;
 			ConfirmTest = true;
 			DeleteTestPilots = true;
+            RememberPlatformFolder = true;
+            ConfirmFGDelete = true;
 			MapOptions = MapOpts.FGTags | MapOpts.Traces;
 			for (int i = 0; i < 6; i++) _recentMissions[i] = "";
 			Startup = StartupMode.Normal;
@@ -155,10 +161,16 @@ namespace Idmr.Yogeme
 					_verifyLocation = br.ReadString();	// added in v1.0 (settings v1)
 					ConfirmTest = br.ReadBoolean();	// added in v1.1 (settings v2)
 					DeleteTestPilots = br.ReadBoolean();	// added in 1.1
-					VerifyTest = br.ReadBoolean();	// added in v1.1
+					VerifyTest = br.ReadBoolean();  // added in v1.1
+					RememberPlatformFolder = br.ReadBoolean();	// added by [JB] in 1.3 (settings v5)
+					ConfirmFGDelete = br.ReadBoolean();
+					_mruTiePath = br.ReadString();
+					_mruXvtPath = br.ReadString();
+					_mruXwaPath = br.ReadString();
 				}	
 				catch { /*do nothing*/ }
-				fs.Close();
+
+                fs.Close();
 				#endregion
 				CheckPlatforms();
 			}
@@ -343,7 +355,7 @@ namespace Idmr.Yogeme
 			FileStream fs = File.OpenWrite(_settingsDir + "\\Settings.dat");
 			BinaryWriter bw = new BinaryWriter(fs);
 			fs.WriteByte(0xFF);
-			fs.WriteByte(0x04);
+			fs.WriteByte(0x05);
 			bw.Write(BopInstalled);
 			bw.Write(_bopPath);
 			bw.Write(ConfirmExit);
@@ -376,12 +388,52 @@ namespace Idmr.Yogeme
 			bw.Write(ConfirmTest);
 			bw.Write(DeleteTestPilots);
 			bw.Write(VerifyTest);
+            bw.Write(RememberPlatformFolder); //[JB] Added
+            bw.Write(ConfirmFGDelete);
+            bw.Write(_mruTiePath);
+            bw.Write(_mruXvtPath);
+            bw.Write(_mruXwaPath);
 			fs.SetLength(fs.Position);
 			fs.Close();
 			#endregion
 			// remove Regkey if needed
 			Registry.CurrentUser.DeleteSubKey("Software\\IDMR\\MissionEditor", false);
 		}
+
+        //[JB] This function helps centralize the use of the last-accessed folder feature.  If most recent folder is not available, it uses the detected installation path and default mission folder.
+        public string GetWorkingPath()
+        {
+            switch (LastPlatform)
+            {
+                case Platform.TIE: return (RememberPlatformFolder && (_mruTiePath != "")) ? _mruTiePath : TiePath + "\\MISSION";
+                case Platform.XvT: return (RememberPlatformFolder && (_mruXvtPath != "")) ? _mruXvtPath : XvtPath + "\\Train";
+                case Platform.BoP: return (RememberPlatformFolder && (_mruXvtPath != "")) ? _mruXvtPath : BopPath + "\\TRAIN";
+                case Platform.XWA: return (RememberPlatformFolder && (_mruXwaPath != "")) ? _mruXwaPath : XwaPath + "\\MISSIONS";
+            }
+            return Directory.GetCurrentDirectory();
+        }
+        //[JB] This function helps centralize the use of the last-opened folder feature.  If a last-opened folder is not available, it uses the default installed path with the requested subfolder (usually the default location of missions for that platform).
+        /*
+        public string GetWorkingPath(string defaultSubFolder)
+        {
+            switch (LastPlatform)
+            {
+                case Platform.TIE: return (RememberPlatformFolder && (_mrutiePath != "")) ? _mrutiePath : TiePath + defaultSubFolder;
+                case Platform.XvT: return (RememberPlatformFolder && (_mruxvtPath != "")) ? _mruxvtPath : XvtPath + defaultSubFolder;
+                case Platform.BoP: return (RememberPlatformFolder && (_mruxvtPath != "")) ? _mruxvtPath : BopPath + defaultSubFolder;
+                case Platform.XWA: return (RememberPlatformFolder && (_mruxwaPath != "")) ? _mruxwaPath : XwaPath + defaultSubFolder;
+            }
+            return "";
+        }*/
+        public void SetWorkingPath(string path)
+        {
+            switch(LastPlatform)
+            {   
+                case Platform.TIE: _mruTiePath = path; break;
+                case Platform.XvT: case Platform.BoP: _mruXvtPath = path; break;
+                case Platform.XWA: _mruXwaPath = path; break;
+            }
+        }
 
 		#region Properties
 		/// <summary>Gets or sets if Balance of Power is installed</summary>
@@ -401,34 +453,44 @@ namespace Idmr.Yogeme
 		public bool ConfirmTest { get; set; }
 		/// <summary>Gets or sets if pilot files created during Test are deleted when the platform is closed</summary>
 		public bool DeleteTestPilots { get; set; }
-		/// <summary>Gets or sets the path to last opened mission</summary>
+        /// <summary>Gets or sets if the most recently used folder is remembered when Saving/Loading missions of a particular platform.</summary>
+        public bool RememberPlatformFolder { get; set; }  //[JB] Added
+        /// <summary>Gets or sets if a confirmation dialog is shown when deleting a Flight Group, if other FGs, goals, mission, or briefing triggers depend on it.</summary>
+        public bool ConfirmFGDelete { get; set; }  //[JB] Added
+        /// <summary>Gets or sets the path to last opened mission</summary>
 		/// <remarks>Updates <see cref="RecentMissions"/> and <see cref="RecentPlatforms"/> during set</remarks>
 		public string LastMission
 		{
 			get { return _recentMissions[0]; }
 			set
 			{
-				if (_recentMissions[0] != value && _recentMissions[0] != "")
-				{
-					for (int i = 4; i >= 0; i--)
-					{
-						_recentMissions[i+1] = _recentMissions[i];
-						_recentPlatforms[i+1] = _recentPlatforms[i];
-					}
-				}
-				_recentMissions[0] = value;
-				for (int i = 1; i < 6; i++)
-				{
-					if (_recentMissions[i] == _recentMissions[0])
-					{
-						for (int j = i; j < 5; j++)
-						{
-							_recentMissions[j] = _recentMissions[j + 1];
-							_recentPlatforms[j] = _recentPlatforms[j + 1];
-						}
-						_recentMissions[5] = "";
-					}
-				}
+                //[JB] Sorting wasn't working correctly.  Rewritten.
+                _recentMissions[0] = value;  //Index [0] holds the current mission, [1...5] hold the Recent list.
+                if (value != "") 
+                {
+                    string[] missions = new string[5];
+                    Platform[] platforms = new Platform[5];
+                    for (int i = 0; i < 5; i++)  //Ensure init (avoids nulls when saving the settings)
+                    {
+                        missions[i] = "";
+                        platforms[i] = Platform.None;
+                    }
+                    int n = 0;
+                    for (int i = 0; i < 6; i++)
+                    {
+                        if ((_recentMissions[i] == value && i > 0) || (_recentMissions[i] == ""))  //The current mission [0] is added. If exists in the former Recent list, will be ignored.
+                            continue;
+                        missions[n] = _recentMissions[i];
+                        platforms[n] = _recentPlatforms[i];
+                        if (++n >= 5)  //Got our 5 items
+                            break;
+                    }
+                    for (int i = 0; i < 5; i++)
+                    {
+                        _recentMissions[1 + i] = missions[i];
+                        _recentPlatforms[1 + i] = platforms[i];
+                    }
+                }
 			}
 		}
 		/// <summary>Gets or sets the most recent platform used in YOGEME</summary>
@@ -543,5 +605,10 @@ namespace Idmr.Yogeme
 	 * ConfirmTest BOOL: show confirm dialog before executing test function
 	 * DeleteTestPilots BOOL: after done flying, delete the testing pilot file
 	 * VerifyTest BOOL: ignored if (Verify), Verify mission before launching test
+	 * (v5+) RememberPlatformFolder BOOL:
+	 * (v5+) ConfirmFGDelete BOOL:
+	 * (v5+) _mruTiePath STRING:
+	 * (v5+) _mruXvtPath STRING:
+	 * (v5+) _mruXwaPath STRING:
 	 */
 }

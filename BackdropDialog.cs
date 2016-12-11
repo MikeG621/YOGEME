@@ -1,12 +1,13 @@
 /*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, TIE through XWA
- * Copyright (C) 2007-2014 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2016 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.2.3
+ * VERSION: 1.2.3+
  */
 
 /* CHANGELOG
+ * [FIX] catch blocks for thumbnails [JB]
  * v1.2.3, 141214
  * [UPD] change to MPL
  * v1.1.1, 120814
@@ -57,7 +58,14 @@ namespace Idmr.Yogeme
 			if ((_platform == MissionFile.Platform.TIE || _platform == MissionFile.Platform.XvT) && (_index < 0 || _index > 7)) _index = 0;
 			if (_platform == MissionFile.Platform.BoP && (_index < 0 || _index > 16)) _index = 0;
 			InitializeComponent();
-			createThumbnails();
+            try  //[JB] Added catch block
+            {
+				createThumbnails();
+            }
+            catch
+            {
+                MessageBox.Show("Failed to load backdrop graphics. The game's files could not be found. Check whether the game is installed and its path has been added to the platform settings.", "Error");
+            }
 			numBackdrop.Maximum = _numBackdrops - 1;
             numBackdrop.Value = _index;
 		}
@@ -227,7 +235,16 @@ namespace Idmr.Yogeme
 					thumbs[i].BackgroundImage = _planets.Groups[i].Subs[0].Image;
 					thumbs[i].BackColor = System.Drawing.Color.Black;
 				}
-				StreamReader sr = new StreamReader(_installDirectory + "\\RESDATA.TXT");
+                StreamReader sr;
+                try //[JB Added try block
+                {
+                   sr = new StreamReader(_installDirectory + "\\RESDATA.TXT");
+                }
+                catch
+                {
+                    MessageBox.Show("Could not open resource file:\n" + _installDirectory + "\\RESDATA.TXT", "Error");
+                    return;
+                }
 				System.Collections.Generic.List<string> resdata = new System.Collections.Generic.List<string>(50);
 				string line = "";
 				while((line = sr.ReadLine()) != null) if (line != "") resdata.Add(line);
