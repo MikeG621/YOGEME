@@ -1,12 +1,13 @@
 ﻿/*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, TIE through XWA
- * Copyright (C) 2007-2016 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2017 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.2.4+
+ * VERSION: 1.3
  */
 
 /* CHANGELOG
+ * v1.3, 170107
  * [ADD] RememberPlatformFolder, ConfirmFGDelete, MRU paths
  * v1.2.4, 141215
  * [FIX #1] x64 registry values in CheckPlatforms and null check for sub (via JeremyAnsel)

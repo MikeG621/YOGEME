@@ -233,11 +233,11 @@ namespace Idmr.Yogeme
 			this.pctBrief.Size = new System.Drawing.Size(584, 228);
 			this.pctBrief.TabIndex = 3;
 			this.pctBrief.TabStop = false;
-			this.pctBrief.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.pctBrief_MouseMove);
-			this.pctBrief.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pctBrief_MouseMove);
-			this.pctBrief.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pctBrief_MouseDown);
 			this.pctBrief.Paint += new System.Windows.Forms.PaintEventHandler(this.pctBrief_Paint);
+			this.pctBrief.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pctBrief_MouseDown);
+			this.pctBrief.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pctBrief_MouseMove);
 			this.pctBrief.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pctBrief_MouseUp);
+			this.pctBrief.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.pctBrief_MouseMove);
 			// 
 			// tabBrief
 			// 
@@ -317,23 +317,23 @@ namespace Idmr.Yogeme
 			// 
 			this.numNewRegion.Location = new System.Drawing.Point(92, 3);
 			this.numNewRegion.Maximum = new decimal(new int[] {
-			4,
-			0,
-			0,
-			0});
+            4,
+            0,
+            0,
+            0});
 			this.numNewRegion.Minimum = new decimal(new int[] {
-			1,
-			0,
-			0,
-			0});
+            1,
+            0,
+            0,
+            0});
 			this.numNewRegion.Name = "numNewRegion";
 			this.numNewRegion.Size = new System.Drawing.Size(40, 20);
 			this.numNewRegion.TabIndex = 1;
 			this.numNewRegion.Value = new decimal(new int[] {
-			1,
-			0,
-			0,
-			0});
+            1,
+            0,
+            0,
+            0});
 			// 
 			// label27
 			// 
@@ -371,12 +371,12 @@ namespace Idmr.Yogeme
 			this.cboIconIff.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cboIconIff.FormattingEnabled = true;
 			this.cboIconIff.Items.AddRange(new object[] {
-			"Rebel",
-			"Imperial",
-			"Blue",
-			"Yellow",
-			"Red",
-			"Purple"});
+            "Rebel",
+            "Imperial",
+            "Blue",
+            "Yellow",
+            "Red",
+            "Purple"});
 			this.cboIconIff.Location = new System.Drawing.Point(3, 56);
 			this.cboIconIff.Name = "cboIconIff";
 			this.cboIconIff.Size = new System.Drawing.Size(128, 21);
@@ -429,16 +429,16 @@ namespace Idmr.Yogeme
 			// 
 			this.numMoveTime.DecimalPlaces = 1;
 			this.numMoveTime.Increment = new decimal(new int[] {
-			1,
-			0,
-			0,
-			65536});
+            1,
+            0,
+            0,
+            65536});
 			this.numMoveTime.Location = new System.Drawing.Point(69, 30);
 			this.numMoveTime.Maximum = new decimal(new int[] {
-			5,
-			0,
-			0,
-			0});
+            5,
+            0,
+            0,
+            0});
 			this.numMoveTime.Name = "numMoveTime";
 			this.numMoveTime.Size = new System.Drawing.Size(62, 20);
 			this.numMoveTime.TabIndex = 2;
@@ -489,11 +489,11 @@ namespace Idmr.Yogeme
 			this.cboRotateAmount.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cboRotateAmount.FormattingEnabled = true;
 			this.cboRotateAmount.Items.AddRange(new object[] {
-			"None",
-			"Left 90°",
-			"180°",
-			"Right 90°",
-			"Mirror"});
+            "None",
+            "Left 90°",
+            "180°",
+            "Right 90°",
+            "Mirror"});
 			this.cboRotateAmount.Location = new System.Drawing.Point(2, 30);
 			this.cboRotateAmount.Name = "cboRotateAmount";
 			this.cboRotateAmount.Size = new System.Drawing.Size(128, 21);
@@ -584,11 +584,13 @@ namespace Idmr.Yogeme
 			// 
 			// cmdPlay
 			// 
+			this.cmdPlay.BackColor = System.Drawing.SystemColors.ControlDarkDark;
 			this.cmdPlay.Image = ((System.Drawing.Image)(resources.GetObject("cmdPlay.Image")));
 			this.cmdPlay.Location = new System.Drawing.Point(21, 16);
 			this.cmdPlay.Name = "cmdPlay";
 			this.cmdPlay.Size = new System.Drawing.Size(16, 16);
 			this.cmdPlay.TabIndex = 6;
+			this.cmdPlay.UseVisualStyleBackColor = false;
 			this.cmdPlay.Click += new System.EventHandler(this.cmdPlay_Click);
 			// 
 			// cmdStop
@@ -789,23 +791,23 @@ namespace Idmr.Yogeme
 			// 
 			this.numFG.Location = new System.Drawing.Point(83, 3);
 			this.numFG.Maximum = new decimal(new int[] {
-			8,
-			0,
-			0,
-			0});
+            8,
+            0,
+            0,
+            0});
 			this.numFG.Minimum = new decimal(new int[] {
-			1,
-			0,
-			0,
-			0});
+            1,
+            0,
+            0,
+            0});
 			this.numFG.Name = "numFG";
 			this.numFG.Size = new System.Drawing.Size(48, 20);
 			this.numFG.TabIndex = 17;
 			this.numFG.Value = new decimal(new int[] {
-			1,
-			0,
-			0,
-			0});
+            1,
+            0,
+            0,
+            0});
 			// 
 			// pnlTextTag
 			// 
@@ -832,23 +834,23 @@ namespace Idmr.Yogeme
 			// 
 			this.numText.Location = new System.Drawing.Point(83, 3);
 			this.numText.Maximum = new decimal(new int[] {
-			8,
-			0,
-			0,
-			0});
+            8,
+            0,
+            0,
+            0});
 			this.numText.Minimum = new decimal(new int[] {
-			1,
-			0,
-			0,
-			0});
+            1,
+            0,
+            0,
+            0});
 			this.numText.Name = "numText";
 			this.numText.Size = new System.Drawing.Size(48, 20);
 			this.numText.TabIndex = 17;
 			this.numText.Value = new decimal(new int[] {
-			1,
-			0,
-			0,
-			0});
+            1,
+            0,
+            0,
+            0});
 			this.numText.ValueChanged += new System.EventHandler(this.numText_ValueChanged);
 			// 
 			// cboTextTag
@@ -864,14 +866,14 @@ namespace Idmr.Yogeme
 			// 
 			this.cboColorTag.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cboColorTag.Items.AddRange(new object[] {
-			"Green",
-			"Red",
-			"Purple",
-			"Blue",
-			"Red",
-			"Light Red",
-			"Gray",
-			"White"});
+            "Green",
+            "Red",
+            "Purple",
+            "Blue",
+            "Red",
+            "Light Red",
+            "Gray",
+            "White"});
 			this.cboColorTag.Location = new System.Drawing.Point(3, 56);
 			this.cboColorTag.Name = "cboColorTag";
 			this.cboColorTag.Size = new System.Drawing.Size(128, 21);
@@ -1167,10 +1169,10 @@ namespace Idmr.Yogeme
 			// 
 			this.numUnk1.Location = new System.Drawing.Point(35, 25);
 			this.numUnk1.Maximum = new decimal(new int[] {
-			65535,
-			0,
-			0,
-			0});
+            65535,
+            0,
+            0,
+            0});
 			this.numUnk1.Name = "numUnk1";
 			this.numUnk1.Size = new System.Drawing.Size(56, 20);
 			this.numUnk1.TabIndex = 0;
@@ -1189,10 +1191,10 @@ namespace Idmr.Yogeme
 			// 
 			this.numUnk3.Location = new System.Drawing.Point(35, 89);
 			this.numUnk3.Maximum = new decimal(new int[] {
-			65535,
-			0,
-			0,
-			0});
+            65535,
+            0,
+            0,
+            0});
 			this.numUnk3.Name = "numUnk3";
 			this.numUnk3.Size = new System.Drawing.Size(56, 20);
 			this.numUnk3.TabIndex = 0;
@@ -1257,11 +1259,11 @@ namespace Idmr.Yogeme
 			this.cboRotate.Enabled = false;
 			this.cboRotate.FormattingEnabled = true;
 			this.cboRotate.Items.AddRange(new object[] {
-			"None",
-			"Left 90°",
-			"180°",
-			"Right 90°",
-			"Mirror"});
+            "None",
+            "Left 90°",
+            "180°",
+            "Right 90°",
+            "Mirror"});
 			this.cboRotate.Location = new System.Drawing.Point(50, 120);
 			this.cboRotate.Name = "cboRotate";
 			this.cboRotate.Size = new System.Drawing.Size(70, 21);
@@ -1284,23 +1286,23 @@ namespace Idmr.Yogeme
 			this.numRegion.Enabled = false;
 			this.numRegion.Location = new System.Drawing.Point(152, 89);
 			this.numRegion.Maximum = new decimal(new int[] {
-			4,
-			0,
-			0,
-			0});
+            4,
+            0,
+            0,
+            0});
 			this.numRegion.Minimum = new decimal(new int[] {
-			1,
-			0,
-			0,
-			0});
+            1,
+            0,
+            0,
+            0});
 			this.numRegion.Name = "numRegion";
 			this.numRegion.Size = new System.Drawing.Size(33, 20);
 			this.numRegion.TabIndex = 5;
 			this.numRegion.Value = new decimal(new int[] {
-			1,
-			0,
-			0,
-			0});
+            1,
+            0,
+            0,
+            0});
 			this.numRegion.ValueChanged += new System.EventHandler(this.numRegion_ValueChanged);
 			// 
 			// label19
@@ -1444,14 +1446,14 @@ namespace Idmr.Yogeme
 			this.cboColor.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cboColor.Enabled = false;
 			this.cboColor.Items.AddRange(new object[] {
-			"Green",
-			"Red",
-			"Purple",
-			"Blue",
-			"Red",
-			"Light Red",
-			"Gray",
-			"White"});
+            "Green",
+            "Red",
+            "Purple",
+            "Blue",
+            "Red",
+            "Light Red",
+            "Gray",
+            "White"});
 			this.cboColor.Location = new System.Drawing.Point(320, 56);
 			this.cboColor.Name = "cboColor";
 			this.cboColor.Size = new System.Drawing.Size(80, 21);
@@ -1481,15 +1483,15 @@ namespace Idmr.Yogeme
 			this.numX.Enabled = false;
 			this.numX.Location = new System.Drawing.Point(32, 24);
 			this.numX.Maximum = new decimal(new int[] {
-			32767,
-			0,
-			0,
-			0});
+            32767,
+            0,
+            0,
+            0});
 			this.numX.Minimum = new decimal(new int[] {
-			32768,
-			0,
-			0,
-			-2147483648});
+            32768,
+            0,
+            0,
+            -2147483648});
 			this.numX.Name = "numX";
 			this.numX.Size = new System.Drawing.Size(56, 20);
 			this.numX.TabIndex = 2;
@@ -1500,15 +1502,15 @@ namespace Idmr.Yogeme
 			this.numY.Enabled = false;
 			this.numY.Location = new System.Drawing.Point(32, 56);
 			this.numY.Maximum = new decimal(new int[] {
-			32767,
-			0,
-			0,
-			0});
+            32767,
+            0,
+            0,
+            0});
 			this.numY.Minimum = new decimal(new int[] {
-			32768,
-			0,
-			0,
-			-2147483648});
+            32768,
+            0,
+            0,
+            -2147483648});
 			this.numY.Name = "numY";
 			this.numY.Size = new System.Drawing.Size(56, 20);
 			this.numY.TabIndex = 2;
@@ -1519,12 +1521,12 @@ namespace Idmr.Yogeme
 			this.cboIFF.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cboIFF.Enabled = false;
 			this.cboIFF.Items.AddRange(new object[] {
-			"Rebel",
-			"Imperial",
-			"Blue",
-			"Yellow",
-			"Red",
-			"Purple"});
+            "Rebel",
+            "Imperial",
+            "Blue",
+            "Yellow",
+            "Red",
+            "Purple"});
 			this.cboIFF.Location = new System.Drawing.Point(320, 120);
 			this.cboIFF.Name = "cboIFF";
 			this.cboIFF.Size = new System.Drawing.Size(80, 21);
@@ -1543,10 +1545,10 @@ namespace Idmr.Yogeme
 			// 
 			this.numTime.Location = new System.Drawing.Point(352, 171);
 			this.numTime.Maximum = new decimal(new int[] {
-			9999,
-			0,
-			0,
-			0});
+            9999,
+            0,
+            0,
+            0});
 			this.numTime.Name = "numTime";
 			this.numTime.Size = new System.Drawing.Size(48, 20);
 			this.numTime.TabIndex = 2;
@@ -1556,29 +1558,29 @@ namespace Idmr.Yogeme
 			// 
 			this.cboEvent.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cboEvent.Items.AddRange(new object[] {
-			"Page Break",
-			"Title Text",
-			"Caption Text",
-			"Move Map",
-			"Zoom Map",
-			"Clear FG Tags",
-			"FG Tag 1",
-			"FG Tag 2",
-			"FG Tag 3",
-			"FG Tag 4",
-			"FG Tag 5",
-			"FG Tag 6",
-			"FG Tag 7",
-			"FG Tag 8",
-			"Clear Text Tags",
-			"Text Tag 1",
-			"Text Tag 2",
-			"Text Tag 3",
-			"Text Tag 4",
-			"Text Tag 5",
-			"Text Tag 6",
-			"Text Tag 7",
-			"Text Tag 8"});
+            "Page Break",
+            "Title Text",
+            "Caption Text",
+            "Move Map",
+            "Zoom Map",
+            "Clear FG Tags",
+            "FG Tag 1",
+            "FG Tag 2",
+            "FG Tag 3",
+            "FG Tag 4",
+            "FG Tag 5",
+            "FG Tag 6",
+            "FG Tag 7",
+            "FG Tag 8",
+            "Clear Text Tags",
+            "Text Tag 1",
+            "Text Tag 2",
+            "Text Tag 3",
+            "Text Tag 4",
+            "Text Tag 5",
+            "Text Tag 6",
+            "Text Tag 7",
+            "Text Tag 8"});
 			this.cboEvent.Location = new System.Drawing.Point(536, 171);
 			this.cboEvent.Name = "cboEvent";
 			this.cboEvent.Size = new System.Drawing.Size(160, 21);
@@ -1702,10 +1704,10 @@ namespace Idmr.Yogeme
 			this.Name = "BriefingForm";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "frmBrief";
-			this.Load += new System.EventHandler(this.frmBrief_Load);
-			this.Closed += new System.EventHandler(this.frmBrief_Closed);
 			this.Activated += new System.EventHandler(this.frmBrief_Activated);
 			this.Closing += new System.ComponentModel.CancelEventHandler(this.frmBrief_Closing);
+			this.Closed += new System.EventHandler(this.frmBrief_Closed);
+			this.Load += new System.EventHandler(this.frmBrief_Load);
 			((System.ComponentModel.ISupportInitialize)(this.pctBrief)).EndInit();
 			this.tabBrief.ResumeLayout(false);
 			this.tabDisplay.ResumeLayout(false);

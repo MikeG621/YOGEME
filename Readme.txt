@@ -2,8 +2,8 @@
 ======================================
 
 Author: Michael Gaisser (mjgaisser@gmail.com)
-Version: 1.2.8
-Date: 2016.06.06
+Version: 1.3
+Date: 2017.01.07
 
 Thank you for downloading YOGEME, the all-in-one mission editor for the X-Wing
 series, TIE95 through X-wing Alliance.  This program allows easy mission
@@ -13,6 +13,33 @@ original mainstream editors were created.
 
 ==========
 Version History
+
+v1.3, 7 Jan 2017
+ -Lots of fixes and new features by Random Starfighter (JB)
+ -- RecentMission startup improved
+ -- (Settings) MRU handling updated, ConfirmFGDelete added
+ -- (Backdrop) Fixed a crash point it if can't find the backdrop resources
+ -- (Briefings) Various crash fixes, better event movement handling, multiple briefings capability added, button images tweaked
+ -- (GoalSummary) New feature
+ -- (All) FG Goal Summary
+ -- (All) Various crash fixes
+ -- (All) MRU capability
+ -- (All) Delete menu item, delete key capture
+ -- (All) Redo open mission procedure
+ -- (All) Added craft reference adjustment when deleting FGs
+ -- (TIE) Fixed copy/paste trigger failures
+ -- (TIE) Fixed Global And/Or goal assignments
+ -- (TIE) Changing briefing officer now resets to first question
+ -- (XvT) New FlightGroup functino now returns BOOL
+ -- (XvT) Fixed SpecialCargo assignment
+ -- (XvT) Fixed various Label refresh issues
+ -- (XWA) Added Ion Pulse warhead
+ -- (XWA) Various typos
+ -- (XWA) Fixed various trigger indexes
+ -- (XWA) Fixed Special Cargo assignment
+ -- (XWA) Fixed various copy/paste issues
+ -- (XWA) Added missing ActiveSequence handlers
+ - (OfficersPreview) Form enlarged to account for W10 window style
 
 v1.2.8, 06 June 2016
  - (Test) Changed how YOGEME detects the running game due to how Steam handles it

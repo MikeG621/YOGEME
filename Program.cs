@@ -1,12 +1,13 @@
 ﻿/*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, TIE through XWA
- * Copyright (C) 2007-2016 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2017 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.2.3+
+ * VERSION: 1.3
  */
 
 /* CHANGELOG
+ * v1.3, 170107
  * [FIX] Recent mission fixes [JB]
  * v1.2.3, 141214
  * [UPD] change to MPL
