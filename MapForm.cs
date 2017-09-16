@@ -1,12 +1,13 @@
 /*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, TIE through XWA
- * Copyright (C) 2007-2014 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2017 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.2.3
+ * VERSION: 1.2.3+
  */
 
 /* CHANGELOG
+ * [ADD] form is now resizable, can be maximized
  * v1.2.3, 141214
  * [UPD] change to MPL
  * v1.2, 121006
@@ -41,6 +42,7 @@ namespace Idmr.Yogeme
 		CheckBox[] chkWP = new CheckBox[22];
 		Settings.Platform _platform;
 		int _wpSetCount = 1;
+		bool _isDragged;
 
 		/// <param name="fg">TFlights array</param>
 		public MapForm(Settings settings, Platform.Tie.FlightGroupCollection fg)
@@ -87,6 +89,56 @@ namespace Idmr.Yogeme
 			startup(settings);
 		}
 
+		/// <summary>Get the center pixel of pctMap and the coordinates it pertains to</summary>
+		/// <returns>A point with the map coordinates in klicks</returns>
+		PointF getCenterCoord()
+		{
+			PointF coord = new PointF();
+			switch (_displayMode)
+			{
+				case Orientation.XY:
+					coord.X = (w / 2 - mapX) / Convert.ToSingle(_zoom);
+					coord.Y = (mapY - h / 2) / Convert.ToSingle(_zoom);
+					break;
+				case Orientation.XZ:
+					coord.X = (w / 2 - mapX) / Convert.ToSingle(_zoom);
+					coord.Y = (mapZ - h / 2) / Convert.ToSingle(_zoom);
+					break;
+				case Orientation.YZ:
+					coord.X = (w / 2 - mapY) / Convert.ToSingle(_zoom);
+					coord.Y = (mapZ - h / 2) / Convert.ToSingle(_zoom);
+					break;
+			}
+			return coord;
+		}
+
+		/// <summary>Updaete mapX and mapY</summary>
+		/// <param name="coord">The coordinate in klicks to use as the new center</param>
+		void updateMapCoord(PointF coord)
+		{
+			switch (_displayMode)
+			{
+				case Orientation.XY:
+					mapX = Convert.ToInt32(w / 2 - coord.X * Convert.ToSingle(_zoom));
+					mapY = Convert.ToInt32(h / 2 + coord.Y * Convert.ToSingle(_zoom));
+					break;
+				case Orientation.XZ:
+					mapX = Convert.ToInt32(w / 2 - coord.X * Convert.ToSingle(_zoom));
+					mapZ = Convert.ToInt32(h / 2 + coord.Y * Convert.ToSingle(_zoom));
+					break;
+				case Orientation.YZ:
+					mapY = Convert.ToInt32(w / 2 - coord.X * Convert.ToSingle(_zoom));
+					mapZ = Convert.ToInt32(h / 2 + coord.Y * Convert.ToSingle(_zoom));
+					break;
+			}
+			if (mapX / _zoom > 150) mapX = 150 * _zoom;
+			if ((mapX - w) / _zoom < -150) mapX = -150 * _zoom + w;
+			if (mapY / _zoom > 150) mapY = 150 * _zoom;
+			if ((mapY - h) / _zoom < -150) mapY = -150 * _zoom + h;
+			if (mapZ / _zoom > 150) mapZ = 150 * _zoom;
+			if ((mapZ - h) / _zoom < -150) mapZ = -150 * _zoom + h;
+		}
+
 		/// <summary>Intialization routine, loads settings and config per platform</summary>
 		void startup(Settings config)
 		{
@@ -119,8 +171,7 @@ namespace Idmr.Yogeme
 				chkWP[i].Tag = i;
 			}
 			#endregion
-			w = pctMap.Width;
-			h = pctMap.Height;
+			updateLayout();
 			mapX = w/2;
 			mapY = h/2;
 			mapZ = h/2;
@@ -147,6 +198,32 @@ namespace Idmr.Yogeme
 			}
 			this.MouseWheel += new MouseEventHandler(frmMap_MouseWheel);
 			_loading = false;
+		}
+
+		/// <summary>Adjust control size/locations</summary>
+		void updateLayout()
+		{
+			PointF center = getCenterCoord();
+			pctMap.Width = Width - 120;
+			pctMap.Height = Height - 155;
+			w = pctMap.Width;
+			h = pctMap.Height;
+			_map = new Bitmap(w, h, PixelFormat.Format24bppRgb);
+			lblCoor1.Top = Height - 59;
+			lblCoor2.Top = lblCoor1.Top;
+			lblZoom.Top = lblCoor1.Top;
+			hscZoom.Top = lblCoor1.Top;
+			hscZoom.Width = Width - 498;
+			lblRegion.Left = Width - 268;
+			numRegion.Left = Width - 218;
+			lblOrder.Left = Width - 171;
+			numOrder.Left = Width - 129;
+			grpDir.Left = Width - 90;
+			grpPoints.Left = grpDir.Left;
+			chkTags.Left = grpDir.Left;
+			chkTrace.Left = grpDir.Left;
+			updateMapCoord(center);
+			MapPaint(true);
 		}
 
 		/// <summary>The down-and-dirty function that handles map display </summary>
@@ -379,46 +456,9 @@ namespace Idmr.Yogeme
 		/// <summary>Change the zoom of the map and reset local x/y/z coords as neccessary</summary>
 		void hscZoom_ValueChanged(object sender, EventArgs e)
 		{
-			// emulate a right-click to the center of the map and store the cords in klicks
-			double msX = 0, msY = 0;
-			switch(_displayMode)
-			{
-				case Orientation.XY:
-					msX = (w/2 - mapX) / Convert.ToDouble(_zoom);
-					msY = (mapY - h/2) / Convert.ToDouble(_zoom);
-					break;
-				case Orientation.XZ:
-					msX = (w/2 - mapX) / Convert.ToDouble(_zoom);
-					msY = (mapZ - h/2) / Convert.ToDouble(_zoom);
-					break;
-				case Orientation.YZ:
-					msX = (w/2 - mapY) / Convert.ToDouble(_zoom);
-					msY = (mapZ - h/2) / Convert.ToDouble(_zoom);
-					break;
-			}
+			PointF center = getCenterCoord();
 			_zoom = hscZoom.Value;
-			// using the coords determine the correct map location with the new zoom
-			switch(_displayMode)
-			{
-				case Orientation.XY:
-					mapX = Convert.ToInt32(w/2 - msX * Convert.ToDouble(_zoom));
-					mapY = Convert.ToInt32(h/2 + msY * Convert.ToDouble(_zoom));
-					break;
-				case Orientation.XZ:
-					mapX = Convert.ToInt32(w/2 - msX * Convert.ToDouble(_zoom));
-					mapZ = Convert.ToInt32(h/2 + msY * Convert.ToDouble(_zoom));
-					break;
-				case Orientation.YZ:
-					mapY = Convert.ToInt32(w/2 - msX * Convert.ToDouble(_zoom));
-					mapZ = Convert.ToInt32(h/2 + msY * Convert.ToDouble(_zoom));
-					break;
-			}
-			if (mapX/_zoom > 150) mapX = 150*_zoom;
-			if ((mapX-w)/_zoom < -150) mapX = -150*_zoom + w;
-			if (mapY/_zoom > 150) mapY = 150*_zoom;
-			if ((mapY-h)/_zoom < -150) mapY = -150*_zoom + h;
-			if (mapZ/_zoom > 150) mapZ = 150*_zoom;
-			if ((mapZ-h)/_zoom < -150) mapZ = -150*_zoom + h;
+			updateMapCoord(center);
 			MapPaint(true);
 			lblZoom.Text = "Zoom: " + _zoom.ToString();
 		}
@@ -632,6 +672,19 @@ namespace Idmr.Yogeme
 			if (hscZoom.Value < 25 && e.Delta < 0) hscZoom.Value = 5;
 			else if (hscZoom.Value > 480 && e.Delta > 0) hscZoom.Value = 500;
 			else hscZoom.Value += 20 * Math.Sign(e.Delta);
+		}
+		void MapForm_Resize(object sender, EventArgs e)
+		{
+			if (!_isDragged) updateLayout();
+		}
+		void MapForm_ResizeBegin(object sender, EventArgs e)
+		{
+			_isDragged = true;
+		}
+		void MapForm_ResizeEnd(object sender, EventArgs e)
+		{
+			_isDragged = false;
+			updateLayout();
 		}
 		#endregion
 

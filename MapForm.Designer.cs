@@ -30,7 +30,7 @@ namespace Idmr.Yogeme
 			this.optXY = new System.Windows.Forms.RadioButton();
 			this.optXZ = new System.Windows.Forms.RadioButton();
 			this.imgCraft = new System.Windows.Forms.ImageList(this.components);
-			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.grpPoints = new System.Windows.Forms.GroupBox();
 			this.chkSP1 = new System.Windows.Forms.CheckBox();
 			this.chkSP2 = new System.Windows.Forms.CheckBox();
 			this.chkSP3 = new System.Windows.Forms.CheckBox();
@@ -62,7 +62,7 @@ namespace Idmr.Yogeme
 			this.label1 = new System.Windows.Forms.Label();
 			((System.ComponentModel.ISupportInitialize)(this.pctMap)).BeginInit();
 			this.grpDir.SuspendLayout();
-			this.groupBox1.SuspendLayout();
+			this.grpPoints.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numRegion)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numOrder)).BeginInit();
 			this.SuspendLayout();
@@ -75,20 +75,20 @@ namespace Idmr.Yogeme
 			this.pctMap.Size = new System.Drawing.Size(720, 408);
 			this.pctMap.TabIndex = 28;
 			this.pctMap.TabStop = false;
-			this.pctMap.DoubleClick += new System.EventHandler(this.pctMap_DoubleClick);
-			this.pctMap.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pctMap_MouseMove);
-			this.pctMap.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pctMap_MouseDown);
 			this.pctMap.Paint += new System.Windows.Forms.PaintEventHandler(this.pctMap_Paint);
-			this.pctMap.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pctMap_MouseUp);
+			this.pctMap.DoubleClick += new System.EventHandler(this.pctMap_DoubleClick);
+			this.pctMap.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pctMap_MouseDown);
 			this.pctMap.MouseEnter += new System.EventHandler(this.pctMap_MouseEnter);
+			this.pctMap.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pctMap_MouseMove);
+			this.pctMap.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pctMap_MouseUp);
 			// 
 			// hscZoom
 			// 
-			this.hscZoom.Location = new System.Drawing.Point(488, 504);
+			this.hscZoom.Location = new System.Drawing.Point(402, 504);
 			this.hscZoom.Maximum = 500;
 			this.hscZoom.Minimum = 5;
 			this.hscZoom.Name = "hscZoom";
-			this.hscZoom.Size = new System.Drawing.Size(200, 16);
+			this.hscZoom.Size = new System.Drawing.Size(342, 16);
 			this.hscZoom.TabIndex = 30;
 			this.hscZoom.Value = 40;
 			this.hscZoom.ValueChanged += new System.EventHandler(this.hscZoom_ValueChanged);
@@ -111,7 +111,7 @@ namespace Idmr.Yogeme
 			// 
 			// lblZoom
 			// 
-			this.lblZoom.Location = new System.Drawing.Point(408, 504);
+			this.lblZoom.Location = new System.Drawing.Point(322, 504);
 			this.lblZoom.Name = "lblZoom";
 			this.lblZoom.Size = new System.Drawing.Size(64, 16);
 			this.lblZoom.TabIndex = 25;
@@ -168,35 +168,35 @@ namespace Idmr.Yogeme
 			this.imgCraft.ImageSize = new System.Drawing.Size(16, 16);
 			this.imgCraft.TransparentColor = System.Drawing.Color.Black;
 			// 
-			// groupBox1
+			// grpPoints
 			// 
-			this.groupBox1.Controls.Add(this.chkSP1);
-			this.groupBox1.Controls.Add(this.chkSP2);
-			this.groupBox1.Controls.Add(this.chkSP3);
-			this.groupBox1.Controls.Add(this.chkSP4);
-			this.groupBox1.Controls.Add(this.chkWP1);
-			this.groupBox1.Controls.Add(this.chkWP2);
-			this.groupBox1.Controls.Add(this.chkWP3);
-			this.groupBox1.Controls.Add(this.chkWP4);
-			this.groupBox1.Controls.Add(this.chkWP5);
-			this.groupBox1.Controls.Add(this.chkWP6);
-			this.groupBox1.Controls.Add(this.chkWP7);
-			this.groupBox1.Controls.Add(this.chkWP8);
-			this.groupBox1.Controls.Add(this.chkRDV);
-			this.groupBox1.Controls.Add(this.chkHYP);
-			this.groupBox1.Controls.Add(this.chkBRF8);
-			this.groupBox1.Controls.Add(this.chkBRF7);
-			this.groupBox1.Controls.Add(this.chkBRF6);
-			this.groupBox1.Controls.Add(this.chkBRF5);
-			this.groupBox1.Controls.Add(this.chkBRF4);
-			this.groupBox1.Controls.Add(this.chkBRF3);
-			this.groupBox1.Controls.Add(this.chkBRF2);
-			this.groupBox1.Controls.Add(this.chkBRF);
-			this.groupBox1.Location = new System.Drawing.Point(750, 100);
-			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(64, 362);
-			this.groupBox1.TabIndex = 5;
-			this.groupBox1.TabStop = false;
+			this.grpPoints.Controls.Add(this.chkSP1);
+			this.grpPoints.Controls.Add(this.chkSP2);
+			this.grpPoints.Controls.Add(this.chkSP3);
+			this.grpPoints.Controls.Add(this.chkSP4);
+			this.grpPoints.Controls.Add(this.chkWP1);
+			this.grpPoints.Controls.Add(this.chkWP2);
+			this.grpPoints.Controls.Add(this.chkWP3);
+			this.grpPoints.Controls.Add(this.chkWP4);
+			this.grpPoints.Controls.Add(this.chkWP5);
+			this.grpPoints.Controls.Add(this.chkWP6);
+			this.grpPoints.Controls.Add(this.chkWP7);
+			this.grpPoints.Controls.Add(this.chkWP8);
+			this.grpPoints.Controls.Add(this.chkRDV);
+			this.grpPoints.Controls.Add(this.chkHYP);
+			this.grpPoints.Controls.Add(this.chkBRF8);
+			this.grpPoints.Controls.Add(this.chkBRF7);
+			this.grpPoints.Controls.Add(this.chkBRF6);
+			this.grpPoints.Controls.Add(this.chkBRF5);
+			this.grpPoints.Controls.Add(this.chkBRF4);
+			this.grpPoints.Controls.Add(this.chkBRF3);
+			this.grpPoints.Controls.Add(this.chkBRF2);
+			this.grpPoints.Controls.Add(this.chkBRF);
+			this.grpPoints.Location = new System.Drawing.Point(750, 100);
+			this.grpPoints.Name = "grpPoints";
+			this.grpPoints.Size = new System.Drawing.Size(64, 362);
+			this.grpPoints.TabIndex = 5;
+			this.grpPoints.TabStop = false;
 			// 
 			// chkSP1
 			// 
@@ -473,9 +473,9 @@ namespace Idmr.Yogeme
 			this.label1.Size = new System.Drawing.Size(399, 32);
 			this.label1.TabIndex = 33;
 			this.label1.Text = "Double-click: 2x zoom.     Left click: drag WP.     Right click: center on mouse." +
-				"  Middle click: Reset map.    Mouse Wheel: zoom";
+    "  Middle click: Reset map.    Mouse Wheel: zoom";
 			// 
-			// frmMap
+			// MapForm
 			// 
 			this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
 			this.ClientSize = new System.Drawing.Size(824, 524);
@@ -485,7 +485,7 @@ namespace Idmr.Yogeme
 			this.Controls.Add(this.lblOrder);
 			this.Controls.Add(this.lblRegion);
 			this.Controls.Add(this.chkTags);
-			this.Controls.Add(this.groupBox1);
+			this.Controls.Add(this.grpPoints);
 			this.Controls.Add(this.grpDir);
 			this.Controls.Add(this.lblZoom);
 			this.Controls.Add(this.lblCoor2);
@@ -493,17 +493,19 @@ namespace Idmr.Yogeme
 			this.Controls.Add(this.hscZoom);
 			this.Controls.Add(this.pctMap);
 			this.Controls.Add(this.chkTrace);
-			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-			this.MaximizeBox = false;
-			this.Name = "frmMap";
+			this.MinimumSize = new System.Drawing.Size(700, 563);
+			this.Name = "MapForm";
 			this.Text = "YOGEME Map Interface";
-			this.Load += new System.EventHandler(this.frmMap_Load);
-			this.Closed += new System.EventHandler(this.frmMap_Closed);
 			this.Activated += new System.EventHandler(this.frmMap_Activated);
+			this.Closed += new System.EventHandler(this.frmMap_Closed);
+			this.Load += new System.EventHandler(this.frmMap_Load);
+			this.ResizeBegin += new System.EventHandler(this.MapForm_ResizeBegin);
+			this.ResizeEnd += new System.EventHandler(this.MapForm_ResizeEnd);
+			this.Resize += new System.EventHandler(this.MapForm_Resize);
 			((System.ComponentModel.ISupportInitialize)(this.pctMap)).EndInit();
 			this.grpDir.ResumeLayout(false);
-			this.groupBox1.ResumeLayout(false);
+			this.grpPoints.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.numRegion)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.numOrder)).EndInit();
 			this.ResumeLayout(false);
@@ -522,7 +524,7 @@ namespace Idmr.Yogeme
 		RadioButton optXZ;
 		RadioButton optXY;
 		ImageList imgCraft;
-		GroupBox groupBox1;
+		GroupBox grpPoints;
 		CheckBox chkSP1;
 		CheckBox chkSP2;
 		CheckBox chkSP3;
