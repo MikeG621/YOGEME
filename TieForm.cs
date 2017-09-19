@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2017 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.3
+ * VERSION: 1.3+
  */
 
 /* CHANGELOG
+ * [NEW #10] Custom ship list loading
  * v1.3, 170107
  * [NEW] FG Goal Summary [JB]
  * [FIX] crash fixes [JB]
@@ -335,6 +336,19 @@ namespace Idmr.Yogeme
 		}
 		void startup()
 		{
+			if (File.Exists(Application.StartupPath + "\\tie_shiplist.txt"))
+			{
+				System.Diagnostics.Debug.WriteLine("custom TIE list found");
+				string[] crafts;
+				string[] abbrvs;
+				try
+				{
+					Common.ProcessCraftList(Application.StartupPath + "\\tie_shiplist.txt", out crafts, out abbrvs);
+					Strings.OverrideShipList(crafts, abbrvs);
+					initializeMission();    // have to re-init since lstFG is already populated
+				}
+				catch { MessageBox.Show("Error processing custom TIE ship list, using defaults.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); }
+			}
 			//initializes cbo's, IFFs, resets bAppExit
 			string[] t = new string[_mission.IFFs.Length];
 			for (int i = 0; i < t.Length; i++) t[i] = _mission.IFFs[i];

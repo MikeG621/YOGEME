@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2017 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.3
+ * VERSION: 1.3+
  */
 
 /* CHANGELOG
+ * [NEW #10] Custom ship list loading
  * v1.3, 170107
  * [UPD] added Ion Pulse [JB]
  * [NEW] MRU capability [JB]
@@ -388,6 +389,19 @@ namespace Idmr.Yogeme
 		}
 		void startup()
 		{
+			if (File.Exists(Application.StartupPath + "\\xwa_shiplist.txt"))
+			{
+				System.Diagnostics.Debug.WriteLine("custom XWA list found");
+				string[] crafts;
+				string[] abbrvs;
+				try
+				{
+					Common.ProcessCraftList(Application.StartupPath + "\\xwa_shiplist.txt", out crafts, out abbrvs);
+					Strings.OverrideShipList(crafts, abbrvs);
+					initializeMission();    // have to re-init since lstFG is already populated
+				}
+				catch { MessageBox.Show("Error processing custom XWA ship list, using defaults.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); }
+			}
 			_config.LastPlatform = Settings.Platform.XWA;
 			_applicationExit = true;	//becomes false if selecting "New Mission" from menu
 			opnXWA.InitialDirectory = _config.GetWorkingPath(); //[JB] Updated for MRU access.  Defaults to installation and mission folder if not enabled.

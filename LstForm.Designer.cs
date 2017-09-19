@@ -71,22 +71,24 @@
 			this.lblEx.Size = new System.Drawing.Size(101, 304);
 			this.lblEx.TabIndex = 3;
 			this.lblEx.Text = "Example:\r\n\r\n//\r\n[Section Title]\r\n//\r\n0\r\nm1.tie\r\nMission description\r\n1\r\nm2.tie\r\nK" +
-				"eep to 1 line\r\n//\r\n[Next Section]\r\n//\r\n2\r\nm3.tie\r\netc";
+    "eep to 1 line\r\n//\r\n[Next Section]\r\n//\r\n2\r\nm3.tie\r\netc";
 			// 
-			// frmLST
+			// LstForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(396, 388);
+			this.ClientSize = new System.Drawing.Size(396, 387);
 			this.Controls.Add(this.lblEx);
 			this.Controls.Add(this.txtLST);
 			this.Controls.Add(this.cboFile);
 			this.Controls.Add(this.cmdSave);
-			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MaximizeBox = false;
-			this.Name = "frmLST";
+			this.MaximumSize = new System.Drawing.Size(412, 2000);
+			this.MinimumSize = new System.Drawing.Size(412, 400);
+			this.Name = "LstForm";
 			this.Text = "YOGEME LST Editor";
+			this.Resize += new System.EventHandler(this.LstForm_Resize);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 

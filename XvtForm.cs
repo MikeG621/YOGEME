@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2017 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.3
+ * VERSION: 1.3+
  */
 
 /* CHANGELOG
+ * [NEW #10] Custom ship list loading
  * v1.3, 170107
  * [FIX] various crashes [JB]
  * [NEW] MRU capability [JB]
@@ -399,6 +400,19 @@ namespace Idmr.Yogeme
 		}
 		void startup()
 		{
+			if (File.Exists(Application.StartupPath + "\\xvt_shiplist.txt"))
+			{
+				System.Diagnostics.Debug.WriteLine("custom XvT list found");
+				string[] crafts;
+				string[] abbrvs;
+				try
+				{
+					Common.ProcessCraftList(Application.StartupPath + "\\xvt_shiplist.txt", out crafts, out abbrvs);
+					Strings.OverrideShipList(crafts, abbrvs);
+					initializeMission();    // have to re-init since lstFG is already populated
+				}
+				catch { MessageBox.Show("Error processing custom XvT ship list, using defaults.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); }
+			}
 			this.Height = 600;	// since VS tends to slowly shrink the damn thing
 			tabMain.SelectedIndex = 0;
 			tabFGMinor.SelectedIndex = 0;

@@ -7,7 +7,7 @@
  */
 
 /* CHANGELOG
- * [ADD] form is now resizable, can be maximized
+ * [ADD #11] form is now resizable, can be maximized
  * v1.2.3, 141214
  * [UPD] change to MPL
  * v1.2, 121006

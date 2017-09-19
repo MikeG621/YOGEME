@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2015 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.2.7
+ * VERSION: 1.2.7+
  */
 
 /* CHANGELOG
+ * [NEW #10] Craft list override
  * v1.2.7, 150405
  * [FIX #7] Added quotes to Verify arguments
  * v1.2.5, 150110
@@ -19,6 +20,7 @@
 
 using System;
 using System.Diagnostics;
+using System.IO;
 using System.Windows.Forms;
 
 namespace Idmr.Yogeme
@@ -34,6 +36,43 @@ namespace Idmr.Yogeme
 
 		public static void LaunchHelp() { Process.Start("yogeme.chm"); }
 		public static void EmailJagged() { Process.Start("mailto:mjgaisser@gmail.com?subject=YOGEME"); }
+
+		/// <summary>Processes properly formatted custom craft list files to be used in YOGEME.</summary>
+		/// <param name="filePath">The full path to the shiplist file.</param>
+		/// <param name="types">The output array of craft types.</param>
+		/// <param name="abbrvs">The output array of craft type abbreviations.</param>
+		/// <exception cref="ApplicationException">Throw if an error occurs processing the file.</exception>
+		/// <remarks>Each line of the file must be in the format "<b>CraftType</b>,<b>Abbrv</b>" without quotes, such as "X-Wing,X-W".</remarks>
+		public static void ProcessCraftList(string filePath, out string[] types, out string[] abbrvs)
+		{
+			if (!File.Exists(filePath))
+			{
+				types = null;
+				abbrvs = null;
+				return;
+			}
+			StreamReader sr = null;
+			try
+			{
+				sr = File.OpenText(filePath);
+				string contents = "";
+				string s = null;
+				while ((s = sr.ReadLine()) != null) contents += s + "\r\n";
+				sr.Close();
+
+				string[] fullList = contents.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+				types = new string[fullList.Length];
+				abbrvs = new string[fullList.Length];
+				for (int i = 0; i < fullList.Length; i++)
+				{
+					string[] line = fullList[i].Split(',');
+					types[i] = line[0];
+					abbrvs[i] = line[1];
+				}
+			}
+			catch { throw new ApplicationException("Error processing shiplist, ensure proper format."); }
+			finally { if (sr != null) sr.Close(); }
+		}
 
 		/// <summary>Run MissionVerify.exe on open mission</summary>
 		/// <remarks>MissionVerify part is take from <see cref="Settings.VerifyLocation"/></remarks>

@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2014 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.2.3
+ * VERSION: 1.2.3+
  */
 
 /* CHANGELOG
+ * [ADD #11] made form resizable, although Height only
  * v1.2.3, 141214
  * [UPD] change to MPL
  * [FIX] close the form if platform isn't isntalled
@@ -33,7 +34,6 @@ namespace Idmr.Yogeme
 		public LstForm(Settings.Platform platform)
 		{
 			InitializeComponent();
-			this.Height = 413;
 			_platform = platform;
 			Settings config = new Settings();
 			if (platform==Settings.Platform.XvT) _installPath = config.XvtPath;
@@ -42,12 +42,18 @@ namespace Idmr.Yogeme
 			if (!Directory.Exists(_installPath))
 			{
 				MessageBox.Show("Error reading install path for platform, LST editor unavailable", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				this.Close();
+				Close();
 				return;
 			}
 			if (platform==Settings.Platform.XWA) 
-			{ 
-				this.Width += 190;
+			{
+				System.Drawing.Size max = MaximumSize;
+				max.Width += 190;
+				MaximumSize = max;
+				Width = max.Width;
+				System.Drawing.Size min = MinimumSize;
+				min.Width = Width;
+				MinimumSize = min;
 				lblEx.Left += 75;
 				txtLST.Width += 75;
 				lblEx.Width += 115;
@@ -96,6 +102,11 @@ namespace Idmr.Yogeme
 			StreamWriter sw = new FileInfo(_installPath+"\\"+cboFile.Text).CreateText();
 			sw.Write(txtLST.Text);
 			sw.Close();
+		}
+
+		private void LstForm_Resize(object sender, EventArgs e)
+		{
+			txtLST.Height = Height - 117;
 		}
 	}
 }
