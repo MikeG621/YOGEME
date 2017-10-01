@@ -3,7 +3,7 @@ X-Wing,X-W
 Y-Wing,Y-W
 A-Wing,A-W
 B-Wing,B-W
-TIE Fighter,T/F
+TIE Fighter,TIE
 TIE Interceptor,T/I
 TIE Bomber,T/B
 TIE Advanced,T/A
