@@ -1,0 +1,232 @@
+None,
+X-Wing,X-W
+Y-Wing,Y-W
+A-Wing,A-W
+B-Wing,B-W
+TIE Fighter,TIE
+TIE Interceptor,T/I
+TIE Bomber,T/B
+TIE Advanced,T/A
+TIE Defender,T/D
+IRD Fighter,IRD
+Toscan Fighter,TOS
+Missile Boat,MOS
+T-Wing,T-W
+Z-95 Headhunter,Z-95
+R-41 Starchaser,R-41
+Assault Gunboat,GUN
+Lambda Shuttle,SHU
+Delta Escort Shuttle,E/S
+IPV Patrol Craft,SPC
+Scout Craft,SCT
+Delta Transport,TRN
+Gamma Assault Transport,ATR
+Beta Escort Transport,ETR
+Utility Tug,TUG
+Combat Utility Vehicle,CUV
+Container A,CN/A
+Container B,CN/B
+Container C,CN/C
+Container D,CN/D
+Heavy Lifter,HLF
+Mole Miner,MINER
+Bulk Freighter,FRT
+Cargo Ferry,CARG
+Modular Conveyor,CNVYR
+*Container Transport,*CTRNS
+Medium Transport,MTRNS
+Murrian Transport,MUTR
+Corellian Transport,CORT
+Millenium Falcon,FALC
+Corellian Corvette,CRV
+Modified Corvette,M/CRV
+Nebulon-B Frigate,FRG
+Modified Frigate,M/FRG
+*C-3 Passenger Liner,*LINER
+*Carrack Cruiser,*CRCK
+Strike Cruiser,STRKC
+Escort Carrier,ESC
+Dreadnaught,DREAD
+MC80a Cruiser,CRS
+MC40a Light Cruiser,CRL
+Interdictor,INT
+Victory Star Destroyer,VSD
+Imperator Star Destroyer,ISD
+Executor Star Destroyer,ESD
+Container E,CN/E
+Container F,CN/F
+Container G,CN/G
+Container H,CN/H
+Container I,CN/I
+XQ1 Platform,PLT/1
+XQ2 Platform,PLT/2
+XQ3 Platform,PLT/3
+XQ4 Platform,PLT/4
+XQ5 Platform,PLT/5
+XQ6 Platform,PLT/6
+Asteroid R&D Facility,R&D FC
+Ast. Laser Battery,L BAT
+Ast. Warhead Battery,W LNCHR
+X/7 Factory,FAC/1
+Satellite 1,SAT/1
+Satellite 2,SAT/2
+Satellite 3,SAT/3
+*Satellite 4,*SAT/4
+*Satellite 5,*SAT/5
+Mine A,MN/A
+Mine B,MN/B
+Mine C,MN/C
+Gun Emplacement,GPLT
+*Mine 5,*MN/5
+Probe A,PRB/A
+Probe B,PRB/B
+*Probe 3,*PRB/C
+Nav Buoy 1,NAV/1
+Nav Buoy 2,NAV/2
+Hyper Buoy,HYP
+Asteroid Field,AST
+Planet,PLNT
+Rendezvous Buoy,RDV
+Cargo Canister,C/C
+Shipyard,SHPYD
+Repair Yard,REPYD
+*Modified Strike Cruiser,*M/SC
+Lancer Frigate,L/FRG
+Bulk Cruiser,B/CRS
+Assault Frigate,A/FRG
+Corellian Gunship,GSP
+Sentinel Landing Craft,L/C
+Gamma Assault Shuttle,A/S
+Maurader Corvette,M-CRV
+Star Galleon,STARG
+Imperial Research Ship,SRS
+Luxury Yacht 3000,LY3K
+Ferryboat Liner,F/L
+Action VI Transport,ActVI
+Mobquet Transport,MOB
+Xiytiar Transport,Xiy/Y
+Freight Transport/C,Frt/C
+Freight Transport/H,Frt/H
+Freight Transport/K,Frt/K
+YT-2000,YT2K
+YT-2400,YT24
+Suprosa,S/M
+Skipray Blasboat,S/B
+T/e mk1,T/e1
+T/e mk2,T/e2
+T/e mk3,T/e3
+T/e mk4,T/e4
+T/e mk5,T/e5
+Cloakshape Fighter,Clk/F
+Razor Fighter,Rzr/F
+Planetary Fighter,Plt/F
+Supa Fighter,Sup/F
+Pinook Fighter,Pnk/F
+*Booster Pack,*B/R
+Preybird Fighter,Pry/F
+*StarViper,*Xiz/F
+Firespray,FRS
+Pursuer,PES
+Golan 1,G/1
+Golan 2,G/2
+Golan 3,G/3
+Derilyn Platform,D/P
+Sensor Array,S/ARY
+Comm Relay,C/RLY
+Space Colony 1,SC/1
+Space Colony 2,SC/2
+Space Colony 3,SC/3
+Casino,CAS
+Cargo Facility 1,C/F1
+Cargo Facility 2,C/F2
+Asteroid Mining Plant,AMU
+Processing Plant,PP
+Rebel Platform,BASE
+Imp. Research Center,IRC
+Family Base,AZZ
+Family Repair Yard,RY/2
+Pirate Shipyard,P/SY
+Industrial Complex,FAC/2
+*Pirate Junkyard Base,*JUNKYD
+Escape Pod 1,E-POD
+Pressure Tank,Pr/Tk
+Container J,CN/J
+Container K,CN/K
+Container L,CN/L
+Container Hangar,C/HGR
+Large Emplacement,G/P
+Warhead Emplacement,GW/P
+Prox Mine A,PM/1
+Prox Mine B,PM/2
+*Homing Mine,*H/MN1
+Homing Mine B,H/MN2
+New Laser Battery,L/B
+New Ion Battery,I/B
+Cargo Freighter,CF
+*Cargo Freighter 2,*CF2
+*Cargo Freighter 3,*CF3
+*Cargo Freighter 4,*CF4
+*Cargo Freighter 5,*CF5
+Cargo Tanker,CT
+*Cargo Tanker 2,*CT2
+*Cargo Tanker 3,*CT3
+*Cargo Tanker 4,*CT4
+*Cargo Tanker 5,*CT5
+Escape Pod 2,E-POD/2
+*Rebel Pilot,*Reb Pilot
+*Imperial Pilot,*Imp Pilot
+*Civilian Pilot,*Civ Pilot
+Space Trooper,*ZG/S
+Zero-G Utility Suit,ZG/U
+Emkay,MK-09
+Astromech,R2-D2
+Worker Droid,Droid
+Backdrop,B/Drop
+*Forest Moon of Endor,*B/Drop
+*Endor,*B/Drop
+*Sullust,*B/Drop
+*Bothuwai,*B/Drop
+*Kothlis,*B/Drop
+*Hoth,*B/Drop
+*DS II backdrop,*B/Drop
+*Nar Shadda,*B/Drop
+*Planet,*B/Drop
+*Planet,*B/Drop
+*Planet,*B/Drop
+*Planet,*B/Drop
+*Planet,*B/Drop
+*Planet,*B/Drop
+*Moon,*B/Drop
+*Moon,*B/Drop
+*Moon,*B/Drop
+*Moon,*B/Drop
+*Moon,*B/Drop
+*Sun,*B/Drop
+*Sun,*B/Drop
+*Sun,*B/Drop
+*Sun,*B/Drop
+*Sun,*B/Drop
+*Sun,*B/Drop
+*Sun,*B/Drop
+*Sun,*B/Drop
+*Sun,*B/Drop
+*Sun,*B/Drop
+*Backdrop,*B/Drop
+*Backdrop,*B/Drop
+*Backdrop,*B/Drop
+*Backdrop,*B/Drop
+*Backdrop,*B/Drop
+*Backdrop,*B/Drop
+*Backdrop,*B/Drop
+*Backdrop,*B/Drop
+*Backdrop,*B/Drop
+*Backdrop,*B/Drop
+*Backdrop,*B/Drop
+*Backdrop,*B/Drop
+*Backdrop,*B/Drop
+*Backdrop,*B/Drop
+*DS II,*B/Drop
+MC80 Liberty-class,WRCS
+VSD II,VSDII
+ISD II,ISDII
+*Planet,*B/Drop

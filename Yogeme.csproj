@@ -1,0 +1,413 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ProjectType>Local</ProjectType>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{8117A944-A11E-4E70-9C43-31A6570D6A4C}</ProjectGuid>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ApplicationIcon>App.ico</ApplicationIcon>
+    <AssemblyKeyContainerName>
+    </AssemblyKeyContainerName>
+    <AssemblyName>YOGEME</AssemblyName>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
+    <DefaultClientScript>JScript</DefaultClientScript>
+    <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
+    <DefaultTargetSchema>IE50</DefaultTargetSchema>
+    <DelaySign>false</DelaySign>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>Idmr.Yogeme</RootNamespace>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+    <StartupObject>
+    </StartupObject>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <IsWebBootstrapper>true</IsWebBootstrapper>
+    <PublishUrl>http://localhost/YOGEME/</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Web</InstallFrom>
+    <UpdateEnabled>true</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <OutputPath>bin\Debug\</OutputPath>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <BaseAddress>285212672</BaseAddress>
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DocumentationFile>
+    </DocumentationFile>
+    <DebugSymbols>true</DebugSymbols>
+    <FileAlignment>4096</FileAlignment>
+    <NoStdLib>false</NoStdLib>
+    <NoWarn>
+    </NoWarn>
+    <Optimize>false</Optimize>
+    <RegisterForComInterop>false</RegisterForComInterop>
+    <RemoveIntegerChecks>false</RemoveIntegerChecks>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningLevel>4</WarningLevel>
+    <DebugType>full</DebugType>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OutputPath>bin\Release\</OutputPath>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <BaseAddress>285212672</BaseAddress>
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>TRACE</DefineConstants>
+    <DocumentationFile>
+    </DocumentationFile>
+    <DebugSymbols>false</DebugSymbols>
+    <FileAlignment>4096</FileAlignment>
+    <NoStdLib>false</NoStdLib>
+    <NoWarn>
+    </NoWarn>
+    <Optimize>true</Optimize>
+    <RegisterForComInterop>false</RegisterForComInterop>
+    <RemoveIntegerChecks>false</RemoveIntegerChecks>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningLevel>4</WarningLevel>
+    <DebugType>none</DebugType>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Idmr.Common, Version=1.0.2.18456, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Libraries\Idmr.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Idmr.ImageFormat.Act, Version=1.0.1.34613, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Libraries\Idmr.ImageFormat.Act.dll</HintPath>
+    </Reference>
+    <Reference Include="Idmr.ImageFormat.Dat, Version=1.0.2.37476, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Libraries\Idmr.ImageFormat.Dat.dll</HintPath>
+    </Reference>
+    <Reference Include="Idmr.LfdReader, Version=1.0.3948.16067, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Libraries\Idmr.LfdReader.dll</HintPath>
+    </Reference>
+    <Reference Include="Idmr.Platform, Version=0.9.3515.39978, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Libraries\Idmr.Platform.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System">
+      <Name>System</Name>
+    </Reference>
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data">
+      <Name>System.Data</Name>
+    </Reference>
+    <Reference Include="System.Drawing">
+      <Name>System.Drawing</Name>
+    </Reference>
+    <Reference Include="System.Windows.Forms">
+      <Name>System.Windows.Forms</Name>
+    </Reference>
+    <Reference Include="System.XML" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="App.ico" />
+    <None Include="tie_shiplist_template.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="xvt_shiplist_template.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="xwa_shiplist_template.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="MPL.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Converter.exe">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Readme.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="MissionVerify.exe">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <EmbeddedResource Include="BackdropDialog.resx">
+      <DependentUpon>BackdropDialog.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TestDialog.resx">
+      <DependentUpon>TestDialog.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="OfficerPreviewForm.resx">
+      <DependentUpon>OfficerPreviewForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="images\form24.png" />
+    <EmbeddedResource Include="images\form25.png" />
+    <EmbeddedResource Include="images\form26.png" />
+    <EmbeddedResource Include="images\form27.png" />
+    <EmbeddedResource Include="images\form28.png" />
+    <EmbeddedResource Include="images\form29.png" />
+    <EmbeddedResource Include="images\form30.png" />
+    <EmbeddedResource Include="images\form31.png" />
+    <EmbeddedResource Include="images\form32.png" />
+    <EmbeddedResource Include="images\form33.png" />
+    <EmbeddedResource Include="images\form10.png" />
+    <EmbeddedResource Include="images\form11.png" />
+    <EmbeddedResource Include="images\form12.png" />
+    <EmbeddedResource Include="images\form13.png" />
+    <EmbeddedResource Include="images\form14.png" />
+    <EmbeddedResource Include="images\form15.png" />
+    <EmbeddedResource Include="images\form16.png" />
+    <EmbeddedResource Include="images\form17.png" />
+    <EmbeddedResource Include="images\form18.png" />
+    <EmbeddedResource Include="images\form19.png" />
+    <EmbeddedResource Include="images\form20.png" />
+    <EmbeddedResource Include="images\form21.png" />
+    <EmbeddedResource Include="images\form22.png" />
+    <EmbeddedResource Include="images\form23.png" />
+    <EmbeddedResource Include="images\form9.png" />
+    <EmbeddedResource Include="images\form2.png" />
+    <EmbeddedResource Include="images\form3.png" />
+    <EmbeddedResource Include="images\form4.png" />
+    <EmbeddedResource Include="images\form5.png" />
+    <EmbeddedResource Include="images\form6.png" />
+    <EmbeddedResource Include="images\form7.png" />
+    <EmbeddedResource Include="images\form8.png" />
+    <EmbeddedResource Include="images\form1.png" />
+    <EmbeddedResource Include="images\form0.png" />
+    <None Include="images\craft_XWA.bmp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="images\craft_TIE.bmp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="images\craft_XvT.bmp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <Compile Include="AboutDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AboutDialog.Designer.cs">
+      <DependentUpon>AboutDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BackdropDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="BackdropDialog.Designer.cs">
+      <DependentUpon>BackdropDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormationDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormationDialog.Designer.cs">
+      <DependentUpon>FormationDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TestDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TestDialog.Designer.cs">
+      <DependentUpon>TestDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BattleForm.Designer.cs">
+      <DependentUpon>BattleForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BriefingForm.Designer.cs">
+      <DependentUpon>BriefingForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GoalSummaryDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GoalSummaryDialog.Designer.cs">
+      <DependentUpon>GoalSummaryDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MapForm.Designer.cs">
+      <DependentUpon>MapForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="OptionsDialog.Designer.cs">
+      <DependentUpon>OptionsDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="OfficerPreviewForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="OfficerPreviewForm.Designer.cs">
+      <DependentUpon>OfficerPreviewForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="StartForm.Designer.cs">
+      <DependentUpon>StartForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TieForm.Designer.cs">
+      <DependentUpon>TieForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="XvtForm.Designer.cs">
+      <DependentUpon>XvtForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="XwaForm.Designer.cs">
+      <DependentUpon>XwaForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="classes\Common.cs" />
+    <Compile Include="classes\Settings.cs" />
+    <Compile Include="BattleForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="BriefingForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="LstForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="LstForm.Designer.cs">
+      <DependentUpon>LstForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MapForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="OptionsDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="StartForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TieForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="XvtForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="XwaForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="AboutDialog.resx">
+      <DependentUpon>AboutDialog.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormationDialog.resx">
+      <DependentUpon>FormationDialog.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="BattleForm.resx">
+      <DependentUpon>BattleForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="BriefingForm.resx">
+      <DependentUpon>BriefingForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GoalSummaryDialog.resx">
+      <DependentUpon>GoalSummaryDialog.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="LstForm.resx">
+      <DependentUpon>LstForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MapForm.resx">
+      <DependentUpon>MapForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="OptionsDialog.resx">
+      <DependentUpon>OptionsDialog.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="StartForm.resx">
+      <DependentUpon>StartForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TieForm.resx">
+      <DependentUpon>TieForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="XvtForm.resx">
+      <DependentUpon>XvtForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="XwaForm.resx">
+      <DependentUpon>XwaForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 2.0 %28x86%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.0 %28x86%29</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="xwatest0.plt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="images\TIE_BRF.dat">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="images\XvT_BRF.dat">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="images\XWA_BRF.dat">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="TEST.tfr">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="xvttest0.pl2">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="xvttest0.plt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+    <PostBuildEvent>move /y "$(SolutionDir)$(OutDir)*.dll" "$(SolutionDir)$(OutDir)bin\"
+attrib +r "$(SolutionDir)$(OutDir)$(TargetFileName).config"</PostBuildEvent>
+  </PropertyGroup>
+</Project>

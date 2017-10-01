@@ -1,0 +1,93 @@
+None,
+X-Wing,X-W
+Y-Wing,Y-W
+A-Wing,A-W
+B-Wing,B-W
+TIE Fighter,TIE
+TIE Interceptor,T/I
+TIE Bomber,T/B
+TIE Advanced,T/A
+*TIE Defender,*T/D
+10,
+11,
+*Missile Boat,*MIS
+T-Wing,T-W
+Z-95 Headhunter,Z-95
+R-41 Starchaser,R-41
+Assault Gunboat,GUN
+Lambda Shuttle,SHU
+Delta Escort Shuttle,E/S
+IPV Patrol Craft,SPC
+*Scout Craft,*SCT
+Delta Transport,TRN
+Gamma Assault Transport,ATR
+Beta Escort Transport,ETR
+Tug,TUG
+Combat Utility Vehicle,CUV
+Container A,CN/A
+Container B,CN/B
+Container C,CN/C
+Container D,CN/D
+Heavy Lifter,HLF
+31,
+Bulk Freighter,FRT
+Cargo Ferry,CARG
+Modular Conveyor,CNVYR
+*Container Transport,*CTRNS
+Medium Transport,MDTRN
+Murrian Transport,MUTR
+Corellian Transport,CORT
+39,
+Corellian Corvette,CRV
+Modified Corvette,M/CRV
+Nebulon-B Frigate,FRG
+Modified Frigate,M/FRG
+*C-3 Passenger Liner,*LINER
+*Carrack Cruiser,*CRCK
+Strike Cruiser,STRKC
+Escort Carrier,ESC
+Dreadnaught,DREAD
+MC80a Cruiser,CRS
+MC40a Light Cruiser,CRL
+Interdictor,INT
+Victory Star Destroyer,VSD
+Imperator Star Destroyer,ISD
+Executor Star Destroyer,ESD
+Container E,CN/E
+Container F,CN/F
+Container G,CN/G
+Container H,CN/H
+Container I,CN/I
+Platform A,PLT/1
+Platform B,PLT/2
+Platform C,PLT/3
+Platform D,PLT/4
+Platform E,PLT/5
+Platform F,PLT/6
+Asteroid R&D Facility,R&D FC
+Ast. Laser Battery,LAS BAT
+Ast. Warhead Battery,W LNCHR
+X/7 Factory,FAC/1
+Satellite 1,SAT 1
+Satellite 2,SAT 2
+71,
+72,
+73,
+Mine A,MINE A
+Mine B,MINE B
+Mine C,MINE C
+Gun Emplacement,GUNPLT
+78,
+Probe A,PROBE A
+Probe B,PROBE B
+81,
+Nav Bouy 1,NAV 1
+Nav Bouy 2,NAV 2
+84,
+Asteroid Field,Asteroid
+Planet,Planet
+87,
+88,
+Shipyard,SHPYD
+Repair Yard,REPYD
+Modified Strike Cruiser,M/SC
