@@ -156,6 +156,9 @@
       <DependentUpon>BackdropDialog.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="HyperbuoyDialog.resx">
+      <DependentUpon>HyperbuoyDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="TestDialog.resx">
       <DependentUpon>TestDialog.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -224,6 +227,12 @@
     </Compile>
     <Compile Include="FormationDialog.Designer.cs">
       <DependentUpon>FormationDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="HyperbuoyDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="HyperbuoyDialog.Designer.cs">
+      <DependentUpon>HyperbuoyDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="TestDialog.cs">
       <SubType>Form</SubType>

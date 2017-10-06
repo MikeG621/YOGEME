@@ -1112,6 +1112,21 @@ namespace Idmr.Yogeme
 		{
 			Common.LaunchHelp();
 		}
+		void menuHyperbuoy_Click(object sender, EventArgs e)
+		{
+			lstFG.Focus();
+			int fgCount = _mission.FlightGroups.Count;
+			new HyperbuoyDialog(_mission).ShowDialog();
+			if (_mission.FlightGroups.Count > fgCount)
+			{
+				for (int i = fgCount; i < _mission.FlightGroups.Count;i++)
+				{
+					if (_mission.FlightGroups[i].ArrivesIn30Seconds) craftStart(_mission.FlightGroups[i], true);
+					lstFG.Items.Add(_mission.FlightGroups[i].ToString(true));
+				}
+				updateFGList();
+			}
+		}
 		void menuIDMR_Click(object sender, EventArgs e)
 		{
 			Common.LaunchIdmr();
@@ -1756,7 +1771,7 @@ namespace Idmr.Yogeme
 		{
 			if (_mission.FlightGroups.Count == Mission.FlightGroupLimit)
 			{
-				MessageBox.Show("Mission contains maximum number of Flight Groups", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				MessageBox.Show("Mission contains maximum number of Flight Groups.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return;
 			}
 			_activeFG = _mission.FlightGroups.Add();
@@ -3813,6 +3828,6 @@ namespace Idmr.Yogeme
 		{
 			_mission.MissionNotes = Common.Update(this, _mission.MissionNotes, txtNotes.Text);
 		}
-		#endregion	
+		#endregion
 	}
 }

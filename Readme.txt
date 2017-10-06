@@ -30,7 +30,7 @@ v1.3, 7 Jan 2017
  -- (TIE) Fixed copy/paste trigger failures
  -- (TIE) Fixed Global And/Or goal assignments
  -- (TIE) Changing briefing officer now resets to first question
- -- (XvT) New FlightGroup functino now returns BOOL
+ -- (XvT) New FlightGroup function now returns BOOL
  -- (XvT) Fixed SpecialCargo assignment
  -- (XvT) Fixed various Label refresh issues
  -- (XWA) Added Ion Pulse warhead
