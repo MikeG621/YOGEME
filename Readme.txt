@@ -2,8 +2,8 @@
 ======================================
 
 Author: Michael Gaisser (mjgaisser@gmail.com)
-Version: 1.3
-Date: 2017.01.07
+Version: 1.4
+Date: 2017.10.16
 
 Thank you for downloading YOGEME, the all-in-one mission editor for the X-Wing
 series, TIE95 through X-wing Alliance.  This program allows easy mission
@@ -13,6 +13,12 @@ original mainstream editors were created.
 
 ==========
 Version History
+
+v1.4, 16 Oct 2017
+ - (XWA) Added Hyperbuoy dialog [Issue#13]
+ - (XvT/XWA) Made LST vertically resizable [Issue #11]
+ - (Map) Form is now resizable, can be maximized [Issue #11]
+ - (All) Added ability to replace default craft list, included templates [Issue #10]
 
 v1.3, 7 Jan 2017
  -Lots of fixes and new features by Random Starfighter (JB)

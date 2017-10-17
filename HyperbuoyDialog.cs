@@ -3,11 +3,12 @@
  * Copyright (C) 2007-2017 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.3+
+ * VERSION: 1.4
  */
 
  /* CHANGELOG
-  * [NEW] created
+  * v1.4, 171016
+  * [NEW] created (#13)
   */
 
 using System;
