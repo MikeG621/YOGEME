@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2017 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.4
+ * VERSION: 1.4+
  */
 
 /* CHANGELOG
+ * [UPD] added Exclamation icon to FG delete confirmation
  * v1.4, 171016
  * [NEW #10] Custom ship list loading
  * v1.3, 170107
@@ -1713,7 +1714,7 @@ namespace Idmr.Yogeme
 					string s = "This Flight Group is referenced " + count[0] + " time" + ((count[1]>1)?"s":"") + " in these cases:\n" + breakdown + "\nAll references targeting this flight group will be reset to default.";
 					if(count[7] > 0) s += "\nAssociated Briefing FG Tag events will be deleted.";
 					s += "\n\nAre you sure you want to delete this Flight Group?";
-					DialogResult res = MessageBox.Show(s, "WARNING: Confirm Delete", MessageBoxButtons.YesNo);
+					DialogResult res = MessageBox.Show(s, "WARNING: Confirm Delete", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
 					if (res == DialogResult.No)
 						return;
 				}

@@ -102,6 +102,7 @@ namespace Idmr.Yogeme
 			this.cmdCancel = new System.Windows.Forms.Button();
 			this.opnVerify = new System.Windows.Forms.OpenFileDialog();
 			this.dirPlatform = new System.Windows.Forms.FolderBrowserDialog();
+			this.chkBackdrops = new System.Windows.Forms.CheckBox();
 			this.tabOptions.SuspendLayout();
 			this.tabOpt1.SuspendLayout();
 			this.groupBox1.SuspendLayout();
@@ -529,12 +530,12 @@ namespace Idmr.Yogeme
 			// cboTIEIFF
 			// 
 			this.cboTIEIFF.Items.AddRange(new object[] {
-			"Rebel",
-			"Imperial",
-			"IFF3-Blue",
-			"IFF4-Purple",
-			"IFF5-Red",
-			"IFF6-Purple"});
+            "Rebel",
+            "Imperial",
+            "IFF3-Blue",
+            "IFF4-Purple",
+            "IFF5-Red",
+            "IFF6-Purple"});
 			this.cboTIEIFF.Location = new System.Drawing.Point(8, 96);
 			this.cboTIEIFF.Name = "cboTIEIFF";
 			this.cboTIEIFF.Size = new System.Drawing.Size(96, 21);
@@ -718,12 +719,12 @@ namespace Idmr.Yogeme
 			// cboXvTIFF
 			// 
 			this.cboXvTIFF.Items.AddRange(new object[] {
-			"Rebel",
-			"Imperial",
-			"Blue",
-			"Yellow",
-			"Red",
-			"Purple"});
+            "Rebel",
+            "Imperial",
+            "Blue",
+            "Yellow",
+            "Red",
+            "Purple"});
 			this.cboXvTIFF.Location = new System.Drawing.Point(8, 96);
 			this.cboXvTIFF.Name = "cboXvTIFF";
 			this.cboXvTIFF.Size = new System.Drawing.Size(96, 21);
@@ -773,6 +774,7 @@ namespace Idmr.Yogeme
 			// 
 			// tabOpt4
 			// 
+			this.tabOpt4.Controls.Add(this.chkBackdrops);
 			this.tabOpt4.Controls.Add(this.cmdXwa);
 			this.tabOpt4.Controls.Add(this.groupBox7);
 			this.tabOpt4.Controls.Add(this.txtXWA);
@@ -824,12 +826,12 @@ namespace Idmr.Yogeme
 			// cboXWAIFF
 			// 
 			this.cboXWAIFF.Items.AddRange(new object[] {
-			"Rebel",
-			"Imperial",
-			"IFF3-Blue",
-			"IFF4-Yellow",
-			"IFF5-Red",
-			"IFF6-Purple"});
+            "Rebel",
+            "Imperial",
+            "IFF3-Blue",
+            "IFF4-Yellow",
+            "IFF5-Red",
+            "IFF6-Purple"});
 			this.cboXWAIFF.Location = new System.Drawing.Point(8, 96);
 			this.cboXWAIFF.Name = "cboXWAIFF";
 			this.cboXWAIFF.Size = new System.Drawing.Size(96, 21);
@@ -888,6 +890,16 @@ namespace Idmr.Yogeme
 			// dirPlatform
 			// 
 			this.dirPlatform.Description = "Select the root install directory of the platform";
+			// 
+			// chkBackdrops
+			// 
+			this.chkBackdrops.Enabled = false;
+			this.chkBackdrops.Location = new System.Drawing.Point(182, 56);
+			this.chkBackdrops.Name = "chkBackdrops";
+			this.chkBackdrops.Size = new System.Drawing.Size(185, 40);
+			this.chkBackdrops.TabIndex = 5;
+			this.chkBackdrops.Text = "Apply DTM Super Backdrops to new missions";
+			this.chkBackdrops.UseVisualStyleBackColor = true;
 			// 
 			// OptionsDialog
 			// 
@@ -1007,5 +1019,6 @@ namespace Idmr.Yogeme
 		private Label label7;
         private CheckBox chkRememberPlatformFolder;
         private CheckBox chkConfirmFGDelete;
+		private CheckBox chkBackdrops;
 	}
 }

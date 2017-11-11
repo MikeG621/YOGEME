@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2017 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.3
+ * VERSION: 1.3+
  */
 
 /* CHANGELOG
+ * [NEW #13] Super Backdrops
  * v1.3, 170107
  * [NEW] RememberPlatformFolder and ConfirmFGDelete implementation [JB]
  * v1.2.3, 141214
@@ -109,6 +110,8 @@ namespace Idmr.Yogeme
             chkTest.Checked = _config.ConfirmTest;
 			chkVerifyTest.Checked = _config.VerifyTest;
 			chkVerifyTest.Enabled = !_config.Verify;
+			chkBackdrops.Enabled = _config.SuperBackdropsInstalled;
+			chkBackdrops.Checked = _config.InitializeUsingSuperBackdrops;
 			int t = _config.Waypoints;
 			for (int i=0;i<22;i++) chkWP[i].Checked = Convert.ToBoolean(t & (1 << i));
 		}
@@ -186,6 +189,7 @@ namespace Idmr.Yogeme
             _config.RememberPlatformFolder = chkRememberPlatformFolder.Checked;  //[JB]
             _config.ConfirmFGDelete = chkConfirmFGDelete.Checked;  //[JB]
 			_config.VerifyTest = chkVerifyTest.Checked;
+			_config.InitializeUsingSuperBackdrops = chkBackdrops.Checked;
 			Close();
 		}
 		void cmdTie_Click(object sender, EventArgs e)

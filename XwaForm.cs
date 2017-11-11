@@ -3,10 +3,12 @@
  * Copyright (C) 2007-2017 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.4
+ * VERSION: 1.4+
  */
 
 /* CHANGELOG
+ * [UPD] added Exclamation icon to FG delete confirmation
+ * [NEW #13] SBD implementation
  * v1.4, 171016
  * [NEW #10] Custom ship list loading
  * v1.3, 170107
@@ -221,19 +223,20 @@ namespace Idmr.Yogeme
 			_activeMessage = 0;
 			_mission.FlightGroups[0].CraftType = Convert.ToByte(_config.XwaCraft);
 			_mission.FlightGroups[0].IFF = Convert.ToByte(_config.XwaIff);
+			if (_config.SuperBackdropsInstalled &&_config.InitializeUsingSuperBackdrops) menuSuperBackdrops_Click("initializeMission()", new EventArgs());
 			string[] fgList = _mission.FlightGroups.GetList();
 			comboReset(cboArrMS, fgList, 0);
 			comboReset(cboArrMSAlt, fgList, 0);
 			comboReset(cboDepMS, fgList, 0);
 			comboReset(cboDepMSAlt, fgList, 0);
 			lstFG.Items.Clear();
-			lstFG.Items.Add(_mission.FlightGroups[_activeFG].ToString(true));
+			for (int i = 0; i < fgList.Length; i++) lstFG.Items.Add(_mission.FlightGroups[i].ToString(true));
 			comboReset(cboTeam, _mission.Teams.GetList(), _mission.FlightGroups[0].Team);
 			cboGlobalTeam.Items.Clear();
 			cboGlobalTeam.Items.AddRange(_mission.Teams.GetList());
 			this.Text = "Ye Olde Galactic Empire Mission Editor - XWA - New Mission";
 			cboMessFG.Items.Clear();
-			cboMessFG.Items.Add(fgList[0]);
+			cboMessFG.Items.AddRange(fgList);
 			tabMain.SelectedIndex = 0;
 			tabFGMinor.SelectedIndex = 0;
 			if (!_config.XwaInstalled) cmdBackdrop.Enabled = false;
@@ -427,6 +430,7 @@ namespace Idmr.Yogeme
 				menuRecentMissions[i].Click += new EventHandler(menuRecentMissions_Click);
 				menuRecentMissions[i].Tag = i;
 			}
+			menuSuperBackdrops.Enabled = _config.SuperBackdropsInstalled;
 			refreshRecent();
 			#endregion
 			#region FlightGroups
@@ -1418,6 +1422,47 @@ namespace Idmr.Yogeme
 		{
 			savXWA.ShowDialog();
 		}
+		void menuSuperBackdrops_Click(object sender, EventArgs e)
+		{
+			if (_mission.FlightGroups.Count >= Mission.FlightGroupLimit - 6)
+			{
+				MessageBox.Show("Mission contains too many Flight Groups to add Super Backdrops.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return;
+			}
+
+			for(int i = 0; i < 6; i++)
+			{
+				int index = _mission.FlightGroups.Add();
+				_mission.FlightGroups[index].CraftType = 0xB7;
+				_mission.FlightGroups[index].Backdrop = 54;
+				_mission.FlightGroups[index].Name = "0.0 0.0 0.0";
+				_mission.FlightGroups[index].Cargo = "0.0";
+				if (i < 2)
+				{
+					_mission.FlightGroups[index].SpecialCargo = "0.895";
+					_mission.FlightGroups[index].GlobalCargo = 5;
+				}
+				else _mission.FlightGroups[index].SpecialCargo = "1.055";
+				_mission.FlightGroups[index].IFF = 3;   // Yellow
+				_mission.FlightGroups[index].GlobalGroup = 42;
+				lstFG.Items.Add(_mission.FlightGroups[index].ToString(true));
+			}
+			_mission.FlightGroups[_mission.FlightGroups.Count - 6].Waypoints[0].Z = 1;
+			_mission.FlightGroups[_mission.FlightGroups.Count - 5].Waypoints[0].Z = -1;
+			_mission.FlightGroups[_mission.FlightGroups.Count - 4].Waypoints[0].Y = -1;
+			_mission.FlightGroups[_mission.FlightGroups.Count - 3].Waypoints[0].Y = 1;
+			_mission.FlightGroups[_mission.FlightGroups.Count - 2].Waypoints[0].X = -1;
+			_mission.FlightGroups[_mission.FlightGroups.Count - 1].Waypoints[0].X = 1;
+			// TODO: should ensure that any existing backdrops are palced inside the box we just made
+			updateFGList();
+			Common.Title(this, _loading);
+			try
+			{
+				_fMap.Import(_mission.FlightGroups);
+				_fMap.MapPaint(true);
+			}
+			catch { /* do nothing */ }
+		}
 		void menuText_Click(object sender, EventArgs e)
 		{
 			if (_config.ConfirmTest)
@@ -1730,7 +1775,7 @@ namespace Idmr.Yogeme
 					string s = "This Flight Group is referenced " + count[0] + " time" + ((count[1]>1)?"s":"") + " in these cases:\n" + breakdown + "\nAll references targeting this flight group will be reset to default.";
 					if(count[7] > 0) s += "\nAssociated Briefing FG Tag events will be deleted.";
 					s += "\n\nAre you sure you want to delete this Flight Group?";
-					DialogResult res = MessageBox.Show(s, "WARNING: Confirm Delete", MessageBoxButtons.YesNo);
+					DialogResult res = MessageBox.Show(s, "WARNING: Confirm Delete", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
 					if (res == DialogResult.No)
 						return;
 				}

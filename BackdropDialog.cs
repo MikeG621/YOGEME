@@ -3,10 +3,13 @@
  * Copyright (C) 2007-2017 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.3
+ * VERSION: 1.3+
  */
 
 /* CHANGELOG
+ * [FIX] added numBackdrop_ValueChanged callout to const to ensure loading if _index is 0
+ * [UPD] XWA platform check moved to after InitComp due to SBD adjustments
+ * [NEW #13] SBD implementation
  * v1.3, 170107
  * [FIX] catch blocks for thumbnails [JB]
  * v1.2.3, 141214
@@ -69,6 +72,7 @@ namespace Idmr.Yogeme
             }
 			numBackdrop.Maximum = _numBackdrops - 1;
             numBackdrop.Value = _index;
+			numBackdrop_ValueChanged("init", new EventArgs());
 		}
 		/// <summary>Constructor for XWA</summary>
 		/// <param name="index">Backdrop index, set to 0 if out of range</param>
@@ -76,18 +80,19 @@ namespace Idmr.Yogeme
 		public BackdropDialog(int index, int shadow)
 		{
 			_platform = MissionFile.Platform.XWA;
-			if (!platformInstalled()) throw new ArgumentException("Platform installation not found, feature unavailable.");
 			_index = index;
 			if (_index < 0 || _index > 103) _index = 0;
 			_shadow = shadow;
 			if (_shadow < 0 || _shadow > 6) _shadow = 0;
 			InitializeComponent();
+			if (!platformInstalled()) throw new ArgumentException("Platform installation not found, feature unavailable.");
 			createThumbnails();
 			vsbThumbs.Enabled = true;
 			numBackdrop.Maximum = _numBackdrops - 1;
 			numBackdrop.Value = _index;
 			numShadow.Enabled = true;
 			numShadow.Value = _shadow;
+			numBackdrop_ValueChanged("init", new EventArgs());
 		}
 
 		void createThumbnails()
@@ -298,29 +303,41 @@ namespace Idmr.Yogeme
 					if (!s.BopInstalled) return false;
 					_installDirectory = s.BopPath;
 					_backdropDirectory = _installDirectory + dir;
-					//_listFile = _backdropDirectory + file;
 					_numBackdrops = 17;	// 8, then 38 lines, then 9
 					break;
 				case MissionFile.Platform.TIE:
 					if (!s.TieInstalled) return false;
 					_installDirectory = s.TiePath;
 					_backdropDirectory = _installDirectory + dir;
-					//_listFile = _backdropDirectory + file;
 					_numBackdrops = 8;
 					break;
 				case MissionFile.Platform.XvT:
 					if (!s.XvtInstalled) return false;
 					_installDirectory = s.XvtPath;
 					_backdropDirectory = _installDirectory + dir;
-					//_listFile = _backdropDirectory + file;
 					_numBackdrops = 8;
 					break;
 				case MissionFile.Platform.XWA:
 					if (!s.XwaInstalled) return false;
 					_installDirectory = s.XwaPath;
 					_backdropDirectory = s.XwaPath + "\\RESDATA\\";
-					//_listFile = _backdropDirectory + "planet.dat";	// full array, just plain is in frontplanet.dat
 					_numBackdrops = 103;
+					if (s.SuperBackdropsInstalled)
+					{
+						int size = 256;
+						Height += size;
+						Width += size;
+						pctBackdrop.Height += size;
+						pctBackdrop.Width += size;
+						label1.Left += size;
+						label2.Left += size;
+						numBackdrop.Left += size;
+						numShadow.Left += size;
+						cmdOK.Left += size;
+						cmdOK.Top += size;
+						cmdCancel.Left += size;
+						cmdCancel.Top += size;
+					}
 					break;
 				default:
 					return false;

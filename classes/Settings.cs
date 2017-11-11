@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2017 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.3
+ * VERSION: 1.3+
  */
 
 /* CHANGELOG
+ * [NEW #13] Super Backdrops
  * v1.3, 170107
  * [ADD] RememberPlatformFolder, ConfirmFGDelete, MRU paths
  * v1.2.4, 141215
@@ -168,6 +169,8 @@ namespace Idmr.Yogeme
 					_mruTiePath = br.ReadString();
 					_mruXvtPath = br.ReadString();
 					_mruXwaPath = br.ReadString();
+					SuperBackdropsInstalled = br.ReadBoolean();	// added in 1.3.1 (settings v6)
+					InitializeUsingSuperBackdrops = br.ReadBoolean();	// added in 1.3.1
 				}	
 				catch { /*do nothing*/ }
 
@@ -320,6 +323,7 @@ namespace Idmr.Yogeme
 					}
 				}
 			}
+			if (XwaInstalled) SuperBackdropsInstalled = File.Exists(_xwaPath + "\\BackupDTMSB\\XwingAlliance.exe");
 		}
 		/// <summary>Saves current settings to user's settings file</summary>
 		/// <remarks>Registry use has been deprecated</remarks>
@@ -356,7 +360,7 @@ namespace Idmr.Yogeme
 			FileStream fs = File.OpenWrite(_settingsDir + "\\Settings.dat");
 			BinaryWriter bw = new BinaryWriter(fs);
 			fs.WriteByte(0xFF);
-			fs.WriteByte(0x05);
+			fs.WriteByte(0x06);
 			bw.Write(BopInstalled);
 			bw.Write(_bopPath);
 			bw.Write(ConfirmExit);
@@ -394,6 +398,8 @@ namespace Idmr.Yogeme
             bw.Write(_mruTiePath);
             bw.Write(_mruXvtPath);
             bw.Write(_mruXwaPath);
+			bw.Write(SuperBackdropsInstalled);
+			bw.Write(InitializeUsingSuperBackdrops);
 			fs.SetLength(fs.Position);
 			fs.Close();
 			#endregion
@@ -448,16 +454,16 @@ namespace Idmr.Yogeme
 		}
 		/// <summary>Gets or sets if the confirmation dialog is shown when exiting YOGEME</summary>
 		public bool ConfirmExit { get; set; }
+		/// <summary>Gets or sets if a confirmation dialog is shown when deleting a Flight Group, if other FGs, goals, mission, or briefing triggers depend on it.</summary>
+		public bool ConfirmFGDelete { get; set; }  //[JB] Added
 		/// <summary>Gets or sets if a confirmation dialog is shown when closing an unsaved mission</summary>
 		public bool ConfirmSave { get; set; }
 		/// <summary>Gets or sets if the Test dialog is shown</summary>
 		public bool ConfirmTest { get; set; }
 		/// <summary>Gets or sets if pilot files created during Test are deleted when the platform is closed</summary>
 		public bool DeleteTestPilots { get; set; }
-        /// <summary>Gets or sets if the most recently used folder is remembered when Saving/Loading missions of a particular platform.</summary>
-        public bool RememberPlatformFolder { get; set; }  //[JB] Added
-        /// <summary>Gets or sets if a confirmation dialog is shown when deleting a Flight Group, if other FGs, goals, mission, or briefing triggers depend on it.</summary>
-        public bool ConfirmFGDelete { get; set; }  //[JB] Added
+		/// <summary>Gets or sets if new XWA missions will be initialized with DTM's Super Backdrops</summary>
+		public bool InitializeUsingSuperBackdrops { get; set; }
         /// <summary>Gets or sets the path to last opened mission</summary>
 		/// <remarks>Updates <see cref="RecentMissions"/> and <see cref="RecentPlatforms"/> during set</remarks>
 		public string LastMission
@@ -506,10 +512,14 @@ namespace Idmr.Yogeme
 		public string[] RecentMissions { get { return (string[])_recentMissions.Clone(); } }
 		/// <summary>Gets a copy of the platforms pertaining to <see cref="RecentMissions"/></summary>
 		public Platform[] RecentPlatforms { get { return (Platform[])_recentPlatforms.Clone(); } }
+		/// <summary>Gets or sets if the most recently used folder is remembered when Saving/Loading missions of a particular platform.</summary>
+		public bool RememberPlatformFolder { get; set; }  //[JB] Added
 		/// <summary>Gets or sets if the user can only platform that have been installed</summary>
 		public bool RestrictPlatforms { get; set; }
 		/// <summary>Gets or sets the initial mode of YOGEME</summary>
 		public StartupMode Startup { get; set; }
+		/// <summary>Gets or sets the installation status of DTM's Super Backdrops mod for XWA</summary>
+		public bool SuperBackdropsInstalled { get; set; }
 		/// <summary>Gets or sets the default craft type in TIE Fighter</summary>
 		public byte TieCraft { get; set; }
 		/// <summary>Gets or sets the default IFF for new ships in TIE Fighter</summary>
@@ -611,5 +621,7 @@ namespace Idmr.Yogeme
 	 * (v5+) _mruTiePath STRING:
 	 * (v5+) _mruXvtPath STRING:
 	 * (v5+) _mruXwaPath STRING:
+	 * (v6+) SuperBackdropsInstalled BOOL:
+	 * (v6+) InitializeUsingSuperBackdrops BOOL:
 	 */
 }
