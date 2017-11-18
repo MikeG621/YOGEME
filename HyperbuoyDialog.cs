@@ -6,10 +6,10 @@
  * VERSION: 1.4
  */
 
- /* CHANGELOG
-  * v1.4, 171016
-  * [NEW] created (#13)
-  */
+/* CHANGELOG
+ * v1.4, 171016
+ * [NEW] created (#13)
+ */
 
 using System;
 using System.Windows.Forms;

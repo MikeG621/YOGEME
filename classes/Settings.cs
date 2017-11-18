@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2017 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.3+
+ * VERSION: 1.4.1
  */
 
 /* CHANGELOG
+ * v1.4.1, 171118
  * [NEW #13] Super Backdrops
  * v1.3, 170107
  * [ADD] RememberPlatformFolder, ConfirmFGDelete, MRU paths

@@ -3,11 +3,12 @@
  * Copyright (C) 2007-2017 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.3+
+ * VERSION: 1.4.1
  */
 
 /* CHANGELOG
- * [FIX] added numBackdrop_ValueChanged callout to const to ensure loading if _index is 0
+ * v1.4.1, 171118
+ * [FIX] added numBackdrop_ValueChanged callout to ctor to ensure loading if _index is 0
  * [UPD] XWA platform check moved to after InitComp due to SBD adjustments
  * [NEW #13] SBD implementation
  * v1.3, 170107

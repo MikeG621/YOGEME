@@ -2,8 +2,8 @@
 ======================================
 
 Author: Michael Gaisser (mjgaisser@gmail.com)
-Version: 1.4
-Date: 2017.10.16
+Version: 1.4.1
+Date: 2017.11.18
 
 Thank you for downloading YOGEME, the all-in-one mission editor for the X-Wing
 series, TIE95 through X-wing Alliance.  This program allows easy mission
@@ -14,8 +14,19 @@ original mainstream editors were created.
 ==========
 Version History
 
+v1.4.1, 18 Nov 2018
+ - (XWA) Added DTM's SuperBackdrops support [Issue #13]
+ -- (Options) New setting on the XWA tab to initialize new missions with SBD
+ -- Clicking the 'Backdrops' button on the main FlightGroup tab changes the text to "Loading" due to longer load times from high-res images.
+ - (XWA) Special Cargo text box visibility resets properly when toggling Backdrops
+ - (XWA) Explosion Time numerical control toggles usability properly when toggling Backdrops
+ - (XWA) Removed Backdrops from "Craft within 30 sec" count
+ - (All) Added Exclamation icon to FlightGroup Delete confirmation dialog
+ - (Backdrop) Fixed loading initial image if index was zero.
+ - (Misc) Updated the install.log to add the shiplist templates from 1.4 and the switch to MPL back from 1.2.3
+
 v1.4, 16 Oct 2017
- - (XWA) Added Hyperbuoy dialog [Issue#13]
+ - (XWA) Added Hyperbuoy dialog [Issue #13]
  - (XvT/XWA) Made LST vertically resizable [Issue #11]
  - (Map) Form is now resizable, can be maximized [Issue #11]
  - (All) Added ability to replace default craft list, included templates [Issue #10]

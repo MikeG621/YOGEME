@@ -3,12 +3,16 @@
  * Copyright (C) 2007-2017 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.4+
+ * VERSION: 1.4.1
  */
 
 /* CHANGELOG
+ * v1.4.1, 171118
  * [UPD] added Exclamation icon to FG delete confirmation
+ * [UPD] omitted Backdrops from craftStart
  * [NEW #13] SBD implementation
+ * [FIX] EnableBackdrops(false) now resets Special Cargo visibility properly
+ * [FIX] numExplode toggled in EnableBackdrops()
  * v1.4, 171016
  * [NEW #10] Custom ship list loading
  * v1.3, 170107
@@ -207,7 +211,7 @@ namespace Idmr.Yogeme
 		}
 		void craftStart(FlightGroup fg, bool bAdd)
 		{
-			if (fg.Difficulty == 1 || fg.Difficulty == 3 || fg.Difficulty == 6 || !fg.ArrivesIn30Seconds) return;
+			if (fg.Difficulty == 1 || fg.Difficulty == 3 || fg.Difficulty == 6 || !fg.ArrivesIn30Seconds || fg.CraftType == 0xB7) return;
 			if (bAdd) _startingShips += fg.NumberOfCraft;
 			else _startingShips -= fg.NumberOfCraft;
 			lblStarting.Text = _startingShips.ToString() + " craft at 30 seconds";
@@ -234,7 +238,7 @@ namespace Idmr.Yogeme
 			comboReset(cboTeam, _mission.Teams.GetList(), _mission.FlightGroups[0].Team);
 			cboGlobalTeam.Items.Clear();
 			cboGlobalTeam.Items.AddRange(_mission.Teams.GetList());
-			this.Text = "Ye Olde Galactic Empire Mission Editor - XWA - New Mission";
+			Text = "Ye Olde Galactic Empire Mission Editor - XWA - New Mission";
 			cboMessFG.Items.Clear();
 			cboMessFG.Items.AddRange(fgList);
 			tabMain.SelectedIndex = 0;
@@ -1061,9 +1065,9 @@ namespace Idmr.Yogeme
 			}
 			#endregion
 			#region generic TextBox
-			if (this.ActiveControl.GetType().ToString() == "System.Windows.Forms.TextBox")
+			if (ActiveControl.GetType().ToString() == "System.Windows.Forms.TextBox")
 			{
-				System.Windows.Forms.TextBox txt_t = (System.Windows.Forms.TextBox)ActiveControl;
+				TextBox txt_t = (TextBox)ActiveControl;
 				if (txt_t.SelectedText != "")
 				{
 					formatter.Serialize(stream, txt_t.SelectedText);
@@ -1424,9 +1428,31 @@ namespace Idmr.Yogeme
 		}
 		void menuSuperBackdrops_Click(object sender, EventArgs e)
 		{
-			if (_mission.FlightGroups.Count >= Mission.FlightGroupLimit - 6)
+			tabMain.Focus();
+			byte region = 0;
+			if (sender.ToString() != "initializeMission()")
 			{
-				MessageBox.Show("Mission contains too many Flight Groups to add Super Backdrops.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				RegionSelectDialog regionDlg = new RegionSelectDialog(new string[] { _mission.Regions[0], _mission.Regions[1], _mission.Regions[2], _mission.Regions[3] });
+				if (regionDlg.ShowDialog() == DialogResult.Cancel) return;
+				region = regionDlg.SelectedRegion;
+			}
+
+			int requiredQty = 6;
+			for (int i = 0; i < _mission.FlightGroups.Count; i++)
+			{
+				if (_mission.FlightGroups[i].CraftType == 0xB7)
+				{
+					if (_mission.FlightGroups[i].Backdrop == 54)
+					{
+						MessageBox.Show("Mission already contains SuperBackdrops in " + _mission.Regions[region] + ".", "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+						return;
+					}
+					else if (_mission.FlightGroups[i].Waypoints[0].Region == region) requiredQty++;
+				}
+			}
+			if (_mission.FlightGroups.Count >= Mission.FlightGroupLimit - requiredQty)
+			{
+				MessageBox.Show("Mission contains too many Flight Groups to add Super Backdrops (" + requiredQty + " needed.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return;
 			}
 
@@ -1435,16 +1461,17 @@ namespace Idmr.Yogeme
 				int index = _mission.FlightGroups.Add();
 				_mission.FlightGroups[index].CraftType = 0xB7;
 				_mission.FlightGroups[index].Backdrop = 54;
-				_mission.FlightGroups[index].Name = "0.0 0.0 0.0";
-				_mission.FlightGroups[index].Cargo = "0.0";
+				_mission.FlightGroups[index].LightRGB = "0.0 0.0 0.0";
+				_mission.FlightGroups[index].Brightness = "0.0";
 				if (i < 2)
 				{
-					_mission.FlightGroups[index].SpecialCargo = "0.895";
-					_mission.FlightGroups[index].GlobalCargo = 5;
+					_mission.FlightGroups[index].BackdropSize = "0.895";
+					_mission.FlightGroups[index].Shadow = 5;
 				}
-				else _mission.FlightGroups[index].SpecialCargo = "1.055";
+				else _mission.FlightGroups[index].BackdropSize = "1.055";
 				_mission.FlightGroups[index].IFF = 3;   // Yellow
 				_mission.FlightGroups[index].GlobalGroup = 42;
+				_mission.FlightGroups[index].Waypoints[0].Region = region;
 				lstFG.Items.Add(_mission.FlightGroups[index].ToString(true));
 			}
 			_mission.FlightGroups[_mission.FlightGroups.Count - 6].Waypoints[0].Z = 1;
@@ -1453,7 +1480,19 @@ namespace Idmr.Yogeme
 			_mission.FlightGroups[_mission.FlightGroups.Count - 3].Waypoints[0].Y = 1;
 			_mission.FlightGroups[_mission.FlightGroups.Count - 2].Waypoints[0].X = -1;
 			_mission.FlightGroups[_mission.FlightGroups.Count - 1].Waypoints[0].X = 1;
-			// TODO: should ensure that any existing backdrops are palced inside the box we just made
+			int tempIndex = _activeFG;
+			for(int i = 0, copied = 0; copied < requiredQty - 6; i++)
+			{
+				if (_mission.FlightGroups[i].CraftType == 0xB7 && _mission.FlightGroups[i].Waypoints[0].Region == region)
+				{
+					_activeFG = i;
+					menuCopy_Click("SBD", new EventArgs());
+					menuPaste_Click("SBD", new EventArgs());
+					_mission.FlightGroups[_mission.FlightGroups.Count - 1].Brightness = "0.0";
+					copied++;
+				}
+			}
+			if (!_loading) lstFG.SelectedIndex = tempIndex;
 			updateFGList();
 			Common.Title(this, _loading);
 			try
@@ -2130,6 +2169,7 @@ namespace Idmr.Yogeme
 			numWaves.Enabled = !state;
 			numSC.Enabled = !state;
 			chkRandSC.Enabled = !state;
+			numExplode.Enabled = !state;
 			if (state)
 			{
 				lblGC.Text = "Shadow";
@@ -2145,6 +2185,7 @@ namespace Idmr.Yogeme
 				lblCargo.Text = "Cargo";
 				lblSC.Text = "Special Cargo";	   //[JB] Fixed typo
 				lblName.Text = "Name";
+				numSC_ValueChanged("EnableBackdrop", new EventArgs());
 			}
 		}
 
@@ -2185,6 +2226,11 @@ namespace Idmr.Yogeme
 
 		void cmdBackdrop_Click(object sender, EventArgs e)
 		{
+			if (_config.SuperBackdropsInstalled)
+			{	// this is here due to inherent lag when loading that many high-res images
+				cmdBackdrop.Text = "Loading...";
+				cmdBackdrop.Enabled = false;
+			}
 			try
 			{
 				BackdropDialog dlg = new BackdropDialog(_mission.FlightGroups[_activeFG].Backdrop, _mission.FlightGroups[_activeFG].GlobalCargo);
@@ -2198,6 +2244,8 @@ namespace Idmr.Yogeme
 			{
 				MessageBox.Show(x.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
+			cmdBackdrop.Enabled = true;
+			cmdBackdrop.Text = "Backdrops";
 		}
 		void cmdForms_Click(object sender, EventArgs e)
 		{
