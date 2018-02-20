@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2017 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.4.1
+ * VERSION: 1.4.1+
  */
 
 /* CHANGELOG
+ * [ADD #17] Added explicit platform detection for Steam
  * v1.4.1, 171118
  * [NEW #13] Super Backdrops
  * v1.3, 170107
@@ -217,6 +218,7 @@ namespace Idmr.Yogeme
 		public void CheckPlatforms()
 		{
 			RegistryKey keyplat;
+			#region original registry
 			if (!TieInstalled)
 			{
 				keyplat = Registry.LocalMachine.OpenSubKey("SOFTWARE\\LucasArts Entertainment Company LLC\\TIE95\\1.0");
@@ -281,6 +283,8 @@ namespace Idmr.Yogeme
 					keyplat.Close();
 				}
 			}
+			#endregion
+			#region MSI installers
 			if (!TieInstalled || !XvtInstalled || !BopInstalled || !XwaInstalled)
 			{
 				// 64-bit detection of platforms using the MSI installers from Markus Egger (http://www.markusegger.at/Software/Games.aspx)
@@ -324,6 +328,43 @@ namespace Idmr.Yogeme
 					}
 				}
 			}
+			#endregion
+			#region Steam detection
+			// since I can't rely on the normal registry values, we'll go about it this way...
+			if (!TieInstalled)
+			{
+				keyplat = Registry.LocalMachine.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Steam App 355250");
+				if (keyplat != null)
+				{
+					_tiePath = (string)keyplat.GetValue("InstallLocation") + "\\remastered";
+					keyplat.Close();
+					// verify it's actually there, just in case uninstall borked
+					if (File.Exists(_tiePath + "\\TIE95.exe")) TieInstalled = true;
+				}
+			}
+			if (!XvtInstalled || !BopInstalled)
+			{
+				keyplat = Registry.LocalMachine.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Steam App 361690");
+				if (keyplat != null)
+				{
+					_xvtPath = (string)keyplat.GetValue("InstallLocation");
+					keyplat.Close();
+					if (File.Exists(_xvtPath + "\\z_xvt__.exe")) XvtInstalled = true;
+					_bopPath = _xvtPath += "\\BalanceOfPower";
+					if (File.Exists(_bopPath + "\\z_xvt__.exe")) BopInstalled = true;
+				}
+			}
+			if (!XwaInstalled)
+			{
+				keyplat = Registry.LocalMachine.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Steam App 361670");
+				if (keyplat != null)
+				{
+					_xwaPath = (string)keyplat.GetValue("InstallLocation");
+					keyplat.Close();
+					if (File.Exists(_xwaPath + "\\alliance.exe")) XwaInstalled = true;
+				}
+			}
+			#endregion
 			if (XwaInstalled) SuperBackdropsInstalled = File.Exists(_xwaPath + "\\BackupDTMSB\\XwingAlliance.exe");
 		}
 		/// <summary>Saves current settings to user's settings file</summary>
