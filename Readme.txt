@@ -2,8 +2,8 @@
 ======================================
 
 Author: Michael Gaisser (mjgaisser@gmail.com)
-Version: 1.4.1
-Date: 2017.11.18
+Version: 1.4.2
+Date: 2018.02.24
 
 Thank you for downloading YOGEME, the all-in-one mission editor for the X-Wing
 series, TIE95 through X-wing Alliance.  This program allows easy mission
@@ -13,6 +13,12 @@ original mainstream editors were created.
 
 ==========
 Version History
+
+v1.4.2, 24 Feb 2018
+ - (XWA) Updated Platform.dll to fix Order WP inversion [Issue #16]
+ - (Settings) Added explicit Steam detection for all platforms [Issue #17]
+ - (MissionVerify) Updated MV to remove containers, backdrops, probes, etc from AI and Orders checks [Issue #15]
+ - (MissionVerfiy) Made various other changes, covered in v1.4.1r2 release
 
 v1.4.1, 18 Nov 2018
  - (XWA) Added DTM's SuperBackdrops support [Issue #13]

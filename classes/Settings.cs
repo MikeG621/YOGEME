@@ -1,12 +1,13 @@
 ﻿/*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, TIE through XWA
- * Copyright (C) 2007-2017 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2018 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.4.1+
+ * VERSION: 1.4.2
  */
 
 /* CHANGELOG
+ * v1.4.2, 180224
  * [ADD #17] Added explicit platform detection for Steam
  * v1.4.1, 171118
  * [NEW #13] Super Backdrops
