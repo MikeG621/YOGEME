@@ -162,40 +162,68 @@ namespace Idmr.Yogeme
 				case 0:
 					cbo.Items.Add("None");
 					break;
-				case 1: //FlightGroup
+				case 1: // Flight Group
 					cbo.Items.AddRange(_mission.FlightGroups.GetList());
 					break;
-				case 2:
+				case 2: // Ship Type
 					cbo.Items.AddRange(Strings.CraftType);
 					cbo.Items.RemoveAt(0);
 					break;
-				case 3:
+				case 3: // Ship Class
 					cbo.Items.AddRange(Strings.ShipClass);
 					break;
-				case 4:
+				case 4: // Object Type
 					cbo.Items.AddRange(Strings.ObjectType);
 					break;
-				case 5:
+				case 5: // IFF
 					cbo.Items.AddRange(Strings.IFF);
 					break;
-				case 6:
+				case 6: // Ship Orders
 					cbo.Items.AddRange(Strings.Orders);
 					break;
-				case 7:
+				case 7: // Craft when
 					cbo.Items.AddRange(Strings.CraftWhen);
 					break;
 				//case 8: Global Group
 				//since it's just numbers, same as default, left out for specifics
-				case 0xC:	// Team
+				case 9: // Rating
+					cbo.Items.AddRange(Strings.Rating);
+					break;
+				case 10: // Craft with status
+					cbo.Items.AddRange(Strings.Status);
+					break;
+				//case 11: // All
+				case 12: // Team
 					cbo.Items.AddRange(_mission.Teams.GetList());
 					break;
-				// case 0xD: Player of Global Group
-				case 0x15:	// All Teams except
+				//case 13: Player of Global Group
+				//case 14: After delay
+				case 15: // All Flight Groups except
+					cbo.Items.AddRange(_mission.FlightGroups.GetList());
+					break;
+				case 16: // All ship types except
+					cbo.Items.AddRange(Strings.CraftType);
+					cbo.Items.RemoveAt(0);
+					break;
+				case 17: // All ship classes except
+					cbo.Items.AddRange(Strings.ShipClass);
+					break;
+				case 18: // All object types except
+					cbo.Items.AddRange(Strings.ObjectType);
+					break;
+				case 19: // All IFFs except
+					cbo.Items.AddRange(Strings.IFF);
+					break;
+				//case 20: // All Global Groups except
+				case 21: // All Teams except
 					cbo.Items.AddRange(_mission.Teams.GetList());
 					break;
-				// case 0x17: Global Unit
-				// case 0x19: Global Cargo
-				// case 0x1B: Message #
+				//case 22: // All player of GGs except
+				//case 23: // Global Unit
+				//case 24: // All Global Units except
+				//case 25: // Global Cargo
+				//case 26: // All Global Cargos except
+				//case 27: // Message #
 				default:
 					string[] temp = new string[256];
 					for (int i=0;i<256;i++) temp[i] = i.ToString();
@@ -1599,7 +1627,7 @@ namespace Idmr.Yogeme
 				foreach(Mission.Trigger adt in fg.ArrDepTriggers)
 				{
 					//Note: many FGs initially present in battle use the first FG for Arr/Dep condition, even though the FG isn't actually used (condition is TRUE or FALSE). In which case no need to warn.
-					if(adt.VariableType == 1 && adt.Variable == fgIndex && adt.Condition != 0 && adt.Condition != 10) count[cArrDep]++;
+					if((adt.VariableType == 1 || adt.VariableType == 15) && adt.Variable == fgIndex && adt.Condition != 0 && adt.Condition != 10) count[cArrDep]++;
 					if(adt.Parameter1 == 5 + fgIndex) count[cArrDep]++;
 				}
 				foreach(FlightGroup.Order order in fg.Orders)
@@ -1610,7 +1638,7 @@ namespace Idmr.Yogeme
 					if (order.Target4Type == 1 && order.Target4 == fgIndex) count[cOrder]++;
 					foreach (Mission.Trigger sk in order.SkipTriggers)
 					{
-						if (sk.VariableType == 1 && sk.Variable == fgIndex) count[cSkip]++;
+						if ((sk.VariableType == 1 || sk.VariableType == 15) && sk.Variable == fgIndex) count[cSkip]++;
 						if (sk.Parameter1 == 5 + fgIndex) count[cSkip]++;
 					}
 				}
@@ -1623,7 +1651,7 @@ namespace Idmr.Yogeme
 				foreach(Globals.Goal goal in global.Goals)
 					foreach(Mission.Trigger trig in goal.Triggers)
 					{
-						if (trig.VariableType == 1 && trig.Variable == fgIndex) count[cGoal]++;
+						if ((trig.VariableType == 1 || trig.VariableType == 15) && trig.Variable == fgIndex) count[cGoal]++;
 						if (trig.Parameter1 == 5 + fgIndex) count[cGoal]++;
 					}
 
@@ -1633,7 +1661,7 @@ namespace Idmr.Yogeme
 
 				foreach(Mission.Trigger trig in msg.Triggers)
 				{
-					if (trig.VariableType == 1 && trig.Variable == fgIndex) count[cMessage]++;
+					if ((trig.VariableType == 1 || trig.VariableType == 15) && trig.Variable == fgIndex) count[cMessage]++;
 					if (trig.Parameter1 == 5 + fgIndex) count[cMessage]++;
 				}
 			}
@@ -1663,7 +1691,7 @@ namespace Idmr.Yogeme
 				for(int j = 0; j < fg.ArrDepTriggers.Length; j++)
 				{
 					Mission.Trigger adt = fg.ArrDepTriggers[j];
-					if(adt.VariableType == 1 && adt.Variable == fgIndex)
+					if((adt.VariableType == 1 || adt.VariableType == 15) && adt.Variable == fgIndex)
 					{
 						adt.Amount = 0;
 						adt.VariableType = 0;
@@ -1681,7 +1709,7 @@ namespace Idmr.Yogeme
 
 					foreach (Mission.Trigger sk in order.SkipTriggers)
 					{
-						if (sk.VariableType == 1 && sk.Variable == fgIndex)
+						if ((sk.VariableType == 1 || sk.VariableType == 15) && sk.Variable == fgIndex)
 						{
 							sk.Amount = 0;
 							sk.VariableType = 0;
@@ -1705,7 +1733,7 @@ namespace Idmr.Yogeme
 				{
 					foreach (Mission.Trigger trig in goal.Triggers)
 					{
-						if (trig.VariableType == 1 && trig.Variable == fgIndex)
+						if ((trig.VariableType == 1 || trig.VariableType == 15) && trig.Variable == fgIndex)
 						{
 							trig.Amount = 0;
 							trig.VariableType = 0;
@@ -1722,7 +1750,7 @@ namespace Idmr.Yogeme
 
 				foreach (Mission.Trigger trig in msg.Triggers)
 				{
-					if (trig.VariableType == 1 && trig.Variable == fgIndex)
+					if ((trig.VariableType == 1 || trig.VariableType == 15) && trig.Variable == fgIndex)
 					{
 						trig.Amount = 0;
 						trig.VariableType = 0;
@@ -1751,7 +1779,7 @@ namespace Idmr.Yogeme
 				if (fg.DepartureCraft2 > fgIndex) { fg.DepartureCraft2--; }
 				foreach (Mission.Trigger adt in fg.ArrDepTriggers)
 				{
-					if (adt.VariableType == 1 && adt.Variable > fgIndex) adt.Variable--;
+					if ((adt.VariableType == 1 || adt.VariableType == 15) && adt.Variable > fgIndex) adt.Variable--;
 					if(adt.Parameter1 > 5 + fgIndex) adt.Parameter1--;
 				}
 
@@ -1764,7 +1792,7 @@ namespace Idmr.Yogeme
 
 					foreach (Mission.Trigger sk in order.SkipTriggers)
 					{
-						if (sk.VariableType == 1 && sk.Variable > fgIndex) sk.Variable--;
+						if ((sk.VariableType == 1 || sk.VariableType == 15) && sk.Variable > fgIndex) sk.Variable--;
 						if (sk.Parameter1 > 5 + fgIndex) sk.Parameter1--;
 					}
 				}
@@ -1776,7 +1804,7 @@ namespace Idmr.Yogeme
 				foreach (Globals.Goal goal in global.Goals)
 					foreach (Mission.Trigger trig in goal.Triggers)
 					{
-						if (trig.VariableType == 1 && trig.Variable > fgIndex) trig.Variable--;
+						if ((trig.VariableType == 1 || trig.VariableType == 15) && trig.Variable > fgIndex) trig.Variable--;
 						if (trig.Parameter1 > 5 + fgIndex) trig.Parameter1--;
 					}
 
@@ -1786,7 +1814,7 @@ namespace Idmr.Yogeme
 
 				foreach (Mission.Trigger trig in msg.Triggers)
 				{
-					if (trig.VariableType == 1 && trig.Variable > fgIndex) trig.Variable--;
+					if ((trig.VariableType == 1 || trig.VariableType == 15) && trig.Variable > fgIndex) trig.Variable--;
 					if (trig.Parameter1 > 5 + fgIndex) trig.Parameter1--;
 				}
 			}
