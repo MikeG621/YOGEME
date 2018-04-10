@@ -196,7 +196,7 @@ namespace Idmr.Yogeme
 				case 12: // Team
 					cbo.Items.AddRange(_mission.Teams.GetList());
 					break;
-				//case 13: Player of Global Group
+				//case 13: Player
 				//case 14: After delay
 				case 15: // All Flight Groups except
 					cbo.Items.AddRange(_mission.FlightGroups.GetList());
@@ -218,7 +218,7 @@ namespace Idmr.Yogeme
 				case 21: // All Teams except
 					cbo.Items.AddRange(_mission.Teams.GetList());
 					break;
-				//case 22: // All player of GGs except
+				//case 22: // All players except
 				//case 23: // Global Unit
 				//case 24: // All Global Units except
 				//case 25: // Global Cargo
