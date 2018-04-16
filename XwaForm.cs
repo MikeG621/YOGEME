@@ -288,8 +288,8 @@ namespace Idmr.Yogeme
 				int index = text.IndexOf("FG:") + 3;
 				int length = text.IndexOfAny(new char[] { ' ', ',', '\0' }, index) - index;
 				int fg;
-				if (length > 0) fg = Int32.Parse(text.Substring(index, length));
-				else fg = Int32.Parse(text.Substring(index));
+				if (length > 0) fg = int.Parse(text.Substring(index, length));
+				else fg = int.Parse(text.Substring(index));
 				text = text.Replace("FG:" + fg, _mission.FlightGroups[fg].ToString());
 			}
 			while (text.Contains("TM:"))
@@ -297,8 +297,8 @@ namespace Idmr.Yogeme
 				int index = text.IndexOf("TM:") + 3;
 				int length = text.IndexOfAny(new char[] { ' ', ',', '\0' }, index) - index;
 				int team;
-				if (length > 0) team = Int32.Parse(text.Substring(index, length));
-				else team = Int32.Parse(text.Substring(index));
+				if (length > 0) team = int.Parse(text.Substring(index, length));
+				else team = int.Parse(text.Substring(index));
 				text = text.Replace("TM:" + team, (_mission.Teams[team].Name == "" ? "Team " + team : _mission.Teams[team].Name));
 			}
 			return text;
