@@ -7,6 +7,7 @@
  */
 
 /* CHANGELOG
+ * [UPD] added MGLT multiplier for orders
  * [ADD #19] TriggerType unknowns (via JeremyAnsel)
  * v1.4.1, 171118
  * [UPD] added Exclamation icon to FG delete confirmation
@@ -198,7 +199,11 @@ namespace Idmr.Yogeme
 					cbo.Items.AddRange(_mission.Teams.GetList());
 					break;
 				//case 13: Player
-				//case 14: After delay
+				case 14: // After delay
+					string[] s = new string[256];
+					for (int i = 0; i < 256; i++) s[i] = (i / 12) + ":" + ((i * 5) % 60);
+					cbo.Items.AddRange(s);
+					break;
 				case 15: // All Flight Groups except
 					cbo.Items.AddRange(_mission.FlightGroups.GetList());
 					break;
@@ -2551,7 +2556,7 @@ namespace Idmr.Yogeme
 			cboOT2Type.SelectedIndex = order.Target2Type;
 			optOT1T2OR.Checked = order.T1AndOrT2;
 			optOT1T2AND.Checked = !optOT1T2OR.Checked;
-			numOSpeed.Value = order.Speed;
+			numOSpeed.Value = (decimal)Math.Round(order.Speed * 2.2235);
 			txtOString.Text = order.CustomText;
 			_loading = btemp;
 		}
@@ -2661,7 +2666,7 @@ namespace Idmr.Yogeme
 		void numOSpeed_Leave(object sender, EventArgs e)
 		{
 			int r = (int)(numORegion.Value - 1);
-			_mission.FlightGroups[_activeFG].Orders[r, _activeOrder].Speed = Common.Update(this, _mission.FlightGroups[_activeFG].Orders[r, _activeOrder].Speed, Convert.ToByte(numOSpeed.Value));
+			_mission.FlightGroups[_activeFG].Orders[r, _activeOrder].Speed = Common.Update(this, _mission.FlightGroups[_activeFG].Orders[r, _activeOrder].Speed, Convert.ToByte((double)numOSpeed.Value / 2.2235));
 		}
 		void numOVar1_Leave(object sender, EventArgs e)
 		{

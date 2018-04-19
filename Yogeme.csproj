@@ -425,7 +425,7 @@
   <PropertyGroup>
     <PreBuildEvent>
     </PreBuildEvent>
-    <PostBuildEvent>move /y "$(SolutionDir)$(OutDir)*.dll" "$(SolutionDir)$(OutDir)bin\"
+    <PostBuildEvent>if $(ConfigurationName) == Release move /y "$(SolutionDir)$(OutDir)*.dll" "$(SolutionDir)$(OutDir)bin\"
 attrib +r "$(SolutionDir)$(OutDir)$(TargetFileName).config"</PostBuildEvent>
   </PropertyGroup>
 </Project>
