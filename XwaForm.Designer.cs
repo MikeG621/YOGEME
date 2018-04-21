@@ -57,6 +57,7 @@ namespace Idmr.Yogeme
 			this.menuOptions = new System.Windows.Forms.MenuItem();
 			this.menuGoalSummary = new System.Windows.Forms.MenuItem();
 			this.menuHyperbuoy = new System.Windows.Forms.MenuItem();
+			this.menuSuperBackdrops = new System.Windows.Forms.MenuItem();
 			this.menuText = new System.Windows.Forms.MenuItem();
 			this.menuHelp = new System.Windows.Forms.MenuItem();
 			this.menuHelpInfo = new System.Windows.Forms.MenuItem();
@@ -761,7 +762,6 @@ namespace Idmr.Yogeme
 			this.txtNotes = new System.Windows.Forms.TextBox();
 			this.dataOrders = new System.Data.DataView();
 			this.dataOrders_Raw = new System.Data.DataView();
-			this.menuSuperBackdrops = new System.Windows.Forms.MenuItem();
 			((System.ComponentModel.ISupportInitialize)(this.dataWaypoints)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.dataWaypoints_Raw)).BeginInit();
 			this.tabMain.SuspendLayout();
@@ -1198,6 +1198,12 @@ namespace Idmr.Yogeme
 			this.menuHyperbuoy.Index = 6;
 			this.menuHyperbuoy.Text = "&Hyperbouy Wizard";
 			this.menuHyperbuoy.Click += new System.EventHandler(this.menuHyperbuoy_Click);
+			// 
+			// menuSuperBackdrops
+			// 
+			this.menuSuperBackdrops.Index = 7;
+			this.menuSuperBackdrops.Text = "Apply &Super Backdrops";
+			this.menuSuperBackdrops.Click += new System.EventHandler(this.menuSuperBackdrops_Click);
 			// 
 			// menuText
 			// 
@@ -3693,7 +3699,7 @@ namespace Idmr.Yogeme
 			// 
 			this.numOSpeed.Location = new System.Drawing.Point(75, 235);
 			this.numOSpeed.Maximum = new decimal(new int[] {
-            255,
+            567,
             0,
             0,
             0});
@@ -8953,12 +8959,6 @@ namespace Idmr.Yogeme
 			// 
 			this.dataOrders_Raw.AllowDelete = false;
 			this.dataOrders_Raw.AllowNew = false;
-			// 
-			// menuSuperBackdrops
-			// 
-			this.menuSuperBackdrops.Index = 7;
-			this.menuSuperBackdrops.Text = "Apply &Super Backdrops";
-			this.menuSuperBackdrops.Click += new System.EventHandler(this.menuSuperBackdrops_Click);
 			// 
 			// XwaForm
 			// 
