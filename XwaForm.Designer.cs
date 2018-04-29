@@ -762,6 +762,7 @@ namespace Idmr.Yogeme
 			this.txtNotes = new System.Windows.Forms.TextBox();
 			this.dataOrders = new System.Data.DataView();
 			this.dataOrders_Raw = new System.Data.DataView();
+			this.lblOV1Meaning = new System.Windows.Forms.Label();
 			((System.ComponentModel.ISupportInitialize)(this.dataWaypoints)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.dataWaypoints_Raw)).BeginInit();
 			this.tabMain.SuspendLayout();
@@ -3636,6 +3637,7 @@ namespace Idmr.Yogeme
 			// 
 			// tabOrders
 			// 
+			this.tabOrders.Controls.Add(this.lblOV1Meaning);
 			this.tabOrders.Controls.Add(this.numORegion);
 			this.tabOrders.Controls.Add(this.label103);
 			this.tabOrders.Controls.Add(this.numOSpeed);
@@ -3943,6 +3945,7 @@ namespace Idmr.Yogeme
 			this.numOVar1.Name = "numOVar1";
 			this.numOVar1.Size = new System.Drawing.Size(40, 20);
 			this.numOVar1.TabIndex = 22;
+			this.numOVar1.ValueChanged += new System.EventHandler(this.numOVar1_ValueChanged);
 			this.numOVar1.Leave += new System.EventHandler(this.numOVar1_Leave);
 			// 
 			// lblOVar3
@@ -4058,7 +4061,7 @@ namespace Idmr.Yogeme
 			// 
 			// lblOVar2
 			// 
-			this.lblOVar2.Location = new System.Drawing.Point(352, 209);
+			this.lblOVar2.Location = new System.Drawing.Point(384, 209);
 			this.lblOVar2.Name = "lblOVar2";
 			this.lblOVar2.Size = new System.Drawing.Size(112, 16);
 			this.lblOVar2.TabIndex = 24;
@@ -4067,7 +4070,7 @@ namespace Idmr.Yogeme
 			// 
 			// numOVar2
 			// 
-			this.numOVar2.Location = new System.Drawing.Point(464, 209);
+			this.numOVar2.Location = new System.Drawing.Point(496, 209);
 			this.numOVar2.Maximum = new decimal(new int[] {
             255,
             0,
@@ -8960,6 +8963,16 @@ namespace Idmr.Yogeme
 			this.dataOrders_Raw.AllowDelete = false;
 			this.dataOrders_Raw.AllowNew = false;
 			// 
+			// lblOV1Meaning
+			// 
+			this.lblOV1Meaning.AutoSize = true;
+			this.lblOV1Meaning.Location = new System.Drawing.Point(307, 211);
+			this.lblOV1Meaning.Name = "lblOV1Meaning";
+			this.lblOV1Meaning.Size = new System.Drawing.Size(100, 13);
+			this.lblOV1Meaning.TabIndex = 37;
+			this.lblOV1Meaning.Text = "Leading Above Left";
+			this.lblOV1Meaning.Visible = false;
+			// 
 			// XwaForm
 			// 
 			this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
@@ -9934,5 +9947,6 @@ namespace Idmr.Yogeme
         private MenuItem menuGoalSummary;
 		private MenuItem menuHyperbuoy;
 		private MenuItem menuSuperBackdrops;
+		private Label lblOV1Meaning;
 	}
 }

@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2017 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.4.1
+ * VERSION: 1.4.1+
  */
 
 /* CHANGELOG
+ * [UPD] changed how Strings.OrderDesc gets split
  * v1.4.1, 171118
  * [UPD] added Exclamation icon to FG delete confirmation
  * v1.4, 171016
@@ -1975,11 +1976,10 @@ namespace Idmr.Yogeme
 			if (!_loading)
 				_mission.FlightGroups[_activeFG].Orders[_activeOrder].Command = Common.Update(this, _mission.FlightGroups[_activeFG].Orders[_activeOrder].Command, Convert.ToByte(cboOrders.SelectedIndex));
 			orderLabelRefresh();
-			int i = Strings.OrderDesc[cboOrders.SelectedIndex].IndexOf("|");
-			int j = Strings.OrderDesc[cboOrders.SelectedIndex].LastIndexOf("|");
-			lblODesc.Text = Strings.OrderDesc[cboOrders.SelectedIndex].Substring(0, i);
-			lblOVar1.Text = Strings.OrderDesc[cboOrders.SelectedIndex].Substring(i+1, j-i-1);
-			lblOVar2.Text = Strings.OrderDesc[cboOrders.SelectedIndex].Substring(j+1);
+			string[] s = Strings.OrderDesc[cboOrders.SelectedIndex].Split('|');
+			lblODesc.Text = s[0];
+			lblOVar1.Text = s[1];
+			lblOVar2.Text = s[2];
 		}
 
 		void cboOT1_Leave(object sender, EventArgs e)

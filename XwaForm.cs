@@ -7,8 +7,10 @@
  */
 
 /* CHANGELOG
+ * [NEW #18] label for Escort Position
+ * [UPD] changed how Strings.OrderDesc gets split
  * [UPD] added MGLT multiplier for orders
- * [ADD #19] TriggerType unknowns (via JeremyAnsel)
+ * [NEW #19] TriggerType unknowns (via JeremyAnsel)
  * v1.4.1, 171118
  * [UPD] added Exclamation icon to FG delete confirmation
  * [UPD] omitted Backdrops from craftStart
@@ -2576,13 +2578,12 @@ namespace Idmr.Yogeme
 			if (!_loading)
 				_mission.FlightGroups[_activeFG].Orders[r, _activeOrder].Command = Common.Update(this, _mission.FlightGroups[_activeFG].Orders[r, _activeOrder].Command, Convert.ToByte(cboOrders.SelectedIndex));
 			OrderLabelRefresh();
-			int i = Strings.OrderDesc[cboOrders.SelectedIndex].IndexOf("|");
-			int j = Strings.OrderDesc[cboOrders.SelectedIndex].IndexOf("|", i+1);
-			int k = Strings.OrderDesc[cboOrders.SelectedIndex].LastIndexOf("|");
-			lblODesc.Text = Strings.OrderDesc[cboOrders.SelectedIndex].Substring(0, i);
-			lblOVar1.Text = Strings.OrderDesc[cboOrders.SelectedIndex].Substring(i+1, j-i-1);
-			lblOVar2.Text = Strings.OrderDesc[cboOrders.SelectedIndex].Substring(j+1, k-j-1);
-			lblOVar3.Text = Strings.OrderDesc[cboOrders.SelectedIndex].Substring(k+1);
+			string[] s = Strings.OrderDesc[cboOrders.SelectedIndex].Split('|');
+			lblODesc.Text = s[0];
+			lblOVar1.Text = s[1];
+			lblOVar2.Text = s[2];
+			lblOVar3.Text = s[3];
+			lblOV1Meaning.Visible = (cboOrders.SelectedIndex == 10);
 		}
 		void cboOT1_Leave(object sender, EventArgs e)
 		{
@@ -2672,6 +2673,22 @@ namespace Idmr.Yogeme
 		{
 			int r = (int)(numORegion.Value - 1);
 			_mission.FlightGroups[_activeFG].Orders[r, _activeOrder].Variable1 = Common.Update(this, _mission.FlightGroups[_activeFG].Orders[r, _activeOrder].Variable1, Convert.ToByte(numOVar1.Value));
+		}
+		void numOVar1_ValueChanged(object sender, EventArgs e)
+		{
+			int value = (int)numOVar1.Value;
+			string text = "";
+			if (value < 9) text = "Above";
+			else if (value > 17) text = "Below";
+			if (value % 3 == 0) text += " Left";
+			else if (value % 3 == 2) text += " Right";
+			if (value == 13 || value == 27) text = "Coincident";	// the only one that won't be caught otherwise
+			value = value % 9;
+			if (value < 3 && numOVar1.Value != 27) text = "Leading " + text;
+			else if (value > 5) text = "Trailing " + text;
+			text = text.Replace("  ", " ");
+			if (numOVar1.Value > 27) text = "Invalid";
+			lblOV1Meaning.Text = text;
 		}
 		void numOVar2_Leave(object sender, EventArgs e)
 		{
