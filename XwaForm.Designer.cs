@@ -283,6 +283,7 @@ namespace Idmr.Yogeme
 			this.label77 = new System.Windows.Forms.Label();
 			this.label78 = new System.Windows.Forms.Label();
 			this.tabOrders = new System.Windows.Forms.TabPage();
+			this.lblOV1Meaning = new System.Windows.Forms.Label();
 			this.numORegion = new System.Windows.Forms.NumericUpDown();
 			this.label103 = new System.Windows.Forms.Label();
 			this.numOSpeed = new System.Windows.Forms.NumericUpDown();
@@ -762,7 +763,6 @@ namespace Idmr.Yogeme
 			this.txtNotes = new System.Windows.Forms.TextBox();
 			this.dataOrders = new System.Data.DataView();
 			this.dataOrders_Raw = new System.Data.DataView();
-			this.lblOV1Meaning = new System.Windows.Forms.Label();
 			((System.ComponentModel.ISupportInitialize)(this.dataWaypoints)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.dataWaypoints_Raw)).BeginInit();
 			this.tabMain.SuspendLayout();
@@ -2816,7 +2816,7 @@ namespace Idmr.Yogeme
 			this.cboADTrig.Name = "cboADTrig";
 			this.cboADTrig.Size = new System.Drawing.Size(160, 21);
 			this.cboADTrig.TabIndex = 35;
-			this.cboADTrig.Leave += new System.EventHandler(this.cboADTrig_Leave);
+			this.cboADTrig.SelectedIndexChanged += new System.EventHandler(this.cboADTrig_SelectedIndexChanged);
 			// 
 			// label44
 			// 
@@ -2901,7 +2901,6 @@ namespace Idmr.Yogeme
 			this.grpGoal.Size = new System.Drawing.Size(288, 102);
 			this.grpGoal.TabIndex = 48;
 			this.grpGoal.TabStop = false;
-			this.grpGoal.Leave += new System.EventHandler(this.grpGoal_Leave);
 			// 
 			// cboGoalPara
 			// 
@@ -2911,7 +2910,7 @@ namespace Idmr.Yogeme
 			this.cboGoalPara.Name = "cboGoalPara";
 			this.cboGoalPara.Size = new System.Drawing.Size(125, 21);
 			this.cboGoalPara.TabIndex = 44;
-			this.cboGoalPara.SelectedIndexChanged += new System.EventHandler(this.cboGoalPara_SelectedIndexChanged);
+			this.cboGoalPara.Leave += new System.EventHandler(this.cboGoalPara_Leave);
 			// 
 			// label31
 			// 
@@ -2934,7 +2933,7 @@ namespace Idmr.Yogeme
 			this.numGoalActSeq.Size = new System.Drawing.Size(46, 20);
 			this.numGoalActSeq.TabIndex = 42;
 			this.numGoalActSeq.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-			this.numGoalActSeq.ValueChanged += new System.EventHandler(this.numGoalActSeq_ValueChanged);
+			this.numGoalActSeq.Leave += new System.EventHandler(this.numGoalActSeq_Leave);
 			// 
 			// label61
 			// 
@@ -2953,6 +2952,7 @@ namespace Idmr.Yogeme
 			this.cboGoalAmount.Name = "cboGoalAmount";
 			this.cboGoalAmount.Size = new System.Drawing.Size(144, 21);
 			this.cboGoalAmount.TabIndex = 38;
+			this.cboGoalAmount.Leave += new System.EventHandler(this.cboGoalAmount_Leave);
 			// 
 			// cboGoalArgument
 			// 
@@ -2966,6 +2966,7 @@ namespace Idmr.Yogeme
 			this.cboGoalArgument.Name = "cboGoalArgument";
 			this.cboGoalArgument.Size = new System.Drawing.Size(112, 21);
 			this.cboGoalArgument.TabIndex = 40;
+			this.cboGoalArgument.Leave += new System.EventHandler(this.cboGoalArgument_Leave);
 			// 
 			// cboGoalTrigger
 			// 
@@ -2974,6 +2975,7 @@ namespace Idmr.Yogeme
 			this.cboGoalTrigger.Name = "cboGoalTrigger";
 			this.cboGoalTrigger.Size = new System.Drawing.Size(160, 21);
 			this.cboGoalTrigger.TabIndex = 41;
+			this.cboGoalTrigger.SelectedIndexChanged += new System.EventHandler(this.cboGoalTrigger_SelectedIndexChanged);
 			// 
 			// label66
 			// 
@@ -3665,6 +3667,16 @@ namespace Idmr.Yogeme
 			this.tabOrders.TabIndex = 4;
 			this.tabOrders.Text = "Orders";
 			// 
+			// lblOV1Meaning
+			// 
+			this.lblOV1Meaning.AutoSize = true;
+			this.lblOV1Meaning.Location = new System.Drawing.Point(307, 211);
+			this.lblOV1Meaning.Name = "lblOV1Meaning";
+			this.lblOV1Meaning.Size = new System.Drawing.Size(100, 13);
+			this.lblOV1Meaning.TabIndex = 37;
+			this.lblOV1Meaning.Text = "Leading Above Left";
+			this.lblOV1Meaning.Visible = false;
+			// 
 			// numORegion
 			// 
 			this.numORegion.Location = new System.Drawing.Point(471, 12);
@@ -4339,7 +4351,7 @@ namespace Idmr.Yogeme
 			this.cboSkipTrig.Name = "cboSkipTrig";
 			this.cboSkipTrig.Size = new System.Drawing.Size(160, 21);
 			this.cboSkipTrig.TabIndex = 44;
-			this.cboSkipTrig.Leave += new System.EventHandler(this.cboSkipTrig_Leave);
+			this.cboSkipTrig.SelectedIndexChanged += new System.EventHandler(this.cboSkipTrig_SelectedIndexChanged);
 			// 
 			// label72
 			// 
@@ -5917,7 +5929,7 @@ namespace Idmr.Yogeme
 			this.cboMessTrig.Name = "cboMessTrig";
 			this.cboMessTrig.Size = new System.Drawing.Size(160, 21);
 			this.cboMessTrig.TabIndex = 33;
-			this.cboMessTrig.Leave += new System.EventHandler(this.cboMessTrig_Leave);
+			this.cboMessTrig.SelectedIndexChanged += new System.EventHandler(this.cboMessTrig_SelectedIndexChanged);
 			// 
 			// label110
 			// 
@@ -6618,7 +6630,7 @@ namespace Idmr.Yogeme
 			this.cboGlobalTrig.Name = "cboGlobalTrig";
 			this.cboGlobalTrig.Size = new System.Drawing.Size(160, 21);
 			this.cboGlobalTrig.TabIndex = 26;
-			this.cboGlobalTrig.Leave += new System.EventHandler(this.cboGlobalTrig_Leave);
+			this.cboGlobalTrig.SelectedIndexChanged += new System.EventHandler(this.cboGlobalTrig_SelectedIndexChanged);
 			// 
 			// label59
 			// 
@@ -8962,16 +8974,6 @@ namespace Idmr.Yogeme
 			// 
 			this.dataOrders_Raw.AllowDelete = false;
 			this.dataOrders_Raw.AllowNew = false;
-			// 
-			// lblOV1Meaning
-			// 
-			this.lblOV1Meaning.AutoSize = true;
-			this.lblOV1Meaning.Location = new System.Drawing.Point(307, 211);
-			this.lblOV1Meaning.Name = "lblOV1Meaning";
-			this.lblOV1Meaning.Size = new System.Drawing.Size(100, 13);
-			this.lblOV1Meaning.TabIndex = 37;
-			this.lblOV1Meaning.Text = "Leading Above Left";
-			this.lblOV1Meaning.Visible = false;
 			// 
 			// XwaForm
 			// 

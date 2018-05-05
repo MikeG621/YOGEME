@@ -7,6 +7,8 @@
  */
 
 /* CHANGELOG
+ * [NEW] Prox trigger distances
+ * [UPD] changed Trigger cbo's from Leave to SIChanged for Amount/Distance Prox handling
  * [NEW #18] label for Escort Position
  * [UPD] changed how Strings.OrderDesc gets split
  * [UPD] added MGLT multiplier for orders
@@ -245,6 +247,31 @@ namespace Idmr.Yogeme
 			cbo.Items.AddRange(items);
 			cbo.SelectedIndex = index;
 		}
+		void comboProxCheck(int trigger, ComboBox cbo)
+		{
+			if ((trigger == 0x31 || trigger == 0x32) && cbo.Items.Count < 30)
+			{
+				_loading = true;    // the _loading switch shouldn't do anything right now, since those get updated on Leave events, not SelectedIndexChanged, but since it's harmless I'm doing it anyway to prevent possible issues in the future
+				int dist = cbo.SelectedIndex;
+				cbo.Items.Clear();
+				cbo.Items.Add("0.05 km");
+				for (int i = 1; i < 10; i++) cbo.Items.Add(0.1 * i + " km");
+				for (int i = 10; i <= 50; i++) cbo.Items.Add(0.5 * i - 4 + " km");
+				cbo.SelectedIndex = dist;
+				_loading = false;
+			}
+			else if (trigger != 0x31 && trigger != 0x32 && cbo.Items.Count > 30)
+			{
+				_loading = true;
+				int amount = cbo.SelectedIndex;
+				cbo.Items.Clear();
+				cbo.Items.AddRange(Strings.Amount);
+				try { cbo.SelectedIndex = amount; }
+				catch { cbo.SelectedIndex = 0; }
+				_loading = false;
+			}
+			// else cbo is fine as-is
+		}
 		void craftStart(FlightGroup fg, bool bAdd)
 		{
 			if (fg.Difficulty == 1 || fg.Difficulty == 3 || fg.Difficulty == 6 || !fg.ArrivesIn30Seconds || fg.CraftType == 0xB7) return;
@@ -298,6 +325,15 @@ namespace Idmr.Yogeme
 				if (length > 0) fg = int.Parse(text.Substring(index, length));
 				else fg = int.Parse(text.Substring(index));
 				text = text.Replace("FG:" + fg, _mission.FlightGroups[fg].ToString());
+			}
+			while (text.Contains("FG2:"))
+			{
+				int index = text.IndexOf("FG2:") + 4;
+				int length = text.IndexOfAny(new char[] { ' ', ',', '\0' }, index) - index;
+				int fg;
+				if (length > 0) fg = int.Parse(text.Substring(index, length));
+				else fg = int.Parse(text.Substring(index));
+				text = text.Replace("FG2:" + fg, cboADPara.Items[fg].ToString());	// this could be any Para, but they should all be the same anyway
 			}
 			while (text.Contains("TM:"))
 			{
@@ -2416,9 +2452,12 @@ namespace Idmr.Yogeme
 			_mission.FlightGroups[_activeFG].ArrDepTriggers[_activeArrDepTrigger].Parameter1 = Common.Update(this, _mission.FlightGroups[_activeFG].ArrDepTriggers[_activeArrDepTrigger].Parameter1, Convert.ToByte(cboADPara.SelectedIndex));
 			labelRefresh(_mission.FlightGroups[_activeFG].ArrDepTriggers[_activeArrDepTrigger], lblADTrig[_activeArrDepTrigger]);
 		}
-		void cboADTrig_Leave(object sender, EventArgs e)
+		void cboADTrig_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			_mission.FlightGroups[_activeFG].ArrDepTriggers[_activeArrDepTrigger].Condition = Common.Update(this, _mission.FlightGroups[_activeFG].ArrDepTriggers[_activeArrDepTrigger].Condition, Convert.ToByte(cboADTrig.SelectedIndex));
+			if (cboADTrig.SelectedIndex == -1) return;
+			if (!_loading)
+				_mission.FlightGroups[_activeFG].ArrDepTriggers[_activeArrDepTrigger].Condition = Common.Update(this, _mission.FlightGroups[_activeFG].ArrDepTriggers[_activeArrDepTrigger].Condition, Convert.ToByte(cboADTrig.SelectedIndex));
+			comboProxCheck(cboADTrig.SelectedIndex, cboADTrigAmount);
 			labelRefresh(_mission.FlightGroups[_activeFG].ArrDepTriggers[_activeArrDepTrigger], lblADTrig[_activeArrDepTrigger]);
 		}
 		void cboADTrigAmount_Leave(object sender, EventArgs e)
@@ -2732,7 +2771,9 @@ namespace Idmr.Yogeme
 		#region Goals
 		void GoalLabelRefresh()
 		{
-			lblGoal[_activeFGGoal].Text = "Goal " + (_activeFGGoal + 1).ToString() + ": " + _mission.FlightGroups[_activeFG].Goals[_activeFGGoal].ToString();
+			string triggerText = _mission.FlightGroups[_activeFG].Goals[_activeFGGoal].ToString();
+			triggerText = replaceTargetText(triggerText);
+			lblGoal[_activeFGGoal].Text = "Goal " + (_activeFGGoal + 1) + ": " + triggerText;
 		}
 
 		void lblGoalArr_Click(object sender, EventArgs e)
@@ -2772,9 +2813,28 @@ namespace Idmr.Yogeme
 			if (e.Button == MouseButtons.Right) menuCopy_Click("Goal", new EventArgs());
 		}
 
-		void cboGoalPara_SelectedIndexChanged(object sender, EventArgs e)
+		void cboGoalAmount_Leave(object sender, EventArgs e)
 		{
-			_mission.FlightGroups[_activeFG].Goals[_activeFGGoal].Parameter = (byte)cboGoalPara.SelectedIndex;
+			_mission.FlightGroups[_activeFG].Goals[_activeFGGoal].Amount = Common.Update(this, _mission.FlightGroups[_activeFG].Goals[_activeFGGoal].Amount, Convert.ToByte(cboGoalAmount.SelectedIndex));
+			GoalLabelRefresh();
+		}
+		void cboGoalArgument_Leave(object sender, EventArgs e)
+		{
+			_mission.FlightGroups[_activeFG].Goals[_activeFGGoal].Argument = Common.Update(this, _mission.FlightGroups[_activeFG].Goals[_activeFGGoal].Argument, Convert.ToByte(cboGoalArgument.SelectedIndex));
+			GoalLabelRefresh();
+		}
+		void cboGoalPara_Leave(object sender, EventArgs e)
+		{
+			_mission.FlightGroups[_activeFG].Goals[_activeFGGoal].Parameter = Common.Update(this, _mission.FlightGroups[_activeFG].Goals[_activeFGGoal].Parameter, Convert.ToByte(cboGoalPara.SelectedIndex));
+			GoalLabelRefresh();
+		}
+		void cboGoalTrigger_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			if (cboGoalTrigger.SelectedIndex == -1) return;
+			if (!_loading)
+				_mission.FlightGroups[_activeFG].Goals[_activeFGGoal].Condition = Common.Update(this, _mission.FlightGroups[_activeFG].Goals[_activeFGGoal].Condition, Convert.ToByte(cboGoalTrigger.SelectedIndex));
+			comboProxCheck(cboGoalTrigger.SelectedIndex, cboGoalAmount);
+			GoalLabelRefresh();
 		}
 
 		void chkGoalEnable_Leave(object sender, EventArgs e)
@@ -2783,19 +2843,10 @@ namespace Idmr.Yogeme
 			GoalLabelRefresh();
 		}
 
-		void grpGoal_Leave(object sender, EventArgs e)
+		void numGoalActSeq_Leave(object sender, EventArgs e)
 		{
-			_mission.FlightGroups[_activeFG].Goals[_activeFGGoal][0] = Common.Update(this, _mission.FlightGroups[_activeFG].Goals[_activeFGGoal][0], Convert.ToByte(cboGoalArgument.SelectedIndex));
-			_mission.FlightGroups[_activeFG].Goals[_activeFGGoal][1] = Common.Update(this, _mission.FlightGroups[_activeFG].Goals[_activeFGGoal][1], Convert.ToByte(cboGoalTrigger.SelectedIndex));
-			_mission.FlightGroups[_activeFG].Goals[_activeFGGoal][2] = Common.Update(this, _mission.FlightGroups[_activeFG].Goals[_activeFGGoal][2], Convert.ToByte(cboGoalAmount.SelectedIndex));
-			_mission.FlightGroups[_activeFG].Goals[_activeFGGoal][6] = Common.Update(this, _mission.FlightGroups[_activeFG].Goals[_activeFGGoal][6], Convert.ToByte(cboGoalPara.SelectedIndex));
-			_mission.FlightGroups[_activeFG].Goals[_activeFGGoal][7] = Common.Update(this, _mission.FlightGroups[_activeFG].Goals[_activeFGGoal][7], Convert.ToByte(numGoalActSeq.Value));
+			_mission.FlightGroups[_activeFG].Goals[_activeFGGoal].ActiveSequence = Common.Update(this, _mission.FlightGroups[_activeFG].Goals[_activeFGGoal].ActiveSequence, Convert.ToByte(numGoalActSeq.Value));
 			GoalLabelRefresh();
-		}
-
-		void numGoalActSeq_ValueChanged(object sender, EventArgs e)
-		{
-			_mission.FlightGroups[_activeFG].Goals[_activeFGGoal].ActiveSequence = (byte)numGoalActSeq.Value;
 		}
 		void numGoalPoints_Leave(object sender, EventArgs e)
 		{
@@ -3109,12 +3160,15 @@ namespace Idmr.Yogeme
 			_mission.FlightGroups[_activeFG].Orders[r, o].SkipTriggers[i].Parameter1 = Common.Update(this, _mission.FlightGroups[_activeFG].Orders[r, o].SkipTriggers[i].Parameter1, Convert.ToByte(cboSkipPara.SelectedIndex));
 			labelRefresh(_mission.FlightGroups[_activeFG].Orders[r, o].SkipTriggers[i], (i == 1 ? lblSkipTrig2 : lblSkipTrig1));
 		}
-		void cboSkipTrig_Leave(object sender, EventArgs e)
+		void cboSkipTrig_SelectedIndexChanged(object sender, EventArgs e)
 		{
+			if (cboSkipTrig.SelectedIndex == -1) return;
 			int i = (lblSkipTrig1.ForeColor == SystemColors.Highlight ? 0 : 1);
 			int r = cboSkipOrder.SelectedIndex / 4;
 			int o = cboSkipOrder.SelectedIndex % 4;
-			_mission.FlightGroups[_activeFG].Orders[r, o].SkipTriggers[i].Condition = Common.Update(this, _mission.FlightGroups[_activeFG].Orders[r, o].SkipTriggers[i].Condition, Convert.ToByte(cboSkipTrig.SelectedIndex));
+			if (!_loading)
+				_mission.FlightGroups[_activeFG].Orders[r, o].SkipTriggers[i].Condition = Common.Update(this, _mission.FlightGroups[_activeFG].Orders[r, o].SkipTriggers[i].Condition, Convert.ToByte(cboSkipTrig.SelectedIndex));
+			comboProxCheck(cboSkipTrig.SelectedIndex, cboSkipAmount);
 			labelRefresh(_mission.FlightGroups[_activeFG].Orders[r, o].SkipTriggers[i], (i == 1 ? lblSkipTrig2 : lblSkipTrig1));
 		}
 		void cboSkipType_SelectedIndexChanged(object sender, EventArgs e)
@@ -3465,9 +3519,12 @@ namespace Idmr.Yogeme
 			_mission.Messages[_activeMessage].Triggers[_activeMessageTrigger].Parameter1 = Common.Update(this, _mission.Messages[_activeMessage].Triggers[_activeMessageTrigger].Parameter1, Convert.ToByte(cboMessPara.SelectedIndex));
 			labelRefresh(_mission.Messages[_activeMessage].Triggers[_activeMessageTrigger], lblMessTrig[_activeMessageTrigger]);
 		}
-		void cboMessTrig_Leave(object sender, EventArgs e)
+		void cboMessTrig_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			_mission.Messages[_activeMessage].Triggers[_activeMessageTrigger].Condition = Common.Update(this, _mission.Messages[_activeMessage].Triggers[_activeMessageTrigger].Condition, Convert.ToByte(cboMessTrig.SelectedIndex));
+			if (cboMessTrig.SelectedIndex == -1) return;
+			if (!_loading)
+				_mission.Messages[_activeMessage].Triggers[_activeMessageTrigger].Condition = Common.Update(this, _mission.Messages[_activeMessage].Triggers[_activeMessageTrigger].Condition, Convert.ToByte(cboMessTrig.SelectedIndex));
+			comboProxCheck(cboMessTrig.SelectedIndex, cboMessAmount);
 			labelRefresh(_mission.Messages[_activeMessage].Triggers[_activeMessageTrigger], lblMessTrig[_activeMessageTrigger]);
 		}
 		void cboMessType_SelectedIndexChanged(object sender, EventArgs e)
@@ -3608,9 +3665,12 @@ namespace Idmr.Yogeme
 			_mission.Globals[_activeTeam].Goals[_activeGlobalTrigger / 4].Triggers[_activeGlobalTrigger % 4].Parameter1 = Common.Update(this, _mission.Globals[_activeTeam].Goals[_activeGlobalTrigger / 4].Triggers[_activeGlobalTrigger % 4].Parameter1, Convert.ToByte(cboGlobalPara.SelectedIndex));
 			labelRefresh(_mission.Globals[_activeTeam].Goals[_activeGlobalTrigger / 4].Triggers[_activeGlobalTrigger % 4], lblGlobTrig[_activeGlobalTrigger]);
 		}
-		void cboGlobalTrig_Leave(object sender, EventArgs e)
+		void cboGlobalTrig_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			_mission.Globals[_activeTeam].Goals[_activeGlobalTrigger / 4].Triggers[_activeGlobalTrigger % 4].Condition = Common.Update(this, _mission.Globals[_activeTeam].Goals[_activeGlobalTrigger / 4].Triggers[_activeGlobalTrigger % 4].Condition, Convert.ToByte(cboGlobalTrig.SelectedIndex));
+			if (cboGlobalTrig.SelectedIndex == -1) return;
+			if (!_loading)
+				_mission.Globals[_activeTeam].Goals[_activeGlobalTrigger / 4].Triggers[_activeGlobalTrigger % 4].Condition = Common.Update(this, _mission.Globals[_activeTeam].Goals[_activeGlobalTrigger / 4].Triggers[_activeGlobalTrigger % 4].Condition, Convert.ToByte(cboGlobalTrig.SelectedIndex));
+			comboProxCheck(cboGlobalTrig.SelectedIndex, cboGlobalAmount);
 			labelRefresh(_mission.Globals[_activeTeam].Goals[_activeGlobalTrigger / 4].Triggers[_activeGlobalTrigger % 4], lblGlobTrig[_activeGlobalTrigger]);
 		}
 		void cboGlobalType_SelectedIndexChanged(object sender, EventArgs e)
@@ -3973,6 +4033,6 @@ namespace Idmr.Yogeme
 		{
 			_mission.MissionNotes = Common.Update(this, _mission.MissionNotes, txtNotes.Text);
 		}
-		#endregion
+		#endregion 
 	}
 }
