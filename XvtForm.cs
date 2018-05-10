@@ -1,12 +1,13 @@
 /*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, TIE through XWA
- * Copyright (C) 2007-2017 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2018 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.4.1+
+ * VERSION: 1.4.3
  */
 
 /* CHANGELOG
+ * v1.4.3, 180509
  * [UPD] changed how Strings.OrderDesc gets split
  * v1.4.1, 171118
  * [UPD] added Exclamation icon to FG delete confirmation

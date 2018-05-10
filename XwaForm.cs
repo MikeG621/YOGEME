@@ -1,12 +1,13 @@
 /*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, TIE through XWA
- * Copyright (C) 2007-2017 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2018 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.4.1+
+ * VERSION: 1.4.3
  */
 
 /* CHANGELOG
+ * v1.4.3, 180509
  * [NEW] Prox trigger distances
  * [UPD] changed Trigger cbo's from Leave to SIChanged for Amount/Distance Prox handling
  * [NEW #18] label for Escort Position

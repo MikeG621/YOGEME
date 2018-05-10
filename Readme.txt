@@ -2,8 +2,8 @@
 ======================================
 
 Author: Michael Gaisser (mjgaisser@gmail.com)
-Version: 1.4.2
-Date: 2018.02.24
+Version: 1.4.3
+Date: 2018.05.09
 
 Thank you for downloading YOGEME, the all-in-one mission editor for the X-Wing
 series, TIE95 through X-wing Alliance.  This program allows easy mission
@@ -13,6 +13,13 @@ original mainstream editors were created.
 
 ==========
 Version History
+
+v1.4.3, 09 May 2018
+ - (All) Code change for splitting some strings
+ - (XWA) Added distances to Prox Trigger display and appropriate ComboBoxes
+ - (XWA) Added a label that appears for Escort orders to explain the selected Position [Issue #18]
+ - (XWA) Order speed now displays as MGLT instead of raw value
+ - (XWA) TriggerType unknowns filled in (JeremyAnsel) [Issue #19]
 
 v1.4.2, 24 Feb 2018
  - (XWA) Updated Platform.dll to fix Order WP inversion [Issue #16]
