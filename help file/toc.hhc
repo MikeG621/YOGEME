@@ -1,0 +1,289 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<HTML>
+<HEAD>
+<meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
+<!-- Sitemap 1.0 -->
+</HEAD><BODY>
+<UL>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Ye Olde Galactic Empire Mission Editor">
+		<param name="Local" value="pages\main.html">
+		</OBJECT>
+	<UL>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Menu">
+			<param name="Local" value="pages\main\menu.html">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Backdrop Dialog">
+			<param name="Local" value="pages\main\bdrop.html">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Formation Dialog">
+			<param name="Local" value="pages\main\forms.html">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="LST Editor">
+			<param name="Local" value="pages\main\lst.html">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Map Dialog">
+			<param name="Local" value="pages\main\map.html">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Options Dialog">
+			<param name="Local" value="pages\main\opt.html">
+			</OBJECT>
+		<UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Overall">
+				<param name="Local" value="pages\main\opt.html#overall">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Map">
+				<param name="Local" value="pages\main\opt.html#map">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="TIE">
+				<param name="Local" value="pages\main\opt.html#tie">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="XvT">
+				<param name="Local" value="pages\main\opt.html#xvt">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="XWA">
+				<param name="Local" value="pages\main\opt.html#xwa">
+				</OBJECT>
+		</UL>
+	</UL>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="TIE95">
+		<param name="Local" value="pages\TIE\main.html">
+		</OBJECT>
+	<UL>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="FlightGroups">
+			<param name="Local" value="pages\TIE\flight.html">
+			</OBJECT>
+		<UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Craft">
+				<param name="Local" value="pages\TIE\flight.html#craft">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Backdrops">
+				<param name="Local" value="pages\TIE\flight.html#bdrop">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Arr/Dep">
+				<param name="Local" value="pages\TIE\flight.html#arrdep">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Goals">
+				<param name="Local" value="pages\TIE\flight.html#goal">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Waypoints">
+				<param name="Local" value="pages\TIE\flight.html#wp">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Orders">
+				<param name="Local" value="pages\TIE\flight.html#ord">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Unknowns">
+				<param name="Local" value="pages\TIE\flight.html#unk">
+				</OBJECT>
+		</UL>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Messages">
+			<param name="Local" value="pages\TIE\mess.html">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Globals">
+			<param name="Local" value="pages\TIE\glob.html">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Officers">
+			<param name="Local" value="pages\TIE\off.html">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Mission Parameters">
+			<param name="Local" value="pages\TIE\miss.html">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Battle Dialog">
+			<param name="Local" value="pages\TIE\battle.html">
+			</OBJECT>
+		<UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Battle">
+				<param name="Local" value="pages\TIE\battle.html#battle">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Missions">
+				<param name="Local" value="pages\TIE\battle.html#miss">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Galaxy">
+				<param name="Local" value="pages\TIE\battle.html#gal">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="System">
+				<param name="Local" value="pages\TIE\battle.html#sys">
+				</OBJECT>
+		</UL>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Briefing Dialog">
+			<param name="Local" value="pages\TIE\brief.html">
+			</OBJECT>
+		<UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Briefing Animation">
+				<param name="Local" value="pages\TIE\brief.html#brief">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Tags and Strings">
+				<param name="Local" value="pages\TIE\brief.html#string">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Event List">
+				<param name="Local" value="pages\TIE\brief.html#events">
+				</OBJECT>
+		</UL>
+	</UL>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="XvT and BoP">
+		<param name="Local" value="pages\XvT\main.html">
+		</OBJECT>
+	<UL>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="FlightGroups">
+			<param name="Local" value="pages\XvT\flight.html">
+			</OBJECT>
+		<UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Craft">
+				<param name="Local" value="pages\XvT\flight.html#craft">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Backdrops">
+				<param name="Local" value="pages\XvT\flight.html#bdrop">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Arr/Dep">
+				<param name="Local" value="pages\XvT\flight.html#arrdep">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Goals">
+				<param name="Local" value="pages\XvT\flight.html#goal">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Waypoints">
+				<param name="Local" value="pages\XvT\flight.html#wp">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Orders">
+				<param name="Local" value="pages\XvT\flight.html#ord">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Options">
+				<param name="Local" value="pages\XvT\flight.html#opt">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Unknowns">
+				<param name="Local" value="pages\XvT\flight.html#unk">
+				</OBJECT>
+		</UL>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Messages">
+			<param name="Local" value="pages\XvT\mess.html">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Globals">
+			<param name="Local" value="pages\XvT\glob.html">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Team">
+			<param name="Local" value="pages\XvT\team.html">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Mission Parameters">
+			<param name="Local" value="pages\XvT\miss.html">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Briefing Dialog">
+			<param name="Local" value="pages\XvT\brief.html">
+			</OBJECT>
+	</UL>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="XWA">
+		<param name="Local" value="pages\XWA\main.html">
+		</OBJECT>
+	<UL>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="FlightGroups">
+			<param name="Local" value="pages\XWA\flight.html">
+			</OBJECT>
+		<UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Craft">
+				<param name="Local" value="pages\XWA\flight.html#craft">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Backdrops">
+				<param name="Local" value="pages\XWA\flight.html#bdrop">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Arr/Dep">
+				<param name="Local" value="pages\XWA\flight.html#arrdep">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Goals">
+				<param name="Local" value="pages\XWA\flight.html#goal">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Waypoints">
+				<param name="Local" value="pages\XWA\flight.html#wp">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Orders">
+				<param name="Local" value="pages\XWA\flight.html#ord">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Options">
+				<param name="Local" value="pages\XWA\flight.html#opt">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Unknowns">
+				<param name="Local" value="pages\XWA\flight.html#unk">
+				</OBJECT>
+		</UL>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Hyperbuoy Wizard">
+			<param name="Local" value="pages\XWA\hyper.html">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Messages">
+			<param name="Local" value="pages\XWA\mess.html">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Globals">
+			<param name="Local" value="pages\XWA\glob.html">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Team">
+			<param name="Local" value="pages\XWA\team.html">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Mission Parameters">
+			<param name="Local" value="pages\XWA\miss.html">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Briefing Dialog">
+			<param name="Local" value="pages\XWA\brief.html">
+			</OBJECT>
+	</UL>
+</UL>
+</BODY></HTML>

@@ -1,0 +1,39 @@
+a {
+	color:#ccc;
+}
+a:hover{
+	text-decoration:overline underline;
+	color:#fff;
+}
+
+.anchor{
+	color:#666;
+}
+
+.anchor:hover{
+	text-decoration:none !important;
+	color:#666 !important;
+}
+
+body {
+	color:#666;
+	background-color:#000;
+}
+
+span {
+	color:#088;
+}
+
+table {
+	padding-left: 10px;
+}
+
+td {
+	background-color:#777;
+	color:#000;
+}
+
+th {
+	text-align: left;
+	background-color:#333
+}

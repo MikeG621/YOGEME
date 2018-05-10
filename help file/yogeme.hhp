@@ -1,0 +1,50 @@
+[OPTIONS]
+Auto Index=Yes
+Compatibility=1.1 or later
+Compiled file=yogeme.chm
+Contents file=toc.hhc
+Default Window=main
+Default topic=pages\main.html
+Display compile progress=Yes
+Language=0x409 English (United States)
+Title=YOGEME Help
+
+[WINDOWS]
+main="YOGEME Help","toc.hhc",,"pages\main.html",,,,,,0x2120,,0x3006,[66,122,1266,922],,,,,,,0
+
+
+[FILES]
+pages\legal.html
+pages\main.html
+pages\main\bdrop.html
+pages\main\forms.html
+pages\main\lst.html
+pages\main\map.html
+pages\main\menu.html
+pages\main\opt.html
+pages\TIE\battle.html
+pages\TIE\brief.html
+pages\TIE\flight.html
+pages\TIE\glob.html
+pages\TIE\main.html
+pages\TIE\mess.html
+pages\TIE\miss.html
+pages\TIE\off.html
+pages\XvT\brief.html
+pages\XvT\flight.html
+pages\XvT\glob.html
+pages\XvT\main.html
+pages\XvT\mess.html
+pages\XvT\miss.html
+pages\XvT\team.html
+pages\XWA\brief.html
+pages\XWA\flight.html
+pages\XWA\glob.html
+pages\XWA\main.html
+pages\XWA\mess.html
+pages\XWA\miss.html
+pages\XWA\team.html
+pages\XWA\hyper.html
+
+[INFOTYPES]
+

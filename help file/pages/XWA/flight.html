@@ -1,0 +1,92 @@
+<HTML>
+<HEAD>
+  <link rel="stylesheet" type="text/css" href="../stylesheet.css" />
+  <title>FlightGroups, XWA</title>
+</HEAD>
+<BODY>
+<p align=center><big><h2>Flightgroups</h2></big></p>
+<ul>
+<li><a href="#craft">Craft</a>
+<li><a href="#bdrop">Backdrops</a>
+<li><a href="#arrdep">Arr/Dep</a>
+<li><a href="#goal">Goals</a>
+<li><a href="#wp">Waypoints</a>
+<li><a href="#ord">Orders</a>
+<li><a href="#opt">Options</a>
+<li><a href="#unk">Unknowns</a>
+</ul>
+When you start YOGEME and launch the XWA platform you will be greeted by the FlightGroups-Craft tab.
+<p align=center><img src="../../images/XWA/FG-craft.png"></p>
+This page includes most of the basic information for the given FlightGroup. On the left you have the list of FGs with a brief summary of their details. On the right you have several tabs to help find the settings you wish to edit. But for right now we're going to focus on here.<br><br>
+
+The ListBox on the left shows every single FG in the mission and is accessible from every FG tab. There is a maximum of <u>100 FlightGroups</u> allowed in a mission file. Past that results in various corruptions. YOGEME will enforce this limit.<br>
+The ListBox gives you the Team Index (as well as the appropriate IFF color), Global Group, Number of Waves x Number of Craft, FG Name and Global Unit. The FG with an asterisk is the player's FG. Simply click on a FG to load that craft's settings.
+
+<h3><a name="craft" class="anchor">Craft</a></h3>
+The first group includes the craft <i>Name</i> and <i>Cargos</i>. These strings all have a maximum length of 20 that is enforced. For Special Cargo to be activated, either the <i>Random</i> checkbox must be checked or <i>Special Ship#</i> must be non-zero. Special Cargo replaces the normal Cargo for the indicated (or random) craft in the FG. This will also mark the craft as "Special" for use in triggers and goals.<br><br>
+
+The next group has several settings, from ship type, weapons, formation, etc. For the <i>Craft Type</i>, if you wish to use a custom shipilst, say for a conversion mod or you've replaced ship models, you can take the supplied <i>"xwa_shiplist_template.txt"</i> file and remove the "_template" from the name and change the contents as you see fit. YOGEME will automatically detect and attempt to load the non-template file. It is important to note that the number of entries must match the original count and that each line is the form "Full Craft Name,Abbrv". This will not affect in-game content, this is merely display within YOGEME.<br>
+<i>IFF</i> will determine which color it appears as in the CMD, while <i>Team</i> determines allegiance and who the ship blongs to. Note that this has little meaning to the AI. If you give an order to attack a ship on the same Team, an AI craft will attack and doesn't care.<br>
+For the <i>Player</i> value, use zero for AI controlled. The <i>AI skill</i> value controls how smart the FG is. Veteran is usually a good value for an average ship. <i>Markings</i> will change the highlight markings for craft that support it, which usually means Fighters.<br>
+<i>Formations</i> are the layout of the FG. If you know what you want you can select it from the dropdown, or click the button to take you to the <a href="../forms.html">Formations Dialog</a>. <i>Leader spacing</i> controls how far out the first craft is from th erest of the group. This is handy for strike groups; since the AI is more likely to attack the closet ship you can have the leader way out in front, leaving the rest of the wave to launch their attack. Likewise, <i>FG Spacing</i> controls how spread out the gorup is. Default value is 2, and I haven't found a consistent unit of measure for this value although it's probably related to ship class.<br>
+The <i>Radio</i> is used to detemrine if FlightGroups will listen to orders given by the player and will also give various status messages udring the mission.<br><br>
+
+The third group is the numbers box. <i># of Waves</i> is how many times the group will spawn, minimum of 1. If you never want it to show up, use Arr/Dep controls. <i># of Craft</i> controls how many ships spawn at a single time, maximum of 6 as the formations can begin to corrupt above that.<br>
+<i>Global Group</i> allows grouping of multiple FGs for use in goals or triggers. Standard uses are for grouping strike craft, capital ships, mission-critical craft, convoys, etc. You can deal without most of the time, but you may burn all triggers or not have enough if you've got too many FGs separated out.  <i>Global Unit</i> is another grouping mechanic, this allow the sharing of FG Numbers. In the image above, C/C Xi are named with numbers individually, although CN/K share the same GU numbering across multiple Flightgroups.<br><br>
+
+The final group has the <i>Status</i> parameters which lets you disable the hyperdrive, cut shields, or a few other adjustments. <i>Warheads</i>, <i>Beam</i> weapon and <i>Countermeasures</i> are also defined here.<br>
+The <i>Explosion time</i> field acts strange, I don't mess with it normally. For <i>Backdrops</i>, the last fields activate and let you choose the image via the index or <a href="../backdrop.html">Backdrops Dialog</a>.  The <i>Global Cargo</i> fields are new to XWA, and allow you to define a single cargo string in the <a href="miss.html">Mission</a> tab that can be used across multiple FGs as well.<br><br>
+
+The last item of note for this tab is the "Flight Group # of #" string which is good for letting you know how close you are to the limit, as well is the "# Craft at 30 Seconds" string. This value will turn red if more than <u>96 craft</u> will be present at the start of the mission in a single Region or have simple Arrival delays that have the FG showing up within 30 seconds. This is your quick sanity check for the craft limit, it's up to you to ensure that this isn't exceeded for the rest of the mission. Any craft over 96 will not appear, <u>this can break missions when those missing craft are mission-critical for destruction goals and others.</u>
+
+<h3><a name="bdrop" class="anchor">Backdrops</a></h3>
+<p align=center><img src="../../images/XWA/FG-bdrop.png"></p>
+When the CraftType is changed to "Planet" the Craft tab changes to reflect the fields that apply. The text fields remain available and are re-labeled accordingly.  The remaining fields don't have any tricks to them; the <i>Backdrop</i> field is the numerical index of the image, and the <i>Shadow</i> field just changes to the appropriate index according to what you picked in the Backdrop Dialog, don't worry about what it says (every image has a different shadow/image setup, and I didn't feel like making a huge table). Click the "Backdrop" button to open the <a href="../main/bdrop.html">Backdrop Dialog</a>.<br><br>
+
+As of v1.4.1, YOGEME supports the application of DTM's Super Backdrops, available at the <a href="http://xwaupgrade.com/">X-wing Alliance Upgrade Project</a>. In the Tools menu the "Apply Super Backdrops" option will be available if the SBD installation is detected. A region selection dialog will appear, prompting you to select the region that the backdrops will be applied to. The region names will reflect those used in the mission.<br>
+<p align=center><img src="../../images/XWA/Region.png"></p>
+After the region is selected, six Backdrops will be added to the mission in that region with the appropriate settings to correctly apply the new star field. Any previously existing backdrops in that region will be duplicated and also added to the end of the FG list to ensure they are still properly displayed. NOTE: If there is not enough available craft slots in the mission to add all necessary backdrops, a message will alert you and no other action will be taken, however the FlightGroupLimit has been raised (at least temporarily) since certain stock missions would exceed the limit if SBD is applied. You cannot apply SBD twice in the same region, if the starfield Backdrop is detected you will receive a message and no other action will be taken.
+
+<h3><a name="arrdep" class="anchor">Arr/Dep</a></h3>
+<p align=center><img src="../../images/XWA/FG-AD.png"></p>
+The Arrival and Departures tab controls when, how and if the FG shows up during the mission. The Arrival and Departure panels hold the settings for those events as one would expect. When you click on a trigger (red background) it gets loaded into the drop boxes below for editing. The two buttons next to the drop boxes should be pretty obvious that they're <i>Copy</i> and <i>Paste</i> buttons. These apply to the trigger itself. The trigger can be pasted into any trigger in the mission, likewise any trigger copied elsewhere can be pasted here. The final drop box at the bottom controls which mission difficulty setting is required at launch for the FG to show up as well as a checkbox to force craft to be player-controlled (for when multiple player FGs are defined or MP missions). Handy for throwing in extra ships for Hard or removing ships in Easy.<br><br>
+
+The Mothership settings should be straight forward, craft will default to Hyperspace. You can select any FG in the mission to be a Mothership, even if they aren't equipped with a hangar. Forgetting to reassign the Mothership's FG can lead to amusing instances of large craft leaving the "hangar" of the first FG, which is usually the player, sending them tumbling, sometimes into tiny pieces.<br><u>Player craft must have a Mothership assigned, even if assigned to itself</u>.<br>
+FlightGroups will attempt the the first option (<i>Via</i> panel) when the appropriate trigger fires and will go to the <i>Alternate</i> when the primary Mothership is not in theater. If both condtions cannot be met, the FG will hang around either holding still or sometimes flying in a straight line forever, depending on their last order.<br><br>
+
+The Arrival <i>Delay</i> doesn't have any tricks to it; if there's a trigger set it will delay after that firing, if there's no triggers (both TRUE) it will delay from the mission start. The Departure <i>Delay</i> now works as you would hope, the delay starts after the trigger fires. Also, individual craft will leave when the <i>Abort</i> condition is met, such as "Warheads Depleted" or "50% Hull".
+
+<h3><a name="goal" class="anchor">Goals</a></h3>
+<p align=center><img src="../../images/XWA/FG-Goals.png"></p>
+This is a rather simple tab, it lists the Flightgroup-specific goals. Changing the argument ("must" in the image) will control if the goal is a Primary, Prevent ("must NOT") or Secondary ("BONUS *") goal. For the goal to be applied, the <i>Enabled</i> checkbox must be checked. Traditionally the goal will always be applied to Team 1, unless you're making a multiplayer mission. The <i>Points</i> field is the number of points awarded or subtracted when the Bonus goal is completed. This can be negative, which is handy for a "you suck" type of condition where you don't want to neccessarily cause a mission failure.  Active Sequence applies to these goals for a dynamic feel.<br>
+You also have three strings at your disposal for the in-flight goal list.
+
+<h3><a name="wp" class="anchor">Waypoints</a></h3>
+<p align=center><img src="../../images/XWA/FG-WP.png"></p>
+Waypoints are the 3D grid coordinates which control initial placement, patrol routes among others. The left field will likely be the primary field of interest, as that one is in kilometers (klicks) which is what is used in-game. The right field is the raw data that is stored in the file, for when you're picky and you need to try and squeeze out a couple extra meters you lose from rounding. Each raw unit is 6.25 meters.<br><br>
+
+The checkboxes control whether or not the WPs are important. If you have multiple <i>Start Points</i>, theroretically it picks one at random (I say this as normally I only notice it using SP1). The <i>Waypoints</i> are used for craft with various "Patrol" or "Circle" orders, best used with capital ships or convoys that can't fly in a straight line. XWA now stores the wapyoints for each order separately, this allows ships to patrol an area for a time, move one and patrol elsewhere. <i>Hyperspace</i> defines where the ship hypes in to and where it heads when it's hyping out. When a craft arrives via hyperspace, <u>it will be oriented such that it will pass through HYP and be pointing towards SP1</u>, even if SP1 isn't checked. This is important, so remember to set SP1 for craft with HYP otherwise you can have collisions when multiple craft hyper in at the same time. Craft leaving have no orientation, then hype out when they hit that point.<br>
+
+The rotation fields with the T/I icons are enabled for all craft in XWA. If you're used to using different editors and adjusting the pitch angle, you know normally the Pitch value is 64 to counter the automatic nose-down that the flight engine automatically adds to all craft. That is the raw value. <u>YOGEME displays this number as corrected degrees</u>, so what you see as 64 in other editors will appears as 0 in YOGEME. Sometimes the conversion from 256 to 360 isn't perfect and it may slip a degree (44° will be 43°, but 45° will always be 45°). YOGEME is aware of that extra 90° and it will be added back into whatever value you choose. (Yes, this means if you put 64 here, the ship will pitch up about 64° instead of being "level").
+
+<h3><a name="ord" class="anchor">Orders</a></h3>
+<p align=center><img src="../../images/XWA/FG-ord.png"></p>
+Orders make the world go 'round. XWA gives you four orders in each Region to control FG behaviour, with up to four targets for each. The top drop-down gives you the <i>Order</i> itself. The <i>Copy</i> and <i>Paste</i> buttons are for the individual order with all targets and settings. Changing the order will update the short description (shown as "Attack targets (not for starships)") and variable definitions (shown as "Component?" and "Meaningless"). Pay attention to the description, as it can give you hints about what that order is suited for. As in previous platforms, Caps should use a "Patrol" variant and fly through their waypoints. Using fighter orders makes them spin on a dime and looks stupid. I will mock you if you do this.<br><br>
+
+<i>Throttle %</i> is just that, a very basic throttle control, while <i>Speed</i> gives you a more precise number suited well for convoy craft of differing ship types. As of 1.4.3, this will be shown in MGLT. The three variables next to it change meaning as you select orders, so pay attention and play with them to get a full understanding.<br><br>
+
+<i>Targets</i> behave similarly to triggers, using the Type and Variable fields as well as the And/Or controls. FlightGroups will go after Primary targets first, with Secondaries being saved for afterwards or as targets of opportunity. The order text will update to reflect any changes and ensure the result is what you're looking for.
+
+<h3><a name="opt" class="anchor">Options</a></h3>
+<p align=center><img src="../../images/XWA/FG-Opt.png"></p>
+This tab lets you set a bunch of miscellaneous settings for the FG, most of them pertaining to loadouts available to select at the start of the mission while you're sitting in the hangar.  Use the <i>Craft Category</i> to set a bunch of flyable craft, or make a custom set.  There's a bunch of weapon options to play with, too.<br><br>
+
+<i>Roles</i> primarily are for message updates, such as "Your Command Ship is under attack!" etc.  The <i>Pilot</i> note is primarily for note-keeping, no real affect.<br><br>
+
+XWA also provides Skip triggers for every order, instead of just Order #4 like in XvT.  This also helps with the dynamic capability of the missions.
+
+<h3><a name="unk" class="anchor">Unknown</a></h3>
+<p align=center><img src="../../images/XWA/FG-Unk.png"></p>
+Not much to this tab, just the remaining values that can be changed, but may not do anything. Offsets are local to the FG. Change the <i>Order</i> and <i>Goal</i> fields to change which set of Unknowns you're editing for those sections, offsets are local to that Order or Goal.<br>
+</body>
+</html>
