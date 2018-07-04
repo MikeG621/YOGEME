@@ -286,12 +286,19 @@ namespace Idmr.Yogeme
 		/// <param name="count">Number of groups to read</param>
 		void setThumbnail(string file, int index, int count)
 		{
-			DatFile temp = new DatFile(_backdropDirectory + file);
-			int offset = 0;
-			if (index == 25) offset = 24;
-			else if (index == 94) offset = 2;
-			else if (index == 98) offset = 10;
-			for (int i = index; i < count+index; i++) _planets.Groups.Add(temp.Groups[i - index + offset]);
+            try  //[JB] Added try/catch to generate a more user-friendly message.
+            {
+			    DatFile temp = new DatFile(_backdropDirectory + file);
+			    int offset = 0;
+			    if (index == 25) offset = 24;
+			    else if (index == 94) offset = 2;
+			    else if (index == 98) offset = 10;
+			    for (int i = index; i < count+index; i++) _planets.Groups.Add(temp.Groups[i - index + offset]);
+            }
+            catch
+            {
+                throw new ArgumentException("Cannot open resource file:\n" + _backdropDirectory + file + "\n\nCheck your platform installation path.");
+            }
 		}
 		bool platformInstalled()
 		{
@@ -367,7 +374,11 @@ namespace Idmr.Yogeme
 			{
 				try
 				{
-					if (_shadow >= _planets.Groups[(int)numBackdrop.Value].NumberOfSubs) numShadow.Value = 0;
+					if (_shadow >= _planets.Groups[(int)numBackdrop.Value].NumberOfSubs)
+                    {
+                        _shadow = 0;  //[JB] Need to set shadow or else the catch() will throw an exception since it's out of range.
+                        numShadow.Value = 0;
+                    }
 					pctBackdrop.Image = _planets.Groups[(int)numBackdrop.Value].Subs[_shadow].Image;
 					_index = (int)numBackdrop.Value;
 					numShadow.Maximum = _planets.Groups[_index].NumberOfSubs - 1;

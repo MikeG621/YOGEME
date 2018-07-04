@@ -38,12 +38,14 @@ namespace Idmr.Yogeme
 			InitializeComponent();
 
 			// Settings.LoadSettings already called, so has Settings.CheckPlatforms
-			if (_config.RestrictPlatforms && !_config.TieInstalled && !_config.XvtInstalled && !_config.XwaInstalled) _config.RestrictPlatforms = false;
-			optTIE.Enabled = (_config.TieInstalled || !_config.RestrictPlatforms);
+			if (_config.RestrictPlatforms && !_config.XwingInstalled && !_config.TieInstalled && !_config.XvtInstalled && !_config.XwaInstalled) _config.RestrictPlatforms = false;
+            optXWING.Enabled = (_config.XwingInstalled || !_config.RestrictPlatforms);
+            optTIE.Enabled = (_config.TieInstalled || !_config.RestrictPlatforms);
 			optXvT.Enabled = (_config.XvtInstalled || !_config.RestrictPlatforms);
 			chkBoP.Enabled = (_config.BopInstalled || !_config.RestrictPlatforms);
 			optXWA.Enabled = (_config.XwaInstalled || !_config.RestrictPlatforms);
-			optTIE.Checked = (_config.LastPlatform == Settings.Platform.TIE);
+            optXWING.Checked = (_config.LastPlatform == Settings.Platform.XWING);
+            optTIE.Checked = (_config.LastPlatform == Settings.Platform.TIE);
 			optXvT.Checked = (_config.LastPlatform == Settings.Platform.XvT);
 			chkBoP.Checked = (_config.LastPlatform == Settings.Platform.BoP);
 			optXWA.Checked = (_config.LastPlatform == Settings.Platform.XWA);
@@ -54,12 +56,17 @@ namespace Idmr.Yogeme
 		void cmdCancel_Click(object sender, EventArgs e) { Close(); }
 		void cmdOK_Click(object sender, EventArgs e)
 		{
-			if (!optTIE.Checked && !optXvT.Checked && !optXWA.Checked) 
+			if (!optXWING.Checked && !optTIE.Checked && !optXvT.Checked && !optXWA.Checked) 
 			{
 				MessageBox.Show("Please select a platform");
 				return;
 			}
-			if (optTIE.Checked)
+            if (optXWING.Checked)
+            {
+                Hide();
+                new XwingForm(_config).Show();
+            } 
+            if (optTIE.Checked)
 			{
 				Hide();
 				new TieForm(_config).Show();

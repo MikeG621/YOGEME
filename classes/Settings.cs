@@ -40,6 +40,7 @@
 using System;
 using System.IO;
 using Microsoft.Win32;
+using System.Drawing;
 
 namespace Idmr.Yogeme
 {
@@ -48,10 +49,12 @@ namespace Idmr.Yogeme
 		#region defaults
 		string _verifyLocation = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location), "MissionVerify.exe");
 		string _lastMission = "";
+        string _xwingPath = "";
 		string _tiePath = "";
 		string _xvtPath = "";
 		string _bopPath = "";
 		string _xwaPath = "";
+        string _mruXwingPath = "";
         string _mruTiePath = ""; //[JB] stores the most recently used folders
         string _mruXvtPath = ""; //XvT and BoP share paths
         string _mruXwaPath = "";
@@ -60,7 +63,7 @@ namespace Idmr.Yogeme
 		#endregion
 		string[] _recentMissions = new string[6];
 		Platform[] _recentPlatforms = new Platform[6];
-		public enum Platform { None, TIE, XvT, BoP, XWA }
+		public enum Platform { None, XWING, TIE, XvT, BoP, XWA }
 		public enum StartupMode { Normal, LastPlatform, LastMission }
 		[Flags]
 		public enum MapOpts { None, FGTags, Traces }
@@ -84,11 +87,17 @@ namespace Idmr.Yogeme
 			MapOptions = MapOpts.FGTags | MapOpts.Traces;
 			for (int i = 0; i < 6; i++) _recentMissions[i] = "";
 			Startup = StartupMode.Normal;
+            XwingCraft = 1;
+            XwingIff = 1;  //0 = Default, 1 = Rebel
 			TieCraft = XvtCraft = XwaCraft = 5;
 			TieIff  = XvtIff = XwaIff = 1;
 			Verify = true;
 			VerifyTest = true;
 			Waypoints = 1;
+            ColorizedDropDowns = true;
+            ColorInteractSelected = Color.Blue;
+            ColorInteractNonSelected = Color.Black;
+            ColorInteractBackground = Color.RosyBrown;
 		}
 		
 		/// <summary>Loads saved settings</summary>
@@ -127,7 +136,25 @@ namespace Idmr.Yogeme
 				RestrictPlatforms = br.ReadBoolean();
 				if (version == 0xFF) fs.Position++;	// ShowDebug **DEPRECATED**
 				Startup = (StartupMode)br.ReadByte();
-				TieInstalled = br.ReadBoolean();
+
+                if (version >= 7)
+                {
+                    XwingInstalled = br.ReadBoolean();  //[JB] Copied this section from TIE and modified for X-wing.
+                    if (version == 0xFF)
+                    {
+                        int xwingCraft = br.ReadInt32();
+                        XwingCraft = (byte)(xwingCraft & 0x7F);
+                        XwingIff = (byte)(xwingCraft >> 7);
+                    }
+                    else
+                    {
+                        XwingCraft = br.ReadByte();
+                        XwingIff = br.ReadByte();
+                    }
+                    _xwingPath = br.ReadString();
+                }
+
+                TieInstalled = br.ReadBoolean();
 				if (version == 0xFF)
 				{
 					int tieCraft = br.ReadInt32();
@@ -169,12 +196,17 @@ namespace Idmr.Yogeme
 					VerifyTest = br.ReadBoolean();  // added in v1.1
 					RememberPlatformFolder = br.ReadBoolean();	// added by [JB] in 1.3 (settings v5)
 					ConfirmFGDelete = br.ReadBoolean();
+                    _mruXwingPath = br.ReadString();
 					_mruTiePath = br.ReadString();
 					_mruXvtPath = br.ReadString();
 					_mruXwaPath = br.ReadString();
 					SuperBackdropsInstalled = br.ReadBoolean();	// added in 1.3.1 (settings v6)
 					InitializeUsingSuperBackdrops = br.ReadBoolean();	// added in 1.3.1
-				}	
+                    ColorizedDropDowns = br.ReadBoolean();
+                    ColorInteractSelected = Color.FromArgb(br.ReadInt32());
+                    ColorInteractNonSelected = Color.FromArgb(br.ReadInt32());
+                    ColorInteractBackground = Color.FromArgb(br.ReadInt32());
+                }
 				catch { /*do nothing*/ }
 
                 fs.Close();
@@ -220,7 +252,23 @@ namespace Idmr.Yogeme
 		{
 			RegistryKey keyplat;
 			#region original registry
-			if (!TieInstalled)
+            if (!XwingInstalled)
+            {
+                keyplat = Registry.LocalMachine.OpenSubKey("SOFTWARE\\LucasArts Entertainment Company LLC\\X-Wing95\\1.0");
+
+                if (keyplat == null)
+                {
+                    keyplat = Registry.LocalMachine.OpenSubKey("SOFTWARE\\Wow6432Node\\LucasArts Entertainment Company LLC\\X-Wing95\\1.0");
+                }
+
+                if (keyplat != null)
+                {
+                    XwingInstalled = true;
+                    _xwingPath = (string)keyplat.GetValue("Install Path");
+                    keyplat.Close();
+                }
+            }
+            if (!TieInstalled)
 			{
 				keyplat = Registry.LocalMachine.OpenSubKey("SOFTWARE\\LucasArts Entertainment Company LLC\\TIE95\\1.0");
 				
@@ -286,7 +334,7 @@ namespace Idmr.Yogeme
 			}
 			#endregion
 			#region MSI installers
-			if (!TieInstalled || !XvtInstalled || !BopInstalled || !XwaInstalled)
+			if (!XwingInstalled || !TieInstalled || !XvtInstalled || !BopInstalled || !XwaInstalled)
 			{
 				// 64-bit detection of platforms using the MSI installers from Markus Egger (http://www.markusegger.at/Software/Games.aspx)
 				keyplat = Registry.LocalMachine.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Installer\\UserData\\S-1-5-18\\Products");
@@ -303,7 +351,13 @@ namespace Idmr.Yogeme
 					}
 
 					string comm = (string)sub.GetValue("DisplayName");
-					if (comm == "Star Wars: X. C. S. - TIE Fighter 95" && !TieInstalled)
+                    if (comm == "Star Wars: X. C. S. - X-Wing 95" && !XwingInstalled)
+                    {
+                        string path = (string)sub.GetValue("Readme");
+                        _xwingPath = path.Remove(path.Length - 11);
+                        XwingInstalled = true;
+                    }
+                    if (comm == "Star Wars: X. C. S. - TIE Fighter 95" && !TieInstalled)
 					{
 						string path = (string)sub.GetValue("Readme");
 						_tiePath = path.Remove(path.Length - 11);
@@ -332,7 +386,18 @@ namespace Idmr.Yogeme
 			#endregion
 			#region Steam detection
 			// since I can't rely on the normal registry values, we'll go about it this way...
-			if (!TieInstalled)
+            if (!XwingInstalled) //[JB] I haven't verified the install keys for X-wing (I don't have the Steam version), I just copied the code and changed the App ID and EXE name.
+            {
+                keyplat = Registry.LocalMachine.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Steam App 354430");
+                if (keyplat != null)
+                {
+                    _xwingPath = (string)keyplat.GetValue("InstallLocation") + "\\remastered";
+                    keyplat.Close();
+                    // verify it's actually there, just in case uninstall borked
+                    if (File.Exists(_xwingPath + "\\XWING95.exe")) XwingInstalled = true;
+                }
+            }
+            if (!TieInstalled)
 			{
 				keyplat = Registry.LocalMachine.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Steam App 355250");
 				if (keyplat != null)
@@ -403,7 +468,7 @@ namespace Idmr.Yogeme
 			FileStream fs = File.OpenWrite(_settingsDir + "\\Settings.dat");
 			BinaryWriter bw = new BinaryWriter(fs);
 			fs.WriteByte(0xFF);
-			fs.WriteByte(0x06);
+			fs.WriteByte(0x07);  //[JB] Changed version from 6 to 7 when adding X-wing support and color features.
 			bw.Write(BopInstalled);
 			bw.Write(_bopPath);
 			bw.Write(ConfirmExit);
@@ -418,7 +483,11 @@ namespace Idmr.Yogeme
 			}
 			bw.Write(RestrictPlatforms);
 			bw.Write((byte)Startup);
-			bw.Write(TieInstalled);
+            bw.Write(XwingInstalled);
+            bw.Write(XwingCraft);
+            bw.Write(XwingIff);
+            bw.Write(_xwingPath);
+            bw.Write(TieInstalled);
 			bw.Write(TieCraft);
 			bw.Write(TieIff);
 			bw.Write(_tiePath);
@@ -438,12 +507,19 @@ namespace Idmr.Yogeme
 			bw.Write(VerifyTest);
             bw.Write(RememberPlatformFolder); //[JB] Added
             bw.Write(ConfirmFGDelete);
+            bw.Write(_mruXwingPath);
             bw.Write(_mruTiePath);
             bw.Write(_mruXvtPath);
             bw.Write(_mruXwaPath);
 			bw.Write(SuperBackdropsInstalled);
 			bw.Write(InitializeUsingSuperBackdrops);
-			fs.SetLength(fs.Position);
+
+            bw.Write(ColorizedDropDowns);
+            bw.Write(ColorInteractSelected.ToArgb());
+            bw.Write(ColorInteractNonSelected.ToArgb());
+            bw.Write(ColorInteractBackground.ToArgb());
+           
+            fs.SetLength(fs.Position);
 			fs.Close();
 			#endregion
 			// remove Regkey if needed
@@ -455,6 +531,7 @@ namespace Idmr.Yogeme
         {
             switch (LastPlatform)
             {
+                case Platform.XWING: return (RememberPlatformFolder && (_mruXwingPath != "")) ? _mruXwingPath : XwingPath + "\\MISSION";
                 case Platform.TIE: return (RememberPlatformFolder && (_mruTiePath != "")) ? _mruTiePath : TiePath + "\\MISSION";
                 case Platform.XvT: return (RememberPlatformFolder && (_mruXvtPath != "")) ? _mruXvtPath : XvtPath + "\\Train";
                 case Platform.BoP: return (RememberPlatformFolder && (_mruXvtPath != "")) ? _mruXvtPath : BopPath + "\\TRAIN";
@@ -462,23 +539,11 @@ namespace Idmr.Yogeme
             }
             return Directory.GetCurrentDirectory();
         }
-        //[JB] This function helps centralize the use of the last-opened folder feature.  If a last-opened folder is not available, it uses the default installed path with the requested subfolder (usually the default location of missions for that platform).
-        /*
-        public string GetWorkingPath(string defaultSubFolder)
-        {
-            switch (LastPlatform)
-            {
-                case Platform.TIE: return (RememberPlatformFolder && (_mrutiePath != "")) ? _mrutiePath : TiePath + defaultSubFolder;
-                case Platform.XvT: return (RememberPlatformFolder && (_mruxvtPath != "")) ? _mruxvtPath : XvtPath + defaultSubFolder;
-                case Platform.BoP: return (RememberPlatformFolder && (_mruxvtPath != "")) ? _mruxvtPath : BopPath + defaultSubFolder;
-                case Platform.XWA: return (RememberPlatformFolder && (_mruxwaPath != "")) ? _mruxwaPath : XwaPath + defaultSubFolder;
-            }
-            return "";
-        }*/
         public void SetWorkingPath(string path)
         {
             switch(LastPlatform)
-            {   
+            {
+                case Platform.XWING: _mruXwingPath = path; break;
                 case Platform.TIE: _mruTiePath = path; break;
                 case Platform.XvT: case Platform.BoP: _mruXvtPath = path; break;
                 case Platform.XWA: _mruXwaPath = path; break;
@@ -563,8 +628,23 @@ namespace Idmr.Yogeme
 		public StartupMode Startup { get; set; }
 		/// <summary>Gets or sets the installation status of DTM's Super Backdrops mod for XWA</summary>
 		public bool SuperBackdropsInstalled { get; set; }
-		/// <summary>Gets or sets the default craft type in TIE Fighter</summary>
-		public byte TieCraft { get; set; }
+        /// <summary>Gets or sets whether FlightGroup ComboBox dropdowns are colorized according to IFF.</summary>
+        public bool ColorizedDropDowns { get; set; }
+        /// <summary>Gets or sets the default craft type in X-wing</summary>
+        public byte XwingCraft { get; set; }
+        /// <summary>Gets or sets the default IFF for new ships in X-wing</summary>
+        public byte XwingIff { get; set; }
+        /// <summary>Gets or sets if XWING95 is installed</summary>
+        public bool XwingInstalled { get; set; }
+        /// <summary>Gets or sets the install directoy for XWING95</summary>
+        /// <remarks>No action is taken when using set if the directory does not exist</remarks>
+        public string XwingPath
+        {
+            get { return _xwingPath; }
+            set { if (Directory.Exists(value)) { _xwingPath = value; } }
+        }
+        /// <summary>Gets or sets the default craft type in TIE Fighter</summary>
+        public byte TieCraft { get; set; }
 		/// <summary>Gets or sets the default IFF for new ships in TIE Fighter</summary>
 		public byte TieIff { get; set; }
 		/// <summary>Gets or sets if TIE95 is installed</summary>
@@ -616,6 +696,10 @@ namespace Idmr.Yogeme
 			get { return _xwaPath; }
 			set { if (Directory.Exists(value)) { _xwaPath = value; } }
 		}
+
+        public Color ColorInteractSelected;
+        public Color ColorInteractNonSelected;
+        public Color ColorInteractBackground;
 		#endregion
 	}
 	/* Settings and values

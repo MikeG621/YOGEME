@@ -23,6 +23,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
+using System.Collections.Generic;
 
 namespace Idmr.Yogeme
 {
@@ -118,8 +119,74 @@ namespace Idmr.Yogeme
 		/// <returns>newValue</returns>
         public static T Update<T>(Form form, T oldValue, T newValue)
 		{
-			if (form.Text.IndexOf("*") == -1 && oldValue.ToString() != newValue.ToString()) form.Text += "*";
+			if (form.Text.IndexOf("*") == -1 && oldValue.ToString() != newValue.ToString())
+                form.Text += "*";
 			return newValue;
 		}
-	}
+
+        /// <summary> Maintains a list of Flight Groups and how many craft share a particular name, categorizing them based from craft type, IFF, and name.</summary>
+        /// <remarks> This function adds a FG (with the specified parameters) to the list.</remarks>
+        /// <returns> The number of craft now assigned to this key.</returns>
+        public static int AddFGCounter(int craftType, int IFF, string craftName, int amount, Dictionary<int, Dictionary<String, int>> counter)
+        {
+            int key = craftType + (IFF << 16);   //Combine IFF into the key, so that same names of different IFFs are not counted together.
+            if (!counter.ContainsKey(key))
+                counter.Add(key, new Dictionary<String, int>());
+
+            if (counter[key].ContainsKey(craftName))
+                counter[key][craftName] += amount;
+            else
+                counter[key][craftName] = amount;   //Adds to dictionary and assigns.
+
+            return counter[key][craftName];
+        }
+        /// <summary> Maintains a list of Flight Groups and how many craft share a particular name, categorizing them based from craft type, IFF, and name.</summary>
+        /// <returns> The number of craft assigned to this key.</returns>
+        public static int GetFGCounter(int craftType, int IFF, string craftName, Dictionary<int, Dictionary<String, int>> counter)
+        {
+            int key = craftType + (IFF << 16);
+            if (!counter.ContainsKey(key)) return 0;
+            if (!counter[key].ContainsKey(craftName)) return 0;
+            return counter[key][craftName];
+        }
+
+        /// <summary>Determines if an array object exists and has a valid index.</summary>
+        public static bool IsValidArray<T>(IList<T> array, int index)
+        {
+            if (array == null) return false;
+            return (index >= 0 && index < array.Count);
+        }
+
+        /// <summary>Returns a formatted string of a time (m:ss)</summary>
+        /// <param name="seconds">Total number of seconds in the time.</param>
+        /// <param name="verbose">If true, appends " seconds" pluralizing if necessary.</param>
+        public static string GetFormattedTime(int seconds, bool verbose)
+        {
+            return String.Format("{0}:{1:00}", seconds / 60, seconds % 60) + (verbose ? " second" + (seconds == 1 ? "" : "s") : "");
+        }
+
+        /// <summary>Safe alternative to <b>cbo.SelectedIndex = n</b> which can automatically handle cases of invalid indexes.</summary>
+        /// <param name="cbo">ComboBox to operate on.</param>
+        /// <param name="index">Requested SelectedIndex value.</param>
+        /// <param name="autoExpand">If the ComboBox doesn't have the requested index, this optionally expands the list with numbered slots.</param>
+        public static void SafeSetCBO(ComboBox cbo, int index, bool autoExpand)
+        {
+            if (index < -1)
+                index = -1;
+            if (index >= cbo.Items.Count)
+            {
+                if (autoExpand == true)
+                {
+                    for (int i = cbo.Items.Count; i < index + 1; i++)
+                        cbo.Items.Add(i.ToString());
+                }
+                else
+                {
+                    //index = cbo.Items.Count - 1;
+                    index = -1;
+                }
+            }
+            cbo.SelectedIndex = index;
+        }    
+    }
 }

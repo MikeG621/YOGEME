@@ -33,7 +33,7 @@ Mole Miner,MINER
 Bulk Freighter,FRT
 Cargo Ferry,CARG
 Modular Conveyor,CNVYR
-*Container Transport,*CTRNS
+Container Transport,CTRNS
 Medium Transport,MTRNS
 Murrian Transport,MUTR
 Corellian Transport,CORT
@@ -42,8 +42,8 @@ Corellian Corvette,CRV
 Modified Corvette,M/CRV
 Nebulon-B Frigate,FRG
 Modified Frigate,M/FRG
-*C-3 Passenger Liner,*LINER
-*Carrack Cruiser,*CRCK
+C-3 Passenger Liner,LINER
+Carrack Cruiser,CRCK
 Strike Cruiser,STRKC
 Escort Carrier,ESC
 Dreadnaught,DREAD
@@ -111,7 +111,7 @@ Freight Transport/K,Frt/K
 YT-2000,YT2K
 YT-2400,YT24
 Suprosa,S/M
-Skipray Blasboat,S/B
+Skipray Blastboat,S/B
 T/e mk1,T/e1
 T/e mk2,T/e2
 T/e mk3,T/e3
@@ -122,7 +122,7 @@ Razor Fighter,Rzr/F
 Planetary Fighter,Plt/F
 Supa Fighter,Sup/F
 Pinook Fighter,Pnk/F
-*Booster Pack,*B/R
+Booster Pack,B/R
 Preybird Fighter,Pry/F
 *StarViper,*Xiz/F
 Firespray,FRS
@@ -173,10 +173,10 @@ Cargo Tanker,CT
 *Cargo Tanker 4,*CT4
 *Cargo Tanker 5,*CT5
 Escape Pod 2,E-POD/2
-*Rebel Pilot,*Reb Pilot
-*Imperial Pilot,*Imp Pilot
-*Civilian Pilot,*Civ Pilot
-Space Trooper,*ZG/S
+Rebel Pilot,Reb Pilot
+Imperial Pilot,Imp Pilot
+Civilian Pilot,Civ Pilot
+Space Trooper,ZG/S
 Zero-G Utility Suit,ZG/U
 Emkay,MK-09
 Astromech,R2-D2

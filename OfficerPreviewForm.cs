@@ -43,7 +43,7 @@ namespace Idmr.Yogeme
 		byte[] _indexes = new byte[5];
 		string _fontID = "FONTfont8";
 
-		public OfficerPreviewForm(Questions questions)
+		public OfficerPreviewForm(Questions questions, int officer, int question)  //[JB] Modified to begin displaying with the selected officer and question without having to select them first.
 		{
 			try
 			{
@@ -104,7 +104,18 @@ namespace Idmr.Yogeme
 			_opts[2] = optPostOff;
 			_opts[3] = optPostSec;
 			for(int i = 0; i < 4; i++) _opts[i].CheckedChanged += new EventHandler(optsArr_CheckedChanged);
-			_opts[0].Checked = true;
+            if(officer < 0 || officer >= 4)
+                officer = 0;
+			_opts[officer].Checked = true;
+            if (question >= 0 && question <= 4)
+            {
+                _selectedIndex = -1;  //Prevent "selecting" the wrong question when drawing the selection highlight.
+                loadBackAndQuestions();
+                for (int i = 0; i < _indexes.Length; i++)
+                    if (question == _indexes[i])
+                        DisplayQuestion(i);  //This will set the actual _selectedIndex
+
+            }
 			#endregion
 		}
 
@@ -128,22 +139,30 @@ namespace Idmr.Yogeme
 			if (e.X > 244 && e.X < 622 && e.Y < 390)
 			{
 				if (e.Y < 232)	// encompasses answer and page blocks
-					{ if (cmdNext.Enabled) cmdNext_Click("pctPreview_MouseUp", new EventArgs()); }
+				{
+                    //[JB] Expanded to allow right-click navigation backwards.
+                    if (e.Button == MouseButtons.Right && cmdPrevious.Enabled) cmdPrevious_Click("pctPreview_MouseUp", new EventArgs());
+                    if (e.Button != MouseButtons.Right && cmdNext.Enabled) cmdNext_Click("pctPreview_MouseUp", new EventArgs());
+                }
 				else if (e.Y > 290)	// questions
 				{
 					int question = (e.Y - 290) / 20;	// the question line clicked, 0-4
-					if (_indexes[question] == 255) return;	// blank Q/A set
-					_selectedIndex = _indexes[question];
-					_answerLines = _currentAnswer.Split(new string[] { "\r\n" }, StringSplitOptions.None);
-					_page = 1;
-					cmdPrevious.Enabled = false;
-					cmdNext.Enabled = (_numberOfPages > 1);
-					loadPage();
+                    DisplayQuestion(question);  //[JB] Moved code to function so that initializing the form can call it too.
 				}
 				// else whitespace
 			}
 			// else whitespace
 		}
+        void DisplayQuestion(int question)
+        {
+            if (_indexes[question] == 255) return;	// blank Q/A set
+            _selectedIndex = _indexes[question];
+            _answerLines = _currentAnswer.Split(new string[] { "\r\n" }, StringSplitOptions.None);
+            _page = 1;
+            cmdPrevious.Enabled = false;
+            cmdNext.Enabled = (_numberOfPages > 1);
+            loadPage();
+        }
 		
 		void cmdClose_Click(object sender, EventArgs e) { Close(); }
 
@@ -254,17 +273,25 @@ namespace Idmr.Yogeme
 			g.Dispose();
 			((LfdReader.Font)_empire.Resources[_fontID]).SetColor(_normalText);
 			int used = 0;
+            int curIndex = _selectedIndex;
 			for (_selectedIndex = 4; _selectedIndex > -1; _selectedIndex--)
 			{
 				_indexes[_selectedIndex] = 255;
 				string q = _currentQuestion;
 				if (q != "" || _currentAnswer != "")
 				{
+                    if (q == "")
+                        q = "(empty question)";      //[JB] Display a placeholder for empty questions.
+                    if(curIndex == _selectedIndex)
+                    {
+                        q = "[" + q + "]";  //[JB] Simulate highlighting of selected question.
+                    }
 					displayString(q, 122, (short)(145 + (4 - used) * 10));
 					_indexes[4 - used] = (byte)_selectedIndex;
 					used++;
 				}
 			}
+            _selectedIndex = curIndex;  //[JB] Restore selected index.  This allows highlighting to remain functional.
 			pctPreview.Invalidate();
 		}
 		#endregion methods
