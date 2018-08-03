@@ -1,12 +1,14 @@
 ﻿/*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, TIE through XWA
- * Copyright (C) 2007-2017 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2018 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.3
+ * VERSION: 1.3+
  */
 
 /* CHANGELOG
+ * [UPD] ctor now inits on a question, display code broken out [JB]
+ * [NEW] r-click reverse navigation [JB]
  * v1.3, 170107
  * [UPD] changed form size due to W10 style
  * v1.2.3, 141214
@@ -43,7 +45,7 @@ namespace Idmr.Yogeme
 		byte[] _indexes = new byte[5];
 		string _fontID = "FONTfont8";
 
-		public OfficerPreviewForm(Questions questions, int officer, int question)  //[JB] Modified to begin displaying with the selected officer and question without having to select them first.
+		public OfficerPreviewForm(Questions questions, int officer, int question)
 		{
 			try
 			{
@@ -103,8 +105,9 @@ namespace Idmr.Yogeme
 			_opts[1] = optPreSec;
 			_opts[2] = optPostOff;
 			_opts[3] = optPostSec;
-			for(int i = 0; i < 4; i++) _opts[i].CheckedChanged += new EventHandler(optsArr_CheckedChanged);
-            if(officer < 0 || officer >= 4)
+			for (int i = 0; i < 4; i++) _opts[i].CheckedChanged += new EventHandler(optsArr_CheckedChanged);
+			#endregion
+			if (officer < 0 || officer >= 4)
                 officer = 0;
 			_opts[officer].Checked = true;
             if (question >= 0 && question <= 4)
@@ -113,10 +116,8 @@ namespace Idmr.Yogeme
                 loadBackAndQuestions();
                 for (int i = 0; i < _indexes.Length; i++)
                     if (question == _indexes[i])
-                        DisplayQuestion(i);  //This will set the actual _selectedIndex
-
+                        displayQuestion(i);  //This will set the actual _selectedIndex
             }
-			#endregion
 		}
 
 		#region controls
@@ -147,22 +148,12 @@ namespace Idmr.Yogeme
 				else if (e.Y > 290)	// questions
 				{
 					int question = (e.Y - 290) / 20;	// the question line clicked, 0-4
-                    DisplayQuestion(question);  //[JB] Moved code to function so that initializing the form can call it too.
+                    displayQuestion(question);  //[JB] Moved code to function so that initializing the form can call it too.
 				}
 				// else whitespace
 			}
 			// else whitespace
 		}
-        void DisplayQuestion(int question)
-        {
-            if (_indexes[question] == 255) return;	// blank Q/A set
-            _selectedIndex = _indexes[question];
-            _answerLines = _currentAnswer.Split(new string[] { "\r\n" }, StringSplitOptions.None);
-            _page = 1;
-            cmdPrevious.Enabled = false;
-            cmdNext.Enabled = (_numberOfPages > 1);
-            loadPage();
-        }
 		
 		void cmdClose_Click(object sender, EventArgs e) { Close(); }
 
@@ -195,6 +186,17 @@ namespace Idmr.Yogeme
 			}
 			displayString("Page " + _page + " of " + _numberOfPages, 234, 106);
 			pctPreview.Invalidate();
+		}
+
+		void displayQuestion(int question)
+		{
+			if (_indexes[question] == 255) return;  // blank Q/A set
+			_selectedIndex = _indexes[question];
+			_answerLines = _currentAnswer.Split(new string[] { "\r\n" }, StringSplitOptions.None);
+			_page = 1;
+			cmdPrevious.Enabled = false;
+			cmdNext.Enabled = (_numberOfPages > 1);
+			loadPage();
 		}
 
 		void displayString(string text, short left, short top)

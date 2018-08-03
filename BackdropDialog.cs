@@ -1,12 +1,14 @@
 /*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, TIE through XWA
- * Copyright (C) 2007-2017 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2018 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.4.1
+ * VERSION: 1.4.1+
  */
 
 /* CHANGELOG
+ * [ADD] catch block for loading XWA thumbnails [JB]
+ * [FIX] shadow out of range now resets _shadow in addition to num [JB]
  * v1.4.1, 171118
  * [FIX] added numBackdrop_ValueChanged callout to ctor to ensure loading if _index is 0
  * [UPD] XWA platform check moved to after InitComp due to SBD adjustments

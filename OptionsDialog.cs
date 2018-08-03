@@ -1,12 +1,15 @@
 /*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, TIE through XWA
- * Copyright (C) 2007-2017 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2018 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.4.1
+ * VERSION: 1.4.1+
  */
 
 /* CHANGELOG
+ * [UPD] added callback [JB]
+ * [NEW] X-wing options [JB]
+ * [NEW] themeing options [JB]
  * v1.4.1, 171118
  * [NEW #13] Super Backdrops
  * v1.3, 170107
@@ -129,9 +132,26 @@ namespace Idmr.Yogeme
             txtColorNonSelected.Text = (_config.ColorInteractNonSelected.ToArgb() & 0x00FFFFFF).ToString("X6");
             txtColorBackground.Text = (_config.ColorInteractBackground.ToArgb() & 0x00FFFFFF).ToString("X6");
             cboInteractiveTheme.SelectedIndex = (txtColorBackground.Text == "BC8F8F" ? 0 : txtColorBackground.Text == "BFBFFF" ? 1 : 0);  //Select YOGEME or XvTED by looking at background color, otherwise default to YOGEME. What's selected here doesn't actually matter unless the user clicks it, so it's just a matter of display consistency.
-            RefreshColors();
+            refreshColors();
 
             _closeCallback = callback;
+		}
+
+		void refreshColors()
+		{
+			int sel = Color.Blue.ToArgb();
+			int nsel = Color.Black.ToArgb();
+			int background = Color.RosyBrown.ToArgb();
+			int.TryParse(txtColorSelected.Text, System.Globalization.NumberStyles.HexNumber, null, out sel);
+			int.TryParse(txtColorNonSelected.Text, System.Globalization.NumberStyles.HexNumber, null, out nsel);
+			int.TryParse(txtColorBackground.Text, System.Globalization.NumberStyles.HexNumber, null, out background);
+			sel += 0xFF << 24;  //Add the alpha channel back in
+			nsel += 0xFF << 24;
+			background += 0xFF << 24;
+			lblInteractSelected.ForeColor = Color.FromArgb(sel);
+			lblInteractSelected.BackColor = Color.FromArgb(background);
+			lblInteractNonSelected.ForeColor = Color.FromArgb(nsel);
+			lblInteractNonSelected.BackColor = Color.FromArgb(background);
 		}
 
 		void selectPlatform(TextBox txt, CheckBox chk)
@@ -145,7 +165,30 @@ namespace Idmr.Yogeme
 			}
 		}
 
-        void chkXWInstall_CheckedChanged(object sender, EventArgs e)
+		void cboInteractiveScheme_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			if (ActiveControl != cboInteractiveTheme) return;
+
+			if (cboInteractiveTheme.SelectedIndex == 0)
+			{
+				txtColorSelected.Text = (Color.Blue.ToArgb() & 0x00FFFFFF).ToString("X6");  //ARGB values include 0xFF for alpha, trim that out before converting to a hexadecimal color code.
+				txtColorNonSelected.Text = (Color.Black.ToArgb() & 0x00FFFFFF).ToString("X6");
+				txtColorBackground.Text = (Color.RosyBrown.ToArgb() & 0x00FFFFFF).ToString("X6");
+			}
+			else
+			{
+				txtColorSelected.Text = "A90391";
+				txtColorNonSelected.Text = "000000";
+				txtColorBackground.Text = "BFBFFF";
+			}
+			refreshColors();
+		}
+
+		void chkColorizeFG_CheckedChanged(object sender, EventArgs e)
+		{
+			_config.ColorizedDropDowns = chkColorizeFG.Checked;
+		}
+		void chkXWInstall_CheckedChanged(object sender, EventArgs e)
         {
             txtXW.Enabled = chkXWInstall.Checked;
         }
@@ -178,6 +221,33 @@ namespace Idmr.Yogeme
 		{
 			Close();
 		}
+		void cmdInteractSelect_Click(object sender, EventArgs e)
+		{
+			DialogResult dr = colorSelector.ShowDialog();
+			if (dr == DialogResult.OK)
+			{
+				txtColorSelected.Text = (colorSelector.Color.ToArgb() & 0x00FFFFFF).ToString("X6");  //ARGB values include 0xFF for alpha, trim that out before converting to a hexadecimal color code.
+				refreshColors();
+			}
+		}
+		void cmdInteractNonSelect_Click(object sender, EventArgs e)
+		{
+			DialogResult dr = colorSelector.ShowDialog();
+			if (dr == DialogResult.OK)
+			{
+				txtColorNonSelected.Text = (colorSelector.Color.ToArgb() & 0x00FFFFFF).ToString("X6");
+				refreshColors();
+			}
+		}
+		void cmdInteractBackground_Click(object sender, EventArgs e)
+		{
+			DialogResult dr = colorSelector.ShowDialog();
+			if (dr == DialogResult.OK)
+			{
+				txtColorBackground.Text = (colorSelector.Color.ToArgb() & 0x00FFFFFF).ToString("X6");
+				refreshColors();
+			}
+		}
 		void cmdOK_Click(object sender, EventArgs e)
 		{
 			if (optStartNormal.Checked) _config.Startup = Settings.StartupMode.Normal;
@@ -199,7 +269,7 @@ namespace Idmr.Yogeme
 			_config.Verify = chkVerify.Checked;
 			_config.VerifyLocation = txtVerify.Text;
 			int temp=0;
-			for(int i=0;i<22;i++) temp += (chkWP[i].Checked ? 1<<i : 0);
+			for (int i = 0; i < 22; i++) temp += (chkWP[i].Checked ? 1 << i : 0);
 			_config.Waypoints = temp;
 			_config.MapOptions = (chkFG.Checked ? Settings.MapOpts.FGTags : Settings.MapOpts.None) | (chkTrace.Checked ? Settings.MapOpts.Traces : Settings.MapOpts.None);
             _config.XwingCraft = (byte)cboXWCraft.SelectedIndex;
@@ -257,83 +327,17 @@ namespace Idmr.Yogeme
 			selectPlatform(txtXWA, chkXWAInstall);
 		}
 
-        void cmdInteractSelect_Click(object sender, EventArgs e)
-        {
-            DialogResult dr = colorSelector.ShowDialog();
-            if (dr == DialogResult.OK)
-            {
-                txtColorSelected.Text = (colorSelector.Color.ToArgb() & 0x00FFFFFF).ToString("X6");  //ARGB values include 0xFF for alpha, trim that out before converting to a hexadecimal color code.
-                RefreshColors();
-            }
-        }
-        void cmdInteractNonSelect_Click(object sender, EventArgs e)
-        {
-            DialogResult dr = colorSelector.ShowDialog();
-            if (dr == DialogResult.OK)
-            {
-                txtColorNonSelected.Text = (colorSelector.Color.ToArgb() & 0x00FFFFFF).ToString("X6");
-                RefreshColors();
-            }
-        }
-        void cmdInteractBackground_Click(object sender, EventArgs e)
-        {
-            DialogResult dr = colorSelector.ShowDialog();
-            if (dr == DialogResult.OK)
-            {
-                txtColorBackground.Text = (colorSelector.Color.ToArgb() & 0x00FFFFFF).ToString("X6");
-                RefreshColors();
-            }
-        }
-        void RefreshColors()
-        {
-            int sel = Color.Blue.ToArgb();
-            int nsel = Color.Black.ToArgb();
-            int background = Color.RosyBrown.ToArgb();
-            Int32.TryParse(txtColorSelected.Text, System.Globalization.NumberStyles.HexNumber, null, out sel);
-            Int32.TryParse(txtColorNonSelected.Text, System.Globalization.NumberStyles.HexNumber, null, out nsel);
-            Int32.TryParse(txtColorBackground.Text, System.Globalization.NumberStyles.HexNumber, null, out background);
-            sel += 0xFF << 24;  //Add the alpha channel back in
-            nsel += 0xFF << 24;
-            background += 0xFF << 24;
-            lblInteractSelected.ForeColor = Color.FromArgb(sel);
-            lblInteractSelected.BackColor = Color.FromArgb(background);
-            lblInteractNonSelected.ForeColor = Color.FromArgb(nsel);
-            lblInteractNonSelected.BackColor = Color.FromArgb(background);
-        }
-
-        void chkColorizeFG_CheckedChanged(object sender, EventArgs e)
-        {
-            _config.ColorizedDropDowns = chkColorizeFG.Checked;
-        }
         void txtColorSelected_TextChanged(object sender, EventArgs e)
         {
-            RefreshColors();
+            refreshColors();
         }
         void txtColorNonSelected_TextChanged(object sender, EventArgs e)
         {
-            RefreshColors();
+            refreshColors();
         }
         void txtColorBackground_TextChanged(object sender, EventArgs e)
         {
-            RefreshColors();
-        }
-        void cboInteractiveScheme_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (ActiveControl != cboInteractiveTheme) return;
-
-            if (cboInteractiveTheme.SelectedIndex == 0)
-            {
-                txtColorSelected.Text = (Color.Blue.ToArgb() & 0x00FFFFFF).ToString("X6");  //ARGB values include 0xFF for alpha, trim that out before converting to a hexadecimal color code.
-                txtColorNonSelected.Text = (Color.Black.ToArgb() & 0x00FFFFFF).ToString("X6");
-                txtColorBackground.Text = (Color.RosyBrown.ToArgb() & 0x00FFFFFF).ToString("X6");
-            }
-            else
-            {
-                txtColorSelected.Text = "A90391";
-                txtColorNonSelected.Text = "000000";
-                txtColorBackground.Text = "BFBFFF";
-            }
-            RefreshColors();
+            refreshColors();
         }
 	}
 }

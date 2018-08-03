@@ -125,7 +125,7 @@
         AAEAAAD/////AQAAAAAAAAAMAgAAAFdTeXN0ZW0uV2luZG93cy5Gb3JtcywgVmVyc2lvbj00LjAuMC4w
         LCBDdWx0dXJlPW5ldXRyYWwsIFB1YmxpY0tleVRva2VuPWI3N2E1YzU2MTkzNGUwODkFAQAAACZTeXN0
         ZW0uV2luZG93cy5Gb3Jtcy5JbWFnZUxpc3RTdHJlYW1lcgEAAAAERGF0YQcCAgAAAAkDAAAADwMAAAAC
-        DwAAAk1TRnQBSQFMAgEBDgEAAagBAgGoAQIBEAEAARABAAT/AQkBAAj/AUIBTQE2AQQGAAE2AQQCAAEo
+        DwAAAk1TRnQBSQFMAgEBDgEAAbABAgGwAQIBEAEAARABAAT/AQkBAAj/AUIBTQE2AQQGAAE2AQQCAAEo
         AwABQAMAAUADAAEBAQABCAYAARAYAAGAAgABgAMAAoABAAGAAwABgAEAAYABAAKAAgADwAEAAcAB3AHA
         AQAB8AHKAaYBAAEzBQABMwEAATMBAAEzAQACMwIAAxYBAAMcAQADIgEAAykBAANVAQADTQEAA0IBAAM5
         AQABgAF8Af8BAAJQAf8BAAGTAQAB1gEAAf8B7AHMAQABxgHWAe8BAAHWAucBAAGQAakBrQIAAf8BMwMA
@@ -192,17 +192,37 @@
         AYABAQr/Cw==
 </value>
   </data>
+  <metadata name="chkWPHyp.Locked" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="chkWP2.Locked" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="chkWP1.Locked" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="chkSP3.Locked" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="chkSP2.Locked" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="chkSP1.Locked" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="chkWP3.Locked" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
   <data name="lblCSInfo.Text" xml:space="preserve">
     <value>* Coordinate Sets are saved in the briefing and can't be loaded without a matching BRF file.  CS1 is derived from SP1 by default.  CS2 and beyond are similar to briefing waypoints in other platforms.  CS points cannot be toggled.  To edit CS points, switch to BRF mode.</value>
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="label76.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
-        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAADrgAAA64AWpB9VsAAAAGYktHRAD/AP8A/6C9p5MAAAAHdElNRQfiBQQCKhivWYge
-        AAAAcUlEQVQ4T7WMAQrAMAgD+z7//x9XC7eKVZCOCUdNYjNU9RPvIiLz2YFp8D4Ze2pGyOJrHEcVll8X
-        8Pm6IFIWEGST3a3bLPAfPDatghXMYfdeuwBd+eijoMt/BVFXPjotsOl4y2fxJjDRLwuy44xdoOMBoWZ3
-        Cdvwfs4AAAAASUVORK5CYII=
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
+        uAAADrgBakH1WwAAAAd0SU1FB+IFBAIqGK9ZiB4AAABxSURBVDhPtYwBCsAwCAP7Pv//H1cLt4pVkI4J
+        R01iM1T1E+8iIvPZgWnwPhl7akbI4mscRxWWXxfw+bogUhYQZJPdrdss8B88Nq2CFcxh9167AF356KOg
+        y38FUVc+Oi2w6XjLZ/EmMNEvC7LjjF2g4wGhZncJ2/B+zgAAAABJRU5ErkJggg==
 </value>
   </data>
   <metadata name="chkWPHyp.Locked" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
@@ -228,21 +248,19 @@
   </metadata>
   <data name="label77.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
-        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAADrgAAA64AWpB9VsAAAAGYktHRAD/AP8A/6C9p5MAAAAHdElNRQfiBQQCKTsmE6qv
-        AAAAcklEQVQ4T6WPCwqAQAhEPZ837LSGC8po035KeGw4voHEzH6RH6pqQexm+IwXl6sClpcQXyREJLIi
-        I11g+F2R+8GKUtDDXbLgbVbl+c+zYWKQBSzcIQu+lLhTChAmdPyOyggTncgfwowiyzWghyfQ5T4mNy4k
-        VL+iGdjpAAAAAElFTkSuQmCC
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
+        uAAADrgBakH1WwAAAAd0SU1FB+IFBAIpOyYTqq8AAABySURBVDhPpY8LCoBACEQ9nzfstIYLymjTfkp4
+        bDi+gcTMfpEfqmpB7Gb4jBeXqwKWlxBfJEQksiIjXWD4XZH7wYpS0MNdsuBtVuX5z7NhYpAFLNwhC76U
+        uFMKECZ0/I7KCBOdyB/CjCLLNaCHJ9DlPiY3LiRUv6IZ2OkAAAAASUVORK5CYII=
 </value>
   </data>
   <data name="label78.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
-        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAADrgAAA64AWpB9VsAAAAGYktHRAD/AP8A/6C9p5MAAAAHdElNRQfiBQQCKwZMTYQ8
-        AAAAn0lEQVQ4T41RgQ3AIAjzPj/ctQzUYkU0mjRiW4qbRURS1FoFiBojJSMQkoXNQ/kmORZz8TZNtx0E
-        myOH5vMNzHgKOGkDvSBDNgW430D3WzMQPb3QgJdmgL07Mf4ueGjMQ2s8DhzC3E2zOjW/YguwGmBj0+g5
-        ndPaCX7KJuiC0b+fPEuAvwJN8RpnApoNnVQTJi6NEaHZ4AFADMHKNBEpPw/sY/XtFp3QAAAAAElFTkSu
-        QmCC
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
+        uAAADrgBakH1WwAAAAd0SU1FB+IFBAIrBkxNhDwAAACfSURBVDhPjVGBDcAgCPM+P9y1DNRiRTSaNGJb
+        iptFRFLUWgWIGiMlIxCShc1D+SY5FnPxNk23HQSbI4fm8w3MeAo4aQO9IEM2BbjfQPdbMxA9vdCAl2aA
+        vTsx/i54aMxDazwOHMLcTbM6Nb9iC7AaYGPT6Dmd09oJfsom6ILRv588S4C/Ak3xGmcCmg2dVBMmLo0R
+        odngAUAMwco0ESk/D+xj9e0WndAAAAAASUVORK5CYII=
 </value>
   </data>
   <metadata name="menuXwing.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">

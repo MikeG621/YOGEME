@@ -1,13 +1,14 @@
 /*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, TIE through XWA
- * Copyright (C) 2007-2017 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2018 Michael Gaisser (mjgaisser@gmail.com)
+ * This file authored by "JB" (Random Starfighter) (randomstarfighter@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.3
+ * VERSION: 1.3+
  */
 
 /* CHANGELOG
-
+ * [NEW] created [JB]
  */
 
 
@@ -67,7 +68,7 @@ namespace Idmr.Yogeme
 		string[] _tags;
 		string[] _strings;
 		int _maxEvents;
-		string _message = "";
+		//string _message = "";	// assigned, but never used
 		int _regionDelay = -1;
 		int _page = 1;
 		short _icon = 0;
@@ -550,7 +551,7 @@ namespace Idmr.Yogeme
 			}
 			if (_regionDelay != -1)
 			{
-				_message = "";
+				//_message = "";
 				_regionDelay = -1;
 				lblCaption.Visible = true;
 				lblTitle.Visible = true;
@@ -574,7 +575,7 @@ namespace Idmr.Yogeme
 			if (_regionDelay == -1) hsbTimer.Value++;
 			else if (_regionDelay == 0)
 			{
-				_message = "";
+				//_message = "";
 				_regionDelay--;
 				lblCaption.Visible = true;
 				lblTitle.Visible = true;
@@ -1887,7 +1888,7 @@ namespace Idmr.Yogeme
                 _textTags[h, 3] = 0;
             }
             if (_platform == Settings.Platform.XWA) _briefData = new BriefData[_briefData.Length];
-            _message = "";
+            //_message = "";
             lblTitle.Visible = true;
             lblCaption.Visible = true;
             lblTitle.Text = "";  //[JB] Clear these to force refresh, otherwise it holds old strings, even if the event list is wiped clean.

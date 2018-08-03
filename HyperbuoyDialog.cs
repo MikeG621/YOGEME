@@ -1,15 +1,19 @@
 ﻿/*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, TIE through XWA
- * Copyright (C) 2007-2017 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2018 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.4
+ * VERSION: 1.4+
  */
 
 /* CHANGELOG
-  * v1.4, 171016
-  * [NEW] created (#13)
-  */
+ * [UPD] added _team for proper Roles [JB]
+ * [UPD] ADT[4] changed to "100% of CraftWhen Player's Craft" [JB]
+ * [UPD] return ADT[0] changed to ">=1 CraftWhen Player's Craft" [JB]
+ * [UPD] beacon orders added [JB]
+ * v1.4, 171016
+ * [NEW] created (#13)
+ */
 
 using System;
 using System.Windows.Forms;
@@ -21,7 +25,7 @@ namespace Idmr.Yogeme
 	{
 		Mission _mission;
 		byte _iff;
-        byte _team;   //[JB] Added team so that roles can be properly assigned.
+        byte _team;
 		byte _playerFG;
 
 		public HyperbuoyDialog(Mission mission)

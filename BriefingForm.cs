@@ -1,12 +1,27 @@
 /*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, TIE through XWA
- * Copyright (C) 2007-2017 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2018 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.3
+ * VERSION: 1.3+
  */
 
 /* CHANGELOG
+ * [FIX] map performance [JB]
+ * [UPD] XvT map size tweaked [JB]
+ * [UPD] PostLoadInit tweaked [JB]
+ * [UPD] _Closed and _Closing changed to _FormClosed and _FormClosing, adjust the exit routine [JB]
+ * [FIX] _Load forces an update [JB]
+ * [ADD] redraw timer and supporting popup functions [JB]
+ * [FIX] limit to FF_Click [JB]
+ * [ADD] code moved to ProcessEvent() and ResetBriefing90 [JB]
+ * [ADD] playback speed shown if not 1x [JB]
+ * [FIX] grid paint when at extreme coords [JB]
+ * [FIX] Y zoom when painting FG icons [JB]
+ * [NEW] lblCaption_Click [JB]
+ * [FIX] XWA tag names now use Icon # [JB]
+ * [UPD] control focus in updateParameters() [JB]
+ * [UPD] cmdNew now adds after current line [JB]
  * v1.3, 170107
  * [NEW] Multiple briefings capability, popup [JB]
  * [NEW] BriefData.WaypointArr [JB]
@@ -77,15 +92,10 @@ namespace Idmr.Yogeme
 		int _page = 1;
 		short _icon = 0;
         bool _popupPreviewActive = false;     //[JB] The popup feature allows the user to move and zoom the map without changing any events, as well as see the coordinates of the mouse cursor.  Designed to assist raw editing of the event list.
-        Timer _popupTimer = new Timer();
-        short _popupPreviewZoomX;
-        short _popupPreviewZoomY;
-        short _popupPreviewMapX;
-        short _popupPreviewMapY;
-        bool _popupDragState = false;
-        int _popupMiddleX;
-        int _popupMiddleY;
-        Timer _mapPaintRedrawTimer = new Timer();  //[JB] Added a timer to control map painting in an attempt to smooth re-drawing performance.
+        Point _popupPreviewZoom;
+		Point _popupPreviewMap;
+        bool _isMiddleDrag = false;
+        Point _popupMiddle;
         bool _mapPaintScheduled = false;      //True if a paint is scheduled, that is a paint request is called while a paint is already in progress.
         static public string[] sharedTeamNames = new string[10]; //[JB] The other platforms need a way to communicate the team names to the briefing
         int _previousTimeIndex = 0;           //Tracks the previous time index of the briefing so we can detect when the user is manually scrolling through arbitrary times.
@@ -103,7 +113,7 @@ namespace Idmr.Yogeme
 			_maxEvents = Platform.Tie.Briefing.EventQuantityLimit;
 			_events = new short[_maxEvents,6];
 			InitializeComponent();
-			this.Text = "YOGEME Briefing Editor - TIE";
+			Text = "YOGEME Briefing Editor - TIE";
 			#region layout edit
 			// final layout update, as in VS it's spread out
 			Height = 422;
@@ -140,7 +150,7 @@ namespace Idmr.Yogeme
             tabTeams.Enabled = false;
 
             _loading = false;
-            PostLoadInit();
+            postLoadInit();
         }
 		public BriefingForm(Platform.Xvt.FlightGroupCollection fg, Platform.Xvt.BriefingCollection briefing)
 		{
@@ -156,7 +166,7 @@ namespace Idmr.Yogeme
 			_maxEvents = Platform.Xvt.Briefing.EventQuantityLimit;
 			_events = new short[_maxEvents, 6];
 			InitializeComponent();
-			this.Text = "YOGEME Briefing Editor - XvT/BoP";
+			Text = "YOGEME Briefing Editor - XvT/BoP";
 			Import(fg);
 			#region XvT layout change
 			Height = 422;
@@ -226,11 +236,11 @@ namespace Idmr.Yogeme
                 lstTeams.Items.Add((i + 1) + ": " + sharedTeamNames[i]);
             cboBriefIndex1.SelectedIndex = 0;
             cboBriefIndex2.SelectedIndex = 0;
-            RefreshTeamList();
-            UpdateTitle();
+            refreshTeamList();
+            updateTitle();
 
     		_loading = false;
-            PostLoadInit();
+            postLoadInit();
         }
 		public BriefingForm(Platform.Xwa.BriefingCollection briefing)
 		{
@@ -247,7 +257,7 @@ namespace Idmr.Yogeme
 			_maxEvents = Platform.Xwa.Briefing.EventQuantityLimit;
 			_events = new short[_maxEvents, 6];
 			InitializeComponent();
-			this.Text = "YOGEME Briefing Editor - XWA";
+			Text = "YOGEME Briefing Editor - XWA";
 			#region XWA layout change
 			label7.Text = "Icon:";
 			Height = 480;
@@ -368,19 +378,16 @@ namespace Idmr.Yogeme
                 lstTeams.Items.Add((i + 1) + ": " + sharedTeamNames[i]);
             cboBriefIndex1.SelectedIndex = 0;
             cboBriefIndex2.SelectedIndex = 0;
-            RefreshTeamList();
-            UpdateTitle();
+            refreshTeamList();
+            updateTitle();
 
             _loading = false;
-            PostLoadInit();
+            postLoadInit();
 		}
 
         /// <summary>Handles redundant code for each of the 3 platform modes.</summary>
-        private void PostLoadInit()
+        void postLoadInit()
         {
-            _popupTimer.Tick += popupTimer_Tick;
-            _mapPaintRedrawTimer.Tick += mapPaintRedrawTimer_Tick;
-
             //[JB] Now that we're done loading, force refresh of the cmdUp and cmdDown buttons.
             if(lstEvents.Items.Count > 0)
             {
@@ -393,30 +400,6 @@ namespace Idmr.Yogeme
             }
         }
 
-		public void Import(Platform.Tie.FlightGroupCollection fg)
-		{
-			_briefData = new BriefData[fg.Count];
-			cboFG.Items.Clear();
-			cboFGTag.Items.Clear();
-			for (int i = 0; i < fg.Count; i++)
-            {
-                fillBriefData(i, fg[i].CraftType, fg[i].Waypoints[14], null, fg[i].IFF, fg[i].Name);
-            }
-		}
-		public void Import(Platform.Xvt.FlightGroupCollection fg)
-		{
-			_briefData = new BriefData[fg.Count];
-			cboFG.Items.Clear();
-			cboFGTag.Items.Clear();
-			for (int i = 0; i < fg.Count; i++)
-            {
-                var wps = new BaseFlightGroup.BaseWaypoint[8];
-                for(int k = 0; k < 8; k++)
-                    wps[k] = fg[i].Waypoints[14+k];
-                fillBriefData(i, fg[i].CraftType, fg[i].Waypoints[14], wps, fg[i].IFF, fg[i].Name);
-            }
-		}
-
 		void fillBriefData(int index, int craftType, BaseFlightGroup.BaseWaypoint waypoint, BaseFlightGroup.BaseWaypoint[] waypoints, byte iff, string name)
 		{
 			_briefData[index].Craft = craftType;
@@ -427,6 +410,7 @@ namespace Idmr.Yogeme
 			cboFG.Items.Add(name);
 			cboFGTag.Items.Add(name);
 		}
+
 		void importDat(string filename, int size)
 		{
 			try
@@ -552,6 +536,29 @@ namespace Idmr.Yogeme
 			loadStrings();
 		}
 
+		public void Import(Platform.Tie.FlightGroupCollection fg)
+		{
+			_briefData = new BriefData[fg.Count];
+			cboFG.Items.Clear();
+			cboFGTag.Items.Clear();
+			for (int i = 0; i < fg.Count; i++)
+			{
+				fillBriefData(i, fg[i].CraftType, fg[i].Waypoints[14], null, fg[i].IFF, fg[i].Name);
+			}
+		}
+		public void Import(Platform.Xvt.FlightGroupCollection fg)
+		{
+			_briefData = new BriefData[fg.Count];
+			cboFG.Items.Clear();
+			cboFGTag.Items.Clear();
+			for (int i = 0; i < fg.Count; i++)
+			{
+				var wps = new BaseFlightGroup.BaseWaypoint[8];
+				for (int k = 0; k < 8; k++)
+					wps[k] = fg[i].Waypoints[14 + k];
+				fillBriefData(i, fg[i].CraftType, fg[i].Waypoints[14], wps, fg[i].IFF, fg[i].Name);
+			}
+		}
 		public void Save()
 		{
 			BaseBriefing brief = (_platform == Settings.Platform.TIE ? (BaseBriefing)_tieBriefing : (_platform == Settings.Platform.XvT ? (BaseBriefing)_xvtBriefing : (BaseBriefing)_xwaBriefing));
@@ -578,17 +585,13 @@ namespace Idmr.Yogeme
         void frmBrief_FormClosed(object sender, FormClosedEventArgs e)
         {
             tabBrief.Focus();       //[JB] Leave any focused controls so that events don't refresh the disposed map.
-            _popupTimer.Dispose();
-            _mapPaintRedrawTimer.Dispose();
             _map.Dispose();
         }  
 		void frmBrief_FormClosing(object sender, FormClosingEventArgs e)
 		{
 			Save();
-            _popupTimer.Stop(); //[JB] Stop and deactivate the timers.  Hopefully this fixes a rare exception (possibly a race condition?) where the newly implemented redraw event would still try to repaint the map even after everything was disposed.
-            _popupTimer.Tick -= popupTimer_Tick;
-            _mapPaintRedrawTimer.Stop();
-            _mapPaintRedrawTimer.Tick -= mapPaintRedrawTimer_Tick;
+            tmrPopup.Stop(); //[JB] Stop and deactivate the timers.  Hopefully this fixes a rare exception (possibly a race condition?) where the newly implemented redraw event would still try to repaint the map even after everything was disposed.
+            tmrMapRedraw.Stop();
 
             /*if (_platform==Settings.Platform.TIE) TIESave();
             else if (_platform==Settings.Platform.XvT) XvTSave();
@@ -691,20 +694,20 @@ namespace Idmr.Yogeme
             bool paint = false;
             if (hsbTimer.Value != 0 && ((hsbTimer.Value - _previousTimeIndex >= 2) || hsbTimer.Value <= _previousTimeIndex))  //A non-incremental or reverse change (if incremental the timer should be +1 to previous), the user most likely manually moved the scrollbar.  Iterate through all past events and rebuild the briefing state.
             {
-                ResetBriefing();
+                resetBriefing();
                 stopTimer();
                 for (int i = 0; i < _maxEvents; i++)
                 {
                     //Process everything up to the current time index.
                     if (_events[i, 0] > hsbTimer.Value || _events[i, 1] == (int)BaseBriefing.EventType.None || _events[i, 1] == (int)BaseBriefing.EventType.EndBriefing) break;
-                    paint |= ProcessEvent(i, true);  //paint stays enabled once enabled.
+                    paint |= processEvent(i, true);  //paint stays enabled once enabled.
                 }
             }
 
             _previousTimeIndex = hsbTimer.Value;
 			if (hsbTimer.Value == 0)
 			{
-                ResetBriefing();  //[JB] Moved code to function.
+                resetBriefing();  //[JB] Moved code to function.
 			}
 			if (_regionDelay != -1)
 			{
@@ -717,7 +720,7 @@ namespace Idmr.Yogeme
 			{
 				if (_events[i,0] < hsbTimer.Value) continue;
 				if (_events[i,0] > hsbTimer.Value || _events[i,1] == (int)BaseBriefing.EventType.None || _events[i,1] == (int)BaseBriefing.EventType.EndBriefing) break;
-                paint |= ProcessEvent(i, false);  //paint stays enabled once enabled.
+                paint |= processEvent(i, false);  //paint stays enabled once enabled.
             }
 			for (int h=0;h<8;h++) if (hsbTimer.Value - _fgTags[h, 1] < 13) paint = true;
 			lblTime.Text = String.Format("{0:Time: 0.00}",(decimal)hsbTimer.Value / _timerInterval);
@@ -739,43 +742,38 @@ namespace Idmr.Yogeme
 			}
 			else _regionDelay--;
 		}
+		void tmrPopup_Tick(object sender, EventArgs e)
+		{
+			if (_popupPreviewActive) return;
+			tmrPopup.Stop();
+			lblPopupInfo.Visible = false;
+			lblPopupInfo.Text = "";
+		}
+		void tmrMapRedraw_Tick(object sender, EventArgs e)
+		{
+			//[JB] Wrapper that handles the calling of the actual map rendering.
+			if (_mapPaintScheduled)
+			{
+				//[JB] Code formerly in the MapPaint(), performs the rendering.
+				if (_platform == Settings.Platform.TIE) tiePaint();
+				else if (_platform == Settings.Platform.XvT) xvtPaint();
+				else if (_platform == Settings.Platform.XWA) xwaPaint();
 
-        void popupTimer_Tick(object sender, EventArgs e)
-        {
-            if (_popupPreviewActive == true) return;
-            _popupTimer.Stop();
-            lblPopupInfo.Visible = false;
-            lblPopupInfo.Text = "";
-        }
-        void mapPaintRedrawTimer_Tick(object sender, EventArgs e)
-        {
-            //[JB] Wrapper that handles the calling of the actual map rendering.
-            if (_mapPaintScheduled == true)
-            {
-                //[JB] Code formerly in the MapPaint(), performs the rendering.
-                if (_platform == Settings.Platform.TIE) tiePaint();
-                else if (_platform == Settings.Platform.XvT) xvtPaint();
-                else if (_platform == Settings.Platform.XWA) xwaPaint();
+				_mapPaintScheduled = false;
+			}
+			tmrMapRedraw.Stop();
+		}
+		#endregion	Timer related
 
-                _mapPaintScheduled = false;
-                _mapPaintRedrawTimer.Stop();
-            }
-            else  //This shouldn't trigger, but just in case nothing is scheduled, stop the timer.
-            {
-                _mapPaintRedrawTimer.Stop();
-            }
-        }
-        #endregion	Timer related
-
-        public void MapPaint()
+		public void MapPaint()
         {
             //[JB] I modified this function to instead serve as a wrapper that handles the map rendering.  It seems to reduce immediate performance for the sake of consistency and not clogging CPU cycles during rapid re-draw attempts. 
-            if (_mapPaintScheduled == false)
+            if (!_mapPaintScheduled)
             {
-                if (!_mapPaintRedrawTimer.Enabled)         //The timer is stopped, start it up.
+                if (!tmrMapRedraw.Enabled)         //The timer is stopped, start it up.
                 {
-                    _mapPaintRedrawTimer.Start();
-                    _mapPaintRedrawTimer.Interval = 17;    //Was trying to aim for ~60 FPS, but according to MSDN, the minimum accuracy is 55 ms.
+                    tmrMapRedraw.Start();
+                    //_mapPaintRedrawTimer.Interval = 17;    //Was trying to aim for ~60 FPS, but according to MSDN, the minimum accuracy is 55 ms.
                 }
                 _mapPaintScheduled = true;
             }
@@ -952,6 +950,235 @@ namespace Idmr.Yogeme
 			g.DrawImageUnscaled(craftImage, x+spacing, y-spacing);
 			g.DrawImageUnscaled(craftImage, x-spacing, y-spacing);
 			g.DrawImageUnscaled(craftImage, x-spacing, y+spacing);
+		}
+		void popupUpdate(string s)
+		{
+			lblPopupInfo.Visible = true;
+			lblPopupInfo.Text = s;
+			tmrPopup.Start();
+		}
+		void popupPreviewStop()
+		{
+			if (_popupPreviewActive)
+			{
+				_mapX = (short)_popupPreviewMap.X;  //Restore prior map settings
+				_mapY = (short)_popupPreviewMap.Y;
+				_zoomX = (short)_popupPreviewZoom.X;
+				_zoomY = (short)_popupPreviewZoom.Y;
+
+				_popupPreviewActive = false;
+				MapPaint();
+			}
+		}
+		void popupPreviewStart()
+		{
+			if (!_popupPreviewActive)
+			{
+				pctBrief.Focus();  //Need to force focus so it generates MouseWheel events
+				_popupPreviewMap.X = _mapX;  //Backup existing map settings
+				_popupPreviewMap.Y = _mapY;
+				_popupPreviewZoom.X = _zoomX;
+				_popupPreviewZoom.Y = _zoomY;
+
+				_popupPreviewActive = true;
+				MapPaint();
+			}
+		}
+		bool processEvent(int evtIndex, bool rebuild)
+		{
+			bool paint = false;
+			int i = evtIndex;  //[JB] I just moved the old code here.  No changes except to prevent hiding of text/caption panels during rebuild, since it causes heavy flickering while scrolling.
+			if (_events[i, 1] == (int)BaseBriefing.EventType.PageBreak)
+			{
+				if (_platform == Settings.Platform.TIE) lblTitle.Text = "";
+				lblCaption.Text = "";
+				_page++;
+				paint = true;
+			}
+			else if (_events[i, 1] == (int)BaseBriefing.EventType.TitleText && _platform == Settings.Platform.TIE)  // XvT and XWA use .LST files
+			{
+				if (_strings[_events[i, 2]].StartsWith(">"))
+				{
+					lblTitle.TextAlign = ContentAlignment.TopCenter;
+					lblTitle.ForeColor = _titleColor;
+					lblTitle.Text = _strings[_events[i, 2]].Replace(">", "");
+				}
+				else
+				{
+					lblTitle.TextAlign = ContentAlignment.TopLeft;
+					lblTitle.ForeColor = _normalColor;
+					lblTitle.Text = _strings[_events[i, 2]];
+				}
+			}
+			else if (_events[i, 1] == (int)BaseBriefing.EventType.CaptionText)
+			{
+				if (_strings[_events[i, 2]].StartsWith(">"))
+				{
+					lblCaption.TextAlign = ContentAlignment.TopCenter;
+					lblCaption.ForeColor = _titleColor;
+					lblCaption.Text = _strings[_events[i, 2]].Replace(">", "").Replace("$", "\r\n");
+				}
+				else
+				{
+					lblCaption.TextAlign = ContentAlignment.TopLeft;
+					lblCaption.ForeColor = _normalColor;
+					lblCaption.Text = _strings[_events[i, 2]].Replace("$", "\r\n");
+				}
+			}
+			else if (_events[i, 1] == (int)BaseBriefing.EventType.MoveMap)
+			{
+				_mapX = _events[i, 2];
+				_mapY = _events[i, 3];
+				if (_platform == Settings.Platform.XvT || _platform == Settings.Platform.BoP)
+				{
+					_mapX /= 2;
+					_mapY /= 2;
+				}
+				paint = true;
+			}
+			else if (_events[i, 1] == (int)BaseBriefing.EventType.ZoomMap)
+			{
+				_zoomX = _events[i, 2];
+				_zoomY = _events[i, 3];
+				if (_zoomX < 1) _zoomX = 1;  //[JB] Prevent divide by zero when drawing the grid
+				if (_zoomY < 1) _zoomY = 1;
+				paint = true;
+			}
+			else if (_events[i, 1] == (int)BaseBriefing.EventType.ClearFGTags)
+			{
+				for (int h = 0; h < 8; h++)
+				{
+					_fgTags[h, 0] = -1;
+					_fgTags[h, 1] = 0;
+				}
+				paint = true;
+			}
+			else if (_events[i, 1] >= (int)BaseBriefing.EventType.FGTag1 && _events[i, 1] <= (int)BaseBriefing.EventType.FGTag8)
+			{
+				int v = _events[i, 1] - (int)BaseBriefing.EventType.FGTag1;
+				_fgTags[v, 0] = _events[i, 2];  // FG number
+				_fgTags[v, 1] = _events[i, 0];  // time started, for MapPaint
+				paint = true;
+			}
+			else if (_events[i, 1] == (int)BaseBriefing.EventType.ClearTextTags)
+			{
+				for (int h = 0; h < 8; h++)
+				{
+					_textTags[h, 0] = -1;
+					_textTags[h, 1] = 0;
+					_textTags[h, 2] = 0;
+					_textTags[h, 3] = 0;
+				}
+				paint = true;
+			}
+			else if (_events[i, 1] >= (int)BaseBriefing.EventType.TextTag1 && _events[i, 1] <= (int)BaseBriefing.EventType.TextTag8)
+			{
+				int v = _events[i, 1] - (int)BaseBriefing.EventType.TextTag1;
+				_textTags[v, 0] = _events[i, 2];    // tag#
+				_textTags[v, 1] = _events[i, 3];    // X
+				_textTags[v, 2] = _events[i, 4];    // Y
+				_textTags[v, 3] = _events[i, 5];    // color
+				paint = true;
+			}
+			else if (_events[i, 1] == (int)BaseBriefing.EventType.XwaNewIcon)
+			{
+				_briefData[_events[i, 2]].Craft = _events[i, 3] - 1;
+				_briefData[_events[i, 2]].IFF = (byte)_events[i, 4];
+				_briefData[_events[i, 2]].Name = "Icon #" + _events[i, 2].ToString();
+				_briefData[_events[i, 2]].Waypoint = new short[4];
+				if (_events[i, 3] != 0) _briefData[_events[i, 2]].Waypoint[3] = 1;
+				else _briefData[_events[i, 2]].Waypoint[3] = 0;
+				paint = true;
+			}
+			else if (_events[i, 1] == (int)BaseBriefing.EventType.XwaShipInfo)
+			{
+				if (_events[i, 2] == 1)
+				{
+					if (_briefData[_events[i, 3]].Craft != 0) _message = "Ship Info: " + Platform.Xwa.Strings.CraftType[_briefData[_events[i, 3]].Craft + 1];
+					else _message = "Ship Info: <flight group not found>";
+					if (!rebuild)
+					{
+						lblTitle.Visible = false;
+						lblCaption.Visible = false;
+					}
+				}
+				else
+				{
+					_message = "";
+					lblTitle.Visible = true;
+					lblCaption.Visible = true;
+				}
+				paint = true;
+			}
+			else if (_events[i, 1] == (int)BaseBriefing.EventType.XwaMoveIcon)
+			{
+				if (Common.IsValidArray(_briefData[_events[i, 2]].Waypoint, 1))
+				{
+					_briefData[_events[i, 2]].Waypoint[0] = _events[i, 3];
+					_briefData[_events[i, 2]].Waypoint[1] = _events[i, 4];
+					paint = true;
+				}
+			}
+			else if (_events[i, 1] == (int)BaseBriefing.EventType.XwaRotateIcon)
+			{
+				if (Common.IsValidArray(_briefData[_events[i, 2]].Waypoint, 2))
+				{
+					_briefData[_events[i, 2]].Waypoint[2] = _events[i, 3];
+					paint = true;
+				}
+			}
+			else if (_events[i, 1] == (int)BaseBriefing.EventType.XwaChangeRegion)
+			{
+				for (int h = 0; h < 8; h++)
+				{
+					_fgTags[h, 0] = -1;
+					_fgTags[h, 1] = 0;
+					_textTags[h, 0] = -1;
+					_textTags[h, 1] = 0;
+					_textTags[h, 2] = 0;
+					_textTags[h, 3] = 0;
+				}
+				_briefData = new BriefData[_briefData.Length];
+
+				_message = "Region " + (_events[i, 2] + 1);
+				_regionDelay = _timerInterval * 3;
+
+				if (!rebuild)
+				{
+					lblTitle.Visible = false;
+					lblCaption.Visible = false;
+				}
+				paint = true;
+			}
+			// don't need to account for EndBriefing
+			return paint;
+		}
+		void resetBriefing()
+		{
+			_page = 1;
+			_mapX = 0;
+			_mapY = 0;
+			_zoomX = 48;
+			if (_platform == Settings.Platform.XvT || _platform == Settings.Platform.BoP || _platform == Settings.Platform.XWA) _zoomX = 32;  //[JB] Default for XvT is also 32
+			_zoomY = _zoomX;
+			for (int h = 0; h < 8; h++)
+			{
+				_fgTags[h, 0] = -1;
+				_fgTags[h, 1] = 0;
+			}
+			for (int h = 0; h < 8; h++)
+			{
+				_textTags[h, 0] = -1;
+				_textTags[h, 1] = 0;
+				_textTags[h, 2] = 0;
+				_textTags[h, 3] = 0;
+			}
+			if (_platform == Settings.Platform.XWA) _briefData = new BriefData[_briefData.Length];
+			_message = "";
+			lblTitle.Visible = true;
+			lblCaption.Visible = true;
+			lblTitle.Text = "";  //[JB] Clear these to force refresh, otherwise it holds old strings, even if the event list is wiped clean.
+			lblCaption.Text = "";
 		}
 		void tieMask(Bitmap craftImage, byte iff)
 		{
@@ -2459,6 +2686,32 @@ namespace Idmr.Yogeme
 			MapPaint();
 		}
 
+		/// <summary>Feature to quickly navigate forward through tbe briefing, landing on the next caption.</summary>
+		void lblCaption_Click(object sender, EventArgs e)
+		{
+			int time = hsbTimer.Value;
+			for (int i = 0; i < _maxEvents; i++)
+			{
+				int etime = _events[i, 0];
+				int eevt = _events[i, 1];
+				if (eevt == (int)BaseBriefing.EventType.None || eevt == (int)BaseBriefing.EventType.EndBriefing)
+				{
+					hsbTimer.Value = 1;
+					hsbTimer.Value = 0;
+					return;
+				}
+				if (etime > time && eevt == (int)BaseBriefing.EventType.CaptionText)
+				{
+					if (etime < hsbTimer.Maximum)
+					{
+						hsbTimer.Value = etime;
+						hsbTimer.Value = etime + 1;
+					}
+					return;
+				}
+			}
+		}
+
 		void numText_ValueChanged(object sender, EventArgs e)
 		{
 			_textTags = _tempTags;	// restore and re-edit
@@ -2474,9 +2727,9 @@ namespace Idmr.Yogeme
             if(e.Button != MouseButtons.Left)
             {
                 if(e.Button == MouseButtons.Middle)
-                    _popupDragState = false;
+                    _isMiddleDrag = false;
 
-                PopupPreviewStop();
+                popupPreviewStop();
             }
         }
 		void pctBrief_MouseDown(object sender, MouseEventArgs e)
@@ -2485,11 +2738,11 @@ namespace Idmr.Yogeme
             {
                 if(e.Button == MouseButtons.Middle)
                 {
-                    _popupDragState = true;
-                    _popupMiddleX = e.X;
-                    _popupMiddleY = e.Y;
+                    _isMiddleDrag = true;
+                    _popupMiddle.X = e.X;
+                    _popupMiddle.Y = e.Y;
                 }
-                PopupPreviewStart();
+                popupPreviewStart();
                 pctBrief_MouseMove(0, e); //Simulate mouse move to refresh and display the data
                 return;
             }
@@ -2534,32 +2787,32 @@ namespace Idmr.Yogeme
 		}
         void pctBrief_MouseMove(object sender, MouseEventArgs e)
         {
-            if (_popupPreviewActive == true)
+            if (_popupPreviewActive)
             {
-                if (_popupDragState == true)
+                if (_isMiddleDrag)
                 {
                     double scx = (w / _zoomX) * 0.75;  //[JB] zoom level is pixels per km.  Modified to be more consistent across zoom levels.
                     double scy = (h / _zoomY) * 0.75;
 
-                    int ox = (int)((e.X - _popupMiddleX) * scx);
-                    int oy = (int)((e.Y - _popupMiddleY) * scy);
+                    int ox = (int)((e.X - _popupMiddle.X) * scx);
+                    int oy = (int)((e.Y - _popupMiddle.Y) * scy);
                     _mapX += (short)ox;
                     _mapY += (short)oy;
-                    _popupMiddleX = e.X;
-                    _popupMiddleY = e.Y;
+                    _popupMiddle.X = e.X;
+                    _popupMiddle.Y = e.Y;
                     MapPaint();
                 }
                 int mod = (_platform != Settings.Platform.TIE ? 2 : 1);
-                int xu = (int)(128 * e.X / _zoomX * mod - 64 * w / _zoomX * mod + _mapX);
-                int yu = (int)(128 * e.Y / _zoomY * mod - 64 * h / _zoomY * mod + _mapY);
-                double xkm = Math.Round((double)(xu * 0.00625), 2);
-                double ykm = Math.Round((double)(-yu * 0.00625), 2);
+                int xu = 128 * e.X / _zoomX * mod - 64 * w / _zoomX * mod + _mapX;
+                int yu = 128 * e.Y / _zoomY * mod - 64 * h / _zoomY * mod + _mapY;
+                double xkm = Math.Round((xu * 0.00625), 2);
+                double ykm = Math.Round((-yu * 0.00625), 2);
                 string s = "PREVIEW ONLY\nZoom: " + _zoomX + " , " + _zoomY;
                 s += "\nMap Offset: " + _mapX + " , " + _mapY;
                 s += "\nMap Coords: " + xu + " , " + yu;
                 if (_platform != Settings.Platform.XWA)
                     s += "\nWaypoint Coords (km): " + xkm.ToString() + " , " + ykm.ToString();
-                PopupUpdate(s, 0);
+                popupUpdate(s);
                 if (e.Delta > 0)
                 {
                     _zoomX += 2;
@@ -2634,266 +2887,6 @@ namespace Idmr.Yogeme
 			if (_eventType == BaseBriefing.EventType.ZoomMap) _zoomY = (short)vsbBRF.Value;
 			MapPaint();
 		}
-
-        /// <summary>Feature to quickly navigate forward through tbe briefing, landing on the next caption.</summary>
-        void lblCaption_Click(object sender, EventArgs e)
-        {
-            int time = hsbTimer.Value;
-            for (int i = 0; i < _maxEvents; i++)
-            {
-                int etime = _events[i, 0];
-                int eevt = _events[i, 1];
-                if (eevt == (int)BaseBriefing.EventType.None || eevt == (int)BaseBriefing.EventType.EndBriefing)
-                {
-                    hsbTimer.Value = 1;
-                    hsbTimer.Value = 0;
-                    return;
-                }
-                if (etime > time && eevt == (int)BaseBriefing.EventType.CaptionText)
-                {
-                    if (etime < hsbTimer.Maximum)
-                    {
-                        hsbTimer.Value = etime;
-                        hsbTimer.Value = etime + 1;
-                    }
-                    return;
-                }
-            }
-        }
-        void PopupUpdate(string s, int timeExtention)
-        {
-            lblPopupInfo.Visible = true;
-            lblPopupInfo.Text = s;
-            _popupTimer.Interval = 500 + timeExtention;
-            _popupTimer.Start();
-        }
-        void PopupPreviewStop()
-        {
-            if (_popupPreviewActive == true)
-            {
-                _mapX = _popupPreviewMapX;  //Restore prior map settings
-                _mapY = _popupPreviewMapY;
-                _zoomX = _popupPreviewZoomX;
-                _zoomY = _popupPreviewZoomY;
-
-                _popupPreviewActive = false;
-                MapPaint();
-            }
-        }
-        void PopupPreviewStart()
-        {
-            if (_popupPreviewActive == false)
-            {
-                pctBrief.Focus();  //Need to force focus so it generates MouseWheel events
-                _popupPreviewMapX = _mapX;  //Backup existing map settings
-                _popupPreviewMapY = _mapY;
-                _popupPreviewZoomX = _zoomX;
-                _popupPreviewZoomY = _zoomY;
-
-                _popupPreviewActive = true;
-                MapPaint();
-            }
-        }
-        bool ProcessEvent(int evtIndex, bool rebuild)
-        {
-            bool paint = false;
-            int i = evtIndex;  //[JB] I just moved the old code here.  No changes except to prevent hiding of text/caption panels during rebuild, since it causes heavy flickering while scrolling.
-            #region event processing
-            if (_events[i, 1] == (int)BaseBriefing.EventType.PageBreak)
-            {
-                if (_platform == Settings.Platform.TIE) lblTitle.Text = "";
-                lblCaption.Text = "";
-                _page++;
-                paint = true;
-            }
-            else if (_events[i, 1] == (int)BaseBriefing.EventType.TitleText && _platform == Settings.Platform.TIE)	// XvT and XWA use .LST files
-            {
-                if (_strings[_events[i, 2]].StartsWith(">"))
-                {
-                    lblTitle.TextAlign = ContentAlignment.TopCenter;
-                    lblTitle.ForeColor = _titleColor;
-                    lblTitle.Text = _strings[_events[i, 2]].Replace(">", "");
-                }
-                else
-                {
-                    lblTitle.TextAlign = ContentAlignment.TopLeft;
-                    lblTitle.ForeColor = _normalColor;
-                    lblTitle.Text = _strings[_events[i, 2]];
-                }
-            }
-            else if (_events[i, 1] == (int)BaseBriefing.EventType.CaptionText)
-            {
-                if (_strings[_events[i, 2]].StartsWith(">"))
-                {
-                    lblCaption.TextAlign = ContentAlignment.TopCenter;
-                    lblCaption.ForeColor = _titleColor;
-                    lblCaption.Text = _strings[_events[i, 2]].Replace(">", "").Replace("$", "\r\n");
-                }
-                else
-                {
-                    lblCaption.TextAlign = ContentAlignment.TopLeft;
-                    lblCaption.ForeColor = _normalColor;
-                    lblCaption.Text = _strings[_events[i, 2]].Replace("$", "\r\n");
-                }
-            }
-            else if (_events[i, 1] == (int)BaseBriefing.EventType.MoveMap)
-            {
-                _mapX = _events[i, 2];
-                _mapY = _events[i, 3];
-                if (_platform == Settings.Platform.XvT || _platform == Settings.Platform.BoP)
-                {
-                    _mapX /= 2;
-                    _mapY /= 2;
-                }
-                paint = true;
-            }
-            else if (_events[i, 1] == (int)BaseBriefing.EventType.ZoomMap)
-            {
-                _zoomX = _events[i, 2];
-                _zoomY = _events[i, 3];
-                if (_zoomX < 1) _zoomX = 1;  //[JB] Prevent divide by zero when drawing the grid
-                if (_zoomY < 1) _zoomY = 1;
-                paint = true;
-            }
-            else if (_events[i, 1] == (int)BaseBriefing.EventType.ClearFGTags)
-            {
-                for (int h = 0; h < 8; h++)
-                {
-                    _fgTags[h, 0] = -1;
-                    _fgTags[h, 1] = 0;
-                }
-                paint = true;
-            }
-            else if (_events[i, 1] >= (int)BaseBriefing.EventType.FGTag1 && _events[i, 1] <= (int)BaseBriefing.EventType.FGTag8)
-            {
-                int v = _events[i, 1] - (int)BaseBriefing.EventType.FGTag1;
-                _fgTags[v, 0] = _events[i, 2];	// FG number
-                _fgTags[v, 1] = _events[i, 0];	// time started, for MapPaint
-                paint = true;
-            }
-            else if (_events[i, 1] == (int)BaseBriefing.EventType.ClearTextTags)
-            {
-                for (int h = 0; h < 8; h++)
-                {
-                    _textTags[h, 0] = -1;
-                    _textTags[h, 1] = 0;
-                    _textTags[h, 2] = 0;
-                    _textTags[h, 3] = 0;
-                }
-                paint = true;
-            }
-            else if (_events[i, 1] >= (int)BaseBriefing.EventType.TextTag1 && _events[i, 1] <= (int)BaseBriefing.EventType.TextTag8)
-            {
-                int v = _events[i, 1] - (int)BaseBriefing.EventType.TextTag1;
-                _textTags[v, 0] = _events[i, 2];	// tag#
-                _textTags[v, 1] = _events[i, 3];	// X
-                _textTags[v, 2] = _events[i, 4];	// Y
-                _textTags[v, 3] = _events[i, 5];	// color
-                paint = true;
-            }
-            else if (_events[i, 1] == (int)BaseBriefing.EventType.XwaNewIcon)
-            {
-                _briefData[_events[i, 2]].Craft = _events[i, 3] - 1;
-                _briefData[_events[i, 2]].IFF = (byte)_events[i, 4];
-                _briefData[_events[i, 2]].Name = "Icon #" + _events[i, 2].ToString();
-                _briefData[_events[i, 2]].Waypoint = new short[4];
-                if (_events[i, 3] != 0) _briefData[_events[i, 2]].Waypoint[3] = 1;
-                else _briefData[_events[i, 2]].Waypoint[3] = 0;
-                paint = true;
-            }
-            else if (_events[i, 1] == (int)BaseBriefing.EventType.XwaShipInfo)
-            {
-                if (_events[i, 2] == 1)
-                {
-                    if (_briefData[_events[i, 3]].Craft != 0) _message = "Ship Info: " + Platform.Xwa.Strings.CraftType[_briefData[_events[i, 3]].Craft + 1];
-                    else _message = "Ship Info: <flight group not found>";
-                    if (!rebuild)
-                    {
-                        lblTitle.Visible = false;
-                        lblCaption.Visible = false;
-                    }
-                }
-                else
-                {
-                    _message = "";
-                    lblTitle.Visible = true;
-                    lblCaption.Visible = true;
-                }
-                paint = true;
-            }
-            else if (_events[i, 1] == (int)BaseBriefing.EventType.XwaMoveIcon)
-            {
-                if (Common.IsValidArray(_briefData[_events[i, 2]].Waypoint, 1))
-                {
-                    _briefData[_events[i, 2]].Waypoint[0] = _events[i, 3];
-                    _briefData[_events[i, 2]].Waypoint[1] = _events[i, 4];
-                    paint = true;
-                }
-            }
-            else if (_events[i, 1] == (int)BaseBriefing.EventType.XwaRotateIcon)
-            {
-                if (Common.IsValidArray(_briefData[_events[i, 2]].Waypoint, 2))
-                {
-                    _briefData[_events[i, 2]].Waypoint[2] = _events[i, 3];
-                    paint = true;
-                }
-            }
-            else if (_events[i, 1] == (int)BaseBriefing.EventType.XwaChangeRegion)
-            {
-                for (int h = 0; h < 8; h++)
-                {
-                    _fgTags[h, 0] = -1;
-                    _fgTags[h, 1] = 0;
-                    _textTags[h, 0] = -1;
-                    _textTags[h, 1] = 0;
-                    _textTags[h, 2] = 0;
-                    _textTags[h, 3] = 0;
-                }
-                _briefData = new BriefData[_briefData.Length];
-
-                _message = "Region " + (_events[i, 2] + 1);
-                _regionDelay = _timerInterval * 3;
-
-                if (!rebuild)
-                {
-                    lblTitle.Visible = false;
-                    lblCaption.Visible = false;
-                }
-                paint = true;
-            }
-            // don't need to account for EndBriefing
-            #endregion
-            return paint;
-        }
-        void ResetBriefing()
-        {
-            #region reset
-            _page = 1;
-            _mapX = 0;
-            _mapY = 0;
-            _zoomX = 48;
-            if (_platform == Settings.Platform.XvT || _platform == Settings.Platform.BoP || _platform == Settings.Platform.XWA) _zoomX = 32;  //[JB] Default for XvT is also 32
-            _zoomY = _zoomX;
-            for (int h = 0; h < 8; h++)
-            {
-                _fgTags[h, 0] = -1;
-                _fgTags[h, 1] = 0;
-            }
-            for (int h = 0; h < 8; h++)
-            {
-                _textTags[h, 0] = -1;
-                _textTags[h, 1] = 0;
-                _textTags[h, 2] = 0;
-                _textTags[h, 3] = 0;
-            }
-            if (_platform == Settings.Platform.XWA) _briefData = new BriefData[_briefData.Length];
-            _message = "";
-            lblTitle.Visible = true;
-            lblCaption.Visible = true;
-            lblTitle.Text = "";  //[JB] Clear these to force refresh, otherwise it holds old strings, even if the event list is wiped clean.
-            lblCaption.Text = "";
-            #endregion
-        }
         #endregion	tabDisplay
 		#region tabStrings
 		void loadStrings()
@@ -2990,6 +2983,35 @@ namespace Idmr.Yogeme
 			_events[i, 1] = 3;
 			for (int j=2;j<6;j++) _events[i, j] = 0;
 			lstEvents.SelectedIndex = i;
+		}
+		/// <summary>Swaps one briefing event index with another.</summary>
+		void swapEvent(int index1, int index2)
+		{
+			short t;
+			for (int j = 0; j < 6; j++)
+			{
+				t = _events[index1, j];
+				_events[index1, j] = _events[index2, j];
+				_events[index2, j] = t;
+			}
+		}
+		/// <summary>Shifts briefing events by swapping the contents of the origin index in a linear path until it occupies the end index.</summary>
+		void shiftEvents(int origin, int end)
+		{
+			if (end > origin)  //swap downward
+			{
+				for (int i = origin; i < end; i++)
+				{
+					swapEvent(i, i + 1);
+				}
+			}
+			else if (end < origin)  //swap upward
+			{
+				for (int i = origin; i > end; i--)
+				{
+					swapEvent(i, i - 1);
+				}
+			}
 		}
 		void updateList(int index)
 		{
@@ -3262,7 +3284,7 @@ namespace Idmr.Yogeme
             if (lstEvents.SelectedIndex + 1 < lstEvents.Items.Count)
             {
                 int index = lstEvents.SelectedIndex;
-                SwapEvent(index, index + 1);
+                swapEvent(index, index + 1);
                 updateList(index + 1);   //updateList() changes lstEvents.SelectedIndex but doesn't seem to refresh the parameters controls with the selected item.  Update in reverse order so that a forced refresh will succeed.
                 updateList(index);
                 lstEvents.SelectedIndex = index + 1;
@@ -3316,36 +3338,6 @@ namespace Idmr.Yogeme
 			if (_events[i, 1] == (int)BaseBriefing.EventType.XwaChangeRegion) _events[i, 2] = (short)(numRegion.Value - 1);
 			updateList(i);
 		}
-
-        /// <summary>Swaps one briefing event index with another.</summary>
-        void SwapEvent(int index1, int index2)
-        {
-            short t;
-            for (int j = 0; j < 6; j++)
-            {
-                t = _events[index1, j];
-                _events[index1, j] = _events[index2, j];
-                _events[index2, j] = t;
-            }
-        }
-        /// <summary>Shifts briefing events by swapping the contents of the origin index in a linear path until it occupies the end index.</summary>
-        void ShiftEvents(int iorigin, int iend)
-        {
-            if (iend > iorigin)  //swap downward
-            {
-                for (int i = iorigin; i < iend; i++)
-                {
-                    SwapEvent(i, i + 1);
-                }
-            }
-            else if (iend < iorigin)  //swap upward
-            {
-                for (int i = iorigin; i > iend; i--)
-                {
-                    SwapEvent(i, i - 1);
-                }
-            }
-        }
         void numTime_ValueChanged(object sender, EventArgs e)
 		{
             lblEventTime.Text = String.Format("{0:= 0.00 seconds}", numTime.Value / _timerInterval);
@@ -3378,7 +3370,7 @@ namespace Idmr.Yogeme
             }
             if (diff != 0)
             {
-                ShiftEvents(i, p);
+                shiftEvents(i, p);
                 lstEvents.Items.RemoveAt(i);
                 lstEvents.Items.Insert(p, "");
                 lstEvents.SelectedIndex = p;
@@ -3427,15 +3419,145 @@ namespace Idmr.Yogeme
 		}
 		#endregion tabEvents
 		#region tabTeams
-        /// <summary>Switches currently visible team briefing.</summary>
-        void cboBriefIndex1_SelectedIndexChanged(object sender, EventArgs e)
+		/// <summary>Performs the necessary data saving and swapping when selecting a new Briefing.</summary>
+		void changeBriefingIndex(int briefIndex)
+		{
+			if (_loading) return;
+
+			if (briefIndex == _currentCollectionIndex) return;
+			if (briefIndex > cboBriefIndex1.Items.Count)
+				briefIndex = cboBriefIndex1.Items.Count - briefIndex;
+
+			Save();  //Save current changes before switching
+
+			_currentCollectionIndex = briefIndex;
+			if (_platform == Settings.Platform.XvT)
+			{
+				_xvtBriefing = _xvtBriefingCollection[briefIndex];
+				//These select lines copied from the constructor to re-load and re-init particular data sets and controls.
+				_events = new short[_maxEvents, 6];
+				_tags = _xvtBriefing.BriefingTag;
+				_strings = _xvtBriefing.BriefingString;
+				importStrings();
+				txtLength.Text = Convert.ToString(Math.Round(((decimal)_xvtBriefing.Length / _timerInterval), 2));
+				lstEvents.Items.Clear();
+				importEvents(_xvtBriefing.Events);
+				numUnk1.Value = _xvtBriefing.Unknown1;
+				numUnk3.Value = _xvtBriefing.Unknown3;
+				cboText.SelectedIndex = 0;
+				cboFGTag.SelectedIndex = 0;
+				cboTextTag.SelectedIndex = 0;
+				cboColorTag.SelectedIndex = 0;
+			}
+			else if (_platform == Settings.Platform.XWA)
+			{
+				_xwaBriefing = _xwaBriefingCollection[briefIndex];
+				//These select lines copied from the constructor to re-load and re-init particular data sets and controls.
+				_events = new short[_maxEvents, 6];
+				_tags = _xwaBriefing.BriefingTag;
+				_strings = _xwaBriefing.BriefingString;
+				importStrings();
+				txtLength.Text = Convert.ToString(Math.Round(((decimal)_xwaBriefing.Length / _timerInterval), 2));
+				lstEvents.Items.Clear();
+				importEvents(_xwaBriefing.Events);
+				numUnk1.Value = _xwaBriefing.Unknown1;
+				numUnk3.Enabled = false;
+				txtNotes.Enabled = true;
+				txtNotes.Text = _xwaBriefing.BriefingStringsNotes[0];
+				cboText.SelectedIndex = 0;
+				cboFGTag.SelectedIndex = 0;
+				cboTextTag.SelectedIndex = 0;
+				cboColorTag.SelectedIndex = 0;
+				cboInfoCraft.SelectedIndex = 0;
+				cboRCraft.SelectedIndex = 0;
+				cboRotateAmount.SelectedIndex = 0;
+				cboMoveIcon.SelectedIndex = 0;
+				cboNewIcon.SelectedIndex = 0;
+				cboNCraft.SelectedIndex = 0;
+				cboIconIff.SelectedIndex = 0;
+			}
+
+			//Refresh controls
+			if (lstEvents.Items.Count > 0)
+				lstEvents.SelectedIndex = 0;
+			if (tabBrief.SelectedIndex == 0) //Only update the map if the tab is visible.
+			{
+				hsbTimer.Value = 1;
+				hsbTimer.Value = 0;  //Need both changes to force the map to update
+			}
+			updateTitle();
+			refreshTeamList();
+		}
+		void refreshTeamList()
+		{
+			if (_platform == Settings.Platform.TIE) return;
+
+			bool temp = _loading;
+			_loading = true;
+			lstTeams.SelectedIndex = -1;
+			for (int i = 0; i < 10; i++)
+			{
+				bool team = (_platform == Settings.Platform.XvT) ? _xvtBriefing.Team[i] : _xwaBriefing.Team[i];
+				if (team)
+					lstTeams.SelectedIndex = i;
+			}
+			_loading = temp;
+		}
+		/// <summary>For multi-briefing platforms (XvT and XWA) this updates the BriefingForm title with the currently selected briefing and applicable teams.</summary>
+		/// <remarks>The title is a convenient location to display this information regardless of which tab is selected.</remarks>
+		void updateTitle()
+		{
+			if (_platform == Settings.Platform.TIE)
+				return;
+			int teamIndex = cboBriefIndex1.SelectedIndex;
+			if (teamIndex < 0) teamIndex = 0;
+			string title = Text;
+			string update = "Briefing #" + (teamIndex + 1);
+			string team = "";
+			int pos = title.IndexOf("   [");
+			if (pos >= 0)
+				title = title.Remove(pos);
+
+			if (_platform == Settings.Platform.XvT)
+			{
+				for (int i = 0; i < _xvtBriefing.Team.Length; i++)
+				{
+					if (_xvtBriefing.Team[i])
+					{
+						if (team.Length > 0)
+							team += ", ";
+						team += sharedTeamNames[i];
+					}
+				}
+			}
+			else if (_platform == Settings.Platform.XWA)
+			{
+				for (int i = 0; i < _xwaBriefing.Team.Length; i++)
+				{
+					if (_xwaBriefing.Team[i])
+					{
+						if (team.Length > 0)
+							team += ", ";
+						team += sharedTeamNames[i];
+					}
+				}
+			}
+			if (team == "")
+				team = "NO TEAMS";
+
+			title += "   [" + update + " for: " + team + "]";
+			Text = title;
+		}
+
+		/// <summary>Switches currently visible team briefing.</summary>
+		void cboBriefIndex1_SelectedIndexChanged(object sender, EventArgs e)
         {
             if(_loading == true) return;
             _loading = true;
            cboBriefIndex2.SelectedIndex = cboBriefIndex1.SelectedIndex;
             _loading = false;
 
-           ChangeBriefingIndex(cboBriefIndex1.SelectedIndex);
+           changeBriefingIndex(cboBriefIndex1.SelectedIndex);
         }
         void cboBriefIndex2_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -3444,137 +3566,7 @@ namespace Idmr.Yogeme
            cboBriefIndex1.SelectedIndex = cboBriefIndex2.SelectedIndex;
             _loading = false;
 
-           ChangeBriefingIndex(cboBriefIndex2.SelectedIndex);
-        }
-
-        /// <summary>For multi-briefing platforms (XvT and XWA) this updates the BriefingForm title with the currently selected briefing and applicable teams.</summary>
-        /// <remarks>The title is a convenient location to display this information regardless of which tab is selected.</remarks>
-        void UpdateTitle()
-        {
-            if(_platform == Settings.Platform.TIE)
-                return;
-            int teamIndex = cboBriefIndex1.SelectedIndex;
-            if(teamIndex < 0) teamIndex = 0;
-            string title = this.Text;
-            string update = "Briefing #" + (teamIndex + 1);
-            string team = "";
-            int pos = title.IndexOf("   [");
-            if(pos >= 0)
-                title = title.Remove(pos);
-
-            if(_platform == Settings.Platform.XvT)
-            {
-                for(int i = 0; i < _xvtBriefing.Team.Length; i++)
-                {
-                    if(_xvtBriefing.Team[i])
-                    {
-                        if(team.Length > 0)
-                            team += ", ";
-                        team += sharedTeamNames[i];
-                    }
-                }
-            }
-            else if (_platform == Settings.Platform.XWA)
-            {
-                for(int i = 0; i < _xwaBriefing.Team.Length; i++)
-                {
-                    if(_xwaBriefing.Team[i])
-                    {
-                        if(team.Length > 0)
-                            team += ", ";
-                        team += sharedTeamNames[i];
-                    }
-                }
-            }
-            if(team == "")
-                team = "NO TEAMS";
-
-            title += "   [" + update + " for: " + team + "]";
-            this.Text = title;
-        }
-        /// <summary>Performs the necessary data saving and swapping when selecting a new Briefing.</summary>
-        void ChangeBriefingIndex(int briefIndex)
-        {
-            if(_loading) return;
-
-            if (briefIndex == _currentCollectionIndex) return;
-            if (briefIndex > cboBriefIndex1.Items.Count)
-                briefIndex = cboBriefIndex1.Items.Count - briefIndex;
-
-            Save();  //Save current changes before switching
-
-            _currentCollectionIndex = briefIndex;
-            if (_platform == Settings.Platform.XvT)
-            {
-                _xvtBriefing = _xvtBriefingCollection[briefIndex];
-                //These select lines copied from the constructor to re-load and re-init particular data sets and controls.
-                _events = new short[_maxEvents, 6];
-                _tags = _xvtBriefing.BriefingTag;
-                _strings = _xvtBriefing.BriefingString;
-                importStrings();
-                txtLength.Text = Convert.ToString(Math.Round(((decimal)_xvtBriefing.Length / _timerInterval), 2));
-                lstEvents.Items.Clear();
-                importEvents(_xvtBriefing.Events);
-                numUnk1.Value = _xvtBriefing.Unknown1;
-                numUnk3.Value = _xvtBriefing.Unknown3;
-                cboText.SelectedIndex = 0;
-                cboFGTag.SelectedIndex = 0;
-                cboTextTag.SelectedIndex = 0;
-                cboColorTag.SelectedIndex = 0;
-            }
-            else if (_platform == Settings.Platform.XWA)
-            {
-                _xwaBriefing = _xwaBriefingCollection[briefIndex];
-                //These select lines copied from the constructor to re-load and re-init particular data sets and controls.
-                _events = new short[_maxEvents, 6];
-                _tags = _xwaBriefing.BriefingTag;
-                _strings = _xwaBriefing.BriefingString;
-                importStrings();
-                txtLength.Text = Convert.ToString(Math.Round(((decimal)_xwaBriefing.Length / _timerInterval), 2));
-                lstEvents.Items.Clear();
-                importEvents(_xwaBriefing.Events);
-                numUnk1.Value = _xwaBriefing.Unknown1;
-                numUnk3.Enabled = false;
-                txtNotes.Enabled = true;
-                txtNotes.Text = _xwaBriefing.BriefingStringsNotes[0];
-                cboText.SelectedIndex = 0;
-                cboFGTag.SelectedIndex = 0;
-                cboTextTag.SelectedIndex = 0;
-                cboColorTag.SelectedIndex = 0;
-                cboInfoCraft.SelectedIndex = 0;
-                cboRCraft.SelectedIndex = 0;
-                cboRotateAmount.SelectedIndex = 0;
-                cboMoveIcon.SelectedIndex = 0;
-                cboNewIcon.SelectedIndex = 0;
-                cboNCraft.SelectedIndex = 0;
-                cboIconIff.SelectedIndex = 0;
-            }
-
-            //Refresh controls
-            if(lstEvents.Items.Count > 0)
-                lstEvents.SelectedIndex = 0;
-            if (tabBrief.SelectedIndex == 0) //Only update the map if the tab is visible.
-            {
-                hsbTimer.Value = 1;
-                hsbTimer.Value = 0;  //Need both changes to force the map to update
-            }
-            UpdateTitle();
-            RefreshTeamList();
-        }
-        void RefreshTeamList()
-        {
-            if(_platform == Settings.Platform.TIE)
-                return;
-            bool temp = _loading;
-            _loading = true;
-            lstTeams.SelectedIndex = -1;
-            for(int i = 0; i < 10; i++)
-            {
-                bool team = (_platform == Settings.Platform.XvT) ? _xvtBriefing.Team[i] : _xwaBriefing.Team[i];
-                if(team)
-                    lstTeams.SelectedIndex = i;
-            }
-            _loading = temp;
+           changeBriefingIndex(cboBriefIndex2.SelectedIndex);
         }
 
         void lstTeams_SelectedIndexChanged(object sender, EventArgs e)
@@ -3626,9 +3618,9 @@ namespace Idmr.Yogeme
                 if(!found)
                     teams[i] = false;
             }
-            UpdateTitle();
+            updateTitle();
         }
-		#endregion
+		#endregion tabTeams
 	}
 
 	public struct BriefData

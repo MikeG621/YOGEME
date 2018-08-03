@@ -1,12 +1,13 @@
 /*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, TIE through XWA
- * Copyright (C) 2007-2017 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2018 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.4
+ * VERSION: 1.4+
  */
 
 /* CHANGELOG
+ * [NEW] FG Counter functions, IsValidArray, GetFOrmattedTime, SafeSetCBO [JB]
  * v1.4, 171016
  * [NEW #10] Craft list override
  * v1.2.7, 150405
@@ -124,14 +125,22 @@ namespace Idmr.Yogeme
 			return newValue;
 		}
 
-        /// <summary> Maintains a list of Flight Groups and how many craft share a particular name, categorizing them based from craft type, IFF, and name.</summary>
-        /// <remarks> This function adds a FG (with the specified parameters) to the list.</remarks>
-        /// <returns> The number of craft now assigned to this key.</returns>
-        public static int AddFGCounter(int craftType, int IFF, string craftName, int amount, Dictionary<int, Dictionary<String, int>> counter)
+        /// <summary>Add or increase the count of a keyed Flight Group.</summary>
+		/// <param name="craftType">The FG's <see cref="Platform.BaseFlightGroup.CraftType"/> index</param>
+		/// <param name="IFF">The FG's <see cref="Platform.BaseFlightGroup.IFF"/> index</param>
+		/// <param name="craftName">The FG's <see cref="Platform.BaseFlightGroup.Name"/></param>
+		/// <param name="amount">The FG's <see cref="Platform.BaseFlightGroup.NumberOfCraft"/> value</param>
+		/// <param name="counter">The keyed Flight Group listing</param>
+        /// <remarks>This function adds a FG (with the specified parameters) to the list if it does not exist.<br/>
+		/// <paramref name="counter"/> is formatted as &lt;<i>key</i>, &lt;<i><paramref name="craftName"/></i>, <i>count</i>&gt;&gt;.<br/>
+		/// Keys are defined as <b>(<paramref name="craftType"/> + (<paramref name="IFF"/> &lt;&lt; 16))</b>. If it does not exist in <paramref name="counter"/> it's added.
+		/// If the key does exist with the same <paramref name="craftName"/>, then its count is increased by <paramref name="amount"/>, otherwise it's added and set to <paramref name="amount"/>.</remarks>
+        /// <returns>The number of craft now assigned to the resulting key.</returns>
+        public static int AddFGCounter(int craftType, int IFF, string craftName, int amount, Dictionary<int, Dictionary<string, int>> counter)
         {
             int key = craftType + (IFF << 16);   //Combine IFF into the key, so that same names of different IFFs are not counted together.
             if (!counter.ContainsKey(key))
-                counter.Add(key, new Dictionary<String, int>());
+                counter.Add(key, new Dictionary<string, int>());
 
             if (counter[key].ContainsKey(craftName))
                 counter[key][craftName] += amount;
@@ -140,9 +149,16 @@ namespace Idmr.Yogeme
 
             return counter[key][craftName];
         }
-        /// <summary> Maintains a list of Flight Groups and how many craft share a particular name, categorizing them based from craft type, IFF, and name.</summary>
-        /// <returns> The number of craft assigned to this key.</returns>
-        public static int GetFGCounter(int craftType, int IFF, string craftName, Dictionary<int, Dictionary<String, int>> counter)
+
+		/// <summary>Gets the count of a keyed Flight Group</summary>
+		/// <param name="craftType">The FG's <see cref="Platform.BaseFlightGroup.CraftType"/> index</param>
+		/// <param name="IFF">The FG's <see cref="Platform.BaseFlightGroup.IFF"/> index</param>
+		/// <param name="craftName">The FG's <see cref="Platform.BaseFlightGroup.Name"/></param>
+		/// <param name="counter">The keyed Flight Group listing</param>
+		/// <remarks><paramref name="counter"/> is formatted as &lt;<i>key</i>, &lt;<i><paramref name="craftName"/></i>, <i>count</i>&gt;&gt;.<br/>
+		/// Keys are defined as <b>(<paramref name="craftType"/> + (<paramref name="IFF"/> &lt;&lt; 16))</b>.</remarks>
+		/// <returns>The number of craft assigned to this key, otherwise <b>zero</b>.</returns>
+		public static int GetFGCounter(int craftType, int IFF, string craftName, Dictionary<int, Dictionary<string, int>> counter)
         {
             int key = craftType + (IFF << 16);
             if (!counter.ContainsKey(key)) return 0;
@@ -151,6 +167,9 @@ namespace Idmr.Yogeme
         }
 
         /// <summary>Determines if an array object exists and has a valid index.</summary>
+		/// <param name="array">The array to check</param>
+		/// <param name="index">The index to search for</param>
+		/// <returns><b>true</b> is <paramref name="array"/> is not <b>null</b> and <paramref name="index"/> is within bounds.</returns>
         public static bool IsValidArray<T>(IList<T> array, int index)
         {
             if (array == null) return false;
@@ -159,16 +178,18 @@ namespace Idmr.Yogeme
 
         /// <summary>Returns a formatted string of a time (m:ss)</summary>
         /// <param name="seconds">Total number of seconds in the time.</param>
-        /// <param name="verbose">If true, appends " seconds" pluralizing if necessary.</param>
+        /// <param name="verbose">Whethe or not to append " second(s)".</param>
+		/// <returns>Formatted time</returns>
         public static string GetFormattedTime(int seconds, bool verbose)
         {
-            return String.Format("{0}:{1:00}", seconds / 60, seconds % 60) + (verbose ? " second" + (seconds == 1 ? "" : "s") : "");
+            return string.Format("{0}:{1:00}", seconds / 60, seconds % 60) + (verbose ? " second" + (seconds == 1 ? "" : "s") : "");
         }
 
         /// <summary>Safe alternative to <b>cbo.SelectedIndex = n</b> which can automatically handle cases of invalid indexes.</summary>
         /// <param name="cbo">ComboBox to operate on.</param>
         /// <param name="index">Requested SelectedIndex value.</param>
-        /// <param name="autoExpand">If the ComboBox doesn't have the requested index, this optionally expands the list with numbered slots.</param>
+        /// <param name="autoExpand">When <paramref name="index"/> is invalid, expand the list with numbered slots.</param>
+		/// <remarks>If <paramref name="index"/> is negative or exceeds the item count, <b>-1</b> is used.</remarks>
         public static void SafeSetCBO(ComboBox cbo, int index, bool autoExpand)
         {
             if (index < -1)

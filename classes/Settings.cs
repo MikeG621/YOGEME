@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2018 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.4.2
+ * VERSION: 1.4.2+
  */
 
 /* CHANGELOG
+ * [ADD] Xwing and theming settings [JB]
  * v1.4.2, 180224
  * [ADD #17] Added explicit platform detection for Steam
  * v1.4.1, 171118
@@ -63,7 +64,7 @@ namespace Idmr.Yogeme
 		#endregion
 		string[] _recentMissions = new string[6];
 		Platform[] _recentPlatforms = new Platform[6];
-		public enum Platform { None, XWING, TIE, XvT, BoP, XWA }
+		public enum Platform { None, TIE, XvT, BoP, XWA, XWING }
 		public enum StartupMode { Normal, LastPlatform, LastMission }
 		[Flags]
 		public enum MapOpts { None, FGTags, Traces }
@@ -136,24 +137,6 @@ namespace Idmr.Yogeme
 				RestrictPlatforms = br.ReadBoolean();
 				if (version == 0xFF) fs.Position++;	// ShowDebug **DEPRECATED**
 				Startup = (StartupMode)br.ReadByte();
-
-                if (version >= 7)
-                {
-                    XwingInstalled = br.ReadBoolean();  //[JB] Copied this section from TIE and modified for X-wing.
-                    if (version == 0xFF)
-                    {
-                        int xwingCraft = br.ReadInt32();
-                        XwingCraft = (byte)(xwingCraft & 0x7F);
-                        XwingIff = (byte)(xwingCraft >> 7);
-                    }
-                    else
-                    {
-                        XwingCraft = br.ReadByte();
-                        XwingIff = br.ReadByte();
-                    }
-                    _xwingPath = br.ReadString();
-                }
-
                 TieInstalled = br.ReadBoolean();
 				if (version == 0xFF)
 				{
@@ -196,13 +179,17 @@ namespace Idmr.Yogeme
 					VerifyTest = br.ReadBoolean();  // added in v1.1
 					RememberPlatformFolder = br.ReadBoolean();	// added by [JB] in 1.3 (settings v5)
 					ConfirmFGDelete = br.ReadBoolean();
-                    _mruXwingPath = br.ReadString();
 					_mruTiePath = br.ReadString();
 					_mruXvtPath = br.ReadString();
 					_mruXwaPath = br.ReadString();
 					SuperBackdropsInstalled = br.ReadBoolean();	// added in 1.3.1 (settings v6)
-					InitializeUsingSuperBackdrops = br.ReadBoolean();	// added in 1.3.1
-                    ColorizedDropDowns = br.ReadBoolean();
+					InitializeUsingSuperBackdrops = br.ReadBoolean();   // added in 1.3.1
+					XwingInstalled = br.ReadBoolean();	// added in #.#.#
+					XwingCraft = br.ReadByte();
+					XwingIff = br.ReadByte();
+					_xwingPath = br.ReadString();
+					_mruXwingPath = br.ReadString();
+					ColorizedDropDowns = br.ReadBoolean();
                     ColorInteractSelected = Color.FromArgb(br.ReadInt32());
                     ColorInteractNonSelected = Color.FromArgb(br.ReadInt32());
                     ColorInteractBackground = Color.FromArgb(br.ReadInt32());
@@ -483,11 +470,7 @@ namespace Idmr.Yogeme
 			}
 			bw.Write(RestrictPlatforms);
 			bw.Write((byte)Startup);
-            bw.Write(XwingInstalled);
-            bw.Write(XwingCraft);
-            bw.Write(XwingIff);
-            bw.Write(_xwingPath);
-            bw.Write(TieInstalled);
+			bw.Write(TieInstalled);
 			bw.Write(TieCraft);
 			bw.Write(TieIff);
 			bw.Write(_tiePath);
@@ -507,14 +490,18 @@ namespace Idmr.Yogeme
 			bw.Write(VerifyTest);
             bw.Write(RememberPlatformFolder); //[JB] Added
             bw.Write(ConfirmFGDelete);
-            bw.Write(_mruXwingPath);
             bw.Write(_mruTiePath);
             bw.Write(_mruXvtPath);
             bw.Write(_mruXwaPath);
 			bw.Write(SuperBackdropsInstalled);
 			bw.Write(InitializeUsingSuperBackdrops);
 
-            bw.Write(ColorizedDropDowns);
+			bw.Write(XwingInstalled);
+			bw.Write(XwingCraft);
+			bw.Write(XwingIff);
+			bw.Write(_xwingPath);
+			bw.Write(_mruXwingPath);
+			bw.Write(ColorizedDropDowns);
             bw.Write(ColorInteractSelected.ToArgb());
             bw.Write(ColorInteractNonSelected.ToArgb());
             bw.Write(ColorInteractBackground.ToArgb());
@@ -526,7 +513,8 @@ namespace Idmr.Yogeme
 			Registry.CurrentUser.DeleteSubKey("Software\\IDMR\\MissionEditor", false);
 		}
 
-        //[JB] This function helps centralize the use of the last-accessed folder feature.  If most recent folder is not available, it uses the detected installation path and default mission folder.
+		/// <summary>Gets the most recently used directory</summary>
+		/// <returns>Most recent directory, otherwise default platform directory</returns>
         public string GetWorkingPath()
         {
             switch (LastPlatform)
@@ -539,13 +527,15 @@ namespace Idmr.Yogeme
             }
             return Directory.GetCurrentDirectory();
         }
+		/// <summary>Sets the MRU directory</summary>
+		/// <param name="path">Full directory</param>
         public void SetWorkingPath(string path)
         {
             switch(LastPlatform)
             {
                 case Platform.XWING: _mruXwingPath = path; break;
                 case Platform.TIE: _mruTiePath = path; break;
-                case Platform.XvT: case Platform.BoP: _mruXvtPath = path; break;
+                case Platform.XvT: case Platform.BoP: _mruXvtPath = path; break;	// TODO: BoP really should be separate
                 case Platform.XWA: _mruXwaPath = path; break;
             }
         }
@@ -560,6 +550,11 @@ namespace Idmr.Yogeme
 			get { return _bopPath; }
 			set { if (Directory.Exists(value)) { _bopPath = value; } }
 		}
+		public Color ColorInteractSelected { get; set; }
+		public Color ColorInteractNonSelected { get; set; }
+		public Color ColorInteractBackground { get; set; }
+		/// <summary>Gets or sets whether FlightGroup ComboBox dropdowns are colorized according to IFF.</summary>
+		public bool ColorizedDropDowns { get; set; }
 		/// <summary>Gets or sets if the confirmation dialog is shown when exiting YOGEME</summary>
 		public bool ConfirmExit { get; set; }
 		/// <summary>Gets or sets if a confirmation dialog is shown when deleting a Flight Group, if other FGs, goals, mission, or briefing triggers depend on it.</summary>
@@ -579,7 +574,6 @@ namespace Idmr.Yogeme
 			get { return _recentMissions[0]; }
 			set
 			{
-                //[JB] Sorting wasn't working correctly.  Rewritten.
                 _recentMissions[0] = value;  //Index [0] holds the current mission, [1...5] hold the Recent list.
                 if (value != "") 
                 {
@@ -628,21 +622,7 @@ namespace Idmr.Yogeme
 		public StartupMode Startup { get; set; }
 		/// <summary>Gets or sets the installation status of DTM's Super Backdrops mod for XWA</summary>
 		public bool SuperBackdropsInstalled { get; set; }
-        /// <summary>Gets or sets whether FlightGroup ComboBox dropdowns are colorized according to IFF.</summary>
-        public bool ColorizedDropDowns { get; set; }
-        /// <summary>Gets or sets the default craft type in X-wing</summary>
-        public byte XwingCraft { get; set; }
-        /// <summary>Gets or sets the default IFF for new ships in X-wing</summary>
-        public byte XwingIff { get; set; }
-        /// <summary>Gets or sets if XWING95 is installed</summary>
-        public bool XwingInstalled { get; set; }
-        /// <summary>Gets or sets the install directoy for XWING95</summary>
-        /// <remarks>No action is taken when using set if the directory does not exist</remarks>
-        public string XwingPath
-        {
-            get { return _xwingPath; }
-            set { if (Directory.Exists(value)) { _xwingPath = value; } }
-        }
+        
         /// <summary>Gets or sets the default craft type in TIE Fighter</summary>
         public byte TieCraft { get; set; }
 		/// <summary>Gets or sets the default IFF for new ships in TIE Fighter</summary>
@@ -696,16 +676,25 @@ namespace Idmr.Yogeme
 			get { return _xwaPath; }
 			set { if (Directory.Exists(value)) { _xwaPath = value; } }
 		}
-
-        public Color ColorInteractSelected;
-        public Color ColorInteractNonSelected;
-        public Color ColorInteractBackground;
+		/// <summary>Gets or sets the default craft type in X-wing</summary>
+		public byte XwingCraft { get; set; }
+		/// <summary>Gets or sets the default IFF for new ships in X-wing</summary>
+		public byte XwingIff { get; set; }
+		/// <summary>Gets or sets if XWING95 is installed</summary>
+		public bool XwingInstalled { get; set; }
+		/// <summary>Gets or sets the install directoy for XWING95</summary>
+		/// <remarks>No action is taken when using set if the directory does not exist</remarks>
+		public string XwingPath
+		{
+			get { return _xwingPath; }
+			set { if (Directory.Exists(value)) { _xwingPath = value; } }
+		}
 		#endregion
 	}
 	/* Settings and values
 	 * (version) Name TYPE: notes
 	 * (v3+) RESERVED BYTE: 0xFF
-	 * (v3+) Version BYTE: 0x04
+	 * (v3+) Version BYTE: 0x07
 	 * BopInstalled BOOL:
 	 * BopPath STR: path to BoP directory
 	 * (v-3) CheckInstall BOOL: **DEPRECATED**
@@ -750,5 +739,14 @@ namespace Idmr.Yogeme
 	 * (v5+) _mruXwaPath STRING:
 	 * (v6+) SuperBackdropsInstalled BOOL:
 	 * (v6+) InitializeUsingSuperBackdrops BOOL:
+	 * (v7+) XwingInstalled BOOL:
+	 * (v7+) XwingCraft BYTE:
+	 * (v7+) XwingIFF BYTE:
+	 * (v7+) XwingPath STR: path to Xwing directory
+	 * (v7+) _mruXwingPath STRING:
+	 * (v7+) ColorizedDropdowns BOOL:
+	 * (v7+) ColorInteractSelected INT: ARGB value
+	 * (v7+) ColorInteractNonSelected INT: ARGB value
+	 * (v7+) ColorInteractBackground INT: ARGB value
 	 */
 }
