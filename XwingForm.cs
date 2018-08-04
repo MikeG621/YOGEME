@@ -1551,9 +1551,9 @@ namespace Idmr.Yogeme
                 numSeconds.Value = _mission.FlightGroups[_activeFG].Formation;  //Uses the same value, different control for UI grouping purposes
             }
             if(_mission.FlightGroups[_activeFG].CraftType == 2 && _mission.FlightGroups[_activeFG].Status1 >= 10)
-				cboCraft.SelectedIndex = 18;  //Hack for B-wing
+				cboCraft.SelectedIndex = 18;  //Adjust for B-wing
 			else if(_mode == EditorMode.BRF && _mission.FlightGroups[_activeFG].CraftType == 25)
-                cboCraft.SelectedIndex = 18;  //Hack for the object mode's B-wing used in briefings.
+                cboCraft.SelectedIndex = 18;  //Adjust for the object mode's B-wing used in briefings.
             else
 				cboCraft.SelectedIndex = _mission.FlightGroups[_activeFG].CraftType;
 			int objindex = _mission.FlightGroups[_activeFG].ObjectType - 17;

@@ -781,6 +781,8 @@ namespace Idmr.Yogeme
 			this.txtNotes = new System.Windows.Forms.TextBox();
 			this.dataOrders = new System.Data.DataView();
 			this.dataOrders_Raw = new System.Data.DataView();
+			this.label152 = new System.Windows.Forms.Label();
+			this.numUnk42 = new System.Windows.Forms.NumericUpDown();
 			((System.ComponentModel.ISupportInitialize)(this.dataWaypoints)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.dataWaypoints_Raw)).BeginInit();
 			this.tabMain.SuspendLayout();
@@ -951,6 +953,7 @@ namespace Idmr.Yogeme
 			this.groupBox37.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.dataOrders)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.dataOrders_Raw)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.numUnk42)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// menuXWA
@@ -2934,6 +2937,8 @@ namespace Idmr.Yogeme
 			// 
 			// tabGoals
 			// 
+			this.tabGoals.Controls.Add(this.numUnk42);
+			this.tabGoals.Controls.Add(this.label152);
 			this.tabGoals.Controls.Add(this.lblGoalTimeLimitNote);
 			this.tabGoals.Controls.Add(this.lblGoalTimeLimitSec);
 			this.tabGoals.Controls.Add(this.lblGoalTimeLimit);
@@ -2996,7 +3001,7 @@ namespace Idmr.Yogeme
             0});
 			this.numGoalTimeLimit.Name = "numGoalTimeLimit";
 			this.numGoalTimeLimit.Size = new System.Drawing.Size(56, 20);
-			this.numGoalTimeLimit.TabIndex = 49;
+			this.numGoalTimeLimit.TabIndex = 18;
 			this.numGoalTimeLimit.ValueChanged += new System.EventHandler(this.numGoalTimeLimit_ValueChanged);
 			// 
 			// grpGoal
@@ -3022,7 +3027,7 @@ namespace Idmr.Yogeme
 			this.cboGoalPara.Location = new System.Drawing.Point(155, 76);
 			this.cboGoalPara.Name = "cboGoalPara";
 			this.cboGoalPara.Size = new System.Drawing.Size(125, 21);
-			this.cboGoalPara.TabIndex = 44;
+			this.cboGoalPara.TabIndex = 13;
 			this.cboGoalPara.SelectedIndexChanged += new System.EventHandler(this.cboGoalPara_SelectedIndexChanged);
 			// 
 			// label31
@@ -3044,7 +3049,7 @@ namespace Idmr.Yogeme
             0});
 			this.numGoalActSeq.Name = "numGoalActSeq";
 			this.numGoalActSeq.Size = new System.Drawing.Size(46, 20);
-			this.numGoalActSeq.TabIndex = 42;
+			this.numGoalActSeq.TabIndex = 14;
 			this.numGoalActSeq.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
 			this.numGoalActSeq.ValueChanged += new System.EventHandler(this.numGoalActSeq_ValueChanged);
 			// 
@@ -3064,7 +3069,7 @@ namespace Idmr.Yogeme
 			this.cboGoalAmount.Location = new System.Drawing.Point(8, 16);
 			this.cboGoalAmount.Name = "cboGoalAmount";
 			this.cboGoalAmount.Size = new System.Drawing.Size(144, 21);
-			this.cboGoalAmount.TabIndex = 38;
+			this.cboGoalAmount.TabIndex = 10;
 			// 
 			// cboGoalArgument
 			// 
@@ -3077,7 +3082,7 @@ namespace Idmr.Yogeme
 			this.cboGoalArgument.Location = new System.Drawing.Point(8, 46);
 			this.cboGoalArgument.Name = "cboGoalArgument";
 			this.cboGoalArgument.Size = new System.Drawing.Size(112, 21);
-			this.cboGoalArgument.TabIndex = 40;
+			this.cboGoalArgument.TabIndex = 11;
 			// 
 			// cboGoalTrigger
 			// 
@@ -3085,7 +3090,7 @@ namespace Idmr.Yogeme
 			this.cboGoalTrigger.Location = new System.Drawing.Point(120, 46);
 			this.cboGoalTrigger.Name = "cboGoalTrigger";
 			this.cboGoalTrigger.Size = new System.Drawing.Size(160, 21);
-			this.cboGoalTrigger.TabIndex = 41;
+			this.cboGoalTrigger.TabIndex = 12;
 			this.cboGoalTrigger.SelectedIndexChanged += new System.EventHandler(this.cboGoalTrigger_SelectedIndexChanged);
 			// 
 			// label66
@@ -3104,7 +3109,7 @@ namespace Idmr.Yogeme
 			this.chkGoalEnable.Location = new System.Drawing.Point(379, 316);
 			this.chkGoalEnable.Name = "chkGoalEnable";
 			this.chkGoalEnable.Size = new System.Drawing.Size(119, 17);
-			this.chkGoalEnable.TabIndex = 46;
+			this.chkGoalEnable.TabIndex = 17;
 			this.chkGoalEnable.Text = "Enabled for Team 1";
 			this.chkGoalEnable.Leave += new System.EventHandler(this.chkGoalEnable_Leave);
 			// 
@@ -3128,13 +3133,13 @@ namespace Idmr.Yogeme
             -2147483648});
 			this.numGoalPoints.Name = "numGoalPoints";
 			this.numGoalPoints.Size = new System.Drawing.Size(56, 20);
-			this.numGoalPoints.TabIndex = 45;
+			this.numGoalPoints.TabIndex = 15;
 			this.numGoalPoints.Leave += new System.EventHandler(this.numGoalPoints_Leave);
 			// 
 			// label65
 			// 
 			this.label65.AutoSize = true;
-			this.label65.Location = new System.Drawing.Point(417, 268);
+			this.label65.Location = new System.Drawing.Point(417, 266);
 			this.label65.Name = "label65";
 			this.label65.Size = new System.Drawing.Size(39, 13);
 			this.label65.TabIndex = 44;
@@ -3157,7 +3162,7 @@ namespace Idmr.Yogeme
 			this.txtGoalInc.MaxLength = 63;
 			this.txtGoalInc.Name = "txtGoalInc";
 			this.txtGoalInc.Size = new System.Drawing.Size(376, 20);
-			this.txtGoalInc.TabIndex = 42;
+			this.txtGoalInc.TabIndex = 19;
 			this.txtGoalInc.Leave += new System.EventHandler(this.txtGoalInc_Leave);
 			// 
 			// label60
@@ -3279,7 +3284,7 @@ namespace Idmr.Yogeme
 			this.txtGoalComp.Location = new System.Drawing.Point(120, 398);
 			this.txtGoalComp.Name = "txtGoalComp";
 			this.txtGoalComp.Size = new System.Drawing.Size(376, 20);
-			this.txtGoalComp.TabIndex = 42;
+			this.txtGoalComp.TabIndex = 20;
 			this.txtGoalComp.Leave += new System.EventHandler(this.txtGoalComp_Leave);
 			// 
 			// txtGoalFail
@@ -3289,7 +3294,7 @@ namespace Idmr.Yogeme
 			this.txtGoalFail.Location = new System.Drawing.Point(120, 428);
 			this.txtGoalFail.Name = "txtGoalFail";
 			this.txtGoalFail.Size = new System.Drawing.Size(376, 20);
-			this.txtGoalFail.TabIndex = 42;
+			this.txtGoalFail.TabIndex = 21;
 			this.txtGoalFail.Leave += new System.EventHandler(this.txtGoalFail_Leave);
 			// 
 			// label63
@@ -3325,7 +3330,7 @@ namespace Idmr.Yogeme
             0});
 			this.numGoalTeam.Name = "numGoalTeam";
 			this.numGoalTeam.Size = new System.Drawing.Size(42, 20);
-			this.numGoalTeam.TabIndex = 45;
+			this.numGoalTeam.TabIndex = 16;
 			this.numGoalTeam.Value = new decimal(new int[] {
             1,
             0,
@@ -9199,6 +9204,28 @@ namespace Idmr.Yogeme
 			this.dataOrders_Raw.AllowDelete = false;
 			this.dataOrders_Raw.AllowNew = false;
 			// 
+			// label152
+			// 
+			this.label152.AutoSize = true;
+			this.label152.Location = new System.Drawing.Point(310, 266);
+			this.label152.Name = "label152";
+			this.label152.Size = new System.Drawing.Size(27, 13);
+			this.label152.TabIndex = 53;
+			this.label152.Text = "Unk";
+			// 
+			// numUnk42
+			// 
+			this.numUnk42.Location = new System.Drawing.Point(343, 264);
+			this.numUnk42.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+			this.numUnk42.Name = "numUnk42";
+			this.numUnk42.Size = new System.Drawing.Size(41, 20);
+			this.numUnk42.TabIndex = 22;
+			this.numUnk42.ValueChanged += new System.EventHandler(this.numUnk42_ValueChanged);
+			// 
 			// XwaForm
 			// 
 			this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
@@ -9428,6 +9455,7 @@ namespace Idmr.Yogeme
 			this.groupBox37.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.dataOrders)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.dataOrders_Raw)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.numUnk42)).EndInit();
 			this.ResumeLayout(false);
 
 		}
@@ -10194,5 +10222,7 @@ namespace Idmr.Yogeme
         private NumericUpDown numGoalTimeLimit;
         private Label lblGoalTimeLimitNote;
         private ComboBox cboOSpeed;
+		private NumericUpDown numUnk42;
+		private Label label152;
 	}
 }
