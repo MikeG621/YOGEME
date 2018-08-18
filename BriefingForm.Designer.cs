@@ -257,6 +257,7 @@ namespace Idmr.Yogeme
 			// 
 			// tabDisplay
 			// 
+			this.tabDisplay.BackColor = System.Drawing.SystemColors.Control;
 			this.tabDisplay.Controls.Add(this.lblPopupInfo);
 			this.tabDisplay.Controls.Add(this.pnlRegion);
 			this.tabDisplay.Controls.Add(this.pnlNew);
@@ -294,7 +295,6 @@ namespace Idmr.Yogeme
 			this.tabDisplay.Size = new System.Drawing.Size(1053, 358);
 			this.tabDisplay.TabIndex = 0;
 			this.tabDisplay.Text = "Briefing";
-			this.tabDisplay.UseVisualStyleBackColor = true;
 			// 
 			// lblPopupInfo
 			// 
@@ -1018,6 +1018,7 @@ namespace Idmr.Yogeme
 			// 
 			// tabStrings
 			// 
+			this.tabStrings.BackColor = System.Drawing.SystemColors.Control;
 			this.tabStrings.Controls.Add(this.label28);
 			this.tabStrings.Controls.Add(this.txtNotes);
 			this.tabStrings.Controls.Add(this.label1);
@@ -1029,7 +1030,6 @@ namespace Idmr.Yogeme
 			this.tabStrings.Size = new System.Drawing.Size(1053, 358);
 			this.tabStrings.TabIndex = 1;
 			this.tabStrings.Text = "Tags and Strings";
-			this.tabStrings.UseVisualStyleBackColor = true;
 			// 
 			// label28
 			// 
@@ -1095,6 +1095,7 @@ namespace Idmr.Yogeme
 			// 
 			// tabEvents
 			// 
+			this.tabEvents.BackColor = System.Drawing.SystemColors.Control;
 			this.tabEvents.Controls.Add(this.labBriefIndex2);
 			this.tabEvents.Controls.Add(this.cboBriefIndex2);
 			this.tabEvents.Controls.Add(this.cmdNew);
@@ -1114,7 +1115,6 @@ namespace Idmr.Yogeme
 			this.tabEvents.Size = new System.Drawing.Size(1053, 358);
 			this.tabEvents.TabIndex = 2;
 			this.tabEvents.Text = "Event List";
-			this.tabEvents.UseVisualStyleBackColor = true;
 			// 
 			// labBriefIndex2
 			// 
@@ -1638,6 +1638,7 @@ namespace Idmr.Yogeme
 			// 
 			// tabTeams
 			// 
+			this.tabTeams.BackColor = System.Drawing.SystemColors.Control;
 			this.tabTeams.Controls.Add(this.lblTeams);
 			this.tabTeams.Controls.Add(this.label29);
 			this.tabTeams.Controls.Add(this.lstTeams);
@@ -1648,7 +1649,6 @@ namespace Idmr.Yogeme
 			this.tabTeams.Size = new System.Drawing.Size(1053, 358);
 			this.tabTeams.TabIndex = 3;
 			this.tabTeams.Text = "Visibility to Teams";
-			this.tabTeams.UseVisualStyleBackColor = true;
 			// 
 			// lblTeams
 			// 

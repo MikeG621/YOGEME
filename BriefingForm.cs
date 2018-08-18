@@ -14,7 +14,7 @@
  * [FIX] _Load forces an update [JB]
  * [ADD] redraw timer and supporting popup functions [JB]
  * [FIX] limit to FF_Click [JB]
- * [ADD] code moved to ProcessEvent() and ResetBriefing90 [JB]
+ * [ADD] code moved to ProcessEvent() and ResetBriefing() [JB]
  * [ADD] playback speed shown if not 1x [JB]
  * [FIX] grid paint when at extreme coords [JB]
  * [FIX] Y zoom when painting FG icons [JB]
@@ -22,6 +22,7 @@
  * [FIX] XWA tag names now use Icon # [JB]
  * [UPD] control focus in updateParameters() [JB]
  * [UPD] cmdNew now adds after current line [JB]
+ * [UPD] tweaked layout size
  * v1.3, 170107
  * [NEW] Multiple briefings capability, popup [JB]
  * [NEW] BriefData.WaypointArr [JB]
@@ -116,8 +117,8 @@ namespace Idmr.Yogeme
 			Text = "YOGEME Briefing Editor - TIE";
 			#region layout edit
 			// final layout update, as in VS it's spread out
-			Height = 422;
-			Width = 756;
+			Height = 426;
+			Width = 760;
 			tabBrief.Width = 752;
 			Point loc = new Point(608, 188);
 			pnlShipTag.Location = loc;
@@ -129,7 +130,7 @@ namespace Idmr.Yogeme
 			_strings = _tieBriefing.BriefingString;
 			importStrings();
 			_timerInterval = Platform.Tie.Briefing.TicksPerSecond;
-			txtLength.Text = Convert.ToString(Math.Round(((decimal)_tieBriefing.Length / _timerInterval), 2));
+			txtLength.Text = Convert.ToString(Math.Round((decimal)_tieBriefing.Length / _timerInterval, 2));
 			hsbTimer.Maximum = _tieBriefing.Length + 11;
 			w = pctBrief.Width;
 			h = pctBrief.Height;
@@ -169,8 +170,8 @@ namespace Idmr.Yogeme
 			Text = "YOGEME Briefing Editor - XvT/BoP";
 			Import(fg);
 			#region XvT layout change
-			Height = 422;
-			Width = 756;
+			Height = 426;
+			Width = 760;
 			tabBrief.Width = 752;
 			Point loc = new Point(608, 188);
 			pnlShipTag.Location = loc;
@@ -260,8 +261,8 @@ namespace Idmr.Yogeme
 			Text = "YOGEME Briefing Editor - XWA";
 			#region XWA layout change
 			label7.Text = "Icon:";
-			Height = 480;
-			Width = 756;
+			Height = 484;
+			Width = 760;
 			tabBrief.Width = 752;
 			Point loc = new Point(608, 246);
 			pnlShipTag.Location = loc;

@@ -2467,13 +2467,13 @@ namespace Idmr.Yogeme
 			// 
 			// tabOptions
 			// 
+			this.tabOptions.BackColor = System.Drawing.SystemColors.Control;
 			this.tabOptions.Controls.Add(this.grpPermaDeath);
 			this.tabOptions.Location = new System.Drawing.Point(4, 22);
 			this.tabOptions.Name = "tabOptions";
 			this.tabOptions.Size = new System.Drawing.Size(544, 478);
 			this.tabOptions.TabIndex = 6;
 			this.tabOptions.Text = "Options";
-			this.tabOptions.UseVisualStyleBackColor = true;
 			// 
 			// grpPermaDeath
 			// 

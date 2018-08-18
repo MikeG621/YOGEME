@@ -133,22 +133,6 @@
     <value>True</value>
   </metadata>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="cmdUp.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAH1JREFUOE+d
-        jFEOgCAUwzi6N0f2zMhgU6MfNVhWWu/9lnaMz0DdTpSA8dsjWW4x0Q1xEUJFt2D9CUFiaeYhDJ+Y3Z+Y
-        VJsuPoFXduJwoBtiomSIgW6IiZIhBrohJkqGGOiGmCgZYqAbYqJkiIFuiImSIQa6ISZKhhjo5qK3E8rZ
-        wZf6BkfPAAAAAElFTkSuQmCC
-</value>
-  </data>
-  <data name="cmdDown.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAH1JREFUOE+d
-        jFEOgDAUwnZ0b/4UEgwGjIsfXVylWzMTrOM6Cr4RIShLDHwjQlCWGPhGhKAsMfCNCEFZYuAbEYKyxMA3
-        IgRliYFvRAjKEgPfiNfxNnyl/diALY4/j9ydPngpw8aj8QtFCRzfgsflliUEvhEhxE4MqhRf8cysE9Du
-        wZcG1wT+AAAAAElFTkSuQmCC
-</value>
-  </data>
   <data name="cmdStart.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAABGdBTUEAALGPC/xhBQAAADRJREFUKFNj
@@ -191,6 +175,22 @@
   </data>
   <data name="label10.Text" xml:space="preserve">
     <value>Select a string entry to the left to begin editing. Text enclosed in brackets [] will be highlighted, lines beginning with '&gt;' will be center-aligned in game.  Right-click to copy/paste text from the system clipboard.</value>
+  </data>
+  <data name="cmdUp.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAH1JREFUOE+d
+        jFEOgCAUwzi6N0f2zMhgU6MfNVhWWu/9lnaMz0DdTpSA8dsjWW4x0Q1xEUJFt2D9CUFiaeYhDJ+Y3Z+Y
+        VJsuPoFXduJwoBtiomSIgW6IiZIhBrohJkqGGOiGmCgZYqAbYqJkiIFuiImSIQa6ISZKhhjo5qK3E8rZ
+        wZf6BkfPAAAAAElFTkSuQmCC
+</value>
+  </data>
+  <data name="cmdDown.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAH1JREFUOE+d
+        jFEOgDAUwnZ0b/4UEgwGjIsfXVylWzMTrOM6Cr4RIShLDHwjQlCWGPhGhKAsMfCNCEFZYuAbEYKyxMA3
+        IgRliYFvRAjKEgPfiNfxNnyl/diALY4/j9ydPngpw8aj8QtFCRzfgsflliUEvhEhxE4MqhRf8cysE9Du
+        wZcG1wT+AAAAAElFTkSuQmCC
+</value>
   </data>
   <data name="label35.Text" xml:space="preserve">
     <value>Page UI settings are advanced options. Recommended to leave default. The game has several quirks. Preview may not be exact. Game crashes may occur if the text viewports are too small to render the string.</value>

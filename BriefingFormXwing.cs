@@ -9,6 +9,7 @@
 
 /* CHANGELOG
  * [NEW] created [JB]
+ * [UPD] tweaked layout size
  */
 
 
@@ -102,8 +103,8 @@ namespace Idmr.Yogeme
 			this.Text = "YOGEME Briefing Editor - X-wing";
 			#region layout edit
 			// final layout update, as in VS it's spread out
-			Height = 422;
-			Width = 756;
+			Height = 426;
+			Width = 760;
 			tabBrief.Width = 752;
 			Point loc = new Point(608, 188);
 			pnlShipTag.Location = loc;

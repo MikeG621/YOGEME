@@ -11,6 +11,7 @@
   * vX, ######
   * [NEW] Release [JB]
   * [NEW] Added SaveAsXwing
+  * [FIX] colorized cbo uses black BG, "None" is black with white text
   */
 
 using System;
@@ -567,9 +568,12 @@ namespace Idmr.Yogeme
             bool colorize = true;
 
             if (e.Index == -1 || e.Index >= _mission.FlightGroups.Count + 1) colorize = false;  //+1 because of None
-            else if(e.Index == 0) colorize = false; //The first entry is always "None"
+            //else if(e.Index == 0) colorize = false; //The first entry is always "None"
 
-            e.DrawBackground();
+			if (variable.BackColor == Color.Black || variable.BackColor == SystemColors.Window)
+				variable.BackColor = (colorize == true) ? Color.Black : SystemColors.Window;
+
+			e.DrawBackground();
             Brush brText = SystemBrushes.ControlText;
             if (colorize == true) brText = getFlightGroupDrawColor(e.Index - 1);
             e.Graphics.DrawString(e.Index >= 0 ? variable.Items[e.Index].ToString() : "", e.Font, brText, e.Bounds, StringFormat.GenericDefault);
