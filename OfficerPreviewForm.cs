@@ -9,6 +9,7 @@
 /* CHANGELOG
  * [UPD] ctor now inits on a question, display code broken out [JB]
  * [NEW] r-click reverse navigation [JB]
+ * [FIX] page count
  * v1.3, 170107
  * [UPD] changed form size due to W10 style
  * v1.2.3, 141214
@@ -329,7 +330,7 @@ namespace Idmr.Yogeme
 			}
 		}
 
-		int _numberOfPages { get { return _answerLines.Length / 10 + 1; } }
+		int _numberOfPages { get { return (_answerLines.Length - 1) / 10 + 1; } }
 		#endregion
 	}
 }
