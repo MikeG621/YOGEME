@@ -200,6 +200,7 @@ namespace Idmr.Yogeme
 			this.menuSaveAsXvT = new System.Windows.Forms.MenuItem();
 			this.menuSaveAsBoP = new System.Windows.Forms.MenuItem();
 			this.menuSaveAsXWA = new System.Windows.Forms.MenuItem();
+			this.menuSaveAsXwing = new System.Windows.Forms.MenuItem();
 			this.menuItem7 = new System.Windows.Forms.MenuItem();
 			this.menuExit = new System.Windows.Forms.MenuItem();
 			this.menuEdit = new System.Windows.Forms.MenuItem();
@@ -225,7 +226,6 @@ namespace Idmr.Yogeme
 			this.savXW = new System.Windows.Forms.SaveFileDialog();
 			this._dataWaypoints = new System.Data.DataView();
 			this._dataWaypointsRaw = new System.Data.DataView();
-			this.menuSaveAsXwing = new System.Windows.Forms.MenuItem();
 			this.tabMain.SuspendLayout();
 			this.tabFG.SuspendLayout();
 			this.tabFGMinor.SuspendLayout();
@@ -1953,13 +1953,13 @@ namespace Idmr.Yogeme
 			// menuNewXwing
 			// 
 			this.menuNewXwing.Index = 0;
+			this.menuNewXwing.Shortcut = System.Windows.Forms.Shortcut.CtrlN;
 			this.menuNewXwing.Text = "X-&wing mission";
 			this.menuNewXwing.Click += new System.EventHandler(this.menuNewXwing_Click);
 			// 
 			// menuNewTIE
 			// 
 			this.menuNewTIE.Index = 1;
-			this.menuNewTIE.Shortcut = System.Windows.Forms.Shortcut.CtrlN;
 			this.menuNewTIE.Text = "&TIE mission";
 			this.menuNewTIE.Click += new System.EventHandler(this.menuNewTIE_Click);
 			// 
@@ -2071,6 +2071,12 @@ namespace Idmr.Yogeme
 			this.menuSaveAsXWA.Index = 3;
 			this.menuSaveAsXWA.Text = "&XWA mission";
 			this.menuSaveAsXWA.Click += new System.EventHandler(this.menuSaveAsXWA_Click);
+			// 
+			// menuSaveAsXwing
+			// 
+			this.menuSaveAsXwing.Index = 4;
+			this.menuSaveAsXwing.Text = "X-&wing mission";
+			this.menuSaveAsXwing.Click += new System.EventHandler(this.menuSaveAsXwing_Click);
 			// 
 			// menuItem7
 			// 
@@ -2239,12 +2245,6 @@ namespace Idmr.Yogeme
 			// 
 			this._dataWaypointsRaw.AllowDelete = false;
 			this._dataWaypointsRaw.AllowNew = false;
-			// 
-			// menuSaveAsXwing
-			// 
-			this.menuSaveAsXwing.Index = 4;
-			this.menuSaveAsXwing.Text = "X-&wing mission";
-			this.menuSaveAsXwing.Click += new System.EventHandler(this.menuSaveAsXwing_Click);
 			// 
 			// XwingForm
 			// 

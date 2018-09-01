@@ -10,6 +10,10 @@
  * [UPD] ctor now inits on a question, display code broken out [JB]
  * [NEW] r-click reverse navigation [JB]
  * [FIX] page count
+ * [FIX] possible OutOfBounds exception in displayString, now displays red X for bad chars
+ * [FIX] page string now always normal color
+ * [ADD] coloring helper function to allow active color tracking in the answer
+ * [FIX] highlighting now works across pages
  * v1.3, 170107
  * [UPD] changed form size due to W10 style
  * v1.2.3, 141214
@@ -40,6 +44,7 @@ namespace Idmr.Yogeme
 		RadioButton[] _opts = new RadioButton[4];
 		Color _normalText = Color.FromArgb(84, 84, 252);
 		Color _highlight = Color.FromArgb(0, 168, 0);
+		Color _activeColor;
 		LfdFile _empire;
 		LfdFile _talk;
 		Bitmap _preview = new Bitmap(320, 200);
@@ -108,6 +113,7 @@ namespace Idmr.Yogeme
 			_opts[3] = optPostSec;
 			for (int i = 0; i < 4; i++) _opts[i].CheckedChanged += new EventHandler(optsArr_CheckedChanged);
 			#endregion
+			_activeColor = _normalText;
 			if (officer < 0 || officer >= 4)
                 officer = 0;
 			_opts[officer].Checked = true;
@@ -179,12 +185,14 @@ namespace Idmr.Yogeme
 		void loadPage()
 		{
 			loadBackAndQuestions();
+			changeAnswerColor(_activeColor);	// this allows highlighting across pages
 			int offset = (_page - 1) * 10;
 			for (int i = 0; i < 10; i++)
 			{
 				if (i + offset == _answerLines.Length) break;
 				displayString(_answerLines[i + offset], 122, (short)(6 + i * 10));
 			}
+			((LfdReader.Font)_empire.Resources[_fontID]).SetColor(_normalText);
 			displayString("Page " + _page + " of " + _numberOfPages, 234, 106);
 			pctPreview.Invalidate();
 		}
@@ -197,6 +205,7 @@ namespace Idmr.Yogeme
 			_page = 1;
 			cmdPrevious.Enabled = false;
 			cmdNext.Enabled = (_numberOfPages > 1);
+			changeAnswerColor(_normalText);
 			loadPage();
 		}
 
@@ -208,27 +217,46 @@ namespace Idmr.Yogeme
 			int offset = left;
 			byte glyph;
 			Graphics g = Graphics.FromImage(_preview);
+			bool badChar = false;
 			for (int i = 0; i < chars.Length; i++)
 			{
 				if (chars[i] == '[')
 				{
-					font8.SetColor(_highlight);
+					changeAnswerColor(_highlight);
 					continue;
 				}
 				else if (chars[i] == ']')
 				{
-					font8.SetColor(_normalText);
+					changeAnswerColor(_normalText);
 					continue;
 				}
 				glyph = Convert.ToByte(chars[i] - font8.StartingChar);
+				if (glyph >= font8.TotalChars)
+				{
+					glyph = Convert.ToByte('X' - font8.StartingChar);
+					badChar = true;
+					font8.SetColor(Color.Red);
+				}
 				g.DrawImageUnscaled(font8.Glyphs[glyph], offset, top);
 				offset += font8.Glyphs[glyph].Width + 1;
+				if (badChar)
+				{
+					badChar = false;
+					font8.SetColor(_activeColor);
+				}
 			}
 			g.Dispose();
 		}
 
+		void changeAnswerColor(Color newColor)
+		{
+			((LfdReader.Font)_empire.Resources[_fontID]).SetColor(newColor);
+			_activeColor = newColor;
+		}
+
 		void loadBackAndQuestions()
 		{
+			#region graphics
 			Graphics g = Graphics.FromImage(_preview);
 			Delt offcr21 = ((Delt)_talk.Resources["DELToffcr21"]);
 			Delt ssrobe9 = ((Delt)_talk.Resources["DELTssrobe9"]);
@@ -274,9 +302,12 @@ namespace Idmr.Yogeme
 					break;
 			}
 			g.Dispose();
-			((LfdReader.Font)_empire.Resources[_fontID]).SetColor(_normalText);
+			#endregion graphics
+			
 			int used = 0;
             int curIndex = _selectedIndex;
+			Color active = _activeColor;
+			((LfdReader.Font)_empire.Resources[_fontID]).SetColor(_normalText);
 			for (_selectedIndex = 4; _selectedIndex > -1; _selectedIndex--)
 			{
 				_indexes[_selectedIndex] = 255;
@@ -294,6 +325,7 @@ namespace Idmr.Yogeme
 					used++;
 				}
 			}
+			_activeColor = active;
             _selectedIndex = curIndex;  //[JB] Restore selected index.  This allows highlighting to remain functional.
 			pctPreview.Invalidate();
 		}
