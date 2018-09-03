@@ -38,6 +38,7 @@
  * [NEW] Goal time limit [JB]
  * [UPD] better tab updates [JB]
  * [UPD] MessDelaySec changed to MessDelay, MessDelayMin changed to MessUnk2, MessUnk2 changed to MessUnk3 [JB]
+ * [UPD #21] Allow craft markings beyond original 4
  * v1.4.3, 180509
  * [NEW] Prox trigger distances
  * [UPD] changed Trigger cbo's from Leave to SIChanged for Amount/Distance Prox handling
@@ -710,7 +711,9 @@ namespace Idmr.Yogeme
 			cboCraft.Items.AddRange(Strings.CraftType); cboCraft.SelectedIndex = _mission.FlightGroups[0].CraftType;
 			cboIFF.Items.AddRange(Strings.IFF); cboIFF.SelectedIndex = _mission.FlightGroups[0].IFF;
 			cboAI.Items.AddRange(Strings.Rating); cboAI.SelectedIndex = _mission.FlightGroups[0].AI;
-			cboMarkings.Items.AddRange(Strings.Color); cboMarkings.SelectedIndex = _mission.FlightGroups[0].Markings;
+			cboMarkings.Items.AddRange(Strings.Color);
+			for (int i = cboMarkings.Items.Count; i < 256; i++) cboMarkings.Items.Add("Color #" + (i + 1));
+			cboMarkings.SelectedIndex = _mission.FlightGroups[0].Markings;
 			cboPlayer.SelectedIndex = 0;
 			cboPosition.SelectedIndex = 0;
 			cboFormation.Items.AddRange(Strings.Formation); cboFormation.SelectedIndex = 0;
