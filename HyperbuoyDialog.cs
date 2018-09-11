@@ -1,12 +1,13 @@
 ﻿/*
- * YOGEME.exe, All-in-one Mission Editor for the X-wing series, TIE through XWA
+ * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
  * Copyright (C) 2007-2018 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.4+
+ * VERSION: 1.5
  */
 
 /* CHANGELOG
+ * v1.5, 180910
  * [UPD] added _team for proper Roles [JB]
  * [UPD] ADT[4] changed to "100% of CraftWhen Player's Craft" [JB]
  * [UPD] return ADT[0] changed to ">=1 CraftWhen Player's Craft" [JB]

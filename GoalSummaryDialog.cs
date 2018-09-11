@@ -7,6 +7,7 @@
  */
 
 /* CHANGELOG
+ * v1.3, 170107
  * [NEW] Dialog created [JB]
  */
 

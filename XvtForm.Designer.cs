@@ -3151,6 +3151,7 @@ namespace Idmr.Yogeme
 			// 
 			// cboOThrottle
 			// 
+			this.cboOThrottle.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cboOThrottle.Items.AddRange(new object[] {
             "0",
             "10",
@@ -3167,7 +3168,6 @@ namespace Idmr.Yogeme
 			this.cboOThrottle.Name = "cboOThrottle";
 			this.cboOThrottle.Size = new System.Drawing.Size(48, 21);
 			this.cboOThrottle.TabIndex = 19;
-			this.cboOThrottle.Text = "100";
 			this.cboOThrottle.Leave += new System.EventHandler(this.cboOThrottle_Leave);
 			// 
 			// label51

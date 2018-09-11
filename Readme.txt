@@ -2,11 +2,11 @@
 ======================================
 
 Author: Michael Gaisser (mjgaisser@gmail.com)
-Version: 1.4.3
-Date: 2018.05.09
+Version: 1.5
+Date: 2018.09.10
 
 Thank you for downloading YOGEME, the all-in-one mission editor for the X-Wing
-series, TIE95 through X-wing Alliance.  This program allows easy mission
+series, Xwing95 through X-wing Alliance.  This program allows easy mission
 creation for all of your favorite Star Wars flight sims in a single platform,
 and has abilities and mission parameters that have been discovered since the
 original mainstream editors were created.
@@ -14,6 +14,59 @@ original mainstream editors were created.
 ==========
 Version History
 
+v1.5, 10 Sep 2018
+This most likely isn't a full list of everything that's visible to the user, but you get the idea; there's a lot.
+ - Lots of fixes and new features by Random Starfighter (JB)
+ -- X-wing 95 platform support added
+ -- (All) Tons of back-end stuff I'm not going to spell out here
+ -- (All) Theme support for shaded labels (orders, triggers, etc)
+ -- (All) Non-platform-matching filestreams now close properly
+ -- (All) Colorized drop-downs
+ -- (All) IFF colors tweaked a little
+ -- (All) Lots of controls throughout changed to instant-update instead of needing to leave the control
+ -- (All) Copy/Paste abilities expanded
+ -- (All) Blank message are now shown
+ -- (All) General performance improvements
+ -- (All) 'Enter' key commits control update
+ -- (All) Move FG/Message Up/Down buttons added
+ -- (All) Editor-only craft numbering added to FGs with identical names
+ -- (All) Fixed an error when there's no Messages and a Message trigger becomes selected
+ -- (Backdrops) Fixed some XWA-specific errors when loading
+ -- (Briefings) Loading forces a refresh properly
+ -- (Briefings) Tooltips added
+ -- (Briefings) Fast Foward now limited to prevent ridiculous speeds
+ -- (Briefings) Playback speed now shown if not 1x
+ -- (Briefings) Fixed/tweaked various display issues
+ -- (Briefings) Clicking on the caption will now advance to the next caption event
+ -- (Briefings) XWA Tags now use Icon number
+ -- (Briefings) New event button now adds after current line instead of at the end
+ -- (Hyperbuoy) Added Beacon orders, fixed Roles, and tweaked AD settings
+ -- (Map) Show/Hide functionality added
+ -- (Map) Selection controls to edit multiple FGs at once
+ -- (Map) Lots of backend work to improve performance/code handling
+ -- (Map) Keyboard/mouse controls reworked
+ -- (OfficerPreview) Now opens with a question selected
+ -- (OfficerPreview) Right-click navigation to previous page
+ -- (Options) In addition to the new stuff, added a callback to refresh the main forms after update
+ -- (TIE) Permadeath unknowns implemented
+ -- (TIE) Can now only launch one OfficerPreview window
+ -- (TIE) EndOfMissionMessages now display in their assigned color
+ -- (TIE) Officer briefing questions now have a "best fit" function to automate line breaks prior to preview
+ -- (XvT) Blank Team names now shown as generic instead of actually blank
+ -- (XvT) Order speed control changed to drop-down
+ -- (XvT) Extra craft options added
+ -- (XvT) PreventCraftNumbering, DepartureClock and GoalTimeLimit unknowns implemented
+ -- (XWA) Order speed control changed to drop-down
+ -- (XWA) more controls so Roles can be correctly applied to teams individually
+ -- (XWA) Extra craft options added
+ -- (XWA) Mission correctly flagged as modified after using Hyperbuoy wizard
+ -- (XWA) Pilot control changed to drop-down
+ -- (XWA) Message Delay changed to a single Seconds control, the previous Minutes value is now an Unk
+ - And I took care of a couple things too...
+ -- (OfficerPreview) Fixed page count and highlighting display
+ -- (OfficerPreview) Bad characters now display a red 'X' instead of crashing
+ -- (XWA) Craft markings now allow values beyond the original 4 [Issue #21]
+ 
 v1.4.3, 09 May 2018
  - (All) Code change for splitting some strings
  - (XWA) Added distances to Prox Trigger display and appropriate ComboBoxes

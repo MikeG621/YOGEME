@@ -1,12 +1,13 @@
 ﻿/*
- * YOGEME.exe, All-in-one Mission Editor for the X-wing series, TIE through XWA
+ * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
  * Copyright (C) 2007-2018 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.3+
+ * VERSION: 1.5
  */
 
 /* CHANGELOG
+ * v1.5, 180910
  * [NEW} added X-wing [JB]
  * v1.3, 170107
  * [FIX] Recent mission fixes [JB]
@@ -35,7 +36,7 @@
  * 
  * When launching YOGEME.exe, certain dialogs (like the briefing) will fail to
  * open unless the "images" subfolder and necessary data files exist.
- */ 
+ */
 
 
 using System;

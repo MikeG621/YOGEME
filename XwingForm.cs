@@ -1,18 +1,18 @@
 /*
- * YOGEME.exe, All-in-one Mission Editor for the X-wing series, TIE through XWA
+ * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
  * Copyright (C) 2007-2018 Michael Gaisser (mjgaisser@gmail.com)
  * This file authored by "JB" (Random Starfighter) (randomstarfighter@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.3+
+ * VERSION: 1.5
  */
 
- /* CHANGELOG:
-  * vX, ######
-  * [NEW] Release [JB]
-  * [NEW] Added SaveAsXwing
-  * [FIX] colorized cbo uses black BG, "None" is black with white text
-  */
+/* CHANGELOG:
+ * v1.5, 180910
+ * [NEW] Release [JB]
+ * [NEW] Added SaveAsXwing
+ * [FIX] colorized cbo uses black BG, "None" is black with white text
+ */
 
 using System;
 using System.Data;	// DataView and DataTable

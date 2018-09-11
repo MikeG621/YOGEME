@@ -1,12 +1,13 @@
 /*
- * YOGEME.exe, All-in-one Mission Editor for the X-wing series, TIE through XWA
+ * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
  * Copyright (C) 2007-2018 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.4.3+
+ * VERSION: 1.5
  */
 
 /* CHANGELOG
+ * v1.5, 180910
  * [NEW] Dictionaries for Control handling [JB]
  * [UPD] blank Team names now show generic in cbo's [JB]
  * [UPD] Messages show preview in cbo's [JB]
@@ -3067,9 +3068,9 @@ namespace Idmr.Yogeme
 			string orderText = order.ToString();
 			orderText = replaceTargetText(orderText);
 			string indicator = "";  //[JB] Added a visual indication if the trigger is potentially being used as a skip trigger
-			if (order.isOrderUsed()) indicator = "XX ";
-			else if (order.isSkipTriggerBroken()) indicator = "?? ";
-			else if (order.isSkipTriggerActive()) indicator = ">> ";
+			if (order.IsOrderUsed()) indicator = "XX ";
+			else if (order.IsSkipTriggerBroken()) indicator = "?? ";
+			else if (order.IsSkipTriggerActive()) indicator = ">> ";
 			if (order.Command == 0x12 && order.Variable2 >= 1 && order.Variable2 <= _mission.FlightGroups.Count)  //[JB] Display flight group for Drop Off command.  Var is one-based.
 				orderText += ", " + _mission.FlightGroups[order.Variable2 - 1].ToString(false);
 			lblOrder[_activeOrder].Text = "Order " + (_activeOrder + 1) + ": " + indicator + orderText;
@@ -3738,9 +3739,9 @@ namespace Idmr.Yogeme
 						replace = replace.Substring(0, erasePos);
 
 					string indicator = "";
-					if (order.isOrderUsed()) indicator = " XX";
-					else if (order.isSkipTriggerBroken()) indicator = " ??";
-					else if (order.isSkipTriggerActive()) indicator = " <<";
+					if (order.IsOrderUsed()) indicator = " XX";
+					else if (order.IsSkipTriggerBroken()) indicator = " ??";
+					else if (order.IsSkipTriggerActive()) indicator = " <<";
 					replace += indicator;
 
 					if (old != replace)
