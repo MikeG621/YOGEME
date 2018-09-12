@@ -1,0 +1,52 @@
+<HTML>
+<HEAD>
+  <link rel="stylesheet" type="text/css" href="../stylesheet.css" />
+  <title>Briefing, TIE</title>
+</HEAD>
+<BODY>
+<p align=center><big><h2>Briefing Dialog</h2></big></p>
+<ul>
+<li><a href="#brief">Briefing Animation</a>
+<li><a href="#string">Tags and Strings</a>
+<li><a href="#events">Event List</a>
+</ul>
+Opening the Briefing Dialog will bring you to the main Briefing Animation tab.<br>
+<p align=center><img src="../../images/TIE/Brief.png"></p>
+This is the pre-mission briefing animation that plays on the wall before you fly. It animates at 12 fps, allows you to write on it, highlight FlightGroups, as well as moving and zooming the map. FlightGroups cannot actually be animated and change position on the map, as their locations and presence are defined in the FG itself<br>
+
+<h3><a name="brief" class="anchor">Briefing Animation</a></h3>
+This is the view or what you will see in-game. The window and ship icons are scaled and sized to the pixel such that if you can see it here, you can see it there (try it, fire up TIE's first mission and spot the green corner of shuttles in the upper right). The <i>Title</i> and <i>Caption</i> fields above and below the map are sized as best I could, this is another item you'll have to check in-game as make sure you got it just right.<br>
+The white number in the corner is applied in YOGEME only and refers to the "page" that's currently active, controlled by the <i>New Page</i> button which adds the "Page Break" event. In TIE, when you hit the "Next" arrow in the briefing (also the double-arrow button here with the playback controls) that goes to the next page. This number does not exist in-game.<br><br>
+
+The buttons on the right allow you to place events during the briefing. Use the slider at the bottom to move back and forth in the briefing, as well as the playback buttons in the lower corner. Those should be simple enough to figure out. The runtime box on the lower right is also exactly what it suggests, the number of seconds before the briefing reset and starts over.<br><br>
+
+With all events, the <i>OK</i> and <i>Cancel</i> buttons will active to confirm or trash the event creation.<br>
+The <i>Title</i> button changes the text at the top, you can use any <u>string</u> you like. The <i>Caption</i> buttom likewise changes the text at the top, and you can use any <u>string</u> you want. Selecting one of these buttons will active the drop-down below.<br>
+Selecting the <i>Clear...</i> button will activate the radio buttons next to it, and is used to wipe all text tags or FG highlights.<br><br>
+
+Selecting the <i>FG Tag</i> will show two fields, one to select the Tag number, and one to select the FlightGroup. You can highlight <u>eight FlightGroups</u> at one time.<br><br>
+
+Using the <i>Text Tag</i> will modify the view slightly; a panel for the string settings will appear and various controls will hide momentarily. Click on the map where you want the string to appear. I've tried to size this as close as I can, so you've got a good estimate of what it will appear like in-game. You have <u>eight tags</u> to use at a single time, you can use any <u>tag</u> you like.<br>
+<p align=center><img src="../../images/TIE/Brief-TextTag.png"></p><br>
+
+Both the <i>Move Map</i> and <i>Zoom Map</i> buttons will hide the text elements and show scroll bars on the side of the map. Drag these to move/stretch/shrink the map however you please. Note however that YOGEME does not animate this process, while in game it is not a snap function, there's a little bit of travel time between views.<br>
+<p align=center><img src="../../images/TIE/Brief-Move.png"></p><br>
+
+<h3><a name="string" class="anchor">Tags and Strings</a></h3>
+<p align=center><img src="../../images/TIE/Brief-Strings.png"></p>
+A simple tab, you have 32 tags and 32 strings at your disposal. As is the case in officer questions, use the "[ ]" brackets for green highlighting. For the title (typically the first string, as shown) use ">" for yellow highlighting and centered. If you want to force a line break, use the "$". There's no hard limit to length, just what you can see in-game<br>
+A word of caution for custom missions; if you plan on replacing existing mission numbers (ie, starting from mission 1) then the original briefing voices will play if you use that particular string index. So if you use the second string, regardless of what it says, you will still hear "One TIE Fighter from Alpha..." (I can hear his voice in my head).<br>
+
+<h3><a name="events" class="anchor">Event List</a></h3>
+<p align=center><img src="../../images/TIE/Brief-Events.png"></p>
+This is the humanized version of the raw briefing data. The list of everything is on the left, you have arrow buttons to move them around, you can delete/add/modify events from here, you can build the entire thing from here if you felt like it. You'll notice a few fields that you will never have access to, regardless of what you do. This is because the briefing dialog is actually shared between TIE, XvT and XWA. The animation tab gets redone to match the appearance of the platform, while the nitty-gritty on the backend stays the same.<br><br>
+
+<i>Unknown 1</i> is the only unk value you can mess with, Unk3 doesn't belong to TIE and Unk2 has been defined and is auto-generated. The <i>Event Time</i> field is the raw number with the rounded value in seconds listed next to it. Changing that value will automatically move the event up and down the list as neccessary. Changing the <i>Event</i> drop-box will enable and disable <i>Parameter</i> fields as neccessary and behave the same as on the main Briefing tab<br><br>
+
+Now, this is a quirk of TIE, but as you can see in the image above the Title is redefined after every Page Break. That's because <u>Page Break clears both the caption and title</u>. You can redefine the Title at the same time, but make sure the Page Break is higher on the list.<br><br>
+
+The <i>X</i> and <i>Y</i> values are the raw numbers on the same scale as the raw FG Waypoint values. For Zoom, 48 is generally a good number and is the YOGEME default.<br><br>
+
+There is an "End Briefing" event, although it does not need to be manually placed. YOGEME will automatically add that event at time=9999.<br>
+</body>
+</html>
