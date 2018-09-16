@@ -58,6 +58,68 @@
 		</UL>
 	</UL>
 	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Xwing95">
+		<param name="Local" value="pages\XW\main.html">
+		</OBJECT>
+	<UL>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="FlightGroups">
+			<param name="Local" value="pages\XW\flight.html">
+			</OBJECT>
+		<UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Craft">
+				<param name="Local" value="pages\XW\flight.html#craft">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Backdrops and Objects">
+				<param name="Local" value="pages\XW\flight.html#bdrop">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Arr/Dep">
+				<param name="Local" value="pages\XW\flight.html#arrdep">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Goals">
+				<param name="Local" value="pages\XW\flight.html#goal">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Waypoints">
+				<param name="Local" value="pages\XW\flight.html#wp">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Orders">
+				<param name="Local" value="pages\XW\flight.html#ord">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Briefing">
+				<param name="Local" value="pages\XW\flight.html#brf">
+				</OBJECT>
+		</UL>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Mission Parameters">
+			<param name="Local" value="pages\XW\miss.html">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Briefing Dialog">
+			<param name="Local" value="pages\XW\brief.html">
+			</OBJECT>
+		<UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Briefing Animation">
+				<param name="Local" value="pages\XW\brief.html#brief">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Tags and Strings">
+				<param name="Local" value="pages\XW\brief.html#string">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Event List">
+				<param name="Local" value="pages\XW\brief.html#events">
+				</OBJECT>
+		</UL>
+	</UL>
+	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="TIE95">
 		<param name="Local" value="pages\TIE\main.html">
 		</OBJECT>
