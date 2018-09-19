@@ -44,6 +44,10 @@
 				<param name="Local" value="pages\main\opt.html#map">
 				</OBJECT>
 			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="XW">
+				<param name="Local" value="pages\main\opt.html#xw">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
 				<param name="Name" value="TIE">
 				<param name="Local" value="pages\main\opt.html#tie">
 				</OBJECT>
@@ -54,6 +58,10 @@
 			<LI> <OBJECT type="text/sitemap">
 				<param name="Name" value="XWA">
 				<param name="Local" value="pages\main\opt.html#xwa">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Colors">
+				<param name="Local" value="pages\main\opt.html#clr">
 				</OBJECT>
 		</UL>
 	</UL>
