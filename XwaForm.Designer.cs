@@ -226,6 +226,8 @@ namespace Idmr.Yogeme
 			this.label46 = new System.Windows.Forms.Label();
 			this.cmdPasteAD = new System.Windows.Forms.Button();
 			this.tabGoals = new System.Windows.Forms.TabPage();
+			this.numUnk42 = new System.Windows.Forms.NumericUpDown();
+			this.label152 = new System.Windows.Forms.Label();
 			this.lblGoalTimeLimitNote = new System.Windows.Forms.Label();
 			this.lblGoalTimeLimitSec = new System.Windows.Forms.Label();
 			this.lblGoalTimeLimit = new System.Windows.Forms.Label();
@@ -781,8 +783,6 @@ namespace Idmr.Yogeme
 			this.txtNotes = new System.Windows.Forms.TextBox();
 			this.dataOrders = new System.Data.DataView();
 			this.dataOrders_Raw = new System.Data.DataView();
-			this.label152 = new System.Windows.Forms.Label();
-			this.numUnk42 = new System.Windows.Forms.NumericUpDown();
 			((System.ComponentModel.ISupportInitialize)(this.dataWaypoints)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.dataWaypoints_Raw)).BeginInit();
 			this.tabMain.SuspendLayout();
@@ -817,6 +817,7 @@ namespace Idmr.Yogeme
 			this.groupBox11.SuspendLayout();
 			this.groupBox12.SuspendLayout();
 			this.tabGoals.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.numUnk42)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numGoalTimeLimit)).BeginInit();
 			this.grpGoal.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numGoalActSeq)).BeginInit();
@@ -953,7 +954,6 @@ namespace Idmr.Yogeme
 			this.groupBox37.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.dataOrders)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.dataOrders_Raw)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.numUnk42)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// menuXWA
@@ -1752,6 +1752,8 @@ namespace Idmr.Yogeme
 			this.numGG.Size = new System.Drawing.Size(40, 20);
 			this.numGG.TabIndex = 22;
 			this.numGG.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+			this.numGG.KeyDown += new System.Windows.Forms.KeyEventHandler(this.numGG_KeyDown);
+			this.numGG.Leave += new System.EventHandler(this.numGG_Leave);
 			// 
 			// numGU
 			// 
@@ -2962,6 +2964,28 @@ namespace Idmr.Yogeme
 			this.tabGoals.Size = new System.Drawing.Size(544, 478);
 			this.tabGoals.TabIndex = 2;
 			this.tabGoals.Text = "Goals";
+			// 
+			// numUnk42
+			// 
+			this.numUnk42.Location = new System.Drawing.Point(343, 264);
+			this.numUnk42.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+			this.numUnk42.Name = "numUnk42";
+			this.numUnk42.Size = new System.Drawing.Size(41, 20);
+			this.numUnk42.TabIndex = 22;
+			this.numUnk42.ValueChanged += new System.EventHandler(this.numUnk42_ValueChanged);
+			// 
+			// label152
+			// 
+			this.label152.AutoSize = true;
+			this.label152.Location = new System.Drawing.Point(310, 266);
+			this.label152.Name = "label152";
+			this.label152.Size = new System.Drawing.Size(27, 13);
+			this.label152.TabIndex = 53;
+			this.label152.Text = "Unk";
 			// 
 			// lblGoalTimeLimitNote
 			// 
@@ -9204,28 +9228,6 @@ namespace Idmr.Yogeme
 			this.dataOrders_Raw.AllowDelete = false;
 			this.dataOrders_Raw.AllowNew = false;
 			// 
-			// label152
-			// 
-			this.label152.AutoSize = true;
-			this.label152.Location = new System.Drawing.Point(310, 266);
-			this.label152.Name = "label152";
-			this.label152.Size = new System.Drawing.Size(27, 13);
-			this.label152.TabIndex = 53;
-			this.label152.Text = "Unk";
-			// 
-			// numUnk42
-			// 
-			this.numUnk42.Location = new System.Drawing.Point(343, 264);
-			this.numUnk42.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
-			this.numUnk42.Name = "numUnk42";
-			this.numUnk42.Size = new System.Drawing.Size(41, 20);
-			this.numUnk42.TabIndex = 22;
-			this.numUnk42.ValueChanged += new System.EventHandler(this.numUnk42_ValueChanged);
-			// 
 			// XwaForm
 			// 
 			this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
@@ -9283,6 +9285,7 @@ namespace Idmr.Yogeme
 			this.groupBox12.ResumeLayout(false);
 			this.tabGoals.ResumeLayout(false);
 			this.tabGoals.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.numUnk42)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.numGoalTimeLimit)).EndInit();
 			this.grpGoal.ResumeLayout(false);
 			this.grpGoal.PerformLayout();
@@ -9455,7 +9458,6 @@ namespace Idmr.Yogeme
 			this.groupBox37.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.dataOrders)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.dataOrders_Raw)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.numUnk42)).EndInit();
 			this.ResumeLayout(false);
 
 		}

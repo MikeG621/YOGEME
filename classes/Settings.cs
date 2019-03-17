@@ -374,7 +374,7 @@ namespace Idmr.Yogeme
 			#endregion
 			#region Steam detection
 			// since I can't rely on the normal registry values, we'll go about it this way...
-            if (!XwingInstalled) //[JB] I haven't verified the install keys for X-wing (I don't have the Steam version), I just copied the code and changed the App ID and EXE name.
+            /*if (!XwingInstalled) //This doesn't work! Steam apparently installs differently, doesn't appear in Windows programs list, need a new way to detect
             {
                 keyplat = Registry.LocalMachine.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Steam App 354430");
                 if (keyplat != null)
@@ -384,7 +384,7 @@ namespace Idmr.Yogeme
                     // verify it's actually there, just in case uninstall borked
                     if (File.Exists(_xwingPath + "\\XWING95.exe")) XwingInstalled = true;
                 }
-            }
+            }*/
             if (!TieInstalled)
 			{
 				keyplat = Registry.LocalMachine.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Steam App 355250");
@@ -702,7 +702,7 @@ namespace Idmr.Yogeme
 	 * ConfirmExit BOOL:
 	 * ConfirmSave BOOL:
 	 * LastMission STR: path to last open mission file; =RecentMission0
-	 * LastPlatform BYTE: last platform edited; 0=none, 1=TIE, 2=XvT, 3=BoP, 4=XWA; =RecentPlatform0
+	 * LastPlatform BYTE: last platform edited; 0=none, 1=TIE, 2=XvT, 3=BoP, 4=XWA, 5=XW; =RecentPlatform0
 	 * MapOptions BYTE [Flags]: 1<<0=FG Tags, 1<<1=Traces
 	 * (v4+) RecentMission1 STR: automatically updated through LastMission.set
 	 * (v4+) RecentPlatform1 BYTE:

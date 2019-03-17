@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2018 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.5
+ * VERSION: 1.5+
  */
 
 /* CHANGELOG
+ * [NEW] Changing GG value will now prompt to update references throughout if it's the only FG with that designation
  * v1.5, 180910
  * [NEW] Dictionaries for Control handling [JB]
  * [UPD] blank Team names now show generic in cbo's [JB]
@@ -2124,7 +2125,7 @@ namespace Idmr.Yogeme
 						if (trig.Parameter1 == 5 + fgIndex) count[cGoal]++;
 					}
 
-			foreach (Idmr.Platform.Xwa.Message msg in _mission.Messages)
+			foreach (Platform.Xwa.Message msg in _mission.Messages)
 			{
 				if (msg.OriginatingFG == fgIndex && fgIndex > 0) count[cMessage]++;  //suppress warning if fgIndex==0 since that's normal for a default/empty message
 
@@ -2254,6 +2255,85 @@ namespace Idmr.Yogeme
 
 			return output;
 		}
+		/// <summary>Check mission for GlobalGroup references and update if needed.</summary>
+		/// <param name="update">Whether or not to update the GG value, or just report it</param>
+		/// <returns>If <paramref name="update"/> is <i>false</i>, returns <i>true</i> if GG is unique and is referenced elsewhere.<br/>
+		/// If <paramref name="update"/> is <i>true</i>, always returns <i>false</i>.</returns>
+		/// <remarks>The update method allows the ability to update references, even if the GG is not unique. It's not implemented in this manner, but it's possible.</remarks>
+		bool updateGG(bool update)
+		{
+			int refCount = 0;
+			int ggCount = 0;
+			byte gg = _mission.FlightGroups[_activeFG].GlobalGroup;
+			for (int i = 0; i < _mission.FlightGroups.Count; i++)
+			{
+				if (_activeFG == i)
+					continue;
+
+				FlightGroup fg = _mission.FlightGroups[i];
+				if (fg.GlobalGroup == gg)
+				{
+					ggCount++;
+					continue;
+				}
+
+				foreach (Mission.Trigger adt in fg.ArrDepTriggers)
+					if ((adt.VariableType == 8 || adt.VariableType == 20) && adt.Variable == gg)
+					{
+						if (update) adt.Variable = (byte)numGG.Value;
+						else refCount++;
+					}
+				foreach (FlightGroup.Order order in fg.Orders)
+				{
+					if ((order.Target1Type == 8 || order.Target1Type == 20) && order.Target1 == gg)
+					{
+						if (update) order.Target1 = (byte)numGG.Value;
+						else refCount++;
+					}
+					if ((order.Target2Type == 8 || order.Target2Type == 20) && order.Target2 == gg)
+					{
+						if (update) order.Target2 = (byte)numGG.Value;
+						else refCount++;
+					}
+					if ((order.Target3Type == 8 || order.Target3Type == 20) && order.Target3 == gg)
+					{
+						if (update) order.Target3 = (byte)numGG.Value;
+						else refCount++;
+					}
+					if ((order.Target4Type == 8 || order.Target4Type == 20) && order.Target4 == gg)
+					{
+						if (update) order.Target4 = (byte)numGG.Value;
+						else refCount++;
+					}
+					foreach (Mission.Trigger sk in order.SkipTriggers)
+						if ((sk.VariableType == 8 || sk.VariableType == 20) && sk.Variable == gg)
+						{
+							if (update) sk.Variable = (byte)numGG.Value;
+							else refCount++;
+						}
+				}
+			}
+			foreach (Globals global in _mission.Globals)
+				foreach (Globals.Goal goal in global.Goals)
+					foreach (Mission.Trigger trig in goal.Triggers)
+						if ((trig.VariableType == 8 || trig.VariableType == 20) && trig.Variable == gg)
+						{
+							if (update) trig.Variable = (byte)numGG.Value;
+							else refCount++;
+						}
+			foreach (Platform.Xwa.Message msg in _mission.Messages)
+				foreach (Mission.Trigger trig in msg.Triggers)
+					if ((trig.VariableType == 8 || trig.VariableType == 20) && trig.Variable == gg)
+					{
+						if (update) trig.Variable = (byte)numGG.Value;
+						else refCount++;
+					}
+			// since I'm using foreach and don't have the index, just redo all of the visible ones in case it's one we updated
+			for (int i = 0; i < 12; i++) labelRefresh(_mission.Globals[_activeTeam].Goals[i / 4].Triggers[i % 4], lblGlobTrig[i]);
+			if (_mission.Messages.Count > 0)
+				for (int i = 0; i < 6; i++) labelRefresh(_mission.Messages[_activeMessage].Triggers[i], lblMessTrig[i]);
+			return (!update ? ggCount == 0 && refCount > 0 : false);
+		}
 		void listRefresh()
 		{
 			_noRefresh = true;  //Prevent full lstFG refresh.
@@ -2333,7 +2413,7 @@ namespace Idmr.Yogeme
 			}
 		}
 		/// <summary>Updates the clipboard contents from containing broken indexes.</summary>
-		/// <remarks>Should be called during swap or delete (dstIndex < 0) operations.</remarks>
+		/// <remarks>Should be called during swap or delete (<paramref name="dstIndex"/> &lt; 0) operations.</remarks>
 		void replaceClipboardReference(int srcIndex, int dstIndex, bool isFG)
 		{
 			//[JB] Replace any clipboard references.  Load it, check/modify type, save back to stream.  Since clipboard access is through a file on disk, I thought it would be best to avoid hammering it with changes if nothing actually changed on the clipboard.
@@ -2794,7 +2874,7 @@ namespace Idmr.Yogeme
 			_mission.FlightGroups[_activeFG].NumberOfCraft = Common.Update(this, _mission.FlightGroups[_activeFG].NumberOfCraft, Convert.ToByte(numCraft.Value));
 			craftStart(_mission.FlightGroups[_activeFG], true);
 			if (_mission.FlightGroups[_activeFG].SpecialCargoCraft > _mission.FlightGroups[_activeFG].NumberOfCraft) numSC.Value = 0;
-			_mission.FlightGroups[_activeFG].GlobalGroup = Common.Update(this, _mission.FlightGroups[_activeFG].GlobalGroup, Convert.ToByte(numGG.Value));
+			//_mission.FlightGroups[_activeFG].GlobalGroup = Common.Update(this, _mission.FlightGroups[_activeFG].GlobalGroup, Convert.ToByte(numGG.Value));
 			_mission.FlightGroups[_activeFG].GlobalUnit = Common.Update(this, _mission.FlightGroups[_activeFG].GlobalUnit, Convert.ToByte(numGU.Value));
 			_mission.FlightGroups[_activeFG].GlobalNumbering = Common.Update(this, _mission.FlightGroups[_activeFG].GlobalNumbering, chkGU.Checked);
 
@@ -2818,6 +2898,23 @@ namespace Idmr.Yogeme
 		{
 			if (_loading) return;
 			_mission.FlightGroups[_activeFG].Backdrop = Common.Update(this, _mission.FlightGroups[_activeFG].Backdrop, Convert.ToByte(numBackdrop.Value));
+		}
+		void numGG_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.KeyCode == Keys.Enter)
+			{
+				numGG_Leave("numGG_KeyDown", new EventArgs());
+			}
+		}
+		void numGG_Leave(object sender, EventArgs e)
+		{
+			if (_mission.FlightGroups[_activeFG].GlobalGroup != Convert.ToByte(numGG.Value) && updateGG(false))
+			{
+
+				DialogResult res = MessageBox.Show("Global Group is unique and referenced. Update references to new number?", "Update Reference?", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+				if (res == DialogResult.Yes) updateGG(true);
+			}
+			_mission.FlightGroups[_activeFG].GlobalGroup = Common.Update(this, _mission.FlightGroups[_activeFG].GlobalGroup, Convert.ToByte(numGG.Value));
 		}
 		void numSC_ValueChanged(object sender, EventArgs e)
 		{
