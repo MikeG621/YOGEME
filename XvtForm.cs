@@ -1819,7 +1819,7 @@ namespace Idmr.Yogeme
 						if (trig.GoalTrigger.VariableType == 1 && trig.GoalTrigger.Variable == fgIndex)
 							count[cGoal]++;
 
-			foreach (Idmr.Platform.Xvt.Message msg in _mission.Messages)
+			foreach (Platform.Xvt.Message msg in _mission.Messages)
 				foreach(Mission.Trigger trig in msg.Triggers)
 					if (trig.VariableType == 1 && trig.Variable == fgIndex)
 						count[cMessage]++;
@@ -1829,7 +1829,7 @@ namespace Idmr.Yogeme
 				int p = 0;
 				while(p < br.EventsLength)
 				{
-					if(br.Events[p+1] >= (int)Briefing.EventType.FGTag1 && br.Events[p+1] <= (int)Briefing.EventType.FGTag8)
+					if(br.Events[p+1] >= (int)Platform.BaseBriefing.EventType.FGTag1 && br.Events[p+1] <= (int)Platform.BaseBriefing.EventType.FGTag8)
 						if(br.Events[p+2] == fgIndex)
 							count[cBrief]++;
 
@@ -2170,6 +2170,84 @@ namespace Idmr.Yogeme
             _loading = temp;
 			listRefresh();
 		}
+		bool updateGG(bool update)
+		{
+			int refCount = 0;
+			int ggCount = 0;
+			byte gg = _mission.FlightGroups[_activeFG].GlobalGroup;
+			for (int i = 0; i < _mission.FlightGroups.Count; i++)
+			{
+				if (_activeFG == i)
+					continue;
+
+				FlightGroup fg = _mission.FlightGroups[i];
+				if (fg.GlobalGroup == gg)
+				{
+					ggCount++;
+					continue;
+				}
+
+				foreach (Mission.Trigger adt in fg.ArrDepTriggers)
+					if ((adt.VariableType == 8 || adt.VariableType == 20) && adt.Variable == gg)
+					{
+						if (update) adt.Variable = (byte)numGG.Value;
+						else refCount++;
+					}
+				foreach (FlightGroup.Order order in fg.Orders)
+				{
+					if ((order.Target1Type == 8 || order.Target1Type == 20) && order.Target1 == gg)
+					{
+						if (update) order.Target1 = (byte)numGG.Value;
+						else refCount++;
+					}
+					if ((order.Target2Type == 8 || order.Target2Type == 20) && order.Target2 == gg)
+					{
+						if (update) order.Target2 = (byte)numGG.Value;
+						else refCount++;
+					}
+					if ((order.Target3Type == 8 || order.Target3Type == 20) && order.Target3 == gg)
+					{
+						if (update) order.Target3 = (byte)numGG.Value;
+						else refCount++;
+					}
+					if ((order.Target4Type == 8 || order.Target4Type == 20) && order.Target4 == gg)
+					{
+						if (update) order.Target4 = (byte)numGG.Value;
+						else refCount++;
+					}
+				}
+				foreach (Mission.Trigger sk in fg.SkipToOrder4Trigger)
+					if ((sk.VariableType == 8 || sk.VariableType == 20) && sk.Variable == gg)
+					{
+						if (update) sk.Variable = (byte)numGG.Value;
+						else refCount++;
+					}
+			}
+			foreach (Globals global in _mission.Globals)
+				foreach (Globals.Goal goal in global.Goals)
+					foreach (Globals.Goal.Trigger trig in goal.Triggers)
+						if ((trig.GoalTrigger.VariableType == 8 || trig.GoalTrigger.VariableType == 20) && trig.GoalTrigger.Variable == gg)
+						{
+							if (update) trig.GoalTrigger.Variable = (byte)numGG.Value;
+							else refCount++;
+						}
+			foreach (Platform.Xvt.Message msg in _mission.Messages)
+				foreach (Mission.Trigger trig in msg.Triggers)
+					if ((trig.VariableType == 8 || trig.VariableType == 20) && trig.Variable == gg)
+					{
+						if (update) trig.Variable = (byte)numGG.Value;
+						else refCount++;
+					}
+			// since I'm using foreach and don't have the index, just redo all of the visible ones in case it's one we updated
+			for (int i = 0; i < 12; i++) labelRefresh(_mission.Globals[_activeTeam].Goals[i / 4].Triggers[i % 4].GoalTrigger, lblGlobTrig[i]);
+			lblGlobTrigArr_Click(_activeGlobalTrigger, new EventArgs());
+			if (_mission.Messages.Count > 0)
+			{
+				for (int i = 0; i < 4; i++) labelRefresh(_mission.Messages[_activeMessage].Triggers[i], lblMessTrig[i]);
+				lblMessTrigArr_Click(_activeMessageTrigger, new EventArgs());
+			}
+			return (!update ? ggCount == 0 && refCount > 0 : false);
+		}
 		
 		void lstFG_DrawItem(object sender, DrawItemEventArgs e)
 		{
@@ -2442,7 +2520,7 @@ namespace Idmr.Yogeme
 			_mission.FlightGroups[_activeFG].NumberOfCraft = Common.Update(this, _mission.FlightGroups[_activeFG].NumberOfCraft, Convert.ToByte(numCraft.Value));
 			craftStart(_mission.FlightGroups[_activeFG], true);
 			if (_mission.FlightGroups[_activeFG].SpecialCargoCraft > _mission.FlightGroups[_activeFG].NumberOfCraft) numSC.Value = 0;
-			_mission.FlightGroups[_activeFG].GlobalGroup = Common.Update(this, _mission.FlightGroups[_activeFG].GlobalGroup, Convert.ToByte(numGG.Value));
+			//_mission.FlightGroups[_activeFG].GlobalGroup = Common.Update(this, _mission.FlightGroups[_activeFG].GlobalGroup, Convert.ToByte(numGG.Value));
 			_mission.FlightGroups[_activeFG].GlobalUnit = Common.Update(this, _mission.FlightGroups[_activeFG].GlobalUnit, Convert.ToByte(numGU.Value));
             _mission.FlightGroups[_activeFG].PreventCraftNumbering = Common.Update(this, _mission.FlightGroups[_activeFG].PreventCraftNumbering, chkPreventNumbering.Checked);
             if (ActiveControl == numCraft || ActiveControl == chkPreventNumbering)
@@ -2463,6 +2541,23 @@ namespace Idmr.Yogeme
 		{
 			cboStatus.SelectedIndex = (int)numBackdrop.Value;
 			_mission.FlightGroups[_activeFG].Status1 = Common.Update(this, _mission.FlightGroups[_activeFG].Status1, Convert.ToByte(cboStatus.SelectedIndex));
+		}
+		void numGG_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.KeyCode == Keys.Enter)
+			{
+				numGG_Leave("numGG_KeyDown", new EventArgs());
+			}
+		}
+		void numGG_Leave(object sender, EventArgs e)
+		{
+			if (_mission.FlightGroups[_activeFG].GlobalGroup != Convert.ToByte(numGG.Value) && updateGG(false))
+			{
+
+				DialogResult res = MessageBox.Show("Global Group is unique and referenced. Update references to new number?", "Update Reference?", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+				if (res == DialogResult.Yes) updateGG(true);
+			}
+			_mission.FlightGroups[_activeFG].GlobalGroup = Common.Update(this, _mission.FlightGroups[_activeFG].GlobalGroup, Convert.ToByte(numGG.Value));
 		}
 		void numSC_ValueChanged(object sender, EventArgs e)
 		{
@@ -3932,5 +4027,5 @@ namespace Idmr.Yogeme
 			_mission.Unknown5 = Common.Update(this, _mission.Unknown5, txtMissUnk5.Text);
 		}
 		#endregion
-    }
+	}
 }

@@ -1016,6 +1016,8 @@ namespace Idmr.Yogeme
 			this.numGG.Name = "numGG";
 			this.numGG.Size = new System.Drawing.Size(40, 20);
 			this.numGG.TabIndex = 22;
+			this.numGG.KeyDown += new System.Windows.Forms.KeyEventHandler(this.numGG_KeyDown);
+			this.numGG.Leave += new System.EventHandler(this.numGG_Leave);
 			// 
 			// numGU
 			// 

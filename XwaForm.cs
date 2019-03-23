@@ -2330,8 +2330,12 @@ namespace Idmr.Yogeme
 					}
 			// since I'm using foreach and don't have the index, just redo all of the visible ones in case it's one we updated
 			for (int i = 0; i < 12; i++) labelRefresh(_mission.Globals[_activeTeam].Goals[i / 4].Triggers[i % 4], lblGlobTrig[i]);
+			lblGlobTrigArr_Click(_activeGlobalTrigger, new EventArgs());
 			if (_mission.Messages.Count > 0)
+			{
 				for (int i = 0; i < 6; i++) labelRefresh(_mission.Messages[_activeMessage].Triggers[i], lblMessTrig[i]);
+				lblMessTrigArr_Click(_activeMessageTrigger, new EventArgs());
+			}
 			return (!update ? ggCount == 0 && refCount > 0 : false);
 		}
 		void listRefresh()
