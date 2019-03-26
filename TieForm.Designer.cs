@@ -970,6 +970,8 @@ namespace Idmr.Yogeme
 			this.numGlobal.Name = "numGlobal";
 			this.numGlobal.Size = new System.Drawing.Size(40, 20);
 			this.numGlobal.TabIndex = 22;
+			this.numGlobal.KeyDown += new System.Windows.Forms.KeyEventHandler(this.numGlobal_KeyDown);
+			this.numGlobal.Leave += new System.EventHandler(this.numGlobal_Leave);
 			// 
 			// groupBox1
 			// 

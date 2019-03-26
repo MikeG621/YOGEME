@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2018 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.5
+ * VERSION: 1.5+
  */
 
 /* CHANGELOG
+ * [NEW] Changing GG value will now prompt to update references throughout if it's the only FG with that designation
  * v1.5, 180910
  * [NEW] cbo's for messages [JB]
  * [NEW] Dictionaries for Control handling [JB]
@@ -1810,6 +1811,79 @@ namespace Idmr.Yogeme
 			_loading = temp;
 			listRefresh();
 		}
+		bool updateGG(bool update)
+		{
+			int refCount = 0;
+			int ggCount = 0;
+			byte gg = _mission.FlightGroups[_activeFG].GlobalGroup;
+			for (int i = 0; i < _mission.FlightGroups.Count; i++)
+			{
+				if (_activeFG == i)
+					continue;
+
+				FlightGroup fg = _mission.FlightGroups[i];
+				if (fg.GlobalGroup == gg)
+				{
+					ggCount++;
+					continue;
+				}
+
+				// I'm also checking Type=20, just in case the "all GG except" is hiding in there somewhere, although at this point it's not documented
+				foreach (Mission.Trigger adt in fg.ArrDepTriggers)
+					if ((adt.VariableType == 8 || adt.VariableType == 20) && adt.Variable == gg)
+					{
+						if (update) adt.Variable = (byte)numGlobal.Value;
+						else refCount++;
+					}
+				foreach (FlightGroup.Order order in fg.Orders)
+				{
+					if ((order.Target1Type == 8 || order.Target1Type == 20) && order.Target1 == gg)
+					{
+						if (update) order.Target1 = (byte)numGlobal.Value;
+						else refCount++;
+					}
+					if ((order.Target2Type == 8 || order.Target2Type == 20) && order.Target2 == gg)
+					{
+						if (update) order.Target2 = (byte)numGlobal.Value;
+						else refCount++;
+					}
+					if ((order.Target3Type == 8 || order.Target3Type == 20) && order.Target3 == gg)
+					{
+						if (update) order.Target3 = (byte)numGlobal.Value;
+						else refCount++;
+					}
+					if ((order.Target4Type == 8 || order.Target4Type == 20) && order.Target4 == gg)
+					{
+						if (update) order.Target4 = (byte)numGlobal.Value;
+						else refCount++;
+					}
+				}
+			}
+			foreach (Globals.Goal goal in _mission.GlobalGoals.Goals)
+				foreach (Mission.Trigger trig in goal.Triggers)
+					if ((trig.VariableType == 8 || trig.VariableType == 20) && trig.Variable == gg)
+					{
+						if (update) trig.Variable = (byte)numGlobal.Value;
+						else refCount++;
+					}
+			foreach (Platform.Tie.Message msg in _mission.Messages)
+				foreach (Mission.Trigger trig in msg.Triggers)
+					if ((trig.VariableType == 8 || trig.VariableType == 20) && trig.Variable == gg)
+					{
+						if (update) trig.Variable = (byte)numGlobal.Value;
+						else refCount++;
+					}
+			// since I'm using foreach and don't have the index, just redo all of them in case it's one we updated
+			for (int i = 0; i < 6; i++) labelRefresh(_mission.GlobalGoals.Goals[i / 2].Triggers[i % 2], lblGlob[i]);
+			lblGlobArr_Click(_activeGlobalGoal, new EventArgs());
+			if (_mission.Messages.Count > 0)
+			{
+				labelRefresh(_mission.Messages[_activeMessage].Triggers[0], lblMess1);
+				labelRefresh(_mission.Messages[_activeMessage].Triggers[1], lblMess2);
+				lblMessArr_Click(_activeMessage, new EventArgs());
+			}
+			return (!update ? ggCount == 0 && refCount > 0 : false);
+		}
 
 		void lstFG_DrawItem(object sender, DrawItemEventArgs e)
 		{
@@ -2021,7 +2095,7 @@ namespace Idmr.Yogeme
 			_mission.FlightGroups[_activeFG].NumberOfCraft = Common.Update(this, _mission.FlightGroups[_activeFG].NumberOfCraft, Convert.ToByte(numCraft.Value));
 			craftStart(_mission.FlightGroups[_activeFG], true);
 			if (_mission.FlightGroups[_activeFG].SpecialCargoCraft > _mission.FlightGroups[_activeFG].NumberOfCraft) numSC.Value = 0;
-			_mission.FlightGroups[_activeFG].GlobalGroup = Common.Update(this, _mission.FlightGroups[_activeFG].GlobalGroup, Convert.ToByte(numGlobal.Value));
+			//_mission.FlightGroups[_activeFG].GlobalGroup = Common.Update(this, _mission.FlightGroups[_activeFG].GlobalGroup, Convert.ToByte(numGlobal.Value));
 			listRefresh();
 		}
 		void grpCraft4_Leave(object sender, EventArgs e)
@@ -2034,6 +2108,23 @@ namespace Idmr.Yogeme
 		{
 			cboStatus.SelectedIndex = (int)numBackdrop.Value;
 			_mission.FlightGroups[_activeFG].Status1 = Common.Update(this, _mission.FlightGroups[_activeFG].Status1, Convert.ToByte(cboStatus.SelectedIndex));
+		}
+		void numGlobal_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.KeyCode == Keys.Enter)
+			{
+				numGlobal_Leave("numGlobal_KeyDown", new EventArgs());
+			}
+		}
+		void numGlobal_Leave(object sender, EventArgs e)
+		{
+			if (_mission.FlightGroups[_activeFG].GlobalGroup != Convert.ToByte(numGlobal.Value) && updateGG(false))
+			{
+
+				DialogResult res = MessageBox.Show("Global Group is unique and referenced. Update references to new number?", "Update Reference?", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+				if (res == DialogResult.Yes) updateGG(true);
+			}
+			_mission.FlightGroups[_activeFG].GlobalGroup = Common.Update(this, _mission.FlightGroups[_activeFG].GlobalGroup, Convert.ToByte(numGlobal.Value));
 		}
 		void numSC_ValueChanged(object sender, EventArgs e)
 		{
@@ -3078,7 +3169,7 @@ namespace Idmr.Yogeme
             else if (c.SelectedIndex == 2) clr = Color.DodgerBlue;
             else if (c.SelectedIndex == 3) clr = Color.MediumOrchid;
             txtEoM[(int)c.Tag].ForeColor = clr;
-        }        
-        #endregion
-    }
+        }
+		#endregion
+	}
 }

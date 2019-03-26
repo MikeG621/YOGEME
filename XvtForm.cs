@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2018 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.5
+ * VERSION: 1.5+
  */
 
 /* CHANGELOG
+ * [NEW] Changing GG value will now prompt to update references throughout if it's the only FG with that designation
  * v1.5, 180910
  * [NEW] Dictionaries for Control handling [JB]
  * [UPD] blank Team names now show generic in cbo's [JB]
