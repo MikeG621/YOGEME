@@ -7,7 +7,7 @@
  */
 
 /* CHANGELOG
- * [NEW] Changing GG value will now prompt to update references throughout if it's the only FG with that designation
+ * [NEW] Changing GG or GU value will now prompt to update references throughout if it's the only FG with that designation
  * v1.5, 180910
  * [NEW] Dictionaries for Control handling [JB]
  * [UPD] blank Team names now show generic in cbo's [JB]
@@ -2338,6 +2338,89 @@ namespace Idmr.Yogeme
 			}
 			return (!update ? ggCount == 0 && refCount > 0 : false);
 		}
+		/// <summary>Check mission for GlobalUnit references and update if needed.</summary>
+		/// <param name="update">Whether or not to update the GU value, or just report it</param>
+		/// <returns>If <paramref name="update"/> is <i>false</i>, returns <i>true</i> if GU is unique and is referenced elsewhere.<br/>
+		/// If <paramref name="update"/> is <i>true</i>, always returns <i>false</i>.</returns>
+		/// <remarks>The update method allows the ability to update references, even if the GU is not unique. It's not implemented in this manner, but it's possible.</remarks>
+		bool updateGU(bool update)
+		{
+			int refCount = 0;
+			int guCount = 0;
+			byte gu = _mission.FlightGroups[_activeFG].GlobalUnit;
+			for (int i = 0; i < _mission.FlightGroups.Count; i++)
+			{
+				if (_activeFG == i)
+					continue;
+
+				FlightGroup fg = _mission.FlightGroups[i];
+				if (fg.GlobalUnit == gu)
+				{
+					guCount++;
+					continue;
+				}
+
+				foreach (Mission.Trigger adt in fg.ArrDepTriggers)
+					if ((adt.VariableType == 23 || adt.VariableType == 24) && adt.Variable == gu)
+					{
+						if (update) adt.Variable = (byte)numGU.Value;
+						else refCount++;
+					}
+				foreach (FlightGroup.Order order in fg.Orders)
+				{
+					if ((order.Target1Type == 23 || order.Target1Type == 24) && order.Target1 == gu)
+					{
+						if (update) order.Target1 = (byte)numGU.Value;
+						else refCount++;
+					}
+					if ((order.Target2Type == 23 || order.Target2Type == 24) && order.Target2 == gu)
+					{
+						if (update) order.Target2 = (byte)numGU.Value;
+						else refCount++;
+					}
+					if ((order.Target3Type == 23 || order.Target3Type == 24) && order.Target3 == gu)
+					{
+						if (update) order.Target3 = (byte)numGU.Value;
+						else refCount++;
+					}
+					if ((order.Target4Type == 23 || order.Target4Type == 24) && order.Target4 == gu)
+					{
+						if (update) order.Target4 = (byte)numGU.Value;
+						else refCount++;
+					}
+					foreach (Mission.Trigger sk in order.SkipTriggers)
+						if ((sk.VariableType == 23 || sk.VariableType == 24) && sk.Variable == gu)
+						{
+							if (update) sk.Variable = (byte)numGU.Value;
+							else refCount++;
+						}
+				}
+			}
+			foreach (Globals global in _mission.Globals)
+				foreach (Globals.Goal goal in global.Goals)
+					foreach (Mission.Trigger trig in goal.Triggers)
+						if ((trig.VariableType == 23 || trig.VariableType == 24) && trig.Variable == gu)
+						{
+							if (update) trig.Variable = (byte)numGU.Value;
+							else refCount++;
+						}
+			foreach (Platform.Xwa.Message msg in _mission.Messages)
+				foreach (Mission.Trigger trig in msg.Triggers)
+					if ((trig.VariableType == 23 || trig.VariableType == 24) && trig.Variable == gu)
+					{
+						if (update) trig.Variable = (byte)numGU.Value;
+						else refCount++;
+					}
+			// since I'm using foreach and don't have the index, just redo all of the visible ones in case it's one we updated
+			for (int i = 0; i < 12; i++) labelRefresh(_mission.Globals[_activeTeam].Goals[i / 4].Triggers[i % 4], lblGlobTrig[i]);
+			lblGlobTrigArr_Click(_activeGlobalTrigger, new EventArgs());
+			if (_mission.Messages.Count > 0)
+			{
+				for (int i = 0; i < 6; i++) labelRefresh(_mission.Messages[_activeMessage].Triggers[i], lblMessTrig[i]);
+				lblMessTrigArr_Click(_activeMessageTrigger, new EventArgs());
+			}
+			return (!update ? guCount == 0 && refCount > 0 : false);
+		}
 		void listRefresh()
 		{
 			_noRefresh = true;  //Prevent full lstFG refresh.
@@ -2879,7 +2962,7 @@ namespace Idmr.Yogeme
 			craftStart(_mission.FlightGroups[_activeFG], true);
 			if (_mission.FlightGroups[_activeFG].SpecialCargoCraft > _mission.FlightGroups[_activeFG].NumberOfCraft) numSC.Value = 0;
 			//_mission.FlightGroups[_activeFG].GlobalGroup = Common.Update(this, _mission.FlightGroups[_activeFG].GlobalGroup, Convert.ToByte(numGG.Value));
-			_mission.FlightGroups[_activeFG].GlobalUnit = Common.Update(this, _mission.FlightGroups[_activeFG].GlobalUnit, Convert.ToByte(numGU.Value));
+			//_mission.FlightGroups[_activeFG].GlobalUnit = Common.Update(this, _mission.FlightGroups[_activeFG].GlobalUnit, Convert.ToByte(numGU.Value));
 			_mission.FlightGroups[_activeFG].GlobalNumbering = Common.Update(this, _mission.FlightGroups[_activeFG].GlobalNumbering, chkGU.Checked);
 
 			if (ActiveControl == numCraft || ActiveControl == chkGU)
@@ -2919,6 +3002,23 @@ namespace Idmr.Yogeme
 				if (res == DialogResult.Yes) updateGG(true);
 			}
 			_mission.FlightGroups[_activeFG].GlobalGroup = Common.Update(this, _mission.FlightGroups[_activeFG].GlobalGroup, Convert.ToByte(numGG.Value));
+		}
+		void numGU_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.KeyCode == Keys.Enter)
+			{
+				numGU_Leave("numGU_KeyDown", new EventArgs());
+			}
+		}
+		void numGU_Leave(object sender, EventArgs e)
+		{
+			if (_mission.FlightGroups[_activeFG].GlobalUnit != Convert.ToByte(numGU.Value) && updateGU(false))
+			{
+
+				DialogResult res = MessageBox.Show("Global Unit is unique and referenced. Update references to new number?", "Update Reference?", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+				if (res == DialogResult.Yes) updateGU(true);
+			}
+			_mission.FlightGroups[_activeFG].GlobalUnit = Common.Update(this, _mission.FlightGroups[_activeFG].GlobalUnit, Convert.ToByte(numGU.Value));
 		}
 		void numSC_ValueChanged(object sender, EventArgs e)
 		{

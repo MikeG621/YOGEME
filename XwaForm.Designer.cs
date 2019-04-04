@@ -1767,6 +1767,8 @@ namespace Idmr.Yogeme
 			this.numGU.Size = new System.Drawing.Size(40, 20);
 			this.numGU.TabIndex = 22;
 			this.numGU.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+			this.numGU.KeyDown += new System.Windows.Forms.KeyEventHandler(this.numGU_KeyDown);
+			this.numGU.Leave += new System.EventHandler(this.numGU_Leave);
 			// 
 			// label3
 			// 
