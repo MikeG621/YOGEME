@@ -1,12 +1,13 @@
 /*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
- * Copyright (C) 2007-2018 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2019 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.5+
+ * VERSION: 1.5.1
  */
 
 /* CHANGELOG
+ * v1.5.1, 190513
  * [NEW] Changing GG value will now prompt to update references throughout if it's the only FG with that designation
  * v1.5, 180910
  * [NEW] cbo's for messages [JB]

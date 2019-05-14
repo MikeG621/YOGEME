@@ -2,8 +2,8 @@
 ======================================
 
 Author: Michael Gaisser (mjgaisser@gmail.com)
-Version: 1.5
-Date: 2018.09.10
+Version: 1.5.1
+Date: 2019.05.13
 
 Thank you for downloading YOGEME, the all-in-one mission editor for the X-Wing
 series, Xwing95 through X-wing Alliance.  This program allows easy mission
@@ -13,6 +13,11 @@ original mainstream editors were created.
 
 ==========
 Version History
+
+v1.5.1, 13 May 2019
+While I did add the below a couple months ago and just haven't gone through releasing it,
+turns out I forgot to finish updating Converter.exe and package it. Oops. [Issue #25]
+ - (All) Changing GG or GU value will now prompt to update references throughout if it's the only FG with that designation
 
 v1.5, 10 Sep 2018
 This most likely isn't a full list of everything that's visible to the user, but you get the idea; there's a lot.

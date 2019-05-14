@@ -3,10 +3,12 @@
  * Copyright (C) 2007-2018 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.5
+ * VERSION: 1.5.1
  */
 
 /* CHANGELOG
+ * v1.5.1, 190513
+ * [UPD] Removed Steam X-Wing detection, as it doesn't work the same for some reason
  * v1.5, 180910
  * [ADD] Xwing and theming settings [JB]
  * v1.4.2, 180224
