@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2018 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.5
+ * VERSION: 1.5+
  */
 
 /* CHANGELOG
+ * [UPD] changed the exception thrown when platform's not installed
  * v1.5, 180910
  * [ADD] catch block for loading XWA thumbnails [JB]
  * [FIX] shadow out of range now resets _shadow in addition to num [JB]
@@ -53,15 +54,16 @@ namespace Idmr.Yogeme
 		public byte BackdropIndex { get { return Convert.ToByte(_index); } }
 
 		/// <summary>Constructor for TIE and XvT</summary>
-		/// <param name="platform">May be TIE, XvT or BoP, throws ArgumentException otherwise</param>
+		/// <param name="platform">Must be TIE, XvT or BoP</param>
 		/// <param name="index">Backdrop index, set to 0 if out of range</param>
-		/// <exception cref="ArgumentException"></exception>
+		/// <exception cref="ArgumentException">Invalid value for <paramref name="platform"/>.</exception>
+		/// <exception cref="ApplicationException">The designated <paramref name="platform"/> installation is not detected.</exception>
 		public BackdropDialog(MissionFile.Platform platform, int index)
 		{
 			_platform = platform;
 			if (_platform == MissionFile.Platform.Invalid || _platform == MissionFile.Platform.XWA)
 				throw new ArgumentException("Invalid platform, must be TIE, XvT or BoP");
-			if (!platformInstalled()) throw new ArgumentException("Platform installation not found, feature unavailable.");
+			if (!platformInstalled()) throw new ApplicationException("Platform installation not found, feature unavailable.");
 			_index = index;
 			if ((_platform == MissionFile.Platform.TIE || _platform == MissionFile.Platform.XvT) && (_index < 0 || _index > 7)) _index = 0;
 			if (_platform == MissionFile.Platform.BoP && (_index < 0 || _index > 16)) _index = 0;
@@ -81,6 +83,7 @@ namespace Idmr.Yogeme
 		/// <summary>Constructor for XWA</summary>
 		/// <param name="index">Backdrop index, set to 0 if out of range</param>
 		/// <param name="shadow">Shadow or backdrop variant, set to 0 if out of range</param>
+		/// <exception cref="ApplicationException">Platform installation not found.</exception>
 		public BackdropDialog(int index, int shadow)
 		{
 			_platform = MissionFile.Platform.XWA;
@@ -89,7 +92,7 @@ namespace Idmr.Yogeme
 			_shadow = shadow;
 			if (_shadow < 0 || _shadow > 6) _shadow = 0;
 			InitializeComponent();
-			if (!platformInstalled()) throw new ArgumentException("Platform installation not found, feature unavailable.");
+			if (!platformInstalled()) throw new ApplicationException("Platform installation not found, feature unavailable.");
 			createThumbnails();
 			vsbThumbs.Enabled = true;
 			numBackdrop.Maximum = _numBackdrops - 1;
@@ -279,7 +282,7 @@ namespace Idmr.Yogeme
 		/// <param name="index">Thumbs index</param>
 		void setThumbnail(string file, int index)
 		{
-			ImageFormat.Act.ActImage act = new Idmr.ImageFormat.Act.ActImage(file);
+			ImageFormat.Act.ActImage act = new ImageFormat.Act.ActImage(file);
 			thumbs[index].BackgroundImage = act.Frames[0].Image;
 			thumbs[index].BackColor = System.Drawing.Color.Black;
 		}
@@ -333,22 +336,20 @@ namespace Idmr.Yogeme
 					_installDirectory = s.XwaPath;
 					_backdropDirectory = s.XwaPath + "\\RESDATA\\";
 					_numBackdrops = 103;
-					if (s.SuperBackdropsInstalled)
-					{
-						int size = 256;
-						Height += size;
-						Width += size;
-						pctBackdrop.Height += size;
-						pctBackdrop.Width += size;
-						label1.Left += size;
-						label2.Left += size;
-						numBackdrop.Left += size;
-						numShadow.Left += size;
-						cmdOK.Left += size;
-						cmdOK.Top += size;
-						cmdCancel.Left += size;
-						cmdCancel.Top += size;
-					}
+					// permanently increasing this to 512. Note however that SBD starfield is 2812px, so it'll be cut off
+					int size = 256;
+					Height += size;
+					Width += size;
+					pctBackdrop.Height += size;
+					pctBackdrop.Width += size;
+					label1.Left += size;
+					label2.Left += size;
+					numBackdrop.Left += size;
+					numShadow.Left += size;
+					cmdOK.Left += size;
+					cmdOK.Top += size;
+					cmdCancel.Left += size;
+					cmdCancel.Top += size;
 					break;
 				default:
 					return false;
