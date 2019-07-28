@@ -1,12 +1,13 @@
 ﻿/*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
- * Copyright (C) 2007-2018 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2019 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.5.1
+ * VERSION: 1.5.1+
  */
 
 /* CHANGELOG
+ * [UPD] SBD detection changed to Readme instead of Backup since XWAUCP is different
  * v1.5.1, 190513
  * [UPD] Removed Steam X-Wing detection, as it doesn't work the same for some reason
  * v1.5, 180910
@@ -421,7 +422,7 @@ namespace Idmr.Yogeme
 				}
 			}
 			#endregion
-			if (XwaInstalled) SuperBackdropsInstalled = File.Exists(_xwaPath + "\\BackupDTMSB\\XwingAlliance.exe");
+			if (XwaInstalled) SuperBackdropsInstalled = File.Exists(_xwaPath + "\\DTMSBReadme.rtf");
 		}
 		/// <summary>Saves current settings to user's settings file</summary>
 		/// <remarks>Registry use has been deprecated</remarks>
