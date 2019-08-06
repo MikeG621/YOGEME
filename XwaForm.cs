@@ -132,6 +132,11 @@ namespace Idmr.Yogeme
 		byte _activeFGGoal = 0;
 		byte _activeOrder = 0;
 		byte _activeOptionCraft = 0;
+		bool _hookBackdropInstalled;
+		bool _hookHangarInstalled;
+		bool _hookEnginesInstalled;
+		bool _hookMissionObjectsInstalled;
+		bool _hookMissionTieInstalled;
 		#endregion
 		#region control arrays
 		MenuItem[] menuRecentMissions = new MenuItem[6];
@@ -1210,6 +1215,15 @@ namespace Idmr.Yogeme
 
 			applySettingsHandler(0, new EventArgs());  //[JB] Configurable colors were added to options.
 			updateMissionTabs();
+
+			if (_config.XwaInstalled)
+			{
+				_hookBackdropInstalled = File.Exists(_config.XwaPath + "\\Hook_Backdrops.dll");
+				_hookEnginesInstalled = File.Exists(_config.XwaPath + "\\Hook_Engine_Sound.dll");
+				_hookHangarInstalled = File.Exists(_config.XwaPath + "\\Hook_Hangars.dll");
+				_hookMissionObjectsInstalled = File.Exists(_config.XwaPath + "\\Hook_Misison_Objects.dll");
+				_hookMissionTieInstalled = File.Exists(_config.XwaPath + "\\Hook_Mission_Tie.dll");
+			}
 		}
 
 		//[JB] Apply color changes to all interactive labels.  This is a callback event when the program settings are updated.
@@ -2913,7 +2927,8 @@ namespace Idmr.Yogeme
 			}
 			try
 			{
-				BackdropDialog dlg = new BackdropDialog(_mission.FlightGroups[_activeFG].Backdrop, _mission.FlightGroups[_activeFG].GlobalCargo);
+				BackdropDialog dlg = null;
+				if (_hookBackdropInstalled) dlg = new BackdropDialog(_mission.FlightGroups[_activeFG].Backdrop, _mission.FlightGroups[_activeFG].GlobalCargo, _mission.MissionFileName);
 				if (dlg.ShowDialog() == DialogResult.OK)
 				{
 					cboGlobCargo.SelectedIndex = dlg.Shadow;

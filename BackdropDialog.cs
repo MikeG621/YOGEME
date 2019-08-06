@@ -1,12 +1,13 @@
 /*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
- * Copyright (C) 2007-2018 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2019 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
  * VERSION: 1.5+
  */
 
 /* CHANGELOG
+ * [NEW #26] Backdrop hook implementation
  * [UPD] changed the exception thrown when platform's not installed
  * v1.5, 180910
  * [ADD] catch block for loading XWA thumbnails [JB]
@@ -46,6 +47,8 @@ namespace Idmr.Yogeme
 		int _numBackdrops = 0;
 		DatFile _planets;
 		PictureBox[] thumbs = new PictureBox[103];
+		bool _hookInstalled;
+		string _fileName;
 
 		/// <summary>The selected Shadow setting</summary>
 		/// <remarks>XWA only</remarks>
@@ -93,6 +96,32 @@ namespace Idmr.Yogeme
 			if (_shadow < 0 || _shadow > 6) _shadow = 0;
 			InitializeComponent();
 			if (!platformInstalled()) throw new ApplicationException("Platform installation not found, feature unavailable.");
+			createThumbnails();
+			vsbThumbs.Enabled = true;
+			numBackdrop.Maximum = _numBackdrops - 1;
+			numBackdrop.Value = _index;
+			numShadow.Enabled = true;
+			numShadow.Value = _shadow;
+			numBackdrop_ValueChanged("init", new EventArgs());
+		}
+		/// <summary>Constructor for XWA, Backdrop hook enabled</summary>
+		/// <param name="index">Backdrop index, set to 0 if out of range</param>
+		/// <param name="shadow">Shadow or backdrop variant, set to 0 if out of range</param>
+		/// <param name="fileName">Name of mission for hook implementation</param>
+		/// <exception cref="ApplicationException">Platform installation not found.</exception>
+		public BackdropDialog(int index, int shadow, string fileName)
+		{
+			_platform = MissionFile.Platform.XWA;
+			_hookInstalled = true;
+			_index = index;
+			if (_index < 0 || _index > 103) _index = 0;
+			_shadow = shadow;
+			if (_shadow < 0 || _shadow > 6) _shadow = 0;
+			InitializeComponent();
+			if (!platformInstalled()) throw new ApplicationException("Platform installation not found, feature unavailable.");
+			_fileName = Idmr.Common.StringFunctions.GetFileName(fileName, false);
+			if (File.Exists(_installDirectory + "\\Missions\\" + _fileName + "_Resdata.txt")) _fileName = _installDirectory + "\\Missions\\" + _fileName + "_Resdata.txt";
+			else _fileName = _installDirectory + "\\Missions\\" + _fileName + ".ini";
 			createThumbnails();
 			vsbThumbs.Enabled = true;
 			numBackdrop.Maximum = _numBackdrops - 1;
@@ -249,29 +278,78 @@ namespace Idmr.Yogeme
 					thumbs[i].BackColor = System.Drawing.Color.Black;
 				}
                 StreamReader sr;
-                try //[JB Added try block
+				System.Collections.Generic.List<string> resdata = new System.Collections.Generic.List<string>(50);
+				string line = "";
+				DatFile temp;
+				try
                 {
-                   sr = new StreamReader(_installDirectory + "\\RESDATA.TXT");
-                }
+					sr = new StreamReader(_installDirectory + "\\RESDATA.TXT");
+					while ((line = sr.ReadLine()) != null) if (line != "") resdata.Add(line);
+					sr.Close();
+				}
                 catch
                 {
                     MessageBox.Show("Could not open resource file:\n" + _installDirectory + "\\RESDATA.TXT", "Error");
-                    return;
                 }
-				System.Collections.Generic.List<string> resdata = new System.Collections.Generic.List<string>(50);
-				string line = "";
-				while((line = sr.ReadLine()) != null) if (line != "") resdata.Add(line);
-				for (int i = 0; i < resdata.Count - 38; i++)
+				for (int i = 0; i < resdata.Count - 38; i++)	// 38 original entries, customs must be at top
 				{
-					DatFile temp = new DatFile(_installDirectory + "\\" + resdata[i]);
-					int index = 0;
-					for (int g = 0; g < temp.NumberOfGroups; g++)
+					try
 					{
-						index = _planets.Groups.GetIndex(temp.Groups[g].ID);
-						if (index != -1)
+						temp = new DatFile(_installDirectory + "\\" + resdata[i]);
+						int index = 0;
+						for (int g = 0; g < temp.NumberOfGroups; g++)
 						{
-							_planets.Groups[index] = temp.Groups[g];
-							thumbs[index].BackgroundImage = temp.Groups[g].Subs[0].Image;
+							index = _planets.Groups.GetIndex(temp.Groups[g].ID);
+							if (index != -1)
+							{
+								_planets.Groups[index] = temp.Groups[g];
+								thumbs[index].BackgroundImage = temp.Groups[g].Subs[0].Image;
+							}
+						}
+					}
+					catch
+					{
+						MessageBox.Show("Error reading DAT file from RESDATA.TXT:\n" + _installDirectory + "\\" + resdata[i] + "\nFile skipped.", "Error");
+					}
+				}
+				if (_hookInstalled && File.Exists(_fileName))
+				{
+					resdata.Clear();
+					try
+					{
+						sr = new StreamReader(_fileName);
+						bool readLine = _fileName.EndsWith(".txt");
+						while ((line = sr.ReadLine()) != null)
+						{
+							if (line.StartsWith("[")) readLine = false;
+							if (readLine) resdata.Add(line);
+							else if (line.ToLower() == "[resdata]") readLine = true;
+						}
+						sr.Close();
+					}
+					catch
+					{
+						MessageBox.Show("Could not open hook file:\n" + _fileName, "Error");
+					}
+					for (int i = 0; i < resdata.Count; i++)
+					{
+						try
+						{
+							temp = new DatFile(_installDirectory + "\\" + resdata[i]);
+							int index = 0;
+							for (int g = 0; g < temp.NumberOfGroups; g++)
+							{
+								index = _planets.Groups.GetIndex(temp.Groups[g].ID);
+								if (index != -1)
+								{
+									_planets.Groups[index] = temp.Groups[g];
+									thumbs[index].BackgroundImage = temp.Groups[g].Subs[0].Image;
+								}
+							}
+						}
+						catch
+						{
+							MessageBox.Show("Error reading DAT file from hook:\n" + _installDirectory + "\\" + resdata[i] + "\nFile skipped.", "Error");
 						}
 					}
 				}
