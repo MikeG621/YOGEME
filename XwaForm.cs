@@ -3,10 +3,12 @@
  * Copyright (C) 2007-2019 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.5.1
+ * VERSION: 1.5.1+
  */
 
 /* CHANGELOG
+ * [UPD] cmdBackdrop "Loading..." now always shown instead of just with SBD
+ * [NEW] hook implementation
  * v1.5.1, 190513
  * [NEW] Changing GG or GU value will now prompt to update references throughout if it's the only FG with that designation
  * v1.5, 180910
@@ -2920,15 +2922,14 @@ namespace Idmr.Yogeme
 
 		void cmdBackdrop_Click(object sender, EventArgs e)
 		{
-			if (_config.SuperBackdropsInstalled)
-			{   // this is here due to inherent lag when loading that many high-res images
-				cmdBackdrop.Text = "Loading...";
-				cmdBackdrop.Enabled = false;
-			}
+			
+			cmdBackdrop.Text = "Loading...";
+			cmdBackdrop.Enabled = false;
 			try
 			{
 				BackdropDialog dlg = null;
 				if (_hookBackdropInstalled) dlg = new BackdropDialog(_mission.FlightGroups[_activeFG].Backdrop, _mission.FlightGroups[_activeFG].GlobalCargo, _mission.MissionFileName);
+				else dlg = new BackdropDialog(_mission.FlightGroups[_activeFG].Backdrop, _mission.FlightGroups[_activeFG].GlobalCargo);
 				if (dlg.ShowDialog() == DialogResult.OK)
 				{
 					cboGlobCargo.SelectedIndex = dlg.Shadow;
