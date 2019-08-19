@@ -783,6 +783,7 @@ namespace Idmr.Yogeme
 			this.txtNotes = new System.Windows.Forms.TextBox();
 			this.dataOrders = new System.Data.DataView();
 			this.dataOrders_Raw = new System.Data.DataView();
+			this.menuHooks = new System.Windows.Forms.MenuItem();
 			((System.ComponentModel.ISupportInitialize)(this.dataWaypoints)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.dataWaypoints_Raw)).BeginInit();
 			this.tabMain.SuspendLayout();
@@ -1183,7 +1184,8 @@ namespace Idmr.Yogeme
             this.menuOptions,
             this.menuGoalSummary,
             this.menuHyperbuoy,
-            this.menuSuperBackdrops});
+            this.menuSuperBackdrops,
+            this.menuHooks});
 			this.menuTools.Text = "&Tools";
 			// 
 			// menuVerify
@@ -9230,6 +9232,13 @@ namespace Idmr.Yogeme
 			this.dataOrders_Raw.AllowDelete = false;
 			this.dataOrders_Raw.AllowNew = false;
 			// 
+			// menuHooks
+			// 
+			this.menuHooks.Enabled = false;
+			this.menuHooks.Index = 8;
+			this.menuHooks.Text = "Hoo&k Assignment";
+			this.menuHooks.Click += new System.EventHandler(this.menuHooks_Click);
+			// 
 			// XwaForm
 			// 
 			this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
@@ -10228,5 +10237,6 @@ namespace Idmr.Yogeme
         private ComboBox cboOSpeed;
 		private NumericUpDown numUnk42;
 		private Label label152;
+		private MenuItem menuHooks;
 	}
 }

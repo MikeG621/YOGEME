@@ -25,7 +25,8 @@ namespace Idmr.Yogeme
 		string _hangarMapFile = "";
 		string _famHangarMapFile = "";
 		string _installDirectory = "";
-		string _res = "\\RESDATA\\";
+		string _mis = "\\Missions\\";
+		string _res = "\\Resdata\\";
 		string _wave = "\\Wave\\";
 		string _fm = "\\FlightModels\\";
 
@@ -33,6 +34,11 @@ namespace Idmr.Yogeme
 		{
 			InitializeComponent();
 			_mission = Idmr.Common.StringFunctions.GetFileName(missionFile, false);
+			if (_mission == "NewMission")
+			{
+				MessageBox.Show("Please perform inital save prior to hook assignment.", "New Mission detected", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+				cmdCancel_Click("NewMission", new EventArgs());
+			}
 			_fileName = missionFile.Replace(".tie", ".ini");
 			Settings s = new Settings();
 			if (s.XwaInstalled)
@@ -50,11 +56,37 @@ namespace Idmr.Yogeme
 				_hangarMapFile = checkFile("_HamgarMap.txt");
 				_famHangarMapFile = checkFile("_FamHangarMap.txt");
 			}
+			StreamReader srMission = null;
+			string line = "";
+			bool readLine = false;
+			if (File.Exists(_fileName)) srMission = new StreamReader(_fileName);
+			if (_bdFile != "")
+			{
+				StreamReader srBD = new StreamReader(_bdFile);
+				while ((line = srBD.ReadLine()) != null)
+				{
+					lstBackdrops.Items.Add(line);
+				}
+				srBD.Close();
+			}
+			else if (srMission != null)
+			{
+				while ((line = srMission.ReadLine()) != null)
+				{
+					// TODO: this will need to be redone so it'll read in any order
+					if (line.StartsWith("[")) readLine = false;
+					if (readLine) lstBackdrops.Items.Add(line);
+					else if (line.ToLower() == "[resdata]") readLine = true;
+				}
+			}
+
+			srMission.Close();
+			chkBackdrops.Checked = (lstBackdrops.Items.Count > 0);
 		}
 
 		string checkFile(string extension)
 		{
-			if (File.Exists(_installDirectory + "\\Missions\\" + _mission + extension)) return _installDirectory + "\\Missions\\" + _mission + extension;
+			if (File.Exists(_installDirectory + _mis + _mission + extension)) return _installDirectory + _mis + _mission + extension;
 			return "";
 		}
 
@@ -68,7 +100,12 @@ namespace Idmr.Yogeme
 
 		private void cmdAddBD_Click(object sender, EventArgs e)
 		{
-
+			if (_installDirectory != "") opnBackdrop.InitialDirectory = _installDirectory + _res;
+			DialogResult res = opnBackdrop.ShowDialog();
+			if (res == DialogResult.OK)
+			{
+				lstBackdrops.Items.Add(_res.TrimStart('\\') + Idmr.Common.StringFunctions.GetFileName(opnBackdrop.FileName, true));
+			}
 		}
 		private void cmdRemoveBD_Click(object sender, EventArgs e)
 		{
@@ -83,6 +120,46 @@ namespace Idmr.Yogeme
 		}
 		private void cmdOK_Click(object sender, EventArgs e)
 		{
+			if (!chkBackdrops.Checked)
+			{
+				File.Delete(_fileName);
+				if (_bdFile != "") File.Delete(_bdFile);
+				Close();
+				return;
+			}
+
+			string backup = _fileName.Replace(".ini", ".bak");
+			if (File.Exists(_fileName))
+			{
+				File.Copy(_fileName, backup);
+				File.Delete(_fileName);
+			}
+			StreamWriter sw = null;
+			try
+			{
+				sw = new StreamWriter(_fileName);
+				sw.WriteLine(";" + _mission + ".ini");
+				sw.WriteLine("");
+
+				if (chkBackdrops.Checked && lstBackdrops.Items.Count > 0)
+				{
+					sw.WriteLine("[Resdata]");
+					for (int i = 0; i < lstBackdrops.Items.Count; i++) sw.WriteLine(lstBackdrops.Items[i]);
+					sw.WriteLine("");
+				}
+				sw.Flush();
+				sw.Close();
+				if (_bdFile != "") File.Delete(_bdFile);
+			}
+			catch
+			{
+				if (sw != null) sw.Close();
+				if (File.Exists(backup))
+				{
+					File.Copy(backup, _fileName);
+					File.Delete(backup);
+				}
+			}
 			Close();
 		}
 	}

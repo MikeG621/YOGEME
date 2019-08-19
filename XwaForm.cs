@@ -1226,6 +1226,7 @@ namespace Idmr.Yogeme
 				_hookMissionObjectsInstalled = File.Exists(_config.XwaPath + "\\Hook_Misison_Objects.dll");
 				_hookMissionTieInstalled = File.Exists(_config.XwaPath + "\\Hook_Mission_Tie.dll");
 			}
+			menuHooks.Enabled = (_hookBackdropInstalled | _hookEnginesInstalled | _hookHangarInstalled | _hookMissionObjectsInstalled | _hookMissionTieInstalled);
 		}
 
 		//[JB] Apply color changes to all interactive labels.  This is a callback event when the program settings are updated.
@@ -1591,6 +1592,11 @@ namespace Idmr.Yogeme
 		void menuHelpInfo_Click(object sender, EventArgs e)
 		{
 			Common.LaunchHelp();
+		}
+		void menuHooks_Click(object sender, EventArgs e)
+		{
+			try { new XwaHookDialog(_mission.MissionPath).ShowDialog(); }
+			catch (ObjectDisposedException) { /* do nothing */ }
 		}
 		void menuHyperbuoy_Click(object sender, EventArgs e)
 		{
