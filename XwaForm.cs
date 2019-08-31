@@ -1595,7 +1595,7 @@ namespace Idmr.Yogeme
 		}
 		void menuHooks_Click(object sender, EventArgs e)
 		{
-			try { new XwaHookDialog(_mission.MissionPath).ShowDialog(); }
+			try { new XwaHookDialog(_mission).ShowDialog(); }
 			catch (ObjectDisposedException) { /* do nothing */ }
 		}
 		void menuHyperbuoy_Click(object sender, EventArgs e)
