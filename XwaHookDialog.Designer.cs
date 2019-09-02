@@ -32,7 +32,6 @@
 			this.cmdOK = new System.Windows.Forms.Button();
 			this.cmdCancel = new System.Windows.Forms.Button();
 			this.label3 = new System.Windows.Forms.Label();
-			this.label4 = new System.Windows.Forms.Label();
 			this.grpBackdrops = new System.Windows.Forms.GroupBox();
 			this.cmdRemoveBD = new System.Windows.Forms.Button();
 			this.cmdAddBD = new System.Windows.Forms.Button();
@@ -57,9 +56,16 @@
 			this.lstSounds = new System.Windows.Forms.ListBox();
 			this.chkSounds = new System.Windows.Forms.CheckBox();
 			this.opnSounds = new System.Windows.Forms.OpenFileDialog();
+			this.grpObjects = new System.Windows.Forms.GroupBox();
+			this.cmdRemoveObjects = new System.Windows.Forms.Button();
+			this.cmdAddObjects = new System.Windows.Forms.Button();
+			this.lstObjects = new System.Windows.Forms.ListBox();
+			this.chkObjects = new System.Windows.Forms.CheckBox();
+			this.opnObjects = new System.Windows.Forms.OpenFileDialog();
 			this.grpBackdrops.SuspendLayout();
 			this.grpMission.SuspendLayout();
 			this.grpSounds.SuspendLayout();
+			this.grpObjects.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// cmdOK
@@ -92,15 +98,6 @@
 			this.label3.Size = new System.Drawing.Size(47, 13);
 			this.label3.TabIndex = 1;
 			this.label3.Text = "Hangars";
-			// 
-			// label4
-			// 
-			this.label4.AutoSize = true;
-			this.label4.Location = new System.Drawing.Point(604, 257);
-			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(81, 13);
-			this.label4.TabIndex = 1;
-			this.label4.Text = "Mission Objects";
 			// 
 			// grpBackdrops
 			// 
@@ -353,6 +350,65 @@
 			// 
 			this.opnSounds.Filter = "WAV Files|*.wav";
 			// 
+			// grpObjects
+			// 
+			this.grpObjects.Controls.Add(this.cmdRemoveObjects);
+			this.grpObjects.Controls.Add(this.cmdAddObjects);
+			this.grpObjects.Controls.Add(this.lstObjects);
+			this.grpObjects.Controls.Add(this.chkObjects);
+			this.grpObjects.Location = new System.Drawing.Point(353, 12);
+			this.grpObjects.Name = "grpObjects";
+			this.grpObjects.Size = new System.Drawing.Size(332, 96);
+			this.grpObjects.TabIndex = 5;
+			this.grpObjects.TabStop = false;
+			this.grpObjects.Text = "Objects";
+			// 
+			// cmdRemoveObjects
+			// 
+			this.cmdRemoveObjects.Enabled = false;
+			this.cmdRemoveObjects.Location = new System.Drawing.Point(264, 42);
+			this.cmdRemoveObjects.Name = "cmdRemoveObjects";
+			this.cmdRemoveObjects.Size = new System.Drawing.Size(60, 23);
+			this.cmdRemoveObjects.TabIndex = 2;
+			this.cmdRemoveObjects.Text = "&Remove";
+			this.cmdRemoveObjects.UseVisualStyleBackColor = true;
+			this.cmdRemoveObjects.Click += new System.EventHandler(this.cmdRemoveObjects_Click);
+			// 
+			// cmdAddObjects
+			// 
+			this.cmdAddObjects.Enabled = false;
+			this.cmdAddObjects.Location = new System.Drawing.Point(198, 42);
+			this.cmdAddObjects.Name = "cmdAddObjects";
+			this.cmdAddObjects.Size = new System.Drawing.Size(60, 23);
+			this.cmdAddObjects.TabIndex = 2;
+			this.cmdAddObjects.Text = "&Add";
+			this.cmdAddObjects.UseVisualStyleBackColor = true;
+			this.cmdAddObjects.Click += new System.EventHandler(this.cmdAddObjects_Click);
+			// 
+			// lstObjects
+			// 
+			this.lstObjects.Enabled = false;
+			this.lstObjects.FormattingEnabled = true;
+			this.lstObjects.Location = new System.Drawing.Point(6, 42);
+			this.lstObjects.Name = "lstObjects";
+			this.lstObjects.Size = new System.Drawing.Size(186, 43);
+			this.lstObjects.TabIndex = 1;
+			// 
+			// chkObjects
+			// 
+			this.chkObjects.AutoSize = true;
+			this.chkObjects.Location = new System.Drawing.Point(6, 19);
+			this.chkObjects.Name = "chkObjects";
+			this.chkObjects.Size = new System.Drawing.Size(84, 17);
+			this.chkObjects.TabIndex = 0;
+			this.chkObjects.Text = "Use Sounds";
+			this.chkObjects.UseVisualStyleBackColor = true;
+			this.chkObjects.CheckedChanged += new System.EventHandler(this.chkObjects_CheckedChanged);
+			// 
+			// opnObjects
+			// 
+			this.opnObjects.Filter = "OPT Files|*.opt";
+			// 
 			// XwaHookDialog
 			// 
 			this.AcceptButton = this.cmdOK;
@@ -360,10 +416,10 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.cmdCancel;
 			this.ClientSize = new System.Drawing.Size(891, 553);
+			this.Controls.Add(this.grpObjects);
 			this.Controls.Add(this.grpSounds);
 			this.Controls.Add(this.grpMission);
 			this.Controls.Add(this.grpBackdrops);
-			this.Controls.Add(this.label4);
 			this.Controls.Add(this.label3);
 			this.Controls.Add(this.cmdCancel);
 			this.Controls.Add(this.cmdOK);
@@ -378,6 +434,8 @@
 			this.grpMission.PerformLayout();
 			this.grpSounds.ResumeLayout(false);
 			this.grpSounds.PerformLayout();
+			this.grpObjects.ResumeLayout(false);
+			this.grpObjects.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -388,7 +446,6 @@
 		private System.Windows.Forms.Button cmdOK;
 		private System.Windows.Forms.Button cmdCancel;
 		private System.Windows.Forms.Label label3;
-		private System.Windows.Forms.Label label4;
 		private System.Windows.Forms.GroupBox grpBackdrops;
 		private System.Windows.Forms.Button cmdRemoveBD;
 		private System.Windows.Forms.Button cmdAddBD;
@@ -413,5 +470,11 @@
 		private System.Windows.Forms.ListBox lstSounds;
 		private System.Windows.Forms.CheckBox chkSounds;
 		private System.Windows.Forms.OpenFileDialog opnSounds;
+		private System.Windows.Forms.GroupBox grpObjects;
+		private System.Windows.Forms.Button cmdRemoveObjects;
+		private System.Windows.Forms.Button cmdAddObjects;
+		private System.Windows.Forms.ListBox lstObjects;
+		private System.Windows.Forms.CheckBox chkObjects;
+		private System.Windows.Forms.OpenFileDialog opnObjects;
 	}
 }

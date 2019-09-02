@@ -24,7 +24,7 @@ namespace Idmr.Yogeme
 		string _res = "\\Resdata\\";
 		string _wave = "\\Wave\\";
 		string _fm = "\\FlightModels\\";
-		enum ReadMode { None = -1, Backdrop, Mission, Sounds }
+		enum ReadMode { None = -1, Backdrop, Mission, Sounds, Objects }
 
 		public XwaHookDialog(Mission mission)
 		{
@@ -69,9 +69,7 @@ namespace Idmr.Yogeme
 			{
 				StreamReader srBD = new StreamReader(_bdFile);
 				while ((line = srBD.ReadLine()) != null)
-				{
 					lstBackdrops.Items.Add(line);
-				}
 				srBD.Close();
 			}
 			if (_missionTxtFile != "")
@@ -98,10 +96,15 @@ namespace Idmr.Yogeme
 			{
 				StreamReader srSounds = new StreamReader(_soundFile);
 				while ((line = srSounds.ReadLine()) != null)
-				{
 					lstSounds.Items.Add(line);
-				}
 				srSounds.Close();
+			}
+			if (_objFile != "")
+			{
+				StreamReader srObjects = new StreamReader(_objFile);
+				while ((line = srObjects.ReadLine()) != null)
+					lstObjects.Items.Add(line);
+				srObjects.Close();
 			}
 			#endregion
 
@@ -117,6 +120,7 @@ namespace Idmr.Yogeme
 						if (line.ToLower() == "[resdata]") readMode = ReadMode.Backdrop;
 						else if (line.ToLower() == "[mission_tie]") readMode = ReadMode.Mission;
 						else if (line.ToLower() == "[sounds]") readMode = ReadMode.Sounds;
+						else if (line.ToLower() == "[objects]") readMode = ReadMode.Objects;
 					}
 					else if (readMode == ReadMode.Backdrop) lstBackdrops.Items.Add(line);
 					else if (readMode == ReadMode.Mission)
@@ -135,6 +139,7 @@ namespace Idmr.Yogeme
 						}
 					}
 					else if (readMode == ReadMode.Sounds) lstSounds.Items.Add(line);
+					else if (readMode == ReadMode.Objects) lstObjects.Items.Add(line);
 				}
 			}
 
@@ -232,6 +237,35 @@ namespace Idmr.Yogeme
 		}
 		#endregion
 
+		#region Objects
+		private void chkObjects_CheckedChanged(object sender, EventArgs e)
+		{
+			lstObjects.Enabled = chkObjects.Checked;
+			cmdAddObjects.Enabled = chkObjects.Checked;
+			cmdRemoveObjects.Enabled = chkObjects.Checked;
+		}
+
+		private void cmdAddObjects_Click(object sender, EventArgs e)
+		{
+			if (_installDirectory != "") opnObjects.InitialDirectory = _installDirectory + _fm;
+			opnObjects.Title = "Select original object...";
+			DialogResult res = opnObjects.ShowDialog();
+			if (res == DialogResult.OK)
+			{
+				string line = opnObjects.FileName.Substring(opnObjects.FileName.IndexOf(_fm) + 1) + " = ";
+				opnObjects.Title = "Select new object...";
+				res = opnObjects.ShowDialog();
+				if (res == DialogResult.OK)
+				{
+					lstObjects.Items.Add(line + opnObjects.FileName.Substring(opnObjects.FileName.IndexOf(_fm) + 1));
+				}
+			}
+		}
+		private void cmdRemoveObjects_Click(object sender, EventArgs e)
+		{
+			if (lstObjects.SelectedIndex != -1) lstObjects.Items.RemoveAt(lstObjects.SelectedIndex);
+		}
+		#endregion
 		private void cmdCancel_Click(object sender, EventArgs e)
 		{
 			Close();
