@@ -33,7 +33,6 @@
 			this.cmdCancel = new System.Windows.Forms.Button();
 			this.label3 = new System.Windows.Forms.Label();
 			this.label4 = new System.Windows.Forms.Label();
-			this.label5 = new System.Windows.Forms.Label();
 			this.grpBackdrops = new System.Windows.Forms.GroupBox();
 			this.cmdRemoveBD = new System.Windows.Forms.Button();
 			this.cmdAddBD = new System.Windows.Forms.Button();
@@ -41,19 +40,26 @@
 			this.chkBackdrops = new System.Windows.Forms.CheckBox();
 			this.opnBackdrop = new System.Windows.Forms.OpenFileDialog();
 			this.grpMission = new System.Windows.Forms.GroupBox();
-			this.chkMission = new System.Windows.Forms.CheckBox();
-			this.cboFG = new System.Windows.Forms.ComboBox();
+			this.txtPilot = new System.Windows.Forms.TextBox();
+			this.lstMission = new System.Windows.Forms.ListBox();
+			this.optPilot = new System.Windows.Forms.RadioButton();
+			this.optIff = new System.Windows.Forms.RadioButton();
+			this.optMarkings = new System.Windows.Forms.RadioButton();
 			this.cmdRemoveMiss = new System.Windows.Forms.Button();
 			this.cmdAddMiss = new System.Windows.Forms.Button();
-			this.optMarkings = new System.Windows.Forms.RadioButton();
-			this.lstMission = new System.Windows.Forms.ListBox();
-			this.optIff = new System.Windows.Forms.RadioButton();
-			this.optPilot = new System.Windows.Forms.RadioButton();
-			this.cboMarkings = new System.Windows.Forms.ComboBox();
 			this.cboIff = new System.Windows.Forms.ComboBox();
-			this.txtPilot = new System.Windows.Forms.TextBox();
+			this.cboMarkings = new System.Windows.Forms.ComboBox();
+			this.cboFG = new System.Windows.Forms.ComboBox();
+			this.chkMission = new System.Windows.Forms.CheckBox();
+			this.grpSounds = new System.Windows.Forms.GroupBox();
+			this.cmdRemoveSounds = new System.Windows.Forms.Button();
+			this.cmdAddSounds = new System.Windows.Forms.Button();
+			this.lstSounds = new System.Windows.Forms.ListBox();
+			this.chkSounds = new System.Windows.Forms.CheckBox();
+			this.opnSounds = new System.Windows.Forms.OpenFileDialog();
 			this.grpBackdrops.SuspendLayout();
 			this.grpMission.SuspendLayout();
+			this.grpSounds.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// cmdOK
@@ -96,15 +102,6 @@
 			this.label4.TabIndex = 1;
 			this.label4.Text = "Mission Objects";
 			// 
-			// label5
-			// 
-			this.label5.AutoSize = true;
-			this.label5.Location = new System.Drawing.Point(604, 303);
-			this.label5.Name = "label5";
-			this.label5.Size = new System.Drawing.Size(74, 13);
-			this.label5.TabIndex = 1;
-			this.label5.Text = "Engine Sound";
-			// 
 			// grpBackdrops
 			// 
 			this.grpBackdrops.Controls.Add(this.cmdRemoveBD);
@@ -113,7 +110,7 @@
 			this.grpBackdrops.Controls.Add(this.chkBackdrops);
 			this.grpBackdrops.Location = new System.Drawing.Point(12, 12);
 			this.grpBackdrops.Name = "grpBackdrops";
-			this.grpBackdrops.Size = new System.Drawing.Size(289, 96);
+			this.grpBackdrops.Size = new System.Drawing.Size(332, 96);
 			this.grpBackdrops.TabIndex = 2;
 			this.grpBackdrops.TabStop = false;
 			this.grpBackdrops.Text = "Backdrops";
@@ -121,7 +118,7 @@
 			// cmdRemoveBD
 			// 
 			this.cmdRemoveBD.Enabled = false;
-			this.cmdRemoveBD.Location = new System.Drawing.Point(219, 42);
+			this.cmdRemoveBD.Location = new System.Drawing.Point(264, 42);
 			this.cmdRemoveBD.Name = "cmdRemoveBD";
 			this.cmdRemoveBD.Size = new System.Drawing.Size(60, 23);
 			this.cmdRemoveBD.TabIndex = 2;
@@ -132,7 +129,7 @@
 			// cmdAddBD
 			// 
 			this.cmdAddBD.Enabled = false;
-			this.cmdAddBD.Location = new System.Drawing.Point(153, 42);
+			this.cmdAddBD.Location = new System.Drawing.Point(198, 42);
 			this.cmdAddBD.Name = "cmdAddBD";
 			this.cmdAddBD.Size = new System.Drawing.Size(60, 23);
 			this.cmdAddBD.TabIndex = 2;
@@ -146,7 +143,7 @@
 			this.lstBackdrops.FormattingEnabled = true;
 			this.lstBackdrops.Location = new System.Drawing.Point(6, 42);
 			this.lstBackdrops.Name = "lstBackdrops";
-			this.lstBackdrops.Size = new System.Drawing.Size(141, 43);
+			this.lstBackdrops.Size = new System.Drawing.Size(186, 43);
 			this.lstBackdrops.TabIndex = 1;
 			// 
 			// chkBackdrops
@@ -184,25 +181,58 @@
 			this.grpMission.TabStop = false;
 			this.grpMission.Text = "Mission Tie";
 			// 
-			// chkMission
+			// txtPilot
 			// 
-			this.chkMission.AutoSize = true;
-			this.chkMission.Location = new System.Drawing.Point(6, 19);
-			this.chkMission.Name = "chkMission";
-			this.chkMission.Size = new System.Drawing.Size(101, 17);
-			this.chkMission.TabIndex = 4;
-			this.chkMission.Text = "Use Mission Tie";
-			this.chkMission.UseVisualStyleBackColor = true;
-			this.chkMission.CheckedChanged += new System.EventHandler(this.chkMission_CheckedChanged);
+			this.txtPilot.Enabled = false;
+			this.txtPilot.Location = new System.Drawing.Point(227, 151);
+			this.txtPilot.MaxLength = 15;
+			this.txtPilot.Name = "txtPilot";
+			this.txtPilot.Size = new System.Drawing.Size(97, 20);
+			this.txtPilot.TabIndex = 11;
 			// 
-			// cboFG
+			// lstMission
 			// 
-			this.cboFG.Enabled = false;
-			this.cboFG.FormattingEnabled = true;
-			this.cboFG.Location = new System.Drawing.Point(167, 42);
-			this.cboFG.Name = "cboFG";
-			this.cboFG.Size = new System.Drawing.Size(157, 21);
-			this.cboFG.TabIndex = 6;
+			this.lstMission.Enabled = false;
+			this.lstMission.FormattingEnabled = true;
+			this.lstMission.Location = new System.Drawing.Point(6, 42);
+			this.lstMission.Name = "lstMission";
+			this.lstMission.Size = new System.Drawing.Size(155, 134);
+			this.lstMission.TabIndex = 10;
+			// 
+			// optPilot
+			// 
+			this.optPilot.AutoSize = true;
+			this.optPilot.Enabled = false;
+			this.optPilot.Location = new System.Drawing.Point(167, 152);
+			this.optPilot.Name = "optPilot";
+			this.optPilot.Size = new System.Drawing.Size(45, 17);
+			this.optPilot.TabIndex = 9;
+			this.optPilot.Text = "Pilot";
+			this.optPilot.UseVisualStyleBackColor = true;
+			// 
+			// optIff
+			// 
+			this.optIff.AutoSize = true;
+			this.optIff.Enabled = false;
+			this.optIff.Location = new System.Drawing.Point(167, 125);
+			this.optIff.Name = "optIff";
+			this.optIff.Size = new System.Drawing.Size(40, 17);
+			this.optIff.TabIndex = 9;
+			this.optIff.Text = "IFF";
+			this.optIff.UseVisualStyleBackColor = true;
+			// 
+			// optMarkings
+			// 
+			this.optMarkings.AutoSize = true;
+			this.optMarkings.Checked = true;
+			this.optMarkings.Enabled = false;
+			this.optMarkings.Location = new System.Drawing.Point(167, 98);
+			this.optMarkings.Name = "optMarkings";
+			this.optMarkings.Size = new System.Drawing.Size(54, 17);
+			this.optMarkings.TabIndex = 9;
+			this.optMarkings.TabStop = true;
+			this.optMarkings.Text = "Marks";
+			this.optMarkings.UseVisualStyleBackColor = true;
 			// 
 			// cmdRemoveMiss
 			// 
@@ -226,48 +256,14 @@
 			this.cmdAddMiss.UseVisualStyleBackColor = true;
 			this.cmdAddMiss.Click += new System.EventHandler(this.cmdAddMiss_Click);
 			// 
-			// optMarkings
+			// cboIff
 			// 
-			this.optMarkings.AutoSize = true;
-			this.optMarkings.Checked = true;
-			this.optMarkings.Enabled = false;
-			this.optMarkings.Location = new System.Drawing.Point(167, 98);
-			this.optMarkings.Name = "optMarkings";
-			this.optMarkings.Size = new System.Drawing.Size(54, 17);
-			this.optMarkings.TabIndex = 9;
-			this.optMarkings.Text = "Marks";
-			this.optMarkings.UseVisualStyleBackColor = true;
-			// 
-			// lstMission
-			// 
-			this.lstMission.Enabled = false;
-			this.lstMission.FormattingEnabled = true;
-			this.lstMission.Location = new System.Drawing.Point(6, 42);
-			this.lstMission.Name = "lstMission";
-			this.lstMission.Size = new System.Drawing.Size(155, 134);
-			this.lstMission.TabIndex = 10;
-			// 
-			// optIff
-			// 
-			this.optIff.AutoSize = true;
-			this.optIff.Enabled = false;
-			this.optIff.Location = new System.Drawing.Point(167, 125);
-			this.optIff.Name = "optIff";
-			this.optIff.Size = new System.Drawing.Size(40, 17);
-			this.optIff.TabIndex = 9;
-			this.optIff.Text = "IFF";
-			this.optIff.UseVisualStyleBackColor = true;
-			// 
-			// optPilot
-			// 
-			this.optPilot.AutoSize = true;
-			this.optPilot.Enabled = false;
-			this.optPilot.Location = new System.Drawing.Point(167, 152);
-			this.optPilot.Name = "optPilot";
-			this.optPilot.Size = new System.Drawing.Size(45, 17);
-			this.optPilot.TabIndex = 9;
-			this.optPilot.Text = "Pilot";
-			this.optPilot.UseVisualStyleBackColor = true;
+			this.cboIff.Enabled = false;
+			this.cboIff.FormattingEnabled = true;
+			this.cboIff.Location = new System.Drawing.Point(227, 124);
+			this.cboIff.Name = "cboIff";
+			this.cboIff.Size = new System.Drawing.Size(97, 21);
+			this.cboIff.TabIndex = 6;
 			// 
 			// cboMarkings
 			// 
@@ -278,23 +274,84 @@
 			this.cboMarkings.Size = new System.Drawing.Size(97, 21);
 			this.cboMarkings.TabIndex = 6;
 			// 
-			// cboIff
+			// cboFG
 			// 
-			this.cboIff.Enabled = false;
-			this.cboIff.FormattingEnabled = true;
-			this.cboIff.Location = new System.Drawing.Point(227, 124);
-			this.cboIff.Name = "cboIff";
-			this.cboIff.Size = new System.Drawing.Size(97, 21);
-			this.cboIff.TabIndex = 6;
+			this.cboFG.Enabled = false;
+			this.cboFG.FormattingEnabled = true;
+			this.cboFG.Location = new System.Drawing.Point(167, 42);
+			this.cboFG.Name = "cboFG";
+			this.cboFG.Size = new System.Drawing.Size(157, 21);
+			this.cboFG.TabIndex = 6;
 			// 
-			// txtPilot
+			// chkMission
 			// 
-			this.txtPilot.Enabled = false;
-			this.txtPilot.Location = new System.Drawing.Point(227, 151);
-			this.txtPilot.MaxLength = 15;
-			this.txtPilot.Name = "txtPilot";
-			this.txtPilot.Size = new System.Drawing.Size(97, 20);
-			this.txtPilot.TabIndex = 11;
+			this.chkMission.AutoSize = true;
+			this.chkMission.Location = new System.Drawing.Point(6, 19);
+			this.chkMission.Name = "chkMission";
+			this.chkMission.Size = new System.Drawing.Size(101, 17);
+			this.chkMission.TabIndex = 4;
+			this.chkMission.Text = "Use Mission Tie";
+			this.chkMission.UseVisualStyleBackColor = true;
+			this.chkMission.CheckedChanged += new System.EventHandler(this.chkMission_CheckedChanged);
+			// 
+			// grpSounds
+			// 
+			this.grpSounds.Controls.Add(this.cmdRemoveSounds);
+			this.grpSounds.Controls.Add(this.cmdAddSounds);
+			this.grpSounds.Controls.Add(this.lstSounds);
+			this.grpSounds.Controls.Add(this.chkSounds);
+			this.grpSounds.Location = new System.Drawing.Point(12, 303);
+			this.grpSounds.Name = "grpSounds";
+			this.grpSounds.Size = new System.Drawing.Size(332, 96);
+			this.grpSounds.TabIndex = 4;
+			this.grpSounds.TabStop = false;
+			this.grpSounds.Text = "Sounds";
+			// 
+			// cmdRemoveSounds
+			// 
+			this.cmdRemoveSounds.Enabled = false;
+			this.cmdRemoveSounds.Location = new System.Drawing.Point(264, 42);
+			this.cmdRemoveSounds.Name = "cmdRemoveSounds";
+			this.cmdRemoveSounds.Size = new System.Drawing.Size(60, 23);
+			this.cmdRemoveSounds.TabIndex = 2;
+			this.cmdRemoveSounds.Text = "&Remove";
+			this.cmdRemoveSounds.UseVisualStyleBackColor = true;
+			this.cmdRemoveSounds.Click += new System.EventHandler(this.cmdRemoveSounds_Click);
+			// 
+			// cmdAddSounds
+			// 
+			this.cmdAddSounds.Enabled = false;
+			this.cmdAddSounds.Location = new System.Drawing.Point(198, 42);
+			this.cmdAddSounds.Name = "cmdAddSounds";
+			this.cmdAddSounds.Size = new System.Drawing.Size(60, 23);
+			this.cmdAddSounds.TabIndex = 2;
+			this.cmdAddSounds.Text = "&Add";
+			this.cmdAddSounds.UseVisualStyleBackColor = true;
+			this.cmdAddSounds.Click += new System.EventHandler(this.cmdAddSounds_Click);
+			// 
+			// lstSounds
+			// 
+			this.lstSounds.Enabled = false;
+			this.lstSounds.FormattingEnabled = true;
+			this.lstSounds.Location = new System.Drawing.Point(6, 42);
+			this.lstSounds.Name = "lstSounds";
+			this.lstSounds.Size = new System.Drawing.Size(186, 43);
+			this.lstSounds.TabIndex = 1;
+			// 
+			// chkSounds
+			// 
+			this.chkSounds.AutoSize = true;
+			this.chkSounds.Location = new System.Drawing.Point(6, 19);
+			this.chkSounds.Name = "chkSounds";
+			this.chkSounds.Size = new System.Drawing.Size(84, 17);
+			this.chkSounds.TabIndex = 0;
+			this.chkSounds.Text = "Use Sounds";
+			this.chkSounds.UseVisualStyleBackColor = true;
+			this.chkSounds.CheckedChanged += new System.EventHandler(this.chkSounds_CheckedChanged);
+			// 
+			// opnSounds
+			// 
+			this.opnSounds.Filter = "WAV Files|*.wav";
 			// 
 			// XwaHookDialog
 			// 
@@ -303,9 +360,9 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.cmdCancel;
 			this.ClientSize = new System.Drawing.Size(891, 553);
+			this.Controls.Add(this.grpSounds);
 			this.Controls.Add(this.grpMission);
 			this.Controls.Add(this.grpBackdrops);
-			this.Controls.Add(this.label5);
 			this.Controls.Add(this.label4);
 			this.Controls.Add(this.label3);
 			this.Controls.Add(this.cmdCancel);
@@ -319,6 +376,8 @@
 			this.grpBackdrops.PerformLayout();
 			this.grpMission.ResumeLayout(false);
 			this.grpMission.PerformLayout();
+			this.grpSounds.ResumeLayout(false);
+			this.grpSounds.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -330,7 +389,6 @@
 		private System.Windows.Forms.Button cmdCancel;
 		private System.Windows.Forms.Label label3;
 		private System.Windows.Forms.Label label4;
-		private System.Windows.Forms.Label label5;
 		private System.Windows.Forms.GroupBox grpBackdrops;
 		private System.Windows.Forms.Button cmdRemoveBD;
 		private System.Windows.Forms.Button cmdAddBD;
@@ -349,5 +407,11 @@
 		private System.Windows.Forms.ComboBox cboMarkings;
 		private System.Windows.Forms.ComboBox cboFG;
 		private System.Windows.Forms.TextBox txtPilot;
+		private System.Windows.Forms.GroupBox grpSounds;
+		private System.Windows.Forms.Button cmdRemoveSounds;
+		private System.Windows.Forms.Button cmdAddSounds;
+		private System.Windows.Forms.ListBox lstSounds;
+		private System.Windows.Forms.CheckBox chkSounds;
+		private System.Windows.Forms.OpenFileDialog opnSounds;
 	}
 }

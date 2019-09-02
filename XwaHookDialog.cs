@@ -24,7 +24,7 @@ namespace Idmr.Yogeme
 		string _res = "\\Resdata\\";
 		string _wave = "\\Wave\\";
 		string _fm = "\\FlightModels\\";
-		enum ReadMode { None = -1, Backdrop, Mission }
+		enum ReadMode { None = -1, Backdrop, Mission, Sounds }
 
 		public XwaHookDialog(Mission mission)
 		{
@@ -94,6 +94,15 @@ namespace Idmr.Yogeme
 				}
 				srMiss.Close();
 			}
+			if (_soundFile != "")
+			{
+				StreamReader srSounds = new StreamReader(_soundFile);
+				while ((line = srSounds.ReadLine()) != null)
+				{
+					lstSounds.Items.Add(line);
+				}
+				srSounds.Close();
+			}
 			#endregion
 
 			if (srMission != null)
@@ -107,6 +116,7 @@ namespace Idmr.Yogeme
 						readMode = ReadMode.None;
 						if (line.ToLower() == "[resdata]") readMode = ReadMode.Backdrop;
 						else if (line.ToLower() == "[mission_tie]") readMode = ReadMode.Mission;
+						else if (line.ToLower() == "[sounds]") readMode = ReadMode.Sounds;
 					}
 					else if (readMode == ReadMode.Backdrop) lstBackdrops.Items.Add(line);
 					else if (readMode == ReadMode.Mission)
@@ -124,6 +134,7 @@ namespace Idmr.Yogeme
 								lstMission.Items.Add(cboFG.Items[fg].ToString() + ",pilot," + parts[3]);
 						}
 					}
+					else if (readMode == ReadMode.Sounds) lstSounds.Items.Add(line);
 				}
 			}
 
@@ -151,14 +162,11 @@ namespace Idmr.Yogeme
 			if (_installDirectory != "") opnBackdrop.InitialDirectory = _installDirectory + _res;
 			DialogResult res = opnBackdrop.ShowDialog();
 			if (res == DialogResult.OK)
-			{
-				lstBackdrops.Items.Add(_res.TrimStart('\\') + Idmr.Common.StringFunctions.GetFileName(opnBackdrop.FileName, true));
-			}
+				lstBackdrops.Items.Add(opnBackdrop.FileName.Substring(opnBackdrop.FileName.IndexOf(_res) + 1));
 		}
 		private void cmdRemoveBD_Click(object sender, EventArgs e)
 		{
-			if (lstBackdrops.SelectedIndex == -1) return;
-			lstBackdrops.Items.RemoveAt(lstBackdrops.SelectedIndex);
+			if (lstBackdrops.SelectedIndex != -1) lstBackdrops.Items.RemoveAt(lstBackdrops.SelectedIndex);
 		}
 		#endregion Backdrops
 
@@ -194,6 +202,36 @@ namespace Idmr.Yogeme
 		}
 		#endregion
 
+		#region Sounds
+		private void chkSounds_CheckedChanged(object sender, EventArgs e)
+		{
+			lstSounds.Enabled = chkSounds.Checked;
+			cmdAddSounds.Enabled = chkSounds.Checked;
+			cmdRemoveSounds.Enabled = chkSounds.Checked;
+		}
+
+		private void cmdAddSounds_Click(object sender, EventArgs e)
+		{
+			if (_installDirectory != "") opnSounds.InitialDirectory = _installDirectory + _wave;
+			opnSounds.Title = "Select original sound...";
+			DialogResult res = opnSounds.ShowDialog();
+			if (res == DialogResult.OK)
+			{
+				string line = opnSounds.FileName.Substring(opnSounds.FileName.IndexOf(_wave) + 1) + " = ";
+				opnSounds.Title = "Select new sound...";
+				res = opnSounds.ShowDialog();
+				if (res == DialogResult.OK)
+				{
+					lstSounds.Items.Add(line + opnSounds.FileName.Substring(opnSounds.FileName.IndexOf(_wave) + 1));
+				}
+			}
+		}
+		private void cmdRemoveSounds_Click(object sender, EventArgs e)
+		{
+			if (lstSounds.SelectedIndex != -1) lstSounds.Items.RemoveAt(lstSounds.SelectedIndex);
+		}
+		#endregion
+
 		private void cmdCancel_Click(object sender, EventArgs e)
 		{
 			Close();
@@ -204,7 +242,9 @@ namespace Idmr.Yogeme
 
 			if (!chkMission.Checked && _missionTxtFile != "") File.Delete(_missionTxtFile);
 
-			if (!chkBackdrops.Checked && !chkMission.Checked)
+			if (!chkSounds.Checked && _soundFile != "") File.Delete(_soundFile);
+
+			if (!chkBackdrops.Checked && !chkMission.Checked && !chkSounds.Checked)
 			{
 				File.Delete(_fileName);
 				Close();
@@ -261,10 +301,17 @@ namespace Idmr.Yogeme
 					}
 					sw.WriteLine("");
 				}
+				if (chkSounds.Checked && lstSounds.Items.Count > 0)
+				{
+					sw.WriteLine("[Sounds]");
+					for (int i = 0; i < lstSounds.Items.Count; i++) sw.WriteLine(lstSounds.Items[i]);
+					sw.WriteLine("");
+				}
 				sw.Flush();
 				sw.Close();
 				if (_bdFile != "") File.Delete(_bdFile);
 				if (_missionTxtFile != "") File.Delete(_missionTxtFile);
+				if (_soundFile != "") File.Delete(_soundFile);
 			}
 			catch
 			{
