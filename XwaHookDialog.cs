@@ -24,7 +24,7 @@ namespace Idmr.Yogeme
 		string _res = "\\Resdata\\";
 		string _wave = "\\Wave\\";
 		string _fm = "\\FlightModels\\";
-		enum ReadMode { None = -1, Backdrop, Mission, Sounds, Objects }
+		enum ReadMode { None = -1, Backdrop, Mission, Sounds, Objects, HangarObjects }
 
 		public XwaHookDialog(Mission mission)
 		{
@@ -40,8 +40,16 @@ namespace Idmr.Yogeme
 			cboIff.Items.AddRange(Strings.IFF);
 			for (int i = cboIff.Items.Count; i < 256; i++) cboIff.Items.Add("IFF #" + (i + 1));
 			cboMarkings.Items.AddRange(Strings.Color);
-			for (int i = cboMarkings.Items.Count; i < 256; i++) cboMarkings.Items.Add("Clr #" + (i + 1));
+			cboShuttleMarks.Items.AddRange(Strings.Color);
+			for (int i = cboMarkings.Items.Count; i < 256; i++)
+			{
+				cboMarkings.Items.Add("Clr #" + (i + 1));
+				cboShuttleMarks.Items.Add("Clr #" + (i + 1));
+			}
+			cboShuttleMarks.SelectedIndex = 0;
 			cboFG.Items.AddRange(mission.FlightGroups.GetList());
+			for (int i = 0; i < 256; i++) cboShuttleModel.Items.Add(i);
+			cboShuttleModel.SelectedIndex = 50;
 
 			Settings s = new Settings();
 			if (s.XwaInstalled)
@@ -106,6 +114,24 @@ namespace Idmr.Yogeme
 					lstObjects.Items.Add(line);
 				srObjects.Close();
 			}
+			if (_hangarObjectsFile != "")
+			{
+				StreamReader srHangarObjects = new StreamReader(_hangarObjectsFile);
+				while ((line = srHangarObjects.ReadLine()) != null)
+				{
+					string[] parts = line.ToLower().Replace(" ", "").Split('=');
+					if (parts.Length == 2)
+					{
+						if (parts[0] == "loadshuttle") chkShuttle.Checked = (parts[1] != "0");
+						else if (parts[0] == "shuttlemodelindex") cboShuttleModel.SelectedIndex = int.Parse(parts[1]);
+						else if (parts[0] == "shuttlemarkings") cboShuttleMarks.SelectedIndex = int.Parse(parts[1]);
+						else if (parts[0] == "loaddroids") chkDroids.Checked = (parts[1] != "0");
+						else if (parts[0] == "ishangarfloorinverted") chkFloor.Checked = (parts[1] != "0");
+						else lstHangarObjects.Items.Add(line);
+					}
+				}
+				srHangarObjects.Close();
+			}
 			#endregion
 
 			if (srMission != null)
@@ -121,6 +147,7 @@ namespace Idmr.Yogeme
 						else if (line.ToLower() == "[mission_tie]") readMode = ReadMode.Mission;
 						else if (line.ToLower() == "[sounds]") readMode = ReadMode.Sounds;
 						else if (line.ToLower() == "[objects]") readMode = ReadMode.Objects;
+						else if (line.ToLower() == "[hangarobjects]") readMode = ReadMode.HangarObjects;
 					}
 					else if (readMode == ReadMode.Backdrop) lstBackdrops.Items.Add(line);
 					else if (readMode == ReadMode.Mission)
@@ -140,12 +167,26 @@ namespace Idmr.Yogeme
 					}
 					else if (readMode == ReadMode.Sounds) lstSounds.Items.Add(line);
 					else if (readMode == ReadMode.Objects) lstObjects.Items.Add(line);
+					else if (readMode == ReadMode.HangarObjects)
+					{
+						string[] parts = line.ToLower().Replace(" ", "").Split('=');
+						if (parts.Length == 2)
+						{
+							if (parts[0] == "loadshuttle") chkShuttle.Checked = (parts[1] != "0");
+							else if (parts[0] == "shuttlemodelindex") cboShuttleModel.SelectedIndex = int.Parse(parts[1]);
+							else if (parts[0] == "shuttlemarkings") cboShuttleMarks.SelectedIndex = int.Parse(parts[1]);
+							else if (parts[0] == "loaddroids") chkDroids.Checked = (parts[1] != "0");
+							else if (parts[0] == "ishangarfloorinverted") chkFloor.Checked = (parts[1] != "0");
+							else lstHangarObjects.Items.Add(line);
+						}
+					}
 				}
 			}
 
 			srMission.Close();
 			chkBackdrops.Checked = (lstBackdrops.Items.Count > 0);
 			chkMission.Checked = (lstMission.Items.Count > 0);
+			chkHangars.Checked = useHangarObjects;
 		}
 
 		string checkFile(string extension)
@@ -226,9 +267,7 @@ namespace Idmr.Yogeme
 				opnSounds.Title = "Select new sound...";
 				res = opnSounds.ShowDialog();
 				if (res == DialogResult.OK)
-				{
 					lstSounds.Items.Add(line + opnSounds.FileName.Substring(opnSounds.FileName.IndexOf(_wave) + 1));
-				}
 			}
 		}
 		private void cmdRemoveSounds_Click(object sender, EventArgs e)
@@ -256,9 +295,7 @@ namespace Idmr.Yogeme
 				opnObjects.Title = "Select new object...";
 				res = opnObjects.ShowDialog();
 				if (res == DialogResult.OK)
-				{
 					lstObjects.Items.Add(line + opnObjects.FileName.Substring(opnObjects.FileName.IndexOf(_fm) + 1));
-				}
 			}
 		}
 		private void cmdRemoveObjects_Click(object sender, EventArgs e)
@@ -266,6 +303,33 @@ namespace Idmr.Yogeme
 			if (lstObjects.SelectedIndex != -1) lstObjects.Items.RemoveAt(lstObjects.SelectedIndex);
 		}
 		#endregion
+
+		#region Hangars
+		private void chkHangars_CheckedChanged(object sender, EventArgs e)
+		{
+			grpHangarObjects.Enabled = chkHangars.Checked;
+		}
+
+		private void cmdAddHangar_Click(object sender, EventArgs e)
+		{
+			if (_installDirectory != "") opnObjects.InitialDirectory = _installDirectory + _fm;
+			opnObjects.Title = "Select original object...";
+			DialogResult res = opnObjects.ShowDialog();
+			if (res == DialogResult.OK)
+			{
+				string line = opnObjects.FileName.Substring(opnObjects.FileName.IndexOf(_fm) + 1) + " = ";
+				opnObjects.Title = "Select new object...";
+				res = opnObjects.ShowDialog();
+				if (res == DialogResult.OK)
+					lstHangarObjects.Items.Add(line + opnObjects.FileName.Substring(opnObjects.FileName.IndexOf(_fm) + 1));
+			}
+		}
+		private void cmdRemoveHangar_Click(object sender, EventArgs e)
+		{
+			if (lstHangarObjects.SelectedIndex != -1) lstHangarObjects.Items.RemoveAt(lstHangarObjects.SelectedIndex);
+		}
+		#endregion
+
 		private void cmdCancel_Click(object sender, EventArgs e)
 		{
 			Close();
@@ -278,7 +342,9 @@ namespace Idmr.Yogeme
 
 			if (!chkSounds.Checked && _soundFile != "") File.Delete(_soundFile);
 
-			if (!chkBackdrops.Checked && !chkMission.Checked && !chkSounds.Checked)
+			if (!useHangarObjects) File.Delete(_hangarObjectsFile);
+
+			if (!chkBackdrops.Checked && !chkMission.Checked && !chkSounds.Checked && !useHangarObjects)
 			{
 				File.Delete(_fileName);
 				Close();
@@ -341,11 +407,23 @@ namespace Idmr.Yogeme
 					for (int i = 0; i < lstSounds.Items.Count; i++) sw.WriteLine(lstSounds.Items[i]);
 					sw.WriteLine("");
 				}
+				if (chkHangars.Checked && useHangarObjects)
+				{
+					sw.WriteLine("[HangarObjects]");
+					if (!chkShuttle.Checked) sw.WriteLine("LoadShuttle = 0");
+					if (cboShuttleModel.SelectedIndex != 50) sw.WriteLine("ShuttleModelIndex = " + cboShuttleModel.SelectedIndex);
+					if (cboShuttleMarks.SelectedIndex != 0) sw.WriteLine("ShuttleMarkings = " + cboShuttleMarks.SelectedIndex);
+					if (!chkDroids.Checked) sw.WriteLine("LoadDroids = 0");
+					if (chkFloor.Checked) sw.WriteLine("IsHangarFloorInverted = 1");
+					for (int i = 0; i < lstHangarObjects.Items.Count; i++) sw.WriteLine(lstHangarObjects.Items[i]);
+					sw.WriteLine("");
+				}
 				sw.Flush();
 				sw.Close();
 				if (_bdFile != "") File.Delete(_bdFile);
 				if (_missionTxtFile != "") File.Delete(_missionTxtFile);
 				if (_soundFile != "") File.Delete(_soundFile);
+				if (_hangarObjectsFile != "") File.Delete(_hangarObjectsFile);
 			}
 			catch
 			{
@@ -359,5 +437,7 @@ namespace Idmr.Yogeme
 			File.Delete(backup);
 			Close();
 		}
+
+		bool useHangarObjects { get { return ((lstHangarObjects.Items.Count > 0) | !chkShuttle.Checked | !chkDroids.Checked | chkFloor.Checked | (cboShuttleModel.SelectedIndex != 50) | (cboShuttleMarks.SelectedIndex != 0)); } }
 	}
 }

@@ -31,7 +31,6 @@
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(XwaHookDialog));
 			this.cmdOK = new System.Windows.Forms.Button();
 			this.cmdCancel = new System.Windows.Forms.Button();
-			this.label3 = new System.Windows.Forms.Label();
 			this.grpBackdrops = new System.Windows.Forms.GroupBox();
 			this.cmdRemoveBD = new System.Windows.Forms.Button();
 			this.cmdAddBD = new System.Windows.Forms.Button();
@@ -62,16 +61,32 @@
 			this.lstObjects = new System.Windows.Forms.ListBox();
 			this.chkObjects = new System.Windows.Forms.CheckBox();
 			this.opnObjects = new System.Windows.Forms.OpenFileDialog();
+			this.grpHangars = new System.Windows.Forms.GroupBox();
+			this.chkHangars = new System.Windows.Forms.CheckBox();
+			this.grpHangarObjects = new System.Windows.Forms.GroupBox();
+			this.lstHangarObjects = new System.Windows.Forms.ListBox();
+			this.cmdRemoveHangar = new System.Windows.Forms.Button();
+			this.cmdAddHangar = new System.Windows.Forms.Button();
+			this.cboShuttleModel = new System.Windows.Forms.ComboBox();
+			this.label1 = new System.Windows.Forms.Label();
+			this.chkShuttle = new System.Windows.Forms.CheckBox();
+			this.chkDroids = new System.Windows.Forms.CheckBox();
+			this.chkFloor = new System.Windows.Forms.CheckBox();
+			this.cboShuttleMarks = new System.Windows.Forms.ComboBox();
+			this.label2 = new System.Windows.Forms.Label();
+			this.label3 = new System.Windows.Forms.Label();
 			this.grpBackdrops.SuspendLayout();
 			this.grpMission.SuspendLayout();
 			this.grpSounds.SuspendLayout();
 			this.grpObjects.SuspendLayout();
+			this.grpHangars.SuspendLayout();
+			this.grpHangarObjects.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// cmdOK
 			// 
 			this.cmdOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.cmdOK.Location = new System.Drawing.Point(180, 462);
+			this.cmdOK.Location = new System.Drawing.Point(179, 405);
 			this.cmdOK.Name = "cmdOK";
 			this.cmdOK.Size = new System.Drawing.Size(75, 23);
 			this.cmdOK.TabIndex = 0;
@@ -82,22 +97,13 @@
 			// cmdCancel
 			// 
 			this.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.cmdCancel.Location = new System.Drawing.Point(465, 432);
+			this.cmdCancel.Location = new System.Drawing.Point(444, 405);
 			this.cmdCancel.Name = "cmdCancel";
 			this.cmdCancel.Size = new System.Drawing.Size(75, 23);
 			this.cmdCancel.TabIndex = 0;
 			this.cmdCancel.Text = "&Cancel";
 			this.cmdCancel.UseVisualStyleBackColor = true;
 			this.cmdCancel.Click += new System.EventHandler(this.cmdCancel_Click);
-			// 
-			// label3
-			// 
-			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(604, 219);
-			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(47, 13);
-			this.label3.TabIndex = 1;
-			this.label3.Text = "Hangars";
 			// 
 			// grpBackdrops
 			// 
@@ -401,7 +407,7 @@
 			this.chkObjects.Name = "chkObjects";
 			this.chkObjects.Size = new System.Drawing.Size(84, 17);
 			this.chkObjects.TabIndex = 0;
-			this.chkObjects.Text = "Use Sounds";
+			this.chkObjects.Text = "Use Objects";
 			this.chkObjects.UseVisualStyleBackColor = true;
 			this.chkObjects.CheckedChanged += new System.EventHandler(this.chkObjects_CheckedChanged);
 			// 
@@ -409,18 +415,166 @@
 			// 
 			this.opnObjects.Filter = "OPT Files|*.opt";
 			// 
+			// grpHangars
+			// 
+			this.grpHangars.Controls.Add(this.label3);
+			this.grpHangars.Controls.Add(this.grpHangarObjects);
+			this.grpHangars.Controls.Add(this.chkHangars);
+			this.grpHangars.Location = new System.Drawing.Point(353, 114);
+			this.grpHangars.Name = "grpHangars";
+			this.grpHangars.Size = new System.Drawing.Size(332, 285);
+			this.grpHangars.TabIndex = 6;
+			this.grpHangars.TabStop = false;
+			this.grpHangars.Text = "Hangars";
+			// 
+			// chkHangars
+			// 
+			this.chkHangars.AutoSize = true;
+			this.chkHangars.Location = new System.Drawing.Point(6, 19);
+			this.chkHangars.Name = "chkHangars";
+			this.chkHangars.Size = new System.Drawing.Size(88, 17);
+			this.chkHangars.TabIndex = 1;
+			this.chkHangars.Text = "Use Hangars";
+			this.chkHangars.UseVisualStyleBackColor = true;
+			this.chkHangars.CheckedChanged += new System.EventHandler(this.chkHangars_CheckedChanged);
+			// 
+			// grpHangarObjects
+			// 
+			this.grpHangarObjects.Controls.Add(this.label2);
+			this.grpHangarObjects.Controls.Add(this.cboShuttleMarks);
+			this.grpHangarObjects.Controls.Add(this.chkFloor);
+			this.grpHangarObjects.Controls.Add(this.chkDroids);
+			this.grpHangarObjects.Controls.Add(this.chkShuttle);
+			this.grpHangarObjects.Controls.Add(this.label1);
+			this.grpHangarObjects.Controls.Add(this.cboShuttleModel);
+			this.grpHangarObjects.Controls.Add(this.cmdAddHangar);
+			this.grpHangarObjects.Controls.Add(this.cmdRemoveHangar);
+			this.grpHangarObjects.Controls.Add(this.lstHangarObjects);
+			this.grpHangarObjects.Enabled = false;
+			this.grpHangarObjects.Location = new System.Drawing.Point(6, 42);
+			this.grpHangarObjects.Name = "grpHangarObjects";
+			this.grpHangarObjects.Size = new System.Drawing.Size(318, 127);
+			this.grpHangarObjects.TabIndex = 2;
+			this.grpHangarObjects.TabStop = false;
+			this.grpHangarObjects.Text = "Objects";
+			// 
+			// lstHangarObjects
+			// 
+			this.lstHangarObjects.FormattingEnabled = true;
+			this.lstHangarObjects.Location = new System.Drawing.Point(6, 19);
+			this.lstHangarObjects.Name = "lstHangarObjects";
+			this.lstHangarObjects.Size = new System.Drawing.Size(174, 43);
+			this.lstHangarObjects.TabIndex = 2;
+			// 
+			// cmdRemoveHangar
+			// 
+			this.cmdRemoveHangar.Location = new System.Drawing.Point(252, 19);
+			this.cmdRemoveHangar.Name = "cmdRemoveHangar";
+			this.cmdRemoveHangar.Size = new System.Drawing.Size(60, 23);
+			this.cmdRemoveHangar.TabIndex = 3;
+			this.cmdRemoveHangar.Text = "&Remove";
+			this.cmdRemoveHangar.UseVisualStyleBackColor = true;
+			this.cmdRemoveHangar.Click += new System.EventHandler(this.cmdRemoveHangar_Click);
+			// 
+			// cmdAddHangar
+			// 
+			this.cmdAddHangar.Location = new System.Drawing.Point(186, 19);
+			this.cmdAddHangar.Name = "cmdAddHangar";
+			this.cmdAddHangar.Size = new System.Drawing.Size(60, 23);
+			this.cmdAddHangar.TabIndex = 4;
+			this.cmdAddHangar.Text = "&Add";
+			this.cmdAddHangar.UseVisualStyleBackColor = true;
+			this.cmdAddHangar.Click += new System.EventHandler(this.cmdAddHangar_Click);
+			// 
+			// cboShuttleModel
+			// 
+			this.cboShuttleModel.FormattingEnabled = true;
+			this.cboShuttleModel.Location = new System.Drawing.Point(74, 68);
+			this.cboShuttleModel.Name = "cboShuttleModel";
+			this.cboShuttleModel.Size = new System.Drawing.Size(44, 21);
+			this.cboShuttleModel.TabIndex = 7;
+			// 
+			// label1
+			// 
+			this.label1.AutoSize = true;
+			this.label1.Location = new System.Drawing.Point(6, 71);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(62, 13);
+			this.label1.TabIndex = 8;
+			this.label1.Text = "SHU Model";
+			// 
+			// chkShuttle
+			// 
+			this.chkShuttle.AutoSize = true;
+			this.chkShuttle.Checked = true;
+			this.chkShuttle.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.chkShuttle.Location = new System.Drawing.Point(9, 95);
+			this.chkShuttle.Name = "chkShuttle";
+			this.chkShuttle.Size = new System.Drawing.Size(86, 17);
+			this.chkShuttle.TabIndex = 9;
+			this.chkShuttle.Text = "Load Shuttle";
+			this.chkShuttle.UseVisualStyleBackColor = true;
+			// 
+			// chkDroids
+			// 
+			this.chkDroids.AutoSize = true;
+			this.chkDroids.Checked = true;
+			this.chkDroids.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.chkDroids.Location = new System.Drawing.Point(101, 95);
+			this.chkDroids.Name = "chkDroids";
+			this.chkDroids.Size = new System.Drawing.Size(83, 17);
+			this.chkDroids.TabIndex = 9;
+			this.chkDroids.Text = "Load Droids";
+			this.chkDroids.UseVisualStyleBackColor = true;
+			// 
+			// chkFloor
+			// 
+			this.chkFloor.AutoSize = true;
+			this.chkFloor.Location = new System.Drawing.Point(192, 95);
+			this.chkFloor.Name = "chkFloor";
+			this.chkFloor.Size = new System.Drawing.Size(79, 17);
+			this.chkFloor.TabIndex = 9;
+			this.chkFloor.Text = "Invert Floor";
+			this.chkFloor.UseVisualStyleBackColor = true;
+			// 
+			// cboShuttleMarks
+			// 
+			this.cboShuttleMarks.FormattingEnabled = true;
+			this.cboShuttleMarks.Location = new System.Drawing.Point(186, 68);
+			this.cboShuttleMarks.Name = "cboShuttleMarks";
+			this.cboShuttleMarks.Size = new System.Drawing.Size(126, 21);
+			this.cboShuttleMarks.TabIndex = 10;
+			// 
+			// label2
+			// 
+			this.label2.AutoSize = true;
+			this.label2.Location = new System.Drawing.Point(124, 71);
+			this.label2.Name = "label2";
+			this.label2.Size = new System.Drawing.Size(62, 13);
+			this.label2.TabIndex = 11;
+			this.label2.Text = "SHU Marks";
+			// 
+			// label3
+			// 
+			this.label3.AutoSize = true;
+			this.label3.Location = new System.Drawing.Point(85, 227);
+			this.label3.Name = "label3";
+			this.label3.Size = new System.Drawing.Size(185, 13);
+			this.label3.TabIndex = 3;
+			this.label3.Text = "Camera, Fam Camera, Map, Fam Map";
+			// 
 			// XwaHookDialog
 			// 
 			this.AcceptButton = this.cmdOK;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.cmdCancel;
-			this.ClientSize = new System.Drawing.Size(891, 553);
+			this.ClientSize = new System.Drawing.Size(697, 447);
+			this.Controls.Add(this.grpHangars);
 			this.Controls.Add(this.grpObjects);
 			this.Controls.Add(this.grpSounds);
 			this.Controls.Add(this.grpMission);
 			this.Controls.Add(this.grpBackdrops);
-			this.Controls.Add(this.label3);
 			this.Controls.Add(this.cmdCancel);
 			this.Controls.Add(this.cmdOK);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -436,8 +590,11 @@
 			this.grpSounds.PerformLayout();
 			this.grpObjects.ResumeLayout(false);
 			this.grpObjects.PerformLayout();
+			this.grpHangars.ResumeLayout(false);
+			this.grpHangars.PerformLayout();
+			this.grpHangarObjects.ResumeLayout(false);
+			this.grpHangarObjects.PerformLayout();
 			this.ResumeLayout(false);
-			this.PerformLayout();
 
 		}
 
@@ -445,7 +602,6 @@
 
 		private System.Windows.Forms.Button cmdOK;
 		private System.Windows.Forms.Button cmdCancel;
-		private System.Windows.Forms.Label label3;
 		private System.Windows.Forms.GroupBox grpBackdrops;
 		private System.Windows.Forms.Button cmdRemoveBD;
 		private System.Windows.Forms.Button cmdAddBD;
@@ -476,5 +632,19 @@
 		private System.Windows.Forms.ListBox lstObjects;
 		private System.Windows.Forms.CheckBox chkObjects;
 		private System.Windows.Forms.OpenFileDialog opnObjects;
+		private System.Windows.Forms.GroupBox grpHangars;
+		private System.Windows.Forms.GroupBox grpHangarObjects;
+		private System.Windows.Forms.Label label2;
+		private System.Windows.Forms.ComboBox cboShuttleMarks;
+		private System.Windows.Forms.CheckBox chkFloor;
+		private System.Windows.Forms.CheckBox chkDroids;
+		private System.Windows.Forms.CheckBox chkShuttle;
+		private System.Windows.Forms.Label label1;
+		private System.Windows.Forms.ComboBox cboShuttleModel;
+		private System.Windows.Forms.Button cmdAddHangar;
+		private System.Windows.Forms.Button cmdRemoveHangar;
+		private System.Windows.Forms.ListBox lstHangarObjects;
+		private System.Windows.Forms.CheckBox chkHangars;
+		private System.Windows.Forms.Label label3;
 	}
 }
