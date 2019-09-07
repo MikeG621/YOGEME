@@ -1,4 +1,16 @@
-﻿using Idmr.Platform.Xwa;
+﻿/*
+ * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
+ * Copyright (C) 2007-2019 Michael Gaisser (mjgaisser@gmail.com)
+ * Licensed under the MPL v2.0 or later
+ * 
+ * VERSION: 1.5.1+
+ */
+
+/* CHANGELOG
+ * -
+ */
+
+using Idmr.Platform.Xwa;
 using System;
 using System.IO;
 using System.Windows.Forms;
@@ -24,7 +36,10 @@ namespace Idmr.Yogeme
 		string _res = "\\Resdata\\";
 		string _wave = "\\Wave\\";
 		string _fm = "\\FlightModels\\";
-		enum ReadMode { None = -1, Backdrop, Mission, Sounds, Objects, HangarObjects }
+		enum ReadMode { None = -1, Backdrop, Mission, Sounds, Objects, HangarObjects, HangarCamera }
+		bool _loading = false;
+		int[,] _cameras = new int[5, 3];
+		int[,] _defaultCameras = new int[5, 3];
 
 		public XwaHookDialog(Mission mission)
 		{
@@ -34,6 +49,7 @@ namespace Idmr.Yogeme
 			{
 				MessageBox.Show("Please perform inital save prior to hook assignment.", "New Mission detected", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 				cmdCancel_Click("NewMission", new EventArgs());
+				return;
 			}
 			_fileName = mission.MissionPath.Replace(".tie", ".ini");
 
@@ -50,12 +66,21 @@ namespace Idmr.Yogeme
 			cboFG.Items.AddRange(mission.FlightGroups.GetList());
 			for (int i = 0; i < 256; i++) cboShuttleModel.Items.Add(i);
 			cboShuttleModel.SelectedIndex = 50;
+			for (int i = 4; i >= 0; i--)
+			{
+				cboCamera.SelectedIndex = i;
+				cmdDefaultCamera_Click("startup", new EventArgs());
+			}
 
 			Settings s = new Settings();
 			if (s.XwaInstalled)
 			{
 				_installDirectory = s.XwaPath;
 				grpBackdrops.Enabled = File.Exists(_installDirectory + "\\Hook_Backdrops.dll");
+				grpMission.Enabled = File.Exists(_installDirectory + "\\Hook_Mission_Tie.dll");
+				grpSounds.Enabled = File.Exists(_installDirectory + "\\Hook_Engine_Sound.dll");
+				grpObjects.Enabled = File.Exists(_installDirectory + "\\Hook_Mission_Objects.dll");
+				grpHangars.Enabled = File.Exists(_installDirectory + "\\Hook_Hangars.dll");
 
 				_bdFile = checkFile("_Resdata.txt");
 				_soundFile = checkFile("_Sounds.txt");
@@ -69,6 +94,7 @@ namespace Idmr.Yogeme
 			}
 			StreamReader srMission = null;
 			string line = "";
+			string lineLower = "";
 			if (File.Exists(_fileName)) srMission = new StreamReader(_fileName);
 			ReadMode readMode = ReadMode.None;
 
@@ -132,6 +158,31 @@ namespace Idmr.Yogeme
 				}
 				srHangarObjects.Close();
 			}
+			if (_hangarCameraFile != "")
+			{
+				StreamReader srHangarCamera = new StreamReader(_hangarCameraFile);
+				int view = 0;
+				int camera = 0;
+				while((line = srHangarCamera.ReadLine()) != null)
+				{
+					string[] parts = line.ToLower().Replace(" ", "").Split('=');
+					if (parts.Length == 2)
+					{
+						if (parts[0].StartsWith("key1")) view = 0;
+						else if (parts[0].StartsWith("key2")) view = 1;
+						else if (parts[0].StartsWith("key3")) view = 2;
+						else if (parts[0].StartsWith("key6")) view = 3;
+						else if (parts[0].StartsWith("key9")) view = 4;
+
+						if (parts[0].IndexOf("_x") != -1) camera = 0;
+						else if (parts[0].IndexOf("_y") != -1) camera = 1;
+						else if (parts[0].IndexOf("_z") != -1) camera = 2;
+
+						_cameras[view, camera] = int.Parse(parts[1]);
+					}
+				}
+				srHangarCamera.Close();
+			}
 			#endregion
 
 			if (srMission != null)
@@ -139,20 +190,22 @@ namespace Idmr.Yogeme
 				while ((line = srMission.ReadLine()) != null)
 				{
 					if (line == "" || line.Trim().StartsWith(";")) continue;
+					lineLower = line.ToLower();
 
 					if (line.StartsWith("["))
 					{
 						readMode = ReadMode.None;
-						if (line.ToLower() == "[resdata]") readMode = ReadMode.Backdrop;
-						else if (line.ToLower() == "[mission_tie]") readMode = ReadMode.Mission;
-						else if (line.ToLower() == "[sounds]") readMode = ReadMode.Sounds;
-						else if (line.ToLower() == "[objects]") readMode = ReadMode.Objects;
-						else if (line.ToLower() == "[hangarobjects]") readMode = ReadMode.HangarObjects;
+						if (lineLower == "[resdata]") readMode = ReadMode.Backdrop;
+						else if (lineLower == "[mission_tie]") readMode = ReadMode.Mission;
+						else if (lineLower == "[sounds]") readMode = ReadMode.Sounds;
+						else if (lineLower == "[objects]") readMode = ReadMode.Objects;
+						else if (lineLower == "[hangarobjects]") readMode = ReadMode.HangarObjects;
+						else if (lineLower == "[hangarcamera]") readMode = ReadMode.HangarCamera;
 					}
 					else if (readMode == ReadMode.Backdrop) lstBackdrops.Items.Add(line);
 					else if (readMode == ReadMode.Mission)
 					{
-						line = line.ToLower().Replace(" ", "");
+						line = lineLower.Replace(" ", "");
 						string[] parts = line.Split(',');
 						if (parts.Length == 4 && parts[0] == "fg")
 						{
@@ -169,7 +222,7 @@ namespace Idmr.Yogeme
 					else if (readMode == ReadMode.Objects) lstObjects.Items.Add(line);
 					else if (readMode == ReadMode.HangarObjects)
 					{
-						string[] parts = line.ToLower().Replace(" ", "").Split('=');
+						string[] parts = lineLower.Replace(" ", "").Split('=');
 						if (parts.Length == 2)
 						{
 							if (parts[0] == "loadshuttle") chkShuttle.Checked = (parts[1] != "0");
@@ -180,13 +233,33 @@ namespace Idmr.Yogeme
 							else lstHangarObjects.Items.Add(line);
 						}
 					}
+					else if (readMode == ReadMode.HangarCamera)
+					{
+						int view = 0;
+						int camera = 0;
+						string[] parts = lineLower.Replace(" ", "").Split('=');
+						if (parts.Length == 2)
+						{
+							if (parts[0].StartsWith("key1")) view = 0;
+							else if (parts[0].StartsWith("key2")) view = 1;
+							else if (parts[0].StartsWith("key3")) view = 2;
+							else if (parts[0].StartsWith("key6")) view = 3;
+							else if (parts[0].StartsWith("key9")) view = 4;
+
+							if (parts[0].IndexOf("_x") != -1) camera = 0;
+							else if (parts[0].IndexOf("_y") != -1) camera = 1;
+							else if (parts[0].IndexOf("_z") != -1) camera = 2;
+
+							_cameras[view, camera] = int.Parse(parts[1]);
+						}
+					}
 				}
 			}
 
 			srMission.Close();
 			chkBackdrops.Checked = (lstBackdrops.Items.Count > 0);
 			chkMission.Checked = (lstMission.Items.Count > 0);
-			chkHangars.Checked = useHangarObjects;
+			chkHangars.Checked = useHangarObjects | useHangarCamera;
 		}
 
 		string checkFile(string extension)
@@ -308,6 +381,17 @@ namespace Idmr.Yogeme
 		private void chkHangars_CheckedChanged(object sender, EventArgs e)
 		{
 			grpHangarObjects.Enabled = chkHangars.Checked;
+			grpCamera.Enabled = chkHangars.Checked;
+		}
+
+		private void cboCamera_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			if (cboCamera.SelectedIndex == -1) return;
+			_loading = true;
+			numCameraX.Value = _cameras[cboCamera.SelectedIndex, 0];
+			numCameraY.Value = _cameras[cboCamera.SelectedIndex, 1];
+			numCameraZ.Value = _cameras[cboCamera.SelectedIndex, 2];
+			_loading = false;
 		}
 
 		private void cmdAddHangar_Click(object sender, EventArgs e)
@@ -324,10 +408,67 @@ namespace Idmr.Yogeme
 					lstHangarObjects.Items.Add(line + opnObjects.FileName.Substring(opnObjects.FileName.IndexOf(_fm) + 1));
 			}
 		}
+		private void cmdDefaultCamera_Click(object sender, EventArgs e)
+		{
+			switch(cboCamera.SelectedIndex)
+			{
+				case 0:	// View 1
+					numCameraX.Value = 1130;
+					numCameraY.Value = -2320;
+					numCameraZ.Value = -300;
+					break;
+				case 1:	// View 2
+					numCameraX.Value = 1240;
+					numCameraY.Value = -330;
+					numCameraZ.Value = -700;
+					break;
+				case 2:	// View 3
+					numCameraX.Value = -1120;
+					numCameraY.Value = 1360;
+					numCameraZ.Value = -790;
+					break;
+				case 3:	// View 6
+					numCameraX.Value = -1200;
+					numCameraY.Value = -1530;
+					numCameraZ.Value = -850;
+					break;
+				case 4:	// View 9
+					numCameraX.Value = 1070;
+					numCameraY.Value = 4640;
+					numCameraZ.Value = -130;
+					break;
+			}
+		}
 		private void cmdRemoveHangar_Click(object sender, EventArgs e)
 		{
 			if (lstHangarObjects.SelectedIndex != -1) lstHangarObjects.Items.RemoveAt(lstHangarObjects.SelectedIndex);
 		}
+
+		private void numCameraX_ValueChanged(object sender, EventArgs e)
+		{
+			if (!_loading) _cameras[cboCamera.SelectedIndex, 0] = (int)numCameraX.Value;
+		}
+		private void numCameraY_ValueChanged(object sender, EventArgs e)
+		{
+			if (!_loading) _cameras[cboCamera.SelectedIndex, 1] = (int)numCameraY.Value;
+		}
+		private void numCameraZ_ValueChanged(object sender, EventArgs e)
+		{
+			if (!_loading) _cameras[cboCamera.SelectedIndex, 2] = (int)numCameraZ.Value;
+		}
+
+		bool useHangarCamera
+		{
+			get
+			{
+				bool use = false;
+				for (int i = 0; i < 5; i++)
+					for (int j = 0; j < 3; j++)
+						use |= (_cameras[i, j] == _defaultCameras[i, j]);
+				return use;
+			}
+		}
+		bool useHangarObjects { get { return ((lstHangarObjects.Items.Count > 0) | !chkShuttle.Checked | !chkDroids.Checked | chkFloor.Checked | (cboShuttleModel.SelectedIndex != 50) | (cboShuttleMarks.SelectedIndex != 0)); } }
 		#endregion
 
 		private void cmdCancel_Click(object sender, EventArgs e)
@@ -342,9 +483,10 @@ namespace Idmr.Yogeme
 
 			if (!chkSounds.Checked && _soundFile != "") File.Delete(_soundFile);
 
-			if (!useHangarObjects) File.Delete(_hangarObjectsFile);
+			if (!useHangarObjects && _hangarObjectsFile != "") File.Delete(_hangarObjectsFile);
+			if (!useHangarCamera && _hangarCameraFile != "") File.Delete (_hangarCameraFile);
 
-			if (!chkBackdrops.Checked && !chkMission.Checked && !chkSounds.Checked && !useHangarObjects)
+			if (!chkBackdrops.Checked && !chkMission.Checked && !chkSounds.Checked && !useHangarObjects && !useHangarCamera)
 			{
 				File.Delete(_fileName);
 				Close();
@@ -418,12 +560,30 @@ namespace Idmr.Yogeme
 					for (int i = 0; i < lstHangarObjects.Items.Count; i++) sw.WriteLine(lstHangarObjects.Items[i]);
 					sw.WriteLine("");
 				}
+				if (chkHangars.Checked && useHangarCamera)
+				{
+					sw.WriteLine("[HangarCamera]");
+					string[] keys = { "1", "2", "3", "6", "9" };
+					for (int i = 0; i < 5; i++)
+					{
+						bool use = false;
+						for (int j = 0; j < 3; j++) use |= (_cameras[i, j] == _defaultCameras[i, j]);
+						if (use)
+						{
+							sw.WriteLine("Key" + keys[i] + "_X = " + _cameras[i, 0]);
+							sw.WriteLine("Key" + keys[i] + "_Y = " + _cameras[i, 1]);
+							sw.WriteLine("Key" + keys[i] + "_Z = " + _cameras[i, 2]);
+							sw.WriteLine("");
+						}
+					}
+				}
 				sw.Flush();
 				sw.Close();
 				if (_bdFile != "") File.Delete(_bdFile);
 				if (_missionTxtFile != "") File.Delete(_missionTxtFile);
 				if (_soundFile != "") File.Delete(_soundFile);
 				if (_hangarObjectsFile != "") File.Delete(_hangarObjectsFile);
+				if (_hangarCameraFile != "") File.Delete(_hangarCameraFile);
 			}
 			catch
 			{
@@ -437,7 +597,5 @@ namespace Idmr.Yogeme
 			File.Delete(backup);
 			Close();
 		}
-
-		bool useHangarObjects { get { return ((lstHangarObjects.Items.Count > 0) | !chkShuttle.Checked | !chkDroids.Checked | chkFloor.Checked | (cboShuttleModel.SelectedIndex != 50) | (cboShuttleMarks.SelectedIndex != 0)); } }
 	}
 }
