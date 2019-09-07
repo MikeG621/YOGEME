@@ -36,10 +36,12 @@ namespace Idmr.Yogeme
 		string _res = "\\Resdata\\";
 		string _wave = "\\Wave\\";
 		string _fm = "\\FlightModels\\";
-		enum ReadMode { None = -1, Backdrop, Mission, Sounds, Objects, HangarObjects, HangarCamera }
+		enum ReadMode { None = -1, Backdrop, Mission, Sounds, Objects, HangarObjects, HangarCamera, FamilyHangarCamera }
 		bool _loading = false;
 		int[,] _cameras = new int[5, 3];
 		int[,] _defaultCameras = new int[5, 3];
+		int[,] _familyCameras = new int[7, 3];
+		int[,] _defaultFamilyCameras = new int[7, 3];
 
 		public XwaHookDialog(Mission mission)
 		{
@@ -71,6 +73,17 @@ namespace Idmr.Yogeme
 				cboCamera.SelectedIndex = i;
 				cmdDefaultCamera_Click("startup", new EventArgs());
 			}
+			for (int i = 0; i < 5; i++)
+				for (int j = 0; j < 3; j++)
+					_defaultCameras[i, j] = _cameras[i, j];
+			for (int i = 6; i >= 0; i--)
+			{
+				cboFamilyCamera.SelectedIndex = i;
+				cmdDefaultFamilyCamera_Click("startup", new EventArgs());
+			}
+			for (int i = 0; i < 7; i++)
+				for (int j = 0; j < 3; j++)
+					_defaultFamilyCameras[i, j] = _familyCameras[i, j];
 
 			Settings s = new Settings();
 			if (s.XwaInstalled)
@@ -183,6 +196,33 @@ namespace Idmr.Yogeme
 				}
 				srHangarCamera.Close();
 			}
+			if (_famHangarCameraFile != "")
+			{
+				StreamReader srFamilyHangarCamera = new StreamReader(_famHangarCameraFile);
+				int view = 0;
+				int camera = 0;
+				while ((line = srFamilyHangarCamera.ReadLine()) != null)
+				{
+					string[] parts = line.ToLower().Replace(" ", "").Split('=');
+					if (parts.Length == 2)
+					{
+						if (parts[0].StartsWith("key1")) view = 0;
+						else if (parts[0].StartsWith("key2")) view = 1;
+						else if (parts[0].StartsWith("key3")) view = 2;
+						else if (parts[0].StartsWith("key6")) view = 3;
+						else if (parts[0].StartsWith("key7")) view = 4;
+						else if (parts[0].StartsWith("key8")) view = 5;
+						else if (parts[0].StartsWith("key9")) view = 6;
+
+						if (parts[0].IndexOf("_x") != -1) camera = 0;
+						else if (parts[0].IndexOf("_y") != -1) camera = 1;
+						else if (parts[0].IndexOf("_z") != -1) camera = 2;
+
+						_familyCameras[view, camera] = int.Parse(parts[1]);
+					}
+				}
+				srFamilyHangarCamera.Close();
+			}
 			#endregion
 
 			if (srMission != null)
@@ -201,6 +241,7 @@ namespace Idmr.Yogeme
 						else if (lineLower == "[objects]") readMode = ReadMode.Objects;
 						else if (lineLower == "[hangarobjects]") readMode = ReadMode.HangarObjects;
 						else if (lineLower == "[hangarcamera]") readMode = ReadMode.HangarCamera;
+						else if (lineLower == "[famhangarcamera]") readMode = ReadMode.FamilyHangarCamera;
 					}
 					else if (readMode == ReadMode.Backdrop) lstBackdrops.Items.Add(line);
 					else if (readMode == ReadMode.Mission)
@@ -253,13 +294,35 @@ namespace Idmr.Yogeme
 							_cameras[view, camera] = int.Parse(parts[1]);
 						}
 					}
+					else if (readMode == ReadMode.FamilyHangarCamera)
+					{
+						int view = 0;
+						int camera = 0;
+						string[] parts = lineLower.Replace(" ", "").Split('=');
+						if (parts.Length == 2)
+						{
+							if (parts[0].StartsWith("key1")) view = 0;
+							else if (parts[0].StartsWith("key2")) view = 1;
+							else if (parts[0].StartsWith("key3")) view = 2;
+							else if (parts[0].StartsWith("key6")) view = 3;
+							else if (parts[0].StartsWith("key7")) view = 4;
+							else if (parts[0].StartsWith("key8")) view = 5;
+							else if (parts[0].StartsWith("key9")) view = 6;
+
+							if (parts[0].IndexOf("_x") != -1) camera = 0;
+							else if (parts[0].IndexOf("_y") != -1) camera = 1;
+							else if (parts[0].IndexOf("_z") != -1) camera = 2;
+
+							_familyCameras[view, camera] = int.Parse(parts[1]);
+						}
+					}
 				}
 			}
 
 			srMission.Close();
 			chkBackdrops.Checked = (lstBackdrops.Items.Count > 0);
 			chkMission.Checked = (lstMission.Items.Count > 0);
-			chkHangars.Checked = useHangarObjects | useHangarCamera;
+			chkHangars.Checked = useHangarObjects | useHangarCamera | useFamilyHangarCamera;
 		}
 
 		string checkFile(string extension)
@@ -382,6 +445,7 @@ namespace Idmr.Yogeme
 		{
 			grpHangarObjects.Enabled = chkHangars.Checked;
 			grpCamera.Enabled = chkHangars.Checked;
+			grpFamilyCamera.Enabled = chkHangars.Checked;
 		}
 
 		private void cboCamera_SelectedIndexChanged(object sender, EventArgs e)
@@ -391,6 +455,15 @@ namespace Idmr.Yogeme
 			numCameraX.Value = _cameras[cboCamera.SelectedIndex, 0];
 			numCameraY.Value = _cameras[cboCamera.SelectedIndex, 1];
 			numCameraZ.Value = _cameras[cboCamera.SelectedIndex, 2];
+			_loading = false;
+		}
+		private void cboFamilyCamera_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			if (cboFamilyCamera.SelectedIndex == -1) return;
+			_loading = true;
+			numFamilyCameraX.Value = _familyCameras[cboFamilyCamera.SelectedIndex, 0];
+			numFamilyCameraY.Value = _familyCameras[cboFamilyCamera.SelectedIndex, 1];
+			numFamilyCameraZ.Value = _familyCameras[cboFamilyCamera.SelectedIndex, 2];
 			_loading = false;
 		}
 
@@ -439,6 +512,47 @@ namespace Idmr.Yogeme
 					break;
 			}
 		}
+		private void cmdDefaultFamilyCamera_Click(object sender, EventArgs e)
+		{
+			switch (cboFamilyCamera.SelectedIndex)
+			{
+				case 0: // View 1
+					numFamilyCameraX.Value = 780;
+					numFamilyCameraY.Value = -6471;
+					numFamilyCameraZ.Value = -4977;
+					break;
+				case 1: // View 2
+					numFamilyCameraX.Value = -1970;
+					numFamilyCameraY.Value = -8810;
+					numFamilyCameraZ.Value = -4707;
+					break;
+				case 2: // View 3
+					numFamilyCameraX.Value = 2510;
+					numFamilyCameraY.Value = -5391;
+					numFamilyCameraZ.Value = -5067;
+					break;
+				case 3: // View 6
+					numFamilyCameraX.Value = 1740;
+					numFamilyCameraY.Value = -8461;
+					numFamilyCameraZ.Value = -5047;
+					break;
+				case 4: // View 7
+					numFamilyCameraX.Value = 3180;
+					numFamilyCameraY.Value = 2629;
+					numFamilyCameraZ.Value = -3777;
+					break;
+				case 5: // View 8
+					numFamilyCameraX.Value = 8242;
+					numFamilyCameraY.Value = 6500;
+					numFamilyCameraZ.Value = 10;
+					break;
+				case 6: // View 9
+					numFamilyCameraX.Value = -13360;
+					numFamilyCameraY.Value = 35019;
+					numFamilyCameraZ.Value = -6537;
+					break;
+			}
+		}
 		private void cmdRemoveHangar_Click(object sender, EventArgs e)
 		{
 			if (lstHangarObjects.SelectedIndex != -1) lstHangarObjects.Items.RemoveAt(lstHangarObjects.SelectedIndex);
@@ -456,6 +570,18 @@ namespace Idmr.Yogeme
 		{
 			if (!_loading) _cameras[cboCamera.SelectedIndex, 2] = (int)numCameraZ.Value;
 		}
+		private void numFamilyCameraX_ValueChanged(object sender, EventArgs e)
+		{
+			if (!_loading) _familyCameras[cboFamilyCamera.SelectedIndex, 0] = (int)numFamilyCameraX.Value;
+		}
+		private void numFamilyCameraY_ValueChanged(object sender, EventArgs e)
+		{
+			if (!_loading) _familyCameras[cboFamilyCamera.SelectedIndex, 1] = (int)numFamilyCameraY.Value;
+		}
+		private void numFamilyCameraZ_ValueChanged(object sender, EventArgs e)
+		{
+			if (!_loading) _familyCameras[cboFamilyCamera.SelectedIndex, 2] = (int)numFamilyCameraZ.Value;
+		}
 
 		bool useHangarCamera
 		{
@@ -464,7 +590,18 @@ namespace Idmr.Yogeme
 				bool use = false;
 				for (int i = 0; i < 5; i++)
 					for (int j = 0; j < 3; j++)
-						use |= (_cameras[i, j] == _defaultCameras[i, j]);
+						use |= (_cameras[i, j] != _defaultCameras[i, j]);
+				return use;
+			}
+		}
+		bool useFamilyHangarCamera
+		{
+			get
+			{
+				bool use = false;
+				for (int i = 0; i < 7; i++)
+					for (int j = 0; j < 3; j++)
+						use |= (_familyCameras[i, j] != _defaultFamilyCameras[i, j]);
 				return use;
 			}
 		}
@@ -484,9 +621,10 @@ namespace Idmr.Yogeme
 			if (!chkSounds.Checked && _soundFile != "") File.Delete(_soundFile);
 
 			if (!useHangarObjects && _hangarObjectsFile != "") File.Delete(_hangarObjectsFile);
-			if (!useHangarCamera && _hangarCameraFile != "") File.Delete (_hangarCameraFile);
+			if (!useHangarCamera && _hangarCameraFile != "") File.Delete(_hangarCameraFile);
+			if (!useFamilyHangarCamera && _famHangarCameraFile != "") File.Delete(_famHangarCameraFile);
 
-			if (!chkBackdrops.Checked && !chkMission.Checked && !chkSounds.Checked && !useHangarObjects && !useHangarCamera)
+			if (!chkBackdrops.Checked && !chkMission.Checked && !chkSounds.Checked && !useHangarObjects && !useHangarCamera && !useFamilyHangarCamera)
 			{
 				File.Delete(_fileName);
 				Close();
@@ -562,17 +700,36 @@ namespace Idmr.Yogeme
 				}
 				if (chkHangars.Checked && useHangarCamera)
 				{
+					System.Diagnostics.Debug.WriteLine("cam");
 					sw.WriteLine("[HangarCamera]");
 					string[] keys = { "1", "2", "3", "6", "9" };
 					for (int i = 0; i < 5; i++)
 					{
 						bool use = false;
-						for (int j = 0; j < 3; j++) use |= (_cameras[i, j] == _defaultCameras[i, j]);
+						for (int j = 0; j < 3; j++) use |= (_cameras[i, j] != _defaultCameras[i, j]);
 						if (use)
 						{
 							sw.WriteLine("Key" + keys[i] + "_X = " + _cameras[i, 0]);
 							sw.WriteLine("Key" + keys[i] + "_Y = " + _cameras[i, 1]);
 							sw.WriteLine("Key" + keys[i] + "_Z = " + _cameras[i, 2]);
+							sw.WriteLine("");
+						}
+					}
+				}
+				if (chkHangars.Checked && useFamilyHangarCamera)
+				{
+					System.Diagnostics.Debug.WriteLine("fam cam");
+					sw.WriteLine("[FamHangarCamera]");
+					string[] keys = { "1", "2", "3", "6", "7", "8", "9" };
+					for (int i = 0; i < 7; i++)
+					{
+						bool use = false;
+						for (int j = 0; j < 3; j++) use |= (_familyCameras[i, j] != _defaultFamilyCameras[i, j]);
+						if (use)
+						{
+							sw.WriteLine("Key" + keys[i] + "_X = " + _familyCameras[i, 0]);
+							sw.WriteLine("Key" + keys[i] + "_Y = " + _familyCameras[i, 1]);
+							sw.WriteLine("Key" + keys[i] + "_Z = " + _familyCameras[i, 2]);
 							sw.WriteLine("");
 						}
 					}
@@ -584,6 +741,7 @@ namespace Idmr.Yogeme
 				if (_soundFile != "") File.Delete(_soundFile);
 				if (_hangarObjectsFile != "") File.Delete(_hangarObjectsFile);
 				if (_hangarCameraFile != "") File.Delete(_hangarCameraFile);
+				if (_famHangarCameraFile != "") File.Delete(_famHangarCameraFile);
 			}
 			catch
 			{

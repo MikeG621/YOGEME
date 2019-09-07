@@ -84,6 +84,15 @@
 			this.label6 = new System.Windows.Forms.Label();
 			this.numCameraZ = new System.Windows.Forms.NumericUpDown();
 			this.cmdDefaultCamera = new System.Windows.Forms.Button();
+			this.grpFamilyCamera = new System.Windows.Forms.GroupBox();
+			this.cmdDefaultFamilyCamera = new System.Windows.Forms.Button();
+			this.label7 = new System.Windows.Forms.Label();
+			this.numFamilyCameraZ = new System.Windows.Forms.NumericUpDown();
+			this.label8 = new System.Windows.Forms.Label();
+			this.numFamilyCameraY = new System.Windows.Forms.NumericUpDown();
+			this.label9 = new System.Windows.Forms.Label();
+			this.numFamilyCameraX = new System.Windows.Forms.NumericUpDown();
+			this.cboFamilyCamera = new System.Windows.Forms.ComboBox();
 			this.grpBackdrops.SuspendLayout();
 			this.grpMission.SuspendLayout();
 			this.grpSounds.SuspendLayout();
@@ -94,6 +103,10 @@
 			((System.ComponentModel.ISupportInitialize)(this.numCameraX)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numCameraY)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numCameraZ)).BeginInit();
+			this.grpFamilyCamera.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.numFamilyCameraZ)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.numFamilyCameraY)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.numFamilyCameraX)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// cmdOK
@@ -430,6 +443,7 @@
 			// 
 			// grpHangars
 			// 
+			this.grpHangars.Controls.Add(this.grpFamilyCamera);
 			this.grpHangars.Controls.Add(this.grpCamera);
 			this.grpHangars.Controls.Add(this.label3);
 			this.grpHangars.Controls.Add(this.grpHangarObjects);
@@ -446,9 +460,9 @@
 			this.label3.AutoSize = true;
 			this.label3.Location = new System.Drawing.Point(67, 393);
 			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(143, 13);
+			this.label3.Size = new System.Drawing.Size(78, 13);
 			this.label3.TabIndex = 3;
-			this.label3.Text = "Fam Camera, Map, Fam Map";
+			this.label3.Text = "Map, Fam Map";
 			// 
 			// grpHangarObjects
 			// 
@@ -702,6 +716,133 @@
 			this.cmdDefaultCamera.UseVisualStyleBackColor = true;
 			this.cmdDefaultCamera.Click += new System.EventHandler(this.cmdDefaultCamera_Click);
 			// 
+			// grpFamilyCamera
+			// 
+			this.grpFamilyCamera.Controls.Add(this.cmdDefaultFamilyCamera);
+			this.grpFamilyCamera.Controls.Add(this.label7);
+			this.grpFamilyCamera.Controls.Add(this.numFamilyCameraZ);
+			this.grpFamilyCamera.Controls.Add(this.label8);
+			this.grpFamilyCamera.Controls.Add(this.numFamilyCameraY);
+			this.grpFamilyCamera.Controls.Add(this.label9);
+			this.grpFamilyCamera.Controls.Add(this.numFamilyCameraX);
+			this.grpFamilyCamera.Controls.Add(this.cboFamilyCamera);
+			this.grpFamilyCamera.Enabled = false;
+			this.grpFamilyCamera.Location = new System.Drawing.Point(6, 263);
+			this.grpFamilyCamera.Name = "grpFamilyCamera";
+			this.grpFamilyCamera.Size = new System.Drawing.Size(318, 82);
+			this.grpFamilyCamera.TabIndex = 5;
+			this.grpFamilyCamera.TabStop = false;
+			this.grpFamilyCamera.Text = "Family Camera";
+			// 
+			// cmdDefaultFamilyCamera
+			// 
+			this.cmdDefaultFamilyCamera.Location = new System.Drawing.Point(6, 46);
+			this.cmdDefaultFamilyCamera.Name = "cmdDefaultFamilyCamera";
+			this.cmdDefaultFamilyCamera.Size = new System.Drawing.Size(121, 23);
+			this.cmdDefaultFamilyCamera.TabIndex = 7;
+			this.cmdDefaultFamilyCamera.Text = "Reset to Default";
+			this.cmdDefaultFamilyCamera.UseVisualStyleBackColor = true;
+			this.cmdDefaultFamilyCamera.Click += new System.EventHandler(this.cmdDefaultFamilyCamera_Click);
+			// 
+			// label7
+			// 
+			this.label7.AutoSize = true;
+			this.label7.Location = new System.Drawing.Point(235, 22);
+			this.label7.Name = "label7";
+			this.label7.Size = new System.Drawing.Size(14, 13);
+			this.label7.TabIndex = 6;
+			this.label7.Text = "Z";
+			// 
+			// numFamilyCameraZ
+			// 
+			this.numFamilyCameraZ.Location = new System.Drawing.Point(255, 20);
+			this.numFamilyCameraZ.Maximum = new decimal(new int[] {
+            65535,
+            0,
+            0,
+            0});
+			this.numFamilyCameraZ.Minimum = new decimal(new int[] {
+            65536,
+            0,
+            0,
+            -2147483648});
+			this.numFamilyCameraZ.Name = "numFamilyCameraZ";
+			this.numFamilyCameraZ.Size = new System.Drawing.Size(57, 20);
+			this.numFamilyCameraZ.TabIndex = 5;
+			this.numFamilyCameraZ.ValueChanged += new System.EventHandler(this.numFamilyCameraZ_ValueChanged);
+			// 
+			// label8
+			// 
+			this.label8.AutoSize = true;
+			this.label8.Location = new System.Drawing.Point(152, 22);
+			this.label8.Name = "label8";
+			this.label8.Size = new System.Drawing.Size(14, 13);
+			this.label8.TabIndex = 4;
+			this.label8.Text = "Y";
+			// 
+			// numFamilyCameraY
+			// 
+			this.numFamilyCameraY.Location = new System.Drawing.Point(172, 20);
+			this.numFamilyCameraY.Maximum = new decimal(new int[] {
+            65535,
+            0,
+            0,
+            0});
+			this.numFamilyCameraY.Minimum = new decimal(new int[] {
+            65536,
+            0,
+            0,
+            -2147483648});
+			this.numFamilyCameraY.Name = "numFamilyCameraY";
+			this.numFamilyCameraY.Size = new System.Drawing.Size(57, 20);
+			this.numFamilyCameraY.TabIndex = 3;
+			this.numFamilyCameraY.ValueChanged += new System.EventHandler(this.numFamilyCameraY_ValueChanged);
+			// 
+			// label9
+			// 
+			this.label9.AutoSize = true;
+			this.label9.Location = new System.Drawing.Point(69, 22);
+			this.label9.Name = "label9";
+			this.label9.Size = new System.Drawing.Size(14, 13);
+			this.label9.TabIndex = 2;
+			this.label9.Text = "X";
+			// 
+			// numFamilyCameraX
+			// 
+			this.numFamilyCameraX.Location = new System.Drawing.Point(89, 20);
+			this.numFamilyCameraX.Maximum = new decimal(new int[] {
+            65535,
+            0,
+            0,
+            0});
+			this.numFamilyCameraX.Minimum = new decimal(new int[] {
+            65536,
+            0,
+            0,
+            -2147483648});
+			this.numFamilyCameraX.Name = "numFamilyCameraX";
+			this.numFamilyCameraX.Size = new System.Drawing.Size(57, 20);
+			this.numFamilyCameraX.TabIndex = 1;
+			this.numFamilyCameraX.ValueChanged += new System.EventHandler(this.numFamilyCameraX_ValueChanged);
+			// 
+			// cboFamilyCamera
+			// 
+			this.cboFamilyCamera.FormattingEnabled = true;
+			this.cboFamilyCamera.Items.AddRange(new object[] {
+            "View 1",
+            "View 2",
+            "View 3",
+            "View 6",
+            "View 7",
+            "View 8",
+            "View 9"});
+			this.cboFamilyCamera.Location = new System.Drawing.Point(6, 19);
+			this.cboFamilyCamera.Name = "cboFamilyCamera";
+			this.cboFamilyCamera.Size = new System.Drawing.Size(62, 21);
+			this.cboFamilyCamera.TabIndex = 0;
+			this.cboFamilyCamera.Text = "View 1";
+			this.cboFamilyCamera.SelectedIndexChanged += new System.EventHandler(this.cboFamilyCamera_SelectedIndexChanged);
+			// 
 			// XwaHookDialog
 			// 
 			this.AcceptButton = this.cmdOK;
@@ -738,6 +879,11 @@
 			((System.ComponentModel.ISupportInitialize)(this.numCameraX)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.numCameraY)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.numCameraZ)).EndInit();
+			this.grpFamilyCamera.ResumeLayout(false);
+			this.grpFamilyCamera.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.numFamilyCameraZ)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.numFamilyCameraY)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.numFamilyCameraX)).EndInit();
 			this.ResumeLayout(false);
 
 		}
@@ -799,5 +945,14 @@
 		private System.Windows.Forms.NumericUpDown numCameraY;
 		private System.Windows.Forms.Label label4;
 		private System.Windows.Forms.NumericUpDown numCameraX;
+		private System.Windows.Forms.GroupBox grpFamilyCamera;
+		private System.Windows.Forms.Button cmdDefaultFamilyCamera;
+		private System.Windows.Forms.Label label7;
+		private System.Windows.Forms.NumericUpDown numFamilyCameraZ;
+		private System.Windows.Forms.Label label8;
+		private System.Windows.Forms.NumericUpDown numFamilyCameraY;
+		private System.Windows.Forms.Label label9;
+		private System.Windows.Forms.NumericUpDown numFamilyCameraX;
+		private System.Windows.Forms.ComboBox cboFamilyCamera;
 	}
 }
