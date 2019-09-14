@@ -36,7 +36,7 @@ namespace Idmr.Yogeme
 		string _res = "\\Resdata\\";
 		string _wave = "\\Wave\\";
 		string _fm = "\\FlightModels\\";
-		enum ReadMode { None = -1, Backdrop, Mission, Sounds, Objects, HangarObjects, HangarCamera, FamilyHangarCamera }
+		enum ReadMode { None = -1, Backdrop, Mission, Sounds, Objects, HangarObjects, HangarCamera, FamilyHangarCamera, HangarMap, FamilyHangarMap }
 		bool _loading = false;
 		int[,] _cameras = new int[5, 3];
 		int[,] _defaultCameras = new int[5, 3];
@@ -59,14 +59,20 @@ namespace Idmr.Yogeme
 			for (int i = cboIff.Items.Count; i < 256; i++) cboIff.Items.Add("IFF #" + (i + 1));
 			cboMarkings.Items.AddRange(Strings.Color);
 			cboShuttleMarks.Items.AddRange(Strings.Color);
+			cboMapMarkings.Items.AddRange(Strings.Color);
 			for (int i = cboMarkings.Items.Count; i < 256; i++)
 			{
 				cboMarkings.Items.Add("Clr #" + (i + 1));
 				cboShuttleMarks.Items.Add("Clr #" + (i + 1));
+				cboMapMarkings.Items.Add("Clr #" + (i + 1));
 			}
 			cboShuttleMarks.SelectedIndex = 0;
 			cboFG.Items.AddRange(mission.FlightGroups.GetList());
-			for (int i = 0; i < 256; i++) cboShuttleModel.Items.Add(i);
+			for (int i = 0; i < 400; i++)
+			{
+				cboShuttleModel.Items.Add(i);
+				cboMapIndex.Items.Add(i);
+			}
 			cboShuttleModel.SelectedIndex = 50;
 			for (int i = 4; i >= 0; i--)
 			{
@@ -116,7 +122,10 @@ namespace Idmr.Yogeme
 			{
 				StreamReader srBD = new StreamReader(_bdFile);
 				while ((line = srBD.ReadLine()) != null)
-					lstBackdrops.Items.Add(line);
+				{
+					if (!isComment(line))
+						lstBackdrops.Items.Add(line);
+				}
 				srBD.Close();
 			}
 			if (_missionTxtFile != "")
@@ -143,14 +152,20 @@ namespace Idmr.Yogeme
 			{
 				StreamReader srSounds = new StreamReader(_soundFile);
 				while ((line = srSounds.ReadLine()) != null)
-					lstSounds.Items.Add(line);
+				{
+					if (!isComment(line))
+						lstSounds.Items.Add(line);
+				}
 				srSounds.Close();
 			}
 			if (_objFile != "")
 			{
 				StreamReader srObjects = new StreamReader(_objFile);
 				while ((line = srObjects.ReadLine()) != null)
-					lstObjects.Items.Add(line);
+				{
+					if (!isComment(line))
+						lstObjects.Items.Add(line);
+				}
 				srObjects.Close();
 			}
 			if (_hangarObjectsFile != "")
@@ -159,7 +174,7 @@ namespace Idmr.Yogeme
 				while ((line = srHangarObjects.ReadLine()) != null)
 				{
 					string[] parts = line.ToLower().Replace(" ", "").Split('=');
-					if (parts.Length == 2)
+					if (parts.Length == 2 && !isComment(line))
 					{
 						if (parts[0] == "loadshuttle") chkShuttle.Checked = (parts[1] != "0");
 						else if (parts[0] == "shuttlemodelindex") cboShuttleModel.SelectedIndex = int.Parse(parts[1]);
@@ -179,7 +194,7 @@ namespace Idmr.Yogeme
 				while((line = srHangarCamera.ReadLine()) != null)
 				{
 					string[] parts = line.ToLower().Replace(" ", "").Split('=');
-					if (parts.Length == 2)
+					if (parts.Length == 2 && !isComment(line))
 					{
 						if (parts[0].StartsWith("key1")) view = 0;
 						else if (parts[0].StartsWith("key2")) view = 1;
@@ -204,7 +219,7 @@ namespace Idmr.Yogeme
 				while ((line = srFamilyHangarCamera.ReadLine()) != null)
 				{
 					string[] parts = line.ToLower().Replace(" ", "").Split('=');
-					if (parts.Length == 2)
+					if (parts.Length == 2 && !isComment(line))
 					{
 						if (parts[0].StartsWith("key1")) view = 0;
 						else if (parts[0].StartsWith("key2")) view = 1;
@@ -223,13 +238,25 @@ namespace Idmr.Yogeme
 				}
 				srFamilyHangarCamera.Close();
 			}
+			if (_hangarMapFile != "")
+			{
+				StreamReader srMap = new StreamReader(_hangarMapFile);
+				MapEntry entry = new MapEntry();
+				while((line = srMap.ReadLine()) != null)
+				{
+					if (isComment(line)) continue;
+					if (entry.Parse(line))
+						lstMap.Items.Add(entry.ToString());
+				}
+				srMap.Close();
+			}
 			#endregion
 
 			if (srMission != null)
 			{
 				while ((line = srMission.ReadLine()) != null)
 				{
-					if (line == "" || line.Trim().StartsWith(";")) continue;
+					if (isComment(line)) continue;
 					lineLower = line.ToLower();
 
 					if (line.StartsWith("["))
@@ -242,6 +269,7 @@ namespace Idmr.Yogeme
 						else if (lineLower == "[hangarobjects]") readMode = ReadMode.HangarObjects;
 						else if (lineLower == "[hangarcamera]") readMode = ReadMode.HangarCamera;
 						else if (lineLower == "[famhangarcamera]") readMode = ReadMode.FamilyHangarCamera;
+						else if (lineLower == "[hangarmap]") readMode = ReadMode.HangarMap;
 					}
 					else if (readMode == ReadMode.Backdrop) lstBackdrops.Items.Add(line);
 					else if (readMode == ReadMode.Mission)
@@ -316,13 +344,19 @@ namespace Idmr.Yogeme
 							_familyCameras[view, camera] = int.Parse(parts[1]);
 						}
 					}
+					else if (readMode == ReadMode.HangarMap)
+					{
+						MapEntry entry = new MapEntry();
+						if (entry.Parse(line))
+							lstMap.Items.Add(entry.ToString());
+					}
 				}
 			}
 
 			srMission.Close();
 			chkBackdrops.Checked = (lstBackdrops.Items.Count > 0);
 			chkMission.Checked = (lstMission.Items.Count > 0);
-			chkHangars.Checked = useHangarObjects | useHangarCamera | useFamilyHangarCamera;
+			chkHangars.Checked = useHangarObjects | useHangarCamera | useFamilyHangarCamera | useHangarMap;
 		}
 
 		string checkFile(string extension)
@@ -441,11 +475,20 @@ namespace Idmr.Yogeme
 		#endregion
 
 		#region Hangars
+		private void chkGrounded_CheckedChanged(object sender, EventArgs e)
+		{
+			numPosZ.Enabled = !chkGrounded.Checked;
+		}
 		private void chkHangars_CheckedChanged(object sender, EventArgs e)
 		{
 			grpHangarObjects.Enabled = chkHangars.Checked;
 			grpCamera.Enabled = chkHangars.Checked;
 			grpFamilyCamera.Enabled = chkHangars.Checked;
+			grpMap.Enabled = chkHangars.Checked;
+		}
+		private void chkMarks_CheckedChanged(object sender, EventArgs e)
+		{
+			cboMapMarkings.Enabled = chkMarks.Checked;
 		}
 
 		private void cboCamera_SelectedIndexChanged(object sender, EventArgs e)
@@ -480,6 +523,10 @@ namespace Idmr.Yogeme
 				if (res == DialogResult.OK)
 					lstHangarObjects.Items.Add(line + opnObjects.FileName.Substring(opnObjects.FileName.IndexOf(_fm) + 1));
 			}
+		}
+		private void cmdAddMap_Click(object sender, EventArgs e)
+		{
+			lstMap.Items.Add(cboMapIndex.SelectedIndex + ", " + (chkMarks.Checked && cboMapIndex.SelectedIndex != 0 ? cboMapMarkings.SelectedIndex.ToString() + ", " : "") + numPosX.Value + ", " + numPosY.Value + ", " + (chkGrounded.Checked ? "0x7FFFFFFF" : numPosZ.Value.ToString()) + ", " + numHeadingXY.Value + ", " + numHeadingZ.Value);
 		}
 		private void cmdDefaultCamera_Click(object sender, EventArgs e)
 		{
@@ -557,6 +604,19 @@ namespace Idmr.Yogeme
 		{
 			if (lstHangarObjects.SelectedIndex != -1) lstHangarObjects.Items.RemoveAt(lstHangarObjects.SelectedIndex);
 		}
+		private void cmdRemoveMap_Click(object sender, EventArgs e)
+		{
+			if (lstMap.SelectedIndex != -1)
+			{
+				if (lstMap.Items.Count == 4)	// warn here only when initially dropping below 4
+				{
+					DialogResult res = MessageBox.Show("Hangar Map requires at least 4 line items to be saved. Continue?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+					if (res == DialogResult.No) return;
+				}
+
+				lstMap.Items.RemoveAt(lstMap.SelectedIndex);
+			}
+		}
 
 		private void numCameraX_ValueChanged(object sender, EventArgs e)
 		{
@@ -606,6 +666,7 @@ namespace Idmr.Yogeme
 			}
 		}
 		bool useHangarObjects { get { return ((lstHangarObjects.Items.Count > 0) | !chkShuttle.Checked | !chkDroids.Checked | chkFloor.Checked | (cboShuttleModel.SelectedIndex != 50) | (cboShuttleMarks.SelectedIndex != 0)); } }
+		bool useHangarMap {  get { return lstMap.Items.Count >= 4; } }
 		#endregion
 
 		private void cmdCancel_Click(object sender, EventArgs e)
@@ -614,6 +675,11 @@ namespace Idmr.Yogeme
 		}
 		private void cmdOK_Click(object sender, EventArgs e)
 		{
+			if (chkHangars.Checked && lstMap.Items.Count > 0 && lstMap.Items.Count < 4)
+			{
+				DialogResult res = MessageBox.Show("Hangar Map must have 4 entries to be used. Continue anyway?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+				if (res == DialogResult.No) return;
+			}
 			if (!chkBackdrops.Checked && _bdFile != "") File.Delete(_bdFile);
 
 			if (!chkMission.Checked && _missionTxtFile != "") File.Delete(_missionTxtFile);
@@ -623,8 +689,9 @@ namespace Idmr.Yogeme
 			if (!useHangarObjects && _hangarObjectsFile != "") File.Delete(_hangarObjectsFile);
 			if (!useHangarCamera && _hangarCameraFile != "") File.Delete(_hangarCameraFile);
 			if (!useFamilyHangarCamera && _famHangarCameraFile != "") File.Delete(_famHangarCameraFile);
+			if (!useHangarMap && _hangarMapFile != "") File.Delete(_hangarMapFile);
 
-			if (!chkBackdrops.Checked && !chkMission.Checked && !chkSounds.Checked && !useHangarObjects && !useHangarCamera && !useFamilyHangarCamera)
+			if (!chkBackdrops.Checked && !chkMission.Checked && !chkSounds.Checked && !useHangarObjects && !useHangarCamera && !useFamilyHangarCamera && !useHangarMap)
 			{
 				File.Delete(_fileName);
 				Close();
@@ -734,6 +801,13 @@ namespace Idmr.Yogeme
 						}
 					}
 				}
+				if (chkHangars.Checked && useHangarMap)
+				{
+					System.Diagnostics.Debug.WriteLine("hangar map");
+					sw.WriteLine("[Hangar Map]");
+					for (int i = 0; i < lstMap.Items.Count; i++) sw.WriteLine(lstMap.Items[i].ToString());
+					sw.WriteLine("");
+				}
 				sw.Flush();
 				sw.Close();
 				if (_bdFile != "") File.Delete(_bdFile);
@@ -742,6 +816,7 @@ namespace Idmr.Yogeme
 				if (_hangarObjectsFile != "") File.Delete(_hangarObjectsFile);
 				if (_hangarCameraFile != "") File.Delete(_hangarCameraFile);
 				if (_famHangarCameraFile != "") File.Delete(_famHangarCameraFile);
+				if (_hangarMapFile != "") File.Delete(_hangarMapFile);
 			}
 			catch
 			{
@@ -754,6 +829,48 @@ namespace Idmr.Yogeme
 			}
 			File.Delete(backup);
 			Close();
+		}
+
+		bool isComment(string line)
+		{
+			return (line.StartsWith("#") || line.StartsWith(";") || line.StartsWith("////") || line == "");
+		}
+
+		struct MapEntry
+		{
+			public int ModelIndex;
+			public byte Markings;
+			public int PositionX;
+			public int PositionY;
+			public int PositionZ;
+			public int HeadingXY;
+			public int HeadingZ;
+			public bool IsGrounded;
+
+			public override string ToString()
+			{
+				return ModelIndex + ", " + (Markings != 0 ? Markings.ToString() + ", " : "") + PositionX + ", " + PositionY + ", " + (IsGrounded ? "0x7FFFFFFF" : PositionZ.ToString()) + ", " + HeadingXY + ", " + HeadingZ;
+			}
+
+			public bool Parse(string line)
+			{
+				int offset = 0;
+				string[] parts = line.Replace(" ", "").Split(',');
+				if (parts.Length == 7) offset = 1;
+				else if (parts.Length != 6) return false;
+
+				ModelIndex = int.Parse(parts[0]);
+				if (offset != 0) Markings = byte.Parse(parts[1]);
+				else Markings = 0;
+				PositionX = int.Parse(parts[1 + offset]);
+				PositionY = int.Parse(parts[2 + offset]);
+				IsGrounded = (parts[3 + offset].ToLower() == "0x7fffffff");
+				if (!IsGrounded) PositionZ = int.Parse(parts[3 + offset]);
+				HeadingXY = int.Parse(parts[4 + offset]);
+				HeadingZ = int.Parse(parts[5 + offset]);
+
+				return true;
+			}
 		}
 	}
 }
