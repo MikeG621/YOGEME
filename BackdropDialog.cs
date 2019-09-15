@@ -3,11 +3,13 @@
  * Copyright (C) 2007-2019 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.5+
+ * VERSION: 1.6
  */
 
 /* CHANGELOG
+ * v1.6, 190915
  * [NEW #26] Backdrop hook implementation
+ * [UPD] XWA always resized, not just for SBD
  * [UPD] changed the exception thrown when platform's not installed
  * v1.5, 180910
  * [ADD] catch block for loading XWA thumbnails [JB]

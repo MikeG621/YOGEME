@@ -3,11 +3,12 @@
  * Copyright (C) 2007-2019 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.5.1+
+ * VERSION: 1.6
  */
 
 /* CHANGELOG
- * -
+ * v1.6, 190915
+ * - Release
  */
 
 using Idmr.Platform.Xwa;
@@ -55,25 +56,35 @@ namespace Idmr.Yogeme
 			}
 			_fileName = mission.MissionPath.Replace(".tie", ".ini");
 
+			#region initialize
 			cboIff.Items.AddRange(Strings.IFF);
 			for (int i = cboIff.Items.Count; i < 256; i++) cboIff.Items.Add("IFF #" + (i + 1));
+			cboIff.SelectedIndex = 0;
 			cboMarkings.Items.AddRange(Strings.Color);
 			cboShuttleMarks.Items.AddRange(Strings.Color);
 			cboMapMarkings.Items.AddRange(Strings.Color);
+			cboFamMapMarkings.Items.AddRange(Strings.Color);
 			for (int i = cboMarkings.Items.Count; i < 256; i++)
 			{
 				cboMarkings.Items.Add("Clr #" + (i + 1));
 				cboShuttleMarks.Items.Add("Clr #" + (i + 1));
 				cboMapMarkings.Items.Add("Clr #" + (i + 1));
+				cboFamMapMarkings.Items.Add("Clr #" + (i + 1));
 			}
+			cboMarkings.SelectedIndex = 0;
 			cboShuttleMarks.SelectedIndex = 0;
+			cboMapMarkings.SelectedIndex = 0;
+			cboFamMapMarkings.SelectedIndex = 0;
 			cboFG.Items.AddRange(mission.FlightGroups.GetList());
 			for (int i = 0; i < 400; i++)
 			{
 				cboShuttleModel.Items.Add(i);
 				cboMapIndex.Items.Add(i);
+				cboFamMapIndex.Items.Add(i);
 			}
 			cboShuttleModel.SelectedIndex = 50;
+			cboMapIndex.SelectedIndex = 0;
+			cboFamMapIndex.SelectedIndex = 0;
 			for (int i = 4; i >= 0; i--)
 			{
 				cboCamera.SelectedIndex = i;
@@ -90,6 +101,7 @@ namespace Idmr.Yogeme
 			for (int i = 0; i < 7; i++)
 				for (int j = 0; j < 3; j++)
 					_defaultFamilyCameras[i, j] = _familyCameras[i, j];
+			#endregion
 
 			Settings s = new Settings();
 			if (s.XwaInstalled)
@@ -250,10 +262,23 @@ namespace Idmr.Yogeme
 				}
 				srMap.Close();
 			}
+			if (_famHangarMapFile != "")
+			{
+				StreamReader srFamMap = new StreamReader(_famHangarMapFile);
+				MapEntry entry = new MapEntry();
+				while ((line = srFamMap.ReadLine()) != null)
+				{
+					if (isComment(line)) continue;
+					if (entry.Parse(line))
+						lstFamilyMap.Items.Add(entry.ToString());
+				}
+				srFamMap.Close();
+			}
 			#endregion
 
 			if (srMission != null)
 			{
+				#region read
 				while ((line = srMission.ReadLine()) != null)
 				{
 					if (isComment(line)) continue;
@@ -270,6 +295,7 @@ namespace Idmr.Yogeme
 						else if (lineLower == "[hangarcamera]") readMode = ReadMode.HangarCamera;
 						else if (lineLower == "[famhangarcamera]") readMode = ReadMode.FamilyHangarCamera;
 						else if (lineLower == "[hangarmap]") readMode = ReadMode.HangarMap;
+						else if (lineLower == "[famhangarmap]") readMode = ReadMode.FamilyHangarMap;
 					}
 					else if (readMode == ReadMode.Backdrop) lstBackdrops.Items.Add(line);
 					else if (readMode == ReadMode.Mission)
@@ -350,7 +376,14 @@ namespace Idmr.Yogeme
 						if (entry.Parse(line))
 							lstMap.Items.Add(entry.ToString());
 					}
+					else if (readMode == ReadMode.FamilyHangarMap)
+					{
+						MapEntry entry = new MapEntry();
+						if (entry.Parse(line))
+							lstFamilyMap.Items.Add(entry.ToString());
+					}
 				}
+				#endregion
 			}
 
 			srMission.Close();
@@ -475,22 +508,6 @@ namespace Idmr.Yogeme
 		#endregion
 
 		#region Hangars
-		private void chkGrounded_CheckedChanged(object sender, EventArgs e)
-		{
-			numPosZ.Enabled = !chkGrounded.Checked;
-		}
-		private void chkHangars_CheckedChanged(object sender, EventArgs e)
-		{
-			grpHangarObjects.Enabled = chkHangars.Checked;
-			grpCamera.Enabled = chkHangars.Checked;
-			grpFamilyCamera.Enabled = chkHangars.Checked;
-			grpMap.Enabled = chkHangars.Checked;
-		}
-		private void chkMarks_CheckedChanged(object sender, EventArgs e)
-		{
-			cboMapMarkings.Enabled = chkMarks.Checked;
-		}
-
 		private void cboCamera_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (cboCamera.SelectedIndex == -1) return;
@@ -510,6 +527,44 @@ namespace Idmr.Yogeme
 			_loading = false;
 		}
 
+		private void chkFamGrounded_CheckedChanged(object sender, EventArgs e)
+		{
+			numFamPosZ.Enabled = !chkFamGrounded.Checked;
+		}
+		private void chkFamMarks_CheckedChanged(object sender, EventArgs e)
+		{
+			cboFamMapMarkings.Enabled = chkFamMarks.Checked;
+		}
+		private void chkGrounded_CheckedChanged(object sender, EventArgs e)
+		{
+			numPosZ.Enabled = !chkGrounded.Checked;
+		}
+		private void chkHangars_CheckedChanged(object sender, EventArgs e)
+		{
+			grpHangarObjects.Enabled = chkHangars.Checked;
+			grpCamera.Enabled = chkHangars.Checked;
+			grpFamilyCamera.Enabled = chkHangars.Checked;
+			grpMap.Enabled = chkHangars.Checked;
+			grpFamilyMap.Enabled = chkHangars.Checked;
+		}
+		private void chkMarks_CheckedChanged(object sender, EventArgs e)
+		{
+			cboMapMarkings.Enabled = chkMarks.Checked;
+		}
+
+		private void cmdAddFamMap_Click(object sender, EventArgs e)
+		{
+			MapEntry entry = new MapEntry();
+			entry.ModelIndex = cboFamMapIndex.SelectedIndex;
+			entry.Markings = (byte)cboFamMapMarkings.SelectedIndex;
+			entry.PositionX = (int)numFamPosX.Value;
+			entry.PositionY = (int)numFamPosY.Value;
+			entry.PositionZ = (int)numFamPosZ.Value;
+			entry.IsGrounded = chkFamGrounded.Checked;
+			entry.HeadingXY = (int)numFamHeadingXY.Value;
+			entry.HeadingZ = (int)numFamHeadingZ.Value;
+			lstFamilyMap.Items.Add(entry.ToString());
+		}
 		private void cmdAddHangar_Click(object sender, EventArgs e)
 		{
 			if (_installDirectory != "") opnObjects.InitialDirectory = _installDirectory + _fm;
@@ -526,7 +581,16 @@ namespace Idmr.Yogeme
 		}
 		private void cmdAddMap_Click(object sender, EventArgs e)
 		{
-			lstMap.Items.Add(cboMapIndex.SelectedIndex + ", " + (chkMarks.Checked && cboMapIndex.SelectedIndex != 0 ? cboMapMarkings.SelectedIndex.ToString() + ", " : "") + numPosX.Value + ", " + numPosY.Value + ", " + (chkGrounded.Checked ? "0x7FFFFFFF" : numPosZ.Value.ToString()) + ", " + numHeadingXY.Value + ", " + numHeadingZ.Value);
+			MapEntry entry = new MapEntry();
+			entry.ModelIndex = cboMapIndex.SelectedIndex;
+			entry.Markings = (byte)cboMapMarkings.SelectedIndex;
+			entry.PositionX = (int)numPosX.Value;
+			entry.PositionY = (int)numPosY.Value;
+			entry.PositionZ = (int)numPosZ.Value;
+			entry.IsGrounded = chkGrounded.Checked;
+			entry.HeadingXY = (int)numHeadingXY.Value;
+			entry.HeadingZ = (int)numHeadingZ.Value;
+			lstMap.Items.Add(entry.ToString());
 		}
 		private void cmdDefaultCamera_Click(object sender, EventArgs e)
 		{
@@ -600,6 +664,19 @@ namespace Idmr.Yogeme
 					break;
 			}
 		}
+		private void cmdRemoveFamMap_Click(object sender, EventArgs e)
+		{
+			if (lstFamilyMap.SelectedIndex != -1)
+			{
+				if (lstFamilyMap.Items.Count == 4)    // warn here only when initially dropping below 4
+				{
+					DialogResult res = MessageBox.Show("Family Hangar Map requires at least 4 line items to be saved. Continue?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+					if (res == DialogResult.No) return;
+				}
+
+				lstFamilyMap.Items.RemoveAt(lstFamilyMap.SelectedIndex);
+			}
+		}
 		private void cmdRemoveHangar_Click(object sender, EventArgs e)
 		{
 			if (lstHangarObjects.SelectedIndex != -1) lstHangarObjects.Items.RemoveAt(lstHangarObjects.SelectedIndex);
@@ -667,6 +744,7 @@ namespace Idmr.Yogeme
 		}
 		bool useHangarObjects { get { return ((lstHangarObjects.Items.Count > 0) | !chkShuttle.Checked | !chkDroids.Checked | chkFloor.Checked | (cboShuttleModel.SelectedIndex != 50) | (cboShuttleMarks.SelectedIndex != 0)); } }
 		bool useHangarMap {  get { return lstMap.Items.Count >= 4; } }
+		bool useFamilyHangarMap { get { return lstFamilyMap.Items.Count >= 4; } }
 		#endregion
 
 		private void cmdCancel_Click(object sender, EventArgs e)
@@ -677,9 +755,15 @@ namespace Idmr.Yogeme
 		{
 			if (chkHangars.Checked && lstMap.Items.Count > 0 && lstMap.Items.Count < 4)
 			{
-				DialogResult res = MessageBox.Show("Hangar Map must have 4 entries to be used. Continue anyway?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+				DialogResult res = MessageBox.Show("Hangar Map must have 4 entries to be used. Continue without it?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
 				if (res == DialogResult.No) return;
 			}
+			if (chkHangars.Checked && lstFamilyMap.Items.Count > 0 && lstFamilyMap.Items.Count < 4)
+			{
+				DialogResult res = MessageBox.Show("Family Hangar Map must have 4 entries to be used. Continue without it?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+				if (res == DialogResult.No) return;
+			}
+
 			if (!chkBackdrops.Checked && _bdFile != "") File.Delete(_bdFile);
 
 			if (!chkMission.Checked && _missionTxtFile != "") File.Delete(_missionTxtFile);
@@ -690,8 +774,9 @@ namespace Idmr.Yogeme
 			if (!useHangarCamera && _hangarCameraFile != "") File.Delete(_hangarCameraFile);
 			if (!useFamilyHangarCamera && _famHangarCameraFile != "") File.Delete(_famHangarCameraFile);
 			if (!useHangarMap && _hangarMapFile != "") File.Delete(_hangarMapFile);
+			if (!useFamilyHangarMap && _famHangarMapFile != "") File.Delete(_famHangarMapFile);
 
-			if (!chkBackdrops.Checked && !chkMission.Checked && !chkSounds.Checked && !useHangarObjects && !useHangarCamera && !useFamilyHangarCamera && !useHangarMap)
+			if (!chkBackdrops.Checked && !chkMission.Checked && !chkSounds.Checked && !useHangarObjects && !useHangarCamera && !useFamilyHangarCamera && !useHangarMap && !useFamilyHangarMap)
 			{
 				File.Delete(_fileName);
 				Close();
@@ -754,59 +839,69 @@ namespace Idmr.Yogeme
 					for (int i = 0; i < lstSounds.Items.Count; i++) sw.WriteLine(lstSounds.Items[i]);
 					sw.WriteLine("");
 				}
-				if (chkHangars.Checked && useHangarObjects)
+				if (chkHangars.Checked)
 				{
-					sw.WriteLine("[HangarObjects]");
-					if (!chkShuttle.Checked) sw.WriteLine("LoadShuttle = 0");
-					if (cboShuttleModel.SelectedIndex != 50) sw.WriteLine("ShuttleModelIndex = " + cboShuttleModel.SelectedIndex);
-					if (cboShuttleMarks.SelectedIndex != 0) sw.WriteLine("ShuttleMarkings = " + cboShuttleMarks.SelectedIndex);
-					if (!chkDroids.Checked) sw.WriteLine("LoadDroids = 0");
-					if (chkFloor.Checked) sw.WriteLine("IsHangarFloorInverted = 1");
-					for (int i = 0; i < lstHangarObjects.Items.Count; i++) sw.WriteLine(lstHangarObjects.Items[i]);
-					sw.WriteLine("");
-				}
-				if (chkHangars.Checked && useHangarCamera)
-				{
-					System.Diagnostics.Debug.WriteLine("cam");
-					sw.WriteLine("[HangarCamera]");
-					string[] keys = { "1", "2", "3", "6", "9" };
-					for (int i = 0; i < 5; i++)
+					if (useHangarObjects)
 					{
-						bool use = false;
-						for (int j = 0; j < 3; j++) use |= (_cameras[i, j] != _defaultCameras[i, j]);
-						if (use)
+						sw.WriteLine("[HangarObjects]");
+						if (!chkShuttle.Checked) sw.WriteLine("LoadShuttle = 0");
+						if (cboShuttleModel.SelectedIndex != 50) sw.WriteLine("ShuttleModelIndex = " + cboShuttleModel.SelectedIndex);
+						if (cboShuttleMarks.SelectedIndex != 0) sw.WriteLine("ShuttleMarkings = " + cboShuttleMarks.SelectedIndex);
+						if (!chkDroids.Checked) sw.WriteLine("LoadDroids = 0");
+						if (chkFloor.Checked) sw.WriteLine("IsHangarFloorInverted = 1");
+						for (int i = 0; i < lstHangarObjects.Items.Count; i++) sw.WriteLine(lstHangarObjects.Items[i]);
+						sw.WriteLine("");
+					}
+					if (useHangarCamera)
+					{
+						System.Diagnostics.Debug.WriteLine("cam");
+						sw.WriteLine("[HangarCamera]");
+						string[] keys = { "1", "2", "3", "6", "9" };
+						for (int i = 0; i < 5; i++)
 						{
-							sw.WriteLine("Key" + keys[i] + "_X = " + _cameras[i, 0]);
-							sw.WriteLine("Key" + keys[i] + "_Y = " + _cameras[i, 1]);
-							sw.WriteLine("Key" + keys[i] + "_Z = " + _cameras[i, 2]);
-							sw.WriteLine("");
+							bool use = false;
+							for (int j = 0; j < 3; j++) use |= (_cameras[i, j] != _defaultCameras[i, j]);
+							if (use)
+							{
+								sw.WriteLine("Key" + keys[i] + "_X = " + _cameras[i, 0]);
+								sw.WriteLine("Key" + keys[i] + "_Y = " + _cameras[i, 1]);
+								sw.WriteLine("Key" + keys[i] + "_Z = " + _cameras[i, 2]);
+								sw.WriteLine("");
+							}
 						}
 					}
-				}
-				if (chkHangars.Checked && useFamilyHangarCamera)
-				{
-					System.Diagnostics.Debug.WriteLine("fam cam");
-					sw.WriteLine("[FamHangarCamera]");
-					string[] keys = { "1", "2", "3", "6", "7", "8", "9" };
-					for (int i = 0; i < 7; i++)
+					if (useFamilyHangarCamera)
 					{
-						bool use = false;
-						for (int j = 0; j < 3; j++) use |= (_familyCameras[i, j] != _defaultFamilyCameras[i, j]);
-						if (use)
+						System.Diagnostics.Debug.WriteLine("fam cam");
+						sw.WriteLine("[FamHangarCamera]");
+						string[] keys = { "1", "2", "3", "6", "7", "8", "9" };
+						for (int i = 0; i < 7; i++)
 						{
-							sw.WriteLine("Key" + keys[i] + "_X = " + _familyCameras[i, 0]);
-							sw.WriteLine("Key" + keys[i] + "_Y = " + _familyCameras[i, 1]);
-							sw.WriteLine("Key" + keys[i] + "_Z = " + _familyCameras[i, 2]);
-							sw.WriteLine("");
+							bool use = false;
+							for (int j = 0; j < 3; j++) use |= (_familyCameras[i, j] != _defaultFamilyCameras[i, j]);
+							if (use)
+							{
+								sw.WriteLine("Key" + keys[i] + "_X = " + _familyCameras[i, 0]);
+								sw.WriteLine("Key" + keys[i] + "_Y = " + _familyCameras[i, 1]);
+								sw.WriteLine("Key" + keys[i] + "_Z = " + _familyCameras[i, 2]);
+								sw.WriteLine("");
+							}
 						}
 					}
-				}
-				if (chkHangars.Checked && useHangarMap)
-				{
-					System.Diagnostics.Debug.WriteLine("hangar map");
-					sw.WriteLine("[Hangar Map]");
-					for (int i = 0; i < lstMap.Items.Count; i++) sw.WriteLine(lstMap.Items[i].ToString());
-					sw.WriteLine("");
+					if (useHangarMap)
+					{
+						System.Diagnostics.Debug.WriteLine("hangar map");
+						sw.WriteLine("[HangarMap]");
+						for (int i = 0; i < lstMap.Items.Count; i++) sw.WriteLine(lstMap.Items[i].ToString());
+						sw.WriteLine("");
+					}
+					if (useFamilyHangarMap)
+					{
+						System.Diagnostics.Debug.WriteLine("family hangar map");
+						sw.WriteLine("[FamHangarMap]");
+						for (int i = 0; i < lstFamilyMap.Items.Count; i++) sw.WriteLine(lstFamilyMap.Items[i].ToString());
+						sw.WriteLine("");
+					}
 				}
 				sw.Flush();
 				sw.Close();
@@ -817,6 +912,7 @@ namespace Idmr.Yogeme
 				if (_hangarCameraFile != "") File.Delete(_hangarCameraFile);
 				if (_famHangarCameraFile != "") File.Delete(_famHangarCameraFile);
 				if (_hangarMapFile != "") File.Delete(_hangarMapFile);
+				if (_famHangarMapFile != "") File.Delete(_famHangarMapFile);
 			}
 			catch
 			{
@@ -838,6 +934,7 @@ namespace Idmr.Yogeme
 
 		struct MapEntry
 		{
+			// doing it this way so the output processing is in only one spot
 			public int ModelIndex;
 			public byte Markings;
 			public int PositionX;
@@ -859,15 +956,15 @@ namespace Idmr.Yogeme
 				if (parts.Length == 7) offset = 1;
 				else if (parts.Length != 6) return false;
 
-				ModelIndex = int.Parse(parts[0]);
-				if (offset != 0) Markings = byte.Parse(parts[1]);
+				ModelIndex = Convert.ToInt32(parts[0], 16);
+				if (offset != 0) Markings = Convert.ToByte(parts[1], 16);
 				else Markings = 0;
-				PositionX = int.Parse(parts[1 + offset]);
-				PositionY = int.Parse(parts[2 + offset]);
+				PositionX = Convert.ToInt32(parts[1 + offset], 16);
+				PositionY = Convert.ToInt32(parts[2 + offset], 16);
 				IsGrounded = (parts[3 + offset].ToLower() == "0x7fffffff");
-				if (!IsGrounded) PositionZ = int.Parse(parts[3 + offset]);
-				HeadingXY = int.Parse(parts[4 + offset]);
-				HeadingZ = int.Parse(parts[5 + offset]);
+				if (!IsGrounded) PositionZ = Convert.ToInt32(parts[3 + offset], 16);
+				HeadingXY = Convert.ToInt32(parts[4 + offset], 16);
+				HeadingZ = Convert.ToInt32(parts[5 + offset], 16);
 
 				return true;
 			}

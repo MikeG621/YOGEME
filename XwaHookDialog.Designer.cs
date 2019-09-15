@@ -62,6 +62,27 @@
 			this.chkObjects = new System.Windows.Forms.CheckBox();
 			this.opnObjects = new System.Windows.Forms.OpenFileDialog();
 			this.grpHangars = new System.Windows.Forms.GroupBox();
+			this.grpMap = new System.Windows.Forms.GroupBox();
+			this.chkMarks = new System.Windows.Forms.CheckBox();
+			this.cboMapMarkings = new System.Windows.Forms.ComboBox();
+			this.label18 = new System.Windows.Forms.Label();
+			this.cboMapIndex = new System.Windows.Forms.ComboBox();
+			this.chkGrounded = new System.Windows.Forms.CheckBox();
+			this.label16 = new System.Windows.Forms.Label();
+			this.label15 = new System.Windows.Forms.Label();
+			this.label14 = new System.Windows.Forms.Label();
+			this.label10 = new System.Windows.Forms.Label();
+			this.numHeadingZ = new System.Windows.Forms.NumericUpDown();
+			this.numPosZ = new System.Windows.Forms.NumericUpDown();
+			this.label13 = new System.Windows.Forms.Label();
+			this.label11 = new System.Windows.Forms.Label();
+			this.numHeadingXY = new System.Windows.Forms.NumericUpDown();
+			this.numPosY = new System.Windows.Forms.NumericUpDown();
+			this.label12 = new System.Windows.Forms.Label();
+			this.numPosX = new System.Windows.Forms.NumericUpDown();
+			this.lstMap = new System.Windows.Forms.ListBox();
+			this.cmdAddMap = new System.Windows.Forms.Button();
+			this.cmdRemoveMap = new System.Windows.Forms.Button();
 			this.grpFamilyCamera = new System.Windows.Forms.GroupBox();
 			this.cmdDefaultFamilyCamera = new System.Windows.Forms.Button();
 			this.label7 = new System.Windows.Forms.Label();
@@ -80,7 +101,6 @@
 			this.label4 = new System.Windows.Forms.Label();
 			this.numCameraX = new System.Windows.Forms.NumericUpDown();
 			this.cboCamera = new System.Windows.Forms.ComboBox();
-			this.label3 = new System.Windows.Forms.Label();
 			this.grpHangarObjects = new System.Windows.Forms.GroupBox();
 			this.label2 = new System.Windows.Forms.Label();
 			this.cboShuttleMarks = new System.Windows.Forms.ComboBox();
@@ -93,32 +113,38 @@
 			this.cmdRemoveHangar = new System.Windows.Forms.Button();
 			this.lstHangarObjects = new System.Windows.Forms.ListBox();
 			this.chkHangars = new System.Windows.Forms.CheckBox();
-			this.grpMap = new System.Windows.Forms.GroupBox();
-			this.cmdAddMap = new System.Windows.Forms.Button();
-			this.cmdRemoveMap = new System.Windows.Forms.Button();
-			this.lstMap = new System.Windows.Forms.ListBox();
-			this.label10 = new System.Windows.Forms.Label();
-			this.numPosZ = new System.Windows.Forms.NumericUpDown();
-			this.label11 = new System.Windows.Forms.Label();
-			this.numPosY = new System.Windows.Forms.NumericUpDown();
-			this.label12 = new System.Windows.Forms.Label();
-			this.numPosX = new System.Windows.Forms.NumericUpDown();
-			this.numHeadingXY = new System.Windows.Forms.NumericUpDown();
-			this.label13 = new System.Windows.Forms.Label();
-			this.numHeadingZ = new System.Windows.Forms.NumericUpDown();
-			this.label14 = new System.Windows.Forms.Label();
-			this.label15 = new System.Windows.Forms.Label();
-			this.label16 = new System.Windows.Forms.Label();
-			this.chkGrounded = new System.Windows.Forms.CheckBox();
-			this.cboMapMarkings = new System.Windows.Forms.ComboBox();
-			this.label18 = new System.Windows.Forms.Label();
-			this.cboMapIndex = new System.Windows.Forms.ComboBox();
-			this.chkMarks = new System.Windows.Forms.CheckBox();
+			this.grpFamilyMap = new System.Windows.Forms.GroupBox();
+			this.chkFamMarks = new System.Windows.Forms.CheckBox();
+			this.cboFamMapMarkings = new System.Windows.Forms.ComboBox();
+			this.label17 = new System.Windows.Forms.Label();
+			this.cboFamMapIndex = new System.Windows.Forms.ComboBox();
+			this.chkFamGrounded = new System.Windows.Forms.CheckBox();
+			this.label19 = new System.Windows.Forms.Label();
+			this.label20 = new System.Windows.Forms.Label();
+			this.label21 = new System.Windows.Forms.Label();
+			this.label22 = new System.Windows.Forms.Label();
+			this.numFamHeadingZ = new System.Windows.Forms.NumericUpDown();
+			this.numFamPosZ = new System.Windows.Forms.NumericUpDown();
+			this.label23 = new System.Windows.Forms.Label();
+			this.label24 = new System.Windows.Forms.Label();
+			this.numFamHeadingXY = new System.Windows.Forms.NumericUpDown();
+			this.numFamPosY = new System.Windows.Forms.NumericUpDown();
+			this.label25 = new System.Windows.Forms.Label();
+			this.numFamPosX = new System.Windows.Forms.NumericUpDown();
+			this.lstFamilyMap = new System.Windows.Forms.ListBox();
+			this.cmdAddFamMap = new System.Windows.Forms.Button();
+			this.cmdRemoveFamMap = new System.Windows.Forms.Button();
 			this.grpBackdrops.SuspendLayout();
 			this.grpMission.SuspendLayout();
 			this.grpSounds.SuspendLayout();
 			this.grpObjects.SuspendLayout();
 			this.grpHangars.SuspendLayout();
+			this.grpMap.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.numHeadingZ)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.numPosZ)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.numHeadingXY)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.numPosY)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.numPosX)).BeginInit();
 			this.grpFamilyCamera.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numFamilyCameraZ)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numFamilyCameraY)).BeginInit();
@@ -128,18 +154,18 @@
 			((System.ComponentModel.ISupportInitialize)(this.numCameraY)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numCameraX)).BeginInit();
 			this.grpHangarObjects.SuspendLayout();
-			this.grpMap.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.numPosZ)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.numPosY)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.numPosX)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.numHeadingXY)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.numHeadingZ)).BeginInit();
+			this.grpFamilyMap.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.numFamHeadingZ)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.numFamPosZ)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.numFamHeadingXY)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.numFamPosY)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.numFamPosX)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// cmdOK
 			// 
 			this.cmdOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.cmdOK.Location = new System.Drawing.Point(388, 447);
+			this.cmdOK.Location = new System.Drawing.Point(602, 447);
 			this.cmdOK.Name = "cmdOK";
 			this.cmdOK.Size = new System.Drawing.Size(75, 23);
 			this.cmdOK.TabIndex = 0;
@@ -150,7 +176,7 @@
 			// cmdCancel
 			// 
 			this.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.cmdCancel.Location = new System.Drawing.Point(513, 447);
+			this.cmdCancel.Location = new System.Drawing.Point(698, 447);
 			this.cmdCancel.Name = "cmdCancel";
 			this.cmdCancel.Size = new System.Drawing.Size(75, 23);
 			this.cmdCancel.TabIndex = 0;
@@ -470,6 +496,7 @@
 			// 
 			// grpHangars
 			// 
+			this.grpHangars.Controls.Add(this.grpFamilyMap);
 			this.grpHangars.Controls.Add(this.grpMap);
 			this.grpHangars.Controls.Add(this.grpFamilyCamera);
 			this.grpHangars.Controls.Add(this.grpCamera);
@@ -477,10 +504,268 @@
 			this.grpHangars.Controls.Add(this.chkHangars);
 			this.grpHangars.Location = new System.Drawing.Point(353, 12);
 			this.grpHangars.Name = "grpHangars";
-			this.grpHangars.Size = new System.Drawing.Size(655, 376);
+			this.grpHangars.Size = new System.Drawing.Size(655, 403);
 			this.grpHangars.TabIndex = 6;
 			this.grpHangars.TabStop = false;
 			this.grpHangars.Text = "Hangars";
+			// 
+			// grpMap
+			// 
+			this.grpMap.Controls.Add(this.chkMarks);
+			this.grpMap.Controls.Add(this.cboMapMarkings);
+			this.grpMap.Controls.Add(this.label18);
+			this.grpMap.Controls.Add(this.cboMapIndex);
+			this.grpMap.Controls.Add(this.chkGrounded);
+			this.grpMap.Controls.Add(this.label16);
+			this.grpMap.Controls.Add(this.label15);
+			this.grpMap.Controls.Add(this.label14);
+			this.grpMap.Controls.Add(this.label10);
+			this.grpMap.Controls.Add(this.numHeadingZ);
+			this.grpMap.Controls.Add(this.numPosZ);
+			this.grpMap.Controls.Add(this.label13);
+			this.grpMap.Controls.Add(this.label11);
+			this.grpMap.Controls.Add(this.numHeadingXY);
+			this.grpMap.Controls.Add(this.numPosY);
+			this.grpMap.Controls.Add(this.label12);
+			this.grpMap.Controls.Add(this.numPosX);
+			this.grpMap.Controls.Add(this.lstMap);
+			this.grpMap.Controls.Add(this.cmdAddMap);
+			this.grpMap.Controls.Add(this.cmdRemoveMap);
+			this.grpMap.Enabled = false;
+			this.grpMap.Location = new System.Drawing.Point(330, 42);
+			this.grpMap.Name = "grpMap";
+			this.grpMap.Size = new System.Drawing.Size(318, 173);
+			this.grpMap.TabIndex = 6;
+			this.grpMap.TabStop = false;
+			this.grpMap.Text = "Hangar Map";
+			// 
+			// chkMarks
+			// 
+			this.chkMarks.AutoSize = true;
+			this.chkMarks.Location = new System.Drawing.Point(125, 144);
+			this.chkMarks.Name = "chkMarks";
+			this.chkMarks.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+			this.chkMarks.Size = new System.Drawing.Size(55, 17);
+			this.chkMarks.TabIndex = 20;
+			this.chkMarks.Text = "Marks";
+			this.chkMarks.UseVisualStyleBackColor = true;
+			this.chkMarks.CheckedChanged += new System.EventHandler(this.chkMarks_CheckedChanged);
+			// 
+			// cboMapMarkings
+			// 
+			this.cboMapMarkings.Enabled = false;
+			this.cboMapMarkings.FormattingEnabled = true;
+			this.cboMapMarkings.Location = new System.Drawing.Point(184, 142);
+			this.cboMapMarkings.Name = "cboMapMarkings";
+			this.cboMapMarkings.Size = new System.Drawing.Size(126, 21);
+			this.cboMapMarkings.TabIndex = 18;
+			// 
+			// label18
+			// 
+			this.label18.AutoSize = true;
+			this.label18.Location = new System.Drawing.Point(4, 145);
+			this.label18.Name = "label18";
+			this.label18.Size = new System.Drawing.Size(65, 13);
+			this.label18.TabIndex = 17;
+			this.label18.Text = "Model Index";
+			// 
+			// cboMapIndex
+			// 
+			this.cboMapIndex.FormattingEnabled = true;
+			this.cboMapIndex.Location = new System.Drawing.Point(72, 142);
+			this.cboMapIndex.Name = "cboMapIndex";
+			this.cboMapIndex.Size = new System.Drawing.Size(44, 21);
+			this.cboMapIndex.TabIndex = 16;
+			// 
+			// chkGrounded
+			// 
+			this.chkGrounded.AutoSize = true;
+			this.chkGrounded.Checked = true;
+			this.chkGrounded.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.chkGrounded.Location = new System.Drawing.Point(238, 71);
+			this.chkGrounded.Name = "chkGrounded";
+			this.chkGrounded.Size = new System.Drawing.Size(73, 17);
+			this.chkGrounded.TabIndex = 15;
+			this.chkGrounded.Text = "Grounded";
+			this.chkGrounded.UseVisualStyleBackColor = true;
+			this.chkGrounded.CheckedChanged += new System.EventHandler(this.chkGrounded_CheckedChanged);
+			// 
+			// label16
+			// 
+			this.label16.AutoSize = true;
+			this.label16.Location = new System.Drawing.Point(6, 118);
+			this.label16.Name = "label16";
+			this.label16.Size = new System.Drawing.Size(55, 13);
+			this.label16.TabIndex = 14;
+			this.label16.Text = "Headings:";
+			// 
+			// label15
+			// 
+			this.label15.AutoSize = true;
+			this.label15.Location = new System.Drawing.Point(6, 95);
+			this.label15.Name = "label15";
+			this.label15.Size = new System.Drawing.Size(52, 13);
+			this.label15.TabIndex = 14;
+			this.label15.Text = "Positions:";
+			// 
+			// label14
+			// 
+			this.label14.AutoSize = true;
+			this.label14.Location = new System.Drawing.Point(152, 118);
+			this.label14.Name = "label14";
+			this.label14.Size = new System.Drawing.Size(14, 13);
+			this.label14.TabIndex = 13;
+			this.label14.Text = "Z";
+			// 
+			// label10
+			// 
+			this.label10.AutoSize = true;
+			this.label10.Location = new System.Drawing.Point(235, 94);
+			this.label10.Name = "label10";
+			this.label10.Size = new System.Drawing.Size(14, 13);
+			this.label10.TabIndex = 13;
+			this.label10.Text = "Z";
+			// 
+			// numHeadingZ
+			// 
+			this.numHeadingZ.Location = new System.Drawing.Point(172, 116);
+			this.numHeadingZ.Maximum = new decimal(new int[] {
+            65535,
+            0,
+            0,
+            0});
+			this.numHeadingZ.Minimum = new decimal(new int[] {
+            65536,
+            0,
+            0,
+            -2147483648});
+			this.numHeadingZ.Name = "numHeadingZ";
+			this.numHeadingZ.Size = new System.Drawing.Size(57, 20);
+			this.numHeadingZ.TabIndex = 12;
+			// 
+			// numPosZ
+			// 
+			this.numPosZ.Enabled = false;
+			this.numPosZ.Location = new System.Drawing.Point(255, 92);
+			this.numPosZ.Maximum = new decimal(new int[] {
+            65535,
+            0,
+            0,
+            0});
+			this.numPosZ.Minimum = new decimal(new int[] {
+            65536,
+            0,
+            0,
+            -2147483648});
+			this.numPosZ.Name = "numPosZ";
+			this.numPosZ.Size = new System.Drawing.Size(57, 20);
+			this.numPosZ.TabIndex = 12;
+			// 
+			// label13
+			// 
+			this.label13.AutoSize = true;
+			this.label13.Location = new System.Drawing.Point(69, 118);
+			this.label13.Name = "label13";
+			this.label13.Size = new System.Drawing.Size(21, 13);
+			this.label13.TabIndex = 11;
+			this.label13.Text = "XY";
+			// 
+			// label11
+			// 
+			this.label11.AutoSize = true;
+			this.label11.Location = new System.Drawing.Point(152, 94);
+			this.label11.Name = "label11";
+			this.label11.Size = new System.Drawing.Size(14, 13);
+			this.label11.TabIndex = 11;
+			this.label11.Text = "Y";
+			// 
+			// numHeadingXY
+			// 
+			this.numHeadingXY.Location = new System.Drawing.Point(89, 116);
+			this.numHeadingXY.Maximum = new decimal(new int[] {
+            65535,
+            0,
+            0,
+            0});
+			this.numHeadingXY.Minimum = new decimal(new int[] {
+            65536,
+            0,
+            0,
+            -2147483648});
+			this.numHeadingXY.Name = "numHeadingXY";
+			this.numHeadingXY.Size = new System.Drawing.Size(57, 20);
+			this.numHeadingXY.TabIndex = 10;
+			// 
+			// numPosY
+			// 
+			this.numPosY.Location = new System.Drawing.Point(172, 92);
+			this.numPosY.Maximum = new decimal(new int[] {
+            65535,
+            0,
+            0,
+            0});
+			this.numPosY.Minimum = new decimal(new int[] {
+            65536,
+            0,
+            0,
+            -2147483648});
+			this.numPosY.Name = "numPosY";
+			this.numPosY.Size = new System.Drawing.Size(57, 20);
+			this.numPosY.TabIndex = 10;
+			// 
+			// label12
+			// 
+			this.label12.AutoSize = true;
+			this.label12.Location = new System.Drawing.Point(69, 94);
+			this.label12.Name = "label12";
+			this.label12.Size = new System.Drawing.Size(14, 13);
+			this.label12.TabIndex = 9;
+			this.label12.Text = "X";
+			// 
+			// numPosX
+			// 
+			this.numPosX.Location = new System.Drawing.Point(89, 92);
+			this.numPosX.Maximum = new decimal(new int[] {
+            65535,
+            0,
+            0,
+            0});
+			this.numPosX.Minimum = new decimal(new int[] {
+            65536,
+            0,
+            0,
+            -2147483648});
+			this.numPosX.Name = "numPosX";
+			this.numPosX.Size = new System.Drawing.Size(57, 20);
+			this.numPosX.TabIndex = 8;
+			// 
+			// lstMap
+			// 
+			this.lstMap.FormattingEnabled = true;
+			this.lstMap.Location = new System.Drawing.Point(6, 19);
+			this.lstMap.Name = "lstMap";
+			this.lstMap.Size = new System.Drawing.Size(223, 69);
+			this.lstMap.TabIndex = 7;
+			// 
+			// cmdAddMap
+			// 
+			this.cmdAddMap.Location = new System.Drawing.Point(251, 20);
+			this.cmdAddMap.Name = "cmdAddMap";
+			this.cmdAddMap.Size = new System.Drawing.Size(60, 23);
+			this.cmdAddMap.TabIndex = 6;
+			this.cmdAddMap.Text = "&Add";
+			this.cmdAddMap.UseVisualStyleBackColor = true;
+			this.cmdAddMap.Click += new System.EventHandler(this.cmdAddMap_Click);
+			// 
+			// cmdRemoveMap
+			// 
+			this.cmdRemoveMap.Location = new System.Drawing.Point(251, 45);
+			this.cmdRemoveMap.Name = "cmdRemoveMap";
+			this.cmdRemoveMap.Size = new System.Drawing.Size(60, 23);
+			this.cmdRemoveMap.TabIndex = 5;
+			this.cmdRemoveMap.Text = "&Remove";
+			this.cmdRemoveMap.UseVisualStyleBackColor = true;
+			this.cmdRemoveMap.Click += new System.EventHandler(this.cmdRemoveMap_Click);
 			// 
 			// grpFamilyCamera
 			// 
@@ -734,15 +1019,6 @@
 			this.cboCamera.Text = "View 1";
 			this.cboCamera.SelectedIndexChanged += new System.EventHandler(this.cboCamera_SelectedIndexChanged);
 			// 
-			// label3
-			// 
-			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(511, 537);
-			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(51, 13);
-			this.label3.TabIndex = 3;
-			this.label3.Text = "Fam Map";
-			// 
 			// grpHangarObjects
 			// 
 			this.grpHangarObjects.Controls.Add(this.label2);
@@ -870,263 +1146,263 @@
 			this.chkHangars.UseVisualStyleBackColor = true;
 			this.chkHangars.CheckedChanged += new System.EventHandler(this.chkHangars_CheckedChanged);
 			// 
-			// grpMap
+			// grpFamilyMap
 			// 
-			this.grpMap.Controls.Add(this.chkMarks);
-			this.grpMap.Controls.Add(this.cboMapMarkings);
-			this.grpMap.Controls.Add(this.label18);
-			this.grpMap.Controls.Add(this.cboMapIndex);
-			this.grpMap.Controls.Add(this.chkGrounded);
-			this.grpMap.Controls.Add(this.label16);
-			this.grpMap.Controls.Add(this.label15);
-			this.grpMap.Controls.Add(this.label14);
-			this.grpMap.Controls.Add(this.label10);
-			this.grpMap.Controls.Add(this.numHeadingZ);
-			this.grpMap.Controls.Add(this.numPosZ);
-			this.grpMap.Controls.Add(this.label13);
-			this.grpMap.Controls.Add(this.label11);
-			this.grpMap.Controls.Add(this.numHeadingXY);
-			this.grpMap.Controls.Add(this.numPosY);
-			this.grpMap.Controls.Add(this.label12);
-			this.grpMap.Controls.Add(this.numPosX);
-			this.grpMap.Controls.Add(this.lstMap);
-			this.grpMap.Controls.Add(this.cmdAddMap);
-			this.grpMap.Controls.Add(this.cmdRemoveMap);
-			this.grpMap.Enabled = false;
-			this.grpMap.Location = new System.Drawing.Point(330, 42);
-			this.grpMap.Name = "grpMap";
-			this.grpMap.Size = new System.Drawing.Size(318, 173);
-			this.grpMap.TabIndex = 6;
-			this.grpMap.TabStop = false;
-			this.grpMap.Text = "Hangar Map";
+			this.grpFamilyMap.Controls.Add(this.chkFamMarks);
+			this.grpFamilyMap.Controls.Add(this.cboFamMapMarkings);
+			this.grpFamilyMap.Controls.Add(this.label17);
+			this.grpFamilyMap.Controls.Add(this.cboFamMapIndex);
+			this.grpFamilyMap.Controls.Add(this.chkFamGrounded);
+			this.grpFamilyMap.Controls.Add(this.label19);
+			this.grpFamilyMap.Controls.Add(this.label20);
+			this.grpFamilyMap.Controls.Add(this.label21);
+			this.grpFamilyMap.Controls.Add(this.label22);
+			this.grpFamilyMap.Controls.Add(this.numFamHeadingZ);
+			this.grpFamilyMap.Controls.Add(this.numFamPosZ);
+			this.grpFamilyMap.Controls.Add(this.label23);
+			this.grpFamilyMap.Controls.Add(this.label24);
+			this.grpFamilyMap.Controls.Add(this.numFamHeadingXY);
+			this.grpFamilyMap.Controls.Add(this.numFamPosY);
+			this.grpFamilyMap.Controls.Add(this.label25);
+			this.grpFamilyMap.Controls.Add(this.numFamPosX);
+			this.grpFamilyMap.Controls.Add(this.lstFamilyMap);
+			this.grpFamilyMap.Controls.Add(this.cmdAddFamMap);
+			this.grpFamilyMap.Controls.Add(this.cmdRemoveFamMap);
+			this.grpFamilyMap.Enabled = false;
+			this.grpFamilyMap.Location = new System.Drawing.Point(330, 221);
+			this.grpFamilyMap.Name = "grpFamilyMap";
+			this.grpFamilyMap.Size = new System.Drawing.Size(318, 173);
+			this.grpFamilyMap.TabIndex = 7;
+			this.grpFamilyMap.TabStop = false;
+			this.grpFamilyMap.Text = "Family Hangar Map";
 			// 
-			// cmdAddMap
+			// chkFamMarks
 			// 
-			this.cmdAddMap.Location = new System.Drawing.Point(251, 20);
-			this.cmdAddMap.Name = "cmdAddMap";
-			this.cmdAddMap.Size = new System.Drawing.Size(60, 23);
-			this.cmdAddMap.TabIndex = 6;
-			this.cmdAddMap.Text = "&Add";
-			this.cmdAddMap.UseVisualStyleBackColor = true;
-			this.cmdAddMap.Click += new System.EventHandler(this.cmdAddMap_Click);
+			this.chkFamMarks.AutoSize = true;
+			this.chkFamMarks.Location = new System.Drawing.Point(125, 144);
+			this.chkFamMarks.Name = "chkFamMarks";
+			this.chkFamMarks.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+			this.chkFamMarks.Size = new System.Drawing.Size(55, 17);
+			this.chkFamMarks.TabIndex = 20;
+			this.chkFamMarks.Text = "Marks";
+			this.chkFamMarks.UseVisualStyleBackColor = true;
+			this.chkFamMarks.CheckedChanged += new System.EventHandler(this.chkFamMarks_CheckedChanged);
 			// 
-			// cmdRemoveMap
+			// cboFamMapMarkings
 			// 
-			this.cmdRemoveMap.Location = new System.Drawing.Point(252, 49);
-			this.cmdRemoveMap.Name = "cmdRemoveMap";
-			this.cmdRemoveMap.Size = new System.Drawing.Size(60, 23);
-			this.cmdRemoveMap.TabIndex = 5;
-			this.cmdRemoveMap.Text = "&Remove";
-			this.cmdRemoveMap.UseVisualStyleBackColor = true;
-			this.cmdRemoveMap.Click += new System.EventHandler(this.cmdRemoveMap_Click);
+			this.cboFamMapMarkings.Enabled = false;
+			this.cboFamMapMarkings.FormattingEnabled = true;
+			this.cboFamMapMarkings.Location = new System.Drawing.Point(184, 142);
+			this.cboFamMapMarkings.Name = "cboFamMapMarkings";
+			this.cboFamMapMarkings.Size = new System.Drawing.Size(126, 21);
+			this.cboFamMapMarkings.TabIndex = 18;
 			// 
-			// lstMap
+			// label17
 			// 
-			this.lstMap.FormattingEnabled = true;
-			this.lstMap.Location = new System.Drawing.Point(6, 19);
-			this.lstMap.Name = "lstMap";
-			this.lstMap.Size = new System.Drawing.Size(223, 69);
-			this.lstMap.TabIndex = 7;
+			this.label17.AutoSize = true;
+			this.label17.Location = new System.Drawing.Point(4, 145);
+			this.label17.Name = "label17";
+			this.label17.Size = new System.Drawing.Size(65, 13);
+			this.label17.TabIndex = 17;
+			this.label17.Text = "Model Index";
 			// 
-			// label10
+			// cboFamMapIndex
 			// 
-			this.label10.AutoSize = true;
-			this.label10.Location = new System.Drawing.Point(235, 94);
-			this.label10.Name = "label10";
-			this.label10.Size = new System.Drawing.Size(14, 13);
-			this.label10.TabIndex = 13;
-			this.label10.Text = "Z";
+			this.cboFamMapIndex.FormattingEnabled = true;
+			this.cboFamMapIndex.Location = new System.Drawing.Point(72, 142);
+			this.cboFamMapIndex.Name = "cboFamMapIndex";
+			this.cboFamMapIndex.Size = new System.Drawing.Size(44, 21);
+			this.cboFamMapIndex.TabIndex = 16;
 			// 
-			// numPosZ
+			// chkFamGrounded
 			// 
-			this.numPosZ.Enabled = false;
-			this.numPosZ.Location = new System.Drawing.Point(255, 92);
-			this.numPosZ.Maximum = new decimal(new int[] {
+			this.chkFamGrounded.AutoSize = true;
+			this.chkFamGrounded.Checked = true;
+			this.chkFamGrounded.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.chkFamGrounded.Location = new System.Drawing.Point(238, 71);
+			this.chkFamGrounded.Name = "chkFamGrounded";
+			this.chkFamGrounded.Size = new System.Drawing.Size(73, 17);
+			this.chkFamGrounded.TabIndex = 15;
+			this.chkFamGrounded.Text = "Grounded";
+			this.chkFamGrounded.UseVisualStyleBackColor = true;
+			this.chkFamGrounded.CheckedChanged += new System.EventHandler(this.chkFamGrounded_CheckedChanged);
+			// 
+			// label19
+			// 
+			this.label19.AutoSize = true;
+			this.label19.Location = new System.Drawing.Point(6, 118);
+			this.label19.Name = "label19";
+			this.label19.Size = new System.Drawing.Size(55, 13);
+			this.label19.TabIndex = 14;
+			this.label19.Text = "Headings:";
+			// 
+			// label20
+			// 
+			this.label20.AutoSize = true;
+			this.label20.Location = new System.Drawing.Point(6, 95);
+			this.label20.Name = "label20";
+			this.label20.Size = new System.Drawing.Size(52, 13);
+			this.label20.TabIndex = 14;
+			this.label20.Text = "Positions:";
+			// 
+			// label21
+			// 
+			this.label21.AutoSize = true;
+			this.label21.Location = new System.Drawing.Point(152, 118);
+			this.label21.Name = "label21";
+			this.label21.Size = new System.Drawing.Size(14, 13);
+			this.label21.TabIndex = 13;
+			this.label21.Text = "Z";
+			// 
+			// label22
+			// 
+			this.label22.AutoSize = true;
+			this.label22.Location = new System.Drawing.Point(235, 94);
+			this.label22.Name = "label22";
+			this.label22.Size = new System.Drawing.Size(14, 13);
+			this.label22.TabIndex = 13;
+			this.label22.Text = "Z";
+			// 
+			// numFamHeadingZ
+			// 
+			this.numFamHeadingZ.Location = new System.Drawing.Point(172, 116);
+			this.numFamHeadingZ.Maximum = new decimal(new int[] {
             65535,
             0,
             0,
             0});
-			this.numPosZ.Minimum = new decimal(new int[] {
+			this.numFamHeadingZ.Minimum = new decimal(new int[] {
             65536,
             0,
             0,
             -2147483648});
-			this.numPosZ.Name = "numPosZ";
-			this.numPosZ.Size = new System.Drawing.Size(57, 20);
-			this.numPosZ.TabIndex = 12;
+			this.numFamHeadingZ.Name = "numFamHeadingZ";
+			this.numFamHeadingZ.Size = new System.Drawing.Size(57, 20);
+			this.numFamHeadingZ.TabIndex = 12;
 			// 
-			// label11
+			// numFamPosZ
 			// 
-			this.label11.AutoSize = true;
-			this.label11.Location = new System.Drawing.Point(152, 94);
-			this.label11.Name = "label11";
-			this.label11.Size = new System.Drawing.Size(14, 13);
-			this.label11.TabIndex = 11;
-			this.label11.Text = "Y";
-			// 
-			// numPosY
-			// 
-			this.numPosY.Location = new System.Drawing.Point(172, 92);
-			this.numPosY.Maximum = new decimal(new int[] {
+			this.numFamPosZ.Enabled = false;
+			this.numFamPosZ.Location = new System.Drawing.Point(255, 92);
+			this.numFamPosZ.Maximum = new decimal(new int[] {
             65535,
             0,
             0,
             0});
-			this.numPosY.Minimum = new decimal(new int[] {
+			this.numFamPosZ.Minimum = new decimal(new int[] {
             65536,
             0,
             0,
             -2147483648});
-			this.numPosY.Name = "numPosY";
-			this.numPosY.Size = new System.Drawing.Size(57, 20);
-			this.numPosY.TabIndex = 10;
+			this.numFamPosZ.Name = "numFamPosZ";
+			this.numFamPosZ.Size = new System.Drawing.Size(57, 20);
+			this.numFamPosZ.TabIndex = 12;
 			// 
-			// label12
+			// label23
 			// 
-			this.label12.AutoSize = true;
-			this.label12.Location = new System.Drawing.Point(69, 94);
-			this.label12.Name = "label12";
-			this.label12.Size = new System.Drawing.Size(14, 13);
-			this.label12.TabIndex = 9;
-			this.label12.Text = "X";
+			this.label23.AutoSize = true;
+			this.label23.Location = new System.Drawing.Point(69, 118);
+			this.label23.Name = "label23";
+			this.label23.Size = new System.Drawing.Size(21, 13);
+			this.label23.TabIndex = 11;
+			this.label23.Text = "XY";
 			// 
-			// numPosX
+			// label24
 			// 
-			this.numPosX.Location = new System.Drawing.Point(89, 92);
-			this.numPosX.Maximum = new decimal(new int[] {
+			this.label24.AutoSize = true;
+			this.label24.Location = new System.Drawing.Point(152, 94);
+			this.label24.Name = "label24";
+			this.label24.Size = new System.Drawing.Size(14, 13);
+			this.label24.TabIndex = 11;
+			this.label24.Text = "Y";
+			// 
+			// numFamHeadingXY
+			// 
+			this.numFamHeadingXY.Location = new System.Drawing.Point(89, 116);
+			this.numFamHeadingXY.Maximum = new decimal(new int[] {
             65535,
             0,
             0,
             0});
-			this.numPosX.Minimum = new decimal(new int[] {
+			this.numFamHeadingXY.Minimum = new decimal(new int[] {
             65536,
             0,
             0,
             -2147483648});
-			this.numPosX.Name = "numPosX";
-			this.numPosX.Size = new System.Drawing.Size(57, 20);
-			this.numPosX.TabIndex = 8;
+			this.numFamHeadingXY.Name = "numFamHeadingXY";
+			this.numFamHeadingXY.Size = new System.Drawing.Size(57, 20);
+			this.numFamHeadingXY.TabIndex = 10;
 			// 
-			// numHeadingXY
+			// numFamPosY
 			// 
-			this.numHeadingXY.Location = new System.Drawing.Point(89, 116);
-			this.numHeadingXY.Maximum = new decimal(new int[] {
+			this.numFamPosY.Location = new System.Drawing.Point(172, 92);
+			this.numFamPosY.Maximum = new decimal(new int[] {
             65535,
             0,
             0,
             0});
-			this.numHeadingXY.Minimum = new decimal(new int[] {
+			this.numFamPosY.Minimum = new decimal(new int[] {
             65536,
             0,
             0,
             -2147483648});
-			this.numHeadingXY.Name = "numHeadingXY";
-			this.numHeadingXY.Size = new System.Drawing.Size(57, 20);
-			this.numHeadingXY.TabIndex = 10;
+			this.numFamPosY.Name = "numFamPosY";
+			this.numFamPosY.Size = new System.Drawing.Size(57, 20);
+			this.numFamPosY.TabIndex = 10;
 			// 
-			// label13
+			// label25
 			// 
-			this.label13.AutoSize = true;
-			this.label13.Location = new System.Drawing.Point(69, 118);
-			this.label13.Name = "label13";
-			this.label13.Size = new System.Drawing.Size(21, 13);
-			this.label13.TabIndex = 11;
-			this.label13.Text = "XY";
+			this.label25.AutoSize = true;
+			this.label25.Location = new System.Drawing.Point(69, 94);
+			this.label25.Name = "label25";
+			this.label25.Size = new System.Drawing.Size(14, 13);
+			this.label25.TabIndex = 9;
+			this.label25.Text = "X";
 			// 
-			// numHeadingZ
+			// numFamPosX
 			// 
-			this.numHeadingZ.Location = new System.Drawing.Point(172, 116);
-			this.numHeadingZ.Maximum = new decimal(new int[] {
+			this.numFamPosX.Location = new System.Drawing.Point(89, 92);
+			this.numFamPosX.Maximum = new decimal(new int[] {
             65535,
             0,
             0,
             0});
-			this.numHeadingZ.Minimum = new decimal(new int[] {
+			this.numFamPosX.Minimum = new decimal(new int[] {
             65536,
             0,
             0,
             -2147483648});
-			this.numHeadingZ.Name = "numHeadingZ";
-			this.numHeadingZ.Size = new System.Drawing.Size(57, 20);
-			this.numHeadingZ.TabIndex = 12;
+			this.numFamPosX.Name = "numFamPosX";
+			this.numFamPosX.Size = new System.Drawing.Size(57, 20);
+			this.numFamPosX.TabIndex = 8;
 			// 
-			// label14
+			// lstFamilyMap
 			// 
-			this.label14.AutoSize = true;
-			this.label14.Location = new System.Drawing.Point(152, 118);
-			this.label14.Name = "label14";
-			this.label14.Size = new System.Drawing.Size(14, 13);
-			this.label14.TabIndex = 13;
-			this.label14.Text = "Z";
+			this.lstFamilyMap.FormattingEnabled = true;
+			this.lstFamilyMap.Location = new System.Drawing.Point(6, 19);
+			this.lstFamilyMap.Name = "lstFamilyMap";
+			this.lstFamilyMap.Size = new System.Drawing.Size(223, 69);
+			this.lstFamilyMap.TabIndex = 7;
 			// 
-			// label15
+			// cmdAddFamMap
 			// 
-			this.label15.AutoSize = true;
-			this.label15.Location = new System.Drawing.Point(6, 95);
-			this.label15.Name = "label15";
-			this.label15.Size = new System.Drawing.Size(52, 13);
-			this.label15.TabIndex = 14;
-			this.label15.Text = "Positions:";
+			this.cmdAddFamMap.Location = new System.Drawing.Point(251, 20);
+			this.cmdAddFamMap.Name = "cmdAddFamMap";
+			this.cmdAddFamMap.Size = new System.Drawing.Size(60, 23);
+			this.cmdAddFamMap.TabIndex = 6;
+			this.cmdAddFamMap.Text = "&Add";
+			this.cmdAddFamMap.UseVisualStyleBackColor = true;
+			this.cmdAddFamMap.Click += new System.EventHandler(this.cmdAddFamMap_Click);
 			// 
-			// label16
+			// cmdRemoveFamMap
 			// 
-			this.label16.AutoSize = true;
-			this.label16.Location = new System.Drawing.Point(6, 118);
-			this.label16.Name = "label16";
-			this.label16.Size = new System.Drawing.Size(55, 13);
-			this.label16.TabIndex = 14;
-			this.label16.Text = "Headings:";
-			// 
-			// chkGrounded
-			// 
-			this.chkGrounded.AutoSize = true;
-			this.chkGrounded.Checked = true;
-			this.chkGrounded.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.chkGrounded.Location = new System.Drawing.Point(238, 71);
-			this.chkGrounded.Name = "chkGrounded";
-			this.chkGrounded.Size = new System.Drawing.Size(73, 17);
-			this.chkGrounded.TabIndex = 15;
-			this.chkGrounded.Text = "Grounded";
-			this.chkGrounded.UseVisualStyleBackColor = true;
-			this.chkGrounded.CheckedChanged += new System.EventHandler(this.chkGrounded_CheckedChanged);
-			// 
-			// cboMapMarkings
-			// 
-			this.cboMapMarkings.Enabled = false;
-			this.cboMapMarkings.FormattingEnabled = true;
-			this.cboMapMarkings.Location = new System.Drawing.Point(184, 142);
-			this.cboMapMarkings.Name = "cboMapMarkings";
-			this.cboMapMarkings.Size = new System.Drawing.Size(126, 21);
-			this.cboMapMarkings.TabIndex = 18;
-			// 
-			// label18
-			// 
-			this.label18.AutoSize = true;
-			this.label18.Location = new System.Drawing.Point(4, 145);
-			this.label18.Name = "label18";
-			this.label18.Size = new System.Drawing.Size(65, 13);
-			this.label18.TabIndex = 17;
-			this.label18.Text = "Model Index";
-			// 
-			// cboMapIndex
-			// 
-			this.cboMapIndex.FormattingEnabled = true;
-			this.cboMapIndex.Location = new System.Drawing.Point(72, 142);
-			this.cboMapIndex.Name = "cboMapIndex";
-			this.cboMapIndex.Size = new System.Drawing.Size(44, 21);
-			this.cboMapIndex.TabIndex = 16;
-			// 
-			// chkMarks
-			// 
-			this.chkMarks.AutoSize = true;
-			this.chkMarks.Location = new System.Drawing.Point(125, 144);
-			this.chkMarks.Name = "chkMarks";
-			this.chkMarks.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-			this.chkMarks.Size = new System.Drawing.Size(55, 17);
-			this.chkMarks.TabIndex = 20;
-			this.chkMarks.Text = "Marks";
-			this.chkMarks.UseVisualStyleBackColor = true;
-			this.chkMarks.CheckedChanged += new System.EventHandler(this.chkMarks_CheckedChanged);
+			this.cmdRemoveFamMap.Location = new System.Drawing.Point(252, 45);
+			this.cmdRemoveFamMap.Name = "cmdRemoveFamMap";
+			this.cmdRemoveFamMap.Size = new System.Drawing.Size(60, 23);
+			this.cmdRemoveFamMap.TabIndex = 5;
+			this.cmdRemoveFamMap.Text = "&Remove";
+			this.cmdRemoveFamMap.UseVisualStyleBackColor = true;
+			this.cmdRemoveFamMap.Click += new System.EventHandler(this.cmdRemoveFamMap_Click);
 			// 
 			// XwaHookDialog
 			// 
@@ -1134,11 +1410,10 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.cmdCancel;
-			this.ClientSize = new System.Drawing.Size(1041, 559);
+			this.ClientSize = new System.Drawing.Size(1041, 507);
 			this.Controls.Add(this.grpHangars);
 			this.Controls.Add(this.grpObjects);
 			this.Controls.Add(this.grpSounds);
-			this.Controls.Add(this.label3);
 			this.Controls.Add(this.grpMission);
 			this.Controls.Add(this.grpBackdrops);
 			this.Controls.Add(this.cmdCancel);
@@ -1158,6 +1433,13 @@
 			this.grpObjects.PerformLayout();
 			this.grpHangars.ResumeLayout(false);
 			this.grpHangars.PerformLayout();
+			this.grpMap.ResumeLayout(false);
+			this.grpMap.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.numHeadingZ)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.numPosZ)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.numHeadingXY)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.numPosY)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.numPosX)).EndInit();
 			this.grpFamilyCamera.ResumeLayout(false);
 			this.grpFamilyCamera.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numFamilyCameraZ)).EndInit();
@@ -1170,15 +1452,14 @@
 			((System.ComponentModel.ISupportInitialize)(this.numCameraX)).EndInit();
 			this.grpHangarObjects.ResumeLayout(false);
 			this.grpHangarObjects.PerformLayout();
-			this.grpMap.ResumeLayout(false);
-			this.grpMap.PerformLayout();
-			((System.ComponentModel.ISupportInitialize)(this.numPosZ)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.numPosY)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.numPosX)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.numHeadingXY)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.numHeadingZ)).EndInit();
+			this.grpFamilyMap.ResumeLayout(false);
+			this.grpFamilyMap.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.numFamHeadingZ)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.numFamPosZ)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.numFamHeadingXY)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.numFamPosY)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.numFamPosX)).EndInit();
 			this.ResumeLayout(false);
-			this.PerformLayout();
 
 		}
 
@@ -1229,7 +1510,6 @@
 		private System.Windows.Forms.Button cmdRemoveHangar;
 		private System.Windows.Forms.ListBox lstHangarObjects;
 		private System.Windows.Forms.CheckBox chkHangars;
-		private System.Windows.Forms.Label label3;
 		private System.Windows.Forms.GroupBox grpCamera;
 		private System.Windows.Forms.ComboBox cboCamera;
 		private System.Windows.Forms.Button cmdDefaultCamera;
@@ -1269,5 +1549,26 @@
 		private System.Windows.Forms.ListBox lstMap;
 		private System.Windows.Forms.Button cmdAddMap;
 		private System.Windows.Forms.Button cmdRemoveMap;
+		private System.Windows.Forms.GroupBox grpFamilyMap;
+		private System.Windows.Forms.CheckBox chkFamMarks;
+		private System.Windows.Forms.ComboBox cboFamMapMarkings;
+		private System.Windows.Forms.Label label17;
+		private System.Windows.Forms.ComboBox cboFamMapIndex;
+		private System.Windows.Forms.CheckBox chkFamGrounded;
+		private System.Windows.Forms.Label label19;
+		private System.Windows.Forms.Label label20;
+		private System.Windows.Forms.Label label21;
+		private System.Windows.Forms.Label label22;
+		private System.Windows.Forms.NumericUpDown numFamHeadingZ;
+		private System.Windows.Forms.NumericUpDown numFamPosZ;
+		private System.Windows.Forms.Label label23;
+		private System.Windows.Forms.Label label24;
+		private System.Windows.Forms.NumericUpDown numFamHeadingXY;
+		private System.Windows.Forms.NumericUpDown numFamPosY;
+		private System.Windows.Forms.Label label25;
+		private System.Windows.Forms.NumericUpDown numFamPosX;
+		private System.Windows.Forms.ListBox lstFamilyMap;
+		private System.Windows.Forms.Button cmdAddFamMap;
+		private System.Windows.Forms.Button cmdRemoveFamMap;
 	}
 }

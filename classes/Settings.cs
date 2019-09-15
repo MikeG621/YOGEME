@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2019 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.5.1+
+ * VERSION: 1.6
  */
 
 /* CHANGELOG
+ * v1.6, 190915
  * [UPD] SBD detection changed to Readme instead of Backup since XWAUCP is different
  * v1.5.1, 190513
  * [UPD] Removed Steam X-Wing detection, as it doesn't work the same for some reason

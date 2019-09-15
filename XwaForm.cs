@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2019 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.5.1+
+ * VERSION: 1.6
  */
 
 /* CHANGELOG
+ * v1.6, 190915
  * [UPD] cmdBackdrop "Loading..." now always shown instead of just with SBD
  * [NEW] hook implementation
  * v1.5.1, 190513
@@ -135,10 +136,6 @@ namespace Idmr.Yogeme
 		byte _activeOrder = 0;
 		byte _activeOptionCraft = 0;
 		bool _hookBackdropInstalled;
-		bool _hookHangarInstalled;
-		bool _hookEnginesInstalled;
-		bool _hookMissionObjectsInstalled;
-		bool _hookMissionTieInstalled;
 		#endregion
 		#region control arrays
 		MenuItem[] menuRecentMissions = new MenuItem[6];
@@ -1218,15 +1215,19 @@ namespace Idmr.Yogeme
 			applySettingsHandler(0, new EventArgs());  //[JB] Configurable colors were added to options.
 			updateMissionTabs();
 
+			bool hookEnginesInstalled = false;
+			bool hookHangarInstalled = false;
+			bool hookMissionObjectsInstalled = false;
+			bool hookMissionTieInstalled = false;
 			if (_config.XwaInstalled)
 			{
 				_hookBackdropInstalled = File.Exists(_config.XwaPath + "\\Hook_Backdrops.dll");
-				_hookEnginesInstalled = File.Exists(_config.XwaPath + "\\Hook_Engine_Sound.dll");
-				_hookHangarInstalled = File.Exists(_config.XwaPath + "\\Hook_Hangars.dll");
-				_hookMissionObjectsInstalled = File.Exists(_config.XwaPath + "\\Hook_Misison_Objects.dll");
-				_hookMissionTieInstalled = File.Exists(_config.XwaPath + "\\Hook_Mission_Tie.dll");
+				hookEnginesInstalled = File.Exists(_config.XwaPath + "\\Hook_Engine_Sound.dll");
+				hookHangarInstalled = File.Exists(_config.XwaPath + "\\Hook_Hangars.dll");
+				hookMissionObjectsInstalled = File.Exists(_config.XwaPath + "\\Hook_Misison_Objects.dll");
+				hookMissionTieInstalled = File.Exists(_config.XwaPath + "\\Hook_Mission_Tie.dll");
 			}
-			menuHooks.Enabled = (_hookBackdropInstalled | _hookEnginesInstalled | _hookHangarInstalled | _hookMissionObjectsInstalled | _hookMissionTieInstalled);
+			menuHooks.Enabled = (_hookBackdropInstalled | hookEnginesInstalled | hookHangarInstalled | hookMissionObjectsInstalled | hookMissionTieInstalled);
 		}
 
 		//[JB] Apply color changes to all interactive labels.  This is a callback event when the program settings are updated.
