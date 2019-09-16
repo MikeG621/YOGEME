@@ -3,10 +3,12 @@
  * Copyright (C) 2007-2019 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.6
+ * VERSION: 1.6.1
  */
 
 /* CHANGELOG
+ * v1.6.1, 190916
+ * [FIX] Crash when the INI doesn't exist [#27]
  * v1.6, 190915
  * - Release
  */
@@ -384,9 +386,9 @@ namespace Idmr.Yogeme
 					}
 				}
 				#endregion
+				srMission.Close();
 			}
 
-			srMission.Close();
 			chkBackdrops.Checked = (lstBackdrops.Items.Count > 0);
 			chkMission.Checked = (lstMission.Items.Count > 0);
 			chkHangars.Checked = useHangarObjects | useHangarCamera | useFamilyHangarCamera | useHangarMap;
