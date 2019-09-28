@@ -3,10 +3,12 @@
  * Copyright (C) 2007-2019 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.6
+ * VERSION: 1.6.2
  */
 
 /* CHANGELOG
+ * v1.6.2, 190928
+ * [FIX] hook read error due to not ignoring comment/blank lines
  * v1.6, 190915
  * [NEW #26] Backdrop hook implementation
  * [UPD] XWA always resized, not just for SBD
@@ -323,6 +325,7 @@ namespace Idmr.Yogeme
 						bool readLine = _fileName.EndsWith(".txt");
 						while ((line = sr.ReadLine()) != null)
 						{
+							if (line.StartsWith("#") || line.StartsWith(";") || line.StartsWith("////") || line == "") continue;
 							if (line.StartsWith("[")) readLine = false;
 							if (readLine) resdata.Add(line);
 							else if (line.ToLower() == "[resdata]") readLine = true;

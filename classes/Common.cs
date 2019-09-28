@@ -3,10 +3,12 @@
  * Copyright (C) 2007-2018 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.5
+ * VERSION: 1.6.2
  */
 
 /* CHANGELOG
+ * v1.6.2, 190928
+ * [UPD] added Exists check to Verify so the exception is clearer [Issue #28]
  * v1.5, 180910
  * [NEW] FG Counter functions, IsValidArray, GetFormattedTime, SafeSetCBO [JB]
  * v1.4, 171016
@@ -85,6 +87,7 @@ namespace Idmr.Yogeme
 		{
 			try
 			{
+				if (!File.Exists(verifyPath)) throw new ArgumentException("Verify executable path is not valid.");
 				Process MV = new Process();
 				MV.StartInfo.FileName = verifyPath;
 				MV.StartInfo.Arguments = "\"" + missionPath + "\"";

@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2019 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.6.1+
+ * VERSION: 1.6.2
  */
 
 /* CHANGELOG
+ * v1.6.2, 190928
  * [UPD] changed the INI save backup name to prevent possible clashes
  * v1.6.1, 190916
  * [FIX] Crash when the INI doesn't exist [#27]

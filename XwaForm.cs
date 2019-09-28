@@ -3,11 +3,10 @@
  * Copyright (C) 2007-2019 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.6+
+ * VERSION: 1.6
  */
 
 /* CHANGELOG
- * [FIX] Verify now checks path before trying to run [Issue #28]
  * v1.6, 190915
  * [UPD] cmdBackdrop "Loading..." now always shown instead of just with SBD
  * [NEW] hook implementation
@@ -660,11 +659,11 @@ namespace Idmr.Yogeme
 			lblTeamArr_Click(lblTeam[_activeTeam], new EventArgs());    // forces an update
 			try { _mission.Save(fileMission); }
 			catch (Exception x) { MessageBox.Show(x.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); }
-			this.Text = "Ye Olde Galactic Empire Mission Editor - XWA - " + _mission.MissionFileName;
+			Text = "Ye Olde Galactic Empire Mission Editor - XWA - " + _mission.MissionFileName;
 			_config.LastMission = fileMission;
 			refreshRecent();  //[JB] Setting _config.LastMission modifies the Recent list.  Need to refresh the menu to match.
 			//Verify the mission after it's been saved
-			if (_config.Verify && File.Exists(_config.VerifyLocation)) Common.RunVerify(_mission.MissionPath, _config.VerifyLocation);
+			if (_config.Verify) Common.RunVerify(_mission.MissionPath, _config.VerifyLocation);
 		}
 		void setInteractiveLabelColor(Label control, bool highlight)
 		{

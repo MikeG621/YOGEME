@@ -2,8 +2,8 @@
 ======================================
 
 Author: Michael Gaisser (mjgaisser@gmail.com)
-Version: 1.6.1
-Date: 2019.09.16
+Version: 1.6.2
+Date: 2019.09.28
 
 Thank you for downloading YOGEME, the all-in-one mission editor for the X-Wing
 series, Xwing95 through X-wing Alliance.  This program allows easy mission
@@ -13,6 +13,12 @@ original mainstream editors were created.
 
 ==========
 Version History
+
+v1.6.2, 28 Sep 2019
+- (All) Fixed a crash that'd occur if Verify was run with a bad path [Issue #28]
+- (XWA) Tweaked the hook INI backup filename during save to prevent possible clashes
+- (XWA) Fixed error during hooked backdrop load
+- (XWA) Idmr.ImageFormat.Dat.dll updated to handle Format 25 images correctly for backdrops
 
 v1.6.1, 16 Sep 2019
  - (XWA) Fixed a crash that'd occur if the mission INI file doesn't exist [Issue #27]
