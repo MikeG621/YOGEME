@@ -533,7 +533,7 @@ namespace Idmr.Yogeme
 			// 
 			this.lblFG.Location = new System.Drawing.Point(296, 349);
 			this.lblFG.Name = "lblFG";
-			this.lblFG.Size = new System.Drawing.Size(120, 16);
+			this.lblFG.Size = new System.Drawing.Size(132, 16);
 			this.lblFG.TabIndex = 11;
 			this.lblFG.Text = "Flight Group #0 of 0";
 			// 
@@ -927,7 +927,7 @@ namespace Idmr.Yogeme
 			// 
 			this.lblStarting.Location = new System.Drawing.Point(296, 374);
 			this.lblStarting.Name = "lblStarting";
-			this.lblStarting.Size = new System.Drawing.Size(120, 32);
+			this.lblStarting.Size = new System.Drawing.Size(132, 32);
 			this.lblStarting.TabIndex = 11;
 			this.lblStarting.Text = "1 Craft at 30 seconds";
 			// 

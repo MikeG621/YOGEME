@@ -1492,7 +1492,7 @@ namespace Idmr.Yogeme
             lblCraft.Visible = !train || start;
             lblCraft.Text = !start ? "# of craft" : "Minutes";
             numCraft.Minimum = !start ? 1 : 0;
-            numCraft.Maximum = !start ? 9 : 32727;  //For starting platforms, it's the minutes on the clock.
+            numCraft.Maximum = !start ? 255 : 32727;  //For starting platforms, it's the minutes on the clock.
             numCraft.Visible = !train || start;
             lblSeconds.Visible = start;
             numSeconds.Visible = start;
