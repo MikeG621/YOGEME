@@ -32,7 +32,7 @@ namespace Idmr.Yogeme
 		Mission _mission;
 		bool _applicationExit;				//for frmTIE_Closing, confirms application exit vs switching platforms
 		int _activeFG = 0;			//counter to keep track of current FG being displayed
-		int _startingShips = 0;		//counter for craft in play at start <30s, warning above 28
+		int _startingShips = 1;		//counter for craft in play at start <30s, warning above 28
         int _startingObjects = 0;
 		bool _loading;		//alerts certain functions to disable during the loading process
         bool _noRefresh = false;
@@ -194,8 +194,6 @@ namespace Idmr.Yogeme
 			_mission = new Mission();
 			_config.LastMission = "";
 			_activeFG = 0;
-            _startingShips = 0;
-            _startingObjects = 0;
 			_mission.FlightGroups[0].CraftType = 1;
 			_mission.FlightGroups[0].ObjectType = 0;
 			_mission.FlightGroups[0].IFF = 1;
