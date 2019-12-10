@@ -4,6 +4,7 @@
  * Licensed under the MPL v2.0 or later
  * 
  * VERSION: 1.2.3
+ * this is just a test
  */
 
 /* CHANGELOG
