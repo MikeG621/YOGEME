@@ -2,7 +2,7 @@
 ======================================
 
 Author: Michael Gaisser (mjgaisser@gmail.com)
-Version: 1.6.2
+Version: 1.6.2+
 Date: 2019.09.28
 
 Thank you for downloading YOGEME, the all-in-one mission editor for the X-Wing
@@ -13,6 +13,8 @@ original mainstream editors were created.
 
 ==========
 Version History
+
+- (XWA) Added ShuttleAnimation and ShuttleAnimiationStraightLine hooks
 
 v1.6.2, 28 Sep 2019
 - (All) Fixed a crash that'd occur if Verify was run with a bad path [Issue #28]

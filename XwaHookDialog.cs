@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2019 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.6.2
+ * VERSION: 1.6.2+
  */
 
 /* CHANGELOG
+ * [ADD] ShuttleAnimation and ShuttleAnimationStraightLine
  * v1.6.2, 190928
  * [UPD] changed the INI save backup name to prevent possible clashes
  * v1.6.1, 190916
@@ -47,6 +48,7 @@ namespace Idmr.Yogeme
 		int[,] _defaultCameras = new int[5, 3];
 		int[,] _familyCameras = new int[7, 3];
 		int[,] _defaultFamilyCameras = new int[7, 3];
+		enum ShuttleAnimation { Right, Top, Bottom }
 
 		public XwaHookDialog(Mission mission)
 		{
@@ -77,6 +79,7 @@ namespace Idmr.Yogeme
 			}
 			cboMarkings.SelectedIndex = 0;
 			cboShuttleMarks.SelectedIndex = 0;
+			cboShuAnimation.SelectedIndex = 0;
 			cboMapMarkings.SelectedIndex = 0;
 			cboFamMapMarkings.SelectedIndex = 0;
 			cboFG.Items.AddRange(mission.FlightGroups.GetList());
@@ -197,6 +200,10 @@ namespace Idmr.Yogeme
 						else if (parts[0] == "shuttlemarkings") cboShuttleMarks.SelectedIndex = int.Parse(parts[1]);
 						else if (parts[0] == "loaddroids") chkDroids.Checked = (parts[1] != "0");
 						else if (parts[0] == "ishangarfloorinverted") chkFloor.Checked = (parts[1] != "0");
+						else if (parts[0] == "shuttleanimation")
+							try { cboShuAnimation.SelectedIndex = (int)Enum.Parse(typeof(ShuttleAnimation), parts[1], true); }
+							catch { MessageBox.Show("Error reading ShuttleAnimation, using default.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); }
+						else if (parts[0] == "shuttleanimiationstraightline") numShuDistance.Value = int.Parse(parts[1]);
 						else lstHangarObjects.Items.Add(line);
 					}
 				}
@@ -329,6 +336,10 @@ namespace Idmr.Yogeme
 							else if (parts[0] == "shuttlemarkings") cboShuttleMarks.SelectedIndex = int.Parse(parts[1]);
 							else if (parts[0] == "loaddroids") chkDroids.Checked = (parts[1] != "0");
 							else if (parts[0] == "ishangarfloorinverted") chkFloor.Checked = (parts[1] != "0");
+							else if (parts[0] == "shuttleanimation")
+								try { cboShuAnimation.SelectedIndex = (int)Enum.Parse(typeof(ShuttleAnimation), parts[1], true); }
+								catch { MessageBox.Show("Error reading ShuttleAnimation, using default.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); }
+							else if (parts[0] == "shuttleanimationstraightline") numShuDistance.Value = int.Parse(parts[1]);
 							else lstHangarObjects.Items.Add(line);
 						}
 					}
@@ -746,7 +757,7 @@ namespace Idmr.Yogeme
 				return use;
 			}
 		}
-		bool useHangarObjects { get { return ((lstHangarObjects.Items.Count > 0) | !chkShuttle.Checked | !chkDroids.Checked | chkFloor.Checked | (cboShuttleModel.SelectedIndex != 50) | (cboShuttleMarks.SelectedIndex != 0)); } }
+		bool useHangarObjects { get { return ((lstHangarObjects.Items.Count > 0) | !chkShuttle.Checked | !chkDroids.Checked | chkFloor.Checked | (cboShuttleModel.SelectedIndex != 50) | (cboShuttleMarks.SelectedIndex != 0) | (cboShuAnimation.SelectedIndex != 0) | (numShuDistance.Value != 0)); } }
 		bool useHangarMap {  get { return lstMap.Items.Count >= 4; } }
 		bool useFamilyHangarMap { get { return lstFamilyMap.Items.Count >= 4; } }
 		#endregion
@@ -853,6 +864,8 @@ namespace Idmr.Yogeme
 						if (cboShuttleMarks.SelectedIndex != 0) sw.WriteLine("ShuttleMarkings = " + cboShuttleMarks.SelectedIndex);
 						if (!chkDroids.Checked) sw.WriteLine("LoadDroids = 0");
 						if (chkFloor.Checked) sw.WriteLine("IsHangarFloorInverted = 1");
+						if (cboShuAnimation.SelectedIndex != 0) sw.WriteLine("ShuttleAnimation = " + cboShuAnimation.Text);
+						if (numShuDistance.Value != 0) sw.WriteLine("ShuttleAnimationStraightLine = " + (int)numShuDistance.Value);
 						for (int i = 0; i < lstHangarObjects.Items.Count; i++) sw.WriteLine(lstHangarObjects.Items[i]);
 						sw.WriteLine("");
 					}
