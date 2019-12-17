@@ -544,7 +544,7 @@ namespace Idmr.Yogeme
 			for (int i = 0; i < 3; i++) txtEoM[i].Text = _mission.EndOfMissionMessages[i];
 			numMissionTime.Value = _mission.TimeLimitMinutes;
 			cboEndEvent.SelectedIndex = _mission.EndEvent;
-			numUnknown1.Value = _mission.Unknown1;
+			numRndSeed.Value = _mission.RndSeed;
 			cboMissionLocation.SelectedIndex = _mission.Location;
 
 			//Check if this is a training course.
@@ -2249,7 +2249,7 @@ namespace Idmr.Yogeme
             if (_loading) return;
             _mission.TimeLimitMinutes = Common.Update(this, _mission.TimeLimitMinutes, Convert.ToInt16(numMissionTime.Value));
             _mission.EndEvent = Common.Update(this, _mission.EndEvent, Convert.ToInt16(cboEndEvent.SelectedIndex));
-            _mission.Unknown1 = Common.Update(this, _mission.Unknown1, Convert.ToInt16(numUnknown1.Value));
+            _mission.RndSeed = Common.Update(this, _mission.RndSeed, Convert.ToInt16(numRndSeed.Value));
             _mission.Location = Common.Update(this, _mission.Location, Convert.ToInt16(cboMissionLocation.SelectedIndex));
         }
 		#endregion
