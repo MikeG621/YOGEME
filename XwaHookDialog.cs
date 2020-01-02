@@ -1,12 +1,13 @@
 ﻿/*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
- * Copyright (C) 2007-2019 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2020 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.6.2+
+ * VERSION: 1.6.3
  */
 
 /* CHANGELOG
+ * v1.6.3, 200101
  * [ADD] ShuttleAnimation and ShuttleAnimationStraightLine
  * v1.6.2, 190928
  * [UPD] changed the INI save backup name to prevent possible clashes

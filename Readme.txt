@@ -2,8 +2,8 @@
 ======================================
 
 Author: Michael Gaisser (mjgaisser@gmail.com)
-Version: 1.6.2+
-Date: 2019.09.28
+Version: 1.6.3
+Date: 2020.01.01
 
 Thank you for downloading YOGEME, the all-in-one mission editor for the X-Wing
 series, Xwing95 through X-wing Alliance.  This program allows easy mission
@@ -14,6 +14,7 @@ original mainstream editors were created.
 ==========
 Version History
 
+- (All) Fixed a settings write corruption due to partial platform detection [Issue #29]
 - (XWA) Added ShuttleAnimation and ShuttleAnimiationStraightLine hooks
 
 v1.6.2, 28 Sep 2019
