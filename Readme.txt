@@ -14,8 +14,9 @@ original mainstream editors were created.
 ==========
 Version History
 
+v1.6.3, 01 Jan 2020
 - (All) Fixed a settings write corruption due to partial platform detection [Issue #29]
-- (XWA) Added ShuttleAnimation and ShuttleAnimiationStraightLine hooks
+- (XWA) Added ShuttleAnimation and ShuttleAnimationStraightLine hooks
 
 v1.6.2, 28 Sep 2019
 - (All) Fixed a crash that'd occur if Verify was run with a bad path [Issue #28]
