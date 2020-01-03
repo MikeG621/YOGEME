@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2014 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.2.3
+ * VERSION: 1.6.3+
  */
 
 /* CHANGELOG
+ * [FIX #31] form Height increased to account for W10 visual style
  * v1.2.3, 141214
  * [UPD] change to MPL
  * [FIX] ctor continued running if TIE wasn't installed
@@ -48,7 +49,7 @@ namespace Idmr.Yogeme
 		public BattleForm(Settings config)
 		{
 			InitializeComponent();
-			this.Height = 326;
+			//this.Height = 342;
 			if (!config.TieInstalled)
 			{
 				MessageBox.Show("TIE95 installation not found, Battle function not available", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);

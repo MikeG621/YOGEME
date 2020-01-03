@@ -352,8 +352,8 @@ namespace Idmr.Yogeme
 			this.picGalaxy.Size = new System.Drawing.Size(344, 152);
 			this.picGalaxy.TabIndex = 2;
 			this.picGalaxy.TabStop = false;
-			this.picGalaxy.MouseMove += new System.Windows.Forms.MouseEventHandler(this.picGalaxy_MouseMove);
 			this.picGalaxy.MouseDown += new System.Windows.Forms.MouseEventHandler(this.picGalaxy_MouseDown);
+			this.picGalaxy.MouseMove += new System.Windows.Forms.MouseEventHandler(this.picGalaxy_MouseMove);
 			this.picGalaxy.MouseUp += new System.Windows.Forms.MouseEventHandler(this.picGalaxy_MouseUp);
 			// 
 			// grpFrame
@@ -481,7 +481,7 @@ namespace Idmr.Yogeme
 			this.label14.Size = new System.Drawing.Size(176, 128);
 			this.label14.TabIndex = 2;
 			this.label14.Text = "Images must be 256 color indexed bitmaps.  Importing images with palettes other t" +
-				"han the one exported will produce... interesting results.";
+    "han the one exported will produce... interesting results.";
 			// 
 			// cmdExport
 			// 
@@ -548,13 +548,14 @@ namespace Idmr.Yogeme
 			// BattleForm
 			// 
 			this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
-			this.ClientSize = new System.Drawing.Size(560, 302);
+			this.ClientSize = new System.Drawing.Size(560, 303);
 			this.Controls.Add(this.label9);
 			this.Controls.Add(this.cmdSave);
 			this.Controls.Add(this.tcBattle);
 			this.Controls.Add(this.lblBattle);
 			this.Controls.Add(this.cmdPrev);
 			this.Controls.Add(this.cmdNext);
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MaximizeBox = false;
 			this.Name = "BattleForm";
