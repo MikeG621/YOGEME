@@ -1,12 +1,13 @@
 /*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
- * Copyright (C) 2007-2019 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2020 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.5.1
+ * VERSION: 1.5.1+
  */
 
 /* CHANGELOG
+ * [NEW #30] Briefing callback
  * v1.5.1, 190513
  * [NEW] Changing GG value will now prompt to update references throughout if it's the only FG with that designation
  * v1.5, 180910
@@ -1000,6 +1001,11 @@ namespace Idmr.Yogeme
 			setInteractiveLabelColor(lblSkipTrig2, false);
 		}
 
+		void briefingModifiedCallback(object sender, EventArgs e)
+		{
+			Common.Title(this, _loading);
+		}
+
 		void colorizedComboBox_DrawItem(object sender, DrawItemEventArgs e)
 		{
 			ComboBox variable = (ComboBox)sender;
@@ -1215,7 +1221,7 @@ namespace Idmr.Yogeme
 			Common.Title(this, false);
 			try { _fBrief.Close(); }
 			catch { /* do nothing */ }
-			_fBrief = new BriefingForm(_mission.FlightGroups, _mission.Briefings);
+			_fBrief = new BriefingForm(_mission.FlightGroups, _mission.Briefings, briefingModifiedCallback);
 			_fBrief.Show();
 		}
         void menuCopy_Click(object sender, EventArgs e)

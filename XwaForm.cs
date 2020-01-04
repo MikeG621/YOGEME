@@ -1,12 +1,13 @@
 /*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
- * Copyright (C) 2007-2019 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2020 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.6
+ * VERSION: 1.6+
  */
 
 /* CHANGELOG
+ * [NEW #30] Briefing callback
  * v1.6, 190915
  * [UPD] cmdBackdrop "Loading..." now always shown instead of just with SBD
  * [NEW] hook implementation
@@ -1245,6 +1246,11 @@ namespace Idmr.Yogeme
 			setInteractiveLabelColor(lblSkipTrig2, false);
 		}
 
+		void briefingModifiedCallback(object sender, EventArgs e)
+		{
+			Common.Title(this, _loading);
+		}
+
 		void colorizedComboBox_DrawItem(object sender, DrawItemEventArgs e)
 		{
 			ComboBox variable = (ComboBox)sender;
@@ -1469,7 +1475,7 @@ namespace Idmr.Yogeme
 			Common.Title(this, false);
 			try { _fBrief.Close(); }  //[JB] Prevent opening multiple dialogs. Same as XvT code.
 			catch { /* do nothing */ }
-			_fBrief = new BriefingForm(_mission.Briefings);
+			_fBrief = new BriefingForm(_mission.Briefings, briefingModifiedCallback);
 			_fBrief.Show();
 		}
 		void menuDelete_Click(object sender, EventArgs e)

@@ -1,12 +1,13 @@
 /*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
- * Copyright (C) 2007-2018 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2020 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.5
+ * VERSION: 1.5+
  */
 
 /* CHANGELOG
+ * [NEW #30] onModified callback to prevent mission from auto-dirty when opening
  * v1.5, 180910
  * [FIX] map performance [JB]
  * [UPD] XvT map size tweaked [JB]
@@ -101,9 +102,10 @@ namespace Idmr.Yogeme
         bool _mapPaintScheduled = false;      //True if a paint is scheduled, that is a paint request is called while a paint is already in progress.
         static public string[] sharedTeamNames = new string[10]; //[JB] The other platforms need a way to communicate the team names to the briefing
         int _previousTimeIndex = 0;           //Tracks the previous time index of the briefing so we can detect when the user is manually scrolling through arbitrary times.
-        #endregion
+		EventHandler onModified = null;
+		#endregion
 
-		public BriefingForm(Platform.Tie.FlightGroupCollection fg, Platform.Tie.Briefing briefing)
+		public BriefingForm(Platform.Tie.FlightGroupCollection fg, Platform.Tie.Briefing briefing, EventHandler onModifiedCallback)
 		{
 			_loading = true;
 			_platform = Settings.Platform.TIE;
@@ -152,9 +154,10 @@ namespace Idmr.Yogeme
             tabTeams.Enabled = false;
 
             _loading = false;
+			onModified = onModifiedCallback;
             postLoadInit();
         }
-		public BriefingForm(Platform.Xvt.FlightGroupCollection fg, Platform.Xvt.BriefingCollection briefing)
+		public BriefingForm(Platform.Xvt.FlightGroupCollection fg, Platform.Xvt.BriefingCollection briefing, EventHandler onModifiedCallback)
 		{
 			_loading = true;
 			_platform = Settings.Platform.XvT;
@@ -242,9 +245,10 @@ namespace Idmr.Yogeme
             updateTitle();
 
     		_loading = false;
-            postLoadInit();
+			onModified = onModifiedCallback;
+			postLoadInit();
         }
-		public BriefingForm(Platform.Xwa.BriefingCollection briefing)
+		public BriefingForm(Platform.Xwa.BriefingCollection briefing, EventHandler onModifiedCallback)
 		{
 			_loading = true;
 			_platform = Settings.Platform.XWA;
@@ -384,7 +388,8 @@ namespace Idmr.Yogeme
             updateTitle();
 
             _loading = false;
-            postLoadInit();
+			onModified = onModifiedCallback;
+			postLoadInit();
 		}
 
         /// <summary>Handles redundant code for each of the 3 platform modes.</summary>
@@ -420,7 +425,7 @@ namespace Idmr.Yogeme
 				FileStream fs = File.OpenRead(filename);
 				BinaryReader br = new BinaryReader(fs);
 				int count = br.ReadInt16();
-				Bitmap bm = new Bitmap(count * size, size, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+				Bitmap bm = new Bitmap(count * size, size, PixelFormat.Format24bppRgb);
 				Graphics g = Graphics.FromImage(bm);
 				SolidBrush sb = new SolidBrush(Color.Black);
 				g.FillRectangle(sb, 0, 0, bm.Width, bm.Height);
@@ -489,7 +494,7 @@ namespace Idmr.Yogeme
 		}
 		void importEvents(short[] rawEvents)
 		{
-			BaseBriefing brief = (_platform == Settings.Platform.TIE ? (BaseBriefing)_tieBriefing : (_platform == Settings.Platform.XvT ? (BaseBriefing)_xvtBriefing : (BaseBriefing)_xwaBriefing));
+			BaseBriefing brief = (_platform == Settings.Platform.TIE ? _tieBriefing : (_platform == Settings.Platform.XvT ? _xvtBriefing : (BaseBriefing)_xwaBriefing));
 			int offset = 0;
 			for (int i=0;i<_maxEvents;i++)
 			{
@@ -532,8 +537,8 @@ namespace Idmr.Yogeme
 			dataStrings.Table = _tableStrings;
 			dataT.DataSource = dataTags;
 			dataS.DataSource = dataStrings;
-			this._tableTags.RowChanged += new DataRowChangeEventHandler(tableTags_RowChanged);
-			this._tableStrings.RowChanged += new DataRowChangeEventHandler(tableStrings_RowChanged);
+			_tableTags.RowChanged += new DataRowChangeEventHandler(tableTags_RowChanged);
+			_tableStrings.RowChanged += new DataRowChangeEventHandler(tableStrings_RowChanged);
 			loadTags();
 			loadStrings();
 		}
@@ -563,7 +568,7 @@ namespace Idmr.Yogeme
 		}
 		public void Save()
 		{
-			BaseBriefing brief = (_platform == Settings.Platform.TIE ? (BaseBriefing)_tieBriefing : (_platform == Settings.Platform.XvT ? (BaseBriefing)_xvtBriefing : (BaseBriefing)_xwaBriefing));
+			BaseBriefing brief = (_platform == Settings.Platform.TIE ? _tieBriefing : (_platform == Settings.Platform.XvT ? _xvtBriefing : (BaseBriefing)_xwaBriefing));
 			int offset = 0;
 			brief.Unknown1 = (short)numUnk1.Value;
 			for (int evnt = 0; evnt < _maxEvents; evnt++)
@@ -594,16 +599,13 @@ namespace Idmr.Yogeme
 			Save();
             tmrPopup.Stop(); //[JB] Stop and deactivate the timers.  Hopefully this fixes a rare exception (possibly a race condition?) where the newly implemented redraw event would still try to repaint the map even after everything was disposed.
             tmrMapRedraw.Stop();
-
-            /*if (_platform==Settings.Platform.TIE) TIESave();
-            else if (_platform==Settings.Platform.XvT) XvTSave();
-            else XWASave();*/
+			onModified = null;
 		}
 		void frmBrief_Load(object sender, EventArgs e)
 		{
             for (int i=0;i<8;i++) _fgTags[i, 0] = -1;
 			for (int i=0;i<8;i++) _textTags[i, 0] = -1;
-			_map = new Bitmap(w, h, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+			_map = new Bitmap(w, h, PixelFormat.Format24bppRgb);
             hsbTimer.Value = 1;  //[JB] Need to force another update, since this function wipes the tags after the init is complete.
             hsbTimer.Value = 0;
         }
@@ -2065,7 +2067,7 @@ namespace Idmr.Yogeme
 		}
 		void cmdOk_Click(object sender, EventArgs e)
 		{
-            BaseBriefing brief = (_platform == Settings.Platform.TIE ? (BaseBriefing)_tieBriefing : (_platform == Settings.Platform.XvT ? (BaseBriefing)_xvtBriefing : (BaseBriefing)_xwaBriefing));
+            BaseBriefing brief = (_platform == Settings.Platform.TIE ? _tieBriefing : (_platform == Settings.Platform.XvT ? _xvtBriefing : (BaseBriefing)_xwaBriefing));
             if(hasAvailableEventSpace(2 + brief.EventParameterCount((int)_eventType)) == false) //Check space for a full event
             {
                 MessageBox.Show("Event list is full, cannot add more.", "Error");
@@ -2579,7 +2581,8 @@ namespace Idmr.Yogeme
 			}
 			lstEvents.SelectedIndex = i;
 			updateList(i);
-			cmdCancel_Click("OK", new System.EventArgs());
+			if (onModified != null) onModified("EventAdd", new EventArgs());
+			cmdCancel_Click("OK", new EventArgs());
 		}
 		void cmdMove_Click(object sender, EventArgs e)
 		{
@@ -2852,6 +2855,7 @@ namespace Idmr.Yogeme
 					{
 						t_Length = (short)Math.Round(Convert.ToDecimal(txtLength.Text) * _timerInterval,0);	// this is the line that could throw
 						_tieBriefing.Length = t_Length;
+						if (onModified != null) onModified("LengthChange", new EventArgs());
 						hsbTimer.Maximum = _tieBriefing.Length + 11;
 						if (Math.Round(((decimal)_tieBriefing.Length / _timerInterval), 2) != Convert.ToDecimal(txtLength.Text))	// so things like .51 become .5, without
 							txtLength.Text = Convert.ToString(Math.Round(((decimal)_tieBriefing.Length / _timerInterval), 2));	// wiping out just a decimal
@@ -2863,6 +2867,7 @@ namespace Idmr.Yogeme
 					{
 						t_Length = (short)Math.Round(Convert.ToDecimal(txtLength.Text) * _timerInterval, 0);	// this is the line that could throw
 						_xvtBriefing.Length = t_Length;
+						if (onModified != null) onModified("LengthChange", new EventArgs());
 						hsbTimer.Maximum = _xvtBriefing.Length + 11;
 						if (Math.Round(((decimal)_xvtBriefing.Length / _timerInterval), 2) != Convert.ToDecimal(txtLength.Text))	// so things like .51 become .5, without
 							txtLength.Text = Convert.ToString(Math.Round(((decimal)_xvtBriefing.Length / _timerInterval), 2));	// wiping out just a decimal
@@ -2874,6 +2879,7 @@ namespace Idmr.Yogeme
 					{
 						t_Length = (short)Math.Round(Convert.ToDecimal(txtLength.Text) * _timerInterval, 0);	// this is the line that could throw
 						_xwaBriefing.Length = t_Length;
+						if (onModified != null) onModified("LengthChange", new EventArgs());
 						hsbTimer.Maximum = _xwaBriefing.Length + 11;
 						if (Math.Round(((decimal)_xwaBriefing.Length / _timerInterval), 2) != Convert.ToDecimal(txtLength.Text))	// so things like .51 become .5, without
 							txtLength.Text = Convert.ToString(Math.Round(((decimal)_xwaBriefing.Length / _timerInterval), 2));	// wiping out just a decimal
@@ -2919,6 +2925,7 @@ namespace Idmr.Yogeme
 
 		void tableStrings_RowChanged(object sender, DataRowChangeEventArgs e)
 		{
+			if (!_loading && onModified != null) onModified("StringsChanged", new EventArgs());
 			int i=0;
 			for (int j=0;j<_strings.Length;j++)
 			{
@@ -2933,6 +2940,7 @@ namespace Idmr.Yogeme
 		}
 		void tableTags_RowChanged(object sender, DataRowChangeEventArgs e)
 		{
+			if (!_loading && onModified != null) onModified("TagsChanged", new EventArgs());
 			int i=0;
 			for(int j=0;j<_tags.Length;j++)
 			{
@@ -2948,6 +2956,7 @@ namespace Idmr.Yogeme
 
 		void txtNotes_Leave(object sender, EventArgs e)
 		{
+			if (_xwaBriefing.BriefingStringsNotes[dataS.CurrentCell.RowNumber] != txtNotes.Text && onModified != null) onModified("NotesMod", new EventArgs());
 			_xwaBriefing.BriefingStringsNotes[dataS.CurrentCell.RowNumber] = txtNotes.Text;
 		}
 		#endregion	tabStrings
@@ -2985,6 +2994,7 @@ namespace Idmr.Yogeme
 			_events[i, 1] = 3;
 			for (int j=2;j<6;j++) _events[i, j] = 0;
 			lstEvents.SelectedIndex = i;
+			if (onModified != null) onModified("EventAdd", new EventArgs());
 		}
 		/// <summary>Swaps one briefing event index with another.</summary>
 		void swapEvent(int index1, int index2)
@@ -2996,6 +3006,7 @@ namespace Idmr.Yogeme
 				_events[index1, j] = _events[index2, j];
 				_events[index2, j] = t;
 			}
+			if (onModified != null) onModified("SwapEvent", new EventArgs());
 		}
 		/// <summary>Shifts briefing events by swapping the contents of the origin index in a linear path until it occupies the end index.</summary>
 		void shiftEvents(int origin, int end)
@@ -3018,7 +3029,7 @@ namespace Idmr.Yogeme
 		void updateList(int index)
 		{
 			if (index == -1) return;
-			string temp = String.Format("{0,-8:0.00}", (decimal)_events[index, 0] / _timerInterval);
+			string temp = string.Format("{0,-8:0.00}", (decimal)_events[index, 0] / _timerInterval);
 			temp += cboEvent.Items[_events[index, 1]-3].ToString();
 			if (_events[index, 1] == (int)BaseBriefing.EventType.TitleText || _events[index, 1] == (int)BaseBriefing.EventType.CaptionText)
 			{
@@ -3182,14 +3193,22 @@ namespace Idmr.Yogeme
 		{
 			int i = lstEvents.SelectedIndex;
 			if (i == -1 || _loading) return;
-			if (_events[i, 1] >= (int)BaseBriefing.EventType.TextTag1 && _events[i, 1] <= (int)BaseBriefing.EventType.TextTag8) _events[i, 5] = (short)cboColor.SelectedIndex;
+			if (_events[i, 1] >= (int)BaseBriefing.EventType.TextTag1 && _events[i, 1] <= (int)BaseBriefing.EventType.TextTag8)
+			{
+				_events[i, 5] = (short)cboColor.SelectedIndex;
+				if (onModified != null) onModified("TagColor", new EventArgs());
+			}
 			updateList(i);
 		}
 		void cboCraft_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			int i = lstEvents.SelectedIndex;
 			if (i == -1 || _loading) return;
-			if (_events[i, 1] == (int)BaseBriefing.EventType.XwaNewIcon) _events[i, 3] = (short)cboCraft.SelectedIndex;
+			if (_events[i, 1] == (int)BaseBriefing.EventType.XwaNewIcon)
+			{
+				_events[i, 3] = (short)cboCraft.SelectedIndex;
+				if (onModified != null) onModified("NewIcon", new EventArgs());
+			}
 			updateList(i);
 		}
 		void cboEvent_SelectedIndexChanged(object sender, EventArgs e)
@@ -3197,7 +3216,7 @@ namespace Idmr.Yogeme
 			int i = lstEvents.SelectedIndex;
 			if (_loading || i == -1 || cboEvent.SelectedIndex == -1) return;
 
-            BaseBriefing brief = (_platform == Settings.Platform.TIE ? (BaseBriefing)_tieBriefing : (_platform == Settings.Platform.XvT ? (BaseBriefing)_xvtBriefing : (BaseBriefing)_xwaBriefing));
+            BaseBriefing brief = (_platform == Settings.Platform.TIE ? _tieBriefing : (_platform == Settings.Platform.XvT ? _xvtBriefing : (BaseBriefing)_xwaBriefing));
             int oldEventSize = 2 + brief.EventParameterCount(_events[i, 1]);
             int newEventSize = 2 + brief.EventParameterCount((short)(cboEvent.SelectedIndex + 3));
             if(hasAvailableEventSpace(newEventSize - oldEventSize) == false)
@@ -3205,6 +3224,7 @@ namespace Idmr.Yogeme
                 MessageBox.Show("Cannot change Event Type because the briefing list is full and the replaced event needs more space than is available.", "Error");
                 return;
             }
+			if (onModified != null) onModified("ChangeEvent", new EventArgs());
 			_events[i, 1] = (short)(cboEvent.SelectedIndex + 3);
 			updateParameters();
 			updateList(i);
@@ -3214,36 +3234,60 @@ namespace Idmr.Yogeme
 			int i = lstEvents.SelectedIndex;
 			if (i == -1 || _loading) return;
 			if ((_events[i, 1] >= (int)BaseBriefing.EventType.FGTag1 && _events[i, 1] <= (int)BaseBriefing.EventType.FGTag8) || _events[i, 1] == (int)BaseBriefing.EventType.XwaNewIcon
-				|| _events[i, 1] == (int)BaseBriefing.EventType.XwaMoveIcon || _events[i, 1] == (int)BaseBriefing.EventType.XwaRotateIcon) _events[i, 2] = (short)cboFG.SelectedIndex;
-			else if (_events[i, 1] == (int)BaseBriefing.EventType.XwaShipInfo) _events[i, 3] = (short)cboFG.SelectedIndex;
+				|| _events[i, 1] == (int)BaseBriefing.EventType.XwaMoveIcon || _events[i, 1] == (int)BaseBriefing.EventType.XwaRotateIcon)
+			{
+				if (onModified != null) onModified("ChangeFG", new EventArgs());
+				_events[i, 2] = (short)cboFG.SelectedIndex;
+			}
+			else if (_events[i, 1] == (int)BaseBriefing.EventType.XwaShipInfo)
+			{
+				if (onModified != null) onModified("ChangeFG", new EventArgs());
+				_events[i, 3] = (short)cboFG.SelectedIndex;
+			}
 			updateList(i);
 		}
 		void cboIFF_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			int i = lstEvents.SelectedIndex;
 			if (i == -1 || _loading) return;
-			if (_events[i, 1] == (int)BaseBriefing.EventType.XwaNewIcon) _events[i, 4] = (short)cboIFF.SelectedIndex;
+			if (_events[i, 1] == (int)BaseBriefing.EventType.XwaNewIcon)
+			{
+				if (onModified != null) onModified("ChangeIFF", new EventArgs());
+				_events[i, 4] = (short)cboIFF.SelectedIndex;
+			}
 			updateList(i);
 		}
 		void cboRotate_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			int i = lstEvents.SelectedIndex;
 			if (i == -1 || _loading) return;
-			if (_events[i, 1] == (int)BaseBriefing.EventType.XwaRotateIcon) _events[i, 3] = (short)cboRotate.SelectedIndex;
+			if (_events[i, 1] == (int)BaseBriefing.EventType.XwaRotateIcon)
+			{
+				if (onModified != null) onModified("RotateIcon", new EventArgs());
+				_events[i, 3] = (short)cboRotate.SelectedIndex;
+			}
 			updateList(i);
 		}
 		void cboString_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			int i = lstEvents.SelectedIndex;
 			if (i == -1 || _loading) return;
-			if (_events[i, 1] == (int)BaseBriefing.EventType.TitleText || _events[i, 1] == (int)BaseBriefing.EventType.CaptionText) _events[i, 2] = (short)cboString.SelectedIndex;
+			if (_events[i, 1] == (int)BaseBriefing.EventType.TitleText || _events[i, 1] == (int)BaseBriefing.EventType.CaptionText)
+			{
+				if (onModified != null) onModified("ChangeString", new EventArgs());
+				_events[i, 2] = (short)cboString.SelectedIndex;
+			}
 			updateList(i);
 		}
 		void cboTag_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			int i = lstEvents.SelectedIndex;
 			if (i == -1 || _loading) return;
-			if (_events[i, 1] >= (int)BaseBriefing.EventType.TextTag1 && _events[i, 1] <= (int)BaseBriefing.EventType.TextTag8) _events[i, 2] = (short)cboTag.SelectedIndex;
+			if (_events[i, 1] >= (int)BaseBriefing.EventType.TextTag1 && _events[i, 1] <= (int)BaseBriefing.EventType.TextTag8)
+			{
+				if (onModified != null) onModified("ChangeTag", new EventArgs());
+				_events[i, 2] = (short)cboTag.SelectedIndex;
+			}
 			updateList(i);
 		}
 
@@ -3257,6 +3301,7 @@ namespace Idmr.Yogeme
 				if (_events[j, 1] == 0) break;
 				for (int h=0;h<6;h++) _events[j, h] = _events[j+1, h];
 			}
+			if (onModified != null) onModified("EventDelete", new EventArgs());
 			try { lstEvents.SelectedIndex = i; }
 			catch { lstEvents.SelectedIndex = i-1; }
 		}
@@ -3272,6 +3317,7 @@ namespace Idmr.Yogeme
 			lstEvents.Items[i] = lstEvents.Items[i+1];
 			lstEvents.Items[i+1] = item;
 			lstEvents.SelectedIndex = i+1;
+			if (onModified != null) onModified("EventDown", new EventArgs());
 		}
 		void cmdNew_Click(object sender, EventArgs e)
 		{
@@ -3308,6 +3354,7 @@ namespace Idmr.Yogeme
 			lstEvents.Items[i] = lstEvents.Items[i-1];
 			lstEvents.Items[i-1] = item;
 			lstEvents.SelectedIndex = i-1;
+			if (onModified != null) onModified("EventUp", new EventArgs());
 		}
 
 		void lstEvents_SelectedIndexChanged(object sender, EventArgs e)
@@ -3337,18 +3384,22 @@ namespace Idmr.Yogeme
 		{
 			int i = lstEvents.SelectedIndex;
 			if (i == -1 || _loading) return;
-			if (_events[i, 1] == (int)BaseBriefing.EventType.XwaChangeRegion) _events[i, 2] = (short)(numRegion.Value - 1);
+			if (_events[i, 1] == (int)BaseBriefing.EventType.XwaChangeRegion)
+			{
+				if (onModified != null) onModified("ChangeRegion", new EventArgs());
+				_events[i, 2] = (short)(numRegion.Value - 1);
+			}
 			updateList(i);
 		}
         void numTime_ValueChanged(object sender, EventArgs e)
 		{
-            lblEventTime.Text = String.Format("{0:= 0.00 seconds}", numTime.Value / _timerInterval);
+            lblEventTime.Text = string.Format("{0:= 0.00 seconds}", numTime.Value / _timerInterval);
             int size = lstEvents.Items.Count;
             int i = lstEvents.SelectedIndex;
             if (_loading || i == -1) return;
             _loading = true;
-
-            short diff = (short)(numTime.Value - _events[i, 0]);
+			if (onModified != null) onModified("ChangeTime", new EventArgs());
+			short diff = (short)(numTime.Value - _events[i, 0]);
             _events[i, 0] = (short)numTime.Value;
 
             int p = i;
@@ -3397,18 +3448,34 @@ namespace Idmr.Yogeme
 		{
 			int i = lstEvents.SelectedIndex;
 			if (i == -1 || _loading) return;
-			if (_events[i, 1] == (int)BaseBriefing.EventType.MoveMap || _events[i, 1] == (int)BaseBriefing.EventType.ZoomMap) _events[i, 2] = (short)numX.Value;
+			if (_events[i, 1] == (int)BaseBriefing.EventType.MoveMap || _events[i, 1] == (int)BaseBriefing.EventType.ZoomMap)
+			{
+				if (onModified != null) onModified("ChangeX", new EventArgs());
+				_events[i, 2] = (short)numX.Value;
+			}
 			else if ((_events[i, 1] >= (int)BaseBriefing.EventType.TextTag1 && _events[i, 1] <= (int)BaseBriefing.EventType.TextTag8)
-				|| _events[i, 1] == (int)BaseBriefing.EventType.XwaMoveIcon) _events[i, 3] = (short)numX.Value;
+				|| _events[i, 1] == (int)BaseBriefing.EventType.XwaMoveIcon)
+			{
+				if (onModified != null) onModified("CHangeX", new EventArgs());
+				_events[i, 3] = (short)numX.Value;
+			}
 			updateList(i);
 		}
 		void numY_ValueChanged(object sender, EventArgs e)
 		{
 			int i = lstEvents.SelectedIndex;
 			if (i == -1 || _loading) return;
-			if (_events[i, 1] == (int)BaseBriefing.EventType.MoveMap || _events[i, 1] == (int)BaseBriefing.EventType.ZoomMap) _events[i, 3] = (short)numY.Value;
+			if (_events[i, 1] == (int)BaseBriefing.EventType.MoveMap || _events[i, 1] == (int)BaseBriefing.EventType.ZoomMap)
+			{
+				if (onModified != null) onModified("ChangeY", new EventArgs());
+				_events[i, 3] = (short)numY.Value;
+			}
 			else if ((_events[i, 1] >= (int)BaseBriefing.EventType.TextTag1 && _events[i, 1] <= (int)BaseBriefing.EventType.TextTag8)
-				|| _events[i, 1] == (int)BaseBriefing.EventType.XwaMoveIcon) _events[i, 4] = (short)numY.Value;
+				|| _events[i, 1] == (int)BaseBriefing.EventType.XwaMoveIcon)
+			{
+				if (onModified != null) onModified("ChangeY", new EventArgs());
+				_events[i, 4] = (short)numY.Value;
+			}
 			updateList(i);
 		}
 
@@ -3416,7 +3483,11 @@ namespace Idmr.Yogeme
 		{
 			int i = lstEvents.SelectedIndex;
 			if (i == -1 || _loading) return;
-			if (_events[i, 1] == (int)BaseBriefing.EventType.XwaShipInfo) _events[i, 2] = (short)(optOn.Checked ? 1 : 0);
+			if (_events[i, 1] == (int)BaseBriefing.EventType.XwaShipInfo)
+			{
+				if (onModified != null) onModified("ToggleInfo", new EventArgs());
+				_events[i, 2] = (short)(optOn.Checked ? 1 : 0);
+			}
 			updateList(i);
 		}
 		#endregion tabEvents
@@ -3554,7 +3625,7 @@ namespace Idmr.Yogeme
 		/// <summary>Switches currently visible team briefing.</summary>
 		void cboBriefIndex1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if(_loading == true) return;
+            if (_loading) return;
             _loading = true;
            cboBriefIndex2.SelectedIndex = cboBriefIndex1.SelectedIndex;
             _loading = false;
@@ -3563,7 +3634,7 @@ namespace Idmr.Yogeme
         }
         void cboBriefIndex2_SelectedIndexChanged(object sender, EventArgs e)
         {
-           if(_loading == true) return;
+           if (_loading) return;
             _loading = true;
            cboBriefIndex1.SelectedIndex = cboBriefIndex2.SelectedIndex;
             _loading = false;
@@ -3620,7 +3691,8 @@ namespace Idmr.Yogeme
                 if(!found)
                     teams[i] = false;
             }
-            updateTitle();
+			if (onModified != null) onModified("ChangeTeams", new EventArgs());
+			updateTitle();
         }
 		#endregion tabTeams
 	}
