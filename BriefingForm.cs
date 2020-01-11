@@ -579,6 +579,7 @@ namespace Idmr.Yogeme
 					brief.Events[offset] = _events[evnt, i];
 			}
 			if (_platform == Settings.Platform.XvT) _xvtBriefing.Unknown3 = (short)numUnk3.Value;
+			if (onModified != null) onModified("Save", new EventArgs());
 		}
 
 		void tabBrief_SelectedIndexChanged(object sender, EventArgs e)
@@ -3456,7 +3457,7 @@ namespace Idmr.Yogeme
 			else if ((_events[i, 1] >= (int)BaseBriefing.EventType.TextTag1 && _events[i, 1] <= (int)BaseBriefing.EventType.TextTag8)
 				|| _events[i, 1] == (int)BaseBriefing.EventType.XwaMoveIcon)
 			{
-				if (onModified != null) onModified("CHangeX", new EventArgs());
+				if (onModified != null) onModified("ChangeX", new EventArgs());
 				_events[i, 3] = (short)numX.Value;
 			}
 			updateList(i);

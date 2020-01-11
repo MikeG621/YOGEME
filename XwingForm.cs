@@ -8,6 +8,7 @@
  */
 
 /* CHANGELOG:
+ * [NEW #30] Briefing callback
  * v1.5, 180910
  * [NEW] Release [JB]
  * [NEW] Added SaveAsXwing
@@ -561,6 +562,11 @@ namespace Idmr.Yogeme
 			}
 		}
 
+		void briefingModifiedCallback(object sender, EventArgs e)
+		{
+			Common.Title(this, _loading);
+		}
+
 		void colorizedComboBox_DrawItem(object sender, DrawItemEventArgs e)
         {
             //X-wing does not use VariableType like the other platforms do
@@ -741,14 +747,12 @@ namespace Idmr.Yogeme
 		}
 		void menuBriefing_Click(object sender, EventArgs e)
 		{
-            //SwitchTo(Mode.XWI);
-			Common.Title(this, _loading);
 			try { _fBrief.Close(); }
 			catch { /* do nothing */ }
             if(_mode == EditorMode.XWI)
-			    _fBrief = new BriefingFormXwing(_mission.FlightGroupsBriefing, _mission.Briefing);
+			    _fBrief = new BriefingFormXwing(_mission.FlightGroupsBriefing, _mission.Briefing, briefingModifiedCallback);
             else
-                _fBrief = new BriefingFormXwing(_mission.FlightGroups, _mission.Briefing);
+                _fBrief = new BriefingFormXwing(_mission.FlightGroups, _mission.Briefing, briefingModifiedCallback);
 			_fBrief.Show();
 		}
 		//[JB] Added function for menu item and modified for extra safety checks to prevent deleting when the list controls don't have focus.
