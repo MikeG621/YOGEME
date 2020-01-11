@@ -7,6 +7,7 @@
  */
 
 /* CHANGELOG
+ * [FIX] added Update to cmdBackdrop to ensure mission is dirtied
  * [NEW #30] Briefing callback
  * v1.5.1, 190513
  * [NEW] Changing GG value will now prompt to update references throughout if it's the only FG with that designation
@@ -2057,7 +2058,8 @@ namespace Idmr.Yogeme
 				if (dlg.ShowDialog() == DialogResult.OK)
 				{
 					numBackdrop.Value = dlg.BackdropIndex;	// simply GUI
-					cboStatus.SelectedIndex = (int)numBackdrop.Value;	// drives stored value
+					cboStatus.SelectedIndex = (int)numBackdrop.Value;   // drives stored value
+					_mission.FlightGroups[_activeFG].Status1 = Common.Update(this, _mission.FlightGroups[_activeFG].Status1, Convert.ToByte(cboStatus.SelectedIndex));
 				}
 			}
 			catch (Exception x)  //[JB] Catch all exceptions.
