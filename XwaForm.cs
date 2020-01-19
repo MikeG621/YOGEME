@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2020 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.6+
+ * VERSION: 1.6.4
  */
 
 /* CHANGELOG
+ * v1.6.4, 200119
  * [NEW #30] Briefing callback
  * v1.6, 190915
  * [UPD] cmdBackdrop "Loading..." now always shown instead of just with SBD

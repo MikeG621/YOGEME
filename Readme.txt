@@ -2,8 +2,8 @@
 ======================================
 
 Author: Michael Gaisser (mjgaisser@gmail.com)
-Version: 1.6.3
-Date: 2020.01.01
+Version: 1.6.4
+Date: 2020.01.19
 
 Thank you for downloading YOGEME, the all-in-one mission editor for the X-Wing
 series, Xwing95 through X-wing Alliance.  This program allows easy mission
@@ -13,6 +13,11 @@ original mainstream editors were created.
 
 ==========
 Version History
+
+v1.6.4, 19 Jan 2020
+- (All) Added briefing callbacks so mission doesn't dirty until something is changed [Issue #30]
+- (TIE) Battle form Height increased to account for W10 visual style [Issue #31]
+- (TIE, XvT) Backdrop dialog now dirties mission on OK
 
 v1.6.3, 01 Jan 2020
 - (All) Fixed a settings write corruption due to partial platform detection [Issue #29]

@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2020 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.5.1+
+ * VERSION: 1.6.4
  */
 
 /* CHANGELOG
+ * v1.6.4, 200119
  * [FIX] added Update to cmdBackdrop to ensure mission is dirtied
  * [NEW #30] Briefing callback
  * v1.5.1, 190513

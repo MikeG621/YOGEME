@@ -16,11 +16,11 @@ using System.Reflection;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Imperial Department of Military Research")]
 [assembly: AssemblyProduct("YOGEME")]
-[assembly: AssemblyCopyright("Copyright © Michael Gaisser 2007-2019")]
+[assembly: AssemblyCopyright("Copyright © Michael Gaisser 2007-2020")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]		
 
-[assembly: AssemblyVersion("1.6.3.*")]
+[assembly: AssemblyVersion("1.6.4.*")]
 
 [assembly: AssemblyDelaySign(false)]
 [assembly: AssemblyKeyFile("")]

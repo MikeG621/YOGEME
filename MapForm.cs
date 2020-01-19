@@ -7,6 +7,7 @@
  */
 
 /* CHANGELOG
+ * v1.5, 180910
  * [NEW] lots of variables for UI tracking [JB]
  * [NEW] Xwing capability [JB]
  * [NEW] Callbacks in ctors [JB]

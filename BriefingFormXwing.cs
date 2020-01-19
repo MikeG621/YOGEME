@@ -4,10 +4,11 @@
  * This file authored by "JB" (Random Starfighter) (randomstarfighter@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.5+
+ * VERSION: 1.6.4
  */
 
 /* CHANGELOG
+ * v1.6.4, 200119
  * [UPD] some formatting stuff
  * [NEW #30] onModified callback to prevent mission from auto-dirty when opening
  * v1.5, 180910
