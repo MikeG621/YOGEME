@@ -2,7 +2,7 @@
 ======================================
 
 Author: Michael Gaisser (mjgaisser@gmail.com)
-Version: 1.6.4
+Version: 1.6.4+
 Date: 2020.01.19
 
 Thank you for downloading YOGEME, the all-in-one mission editor for the X-Wing
@@ -13,6 +13,8 @@ original mainstream editors were created.
 
 ==========
 Version History
+
+- (All) [FIX #32] bin and help path now explicitly uses Startup Path to prevent implicit from defaulting to sys32 [Issue #32]
 
 v1.6.4, 19 Jan 2020
 - (All) Added briefing callbacks so mission doesn't dirty until something is changed [Issue #30]
@@ -246,7 +248,7 @@ all original YOGEME files.
 ==========
 Special Thanks
 
-All the modders and programmers over the last 15 years who started the grunt
+All the modders and programmers over the last 20 years who started the grunt
 work that made editors like this possible, notably Evan Sabatelli for TIE
 Fighter Workshop, Troy Dangerfield for both XvtED and AlliED, and countless
 others who did the initial research into the mission file formats.

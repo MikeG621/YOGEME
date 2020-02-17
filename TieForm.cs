@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2020 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.6.4
+ * VERSION: 1.6.4+
  */
 
 /* CHANGELOG
+ * [FIX #32] bin path now explicitly uses Startup Path to prevent implicit from defaulting to sys32
  * v1.6.4, 200119
  * [FIX] added Update to cmdBackdrop to ensure mission is dirtied
  * [NEW #30] Briefing callback
@@ -1031,7 +1032,7 @@ namespace Idmr.Yogeme
 		void menuCopy_Click(object sender, EventArgs e)
 		{
 			System.Runtime.Serialization.IFormatter formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
-			Stream stream = new FileStream("YOGEME.bin", FileMode.Create, FileAccess.Write, FileShare.None);
+			Stream stream = new FileStream(Application.StartupPath + "YOGEME.bin", FileMode.Create, FileAccess.Write, FileShare.None);	// BUG: this breaks if Startup path borked
 			#region ArrDep
             if (sender.ToString() == "AD" || hasFocus(lblADTrig))  //[JB] Detect if triggers have focus
 			{
@@ -1203,7 +1204,7 @@ namespace Idmr.Yogeme
 		{
 			System.Runtime.Serialization.IFormatter formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
 			Stream stream;
-			try { stream = new FileStream("YOGEME.bin", FileMode.Open, FileAccess.Read, FileShare.Read); }
+			try { stream = new FileStream(Application.StartupPath + "YOGEME.bin", FileMode.Open, FileAccess.Read, FileShare.Read); }
 			catch { return; }
 			#region ArrDep
             if (sender.ToString() == "AD" || hasFocus(lblADTrig))  //[JB] Detect if triggers have focus
@@ -1681,7 +1682,7 @@ namespace Idmr.Yogeme
 			try
 			{
 				System.Runtime.Serialization.IFormatter formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
-				stream = new FileStream("YOGEME.bin", FileMode.Open, FileAccess.Read, FileShare.Read);
+				stream = new FileStream(Application.StartupPath + "YOGEME.bin", FileMode.Open, FileAccess.Read, FileShare.Read);
 				object raw = formatter.Deserialize(stream);
 				stream.Close();
 				bool change = false;
@@ -1735,7 +1736,7 @@ namespace Idmr.Yogeme
 				}
 				if (change)
 				{
-					stream = new FileStream("YOGEME.bin", FileMode.Create, FileAccess.Write, FileShare.None);
+					stream = new FileStream(Application.StartupPath + "YOGEME.bin", FileMode.Create, FileAccess.Write, FileShare.None);
 					formatter.Serialize(stream, raw);
 					stream.Close();
 				}

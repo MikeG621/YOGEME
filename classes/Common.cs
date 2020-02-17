@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2018 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.6.2
+ * VERSION: 1.6.2+
  */
 
 /* CHANGELOG
+ * [FIX #32] help path now explicitly uses Startup Path to prevent implicit from defaulting to sys32
  * v1.6.2, 190928
  * [UPD] added Exists check to Verify so the exception is clearer [Issue #28]
  * v1.5, 180910
@@ -40,7 +41,7 @@ namespace Idmr.Yogeme
 		/// <summary>Launch a browser at the IDMR site</summary>
 		public static void LaunchIdmr() { Process.Start("http://idmr.empirereborn.net"); }
 
-		public static void LaunchHelp() { Process.Start("yogeme.chm"); }
+		public static void LaunchHelp() { Process.Start(Application.StartupPath + "yogeme.chm"); }	// BUG: this breaks if startup path borked
 		public static void EmailJagged() { Process.Start("mailto:mjgaisser@gmail.com?subject=YOGEME"); }
 
 		/// <summary>Processes properly formatted custom craft list files to be used in YOGEME.</summary>
