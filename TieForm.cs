@@ -1032,7 +1032,7 @@ namespace Idmr.Yogeme
 		void menuCopy_Click(object sender, EventArgs e)
 		{
 			System.Runtime.Serialization.IFormatter formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
-			Stream stream = new FileStream(Application.StartupPath + "YOGEME.bin", FileMode.Create, FileAccess.Write, FileShare.None);	// BUG: this breaks if Startup path borked
+			Stream stream = new FileStream(Application.StartupPath + "YOGEME.bin", FileMode.Create, FileAccess.Write, FileShare.None);
 			#region ArrDep
             if (sender.ToString() == "AD" || hasFocus(lblADTrig))  //[JB] Detect if triggers have focus
 			{

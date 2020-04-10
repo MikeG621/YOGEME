@@ -1,12 +1,13 @@
 /*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
- * Copyright (C) 2007-2018 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2020 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
  * VERSION: 1.6.2+
  */
 
 /* CHANGELOG
+ * [UPD] More details to ProcessCraftList error message
  * [FIX #32] help path now explicitly uses Startup Path to prevent implicit from defaulting to sys32
  * v1.6.2, 190928
  * [UPD] added Exists check to Verify so the exception is clearer [Issue #28]
@@ -41,7 +42,7 @@ namespace Idmr.Yogeme
 		/// <summary>Launch a browser at the IDMR site</summary>
 		public static void LaunchIdmr() { Process.Start("http://idmr.empirereborn.net"); }
 
-		public static void LaunchHelp() { Process.Start(Application.StartupPath + "yogeme.chm"); }	// BUG: this breaks if startup path borked
+		public static void LaunchHelp() { Process.Start(Application.StartupPath + "yogeme.chm"); }
 		public static void EmailJagged() { Process.Start("mailto:mjgaisser@gmail.com?subject=YOGEME"); }
 
 		/// <summary>Processes properly formatted custom craft list files to be used in YOGEME.</summary>
@@ -77,7 +78,7 @@ namespace Idmr.Yogeme
 					abbrvs[i] = line[1];
 				}
 			}
-			catch { throw new ApplicationException("Error processing shiplist, ensure proper format."); }
+			catch (Exception x) { throw new ApplicationException(x.Message); }
 			finally { if (sr != null) sr.Close(); }
 		}
 
