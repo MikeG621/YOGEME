@@ -1,12 +1,13 @@
 /*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
- * Copyright (C) 2007-2018 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2020 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.5
+ * VERSION: 1.5+
  */
 
 /* CHANGELOG
+ * [NEW] if pulling from imgCraft trips an OutOfRange, default to img[0]
  * v1.5, 180910
  * [NEW] lots of variables for UI tracking [JB]
  * [NEW] Xwing capability [JB]
@@ -720,7 +721,8 @@ namespace Idmr.Yogeme
 				bAdd[0] = pn.Color.R;
 				bAdd[1] = pn.Color.G;
 				bAdd[2] = pn.Color.B;
-				bmptemp = new Bitmap(imgCraft.Images[_mapData[i].Craft]);
+				try { bmptemp = new Bitmap(imgCraft.Images[_mapData[i].Craft]); }
+				catch { bmptemp = new Bitmap(imgCraft.Images[0]); }
 				bmptemp = mask(bmptemp, bAdd);
 				// work through each WP and determine if it needs to be displayed, then place it on the map
 				// draw tags if required

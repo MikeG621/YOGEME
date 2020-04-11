@@ -7,6 +7,7 @@
  */
 
 /* CHANGELOG
+ * [UPD] More details to ProcessCraftList error message
  * [FIX #32] bin path now explicitly uses Startup Path to prevent implicit from defaulting to sys32
  * v1.6.4, 200119
  * [FIX] added Update to cmdBackdrop to ensure mission is dirtied
@@ -481,7 +482,7 @@ namespace Idmr.Yogeme
 					Strings.OverrideShipList(crafts, abbrvs);
 					initializeMission();    // have to re-init since lstFG is already populated
 				}
-				catch { MessageBox.Show("Error processing custom TIE ship list, using defaults.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); }
+				catch (Exception x) { MessageBox.Show("Error processing custom TIE ship list, using defaults.\n(" + x.Message + ").", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); }
 			}
 			//initializes cbo's, IFFs, resets bAppExit
             comboReset(cboIFF, getIffStrings(), 0);  //[JB] Changed by feature request.

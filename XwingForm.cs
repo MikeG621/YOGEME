@@ -8,6 +8,7 @@
  */
 
 /* CHANGELOG:
+ * [NEW] Custom shiplist
  * [FIX #32] bin path now explicitly uses Startup Path to prevent implicit from defaulting to sys32
  * v1.6.4, 200119
  * [NEW #30] Briefing callback
@@ -383,7 +384,20 @@ namespace Idmr.Yogeme
 		}
 		void startup()
 		{
-            switchTo(EditorMode.XWI);
+			if (File.Exists(Application.StartupPath + "\\xw_shiplist.txt"))
+			{
+				System.Diagnostics.Debug.WriteLine("custom XW list found");
+				string[] crafts;
+				string[] abbrvs;
+				try
+				{
+					Common.ProcessCraftList(Application.StartupPath + "\\xw_shiplist.txt", out crafts, out abbrvs);
+					Strings.OverrideShipList(crafts, abbrvs);
+					initializeMission();    // have to re-init since lstFG is already populated
+				}
+				catch (Exception x) { MessageBox.Show("Error processing custom XW ship list, using defaults.\n(" + x.Message + ").", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); }
+			}
+			switchTo(EditorMode.XWI);
 			//initializes cbo's, IFFs, resets bAppExit
 			_config.LastMission = "";
 			_config.LastPlatform = Settings.Platform.XWING;
