@@ -131,6 +131,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="App.ico" />
+    <None Include="xw_shiplist_template.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="License.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
