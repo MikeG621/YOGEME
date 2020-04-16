@@ -16,8 +16,9 @@ Version History
 
 - (Map) If the craft index is too high (mods) use the default 'X' image
 - (All) Added more details to custom ship list error message
-- (All) [FIX #32] bin and help path now explicitly uses Startup Path to prevent implicit from defaulting to sys32 [Issue #32]
+- (All) Clipboard bin and help path now explicitly use Startup Path to prevent implicit from defaulting to sys32 [Issue #32]
 - (XW) Added custom shiplist capability
+- Various code tweaks/cleaning
 
 v1.6.4, 19 Jan 2020
 - (All) Added briefing callbacks so mission doesn't dirty until something is changed [Issue #30]

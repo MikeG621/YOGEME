@@ -57,7 +57,7 @@ using Idmr.Platform;
 
 namespace Idmr.Yogeme
 {
-	/// <summary>The briefing forms for YOGEME, one form for all platforms</summary>
+	/// <summary>The briefing forms for YOGEME, one form for TIE-XWA</summary>
 	public partial class BriefingForm : Form
 	{
 		#region Vars

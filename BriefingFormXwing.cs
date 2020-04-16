@@ -4,10 +4,11 @@
  * This file authored by "JB" (Random Starfighter) (randomstarfighter@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.6.4
+ * VERSION: 1.6.4+
  */
 
 /* CHANGELOG
+ * [UPD] various code tweaks/cleaning that don't affect functionality
  * v1.6.4, 200119
  * [UPD] some formatting stuff
  * [NEW #30] onModified callback to prevent mission from auto-dirty when opening
@@ -82,7 +83,7 @@ namespace Idmr.Yogeme
         short _popupPreviewZoomY;
         short _popupPreviewMapX;
         short _popupPreviewMapY;
-        bool _popupDragState = false;
+        bool _popupIsDragging = false;
         int _popupMiddleX;
         int _popupMiddleY;
         Timer _mapPaintRedrawTimer = new Timer();  //[JB] Added a timer to control map painting in an attempt to smooth re-drawing performance.
@@ -1185,332 +1186,323 @@ namespace Idmr.Yogeme
 		}
 		void cmdOk_Click(object sender, EventArgs e)
 		{
-            //[JB] Add test
-            BaseBriefing brief = getBriefing();
-            if(hasAvailableEventSpace(2 + brief.EventParameterCount((int)_eventType)) == false) //Check space for a full event
-            {
-                MessageBox.Show("Event list is full, cannot add more.", "Error");
-                cmdCancel_Click(0, new EventArgs());
-                return;
-            }
-            if (_eventType == Briefing.EventType.ClearFGTags) if (optText.Checked) _eventType = Briefing.EventType.ClearTextTags;
+			//[JB] Add test
+			BaseBriefing brief = getBriefing();
+			if (!hasAvailableEventSpace(2 + brief.EventParameterCount((int)_eventType))) //Check space for a full event
+			{
+				MessageBox.Show("Event list is full, cannot add more.", "Error");
+				cmdCancel_Click(0, new EventArgs());
+				return;
+			}
+			if (_eventType == Briefing.EventType.ClearFGTags) if (optText.Checked) _eventType = Briefing.EventType.ClearTextTags;
 			int i = -1;
 
-            // [JB] I tried changing these away from a switch() to function calls for a possible platform merge using override functions, but abandoned that idea.
-			//TODO: convert these back to switch, get rid of the GOTO
-            if(_eventType == Briefing.EventType.TitleText)
-            {
-				#region title
-				i = findExisting(_eventType);
-				if (i >= 10000)  //[JB] Need to change all these conditional checks to >= 10000.  If the event list is empty, none will be found, returning exactly 10000 (which isn't caught) and produces an out of bounds exception trying to insert at _events[10000,0]
-				{
-					i -= 10000;	// if one wasn't found, remove marker, create it.
-					try
-					{
-						lstEvents.SelectedIndex = i;
-						insertEvent();
-					}
-					catch (ArgumentOutOfRangeException)
-					{
-						lstEvents.Items.Add("");
-						for (int n=i+2;n>i;n--)
-						{
-							if (_events[n-1, 1] == 0) continue;
-							for (int h=0;h<6;h++) _events[n, h] = _events[n-1, h];
-						}
-					}
-				}
-				_events[i, 0] = (short)hsbTimer.Value;
-				_events[i, 1] = (short)_eventType;
-				_events[i, 2] = (short)((cboText.SelectedIndex >= 0) ? cboText.SelectedIndex : 0);  //[JB] Fix exception if no string is selected in the dropdown box.
-				for (int n=3;n<6;n++) _events[i, n] = 0;
-				if (_strings[_events[i, 2]].StartsWith(">"))
-				{
-					lblTitle.TextAlign = ContentAlignment.TopCenter;
-					lblTitle.ForeColor = _titleColor;
-					lblTitle.Text = _strings[_events[i, 2]].Replace(">", "");
-				}
-				else
-				{
-					lblTitle.TextAlign = ContentAlignment.TopLeft;
-					lblTitle.ForeColor = _normalColor;
-					lblTitle.Text = _strings[_events[i, 2]];
-				}
-				#endregion
-            }
-            else if(_eventType == Briefing.EventType.CaptionText)
-            {
-				#region caption
-				i = findExisting(_eventType);
-				if (i >= 10000)
-				{
-					i -= 10000;	// if one wasn't found, remove marker, create it.
-					try
-					{
-						lstEvents.SelectedIndex = i;
-						insertEvent();
-					}
-					catch (ArgumentOutOfRangeException)
-					{
-						lstEvents.Items.Add("");
-						for (int n=i+2;n>i;n--)
-						{
-							if (_events[n-1, 1] == 0) continue;
-							for (int h=0;h<6;h++) _events[n, h] = _events[n-1, h];
-						}
-					}
-				}
-				_events[i, 0] = (short)hsbTimer.Value;
-				_events[i, 1] = (short)_eventType;
-				_events[i, 2] = (short)cboText.SelectedIndex;
-				for (int n=3;n<6;n++) _events[i, n] = 0;
-				if (_strings[_events[i, 2]].StartsWith(">"))
-				{
-					lblCaption.TextAlign = ContentAlignment.TopCenter;
-					lblCaption.ForeColor = _titleColor;
-					lblCaption.Text = _strings[_events[i, 2]].Replace(">", "");
-				}
-				else
-				{
-					lblCaption.TextAlign = ContentAlignment.TopLeft;
-					lblCaption.ForeColor = _normalColor;
-					lblCaption.Text = _strings[_events[i, 2]];
-				}
-				#endregion
-            }
-            else if(_eventType == Briefing.EventType.MoveMap)
-            {
-				#region move
-				i = findExisting(_eventType);
-				if (i >= 10000)
-				{
-					i -= 10000;	// if one wasn't found, remove marker, create it.
-					try
-					{
-						lstEvents.SelectedIndex = i;
-						insertEvent();
-					}
-					catch (ArgumentOutOfRangeException)
-					{
-						lstEvents.Items.Add("");
-						for (int n=i+2;n>i;n--)
-						{
-							if (_events[n-1, 1] == 0) continue;
-							for (int h=0;h<6;h++) _events[n, h] = _events[n-1, h];
-						}
-					}
-				}
-				_events[i, 0] = (short)hsbTimer.Value;
-				_events[i, 1] = (short)_eventType;
-				_events[i, 2] = _mapX;
-				_events[i, 3] = _mapY;
-				// don't need to repaint, done while adjusting values
-				#endregion
-            }
-            else if(_eventType == Briefing.EventType.ZoomMap)
-            {
-				#region zoom
-				i = findExisting(_eventType);
-				if (i >= 10000)
-				{
-					i -= 10000;	// if one wasn't found, remove marker, create it.
-					try
-					{
-						lstEvents.SelectedIndex = i;
-						insertEvent();
-					}
-					catch (ArgumentOutOfRangeException)
-					{
-						lstEvents.Items.Add("");
-						for (int n=i+2;n>i;n--)
-						{
-							if (_events[n-1, 1] == 0) continue;
-							for (int h=0;h<6;h++) _events[n, h] = _events[n-1, h];
-						}
-					}
-				}
-				_events[i, 0] = (short)hsbTimer.Value;
-				_events[i, 1] = (short)_eventType;
-				_events[i, 2] = _zoomX;
-				_events[i, 3] = _zoomY;
-				// don't need to repaint, done while adjusting values
-				#endregion
-            }
-            else if(_eventType == Briefing.EventType.ClearFGTags)
-            {
-				#region clear FG
-				i = findExisting(_eventType);
-				if (i < 10000) goto Finish;	// no further action, existing break found
-				i -= 10000;
-				try
-				{
-					lstEvents.SelectedIndex = i;	// this will throw for last event
-					insertEvent();
-				}
-				catch (ArgumentOutOfRangeException)
-				{
-					lstEvents.Items.Add("");
-					for (int n=i+2;n>i;n--)
-					{
-						if (_events[n-1, 1] == 0) continue;
-						for (int h=0;h<6;h++) _events[n, h] = _events[n-1, h];
-					}
-				}
-				_events[i, 0] = (short)hsbTimer.Value;
-				_events[i, 1] = (short)_eventType;
-				for (int n=2;n<6;n++) _events[i, n] = 0;
-				for (int n=0;n<8;n++)
-				{
-					_fgTags[n, 0] = -1;
-					_fgTags[n, 1] = 0;
-				}
-				#endregion
-            }
-            else if(_eventType == Briefing.EventType.FGTag1)
-            {
-				#region FG
-				_eventType = (Briefing.EventType)((int)_eventType + numFG.Value - 1);
-				i = findExisting(_eventType);
-				if (i >= 10000)
-				{
-					i -= 10000;	// if one wasn't found, remove marker, create it.
-					try
-					{
-						lstEvents.SelectedIndex = i;
-						insertEvent();
-					}
-					catch (ArgumentOutOfRangeException)
-					{
-						lstEvents.Items.Add("");
-						for (int n=i+2;n>i;n--)
-						{
-							if (_events[n-1, 1] == 0) continue;
-							for (int h=0;h<6;h++) _events[n, h] = _events[n-1, h];
-						}
-					}
-				}
-				_events[i, 0] = (short)hsbTimer.Value;
-				_events[i, 1] = (short)_eventType;
-				_events[i, 2] = (short)cboFGTag.SelectedIndex;
-				for (int n=3;n<6;n++) _events[i, n] = 0;
-                if (_platform != Settings.Platform.XWING)
-                {
-                    _fgTags[(int)_eventType - 9, 0] = _events[i, 2];
-                    _fgTags[(int)_eventType - 9, 1] = _events[i, 0];
-                }
-                else
-                {
-                    _fgTags[(int)_eventType - (int)Briefing.EventType.FGTag1, 0] = _events[i, 2];
-                    _fgTags[(int)_eventType - (int)Briefing.EventType.FGTag1, 1] = _events[i, 0];
-                }
-				MapPaint();
-				#endregion
-            }
-            else if(_eventType == Briefing.EventType.ClearTextTags)
-            {
-				#region clear text
-				i = findExisting(_eventType);
-				if (i < 10000) goto Finish;	// no further action, existing break found
-				i -= 10000;
-				try
-				{
-					lstEvents.SelectedIndex = i;	// this will throw for last event
-					insertEvent();
-				}
-				catch (ArgumentOutOfRangeException)
-				{
-					lstEvents.Items.Add("");
-					for (int n=i+2;n>i;n--)
-					{
-						if (_events[n-1, 1] == 0) continue;
-						for (int h=0;h<6;h++) _events[n, h] = _events[n-1, h];
-					}
-				}
-				_events[i, 0] = (short)hsbTimer.Value;
-				_events[i, 1] = (short)_eventType;
-				for (int n=2;n<6;n++) _events[i, n] = 0;
-				for (int n=0;n<8;n++)
-				{
-					_textTags[n, 0] = -1;
-					_textTags[n, 1] = 0;
-				}
-				#endregion
-            }
-            else if(_eventType == Briefing.EventType.TextTag1)
-            {
-				#region text
-				_eventType = (Briefing.EventType)((int)_eventType + numText.Value - 1);
-				// can't use FindExisting, due to extra parameter
-				i = findExisting(_eventType);
-				if (i >= 10000)
-				{
-					if (_tempX == -621 && _tempY == -621)
-					{
-						MessageBox.Show("No tag location selected!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-						i = 0;
-						goto Finish;
-					}
-					i -= 10000;	// if one wasn't found, remove marker, create it.
-					try
-					{
-						lstEvents.SelectedIndex = i;
-						insertEvent();
-					}
-					catch (ArgumentOutOfRangeException)
-					{
-						lstEvents.Items.Add("");
-						for (int n=i+2;n>i;n--)
-						{
-							if (_events[n-1, 1] == 0) continue;
-							for (int h=0;h<6;h++) _events[n, h] = _events[n-1, h];
-						}
-					}
-				}
-				else
-				{
-					// found existing, just see if we change location or not
-					if (_tempX == -621 && _tempY == -621)
-					{
-						_tempX = _events[i, 3];
-						_tempY = _events[i, 4];
-					}
-				}
-				_events[i, 0] = (short)hsbTimer.Value;
-				_events[i, 1] = (short)_eventType;
-				_events[i, 2] = (short)cboTextTag.SelectedIndex;
-				_events[i, 3] = _tempX;
-				_events[i, 4] = _tempY;
-				_events[i, 5] = (short)cboColorTag.SelectedIndex;   //Unused for XWING but it won't be copied anyway since the event parameter count isn't large enough to copy the data.
-				// don't need to repaint or restore/edit from backup, as it's taken care of during placement
-				#endregion
-            }
-            else if (_eventType == Briefing.EventType.ClearText)
-            {
-                #region clear title/caption text
-                i = findExisting(_eventType);
-                if (i < 10000) goto Finish;	// no further action, existing break found
-                i -= 10000;
-                try
-                {
-                    lstEvents.SelectedIndex = i;	// this will throw for last event
-                    insertEvent();
-                }
-                catch (ArgumentOutOfRangeException)
-                {
-                    lstEvents.Items.Add("");
-                    for (int n = i + 2; n > i; n--)
-                    {
-                        if (_events[n - 1, 1] == 0) continue;
-                        for (int h = 0; h < 6; h++) _events[n, h] = _events[n - 1, h];
-                    }
-                }
-                _events[i, 0] = (short)hsbTimer.Value;
-                _events[i, 1] = (short)_eventType;
-                for (int n = 2; n < 6; n++) _events[i, n] = 0;
-                #endregion
-            }
+			switch (_eventType)
+			{
 
-            Finish:
+				case Briefing.EventType.TitleText:
+					#region title
+					i = findExisting(_eventType);
+					if (i >= 10000)  //[JB] Need to change all these conditional checks to >= 10000.  If the event list is empty, none will be found, returning exactly 10000 (which isn't caught) and produces an out of bounds exception trying to insert at _events[10000,0]
+					{
+						i -= 10000; // if one wasn't found, remove marker, create it.
+						try
+						{
+							lstEvents.SelectedIndex = i;
+							insertEvent();
+						}
+						catch (ArgumentOutOfRangeException)
+						{
+							lstEvents.Items.Add("");
+							for (int n = i + 2; n > i; n--)
+							{
+								if (_events[n - 1, 1] == 0) continue;
+								for (int h = 0; h < 6; h++) _events[n, h] = _events[n - 1, h];
+							}
+						}
+					}
+					_events[i, 0] = (short)hsbTimer.Value;
+					_events[i, 1] = (short)_eventType;
+					_events[i, 2] = (short)((cboText.SelectedIndex >= 0) ? cboText.SelectedIndex : 0);  //[JB] Fix exception if no string is selected in the dropdown box.
+					for (int n = 3; n < 6; n++) _events[i, n] = 0;
+					if (_strings[_events[i, 2]].StartsWith(">"))
+					{
+						lblTitle.TextAlign = ContentAlignment.TopCenter;
+						lblTitle.ForeColor = _titleColor;
+						lblTitle.Text = _strings[_events[i, 2]].Replace(">", "");
+					}
+					else
+					{
+						lblTitle.TextAlign = ContentAlignment.TopLeft;
+						lblTitle.ForeColor = _normalColor;
+						lblTitle.Text = _strings[_events[i, 2]];
+					}
+					break;
+					#endregion
+				case Briefing.EventType.CaptionText:
+					#region caption
+					i = findExisting(_eventType);
+					if (i >= 10000)
+					{
+						i -= 10000; // if one wasn't found, remove marker, create it.
+						try
+						{
+							lstEvents.SelectedIndex = i;
+							insertEvent();
+						}
+						catch (ArgumentOutOfRangeException)
+						{
+							lstEvents.Items.Add("");
+							for (int n = i + 2; n > i; n--)
+							{
+								if (_events[n - 1, 1] == 0) continue;
+								for (int h = 0; h < 6; h++) _events[n, h] = _events[n - 1, h];
+							}
+						}
+					}
+					_events[i, 0] = (short)hsbTimer.Value;
+					_events[i, 1] = (short)_eventType;
+					_events[i, 2] = (short)cboText.SelectedIndex;
+					for (int n = 3; n < 6; n++) _events[i, n] = 0;
+					if (_strings[_events[i, 2]].StartsWith(">"))
+					{
+						lblCaption.TextAlign = ContentAlignment.TopCenter;
+						lblCaption.ForeColor = _titleColor;
+						lblCaption.Text = _strings[_events[i, 2]].Replace(">", "");
+					}
+					else
+					{
+						lblCaption.TextAlign = ContentAlignment.TopLeft;
+						lblCaption.ForeColor = _normalColor;
+						lblCaption.Text = _strings[_events[i, 2]];
+					}
+					break;
+					#endregion
+				case Briefing.EventType.MoveMap:
+					#region move
+					i = findExisting(_eventType);
+					if (i >= 10000)
+					{
+						i -= 10000; // if one wasn't found, remove marker, create it.
+						try
+						{
+							lstEvents.SelectedIndex = i;
+							insertEvent();
+						}
+						catch (ArgumentOutOfRangeException)
+						{
+							lstEvents.Items.Add("");
+							for (int n = i + 2; n > i; n--)
+							{
+								if (_events[n - 1, 1] == 0) continue;
+								for (int h = 0; h < 6; h++) _events[n, h] = _events[n - 1, h];
+							}
+						}
+					}
+					_events[i, 0] = (short)hsbTimer.Value;
+					_events[i, 1] = (short)_eventType;
+					_events[i, 2] = _mapX;
+					_events[i, 3] = _mapY;
+					// don't need to repaint, done while adjusting values
+					break;
+					#endregion
+				case Briefing.EventType.ZoomMap:
+					#region zoom
+					i = findExisting(_eventType);
+					if (i >= 10000)
+					{
+						i -= 10000; // if one wasn't found, remove marker, create it.
+						try
+						{
+							lstEvents.SelectedIndex = i;
+							insertEvent();
+						}
+						catch (ArgumentOutOfRangeException)
+						{
+							lstEvents.Items.Add("");
+							for (int n = i + 2; n > i; n--)
+							{
+								if (_events[n - 1, 1] == 0) continue;
+								for (int h = 0; h < 6; h++) _events[n, h] = _events[n - 1, h];
+							}
+						}
+					}
+					_events[i, 0] = (short)hsbTimer.Value;
+					_events[i, 1] = (short)_eventType;
+					_events[i, 2] = _zoomX;
+					_events[i, 3] = _zoomY;
+					// don't need to repaint, done while adjusting values
+					break;
+					#endregion
+				case Briefing.EventType.ClearFGTags:
+					#region clear FG
+					i = findExisting(_eventType);
+					if (i < 10000) break; // no further action, existing break found
+					i -= 10000;
+					try
+					{
+						lstEvents.SelectedIndex = i;    // this will throw for last event
+						insertEvent();
+					}
+					catch (ArgumentOutOfRangeException)
+					{
+						lstEvents.Items.Add("");
+						for (int n = i + 2; n > i; n--)
+						{
+							if (_events[n - 1, 1] == 0) continue;
+							for (int h = 0; h < 6; h++) _events[n, h] = _events[n - 1, h];
+						}
+					}
+					_events[i, 0] = (short)hsbTimer.Value;
+					_events[i, 1] = (short)_eventType;
+					for (int n = 2; n < 6; n++) _events[i, n] = 0;
+					for (int n = 0; n < 8; n++)
+					{
+						_fgTags[n, 0] = -1;
+						_fgTags[n, 1] = 0;
+					}
+					break;
+					#endregion
+				case Briefing.EventType.FGTag1:
+					#region FG
+					_eventType = (Briefing.EventType)((int)_eventType + numFG.Value - 1);
+					i = findExisting(_eventType);
+					if (i >= 10000)
+					{
+						i -= 10000; // if one wasn't found, remove marker, create it.
+						try
+						{
+							lstEvents.SelectedIndex = i;
+							insertEvent();
+						}
+						catch (ArgumentOutOfRangeException)
+						{
+							lstEvents.Items.Add("");
+							for (int n = i + 2; n > i; n--)
+							{
+								if (_events[n - 1, 1] == 0) continue;
+								for (int h = 0; h < 6; h++) _events[n, h] = _events[n - 1, h];
+							}
+						}
+					}
+					_events[i, 0] = (short)hsbTimer.Value;
+					_events[i, 1] = (short)_eventType;
+					_events[i, 2] = (short)cboFGTag.SelectedIndex;
+					for (int n = 3; n < 6; n++) _events[i, n] = 0;
+					if (_platform != Settings.Platform.XWING)
+					{
+						_fgTags[(int)_eventType - 9, 0] = _events[i, 2];
+						_fgTags[(int)_eventType - 9, 1] = _events[i, 0];
+					}
+					else
+					{
+						_fgTags[(int)_eventType - (int)Briefing.EventType.FGTag1, 0] = _events[i, 2];
+						_fgTags[(int)_eventType - (int)Briefing.EventType.FGTag1, 1] = _events[i, 0];
+					}
+					MapPaint();
+					break;
+					#endregion
+				case Briefing.EventType.ClearTextTags:
+					#region clear text
+					i = findExisting(_eventType);
+					if (i < 10000) break; // no further action, existing break found
+					i -= 10000;
+					try
+					{
+						lstEvents.SelectedIndex = i;    // this will throw for last event
+						insertEvent();
+					}
+					catch (ArgumentOutOfRangeException)
+					{
+						lstEvents.Items.Add("");
+						for (int n = i + 2; n > i; n--)
+						{
+							if (_events[n - 1, 1] == 0) continue;
+							for (int h = 0; h < 6; h++) _events[n, h] = _events[n - 1, h];
+						}
+					}
+					_events[i, 0] = (short)hsbTimer.Value;
+					_events[i, 1] = (short)_eventType;
+					for (int n = 2; n < 6; n++) _events[i, n] = 0;
+					for (int n = 0; n < 8; n++)
+					{
+						_textTags[n, 0] = -1;
+						_textTags[n, 1] = 0;
+					}
+					break;
+					#endregion
+				case Briefing.EventType.TextTag1:
+					#region text
+					_eventType = (Briefing.EventType)((int)_eventType + numText.Value - 1);
+					// can't use FindExisting, due to extra parameter
+					i = findExisting(_eventType);
+					if (i >= 10000)
+					{
+						if (_tempX == -621 && _tempY == -621)
+						{
+							MessageBox.Show("No tag location selected!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+							i = 0;
+							break;
+						}
+						i -= 10000; // if one wasn't found, remove marker, create it.
+						try
+						{
+							lstEvents.SelectedIndex = i;
+							insertEvent();
+						}
+						catch (ArgumentOutOfRangeException)
+						{
+							lstEvents.Items.Add("");
+							for (int n = i + 2; n > i; n--)
+							{
+								if (_events[n - 1, 1] == 0) continue;
+								for (int h = 0; h < 6; h++) _events[n, h] = _events[n - 1, h];
+							}
+						}
+					}
+					else
+					{
+						// found existing, just see if we change location or not
+						if (_tempX == -621 && _tempY == -621)
+						{
+							_tempX = _events[i, 3];
+							_tempY = _events[i, 4];
+						}
+					}
+					_events[i, 0] = (short)hsbTimer.Value;
+					_events[i, 1] = (short)_eventType;
+					_events[i, 2] = (short)cboTextTag.SelectedIndex;
+					_events[i, 3] = _tempX;
+					_events[i, 4] = _tempY;
+					_events[i, 5] = (short)cboColorTag.SelectedIndex;   //Unused for XWING but it won't be copied anyway since the event parameter count isn't large enough to copy the data.
+					break; // don't need to repaint or restore/edit from backup, as it's taken care of during placement
+					#endregion
+				case Briefing.EventType.ClearText:
+					#region clear title/caption text
+					i = findExisting(_eventType);
+					if (i < 10000) break; // no further action, existing break found
+					i -= 10000;
+					try
+					{
+						lstEvents.SelectedIndex = i;    // this will throw for last event
+						insertEvent();
+					}
+					catch (ArgumentOutOfRangeException)
+					{
+						lstEvents.Items.Add("");
+						for (int n = i + 2; n > i; n--)
+						{
+							if (_events[n - 1, 1] == 0) continue;
+							for (int h = 0; h < 6; h++) _events[n, h] = _events[n - 1, h];
+						}
+					}
+					_events[i, 0] = (short)hsbTimer.Value;
+					_events[i, 1] = (short)_eventType;
+					for (int n = 2; n < 6; n++) _events[i, n] = 0;
+					break;
+					#endregion
+			}
+
 			//[JB] Need to check for empty events. Some events fail to add if the user doesn't supply correct info (like XwaNewIcon with no location selected) and refreshing an empty list would throw an exception.
 			if(lstEvents.Items.Count != 0)
 			{
@@ -1549,7 +1541,7 @@ namespace Idmr.Yogeme
 			_tempY = -621;
 			enableOkCancel(true);
             numText.Maximum = (_platform != Settings.Platform.XWING) ? 8 : 4;
-            cboColorTag.Visible = (_platform != Settings.Platform.XWING) ? true : false;
+            cboColorTag.Visible = (_platform != Settings.Platform.XWING);
 		}
 		void cmdTitle_Click(object sender, EventArgs e)
 		{
@@ -1602,7 +1594,7 @@ namespace Idmr.Yogeme
             if(e.Button != MouseButtons.Left)
             {
                 if(e.Button == MouseButtons.Middle)
-                    _popupDragState = false;
+                    _popupIsDragging = false;
 
                 popupPreviewStop();
             }
@@ -1614,7 +1606,7 @@ namespace Idmr.Yogeme
             {
                 if(e.Button == MouseButtons.Middle)
                 {
-                    _popupDragState = true;
+                    _popupIsDragging = true;
                     _popupMiddleX = e.X;
                     _popupMiddleY = e.Y;
                 }
@@ -1638,9 +1630,9 @@ namespace Idmr.Yogeme
 		}
         void pctBrief_MouseMove(object sender, MouseEventArgs e)
         {
-            if (_popupPreviewActive == true)
+            if (_popupPreviewActive)
             {
-                if (_popupDragState == true)
+                if (_popupIsDragging)
                 {
                     double scx = (w / _zoomX) * 0.75;  //[JB] zoom level is pixels per km.  Modified to be more consistent across zoom levels.
                     double scy = (h / _zoomY) * 0.75;
@@ -1654,10 +1646,10 @@ namespace Idmr.Yogeme
                     MapPaint();
                 }
                 int mod = (_platform != Settings.Platform.TIE ? 2 : 1);
-                int xu = (int)(128 * e.X / _zoomX * mod - 64 * w / _zoomX * mod + _mapX);
-                int yu = (int)(128 * e.Y / _zoomY * mod - 64 * h / _zoomY * mod + _mapY);
-                double xkm = Math.Round((double)(xu * 0.00625), 2);
-                double ykm = Math.Round((double)(-yu * 0.00625), 2);
+                int xu = 128 * e.X / _zoomX * mod - 64 * w / _zoomX * mod + _mapX;
+                int yu = 128 * e.Y / _zoomY * mod - 64 * h / _zoomY * mod + _mapY;
+                double xkm = Math.Round(xu * 0.00625, 2);
+                double ykm = Math.Round(-yu * 0.00625, 2);
                 string s = "PREVIEW ONLY\nZoom: " + _zoomX + " , " + _zoomY;
                 s += "\nMap Offset: " + _mapX + " , " + _mapY;
                 s += "\nMap Coords: " + xu + " , " + yu;
@@ -1754,7 +1746,7 @@ namespace Idmr.Yogeme
         }
         void popupPreviewStop()
         {
-            if (_popupPreviewActive == true)
+            if (_popupPreviewActive)
             {
                 _mapX = _popupPreviewMapX;  //Restore prior map settings
                 _mapY = _popupPreviewMapY;
@@ -1767,7 +1759,7 @@ namespace Idmr.Yogeme
         }
         void popupPreviewStart()
         {
-            if (_popupPreviewActive == false)
+            if (!_popupPreviewActive)
             {
                 pctBrief.Focus();  //Need to force focus so it generates MouseWheel events
                 _popupPreviewMapX = _mapX;  //Backup existing map settings
@@ -1784,7 +1776,7 @@ namespace Idmr.Yogeme
             bool paint = false;
             int i = evtIndex;  //[JB] I just moved the old code here, didn't change anything.
             #region event processing
-            if (_events[i, 1] == (int)Platform.Xwing.Briefing.EventType.ClearText)
+            if (_events[i, 1] == (int)Briefing.EventType.ClearText)
             {
                 if (_platform == Settings.Platform.XWING || _platform == Settings.Platform.TIE) lblTitle.Text = "";
                 lblCaption.Text = "";
