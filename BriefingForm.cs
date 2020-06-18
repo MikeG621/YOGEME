@@ -129,7 +129,7 @@ namespace Idmr.Yogeme
 			pnlTextTag.Location = loc;
 			#endregion
 			Import(fg);	// FGs are separate so they can be updated without running the BRF as well
-			importDat(Application.StartupPath + "\\images\\TIE_BRF.dat", 34);
+			importIcons(Application.StartupPath + "\\images\\TIE_BRF.bmp", 34);
 			_tags = _tieBriefing.BriefingTag;
 			_strings = _tieBriefing.BriefingString;
 			importStrings();
@@ -210,7 +210,7 @@ namespace Idmr.Yogeme
 			cboColor.Items.Add("Purple");
 			cboColor.Items.Add("Black");
 			#endregion
-			importDat(Application.StartupPath + "\\images\\XvT_BRF.dat", 22);
+			importIcons(Application.StartupPath + "\\images\\XvT_BRF.bmp", 22);
 			_tags = _xvtBriefing.BriefingTag;
 			_strings = _xvtBriefing.BriefingString;
 			importStrings();
@@ -335,7 +335,7 @@ namespace Idmr.Yogeme
 			cboCraft.Items.AddRange(Platform.Xwa.Strings.CraftType);
 			cboNCraft.Items.AddRange(Platform.Xwa.Strings.CraftType);
 			#endregion
-			importDat(Application.StartupPath + "\\images\\XWA_BRF.dat", 56);
+			importIcons(Application.StartupPath + "\\images\\XWA_BRF.bmp", 56);
 			_tags = _xwaBriefing.BriefingTag;
 			_strings = _xwaBriefing.BriefingString;
 			importStrings();
@@ -419,73 +419,12 @@ namespace Idmr.Yogeme
 			cboFGTag.Items.Add(name);
 		}
 
-		void importDat(string filename, int size)
+		void importIcons(string filename, int size)
 		{
 			try
 			{
-				FileStream fs = File.OpenRead(filename);
-				BinaryReader br = new BinaryReader(fs);
-				int count = br.ReadInt16();
-				Bitmap bm = new Bitmap(count * size, size, PixelFormat.Format24bppRgb);
-				Graphics g = Graphics.FromImage(bm);
-				SolidBrush sb = new SolidBrush(Color.Black);
-				g.FillRectangle(sb, 0, 0, bm.Width, bm.Height);
-				byte[] blue = { 0, 0x48, 0x60, 0x78, 0x94, 0xAC, 0xC8, 0xE0, 0xFC };
-				byte[] green = { 0, 0, 4, 0x10, 0x24, 0x3C, 0x58, 0x78, 0xA0 };
-				for (int i=0;i<count;i++)
-				{
-					fs.Position = i*2+2;
-					fs.Position = br.ReadUInt16();
-					byte b;
-					w = br.ReadByte();	// using these vars just because I can
-					h = br.ReadByte();
-					int x;
-					for (int q=0;q<h;q++)
-					{
-						for (int r=0;r<(w+1)/2;r++)
-						{
-							b = br.ReadByte();
-							int p1 = b & 0xF;
-							int p2 = (b & 0xF0) >> 4;
-							x = (size-w)/2 + size*i + r*2;
-							if (_platform == Settings.Platform.TIE)
-							{
-								x = size/2 - w + size*i + r*4;
-								if (p1 != 0)
-								{
-									bm.SetPixel(x, size/2 - h + q*2, Color.FromArgb(0, green[p1], blue[p1]));
-									bm.SetPixel(x + 1, size/2 - h + q*2, Color.FromArgb(0, green[p1], blue[p1]));
-									bm.SetPixel(x, size/2 - h + q*2 + 1, Color.FromArgb(0, green[p1], blue[p1]));
-									bm.SetPixel(x + 1, size/2 - h + q*2 + 1, Color.FromArgb(0, green[p1], blue[p1]));
-								}
-								if (p2 != 0)
-								{
-									bm.SetPixel(x + 2, size/2 - h + q*2, Color.FromArgb(0, green[p2], blue[p2]));
-									bm.SetPixel(x + 3, size/2 - h + q*2, Color.FromArgb(0, green[p2], blue[p2]));
-									bm.SetPixel(x + 2, size/2 - h + q*2 + 1, Color.FromArgb(0, green[p2], blue[p2]));
-									bm.SetPixel(x + 3, size/2 - h + q*2 + 1, Color.FromArgb(0, green[p2], blue[p2]));
-								}
-							}
-							else if (_platform == Settings.Platform.XvT)
-							{
-								p1 = (p1 != 0 ? (5 - p1) * 0x28 : 0);
-								p2 = (p2 != 0 ? (5 - p2) * 0x28 : 0);
-								if (p1 != 0) bm.SetPixel(x, (size-h)/2 + q, Color.FromArgb(p1, p1, p1));
-								if (p2 != 0) bm.SetPixel(x + 1, (size-h)/2 + q, Color.FromArgb(p2, p2, p2));
-							}
-							else
-							{
-								p1 = (p1 != 0 ? p1 * 0x10 + 0xF : 0);
-								p2 = (p2 != 0 ? p2 * 0x10 + 0xF : 0);
-								if (p1 != 0) bm.SetPixel(x, (size-h)/2 + q, Color.FromArgb(p1, p1, p1));
-								if (p2 != 0) bm.SetPixel(x + 1, (size-h)/2 + q, Color.FromArgb(p2, p2, p2));
-							}
-						}
-					}
-				}
 				imgCraft.ImageSize = new Size(size, size);
-				imgCraft.Images.AddStrip(bm);
-				fs.Close();
+				imgCraft.Images.AddStrip(Image.FromFile(filename));
 			}
 			catch (Exception x)
 			{
@@ -3716,5 +3655,7 @@ namespace Idmr.Yogeme
 	 * BYTE width, BYTE height
 	 * BITFIELD; bottom 4 are left px, top 4 are right px, always in pairs even for odd sizes
 	 * reads left to right, top to bottom
+
+	NOTE: the DAT files were deprecated to just use BMPs, but had to keep XvT since it sizes the FG tags according to size, not a fixed box
 	 */
 }
