@@ -230,3 +230,4 @@ MC80 Liberty-class,WRCS
 VSD II,VSDII
 ISD II,ISDII
 Trade Federation Battleship,TFB
+Katana Warship,KTN

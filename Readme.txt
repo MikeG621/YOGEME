@@ -18,6 +18,10 @@ Version History
 - (All) Added more details to custom ship list error message
 - (All) Clipboard bin and help path now explicitly use Startup Path to prevent implicit from defaulting to sys32 [Issue #32]
 - (XW) Added custom shiplist capability
+- (Briefing) Icons now use BMPs instead of the DATs
+- (Briefing) If the craft index is too high (mods) use the default 'X-wing' image
+- (XWA) Including map icons and shiplist template for DSUCP v2.6
+- (XWA) Added missing Unused ship slot at end of the shiplist to account for use in DSUCP
 - Various code tweaks/cleaning
 
 v1.6.4, 19 Jan 2020

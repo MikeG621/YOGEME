@@ -230,3 +230,4 @@ MC80 Liberty-class,WRCS
 VSD II,VSDII
 ISD II,ISDII
 *Planet,*B/Drop
+*Planet,*B/Drop

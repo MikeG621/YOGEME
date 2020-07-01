@@ -3,10 +3,12 @@
  * Copyright (C) 2007-2020 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.6.4
+ * VERSION: 1.6.4+
  */
 
 /* CHANGELOG
+ * [UPD] Icons now use BMPs instead of the DATs, importDats() renamed to importIcons()
+ * [UPD] If the craft index is OutOfRange, use the first one
  * v1.6.4, 200119
  * [NEW #30] onModified callback to prevent mission from auto-dirty when opening
  * v1.5, 180910
@@ -1183,7 +1185,7 @@ namespace Idmr.Yogeme
 			g3.DrawLine(pn, 1, 0, 1, h);
 			g3.DrawLine(pn, w-1, 0, w-1, h);
 			drawGrid(X, Y, g3);
-			Bitmap bmptemp;
+			Bitmap bmptemp = null;
 			#region FG tags
 			Bitmap bmptemp2;
 			for (int i=0;i<8;i++)
@@ -1195,23 +1197,22 @@ namespace Idmr.Yogeme
 				int wpX = 2*(int)Math.Round((double)_zoomX*_briefData[_fgTags[i, 0]].Waypoint[0]/256, 0) + X;
 				int wpY = 2*(int)Math.Round((double)_zoomY*-_briefData[_fgTags[i, 0]].Waypoint[1]/256, 0) + Y;  //[JB] Invert Y axis of waypoint
 				int frame = hsbTimer.Value - _fgTags[i, 1];
-				if (_fgTags[i, 1] == 0) frame = 12;	// if tagged at t=0, just the box
+				if (_fgTags[i, 1] == 0) frame = 12; // if tagged at t=0, just the box
+				try { bmptemp = new Bitmap(imgCraft.Images[_briefData[_fgTags[i, 0]].Craft]); }
+				catch { bmptemp = new Bitmap(imgCraft.Images[0]); }
 				switch (frame)
 				{
 					case 0:
-						bmptemp = new Bitmap(imgCraft.Images[_briefData[_fgTags[i, 0]].Craft]);
 						bmptemp2 = flatMask(bmptemp, IFF, 0xFC);
 						imageQuad(wpX-16, wpY-16, 32, bmptemp2, g3);
 						break;
 					case 1:
-						bmptemp = new Bitmap(imgCraft.Images[_briefData[_fgTags[i, 0]].Craft]);
 						bmptemp2 = flatMask(bmptemp, IFF, 0xC8);
 						imageQuad(wpX-16, wpY-16, 32, bmptemp2, g3);
 						bmptemp2 = flatMask(bmptemp, IFF, 0xFC);
 						imageQuad(wpX-16, wpY-16, 28, bmptemp2, g3);
 						break;
 					case 2:
-						bmptemp = new Bitmap(imgCraft.Images[_briefData[_fgTags[i, 0]].Craft]);
 						bmptemp2 = flatMask(bmptemp, IFF, 0x94);
 						imageQuad(wpX-16, wpY-16, 32, bmptemp2, g3);
 						bmptemp2 = flatMask(bmptemp, IFF, 0xC8);
@@ -1220,7 +1221,6 @@ namespace Idmr.Yogeme
 						imageQuad(wpX-16, wpY-16, 24, bmptemp2, g3);
 						break;
 					case 3:
-						bmptemp = new Bitmap(imgCraft.Images[_briefData[_fgTags[i, 0]].Craft]);
 						bmptemp2 = flatMask(bmptemp, IFF, 0x60);
 						imageQuad(wpX-16, wpY-16, 32, bmptemp2, g3);
 						bmptemp2 = flatMask(bmptemp, IFF, 0x94);
@@ -1231,7 +1231,6 @@ namespace Idmr.Yogeme
 						imageQuad(wpX-16, wpY-16, 20, bmptemp2, g3);
 						break;
 					case 4:
-						bmptemp = new Bitmap(imgCraft.Images[_briefData[_fgTags[i, 0]].Craft]);
 						bmptemp2 = flatMask(bmptemp, IFF, 0x60);
 						imageQuad(wpX-16, wpY-16, 28, bmptemp2, g3);
 						bmptemp2 = flatMask(bmptemp, IFF, 0x94);
@@ -1242,7 +1241,6 @@ namespace Idmr.Yogeme
 						imageQuad(wpX-16, wpY-16, 16, bmptemp2, g3);
 						break;
 					case 5:
-						bmptemp = new Bitmap(imgCraft.Images[_briefData[_fgTags[i, 0]].Craft]);
 						bmptemp2 = flatMask(bmptemp, IFF, 0x60);
 						imageQuad(wpX-16, wpY-16, 24, bmptemp2, g3);
 						bmptemp2 = flatMask(bmptemp, IFF, 0x94);
@@ -1253,7 +1251,6 @@ namespace Idmr.Yogeme
 						imageQuad(wpX-16, wpY-16, 12, bmptemp2, g3);
 						break;
 					case 6:
-						bmptemp = new Bitmap(imgCraft.Images[_briefData[_fgTags[i, 0]].Craft]);
 						bmptemp2 = flatMask(bmptemp, IFF, 0x60);
 						imageQuad(wpX-16, wpY-16, 20, bmptemp2, g3);
 						bmptemp2 = flatMask(bmptemp, IFF, 0x94);
@@ -1264,7 +1261,6 @@ namespace Idmr.Yogeme
 						imageQuad(wpX-16, wpY-16, 8, bmptemp2, g3);
 						break;
 					case 7:
-						bmptemp = new Bitmap(imgCraft.Images[_briefData[_fgTags[i, 0]].Craft]);
 						bmptemp2 = flatMask(bmptemp, IFF, 0x60);
 						imageQuad(wpX-16, wpY-16, 16, bmptemp2, g3);
 						bmptemp2 = flatMask(bmptemp, IFF, 0x94);
@@ -1275,7 +1271,6 @@ namespace Idmr.Yogeme
 						imageQuad(wpX-16, wpY-16, 4, bmptemp2, g3);
 						break;
 					case 8:
-						bmptemp = new Bitmap(imgCraft.Images[_briefData[_fgTags[i, 0]].Craft]);
 						bmptemp2 = flatMask(bmptemp, IFF, 0x60);
 						imageQuad(wpX-16, wpY-16, 12, bmptemp2, g3);
 						bmptemp2 = flatMask(bmptemp, IFF, 0x94);
@@ -1284,14 +1279,12 @@ namespace Idmr.Yogeme
 						imageQuad(wpX-16, wpY-16, 4, bmptemp2, g3);
 						break;
 					case 9:
-						bmptemp = new Bitmap(imgCraft.Images[_briefData[_fgTags[i, 0]].Craft]);
 						bmptemp2 = flatMask(bmptemp, IFF, 0x60);
 						imageQuad(wpX-16, wpY-16, 8, bmptemp2, g3);
 						bmptemp2 = flatMask(bmptemp, IFF, 0x94);
 						imageQuad(wpX-16, wpY-16, 4, bmptemp2, g3);
 						break;
 					case 10:
-						bmptemp = new Bitmap(imgCraft.Images[_briefData[_fgTags[i, 0]].Craft]);
 						bmptemp2 = flatMask(bmptemp, IFF, 0x60);
 						imageQuad(wpX-16, wpY-16, 4, bmptemp2, g3);
 						break;
@@ -1333,8 +1326,16 @@ namespace Idmr.Yogeme
 			for (int i=0;i<_briefData.Length;i++)
 			{
 				if (_briefData[i].Waypoint[3] != 1) continue;
-				if (_zoomX >= 32) bmptemp = new Bitmap(imgCraft.Images[_briefData[i].Craft]);
-				else bmptemp = new Bitmap(imgCraft.Images[_briefData[i].Craft+88]);	// small icon
+				if (_zoomX >= 32)
+				{
+					try { bmptemp = new Bitmap(imgCraft.Images[_briefData[i].Craft]); }
+					catch { bmptemp = new Bitmap(imgCraft.Images[0]); }
+				}
+				else
+				{
+					try { bmptemp = new Bitmap(imgCraft.Images[_briefData[i].Craft + 88]); }    // small icon
+					catch { bmptemp = new Bitmap(imgCraft.Images[88]); }
+				}
 				tieMask(bmptemp, _briefData[i].IFF);
 				// simple base-256 grid coords * zoom to get pixel location, * 2 to enlarge, + map offset, - pic size/2 to center
 				// forced to even numbers
@@ -1487,22 +1488,21 @@ namespace Idmr.Yogeme
 				int frame = hsbTimer.Value - _fgTags[i, 1];
 				if (_fgTags[i, 1] == 0) frame = 12;	// if tagged at t=0, just the box
 				int[] pos = getTagSize(_briefData[_fgTags[i, 0]].Craft);
+				try { bmptemp = new Bitmap(imgCraft.Images[_briefData[_fgTags[i, 0]].Craft]); }
+				catch { bmptemp = new Bitmap(imgCraft.Images[0]); }
 				switch (frame)
 				{
 					case 0:
-						bmptemp = new Bitmap(imgCraft.Images[_briefData[_fgTags[i, 0]].Craft]);
 						bmptemp2 = xvtMask(bmptemp, IFF, 1);
 						imageQuad(wpX-11, wpY-11, 16, bmptemp2, g3);
 						break;
 					case 1:
-						bmptemp = new Bitmap(imgCraft.Images[_briefData[_fgTags[i, 0]].Craft]);
 						bmptemp2 = xvtMask(bmptemp, IFF, 2);
 						imageQuad(wpX-11, wpY-11, 16, bmptemp2, g3);
 						bmptemp2 = xvtMask(bmptemp, IFF, 1);
 						imageQuad(wpX-11, wpY-11, 14, bmptemp2, g3);
 						break;
 					case 2:
-						bmptemp = new Bitmap(imgCraft.Images[_briefData[_fgTags[i, 0]].Craft]);
 						bmptemp2 = xvtMask(bmptemp, IFF, 3);
 						imageQuad(wpX-11, wpY-11, 16, bmptemp2, g3);
 						bmptemp2 = xvtMask(bmptemp, IFF, 2);
@@ -1511,7 +1511,6 @@ namespace Idmr.Yogeme
 						imageQuad(wpX-11, wpY-11, 12, bmptemp2, g3);
 						break;
 					case 3:
-						bmptemp = new Bitmap(imgCraft.Images[_briefData[_fgTags[i, 0]].Craft]);
 						bmptemp2 = xvtMask(bmptemp, IFF, 4);
 						imageQuad(wpX-11, wpY-11, 16, bmptemp2, g3);
 						bmptemp2 = xvtMask(bmptemp, IFF, 3);
@@ -1522,7 +1521,6 @@ namespace Idmr.Yogeme
 						imageQuad(wpX-11, wpY-11, 10, bmptemp2, g3);
 						break;
 					case 4:
-						bmptemp = new Bitmap(imgCraft.Images[_briefData[_fgTags[i, 0]].Craft]);
 						bmptemp2 = xvtMask(bmptemp, IFF, 4);
 						imageQuad(wpX-11, wpY-11, 14, bmptemp2, g3);
 						bmptemp2 = xvtMask(bmptemp, IFF, 3);
@@ -1533,7 +1531,6 @@ namespace Idmr.Yogeme
 						imageQuad(wpX-11, wpY-11, 8, bmptemp2, g3);
 						break;
 					case 5:
-						bmptemp = new Bitmap(imgCraft.Images[_briefData[_fgTags[i, 0]].Craft]);
 						bmptemp2 = xvtMask(bmptemp, IFF, 4);
 						imageQuad(wpX-11, wpY-11, 12, bmptemp2, g3);
 						bmptemp2 = xvtMask(bmptemp, IFF, 3);
@@ -1544,7 +1541,6 @@ namespace Idmr.Yogeme
 						imageQuad(wpX-11, wpY-11, 6, bmptemp2, g3);
 						break;
 					case 6:
-						bmptemp = new Bitmap(imgCraft.Images[_briefData[_fgTags[i, 0]].Craft]);
 						bmptemp2 = xvtMask(bmptemp, IFF, 4);
 						imageQuad(wpX-11, wpY-11, 10, bmptemp2, g3);
 						bmptemp2 = xvtMask(bmptemp, IFF, 3);
@@ -1555,7 +1551,6 @@ namespace Idmr.Yogeme
 						imageQuad(wpX-11, wpY-11, 4, bmptemp2, g3);
 						break;
 					case 7:
-						bmptemp = new Bitmap(imgCraft.Images[_briefData[_fgTags[i, 0]].Craft]);
 						bmptemp2 = xvtMask(bmptemp, IFF, 4);
 						imageQuad(wpX-11, wpY-11, 8, bmptemp2, g3);
 						bmptemp2 = xvtMask(bmptemp, IFF, 3);
@@ -1566,7 +1561,6 @@ namespace Idmr.Yogeme
 						imageQuad(wpX-11, wpY-11, 2, bmptemp2, g3);
 						break;
 					case 8:
-						bmptemp = new Bitmap(imgCraft.Images[_briefData[_fgTags[i, 0]].Craft]);
 						bmptemp2 = xvtMask(bmptemp, IFF, 4);
 						imageQuad(wpX-11, wpY-11, 6, bmptemp2, g3);
 						bmptemp2 = xvtMask(bmptemp, IFF, 3);
@@ -1575,14 +1569,12 @@ namespace Idmr.Yogeme
 						imageQuad(wpX-11, wpY-11, 2, bmptemp2, g3);
 						break;
 					case 9:
-						bmptemp = new Bitmap(imgCraft.Images[_briefData[_fgTags[i, 0]].Craft]);
 						bmptemp2 = xvtMask(bmptemp, IFF, 4);
 						imageQuad(wpX-11, wpY-11, 4, bmptemp2, g3);
 						bmptemp2 = xvtMask(bmptemp, IFF, 3);
 						imageQuad(wpX-11, wpY-11, 2, bmptemp2, g3);
 						break;
 					case 10:
-						bmptemp = new Bitmap(imgCraft.Images[_briefData[_fgTags[i, 0]].Craft]);
 						bmptemp2 = xvtMask(bmptemp, IFF, 4);
 						imageQuad(wpX-11, wpY-11, 2, bmptemp2, g3);
 						break;
@@ -1625,7 +1617,8 @@ namespace Idmr.Yogeme
 			{
                 wp = _briefData[i].WaypointArr[briefIndex];
 				if (wp[3] != 1) continue;
-				bmptemp = new Bitmap(imgCraft.Images[_briefData[i].Craft]);
+				try { bmptemp = new Bitmap(imgCraft.Images[_briefData[i].Craft]); }
+				catch { bmptemp = new Bitmap(imgCraft.Images[0]); }
 				bmptemp = xvtMask(bmptemp, _briefData[i].IFF, 0);
 				int[] pos = getTagSize(_briefData[i].Craft);
 				// simple base-256 grid coords * zoom to get pixel location, + map offset, - pic size/2 to center
@@ -1726,7 +1719,8 @@ namespace Idmr.Yogeme
 				int frame = hsbTimer.Value - _fgTags[i, 1];
 				if (_fgTags[i, 1] == 0) frame = 12;	// if tagged at t=0, just the box
 				byte r = sb.Color.R, b = sb.Color.B, g = sb.Color.G;
-				bmptemp = new Bitmap(imgCraft.Images[_briefData[_fgTags[i, 0]].Craft]);
+				try { bmptemp = new Bitmap(imgCraft.Images[_briefData[_fgTags[i, 0]].Craft]); }
+				catch { bmptemp = new Bitmap(imgCraft.Images[0]); }	// if it breaks, use an X-wing
 				bmptemp = xwaMask(bmptemp, IFF);
 				if (_briefData[_fgTags[i, 0]].Waypoint[2] == 1) bmptemp.RotateFlip(RotateFlipType.Rotate270FlipNone);
 				else if (_briefData[_fgTags[i, 0]].Waypoint[2] == 2) bmptemp.RotateFlip(RotateFlipType.Rotate180FlipNone);
@@ -1841,7 +1835,8 @@ namespace Idmr.Yogeme
 			for (int i=0;i<_briefData.Length;i++)
 			{
 				if (_briefData[i].Waypoint == null || _briefData[i].Waypoint[3] != 1) continue;
-				bmptemp = new Bitmap(imgCraft.Images[_briefData[i].Craft]);
+				try { bmptemp = new Bitmap(imgCraft.Images[_briefData[i].Craft]); }
+				catch { bmptemp = new Bitmap(imgCraft.Images[0]); }
 				bmptemp = xwaMask(bmptemp, _briefData[i].IFF);
 				if (_briefData[i].Waypoint[2] == 1) bmptemp.RotateFlip(RotateFlipType.Rotate270FlipNone);
 				else if (_briefData[i].Waypoint[2] == 2) bmptemp.RotateFlip(RotateFlipType.Rotate180FlipNone);
@@ -2756,7 +2751,7 @@ namespace Idmr.Yogeme
                 string s = "PREVIEW ONLY\nZoom: " + _zoomX + " , " + _zoomY;
                 s += "\nMap Offset: " + _mapX + " , " + _mapY;
                 s += "\nMap Coords: " + xu + " , " + yu;
-                if (_platform != Settings.Platform.XWA)
+                //if (_platform != Settings.Platform.XWA)
                     s += "\nWaypoint Coords (km): " + xkm.ToString() + " , " + ykm.ToString();
                 popupUpdate(s);
                 if (e.Delta > 0)
