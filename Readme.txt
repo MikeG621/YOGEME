@@ -22,6 +22,7 @@ Version History
 - (Briefing) If the craft index is too high (mods) use the default 'X-wing' image
 - (XWA) Including map icons and shiplist template for DSUCP v2.6
 - (XWA) Added missing Unused ship slot at end of the shiplist to account for use in DSUCP
+- (XWA) The ShipInfo in the briefings will work for X-wings now
 - Various code tweaks/cleaning
 
 v1.6.4, 19 Jan 2020

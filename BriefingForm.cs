@@ -9,6 +9,7 @@
 /* CHANGELOG
  * [UPD] Icons now use BMPs instead of the DATs, importDats() renamed to importIcons()
  * [UPD] If the craft index is OutOfRange, use the first one
+ * [FIX] XWA ShipInfo for X-wings work now
  * v1.6.4, 200119
  * [NEW #30] onModified callback to prevent mission from auto-dirty when opening
  * v1.5, 180910
@@ -670,7 +671,7 @@ namespace Idmr.Yogeme
                 paint |= processEvent(i, false);  //paint stays enabled once enabled.
             }
 			for (int h=0;h<8;h++) if (hsbTimer.Value - _fgTags[h, 1] < 13) paint = true;
-			lblTime.Text = String.Format("{0:Time: 0.00}",(decimal)hsbTimer.Value / _timerInterval);
+			lblTime.Text = string.Format("{0:Time: 0.00}",(decimal)hsbTimer.Value / _timerInterval);
 			if (hsbTimer.Value == (hsbTimer.Maximum-11) || hsbTimer.Value == 0) stopTimer();
 			if (paint) MapPaint();	// prevent MapPaint from running if no change
             if (tmrBrief.Interval != (1000 / _timerInterval))  //[JB] Show playback speed if playing fast-forward
@@ -1041,7 +1042,7 @@ namespace Idmr.Yogeme
 			{
 				if (_events[i, 2] == 1)
 				{
-					if (_briefData[_events[i, 3]].Craft != 0) _message = "Ship Info: " + Platform.Xwa.Strings.CraftType[_briefData[_events[i, 3]].Craft + 1];
+					if (_briefData[_events[i, 3]].Craft >= 0) _message = "Ship Info: " + Platform.Xwa.Strings.CraftType[_briefData[_events[i, 3]].Craft + 1];
 					else _message = "Ship Info: <flight group not found>";
 					if (!rebuild)
 					{
@@ -2751,7 +2752,7 @@ namespace Idmr.Yogeme
                 string s = "PREVIEW ONLY\nZoom: " + _zoomX + " , " + _zoomY;
                 s += "\nMap Offset: " + _mapX + " , " + _mapY;
                 s += "\nMap Coords: " + xu + " , " + yu;
-                //if (_platform != Settings.Platform.XWA)
+                if (_platform != Settings.Platform.XWA)
                     s += "\nWaypoint Coords (km): " + xkm.ToString() + " , " + ykm.ToString();
                 popupUpdate(s);
                 if (e.Delta > 0)
