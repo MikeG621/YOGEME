@@ -2,8 +2,8 @@
 ======================================
 
 Author: Michael Gaisser (mjgaisser@gmail.com)
-Version: 1.6.4+
-Date: 2020.01.19
+Version: 1.6.5
+Date: 2020.07.04
 
 Thank you for downloading YOGEME, the all-in-one mission editor for the X-Wing
 series, Xwing95 through X-wing Alliance.  This program allows easy mission
@@ -14,31 +14,36 @@ original mainstream editors were created.
 ==========
 Version History
 
-- (Map) If the craft index is too high (mods) use the default 'X' image
-- (All) Added more details to custom ship list error message
-- (All) Clipboard bin and help path now explicitly use Startup Path to prevent implicit from defaulting to sys32 [Issue #32]
-- (XW) Added custom shiplist capability
-- (Briefing) Icons now use BMPs instead of the DATs
-- (Briefing) If the craft index is too high (mods) use the default 'X-wing' image
-- (XWA) Including map icons and shiplist template for DSUCP v2.6
-- (XWA) Added missing Unused ship slot at end of the shiplist to account for use in DSUCP
-- (XWA) The ShipInfo in the briefings will work for X-wings now
-- Various code tweaks/cleaning
+v1.6.5, 04 Jul 2020
+ - (Map) If the craft index is too high (mods) use the default 'X' image
+ - (All) Added more details to custom ship list error message
+ - (All) Clipboard bin and help path now explicitly use Startup Path to prevent implicit from defaulting to sys32 [Issue #32]
+ - (XW) Added custom shiplist capability
+ - (Briefing) Icons now use BMPs instead of the DATs
+ - (Briefing) If the craft index is too high (mods) use the default 'X-wing' image
+ - (XWA) Including mission map icons and shiplist template for DSUCP v2.6
+ - (XWA) Added missing Unused ship slot at end of the shiplist to account for use in DSUCP
+ - (XWA) The ShipInfo in the briefings will work for X-wings now
+ - Various code tweaks/cleaning
+
+Note regarding DSUCP: templates were created before the community events unfolded. While
+it may not be available going forward, I'm leaving the templates in for those who still
+have installers and wish to use it.
 
 v1.6.4, 19 Jan 2020
-- (All) Added briefing callbacks so mission doesn't dirty until something is changed [Issue #30]
-- (TIE) Battle form Height increased to account for W10 visual style [Issue #31]
-- (TIE, XvT) Backdrop dialog now dirties mission on OK
+ - (All) Added briefing callbacks so mission doesn't dirty until something is changed [Issue #30]
+ - (TIE) Battle form Height increased to account for W10 visual style [Issue #31]
+ - (TIE, XvT) Backdrop dialog now dirties mission on OK
 
 v1.6.3, 01 Jan 2020
-- (All) Fixed a settings write corruption due to partial platform detection [Issue #29]
-- (XWA) Added ShuttleAnimation and ShuttleAnimationStraightLine hooks
+ - (All) Fixed a settings write corruption due to partial platform detection [Issue #29]
+ - (XWA) Added ShuttleAnimation and ShuttleAnimationStraightLine hooks
 
 v1.6.2, 28 Sep 2019
-- (All) Fixed a crash that'd occur if Verify was run with a bad path [Issue #28]
-- (XWA) Tweaked the hook INI backup filename during save to prevent possible clashes
-- (XWA) Fixed error during hooked backdrop load
-- (XWA) Idmr.ImageFormat.Dat.dll updated to handle Format 25 images correctly for backdrops
+ - (All) Fixed a crash that'd occur if Verify was run with a bad path [Issue #28]
+ - (XWA) Tweaked the hook INI backup filename during save to prevent possible clashes
+ - (XWA) Fixed error during hooked backdrop load
+ - (XWA) Idmr.ImageFormat.Dat.dll updated to handle Format 25 images correctly for backdrops
 
 v1.6.1, 16 Sep 2019
  - (XWA) Fixed a crash that'd occur if the mission INI file doesn't exist [Issue #27]

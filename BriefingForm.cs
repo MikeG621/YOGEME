@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2020 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.6.4+
+ * VERSION: 1.6.5
  */
 
 /* CHANGELOG
+ * v1.6.5, 200704
  * [UPD] Icons now use BMPs instead of the DATs, importDats() renamed to importIcons()
  * [UPD] If the craft index is OutOfRange, use the first one
  * [FIX] XWA ShipInfo for X-wings work now

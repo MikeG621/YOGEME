@@ -4,10 +4,11 @@
  * This file authored by "JB" (Random Starfighter) (randomstarfighter@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.6.4+
+ * VERSION: 1.6.5
  */
 
 /* CHANGELOG:
+ * v1.6.5, 200704
  * [NEW] Custom shiplist
  * [FIX #32] bin path now explicitly uses Startup Path to prevent implicit from defaulting to sys32
  * v1.6.4, 200119

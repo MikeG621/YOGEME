@@ -4,10 +4,11 @@
  * This file authored by "JB" (Random Starfighter) (randomstarfighter@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.6.4+
+ * VERSION: 1.6.5
  */
 
 /* CHANGELOG
+ * v1.6.5, 200704
  * [UPD] various code tweaks/cleaning that don't affect functionality
  * v1.6.4, 200119
  * [UPD] some formatting stuff

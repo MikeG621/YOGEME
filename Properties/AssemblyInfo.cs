@@ -12,7 +12,7 @@ using System.Reflection;
 // associated with an assembly.
 //
 [assembly: AssemblyTitle("Ye Olde Galactic Empire Mission Editor")]
-[assembly: AssemblyDescription("All-in-one Mission Editor for the X-wing series, TIE through XWA")]
+[assembly: AssemblyDescription("All-in-one Mission Editor for the X-wing series, X-wing through XWA")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Imperial Department of Military Research")]
 [assembly: AssemblyProduct("YOGEME")]
@@ -20,7 +20,7 @@ using System.Reflection;
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]		
 
-[assembly: AssemblyVersion("1.6.4.*")]
+[assembly: AssemblyVersion("1.6.5.*")]
 
 [assembly: AssemblyDelaySign(false)]
 [assembly: AssemblyKeyFile("")]
