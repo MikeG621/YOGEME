@@ -566,13 +566,36 @@ namespace Idmr.Yogeme
 			BaseBriefing brief = (_platform == Settings.Platform.TIE ? (BaseBriefing)_tieBriefing : (_platform == Settings.Platform.XvT ? (BaseBriefing)_xvtBriefing : (BaseBriefing)_xwaBriefing));
 			int offset = 0;
 			brief.Unknown1 = (short)numUnk1.Value;
-			for (int evnt = 0; evnt < _maxEvents; evnt++)
+            //[JB] I've encountered custom missions that didn't have proper end tags.
+            //Modified the save routine with a sanity check if out of bounds, and attempts to detect the end of the event list.
+            //If the end event is not found, inserts one at the end of the event list.
+            bool endFound = false;
+            int lastOffset = -1;
+	        for (int evnt = 0; evnt < _maxEvents; evnt++)
 			{
 				for (int i = 0; i < 2; i++, offset++) brief.Events[offset] = _events[evnt, i];
-				if (_events[evnt, 1] == (short)BaseBriefing.EventType.EndBriefing) break;
-				else for (int i = 2; i < 2 + brief.EventParameterCount(_events[evnt, 1]); i++, offset++)
-					brief.Events[offset] = _events[evnt, i];
+                if (_events[evnt, 1] == (short)BaseBriefing.EventType.EndBriefing)
+                {
+                    endFound = true;
+                    break;
+                }
+                else 
+                {
+                    if (_events[evnt, 1] == 0 && lastOffset == -1)
+                        lastOffset = offset - 2;  //Found an empty event, possible candidate for an end marker.  Bookmark the write position to the start of this event.
+                    else if (_events[evnt, 1] != 0)                 
+                        lastOffset = -1;          //I'm not sure if any briefing utilizes an empty tag, but this resets our detection just in case.  Don't want to overwrite anything we're not supposed to.
+
+                    if (offset >= brief.Events.Length - 1) break;
+                    for (int i = 2; i < 2 + brief.EventParameterCount(_events[evnt, 1]) && offset < brief.Events.Length; i++, offset++)
+                        brief.Events[offset] = _events[evnt, i];
+                }
 			}
+            if (!endFound && lastOffset >= 0 && lastOffset < brief.Events.Length - 2)
+            {
+                brief.Events[lastOffset] = 9999;
+                brief.Events[lastOffset + 1] = (short)BaseBriefing.EventType.EndBriefing;
+            }
 			if (_platform == Settings.Platform.XvT) _xvtBriefing.Unknown3 = (short)numUnk3.Value;
 		}
 
