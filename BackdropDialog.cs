@@ -496,7 +496,7 @@ namespace Idmr.Yogeme
 			PictureBox p = (PictureBox)sender;
 			int index = 0;
 			index = (int)p.Tag;
-			if (index > _numBackdrops) return;
+			if (index >= _numBackdrops) return;
 			numBackdrop.Value = index;
 		}
 
