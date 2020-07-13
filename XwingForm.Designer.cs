@@ -1338,12 +1338,12 @@ namespace Idmr.Yogeme
 			// 
 			this.numRoll.Location = new System.Drawing.Point(288, 440);
 			this.numRoll.Maximum = new decimal(new int[] {
-            180,
+            360,
             0,
             0,
             0});
 			this.numRoll.Minimum = new decimal(new int[] {
-            179,
+            359,
             0,
             0,
             -2147483648});
@@ -1356,12 +1356,12 @@ namespace Idmr.Yogeme
 			// 
 			this.numPitch.Location = new System.Drawing.Point(288, 408);
 			this.numPitch.Maximum = new decimal(new int[] {
-            180,
+            360,
             0,
             0,
             0});
 			this.numPitch.Minimum = new decimal(new int[] {
-            179,
+            359,
             0,
             0,
             -2147483648});
@@ -1374,12 +1374,12 @@ namespace Idmr.Yogeme
 			// 
 			this.numYaw.Location = new System.Drawing.Point(288, 376);
 			this.numYaw.Maximum = new decimal(new int[] {
-            180,
+            360,
             0,
             0,
             0});
 			this.numYaw.Minimum = new decimal(new int[] {
-            179,
+            359,
             0,
             0,
             -2147483648});
