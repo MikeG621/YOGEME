@@ -2138,9 +2138,9 @@ namespace Idmr.Yogeme
             if (!isCraftFG) chkSP1.Checked = true; //Always check for display purposes, but value is not saved with mission.
             _table.AcceptChanges();
             _tableRaw.AcceptChanges();
-            numYaw.Value = _mission.FlightGroups[_activeFG].Yaw;
-            numPitch.Value = _mission.FlightGroups[_activeFG].Pitch;
-            numRoll.Value = _mission.FlightGroups[_activeFG].Roll;
+			numYaw.Value = (int)Math.Round((double)_mission.FlightGroups[_activeFG].Yaw / 256 * 360);
+			numPitch.Value = (int)Math.Round((double)_mission.FlightGroups[_activeFG].Pitch / 256 * 360) - 90;
+            numRoll.Value = (int)Math.Round((double)_mission.FlightGroups[_activeFG].Roll / 256 * 360);
             enableRot((_mission.FlightGroups[_activeFG].ObjectType == 0 ? false : true));
             _loading = btemp;
         }
@@ -2156,15 +2156,18 @@ namespace Idmr.Yogeme
 
 		void numPitch_Leave(object sender, EventArgs e)
 		{
-			_mission.FlightGroups[_activeFG].Pitch = Common.Update(this, _mission.FlightGroups[_activeFG].Pitch, (short)numPitch.Value);
+			short Pitch = (short)Math.Round((double)((numPitch.Value >= 270) ? numPitch.Value - 270 : numPitch.Value + 90) / 360 * 256);
+			_mission.FlightGroups[_activeFG].Pitch = Common.Update(this, _mission.FlightGroups[_activeFG].Pitch, Pitch);
 		}
 		void numRoll_Leave(object sender, EventArgs e)
 		{
-			_mission.FlightGroups[_activeFG].Roll = Common.Update(this, _mission.FlightGroups[_activeFG].Roll, (short)numRoll.Value);
+			short Roll = (short)Math.Round((double)numRoll.Value / 360 * 256);
+			_mission.FlightGroups[_activeFG].Roll = Common.Update(this, _mission.FlightGroups[_activeFG].Roll, Roll);
 		}
 		void numYaw_Leave(object sender, EventArgs e)
 		{
-			_mission.FlightGroups[_activeFG].Yaw = Common.Update(this, _mission.FlightGroups[_activeFG].Yaw, (short)numYaw.Value);
+			short Yaw = (short)Math.Round((double)numYaw.Value / 360 * 256);
+			_mission.FlightGroups[_activeFG].Yaw = Common.Update(this, _mission.FlightGroups[_activeFG].Yaw, Yaw);
 		}
 
 		void table_RowChanged(object sender, DataRowChangeEventArgs e)
