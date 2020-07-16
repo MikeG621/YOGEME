@@ -14,6 +14,8 @@ original mainstream editors were created.
 ==========
 Version History
 
+ - (XWA) Fixed a crash when using "Apply DTM SuperBackdrops to new missions" option
+
 v1.6.5, 04 Jul 2020
  - (Map) If the craft index is too high (mods) use the default 'X' image
  - (All) Added more details to custom ship list error message

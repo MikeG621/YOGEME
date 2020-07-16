@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2020 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.6.5
+ * VERSION: 1.6.5+
  */
 
 /* CHANGELOG
+ * [FIX] Crash when using "Apply DTM SuperBackdrops to new missions" option
  * v1.6.5, 200704
  * [UPD] More details to ProcessCraftList error message
  * [FIX #32] bin path now explicitly uses Startup Path to prevent implicit from defaulting to sys32
@@ -358,6 +359,84 @@ namespace Idmr.Yogeme
 			_activeMessage = 0;
 			_mission.FlightGroups[0].CraftType = Convert.ToByte(_config.XwaCraft);
 			_mission.FlightGroups[0].IFF = Convert.ToByte(_config.XwaIff);
+			#region required early control arrays
+			// these are extracted from startup() so SBD on init works
+			cboADTrig.Items.AddRange(Strings.Trigger);
+			cboADTrigAmount.Items.AddRange(Strings.Amount);
+			cboADTrigType.Items.AddRange(Strings.VariableType);
+			cboAbort.Items.AddRange(Strings.Abort); cboAbort.SelectedIndex = 0;
+			cboDiff.Items.AddRange(Platform.BaseStrings.Difficulty); cboDiff.SelectedIndex = 0;
+			lblADTrig[0] = lblArr1;
+			lblADTrig[1] = lblArr2;
+			lblADTrig[2] = lblArr3;
+			lblADTrig[3] = lblArr4;
+			lblADTrig[4] = lblDep1;
+			lblADTrig[5] = lblDep2;
+			for (int i = 0; i < 6; i++)
+			{
+				lblADTrig[i].Click += new EventHandler(lblADTrigArr_Click);
+				lblADTrig[i].MouseUp += new MouseEventHandler(lblADTrigArr_MouseUp);
+				lblADTrig[i].DoubleClick += new EventHandler(lblADTrigArr_DoubleClick);
+				lblADTrig[i].Tag = i;
+			}
+			cboOrders.Items.AddRange(Strings.Orders);
+			cboOT1Type.Items.AddRange(Strings.VariableType);
+			cboOT2Type.Items.AddRange(Strings.VariableType);
+			cboOT3Type.Items.AddRange(Strings.VariableType);
+			cboOT4Type.Items.AddRange(Strings.VariableType);
+			for (int i = 1; i < 256; i++)  //The designer already starts with one item "default" for 0 MGLT.
+				cboOSpeed.Items.Add(Convert.ToInt32(i * 2.2235));
+			cboOSpeed.SelectedIndex = 0;
+			lblOrder[0] = lblOrder1;
+			lblOrder[1] = lblOrder2;
+			lblOrder[2] = lblOrder3;
+			lblOrder[3] = lblOrder4;
+			for (int i = 0; i < 4; i++)
+			{
+				lblOrder[i].Click += new EventHandler(lblOrderArr_Click);
+				lblOrder[i].DoubleClick += new EventHandler(lblOrderArr_DoubleClick);
+				lblOrder[i].MouseUp += new MouseEventHandler(lblOrderArr_MouseUp);
+				lblOrder[i].Tag = i;
+			}
+			cboSkipAmount.Items.AddRange(Strings.Amount);
+			cboSkipTrig.Items.AddRange(Strings.Trigger);
+			cboSkipType.Items.AddRange(Strings.VariableType);
+			cboGlobalAmount.Items.AddRange(Strings.Amount);
+			cboGlobalTrig.Items.AddRange(Strings.Trigger);
+			cboGlobalType.Items.AddRange(Strings.VariableType);
+			lblGlobTrig[0] = lblPrim1;
+			lblGlobTrig[1] = lblPrim2;
+			lblGlobTrig[2] = lblPrim3;
+			lblGlobTrig[3] = lblPrim4;
+			lblGlobTrig[4] = lblPrev1;
+			lblGlobTrig[5] = lblPrev2;
+			lblGlobTrig[6] = lblPrev3;
+			lblGlobTrig[7] = lblPrev4;
+			lblGlobTrig[8] = lblSec1;
+			lblGlobTrig[9] = lblSec2;
+			lblGlobTrig[10] = lblSec3;
+			lblGlobTrig[11] = lblSec4;
+			for (int i = 0; i < 12; i++)
+			{
+				lblGlobTrig[i].Click += new EventHandler(lblGlobTrigArr_Click);
+				lblGlobTrig[i].DoubleClick += new EventHandler(lblGlobTrigArr_DoubleClick);
+				lblGlobTrig[i].MouseUp += new MouseEventHandler(lblGlobTrigArr_MouseUp);
+				lblGlobTrig[i].Tag = i;
+			}
+			lblMessTrig[0] = lblMess1;
+			lblMessTrig[1] = lblMess2;
+			lblMessTrig[2] = lblMess3;
+			lblMessTrig[3] = lblMess4;
+			lblMessTrig[4] = lblMess5;
+			lblMessTrig[5] = lblMess6;
+			for (int i = 0; i < 6; i++)
+			{
+				lblMessTrig[i].Click += new EventHandler(lblMessTrigArr_Click);
+				lblMessTrig[i].DoubleClick += new EventHandler(lblMessTrigArr_DoubleClick);
+				lblMessTrig[i].MouseUp += new MouseEventHandler(lblMessTrigArr_MouseUp);
+				lblMessTrig[i].Tag = i;
+			}
+			#endregion
 			if (_config.SuperBackdropsInstalled && _config.InitializeUsingSuperBackdrops) menuSuperBackdrops_Click("initializeMission()", new EventArgs());
 			string[] fgList = _mission.FlightGroups.GetList();
 			comboReset(cboArrMS, fgList, 0);
@@ -743,24 +822,6 @@ namespace Idmr.Yogeme
 			cboGlobSpecCargo.SelectedIndex = 0;
 			#endregion
 			#region Arr/Dep
-			cboADTrig.Items.AddRange(Strings.Trigger);
-			cboADTrigAmount.Items.AddRange(Strings.Amount);
-			cboADTrigType.Items.AddRange(Strings.VariableType);
-			cboAbort.Items.AddRange(Strings.Abort); cboAbort.SelectedIndex = 0;
-			cboDiff.Items.AddRange(Strings.Difficulty); cboDiff.SelectedIndex = 0;
-			lblADTrig[0] = lblArr1;
-			lblADTrig[1] = lblArr2;
-			lblADTrig[2] = lblArr3;
-			lblADTrig[3] = lblArr4;
-			lblADTrig[4] = lblDep1;
-			lblADTrig[5] = lblDep2;
-			for (int i = 0; i < 6; i++)
-			{
-				lblADTrig[i].Click += new EventHandler(lblADTrigArr_Click);
-				lblADTrig[i].MouseUp += new MouseEventHandler(lblADTrigArr_MouseUp);
-				lblADTrig[i].DoubleClick += new EventHandler(lblADTrigArr_DoubleClick);
-				lblADTrig[i].Tag = i;
-			}
 			parameterRefresh(cboADPara);
 			optADAndOr[0] = optArr1OR2;
 			optADAndOr[1] = optArr3OR4;
@@ -775,27 +836,6 @@ namespace Idmr.Yogeme
 				optADAndOr[i].CheckedChanged += new EventHandler(optADAndOrArr_CheckedChanged);
 				optADAndOr[i].Tag = i;
 			}
-			#endregion
-			#region Orders
-			cboOrders.Items.AddRange(Strings.Orders);
-			cboOT1Type.Items.AddRange(Strings.VariableType);
-			cboOT2Type.Items.AddRange(Strings.VariableType);
-			cboOT3Type.Items.AddRange(Strings.VariableType);
-			cboOT4Type.Items.AddRange(Strings.VariableType);
-			lblOrder[0] = lblOrder1;
-			lblOrder[1] = lblOrder2;
-			lblOrder[2] = lblOrder3;
-			lblOrder[3] = lblOrder4;
-			for (int i = 0; i < 4; i++)
-			{
-				lblOrder[i].Click += new EventHandler(lblOrderArr_Click);
-				lblOrder[i].DoubleClick += new EventHandler(lblOrderArr_DoubleClick);
-				lblOrder[i].MouseUp += new MouseEventHandler(lblOrderArr_MouseUp);
-				lblOrder[i].Tag = i;
-			}
-			for (int i = 1; i < 256; i++)  //The designer already starts with one item "default" for 0 MGLT.
-				cboOSpeed.Items.Add(Convert.ToInt32(i * 2.2235));
-			cboOSpeed.SelectedIndex = 0;
 			#endregion
 			#region Waypoints
 			_tableWP.Columns.Add("X"); _tableWP.Columns.Add("Y"); _tableWP.Columns.Add("Z");
@@ -874,9 +914,6 @@ namespace Idmr.Yogeme
 			#endregion
 			#region Options
 			cboOptCraft.Items.AddRange(Strings.CraftType);
-			cboSkipAmount.Items.AddRange(Strings.Amount);
-			cboSkipTrig.Items.AddRange(Strings.Trigger);
-			cboSkipType.Items.AddRange(Strings.VariableType);
 			parameterRefresh(cboSkipPara);
 			cboSkipOrder.SelectedIndex = 0;
 			cboRole1Teams.Items.AddRange(Strings.RoleTeams);
@@ -955,19 +992,6 @@ namespace Idmr.Yogeme
 				chkSendTo[i].Leave += new EventHandler(chkSendToArr_Leave);
 				chkSendTo[i].Tag = i;
 			}
-			lblMessTrig[0] = lblMess1;
-			lblMessTrig[1] = lblMess2;
-			lblMessTrig[2] = lblMess3;
-			lblMessTrig[3] = lblMess4;
-			lblMessTrig[4] = lblMess5;
-			lblMessTrig[5] = lblMess6;
-			for (int i = 0; i < 6; i++)
-			{
-				lblMessTrig[i].Click += new EventHandler(lblMessTrigArr_Click);
-				lblMessTrig[i].DoubleClick += new EventHandler(lblMessTrigArr_DoubleClick);
-				lblMessTrig[i].MouseUp += new MouseEventHandler(lblMessTrigArr_MouseUp);
-				lblMessTrig[i].Tag = i;
-			}
 			optMessAndOr[0] = optMess1OR2;
 			optMessAndOr[1] = optMess3OR4;
 			optMessAndOr[2] = optMess12OR34;
@@ -983,28 +1007,6 @@ namespace Idmr.Yogeme
 			}
 			#endregion
 			#region Globals
-			cboGlobalAmount.Items.AddRange(Strings.Amount);
-			cboGlobalTrig.Items.AddRange(Strings.Trigger);
-			cboGlobalType.Items.AddRange(Strings.VariableType);
-			lblGlobTrig[0] = lblPrim1;
-			lblGlobTrig[1] = lblPrim2;
-			lblGlobTrig[2] = lblPrim3;
-			lblGlobTrig[3] = lblPrim4;
-			lblGlobTrig[4] = lblPrev1;
-			lblGlobTrig[5] = lblPrev2;
-			lblGlobTrig[6] = lblPrev3;
-			lblGlobTrig[7] = lblPrev4;
-			lblGlobTrig[8] = lblSec1;
-			lblGlobTrig[9] = lblSec2;
-			lblGlobTrig[10] = lblSec3;
-			lblGlobTrig[11] = lblSec4;
-			for (int i = 0; i < 12; i++)
-			{
-				lblGlobTrig[i].Click += new EventHandler(lblGlobTrigArr_Click);
-				lblGlobTrig[i].DoubleClick += new EventHandler(lblGlobTrigArr_DoubleClick);
-				lblGlobTrig[i].MouseUp += new MouseEventHandler(lblGlobTrigArr_MouseUp);
-				lblGlobTrig[i].Tag = i;
-			}
 			optGlobAndOr[0] = optPrim1OR2;
 			optGlobAndOr[2] = optPrim3OR4;
 			optGlobAndOr[4] = optPrim12OR34;
@@ -1229,7 +1231,7 @@ namespace Idmr.Yogeme
 				_hookBackdropInstalled = File.Exists(_config.XwaPath + "\\Hook_Backdrops.dll");
 				hookEnginesInstalled = File.Exists(_config.XwaPath + "\\Hook_Engine_Sound.dll");
 				hookHangarInstalled = File.Exists(_config.XwaPath + "\\Hook_Hangars.dll");
-				hookMissionObjectsInstalled = File.Exists(_config.XwaPath + "\\Hook_Misison_Objects.dll");
+				hookMissionObjectsInstalled = File.Exists(_config.XwaPath + "\\Hook_Mission_Objects.dll");
 				hookMissionTieInstalled = File.Exists(_config.XwaPath + "\\Hook_Mission_Tie.dll");
 			}
 			menuHooks.Enabled = (_hookBackdropInstalled | hookEnginesInstalled | hookHangarInstalled | hookMissionObjectsInstalled | hookMissionTieInstalled);
@@ -4075,6 +4077,7 @@ namespace Idmr.Yogeme
 			i = (l == lblSkipTrig1 ? 0 : 1);
 			r = cboSkipOrder.SelectedIndex / 4;
 			o = cboSkipOrder.SelectedIndex % 4;
+			if (o == -1) o = 0;
 			Mission.Trigger trigger = _mission.FlightGroups[_activeFG].Orders[r, o].SkipTriggers[i];
 			setInteractiveLabelColor(l, true);
 			setInteractiveLabelColor(ll, false);
@@ -4148,6 +4151,7 @@ namespace Idmr.Yogeme
 			int i = (lblSkipTrig1.ForeColor == getHighlightColor() ? 0 : 1);
 			int r = cboSkipOrder.SelectedIndex / 4;
 			int o = cboSkipOrder.SelectedIndex % 4;
+			if (o == -1) o = 0;
 			if (!_loading)
 				_mission.FlightGroups[_activeFG].Orders[r, o].SkipTriggers[i].Condition = Common.Update(this, _mission.FlightGroups[_activeFG].Orders[r, o].SkipTriggers[i].Condition, Convert.ToByte(cboSkipTrig.SelectedIndex));
 			comboProxCheck(cboSkipTrig.SelectedIndex, cboSkipAmount);
@@ -4160,6 +4164,7 @@ namespace Idmr.Yogeme
 			int i = (lblSkipTrig1.ForeColor == getHighlightColor() ? 0 : 1);
 			int r = cboSkipOrder.SelectedIndex / 4;
 			int o = cboSkipOrder.SelectedIndex % 4;
+			if (o == -1) o = 0;
 			if (!_loading)
 				_mission.FlightGroups[_activeFG].Orders[r, o].SkipTriggers[i].VariableType = Common.Update(this, _mission.FlightGroups[_activeFG].Orders[r, o].SkipTriggers[i].VariableType, Convert.ToByte(cboSkipType.SelectedIndex));
 			comboVarRefresh(_mission.FlightGroups[_activeFG].Orders[r, o].SkipTriggers[i].VariableType, cboSkipVar);
@@ -4173,6 +4178,7 @@ namespace Idmr.Yogeme
 			int i = (lblSkipTrig1.ForeColor == getHighlightColor() ? 0 : 1);
 			int r = cboSkipOrder.SelectedIndex / 4;
 			int o = cboSkipOrder.SelectedIndex % 4;
+			if (o == -1) o = 0;
 			_mission.FlightGroups[_activeFG].Orders[r, o].SkipTriggers[i].Variable = Common.Update(this, _mission.FlightGroups[_activeFG].Orders[r, o].SkipTriggers[i].Variable, Convert.ToByte(cboSkipVar.SelectedIndex));
 			labelRefresh(_mission.FlightGroups[_activeFG].Orders[r, o].SkipTriggers[i], (i == 1 ? lblSkipTrig2 : lblSkipTrig1));
 		}
