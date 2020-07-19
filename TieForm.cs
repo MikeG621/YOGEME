@@ -110,6 +110,7 @@ namespace Idmr.Yogeme
 		byte _activeGlobalGoal;
 		byte _activeArrDepTrigger;
 		byte _activeOrder;
+		byte _activeMessageTrig;
 		#endregion
 		#region Control Arrays
 		Label[] lblGlob = new Label[6];
@@ -761,7 +762,8 @@ namespace Idmr.Yogeme
 			optBonOR.Checked = _mission.GlobalGoals.Goals[2].T1AndOrT2;
 			optBonAND.Checked = !optBonOR.Checked;
 			for (int i=0;i<6;i++) labelRefresh(_mission.GlobalGoals.Goals[i/2].Triggers[i%2], lblGlob[i]);
-			lblGlobArr_Click(0, new System.EventArgs());
+			//Preserve the selected label after updating. This also serves to populate the dropdowns if not already done (formerly accomplished with an empty sender).
+			lblGlobArr_Click(lblGlob[_activeGlobalGoal], new EventArgs());
 			#endregion
 			#region Mission tab
 			optCapture.Checked = _mission.CapturedOnEjection;
@@ -803,8 +805,8 @@ namespace Idmr.Yogeme
 			foreach (Label lbl in lblADTrig) setInteractiveLabelColor(lbl, lbl.Tag.ToString() == _activeArrDepTrigger.ToString());  //Tags are set to ints, but casting objects throws an exception, so convert to string and check those instead.
 			foreach (Label lbl in lblGlob) setInteractiveLabelColor(lbl, lbl.Tag.ToString() == _activeGlobalGoal.ToString());
 			foreach (Label lbl in lblOrder) setInteractiveLabelColor(lbl, lbl.Tag.ToString() == _activeOrder.ToString());
-			setInteractiveLabelColor(lblMess1, false);  //No variable tracks which one is selected, set colors but ignore highlight.
-			setInteractiveLabelColor(lblMess2, false);
+			setInteractiveLabelColor(lblMess1, _activeMessageTrig == 0);
+			setInteractiveLabelColor(lblMess2, _activeMessageTrig == 1);
 		}
 
 		void colorizedComboBox_DrawItem(object sender, DrawItemEventArgs e)
@@ -1804,12 +1806,21 @@ namespace Idmr.Yogeme
 			if (cboOT3Type.SelectedIndex == 1) comboReset(cboOT3, fgList, _mission.FlightGroups[_activeFG].Orders[_activeOrder].Target3);
 			if (cboOT4Type.SelectedIndex == 1) comboReset(cboOT4, fgList, _mission.FlightGroups[_activeFG].Orders[_activeOrder].Target4);
 			if (cboMessType.SelectedIndex == 1) comboReset(cboMessVar, fgList, cboMessVar.SelectedIndex);
-			//[JB] This is the simplest way to force all labels to refresh.
+			//[JB] This is the simplest way to force all labels to refresh, but not the most efficient. An annoying side effect of forcing clicks is that the current selection will change, so restore after refreshing.
+			int restore = _activeArrDepTrigger;
 			for (int i = 0; i < lblADTrig.Length; i++) lblADTrigArr_Click(lblADTrig[i], new EventArgs());
-			for (int i = 0; i < lblGlob.Length; i++) lblGlobArr_Click(lblGlob[i], new EventArgs());
+			lblADTrigArr_Click(lblADTrig[restore], new EventArgs());
+
+			//_activeGlobalGoal is handled when switching tabs. See updateMissionTabs(), which refreshes the labels there.
+
+			restore = _activeOrder;
 			for (int i = 0; i < lblOrder.Length; i++) lblOrderArr_Click(lblOrder[i], new EventArgs());
-			lblMessArr_Click(lblMess1, new EventArgs());
-			lblMessArr_Click(lblMess2, new EventArgs());
+			lblOrderArr_Click(lblOrder[restore], new EventArgs());
+
+			restore = _activeMessageTrig;
+			lblMessArr_Click(restore == 0 ? lblMess2 : lblMess1, new EventArgs());  //Only two, inactive one first, then active.
+			lblMessArr_Click(restore == 0 ? lblMess1 : lblMess2, new EventArgs());
+			
 			_loading = temp;
 			listRefresh();
 		}
@@ -2721,6 +2732,7 @@ namespace Idmr.Yogeme
 			catch (InvalidCastException) { m = (int)sender; l = (m==0 ? lblMess1 : lblMess2); }
             setInteractiveLabelColor(l, true);
             setInteractiveLabelColor((m == 0 ? lblMess2 : lblMess1), false);
+			_activeMessageTrig = (byte)m;
 			bool btemp = _loading;
 			_loading = true;
 			cboMessTrig.SelectedIndex = _mission.Messages[_activeMessage].Triggers[m].Condition;

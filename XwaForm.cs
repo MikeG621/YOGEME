@@ -135,6 +135,7 @@ namespace Idmr.Yogeme
 		byte _activeFGGoal = 0;
 		byte _activeOrder = 0;
 		byte _activeOptionCraft = 0;
+		byte _activeSkipTrigger = 0;
 		bool _hookBackdropInstalled;
 		#endregion
 		#region control arrays
@@ -1224,8 +1225,8 @@ namespace Idmr.Yogeme
 			foreach (Label lbl in lblGlobTrig) setInteractiveLabelColor(lbl, lbl.Tag.ToString() == _activeGlobalTrigger.ToString());
 			foreach (Label lbl in lblTeam) setInteractiveLabelColor(lbl, lbl.Tag.ToString() == _activeTeam.ToString());
 			foreach (Label lbl in lblGG) setInteractiveLabelColor(lbl, false);  //No variable tracks which one is selected, set colors but ignore highlight.
-			setInteractiveLabelColor(lblSkipTrig1, false);  //No variable tracks which one is selected.
-			setInteractiveLabelColor(lblSkipTrig2, false);
+			setInteractiveLabelColor(lblSkipTrig1, _activeSkipTrigger == 0);
+			setInteractiveLabelColor(lblSkipTrig2, _activeSkipTrigger == 1);
 		}
 
 		void colorizedComboBox_DrawItem(object sender, DrawItemEventArgs e)
@@ -2657,13 +2658,27 @@ namespace Idmr.Yogeme
 			parameterRefresh(cboADPara);
 			parameterRefresh(cboMessPara);
 			parameterRefresh(cboGlobalPara);
-			//[JB] This is the simplest way to force all labels to refresh.  May not be the most efficient though...
+			//[JB] This is the simplest way to force all labels to refresh, but not the most efficient. An annoying side effect of forcing clicks is that the current selection will change, so restore after refreshing.
+			int restore = _activeArrDepTrigger; 
 			foreach (var lbl in lblADTrig) lblADTrigArr_Click(lbl, new EventArgs());
+			lblADTrigArr_Click(lblADTrig[restore], new EventArgs());
+
+			restore = _activeGlobalTrigger;
 			foreach (var lbl in lblGlobTrig) lblGlobTrigArr_Click(lbl, new EventArgs());
+			lblGlobTrigArr_Click(lblGlobTrig[restore], new EventArgs());
+
+			restore = _activeOrder;
 			foreach (var lbl in lblOrder) lblOrderArr_Click(lbl, new EventArgs());
+			lblOrderArr_Click(lblOrder[restore], new EventArgs());
+
+			restore = _activeMessageTrigger;
 			foreach (var lbl in lblMessTrig) lblMessTrigArr_Click(lbl, new EventArgs());
-			lblSkipTrigArr_Click(lblSkipTrig1, new EventArgs());
-			lblSkipTrigArr_Click(lblSkipTrig2, new EventArgs());
+			lblMessTrigArr_Click(lblMessTrig[restore], new EventArgs());
+
+			restore = _activeSkipTrigger;
+			lblSkipTrigArr_Click(restore == 0 ? lblSkipTrig2 : lblSkipTrig1, new EventArgs());  //Only two, inactive one first, then active.
+			lblSkipTrigArr_Click(restore == 0 ? lblSkipTrig1 : lblSkipTrig2, new EventArgs());
+
 			_loading = temp;
 			listRefresh();
 		}
@@ -4051,6 +4066,7 @@ namespace Idmr.Yogeme
 			Mission.Trigger trigger = _mission.FlightGroups[_activeFG].Orders[r, o].SkipTriggers[i];
 			setInteractiveLabelColor(l, true);
 			setInteractiveLabelColor(ll, false);
+			_activeSkipTrigger = (byte)i;
 			bool btemp = _loading;
 			_loading = true;
 			cboSkipTrig.SelectedIndex = trigger.Condition;
