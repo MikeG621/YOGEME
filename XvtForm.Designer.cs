@@ -512,18 +512,23 @@ namespace Idmr.Yogeme
 			this.lblTeam9 = new System.Windows.Forms.Label();
 			this.lblTeam10 = new System.Windows.Forms.Label();
 			this.tabMission = new System.Windows.Forms.TabPage();
+			this.grpIFF = new System.Windows.Forms.GroupBox();
+			this.txtIFF6 = new System.Windows.Forms.TextBox();
+			this.txtIFF5 = new System.Windows.Forms.TextBox();
+			this.txtIFF4 = new System.Windows.Forms.TextBox();
+			this.txtIFF3 = new System.Windows.Forms.TextBox();
+			this.lblIFF6 = new System.Windows.Forms.Label();
+			this.lblIFF5 = new System.Windows.Forms.Label();
+			this.lblIFF4 = new System.Windows.Forms.Label();
+			this.lblIFF3 = new System.Windows.Forms.Label();
 			this.label150 = new System.Windows.Forms.Label();
 			this.groupBox36 = new System.Windows.Forms.GroupBox();
-			this.txtMissUnk4 = new System.Windows.Forms.TextBox();
 			this.chkMissUnk3 = new System.Windows.Forms.CheckBox();
 			this.numMissUnk1 = new System.Windows.Forms.NumericUpDown();
 			this.label105 = new System.Windows.Forms.Label();
 			this.label106 = new System.Windows.Forms.Label();
 			this.numMissUnk2 = new System.Windows.Forms.NumericUpDown();
-			this.label107 = new System.Windows.Forms.Label();
-			this.label108 = new System.Windows.Forms.Label();
-			this.txtMissUnk5 = new System.Windows.Forms.TextBox();
-			this.chkMissUnk6 = new System.Windows.Forms.CheckBox();
+			this.chkPreventOutcome = new System.Windows.Forms.CheckBox();
 			this.optXvT = new System.Windows.Forms.RadioButton();
 			this.label104 = new System.Windows.Forms.Label();
 			this.label102 = new System.Windows.Forms.Label();
@@ -709,6 +714,7 @@ namespace Idmr.Yogeme
 			this.groupBox31.SuspendLayout();
 			this.groupBox30.SuspendLayout();
 			this.tabMission.SuspendLayout();
+			this.grpIFF.SuspendLayout();
 			this.groupBox36.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numMissUnk1)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numMissUnk2)).BeginInit();
@@ -6000,6 +6006,7 @@ namespace Idmr.Yogeme
 			// 
 			// tabMission
 			// 
+			this.tabMission.Controls.Add(this.grpIFF);
 			this.tabMission.Controls.Add(this.label150);
 			this.tabMission.Controls.Add(this.groupBox36);
 			this.tabMission.Controls.Add(this.optXvT);
@@ -6024,6 +6031,99 @@ namespace Idmr.Yogeme
 			this.tabMission.TabIndex = 4;
 			this.tabMission.Text = "Mission";
 			// 
+			// grpIFF
+			// 
+			this.grpIFF.Controls.Add(this.txtIFF6);
+			this.grpIFF.Controls.Add(this.txtIFF5);
+			this.grpIFF.Controls.Add(this.txtIFF4);
+			this.grpIFF.Controls.Add(this.txtIFF3);
+			this.grpIFF.Controls.Add(this.lblIFF6);
+			this.grpIFF.Controls.Add(this.lblIFF5);
+			this.grpIFF.Controls.Add(this.lblIFF4);
+			this.grpIFF.Controls.Add(this.lblIFF3);
+			this.grpIFF.Location = new System.Drawing.Point(577, 368);
+			this.grpIFF.Name = "grpIFF";
+			this.grpIFF.Size = new System.Drawing.Size(183, 106);
+			this.grpIFF.TabIndex = 18;
+			this.grpIFF.TabStop = false;
+			this.grpIFF.Text = "IFFs";
+			// 
+			// txtIFF6
+			// 
+			this.txtIFF6.BackColor = System.Drawing.Color.Black;
+			this.txtIFF6.ForeColor = System.Drawing.Color.DarkOrchid;
+			this.txtIFF6.Location = new System.Drawing.Point(84, 78);
+			this.txtIFF6.MaxLength = 19;
+			this.txtIFF6.Name = "txtIFF6";
+			this.txtIFF6.Size = new System.Drawing.Size(88, 20);
+			this.txtIFF6.TabIndex = 4;
+			// 
+			// txtIFF5
+			// 
+			this.txtIFF5.BackColor = System.Drawing.Color.Black;
+			this.txtIFF5.ForeColor = System.Drawing.Color.OrangeRed;
+			this.txtIFF5.Location = new System.Drawing.Point(84, 57);
+			this.txtIFF5.MaxLength = 19;
+			this.txtIFF5.Name = "txtIFF5";
+			this.txtIFF5.Size = new System.Drawing.Size(88, 20);
+			this.txtIFF5.TabIndex = 3;
+			// 
+			// txtIFF4
+			// 
+			this.txtIFF4.BackColor = System.Drawing.Color.Black;
+			this.txtIFF4.ForeColor = System.Drawing.Color.Yellow;
+			this.txtIFF4.Location = new System.Drawing.Point(84, 36);
+			this.txtIFF4.MaxLength = 19;
+			this.txtIFF4.Name = "txtIFF4";
+			this.txtIFF4.Size = new System.Drawing.Size(88, 20);
+			this.txtIFF4.TabIndex = 2;
+			// 
+			// txtIFF3
+			// 
+			this.txtIFF3.BackColor = System.Drawing.Color.Black;
+			this.txtIFF3.ForeColor = System.Drawing.Color.DodgerBlue;
+			this.txtIFF3.Location = new System.Drawing.Point(84, 15);
+			this.txtIFF3.MaxLength = 19;
+			this.txtIFF3.Name = "txtIFF3";
+			this.txtIFF3.Size = new System.Drawing.Size(88, 20);
+			this.txtIFF3.TabIndex = 1;
+			// 
+			// lblIFF6
+			// 
+			this.lblIFF6.Location = new System.Drawing.Point(6, 79);
+			this.lblIFF6.Name = "lblIFF6";
+			this.lblIFF6.Size = new System.Drawing.Size(72, 16);
+			this.lblIFF6.TabIndex = 4;
+			this.lblIFF6.Text = "IFF6 - Purple";
+			this.lblIFF6.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
+			// 
+			// lblIFF5
+			// 
+			this.lblIFF5.Location = new System.Drawing.Point(6, 58);
+			this.lblIFF5.Name = "lblIFF5";
+			this.lblIFF5.Size = new System.Drawing.Size(72, 16);
+			this.lblIFF5.TabIndex = 3;
+			this.lblIFF5.Text = "IFF5 - Red";
+			this.lblIFF5.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
+			// 
+			// lblIFF4
+			// 
+			this.lblIFF4.Location = new System.Drawing.Point(6, 37);
+			this.lblIFF4.Name = "lblIFF4";
+			this.lblIFF4.Size = new System.Drawing.Size(72, 16);
+			this.lblIFF4.TabIndex = 2;
+			this.lblIFF4.Text = "IFF4 - Yellow";
+			this.lblIFF4.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
+			// 
+			// lblIFF3
+			// 
+			this.lblIFF3.Location = new System.Drawing.Point(6, 16);
+			this.lblIFF3.Name = "lblIFF3";
+			this.lblIFF3.Size = new System.Drawing.Size(72, 16);
+			this.lblIFF3.TabIndex = 1;
+			this.lblIFF3.Text = "IFF3 - Blue";
+			this.lblIFF3.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
+			// 
 			// label150
 			// 
 			this.label150.AutoSize = true;
@@ -6036,35 +6136,22 @@ namespace Idmr.Yogeme
 			// 
 			// groupBox36
 			// 
-			this.groupBox36.Controls.Add(this.txtMissUnk4);
 			this.groupBox36.Controls.Add(this.chkMissUnk3);
 			this.groupBox36.Controls.Add(this.numMissUnk1);
 			this.groupBox36.Controls.Add(this.label105);
 			this.groupBox36.Controls.Add(this.label106);
 			this.groupBox36.Controls.Add(this.numMissUnk2);
-			this.groupBox36.Controls.Add(this.label107);
-			this.groupBox36.Controls.Add(this.label108);
-			this.groupBox36.Controls.Add(this.txtMissUnk5);
-			this.groupBox36.Controls.Add(this.chkMissUnk6);
-			this.groupBox36.Location = new System.Drawing.Point(280, 384);
+			this.groupBox36.Controls.Add(this.chkPreventOutcome);
+			this.groupBox36.Location = new System.Drawing.Point(273, 368);
 			this.groupBox36.Name = "groupBox36";
-			this.groupBox36.Size = new System.Drawing.Size(344, 88);
+			this.groupBox36.Size = new System.Drawing.Size(233, 95);
 			this.groupBox36.TabIndex = 9;
 			this.groupBox36.TabStop = false;
 			this.groupBox36.Text = "Unknown";
 			// 
-			// txtMissUnk4
-			// 
-			this.txtMissUnk4.Location = new System.Drawing.Point(248, 24);
-			this.txtMissUnk4.MaxLength = 16;
-			this.txtMissUnk4.Name = "txtMissUnk4";
-			this.txtMissUnk4.Size = new System.Drawing.Size(80, 20);
-			this.txtMissUnk4.TabIndex = 3;
-			this.txtMissUnk4.Leave += new System.EventHandler(this.txtMissUnk4_Leave);
-			// 
 			// chkMissUnk3
 			// 
-			this.chkMissUnk3.Location = new System.Drawing.Point(32, 56);
+			this.chkMissUnk3.Location = new System.Drawing.Point(11, 56);
 			this.chkMissUnk3.Name = "chkMissUnk3";
 			this.chkMissUnk3.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
 			this.chkMissUnk3.Size = new System.Drawing.Size(48, 16);
@@ -6116,42 +6203,15 @@ namespace Idmr.Yogeme
 			this.numMissUnk2.TabIndex = 1;
 			this.numMissUnk2.Leave += new System.EventHandler(this.numMissUnk2_Leave);
 			// 
-			// label107
+			// chkPreventOutcome
 			// 
-			this.label107.Location = new System.Drawing.Point(208, 24);
-			this.label107.Name = "label107";
-			this.label107.Size = new System.Drawing.Size(32, 16);
-			this.label107.TabIndex = 0;
-			this.label107.Text = "0x28";
-			this.label107.TextAlign = System.Drawing.ContentAlignment.BottomRight;
-			// 
-			// label108
-			// 
-			this.label108.Location = new System.Drawing.Point(208, 56);
-			this.label108.Name = "label108";
-			this.label108.Size = new System.Drawing.Size(32, 16);
-			this.label108.TabIndex = 0;
-			this.label108.Text = "0x50";
-			this.label108.TextAlign = System.Drawing.ContentAlignment.BottomRight;
-			// 
-			// txtMissUnk5
-			// 
-			this.txtMissUnk5.Location = new System.Drawing.Point(248, 56);
-			this.txtMissUnk5.MaxLength = 16;
-			this.txtMissUnk5.Name = "txtMissUnk5";
-			this.txtMissUnk5.Size = new System.Drawing.Size(80, 20);
-			this.txtMissUnk5.TabIndex = 3;
-			this.txtMissUnk5.Leave += new System.EventHandler(this.txtMissUnk5_Leave);
-			// 
-			// chkMissUnk6
-			// 
-			this.chkMissUnk6.Location = new System.Drawing.Point(124, 56);
-			this.chkMissUnk6.Name = "chkMissUnk6";
-			this.chkMissUnk6.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-			this.chkMissUnk6.Size = new System.Drawing.Size(52, 16);
-			this.chkMissUnk6.TabIndex = 2;
-			this.chkMissUnk6.Text = "0x65";
-			this.chkMissUnk6.Leave += new System.EventHandler(this.chkMissUnk6_Leave);
+			this.chkPreventOutcome.Location = new System.Drawing.Point(75, 56);
+			this.chkPreventOutcome.Name = "chkPreventOutcome";
+			this.chkPreventOutcome.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+			this.chkPreventOutcome.Size = new System.Drawing.Size(152, 16);
+			this.chkPreventOutcome.TabIndex = 2;
+			this.chkPreventOutcome.Text = "Prevent mission outcome";
+			this.chkPreventOutcome.Leave += new System.EventHandler(this.chkMissUnk6_Leave);
 			// 
 			// optXvT
 			// 
@@ -6901,8 +6961,9 @@ namespace Idmr.Yogeme
 			this.groupBox30.ResumeLayout(false);
 			this.tabMission.ResumeLayout(false);
 			this.tabMission.PerformLayout();
+			this.grpIFF.ResumeLayout(false);
+			this.grpIFF.PerformLayout();
 			this.groupBox36.ResumeLayout(false);
-			this.groupBox36.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numMissUnk1)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.numMissUnk2)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.numMissTimeMin)).EndInit();
@@ -6997,11 +7058,7 @@ namespace Idmr.Yogeme
 		Label label106;
 		NumericUpDown numMissUnk2;
 		CheckBox chkMissUnk3;
-		Label label107;
-		TextBox txtMissUnk4;
-		Label label108;
-		TextBox txtMissUnk5;
-		CheckBox chkMissUnk6;
+		CheckBox chkPreventOutcome;
 		NumericUpDown numUnk1;
 		CheckBox chkUnk2;
 		Label label83;
@@ -7499,5 +7556,14 @@ namespace Idmr.Yogeme
         private Label label150;
         private Label lblOVar2Note;
         private ComboBox cboOSpeed;
-	}
+        private GroupBox grpIFF;
+        private Label lblIFF3;
+        private Label lblIFF4;
+        private Label lblIFF5;
+        private Label lblIFF6;
+        private TextBox txtIFF3;
+        private TextBox txtIFF4;
+        private TextBox txtIFF5;
+        private TextBox txtIFF6;
+    }
 }
