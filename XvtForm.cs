@@ -2938,27 +2938,31 @@ namespace Idmr.Yogeme
     			_mission.FlightGroups[_activeFG].Orders[_activeOrder].Variable1 = Common.Update(this, _mission.FlightGroups[_activeFG].Orders[_activeOrder].Variable1, Convert.ToByte(numOVar1.Value));
 
             //[JB] Display additional information and warnings to the user.
-            byte var = _mission.FlightGroups[_activeFG].Orders[_activeOrder].Variable1;
+            byte value = _mission.FlightGroups[_activeFG].Orders[_activeOrder].Variable1;
             int command = _mission.FlightGroups[_activeFG].Orders[_activeOrder].Command;
             string text = "";
             bool warning = false;
-            switch (command)
-            {
-                case 0x0C: case 0x0D: case 0x0E: case 0x0F: case 0x10: case 0x11: //Board and Give, Take, Exchange, Capture, Destroy Cargo, Pick Up
-                case 0x13: case 0x14: case 0x1C: case 0x1E: case 0x1F: case 0x20: //Wait, SS Wait, SS Hold Steady, SS Wait, SS Board, Board to Repair
-                case 0x24:  //Self-Destruct
-                    text = Common.GetFormattedTime(var * 5, true);
-                    break;
-                case 0x02: case 0x03: case 0x15:  //Circle, Circle and Evade, SS Patrol Loop.
-                    if (var == 0) { text = "Zero, no loops!"; warning = true; }
-                    break;
-                case 0x0A:  //Escort
-                    if (_mission.IsBop)
-                    {
-                        text = "Escort bugged in BoP!";
-                        warning = true;
-                    }
-                    break;
+			switch (command)
+			{
+				case 0x0C: case 0x0D: case 0x0E: case 0x0F: case 0x10: case 0x11: //Board and Give, Take, Exchange, Capture, Destroy Cargo, Pick Up
+				case 0x13: case 0x14: case 0x1F: case 0x20: case 0x24: //Wait, SS Wait, SS Board, Board to Repair, Self-Destruct
+					text = Common.GetFormattedTime(value * 5, true);
+					break;
+				case 0x02: case 0x03: case 0x15:  //Circle, Circle and Evade, SS Patrol Loop.
+					if (value == 0) { text = "Zero, no loops!"; warning = true; }
+					break;
+				case 0x0A:  //Escort
+					if (value < 9) text = "Above";
+					else if (value > 17) text = "Below";
+					if (value % 3 == 0) text += " Left";
+					else if (value % 3 == 2) text += " Right";
+					if (value == 13 || value == 27) { text = "Coincident"; warning = true; }   // the only one that won't be caught otherwise
+					value = (byte)(value % 9);
+					if (value < 3 && numOVar1.Value != 27) text = "Leading " + text;
+					else if (value > 5) text = "Trailing " + text;
+					text = text.Replace("  ", " ");
+					if (numOVar1.Value > 27) { text = "Invalid"; warning = true; }
+					break;
             }
             lblOVar1Note.Text = text;
             lblOVar1Note.Visible = (text != "");
@@ -2971,20 +2975,27 @@ namespace Idmr.Yogeme
 
             //[JB] Display additional information and warnings to the user.
             int command = _mission.FlightGroups[_activeFG].Orders[_activeOrder].Command;
-            int var = _mission.FlightGroups[_activeFG].Orders[_activeOrder].Variable2;
+            int value = _mission.FlightGroups[_activeFG].Orders[_activeOrder].Variable2;
             string text = "";
             bool warning = false;
             switch (command)
             {
                 case 0x0C: case 0x0D: case 0x0E: case 0x0F: case 0x10:  //Board to Give Cargo, Take, Exchange, Capture, Destroy
                 case 0x11: case 0x1F: case 0x20: //Pick Up, SS Board, Board to Repair
-                    warning = (var == 0);
-                    if (var == 0) text = "No dockings.";
+                    warning = (value == 0);
+                    if (value == 0) text = "No dockings.";
+                    break;
+				case 0xA:  //Escort.  Moved warning here since the first variable controls position.
+                    if (_mission.IsBop)
+                    {
+                        text = "Order bugged in BoP!";
+                        warning = true;
+                    }
                     break;
                 case 0x12:  //Drop Off
-                    if (var >= 1 && var <= _mission.FlightGroups.Count)   //Variable is FG #, one based.
+                    if (value >= 1 && value <= _mission.FlightGroups.Count)   //Variable is FG #, one based.
                     {
-                        text = _mission.FlightGroups[var - 1].ToString(false);
+                        text = _mission.FlightGroups[value - 1].ToString(false);
                     }
                     else
                     {
