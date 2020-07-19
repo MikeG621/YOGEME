@@ -1033,7 +1033,7 @@ namespace Idmr.Yogeme
 				txtIFF[i].Text = _mission.IFFs[i+2];
 			}
 			cboMissType.SelectedIndex = (int)_mission.MissionType;
-			chkMissUnk6.Checked = _mission.Unknown6;
+			chkPreventOutcome.Checked = _mission.PreventMissionOutcome;
 			numMissTimeMin.Value = _mission.TimeLimitMin;
 			numMissTimeSec.Value = _mission.TimeLimitSec;
 			txtMissDesc.Text = _mission.MissionDescription;
@@ -4061,9 +4061,9 @@ namespace Idmr.Yogeme
 		{
 			_mission.Unknown3 = Common.Update(this, _mission.Unknown3, chkMissUnk3.Checked);
 		}
-		void chkMissUnk6_Leave(object sender, EventArgs e)
+		void chkPreventOutcome_Leave(object sender, EventArgs e)
 		{
-			_mission.Unknown6 = Common.Update(this, _mission.Unknown6, chkMissUnk6.Checked);
+			_mission.PreventMissionOutcome = Common.Update(this, _mission.PreventMissionOutcome, chkPreventOutcome.Checked);
 		}
 
 		void numMissTimeMin_Leave(object sender, EventArgs e)

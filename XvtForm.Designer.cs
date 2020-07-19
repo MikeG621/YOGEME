@@ -6211,7 +6211,7 @@ namespace Idmr.Yogeme
 			this.chkPreventOutcome.Size = new System.Drawing.Size(152, 16);
 			this.chkPreventOutcome.TabIndex = 2;
 			this.chkPreventOutcome.Text = "Prevent mission outcome";
-			this.chkPreventOutcome.Leave += new System.EventHandler(this.chkMissUnk6_Leave);
+			this.chkPreventOutcome.Leave += new System.EventHandler(this.chkPreventOutcome_Leave);
 			// 
 			// optXvT
 			// 
