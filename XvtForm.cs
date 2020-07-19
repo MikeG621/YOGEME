@@ -192,7 +192,7 @@ namespace Idmr.Yogeme
 					cbo.Items.AddRange(Strings.ObjectType);
 					break;
 				case 5:
-					cbo.Items.AddRange(Strings.IFF);
+					cbo.Items.AddRange(getIffStrings());
 					break;
 				case 6:
 					cbo.Items.AddRange(Strings.Orders);
@@ -202,17 +202,55 @@ namespace Idmr.Yogeme
 					break;
 				//case 8: Global Group
 				//since it's just numbers, same as default, left out for specifics
-				case 12:	// Teams
-                case 0x15:	// All Teams except         [JB] I modified the list population, so I moved both team commands together
+				case 9: //AI Skill
+					cbo.Items.AddRange(Strings.Rating);
+					break;
+				case 0xA: //Status1
+					cbo.Items.AddRange(Strings.Status);
+					break;
+				//case 0xB: Always true
+				case 0xC:	// Teams
+                case 0x15:	// All Teams except
                     temp = _mission.Teams.GetList();
                     for (int i = 0; i < temp.Length; i++)
                         if (temp[i] == "") temp[i] = "Team " + (i + 1).ToString();  //[JB] Modified to replace empty strings.
                     cbo.Items.AddRange(temp);
                     break;
-				case 0x13:  //[JB] All IFFs except
-					cbo.Items.AddRange(Strings.IFF);
+				case 0xD:  //Player slot
+				case 0x16: //All Player Slot except
+					temp = new string[256];
+					for (int i = 0;i <= 255;i++) temp[i] = (i + 1).ToString();
+					cbo.Items.AddRange(temp);
+					if (index == 0xD)
+						cbo.Items[0] = "1   (this slot may be buggy!)";
 					break;
+				case 0xE:  //Elapsed time
+					temp = new string[256];
+					for (int i = 0; i <= 255; i++) temp[i] = Common.GetFormattedTime(i * 5, false);
+					temp[0] += " seconds";
+					cbo.Items.AddRange(temp);
+					break;
+				case 0xF:  //All Flight Group except
+					cbo.Items.AddRange(_mission.FlightGroups.GetList());
+					break;
+				case 0x10:  //All Craft type except
+					cbo.Items.AddRange(Strings.CraftType);
+					cbo.Items.RemoveAt(0);
+					break;
+				case 0x11:  //All CraftCategory except
+					cbo.Items.AddRange(Strings.ShipClass);
+					break;
+				case 0x12:  //All ObjectCategory except
+					cbo.Items.AddRange(Strings.ObjectType);
+					break;
+				case 0x13:  //All IFFs except
+					cbo.Items.AddRange(getIffStrings());
+					break;
+				// case 0x14: All Global Group except
+				// case 0x15: All Teams except  (already handled, above with case 0xC)
+				// case 0x16: All Player Slot except  (already handled, above with case 0xD)
 				// case 0x17: Global Unit
+				// case 0x18: All Global Unit except
 				default:
 					temp = new string[256];
 					for (int i = 0;i <= 255;i++) temp[i] = i.ToString();
@@ -266,6 +304,18 @@ namespace Idmr.Yogeme
 			return brText;
 		}
 		Color getHighlightColor() { return _config.ColorInteractSelected; }
+        /// <summary>Generates a string list of IFF names which provide default names instead of an empty string when no custom names are defined</summary>
+		string[] getIffStrings()
+		{
+			string[] t = new string[_mission.IFFs.Length];
+			for (int i = 0; i < t.Length; i++)
+			{
+				t[i] = _mission.IFFs[i];
+				if (t[i] == "")
+					t[i] = Strings.IFF[i];
+			}
+			return t;
+		}
 		bool hasFocus(Label[] list) //[JB] Added helper function to detect focus inside control arrays when copying/pasting triggers.
 		{
 			foreach (Label c in list)
