@@ -564,9 +564,10 @@ namespace Idmr.Yogeme
 			else
 			{
 				enableMessages(true);
-				for (int i = 0; i < _mission.Messages.Count; i++) lstMessages.Items.Add(_mission.Messages[i].MessageString);
+				for (int i = 0; i < _mission.Messages.Count; i++)
+					lstMessages.Items.Add(getNumberedMessage(i));
 			}
-			bool btemp = _loading;  //[JB] Not that InstantUpdate exists, we need to be more careful about batch updating of form information.
+			bool btemp = _loading;  //[JB] Now that InstantUpdate exists, we need to be more careful about batch updating of form information.
 			_loading = true;
 			updateMissionTabs();
 			cboGlobalTeam.SelectedIndex = -1;   // otherwise it doesn't trigger an index change
@@ -4336,6 +4337,10 @@ namespace Idmr.Yogeme
 				lblMessage.Text = "Message #0 of 0";
 				return;
 			}
+			//The numbering will be wrong, so update all messages from the deletion point onwards.
+			for (int i = _activeMessage; i < _mission.Messages.Count; i++)
+				lstMessages.Items[i] = getNumberedMessage(i);
+
 			lstMessages.SelectedIndex = _activeMessage;
 			Common.Title(this, _loading);
 		}
@@ -4362,9 +4367,7 @@ namespace Idmr.Yogeme
 		void messListRefresh()
 		{
 			if (_mission.Messages.Count == 0) return;
-			string msg = _mission.Messages[_activeMessage].MessageString;
-			if (msg == "") msg = " *"; //[JB] Feature request to display something if the string is empty.
-			lstMessages.Items[_activeMessage] = msg;
+			lstMessages.Items[_activeMessage] = getNumberedMessage(_activeMessage);
 			lstMessages.Invalidate(lstMessages.GetItemRectangle(_activeMessage)); //[JB] Force refresh if color changed
 		}
 		void newMess()
@@ -4376,7 +4379,7 @@ namespace Idmr.Yogeme
 			}
 			_activeMessage = _mission.Messages.Add();
 			if (_mission.Messages.Count == 1) enableMessages(true);
-			lstMessages.Items.Add(_mission.Messages[_activeMessage].MessageString);
+			lstMessages.Items.Add(getNumberedMessage(_activeMessage));
 			lstMessages.SelectedIndex = _activeMessage;
 			Common.Title(this, _loading);
 		}
@@ -4391,6 +4394,10 @@ namespace Idmr.Yogeme
 				lstMessages.SelectedIndex = dstIndex;
 				Common.Title(this, false);
 			}
+		}
+		string getNumberedMessage(int index)
+		{
+			return (index >= 0 && index < _mission.Messages.Count) ? "#" + (index + 1) + ": " + _mission.Messages[index].MessageString : "";
 		}
 
 		void lstMessages_DrawItem(object sender, DrawItemEventArgs e)
