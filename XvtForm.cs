@@ -528,8 +528,6 @@ namespace Idmr.Yogeme
 				_config.LastPlatform = Settings.Platform.BoP;
 				Text = Text.Substring(0, 41) + "BoP" + Text.Substring(44);
 				txtMissDesc.MaxLength = 0x1000;
-				opnXvT.InitialDirectory = _config.GetWorkingPath();  //[JB] Updated for MRU access.  Defaults to installation and mission folder if not enabled.
-				savXvT.InitialDirectory = _config.GetWorkingPath();
 				menuTest.Enabled = _config.BopInstalled;
 			}
 			else
@@ -548,9 +546,6 @@ namespace Idmr.Yogeme
 				txtMissDesc.MaxLength = 0x400;
 				txtMissSucc.Text = "";
 				txtMissFail.Text = "";
-
-				opnXvT.InitialDirectory = _config.GetWorkingPath();  //[JB] Updated for MRU access.  Defaults to installation and mission folder if not enabled.
-				savXvT.InitialDirectory = _config.GetWorkingPath();
 			}
 			optBoP.Checked = _mission.IsBop;
 			optXvT.Checked = !optBoP.Checked;
@@ -588,6 +583,9 @@ namespace Idmr.Yogeme
 			tabMain.SelectedIndex = 0;
 			tabFGMinor.SelectedIndex = 0;
 			_config.LastMission = "";
+			_config.LastPlatform = _mission.IsBop ? Settings.Platform.BoP : Settings.Platform.XvT;
+			opnXvT.InitialDirectory = _config.GetWorkingPath();  //[JB] Updated for MRU access.  Defaults to installation and mission folder if not enabled.
+			savXvT.InitialDirectory = _config.GetWorkingPath();
             comboReset(cboIFF, getIffStrings(), 0);
 			_applicationExit = true;	//becomes false if selecting "New Mission" from menu
 			#region Menu

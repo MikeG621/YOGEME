@@ -671,6 +671,8 @@ namespace Idmr.Yogeme
 			}
 			_config.LastPlatform = Settings.Platform.XWA;
 			_applicationExit = true;    //becomes false if selecting "New Mission" from menu
+			_config.LastMission = "";
+			_config.LastPlatform = Settings.Platform.XWA;
 			opnXWA.InitialDirectory = _config.GetWorkingPath(); //[JB] Updated for MRU access.  Defaults to installation and mission folder if not enabled.
 			savXWA.InitialDirectory = _config.GetWorkingPath();
 			_iffs = Strings.IFF;
