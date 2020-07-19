@@ -357,6 +357,7 @@ namespace Idmr.Yogeme
 			closeForms();
 			lstFG.SelectedIndex = 0;  //[JB] Prevents sporadic index out of range exceptions (such as when opening mission with fewer FGs than the current selected index, or opening missions of a different platform)
 			lstFG.Items.Clear();
+			_activeMessage = 0; //Reset in case new mission has fewer messages.
 			lstMessages.Items.Clear();
 			_startingShips = 0;
 			byte[] buffer = new byte[64];
