@@ -2,8 +2,8 @@
 ======================================
 
 Author: Michael Gaisser (mjgaisser@gmail.com)
-Version: 1.6.5
-Date: 2020.07.04
+Version: 1.6.6
+Date: 2020.07.19
 
 Thank you for downloading YOGEME, the all-in-one mission editor for the X-Wing
 series, Xwing95 through X-wing Alliance.  This program allows easy mission
@@ -14,6 +14,7 @@ original mainstream editors were created.
 ==========
 Version History
 
+v1.6.6, 19 Jul 2020
  - (XWA) Fixed a crash when using "Apply DTM SuperBackdrops to new missions" option
 
 v1.6.5, 04 Jul 2020

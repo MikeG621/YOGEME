@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2020 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.6.5+
+ * VERSION: 1.6.6
  */
 
 /* CHANGELOG
+ * v1.6.6, 200719
  * [FIX] Crash when using "Apply DTM SuperBackdrops to new missions" option
  * v1.6.5, 200704
  * [UPD] More details to ProcessCraftList error message
