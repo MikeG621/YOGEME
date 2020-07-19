@@ -118,6 +118,7 @@ namespace Idmr.Yogeme
 		byte _activeSkipTrigger = 0;
 		#endregion
 		#region Control Arrays
+        TextBox[] txtIFF = new TextBox[4];
 		RadioButton[] optADAndOr = new RadioButton[8];
 		CheckBox[] chkSendTo = new CheckBox[10];
 		Label[] lblMessTrig = new Label[4];
@@ -341,6 +342,7 @@ namespace Idmr.Yogeme
 			lstFG.Items.Add(_mission.FlightGroups[_activeFG].ToString(true));
 			tabMain.SelectedIndex = 0;
 			tabFGMinor.SelectedIndex = 0;
+            comboReset(cboIFF, getIffStrings(), 0);
 			this.Text = "Ye Olde Galactic Empire Mission Editor - XvT - New Mission.tie";
 		}
 		void labelRefresh(Mission.Trigger trigger, Label lbl)
@@ -428,6 +430,7 @@ namespace Idmr.Yogeme
 			}
             bool btemp = _loading;  //[JB] Not that InstantUpdate exists, we need to be more careful about batch updating of form information.
             _loading = true;
+            comboReset(cboIFF, getIffStrings(), 0);
 			updateMissionTabs();
 			cboGlobalTeam.SelectedIndex = -1;	// otherwise it doesn't trigger an index change
 			cboGlobalTeam.SelectedIndex = 0;
@@ -585,6 +588,7 @@ namespace Idmr.Yogeme
 			tabMain.SelectedIndex = 0;
 			tabFGMinor.SelectedIndex = 0;
 			_config.LastMission = "";
+            comboReset(cboIFF, getIffStrings(), 0);
 			_applicationExit = true;	//becomes false if selecting "New Mission" from menu
 			#region Menu
 			// menuTest has already been taken care of
@@ -942,6 +946,16 @@ namespace Idmr.Yogeme
 			cboMissType.Items.AddRange(Enum.GetNames(typeof(Mission.MissionTypeEnum)));
 			cboMissType.SelectedIndex = 0;
 
+			txtIFF[0] = txtIFF3;
+			txtIFF[1] = txtIFF4;
+			txtIFF[2] = txtIFF5;
+			txtIFF[3] = txtIFF6;
+			for (int i=0;i<4;i++)
+			{
+				txtIFF[i].Leave += new EventHandler(txtIFFArr_Leave);
+				txtIFF[i].Tag = i+2;
+			}
+
             #region InstantUpdate
             //RegisterInstantUpdate(txtName, txtName_Leave);
             registerInstantUpdate(numWaves, grpCraft3_Leave);
@@ -1014,8 +1028,10 @@ namespace Idmr.Yogeme
 			numMissUnk1.Value = _mission.Unknown1;
 			numMissUnk2.Value = _mission.Unknown2;
 			chkMissUnk3.Checked = _mission.Unknown3;
-			txtMissUnk4.Text = _mission.Unknown4;
-			txtMissUnk5.Text = _mission.Unknown5;
+			for (int i=0;i<4;i++)
+			{
+				txtIFF[i].Text = _mission.IFFs[i+2];
+			}
 			cboMissType.SelectedIndex = (int)_mission.MissionType;
 			chkMissUnk6.Checked = _mission.Unknown6;
 			numMissTimeMin.Value = _mission.TimeLimitMin;
@@ -4066,6 +4082,13 @@ namespace Idmr.Yogeme
 		{
 			_mission.Unknown2 = Common.Update(this, _mission.Unknown2, Convert.ToByte(numMissUnk2.Value));
 		}
+		void txtIFFArr_Leave(object sender, EventArgs e)
+		{
+			TextBox t = (TextBox)sender;
+			_mission.IFFs[(int)t.Tag] = Common.Update(this, _mission.IFFs[(int)t.Tag], t.Text);
+			cboIFF.Items[(int)t.Tag] = t.Text;
+            comboReset(cboIFF, getIffStrings(), 0);
+		}
 
 		void optXvT_CheckedChanged(object sender, EventArgs e)
 		{
@@ -4084,14 +4107,6 @@ namespace Idmr.Yogeme
 		void txtMissSucc_Leave(object sender, EventArgs e)
 		{
 			_mission.MissionSuccessful = Common.Update(this, _mission.MissionSuccessful, txtMissSucc.Text);
-		}
-		void txtMissUnk4_Leave(object sender, EventArgs e)
-		{
-			_mission.Unknown4 = Common.Update(this, _mission.Unknown4, txtMissUnk4.Text);
-		}
-		void txtMissUnk5_Leave(object sender, EventArgs e)
-		{
-			_mission.Unknown5 = Common.Update(this, _mission.Unknown5, txtMissUnk5.Text);
 		}
 		#endregion
 	}
