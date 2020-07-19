@@ -426,9 +426,10 @@ namespace Idmr.Yogeme
 			else
 			{
 				enableMessages(true);
-				for (int i=0;i<_mission.Messages.Count;i++) lstMessages.Items.Add(_mission.Messages[i].MessageString);
+				for (int i = 0; i < _mission.Messages.Count; i++)
+					lstMessages.Items.Add(_mission.Messages[i].MessageString != "" ? _mission.Messages[i].MessageString : " *");
 			}
-            bool btemp = _loading;  //[JB] Not that InstantUpdate exists, we need to be more careful about batch updating of form information.
+            bool btemp = _loading;  //[JB] Now that InstantUpdate exists, we need to be more careful about batch updating of form information.
             _loading = true;
             comboReset(cboIFF, getIffStrings(), 0);
 			updateMissionTabs();
@@ -3654,9 +3655,7 @@ namespace Idmr.Yogeme
 		void messListRefresh()
 		{
 			if (_mission.Messages.Count == 0) return;
-            string msg = _mission.Messages[_activeMessage].MessageString;  //[JB] Feature request to display something if the string is empty.
-            if (msg == "") msg = " *";
-            lstMessages.Items[_activeMessage] = msg;
+            lstMessages.Items[_activeMessage] = _mission.Messages[_activeMessage].MessageString != "" ? _mission.Messages[_activeMessage].MessageString : " *";
             lstMessages.Invalidate(lstMessages.GetItemRectangle(_activeMessage)); //[JB] Force refresh if color changed
 		}
 		void swapMessage(int srcIndex, int dstIndex)

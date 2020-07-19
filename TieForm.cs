@@ -380,7 +380,8 @@ namespace Idmr.Yogeme
 			else
 			{
 				enableMessage(true);
-				for (int i=0;i<_mission.Messages.Count;i++) lstMessages.Items.Add(_mission.Messages[i].MessageString);
+				for (int i = 0; i < _mission.Messages.Count; i++)
+					lstMessages.Items.Add(_mission.Messages[i].MessageString != "" ? _mission.Messages[i].MessageString : " *");
 			}
             bool btemp = _loading;  //[JB] Now that the IFFs are loaded, replace the list items.  Need to set _loading otherwise it will trigger an IFF reset for the first FG.
             _loading = true;
@@ -2676,10 +2677,8 @@ namespace Idmr.Yogeme
 		void messlistRefresh()
 		{
 			if (_mission.Messages.Count == 0) return;
-			string temp = _mission.Messages[_activeMessage].MessageString;
-            if (temp == "") temp = " *";  //[JB] Feature request to display something if the string is empty.
             int index = lstMessages.SelectedIndex;  //[JB] Backup and restore index so the selected item doesn't lose visibility in the list
-			lstMessages.Items.Insert(_activeMessage, temp);
+			lstMessages.Items.Insert(_activeMessage, _mission.Messages[_activeMessage].MessageString != "" ? _mission.Messages[_activeMessage].MessageString : " *");
 			lstMessages.Items.RemoveAt(_activeMessage+1);
             lstMessages.SelectedIndex = index;
 		}
