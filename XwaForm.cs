@@ -476,35 +476,18 @@ namespace Idmr.Yogeme
 		{
 			while (text.Contains("FG:"))
 			{
-				int index = text.IndexOf("FG:") + 3;
-				int length = text.IndexOfAny(new char[] { ' ', ',', '\0' }, index) - index;
-				int fg;
-				if (length > 0) fg = int.Parse(text.Substring(index, length));
-				else fg = int.Parse(text.Substring(index));
-				string s = (fg >= 0 && fg < _mission.FlightGroups.Count) ? _mission.FlightGroups[fg].ToString() : "Undefined";  //[JB] Fixes some potential issues of bad or broken data.
-				text = text.Replace("FG:" + fg, s);
+				int fg = Common.ParseIntAfter(text, "FG:");
+				text = text.Replace("FG:" + fg, (fg >= 0 && fg < _mission.FlightGroups.Count) ? _mission.FlightGroups[fg].ToString() : "Undefined");
 			}
 			while (text.Contains("FG2:"))
 			{
-				int index = text.IndexOf("FG2:") + 4;
-				int length = text.IndexOfAny(new char[] { ' ', ',', '\0' }, index) - index;
-				int fg;
-				if (length > 0) fg = int.Parse(text.Substring(index, length));
-				else fg = int.Parse(text.Substring(index));
-				string s = (fg >= 0 && fg < cboADPara.Items.Count) ? cboADPara.Items[fg].ToString() : "Undefined";
-				text = text.Replace("FG2:" + fg, s);    // this could be any Para, but they should all be the same anyway
+				int fg = Common.ParseIntAfter(text, "FG2:");
+				text = text.Replace("FG2:" + fg, (fg >= 0 && fg < cboADPara.Items.Count) ? cboADPara.Items[fg].ToString() : "Undefined"); // this could be any Para, but they should all be the same anyway
 			}
 			while (text.Contains("TM:"))
 			{
-				int index = text.IndexOf("TM:") + 3;
-				int length = text.IndexOfAny(new char[] { ' ', ',', '\0' }, index) - index;
-				int team;
-				if (length > 0) team = int.Parse(text.Substring(index, length));
-				else team = int.Parse(text.Substring(index));
-				string replace = (_mission.Teams[team].Name == "" ? (team + 1).ToString() : _mission.Teams[team].Name);
-				if (replace.IndexOf("Team") < 0)
-					replace = "Team " + replace;
-				text = text.Replace("TM:" + team, replace);  //[JB] By request, explicitly label as a team.
+				int team = Common.ParseIntAfter(text, "TM:");
+				text = text.Replace("TM:" + team, (team >= 0 && team < 10 && _mission.Teams[team].Name != "") ? _mission.Teams[team].Name : "Team " + (team + 1).ToString());
 			}
 			return text;
 		}

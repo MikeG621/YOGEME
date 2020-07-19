@@ -438,12 +438,13 @@ namespace Idmr.Yogeme
 		{
 			while (text.Contains("FG:"))
 			{
-				int index = text.IndexOf("FG:") + 3;
-				int length = text.IndexOfAny(new char[] { ' ', ',', '\0' }, index) - index;
-				int fg;
-				if (length > 0) fg = int.Parse(text.Substring(index, length));
-				else fg = int.Parse(text.Substring(index));
-				text = text.Replace("FG:" + fg, _mission.FlightGroups[fg].ToString());
+				int fg = Common.ParseIntAfter(text, "FG:");
+				text = text.Replace("FG:" + fg, (fg >= 0 && fg < _mission.FlightGroups.Count) ? _mission.FlightGroups[fg].ToString() : "");
+			}
+			while (text.Contains("IFF:"))
+			{
+				int iff = Common.ParseIntAfter(text, "IFF:");
+				text = text.Replace("IFF:" + iff, "IFF " + Common.SafeString(getIffStrings(), iff, true));
 			}
 			return text;
 		}

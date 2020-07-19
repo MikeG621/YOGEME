@@ -182,7 +182,7 @@ namespace Idmr.Yogeme
 
         /// <summary>Returns a formatted string of a time (m:ss)</summary>
         /// <param name="seconds">Total number of seconds in the time.</param>
-        /// <param name="verbose">Whethe or not to append " second(s)".</param>
+        /// <param name="verbose">Whether or not to append " second(s)".</param>
 		/// <returns>Formatted time</returns>
         public static string GetFormattedTime(int seconds, bool verbose)
         {
@@ -212,6 +212,30 @@ namespace Idmr.Yogeme
                 }
             }
             cbo.SelectedIndex = index;
-        }    
+        }
+
+		/// <summary>Parses an integer value that immediately follows the first instance of a substring.</summary>
+		/// <remarks>Used for extracting embedded information within a trigger or order sentence, for example <b>100% of FG:5</b></remarks>
+		/// <param name="text">String to search.</param>
+		/// <param name="substr">Substring to search for, including any separator that is expected to appear before the first integer character.</param>
+		/// <returns>The parsed value, or zero if not found.</returns>
+ 		public static int ParseIntAfter(string text, string substr)
+		{
+			int index = text.IndexOf(substr);
+			if (index < 0) return 0;
+			index += substr.Length;
+			int length = text.IndexOfAny(new char[] { ' ', ',', '\0' }, index) - index;
+			int value = 0;
+			if (length > 0) value = int.Parse(text.Substring(index, length));
+			else value = int.Parse(text.Substring(index));
+			return value;
+		}
+
+		/// <summary>Safely returns a string from a string array.</summary>
+		/// <remarks>Performs array bounds checking to return an item in the array. If invalid, returns an empty string. If <paramref name="echo"/> is true, returns a string representation of the index instead of an empty string if not found.</remarks>
+ 		public static string SafeString(string[] stringArray, int index, bool echo)
+		{
+			return (stringArray != null && index >= 0 && index < stringArray.Length) ? stringArray[index] : echo ? index.ToString() : "";
+		}
     }
 }

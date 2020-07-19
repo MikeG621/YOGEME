@@ -436,30 +436,18 @@ namespace Idmr.Yogeme
 		{
 			while (text.Contains("FG:"))
 			{
-				int index = text.IndexOf("FG:") + 3;
-				int length = text.IndexOfAny(new char[] { ' ', ',', '\0' }, index) - index;
-				int fg;
-				if (length > 0) fg = Int32.Parse(text.Substring(index, length));
-				else fg = Int32.Parse(text.Substring(index));
-				text = text.Replace("FG:" + fg, _mission.FlightGroups[fg].ToString());
+				int fg = Common.ParseIntAfter(text, "FG:");
+				text = text.Replace("FG:" + fg, (fg >= 0 && fg < _mission.FlightGroups.Count) ? _mission.FlightGroups[fg].ToString() : "Undefined");
+			}
+			while (text.Contains("IFF:"))
+			{
+				int iff = Common.ParseIntAfter(text, "IFF:");
+				text = text.Replace("IFF:" + iff, "IFF " + Common.SafeString(getIffStrings(), iff, true));
 			}
 			while (text.Contains("TM:"))
 			{
-				int index = text.IndexOf("TM:") + 3;
-				int length = text.IndexOfAny(new char[] { ' ', ',', '\0' }, index) - index;
-				int team;
-				if (length > 0) team = Int32.Parse(text.Substring(index, length));
-				else team = Int32.Parse(text.Substring(index));
-				string n = "";
-				if (team >= 10 || (team < 10 && _mission.Teams[team].Name == ""))  //[JB] Test if team index is within bounds.  This fixes a crash when loading certain BoP melee files which have a global goal for Team#11.
-					n = (team + 1).ToString();
-				else
-					n = _mission.Teams[team].Name;
-
-				if (n.IndexOf("Team") < 0)
-					n = "Team " + n;
-
-				text = text.Replace("TM:" + team, n);
+				int team = Common.ParseIntAfter(text, "TM:");
+				text = text.Replace("TM:" + team, (team >= 0 && team < 10 && _mission.Teams[team].Name != "") ? _mission.Teams[team].Name : "Team " + (team + 1).ToString());
 			}
 			return text;
 		}
