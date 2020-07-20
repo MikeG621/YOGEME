@@ -865,7 +865,7 @@ namespace Idmr.Yogeme
 			cboRole2Teams.Items.AddRange(Strings.RoleTeams);
 			cboRole1Teams.Items[0] = "Role 1 Disabled";
 			cboRole2Teams.Items[0] = "Role 2 Disabled";
-			for (int i = 0; i < 10; i++)   //Update craft role designation dropdown items.
+			for (int i = 0; i < 8; i++)   //Update craft role designation dropdown items.
 			{
 				if (_mission.Teams[i].Name != "")
 				{
@@ -4785,8 +4785,11 @@ namespace Idmr.Yogeme
 			for (int i = 0; i < _mission.Teams.Count; i++)
 				BriefingForm.sharedTeamNames[i] = _mission.Teams[i].Name;
 
-			cboRole1Teams.Items[1 + _activeTeam] = team;   //Each dropdown has 10 teams beginning at index[1]
-			cboRole2Teams.Items[1 + _activeTeam] = team;
+			if (_activeTeam < 8)
+			{
+				cboRole1Teams.Items[1 + _activeTeam] = team;   //Each dropdown has 8 teams beginning at index[1]
+				cboRole2Teams.Items[1 + _activeTeam] = team;
+			}
 
 			if (_activeTeam >= 0 && _activeTeam < 8)       //8 teams in the Radio list beginning at index[1]
 				cboRadio.Items[1 + _activeTeam] = team;
