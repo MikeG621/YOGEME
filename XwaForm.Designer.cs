@@ -154,7 +154,7 @@ namespace Idmr.Yogeme
 			this.label67 = new System.Windows.Forms.Label();
 			this.label18 = new System.Windows.Forms.Label();
 			this.cboWarheads = new System.Windows.Forms.ComboBox();
-			this.label19 = new System.Windows.Forms.Label();
+			this.lblStatus = new System.Windows.Forms.Label();
 			this.cboBeam = new System.Windows.Forms.ComboBox();
 			this.cboStatus = new System.Windows.Forms.ComboBox();
 			this.label20 = new System.Windows.Forms.Label();
@@ -2071,7 +2071,7 @@ namespace Idmr.Yogeme
 			this.grpCraft4.Controls.Add(this.label67);
 			this.grpCraft4.Controls.Add(this.label18);
 			this.grpCraft4.Controls.Add(this.cboWarheads);
-			this.grpCraft4.Controls.Add(this.label19);
+			this.grpCraft4.Controls.Add(this.lblStatus);
 			this.grpCraft4.Controls.Add(this.cboBeam);
 			this.grpCraft4.Controls.Add(this.cboStatus);
 			this.grpCraft4.Controls.Add(this.label20);
@@ -2207,14 +2207,14 @@ namespace Idmr.Yogeme
 			this.cboWarheads.Size = new System.Drawing.Size(150, 21);
 			this.cboWarheads.TabIndex = 24;
 			// 
-			// label19
+			// lblStatus
 			// 
-			this.label19.AutoSize = true;
-			this.label19.Location = new System.Drawing.Point(8, 20);
-			this.label19.Name = "label19";
-			this.label19.Size = new System.Drawing.Size(37, 13);
-			this.label19.TabIndex = 0;
-			this.label19.Text = "Status";
+			this.lblStatus.AutoSize = true;
+			this.lblStatus.Location = new System.Drawing.Point(8, 20);
+			this.lblStatus.Name = "lblStatus";
+			this.lblStatus.Size = new System.Drawing.Size(37, 13);
+			this.lblStatus.TabIndex = 0;
+			this.lblStatus.Text = "Status";
 			// 
 			// cboBeam
 			// 
@@ -9585,7 +9585,7 @@ namespace Idmr.Yogeme
 		private Label label67;
 		private Label label18;
 		private ComboBox cboWarheads;
-		private Label label19;
+		private Label lblStatus;
 		private ComboBox cboBeam;
 		private ComboBox cboStatus;
 		private Label label20;

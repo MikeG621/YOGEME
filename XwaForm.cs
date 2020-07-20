@@ -2724,7 +2724,7 @@ namespace Idmr.Yogeme
 			numGG.Value = _mission.FlightGroups[_activeFG].GlobalGroup;
 			numGU.Value = _mission.FlightGroups[_activeFG].GlobalUnit;
 			chkGU.Checked = _mission.FlightGroups[_activeFG].GlobalNumbering;
-			cboStatus.SelectedIndex = _mission.FlightGroups[_activeFG].Status1;
+			refreshStatus();  //Handles Status1, special case for mines.
 			cboStatus2.SelectedIndex = _mission.FlightGroups[_activeFG].Status2;
 			cboWarheads.SelectedIndex = _mission.FlightGroups[_activeFG].Missile;
 			cboBeam.SelectedIndex = _mission.FlightGroups[_activeFG].Beam;
@@ -2892,6 +2892,15 @@ namespace Idmr.Yogeme
 				numSC_ValueChanged("EnableBackdrop", new EventArgs());
 			}
 		}
+		void refreshStatus()
+		{
+			cboStatus.Items.Clear();
+			bool isMine = (_mission.FlightGroups[_activeFG].CraftType >= 0x4B && _mission.FlightGroups[_activeFG].CraftType <= 0x4D);
+			lblStatus.Text = isMine ? "Mine Formation" : "Status";
+			cboStatus.Items.AddRange(isMine ? Strings.FormationMine : Strings.Status);
+			Common.SafeSetCBO(cboStatus, isMine ? (int)_mission.FlightGroups[_activeFG].Status1 & 3 : _mission.FlightGroups[_activeFG].Status1, true);
+			cboFormation.Enabled = isMine ? false : true;
+		}
 
 		void cboCraft_SelectedIndexChanged(object sender, EventArgs e)
 		{
@@ -2899,6 +2908,7 @@ namespace Idmr.Yogeme
 			if (_loading) return;
 			_mission.FlightGroups[_activeFG].CraftType = Common.Update(this, _mission.FlightGroups[_activeFG].CraftType, Convert.ToByte(cboCraft.SelectedIndex));
 			updateFGList();
+			refreshStatus();
 		}
 		void cboFormation_SelectedIndexChanged(object sender, EventArgs e)
 		{
