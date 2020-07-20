@@ -1,12 +1,18 @@
 /*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
- * Copyright (C) 2007-2019 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2020 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.5.1
+ * VERSION: 1.6.5
  */
 
 /* CHANGELOG
+ * v1.6.5, 200704
+ * [UPD] More details to ProcessCraftList error message
+ * [FIX #32] bin path now explicitly uses Startup Path to prevent implicit from defaulting to sys32
+ * v1.6.4, 200119
+ * [FIX] added Update to cmdBackdrop to ensure mission is dirtied
+ * [NEW #30] Briefing callback
  * v1.5.1, 190513
  * [NEW] Changing GG value will now prompt to update references throughout if it's the only FG with that designation
  * v1.5, 180910
@@ -480,7 +486,7 @@ namespace Idmr.Yogeme
 					Strings.OverrideShipList(crafts, abbrvs);
 					initializeMission();    // have to re-init since lstFG is already populated
 				}
-				catch { MessageBox.Show("Error processing custom TIE ship list, using defaults.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); }
+				catch (Exception x) { MessageBox.Show("Error processing custom TIE ship list, using defaults.\n(" + x.Message + ").", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); }
 			}
 			//initializes cbo's, IFFs, resets bAppExit
             comboReset(cboIFF, getIffStrings(), 0);  //[JB] Changed by feature request.
@@ -810,6 +816,11 @@ namespace Idmr.Yogeme
 			setInteractiveLabelColor(lblMess2, _activeMessageTrig == 1);
 		}
 
+		void briefingModifiedCallback(object sender, EventArgs e)
+		{
+			Common.Title(this, _loading);
+		}
+
 		void colorizedComboBox_DrawItem(object sender, DrawItemEventArgs e)
 		{
 			ComboBox variable = (ComboBox)sender;
@@ -1019,16 +1030,15 @@ namespace Idmr.Yogeme
 		}
 		void menuBriefing_Click(object sender, EventArgs e)
 		{
-			Common.Title(this, _loading);
 			try { _fBrief.Close(); }
 			catch { /* do nothing */ }
-			_fBrief = new BriefingForm(_mission.FlightGroups, _mission.Briefing);
+			_fBrief = new BriefingForm(_mission.FlightGroups, _mission.Briefing, briefingModifiedCallback);
 			_fBrief.Show();
 		}
 		void menuCopy_Click(object sender, EventArgs e)
 		{
 			System.Runtime.Serialization.IFormatter formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
-			Stream stream = new FileStream("YOGEME.bin", FileMode.Create, FileAccess.Write, FileShare.None);
+			Stream stream = new FileStream(Application.StartupPath + "YOGEME.bin", FileMode.Create, FileAccess.Write, FileShare.None);
 			#region ArrDep
             if (sender.ToString() == "AD" || hasFocus(lblADTrig))  //[JB] Detect if triggers have focus
 			{
@@ -1200,7 +1210,7 @@ namespace Idmr.Yogeme
 		{
 			System.Runtime.Serialization.IFormatter formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
 			Stream stream;
-			try { stream = new FileStream("YOGEME.bin", FileMode.Open, FileAccess.Read, FileShare.Read); }
+			try { stream = new FileStream(Application.StartupPath + "YOGEME.bin", FileMode.Open, FileAccess.Read, FileShare.Read); }
 			catch { return; }
 			#region ArrDep
             if (sender.ToString() == "AD" || hasFocus(lblADTrig))  //[JB] Detect if triggers have focus
@@ -1678,7 +1688,7 @@ namespace Idmr.Yogeme
 			try
 			{
 				System.Runtime.Serialization.IFormatter formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
-				stream = new FileStream("YOGEME.bin", FileMode.Open, FileAccess.Read, FileShare.Read);
+				stream = new FileStream(Application.StartupPath + "YOGEME.bin", FileMode.Open, FileAccess.Read, FileShare.Read);
 				object raw = formatter.Deserialize(stream);
 				stream.Close();
 				bool change = false;
@@ -1732,7 +1742,7 @@ namespace Idmr.Yogeme
 				}
 				if (change)
 				{
-					stream = new FileStream("YOGEME.bin", FileMode.Create, FileAccess.Write, FileShare.None);
+					stream = new FileStream(Application.StartupPath + "YOGEME.bin", FileMode.Create, FileAccess.Write, FileShare.None);
 					formatter.Serialize(stream, raw);
 					stream.Close();
 				}
@@ -2075,7 +2085,8 @@ namespace Idmr.Yogeme
 				if (dlg.ShowDialog() == DialogResult.OK)
 				{
 					numBackdrop.Value = dlg.BackdropIndex;	// simply GUI
-					cboStatus.SelectedIndex = (int)numBackdrop.Value;	// drives stored value
+					cboStatus.SelectedIndex = (int)numBackdrop.Value;   // drives stored value
+					_mission.FlightGroups[_activeFG].Status1 = Common.Update(this, _mission.FlightGroups[_activeFG].Status1, Convert.ToByte(cboStatus.SelectedIndex));
 				}
 			}
 			catch (Exception x)  //[JB] Catch all exceptions.

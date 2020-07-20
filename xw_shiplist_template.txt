@@ -1,0 +1,19 @@
+None,
+X-Wing,X-W
+Y-Wing,Y-W
+A-Wing,A-W
+TIE Fighter,TIE
+TIE Interceptor,T/I
+TIE Bomber,T/B
+Assault Gunboat,GUN
+Delta Transport,TRN
+Lambda Shuttle,SHU
+Tug,TUG
+Container,CON
+Bulk Freighter,FRT
+MC80a Cruiser,CRS
+Nebulon-B Frigate,FRG
+Corellian Corvette,CRV
+Imperator Star Destroyer,ISD
+TIE Advanced,T/A
+B-Wing,B-W

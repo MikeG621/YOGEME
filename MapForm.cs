@@ -1,12 +1,15 @@
 /*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
- * Copyright (C) 2007-2018 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2020 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.5
+ * VERSION: 1.6.5
  */
 
 /* CHANGELOG
+ * v1.6.5, 200704
+ * [NEW] if pulling from imgCraft trips an OutOfRange, default to img[0]
+ * v1.5, 180910
  * [NEW] lots of variables for UI tracking [JB]
  * [NEW] Xwing capability [JB]
  * [NEW] Callbacks in ctors [JB]
@@ -41,7 +44,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
-//using System.IO;	//not needed yet, will be for wireframes
+using System.IO;
 using System.Windows.Forms;
 
 namespace Idmr.Yogeme
@@ -82,7 +85,6 @@ namespace Idmr.Yogeme
         //WireframeManager wireframes = new WireframeManager();
         EventHandler onDataModified = null;
         bool _isClosing = false;              //Need a flag during form close to check whether external MapPaint() calls should be ignored.
-        //bool imagesLoaded = false;	// assigned, never used
 		#endregion vars
 
 		#region ctors
@@ -720,7 +722,8 @@ namespace Idmr.Yogeme
 				bAdd[0] = pn.Color.R;
 				bAdd[1] = pn.Color.G;
 				bAdd[2] = pn.Color.B;
-				bmptemp = new Bitmap(imgCraft.Images[_mapData[i].Craft]);
+				try { bmptemp = new Bitmap(imgCraft.Images[_mapData[i].Craft]); }
+				catch { bmptemp = new Bitmap(imgCraft.Images[0]); }
 				bmptemp = mask(bmptemp, bAdd);
 				// work through each WP and determine if it needs to be displayed, then place it on the map
 				// draw tags if required
@@ -910,7 +913,7 @@ namespace Idmr.Yogeme
 				_mapData[i].WPs[0] = fg[i].Waypoints;
 				_mapData[i].IFF = fg[i].IFF;
 				_mapData[i].Name = fg[i].Name;
-                _mapData[i].FullName = Platform.Tie.Strings.CraftAbbrv[_mapData[i].Craft] + " " + fg[i].Name; //We converted craft to TIE, so load TIE strings.
+                _mapData[i].FullName = Platform.Tie.Strings.CraftAbbrv[_mapData[i].Craft] + " " + fg[i].Name;
             }
             reloadSelectionControls();
 		}
@@ -928,7 +931,7 @@ namespace Idmr.Yogeme
 				_mapData[i].WPs[0] = fg[i].Waypoints;
 				_mapData[i].IFF = fg[i].IFF;
 				_mapData[i].Name = fg[i].Name;
-                _mapData[i].FullName = Platform.Xvt.Strings.CraftAbbrv[_mapData[i].Craft] + " " + fg[i].Name; //We converted craft to TIE, so load TIE strings.
+                _mapData[i].FullName = Platform.Xvt.Strings.CraftAbbrv[_mapData[i].Craft] + " " + fg[i].Name;
             }
             reloadSelectionControls();
 		}
@@ -953,7 +956,7 @@ namespace Idmr.Yogeme
 				}
 				_mapData[i].IFF = fg[i].IFF;
 				_mapData[i].Name = fg[i].Name;
-				_mapData[i].FullName = Platform.Xwa.Strings.CraftAbbrv[_mapData[i].Craft] + " " + fg[i].Name; //We converted craft to TIE, so load TIE strings.
+				_mapData[i].FullName = Platform.Xwa.Strings.CraftAbbrv[_mapData[i].Craft] + " " + fg[i].Name;
 				//_mapData[i].wireframe = wireframes.GetNewActiveInstance(_platform, _mapData[i].Craft);
 			}
             reloadSelectionControls();
@@ -1496,8 +1499,8 @@ namespace Idmr.Yogeme
             public Platform.BaseFlightGroup.BaseWaypoint wpRef;
         }
 
-        /*
-        void DrawWireframe(ref Graphics g, MapData dat, int x, int y)
+        
+        /*void drawWireframe(ref Graphics g, MapData dat, int x, int y)
         {
             if (dat.wireframe == null) return;
             if (dat.wireframe.def == null) return;
@@ -1515,7 +1518,7 @@ namespace Idmr.Yogeme
             }
             dat.wireframe.SetRotation(dat.WPs[0][0], dst, _zoom, _displayMode);
 
-            Pen body = new Pen(GetIFFColor(dat.IFF));
+            Pen body = new Pen(getIFFColor(dat.IFF));
             Pen hangar = new Pen(Color.White);
             Pen dock = new Pen(Color.Yellow);
             Pen p;
@@ -1561,44 +1564,45 @@ namespace Idmr.Yogeme
                     }
                 }
             }
-        }
-         * */
-
-        /*Bitmap GetBitmap(int craftType)
+        }*/
+        
+        /*Bitmap getBitmap(int craftType)
         {
-            if (imgCraft.Images.Count == 0 || imagesLoaded == false)
+            if (imgCraft.Images.Count == 0)
             {
                 imgCraft = new ImageList();
-                imagesLoaded = true;
                 switch (_platform)
                 {
                     case Settings.Platform.XWING:
                     case Settings.Platform.TIE:
-                        importDat(Application.StartupPath + "\\images\\TIE_BRF.dat", 34);
+                        //importDat(Application.StartupPath + "\\images\\TIE_BRF.dat", 34);
+						imgCraft.Images.AddStrip(Image.FromFile(Application.StartupPath + "\\images\\craft_TIE.bmp"));
                         break;
                     case Settings.Platform.XvT:
                     case Settings.Platform.BoP:
-                        importDat(Application.StartupPath + "\\images\\XvT_BRF.dat", 22);
-                        break;
+						//importDat(Application.StartupPath + "\\images\\XvT_BRF.dat", 22);
+						imgCraft.Images.AddStrip(Image.FromFile(Application.StartupPath + "\\images\\craft_XvT.bmp"));
+						break;
                     case Settings.Platform.XWA:
-                        importDat(Application.StartupPath + "\\images\\XWA_BRF.dat", 56);
-                        break;
+						//importDat(Application.StartupPath + "\\images\\XWA_BRF.dat", 56);
+						imgCraft.Images.AddStrip(Image.FromFile(Application.StartupPath + "\\images\\craft_XWA.bmp"));
+						break;
                 }
-            }
+			}
             if (craftType < 0 || craftType >= imgCraft.Images.Count)
                 return new Bitmap(0, 0);
 
             return new Bitmap(imgCraft.Images[craftType]);
-        }
+        }*/
 
-        void importDat(string filename, int size)
+		/*void importDat(string filename, int size)
         {
             try
             {
                 FileStream fs = File.OpenRead(filename);
                 BinaryReader br = new BinaryReader(fs);
                 int count = br.ReadInt16();
-                Bitmap bm = new Bitmap(count * size, size, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+                Bitmap bm = new Bitmap(count * size, size, PixelFormat.Format24bppRgb);
                 Graphics g = Graphics.FromImage(bm);
                 SolidBrush sb = new SolidBrush(Color.Black);
                 g.FillRectangle(sb, 0, 0, bm.Width, bm.Height);

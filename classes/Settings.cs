@@ -1,12 +1,14 @@
 ﻿/*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
- * Copyright (C) 2007-2019 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2020 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.6
+ * VERSION: 1.6.3
  */
 
 /* CHANGELOG
+ * v1.6.3, 200101
+ * [FIX #29] Fixed a settings write corruption due to partial platform detection
  * v1.6, 190915
  * [UPD] SBD detection changed to Readme instead of Backup since XWAUCP is different
  * v1.5.1, 190513
@@ -462,7 +464,8 @@ namespace Idmr.Yogeme
 			fs.WriteByte(0xFF);
 			fs.WriteByte(0x07);  //[JB] Changed version from 6 to 7 when adding X-wing support and color features.
 			bw.Write(BopInstalled);
-			bw.Write(_bopPath);
+			if (_bopPath != null) bw.Write(_bopPath);
+			else bw.Write("");
 			bw.Write(ConfirmExit);
 			bw.Write(ConfirmSave);
 			bw.Write(_recentMissions[0]);
@@ -478,17 +481,20 @@ namespace Idmr.Yogeme
 			bw.Write(TieInstalled);
 			bw.Write(TieCraft);
 			bw.Write(TieIff);
-			bw.Write(_tiePath);
+			if (_tiePath != null) bw.Write(_tiePath);
+			else bw.Write("");
 			bw.Write(Verify);
 			bw.Write(Waypoints);
 			bw.Write(XvtInstalled);
 			bw.Write(XvtCraft);
 			bw.Write(XvtIff);
-			bw.Write(_xvtPath);
+			if (_xvtPath != null) bw.Write(_xvtPath);
+			else bw.Write("");
 			bw.Write(XwaInstalled);
 			bw.Write(XwaCraft);
 			bw.Write(XwaIff);
-			bw.Write(_xwaPath);
+			if (_xwaPath != null) bw.Write(_xwaPath);
+			else bw.Write("");
 			bw.Write(_verifyLocation);
 			bw.Write(ConfirmTest);
 			bw.Write(DeleteTestPilots);
@@ -504,7 +510,8 @@ namespace Idmr.Yogeme
 			bw.Write(XwingInstalled);
 			bw.Write(XwingCraft);
 			bw.Write(XwingIff);
-			bw.Write(_xwingPath);
+			if (_xwingPath != null) bw.Write(_xwingPath);
+			else bw.Write("");
 			bw.Write(_mruXwingPath);
 			bw.Write(ColorizedDropDowns);
             bw.Write(ColorInteractSelected.ToArgb());
@@ -555,8 +562,11 @@ namespace Idmr.Yogeme
 			get { return _bopPath; }
 			set { if (Directory.Exists(value)) { _bopPath = value; } }
 		}
+		/// <summary>Gets or sets the foreground color for the selected Goal, Trigger, Order, etc.</summary>
 		public Color ColorInteractSelected { get; set; }
+		/// <summary>Gets or sets the foreground color for non-selected Goals, Triggers, Orders, etc.</summary>
 		public Color ColorInteractNonSelected { get; set; }
+		/// <summary>Gets or sets the background color for Goals, Triggers, Orders, etc.</summary>
 		public Color ColorInteractBackground { get; set; }
 		/// <summary>Gets or sets whether FlightGroup ComboBox dropdowns are colorized according to IFF.</summary>
 		public bool ColorizedDropDowns { get; set; }

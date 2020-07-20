@@ -182,52 +182,52 @@ Emkay,MK-09
 Astromech,R2-D2
 Worker Droid,Droid
 Backdrop,B/Drop
-*Forest Moon of Endor,*B/Drop
-*Endor,*B/Drop
-*Sullust,*B/Drop
-*Bothuwai,*B/Drop
-*Kothlis,*B/Drop
-*Hoth,*B/Drop
-*DS II backdrop,*B/Drop
-*Nar Shadda,*B/Drop
-*Planet,*B/Drop
-*Planet,*B/Drop
-*Planet,*B/Drop
-*Planet,*B/Drop
-*Planet,*B/Drop
-*Planet,*B/Drop
-*Moon,*B/Drop
-*Moon,*B/Drop
-*Moon,*B/Drop
-*Moon,*B/Drop
-*Moon,*B/Drop
-*Sun,*B/Drop
-*Sun,*B/Drop
-*Sun,*B/Drop
-*Sun,*B/Drop
-*Sun,*B/Drop
-*Sun,*B/Drop
-*Sun,*B/Drop
-*Sun,*B/Drop
-*Sun,*B/Drop
-*Sun,*B/Drop
-*Backdrop,*B/Drop
-*Backdrop,*B/Drop
-*Backdrop,*B/Drop
-*Backdrop,*B/Drop
-*Backdrop,*B/Drop
-*Backdrop,*B/Drop
-*Backdrop,*B/Drop
-*Backdrop,*B/Drop
-*Backdrop,*B/Drop
-*Backdrop,*B/Drop
-*Backdrop,*B/Drop
-*Backdrop,*B/Drop
+TIE Phantom,T/P
+E-Wing C,E-Wc
+T-70 X-Wing,X-W
+Eta-2 Actis Interceptor,J/I
+Naboo Fighter,N-1
+ARC 170,ARC/F
+V-19 Torrent,V-19
+TIE Lancer,T/TL
+Partisan X-Wing,PX-W
+Y-Wing/B,Y-W/B
+Scimitar Assault Bomber,SAB
+Moldy Crow,HWK
+Raven's Claw,CRF
+Naboo Barge,NDB
+Sith Infiltrator,S/I
+Coruscant Courier,CHC
+Mining Guild TIE Fighter,T/Fmg
+R-22 Spearhead,R-22
+TIE Fighter Special Forces,TIE/sf
+TIE Fighter First Order,TIE/fo
+TIE Reaper,T/Rp
+Jedi Starfighter,D/I
+Droid Tri-Fighter,DRD/T
+Arquitens Light Cruiser,ALCRS
+Republic Attack Cruiser,RSS
+Valiant Cruiser,V/Cr
+Banking Clan Frigate,BC/Fg
+Commerce Guild Destroyer,RLD
+MC80B Mon Remonda,M/CRS
+MC90 Defiance,D/CRS
+MC104 Odysseus,O/BCRS
+Acclamator Assault Ship,ACA
+Trade Federation Cruiser,TFC
+MC80 Reef Home,R/CRS
+MC80 Home One,I/CRS
+Predator Star Destroyer,PSD
+Vindicator Heavy Cruiser,VHC
+Ecliptic Star Frigate,ESF
+Vengeance Battlecruiser,VBC
+Dominance Battlecruiser,DBC
+Warhammer Heavy Cruiser,WHC
 *Backdrop,*B/Drop
 *Backdrop,*B/Drop
 *DS II,*B/Drop
 MC80 Liberty-class,WRCS
 VSD II,VSDII
 ISD II,ISDII
-*Planet,*B/Drop
-*Planet,*B/Drop
+Trade Federation Battleship,TFB
+Katana Warship,KTN

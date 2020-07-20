@@ -1,13 +1,18 @@
 /*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
- * Copyright (C) 2007-2018 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2020 Michael Gaisser (mjgaisser@gmail.com)
  * This file authored by "JB" (Random Starfighter) (randomstarfighter@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.5
+ * VERSION: 1.6.5
  */
 
 /* CHANGELOG:
+ * v1.6.5, 200704
+ * [NEW] Custom shiplist
+ * [FIX #32] bin path now explicitly uses Startup Path to prevent implicit from defaulting to sys32
+ * v1.6.4, 200119
+ * [NEW #30] Briefing callback
  * v1.5, 180910
  * [NEW] Release [JB]
  * [NEW] Added SaveAsXwing
@@ -378,7 +383,20 @@ namespace Idmr.Yogeme
 		}
 		void startup()
 		{
-            switchTo(EditorMode.XWI);
+			if (File.Exists(Application.StartupPath + "\\xw_shiplist.txt"))
+			{
+				System.Diagnostics.Debug.WriteLine("custom XW list found");
+				string[] crafts;
+				string[] abbrvs;
+				try
+				{
+					Common.ProcessCraftList(Application.StartupPath + "\\xw_shiplist.txt", out crafts, out abbrvs);
+					Strings.OverrideShipList(crafts, abbrvs);
+					initializeMission();    // have to re-init since lstFG is already populated
+				}
+				catch (Exception x) { MessageBox.Show("Error processing custom XW ship list, using defaults.\n(" + x.Message + ").", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); }
+			}
+			switchTo(EditorMode.XWI);
 			//initializes cbo's, IFFs, resets bAppExit
 			_config.LastMission = "";
 			_config.LastPlatform = Settings.Platform.XWING;
@@ -557,6 +575,11 @@ namespace Idmr.Yogeme
 					break;
 				}
 			}
+		}
+
+		void briefingModifiedCallback(object sender, EventArgs e)
+		{
+			Common.Title(this, _loading);
 		}
 
 		void colorizedComboBox_DrawItem(object sender, DrawItemEventArgs e)
@@ -739,14 +762,12 @@ namespace Idmr.Yogeme
 		}
 		void menuBriefing_Click(object sender, EventArgs e)
 		{
-            //SwitchTo(Mode.XWI);
-			Common.Title(this, _loading);
 			try { _fBrief.Close(); }
 			catch { /* do nothing */ }
             if(_mode == EditorMode.XWI)
-			    _fBrief = new BriefingFormXwing(_mission.FlightGroupsBriefing, _mission.Briefing);
+			    _fBrief = new BriefingFormXwing(_mission.FlightGroupsBriefing, _mission.Briefing, briefingModifiedCallback);
             else
-                _fBrief = new BriefingFormXwing(_mission.FlightGroups, _mission.Briefing);
+                _fBrief = new BriefingFormXwing(_mission.FlightGroups, _mission.Briefing, briefingModifiedCallback);
 			_fBrief.Show();
 		}
 		//[JB] Added function for menu item and modified for extra safety checks to prevent deleting when the list controls don't have focus.
@@ -761,7 +782,7 @@ namespace Idmr.Yogeme
 		void menuCopy_Click(object sender, EventArgs e)
 		{
 			System.Runtime.Serialization.IFormatter formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
-			Stream stream = new FileStream("YOGEME.bin", FileMode.Create, FileAccess.Write, FileShare.None);
+			Stream stream = new FileStream(Application.StartupPath + "YOGEME.bin", FileMode.Create, FileAccess.Write, FileShare.None);
 			#region ArrDep
 			if (sender.ToString() == "AD")
 			{
@@ -911,7 +932,7 @@ namespace Idmr.Yogeme
 		{
 			System.Runtime.Serialization.IFormatter formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
 			Stream stream;
-			try { stream = new FileStream("YOGEME.bin", FileMode.Open, FileAccess.Read, FileShare.Read); }
+			try { stream = new FileStream(Application.StartupPath + "YOGEME.bin", FileMode.Open, FileAccess.Read, FileShare.Read); }
 			catch { return; }
 			#region ArrDep
 			if (sender.ToString()== "AD")
@@ -1386,7 +1407,7 @@ namespace Idmr.Yogeme
 			try
 			{
 				System.Runtime.Serialization.IFormatter formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
-				stream = new FileStream("YOGEME.bin", FileMode.Open, FileAccess.Read, FileShare.Read);
+				stream = new FileStream(Application.StartupPath + "YOGEME.bin", FileMode.Open, FileAccess.Read, FileShare.Read);
 				object raw = formatter.Deserialize(stream);
 				stream.Close();
 				bool change = false;
@@ -1410,7 +1431,7 @@ namespace Idmr.Yogeme
 					}
 					if (change)
 					{
-						stream = new FileStream("YOGEME.bin", FileMode.Create, FileAccess.Write, FileShare.None);
+						stream = new FileStream(Application.StartupPath + "YOGEME.bin", FileMode.Create, FileAccess.Write, FileShare.None);
 						formatter.Serialize(stream, raw);
 						stream.Close();
 					}

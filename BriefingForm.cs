@@ -1,12 +1,18 @@
 /*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
- * Copyright (C) 2007-2018 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2020 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.5
+ * VERSION: 1.6.5
  */
 
 /* CHANGELOG
+ * v1.6.5, 200704
+ * [UPD] Icons now use BMPs instead of the DATs, importDats() renamed to importIcons()
+ * [UPD] If the craft index is OutOfRange, use the first one
+ * [FIX] XWA ShipInfo for X-wings work now
+ * v1.6.4, 200119
+ * [NEW #30] onModified callback to prevent mission from auto-dirty when opening
  * v1.5, 180910
  * [FIX] map performance [JB]
  * [UPD] XvT map size tweaked [JB]
@@ -55,7 +61,7 @@ using Idmr.Platform;
 
 namespace Idmr.Yogeme
 {
-	/// <summary>The briefing forms for YOGEME, one form for all platforms</summary>
+	/// <summary>The briefing forms for YOGEME, one form for TIE-XWA</summary>
 	public partial class BriefingForm : Form
 	{
 		#region Vars
@@ -101,9 +107,10 @@ namespace Idmr.Yogeme
         bool _mapPaintScheduled = false;      //True if a paint is scheduled, that is a paint request is called while a paint is already in progress.
         static public string[] sharedTeamNames = new string[10]; //[JB] The other platforms need a way to communicate the team names to the briefing
         int _previousTimeIndex = 0;           //Tracks the previous time index of the briefing so we can detect when the user is manually scrolling through arbitrary times.
-        #endregion
+		EventHandler onModified = null;
+		#endregion
 
-		public BriefingForm(Platform.Tie.FlightGroupCollection fg, Platform.Tie.Briefing briefing)
+		public BriefingForm(Platform.Tie.FlightGroupCollection fg, Platform.Tie.Briefing briefing, EventHandler onModifiedCallback)
 		{
 			_loading = true;
 			_platform = Settings.Platform.TIE;
@@ -126,7 +133,7 @@ namespace Idmr.Yogeme
 			pnlTextTag.Location = loc;
 			#endregion
 			Import(fg);	// FGs are separate so they can be updated without running the BRF as well
-			importDat(Application.StartupPath + "\\images\\TIE_BRF.dat", 34);
+			importIcons(Application.StartupPath + "\\images\\TIE_BRF.bmp", 34);
 			_tags = _tieBriefing.BriefingTag;
 			_strings = _tieBriefing.BriefingString;
 			importStrings();
@@ -152,9 +159,10 @@ namespace Idmr.Yogeme
             tabTeams.Enabled = false;
 
             _loading = false;
+			onModified = onModifiedCallback;
             postLoadInit();
         }
-		public BriefingForm(Platform.Xvt.FlightGroupCollection fg, Platform.Xvt.BriefingCollection briefing)
+		public BriefingForm(Platform.Xvt.FlightGroupCollection fg, Platform.Xvt.BriefingCollection briefing, EventHandler onModifiedCallback)
 		{
 			_loading = true;
 			_platform = Settings.Platform.XvT;
@@ -206,7 +214,7 @@ namespace Idmr.Yogeme
 			cboColor.Items.Add("Purple");
 			cboColor.Items.Add("Black");
 			#endregion
-			importDat(Application.StartupPath + "\\images\\XvT_BRF.dat", 22);
+			importIcons(Application.StartupPath + "\\images\\XvT_BRF.bmp", 22);
 			_tags = _xvtBriefing.BriefingTag;
 			_strings = _xvtBriefing.BriefingString;
 			importStrings();
@@ -242,9 +250,10 @@ namespace Idmr.Yogeme
             updateTitle();
 
     		_loading = false;
-            postLoadInit();
+			onModified = onModifiedCallback;
+			postLoadInit();
         }
-		public BriefingForm(Platform.Xwa.BriefingCollection briefing)
+		public BriefingForm(Platform.Xwa.BriefingCollection briefing, EventHandler onModifiedCallback)
 		{
 			_loading = true;
 			_platform = Settings.Platform.XWA;
@@ -330,7 +339,7 @@ namespace Idmr.Yogeme
 			cboCraft.Items.AddRange(Platform.Xwa.Strings.CraftType);
 			cboNCraft.Items.AddRange(Platform.Xwa.Strings.CraftType);
 			#endregion
-			importDat(Application.StartupPath + "\\images\\XWA_BRF.dat", 56);
+			importIcons(Application.StartupPath + "\\images\\XWA_BRF.bmp", 56);
 			_tags = _xwaBriefing.BriefingTag;
 			_strings = _xwaBriefing.BriefingString;
 			importStrings();
@@ -384,7 +393,8 @@ namespace Idmr.Yogeme
             updateTitle();
 
             _loading = false;
-            postLoadInit();
+			onModified = onModifiedCallback;
+			postLoadInit();
 		}
 
         /// <summary>Handles redundant code for each of the 3 platform modes.</summary>
@@ -413,73 +423,12 @@ namespace Idmr.Yogeme
 			cboFGTag.Items.Add(name);
 		}
 
-		void importDat(string filename, int size)
+		void importIcons(string filename, int size)
 		{
 			try
 			{
-				FileStream fs = File.OpenRead(filename);
-				BinaryReader br = new BinaryReader(fs);
-				int count = br.ReadInt16();
-				Bitmap bm = new Bitmap(count * size, size, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
-				Graphics g = Graphics.FromImage(bm);
-				SolidBrush sb = new SolidBrush(Color.Black);
-				g.FillRectangle(sb, 0, 0, bm.Width, bm.Height);
-				byte[] blue = { 0, 0x48, 0x60, 0x78, 0x94, 0xAC, 0xC8, 0xE0, 0xFC };
-				byte[] green = { 0, 0, 4, 0x10, 0x24, 0x3C, 0x58, 0x78, 0xA0 };
-				for (int i=0;i<count;i++)
-				{
-					fs.Position = i*2+2;
-					fs.Position = br.ReadUInt16();
-					byte b;
-					w = br.ReadByte();	// using these vars just because I can
-					h = br.ReadByte();
-					int x;
-					for (int q=0;q<h;q++)
-					{
-						for (int r=0;r<(w+1)/2;r++)
-						{
-							b = br.ReadByte();
-							int p1 = b & 0xF;
-							int p2 = (b & 0xF0) >> 4;
-							x = (size-w)/2 + size*i + r*2;
-							if (_platform == Settings.Platform.TIE)
-							{
-								x = size/2 - w + size*i + r*4;
-								if (p1 != 0)
-								{
-									bm.SetPixel(x, size/2 - h + q*2, Color.FromArgb(0, green[p1], blue[p1]));
-									bm.SetPixel(x + 1, size/2 - h + q*2, Color.FromArgb(0, green[p1], blue[p1]));
-									bm.SetPixel(x, size/2 - h + q*2 + 1, Color.FromArgb(0, green[p1], blue[p1]));
-									bm.SetPixel(x + 1, size/2 - h + q*2 + 1, Color.FromArgb(0, green[p1], blue[p1]));
-								}
-								if (p2 != 0)
-								{
-									bm.SetPixel(x + 2, size/2 - h + q*2, Color.FromArgb(0, green[p2], blue[p2]));
-									bm.SetPixel(x + 3, size/2 - h + q*2, Color.FromArgb(0, green[p2], blue[p2]));
-									bm.SetPixel(x + 2, size/2 - h + q*2 + 1, Color.FromArgb(0, green[p2], blue[p2]));
-									bm.SetPixel(x + 3, size/2 - h + q*2 + 1, Color.FromArgb(0, green[p2], blue[p2]));
-								}
-							}
-							else if (_platform == Settings.Platform.XvT)
-							{
-								p1 = (p1 != 0 ? (5 - p1) * 0x28 : 0);
-								p2 = (p2 != 0 ? (5 - p2) * 0x28 : 0);
-								if (p1 != 0) bm.SetPixel(x, (size-h)/2 + q, Color.FromArgb(p1, p1, p1));
-								if (p2 != 0) bm.SetPixel(x + 1, (size-h)/2 + q, Color.FromArgb(p2, p2, p2));
-							}
-							else
-							{
-								p1 = (p1 != 0 ? p1 * 0x10 + 0xF : 0);
-								p2 = (p2 != 0 ? p2 * 0x10 + 0xF : 0);
-								if (p1 != 0) bm.SetPixel(x, (size-h)/2 + q, Color.FromArgb(p1, p1, p1));
-								if (p2 != 0) bm.SetPixel(x + 1, (size-h)/2 + q, Color.FromArgb(p2, p2, p2));
-							}
-						}
-					}
-				}
 				imgCraft.ImageSize = new Size(size, size);
-				imgCraft.Images.AddStrip(bm);
-				fs.Close();
+				imgCraft.Images.AddStrip(Image.FromFile(filename));
 			}
 			catch (Exception x)
 			{
@@ -489,7 +438,7 @@ namespace Idmr.Yogeme
 		}
 		void importEvents(short[] rawEvents)
 		{
-			BaseBriefing brief = (_platform == Settings.Platform.TIE ? (BaseBriefing)_tieBriefing : (_platform == Settings.Platform.XvT ? (BaseBriefing)_xvtBriefing : (BaseBriefing)_xwaBriefing));
+			BaseBriefing brief = (_platform == Settings.Platform.TIE ? _tieBriefing : (_platform == Settings.Platform.XvT ? _xvtBriefing : (BaseBriefing)_xwaBriefing));
 			int offset = 0;
 			for (int i=0;i<_maxEvents;i++)
 			{
@@ -532,8 +481,8 @@ namespace Idmr.Yogeme
 			dataStrings.Table = _tableStrings;
 			dataT.DataSource = dataTags;
 			dataS.DataSource = dataStrings;
-			this._tableTags.RowChanged += new DataRowChangeEventHandler(tableTags_RowChanged);
-			this._tableStrings.RowChanged += new DataRowChangeEventHandler(tableStrings_RowChanged);
+			_tableTags.RowChanged += new DataRowChangeEventHandler(tableTags_RowChanged);
+			_tableStrings.RowChanged += new DataRowChangeEventHandler(tableStrings_RowChanged);
 			loadTags();
 			loadStrings();
 		}
@@ -563,40 +512,18 @@ namespace Idmr.Yogeme
 		}
 		public void Save()
 		{
-			BaseBriefing brief = (_platform == Settings.Platform.TIE ? (BaseBriefing)_tieBriefing : (_platform == Settings.Platform.XvT ? (BaseBriefing)_xvtBriefing : (BaseBriefing)_xwaBriefing));
+			BaseBriefing brief = (_platform == Settings.Platform.TIE ? _tieBriefing : (_platform == Settings.Platform.XvT ? _xvtBriefing : (BaseBriefing)_xwaBriefing));
 			int offset = 0;
 			brief.Unknown1 = (short)numUnk1.Value;
-            //[JB] I've encountered custom missions that didn't have proper end tags.
-            //Modified the save routine with a sanity check if out of bounds, and attempts to detect the end of the event list.
-            //If the end event is not found, inserts one at the end of the event list.
-            bool endFound = false;
-            int lastOffset = -1;
-	        for (int evnt = 0; evnt < _maxEvents; evnt++)
+			for (int evnt = 0; evnt < _maxEvents; evnt++)
 			{
 				for (int i = 0; i < 2; i++, offset++) brief.Events[offset] = _events[evnt, i];
-                if (_events[evnt, 1] == (short)BaseBriefing.EventType.EndBriefing)
-                {
-                    endFound = true;
-                    break;
-                }
-                else 
-                {
-                    if (_events[evnt, 1] == 0 && lastOffset == -1)
-                        lastOffset = offset - 2;  //Found an empty event, possible candidate for an end marker.  Bookmark the write position to the start of this event.
-                    else if (_events[evnt, 1] != 0)                 
-                        lastOffset = -1;          //I'm not sure if any briefing utilizes an empty tag, but this resets our detection just in case.  Don't want to overwrite anything we're not supposed to.
-
-                    if (offset >= brief.Events.Length - 1) break;
-                    for (int i = 2; i < 2 + brief.EventParameterCount(_events[evnt, 1]) && offset < brief.Events.Length; i++, offset++)
-                        brief.Events[offset] = _events[evnt, i];
-                }
+				if (_events[evnt, 1] == (short)BaseBriefing.EventType.EndBriefing) break;
+				else for (int i = 2; i < 2 + brief.EventParameterCount(_events[evnt, 1]); i++, offset++)
+					brief.Events[offset] = _events[evnt, i];
 			}
-            if (!endFound && lastOffset >= 0 && lastOffset < brief.Events.Length - 2)
-            {
-                brief.Events[lastOffset] = 9999;
-                brief.Events[lastOffset + 1] = (short)BaseBriefing.EventType.EndBriefing;
-            }
 			if (_platform == Settings.Platform.XvT) _xvtBriefing.Unknown3 = (short)numUnk3.Value;
+			if (onModified != null) onModified("Save", new EventArgs());
 		}
 
 		void tabBrief_SelectedIndexChanged(object sender, EventArgs e)
@@ -615,21 +542,15 @@ namespace Idmr.Yogeme
 		void frmBrief_FormClosing(object sender, FormClosingEventArgs e)
 		{
 			Save();
-            //[JB] Stop and deactivate the timers.
-            //Important! There's an issue where the event can trigger after the map is disposed, even after calling Stop(). The event must be unregistered.
-            tmrPopup.Stop();
-            tmrPopup.Tick -= tmrPopup_Tick;
+            tmrPopup.Stop(); //[JB] Stop and deactivate the timers.  Hopefully this fixes a rare exception (possibly a race condition?) where the newly implemented redraw event would still try to repaint the map even after everything was disposed.
             tmrMapRedraw.Stop();
-            tmrMapRedraw.Tick -= tmrMapRedraw_Tick;
-            /*if (_platform==Settings.Platform.TIE) TIESave();
-            else if (_platform==Settings.Platform.XvT) XvTSave();
-            else XWASave();*/
+			onModified = null;
 		}
 		void frmBrief_Load(object sender, EventArgs e)
 		{
             for (int i=0;i<8;i++) _fgTags[i, 0] = -1;
 			for (int i=0;i<8;i++) _textTags[i, 0] = -1;
-			_map = new Bitmap(w, h, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+			_map = new Bitmap(w, h, PixelFormat.Format24bppRgb);
             hsbTimer.Value = 1;  //[JB] Need to force another update, since this function wipes the tags after the init is complete.
             hsbTimer.Value = 0;
         }
@@ -751,7 +672,7 @@ namespace Idmr.Yogeme
                 paint |= processEvent(i, false);  //paint stays enabled once enabled.
             }
 			for (int h=0;h<8;h++) if (hsbTimer.Value - _fgTags[h, 1] < 13) paint = true;
-			lblTime.Text = String.Format("{0:Time: 0.00}",(decimal)hsbTimer.Value / _timerInterval);
+			lblTime.Text = string.Format("{0:Time: 0.00}",(decimal)hsbTimer.Value / _timerInterval);
 			if (hsbTimer.Value == (hsbTimer.Maximum-11) || hsbTimer.Value == 0) stopTimer();
 			if (paint) MapPaint();	// prevent MapPaint from running if no change
             if (tmrBrief.Interval != (1000 / _timerInterval))  //[JB] Show playback speed if playing fast-forward
@@ -1122,7 +1043,7 @@ namespace Idmr.Yogeme
 			{
 				if (_events[i, 2] == 1)
 				{
-					if (_briefData[_events[i, 3]].Craft != 0) _message = "Ship Info: " + Platform.Xwa.Strings.CraftType[_briefData[_events[i, 3]].Craft + 1];
+					if (_briefData[_events[i, 3]].Craft >= 0) _message = "Ship Info: " + Platform.Xwa.Strings.CraftType[_briefData[_events[i, 3]].Craft + 1];
 					else _message = "Ship Info: <flight group not found>";
 					if (!rebuild)
 					{
@@ -1266,7 +1187,7 @@ namespace Idmr.Yogeme
 			g3.DrawLine(pn, 1, 0, 1, h);
 			g3.DrawLine(pn, w-1, 0, w-1, h);
 			drawGrid(X, Y, g3);
-			Bitmap bmptemp;
+			Bitmap bmptemp = null;
 			#region FG tags
 			Bitmap bmptemp2;
 			for (int i=0;i<8;i++)
@@ -1278,23 +1199,22 @@ namespace Idmr.Yogeme
 				int wpX = 2*(int)Math.Round((double)_zoomX*_briefData[_fgTags[i, 0]].Waypoint[0]/256, 0) + X;
 				int wpY = 2*(int)Math.Round((double)_zoomY*-_briefData[_fgTags[i, 0]].Waypoint[1]/256, 0) + Y;  //[JB] Invert Y axis of waypoint
 				int frame = hsbTimer.Value - _fgTags[i, 1];
-				if (_fgTags[i, 1] == 0) frame = 12;	// if tagged at t=0, just the box
+				if (_fgTags[i, 1] == 0) frame = 12; // if tagged at t=0, just the box
+				try { bmptemp = new Bitmap(imgCraft.Images[_briefData[_fgTags[i, 0]].Craft]); }
+				catch { bmptemp = new Bitmap(imgCraft.Images[0]); }
 				switch (frame)
 				{
 					case 0:
-						bmptemp = new Bitmap(imgCraft.Images[_briefData[_fgTags[i, 0]].Craft]);
 						bmptemp2 = flatMask(bmptemp, IFF, 0xFC);
 						imageQuad(wpX-16, wpY-16, 32, bmptemp2, g3);
 						break;
 					case 1:
-						bmptemp = new Bitmap(imgCraft.Images[_briefData[_fgTags[i, 0]].Craft]);
 						bmptemp2 = flatMask(bmptemp, IFF, 0xC8);
 						imageQuad(wpX-16, wpY-16, 32, bmptemp2, g3);
 						bmptemp2 = flatMask(bmptemp, IFF, 0xFC);
 						imageQuad(wpX-16, wpY-16, 28, bmptemp2, g3);
 						break;
 					case 2:
-						bmptemp = new Bitmap(imgCraft.Images[_briefData[_fgTags[i, 0]].Craft]);
 						bmptemp2 = flatMask(bmptemp, IFF, 0x94);
 						imageQuad(wpX-16, wpY-16, 32, bmptemp2, g3);
 						bmptemp2 = flatMask(bmptemp, IFF, 0xC8);
@@ -1303,7 +1223,6 @@ namespace Idmr.Yogeme
 						imageQuad(wpX-16, wpY-16, 24, bmptemp2, g3);
 						break;
 					case 3:
-						bmptemp = new Bitmap(imgCraft.Images[_briefData[_fgTags[i, 0]].Craft]);
 						bmptemp2 = flatMask(bmptemp, IFF, 0x60);
 						imageQuad(wpX-16, wpY-16, 32, bmptemp2, g3);
 						bmptemp2 = flatMask(bmptemp, IFF, 0x94);
@@ -1314,7 +1233,6 @@ namespace Idmr.Yogeme
 						imageQuad(wpX-16, wpY-16, 20, bmptemp2, g3);
 						break;
 					case 4:
-						bmptemp = new Bitmap(imgCraft.Images[_briefData[_fgTags[i, 0]].Craft]);
 						bmptemp2 = flatMask(bmptemp, IFF, 0x60);
 						imageQuad(wpX-16, wpY-16, 28, bmptemp2, g3);
 						bmptemp2 = flatMask(bmptemp, IFF, 0x94);
@@ -1325,7 +1243,6 @@ namespace Idmr.Yogeme
 						imageQuad(wpX-16, wpY-16, 16, bmptemp2, g3);
 						break;
 					case 5:
-						bmptemp = new Bitmap(imgCraft.Images[_briefData[_fgTags[i, 0]].Craft]);
 						bmptemp2 = flatMask(bmptemp, IFF, 0x60);
 						imageQuad(wpX-16, wpY-16, 24, bmptemp2, g3);
 						bmptemp2 = flatMask(bmptemp, IFF, 0x94);
@@ -1336,7 +1253,6 @@ namespace Idmr.Yogeme
 						imageQuad(wpX-16, wpY-16, 12, bmptemp2, g3);
 						break;
 					case 6:
-						bmptemp = new Bitmap(imgCraft.Images[_briefData[_fgTags[i, 0]].Craft]);
 						bmptemp2 = flatMask(bmptemp, IFF, 0x60);
 						imageQuad(wpX-16, wpY-16, 20, bmptemp2, g3);
 						bmptemp2 = flatMask(bmptemp, IFF, 0x94);
@@ -1347,7 +1263,6 @@ namespace Idmr.Yogeme
 						imageQuad(wpX-16, wpY-16, 8, bmptemp2, g3);
 						break;
 					case 7:
-						bmptemp = new Bitmap(imgCraft.Images[_briefData[_fgTags[i, 0]].Craft]);
 						bmptemp2 = flatMask(bmptemp, IFF, 0x60);
 						imageQuad(wpX-16, wpY-16, 16, bmptemp2, g3);
 						bmptemp2 = flatMask(bmptemp, IFF, 0x94);
@@ -1358,7 +1273,6 @@ namespace Idmr.Yogeme
 						imageQuad(wpX-16, wpY-16, 4, bmptemp2, g3);
 						break;
 					case 8:
-						bmptemp = new Bitmap(imgCraft.Images[_briefData[_fgTags[i, 0]].Craft]);
 						bmptemp2 = flatMask(bmptemp, IFF, 0x60);
 						imageQuad(wpX-16, wpY-16, 12, bmptemp2, g3);
 						bmptemp2 = flatMask(bmptemp, IFF, 0x94);
@@ -1367,14 +1281,12 @@ namespace Idmr.Yogeme
 						imageQuad(wpX-16, wpY-16, 4, bmptemp2, g3);
 						break;
 					case 9:
-						bmptemp = new Bitmap(imgCraft.Images[_briefData[_fgTags[i, 0]].Craft]);
 						bmptemp2 = flatMask(bmptemp, IFF, 0x60);
 						imageQuad(wpX-16, wpY-16, 8, bmptemp2, g3);
 						bmptemp2 = flatMask(bmptemp, IFF, 0x94);
 						imageQuad(wpX-16, wpY-16, 4, bmptemp2, g3);
 						break;
 					case 10:
-						bmptemp = new Bitmap(imgCraft.Images[_briefData[_fgTags[i, 0]].Craft]);
 						bmptemp2 = flatMask(bmptemp, IFF, 0x60);
 						imageQuad(wpX-16, wpY-16, 4, bmptemp2, g3);
 						break;
@@ -1416,8 +1328,16 @@ namespace Idmr.Yogeme
 			for (int i=0;i<_briefData.Length;i++)
 			{
 				if (_briefData[i].Waypoint[3] != 1) continue;
-				if (_zoomX >= 32) bmptemp = new Bitmap(imgCraft.Images[_briefData[i].Craft]);
-				else bmptemp = new Bitmap(imgCraft.Images[_briefData[i].Craft+88]);	// small icon
+				if (_zoomX >= 32)
+				{
+					try { bmptemp = new Bitmap(imgCraft.Images[_briefData[i].Craft]); }
+					catch { bmptemp = new Bitmap(imgCraft.Images[0]); }
+				}
+				else
+				{
+					try { bmptemp = new Bitmap(imgCraft.Images[_briefData[i].Craft + 88]); }    // small icon
+					catch { bmptemp = new Bitmap(imgCraft.Images[88]); }
+				}
 				tieMask(bmptemp, _briefData[i].IFF);
 				// simple base-256 grid coords * zoom to get pixel location, * 2 to enlarge, + map offset, - pic size/2 to center
 				// forced to even numbers
@@ -1570,22 +1490,21 @@ namespace Idmr.Yogeme
 				int frame = hsbTimer.Value - _fgTags[i, 1];
 				if (_fgTags[i, 1] == 0) frame = 12;	// if tagged at t=0, just the box
 				int[] pos = getTagSize(_briefData[_fgTags[i, 0]].Craft);
+				try { bmptemp = new Bitmap(imgCraft.Images[_briefData[_fgTags[i, 0]].Craft]); }
+				catch { bmptemp = new Bitmap(imgCraft.Images[0]); }
 				switch (frame)
 				{
 					case 0:
-						bmptemp = new Bitmap(imgCraft.Images[_briefData[_fgTags[i, 0]].Craft]);
 						bmptemp2 = xvtMask(bmptemp, IFF, 1);
 						imageQuad(wpX-11, wpY-11, 16, bmptemp2, g3);
 						break;
 					case 1:
-						bmptemp = new Bitmap(imgCraft.Images[_briefData[_fgTags[i, 0]].Craft]);
 						bmptemp2 = xvtMask(bmptemp, IFF, 2);
 						imageQuad(wpX-11, wpY-11, 16, bmptemp2, g3);
 						bmptemp2 = xvtMask(bmptemp, IFF, 1);
 						imageQuad(wpX-11, wpY-11, 14, bmptemp2, g3);
 						break;
 					case 2:
-						bmptemp = new Bitmap(imgCraft.Images[_briefData[_fgTags[i, 0]].Craft]);
 						bmptemp2 = xvtMask(bmptemp, IFF, 3);
 						imageQuad(wpX-11, wpY-11, 16, bmptemp2, g3);
 						bmptemp2 = xvtMask(bmptemp, IFF, 2);
@@ -1594,7 +1513,6 @@ namespace Idmr.Yogeme
 						imageQuad(wpX-11, wpY-11, 12, bmptemp2, g3);
 						break;
 					case 3:
-						bmptemp = new Bitmap(imgCraft.Images[_briefData[_fgTags[i, 0]].Craft]);
 						bmptemp2 = xvtMask(bmptemp, IFF, 4);
 						imageQuad(wpX-11, wpY-11, 16, bmptemp2, g3);
 						bmptemp2 = xvtMask(bmptemp, IFF, 3);
@@ -1605,7 +1523,6 @@ namespace Idmr.Yogeme
 						imageQuad(wpX-11, wpY-11, 10, bmptemp2, g3);
 						break;
 					case 4:
-						bmptemp = new Bitmap(imgCraft.Images[_briefData[_fgTags[i, 0]].Craft]);
 						bmptemp2 = xvtMask(bmptemp, IFF, 4);
 						imageQuad(wpX-11, wpY-11, 14, bmptemp2, g3);
 						bmptemp2 = xvtMask(bmptemp, IFF, 3);
@@ -1616,7 +1533,6 @@ namespace Idmr.Yogeme
 						imageQuad(wpX-11, wpY-11, 8, bmptemp2, g3);
 						break;
 					case 5:
-						bmptemp = new Bitmap(imgCraft.Images[_briefData[_fgTags[i, 0]].Craft]);
 						bmptemp2 = xvtMask(bmptemp, IFF, 4);
 						imageQuad(wpX-11, wpY-11, 12, bmptemp2, g3);
 						bmptemp2 = xvtMask(bmptemp, IFF, 3);
@@ -1627,7 +1543,6 @@ namespace Idmr.Yogeme
 						imageQuad(wpX-11, wpY-11, 6, bmptemp2, g3);
 						break;
 					case 6:
-						bmptemp = new Bitmap(imgCraft.Images[_briefData[_fgTags[i, 0]].Craft]);
 						bmptemp2 = xvtMask(bmptemp, IFF, 4);
 						imageQuad(wpX-11, wpY-11, 10, bmptemp2, g3);
 						bmptemp2 = xvtMask(bmptemp, IFF, 3);
@@ -1638,7 +1553,6 @@ namespace Idmr.Yogeme
 						imageQuad(wpX-11, wpY-11, 4, bmptemp2, g3);
 						break;
 					case 7:
-						bmptemp = new Bitmap(imgCraft.Images[_briefData[_fgTags[i, 0]].Craft]);
 						bmptemp2 = xvtMask(bmptemp, IFF, 4);
 						imageQuad(wpX-11, wpY-11, 8, bmptemp2, g3);
 						bmptemp2 = xvtMask(bmptemp, IFF, 3);
@@ -1649,7 +1563,6 @@ namespace Idmr.Yogeme
 						imageQuad(wpX-11, wpY-11, 2, bmptemp2, g3);
 						break;
 					case 8:
-						bmptemp = new Bitmap(imgCraft.Images[_briefData[_fgTags[i, 0]].Craft]);
 						bmptemp2 = xvtMask(bmptemp, IFF, 4);
 						imageQuad(wpX-11, wpY-11, 6, bmptemp2, g3);
 						bmptemp2 = xvtMask(bmptemp, IFF, 3);
@@ -1658,14 +1571,12 @@ namespace Idmr.Yogeme
 						imageQuad(wpX-11, wpY-11, 2, bmptemp2, g3);
 						break;
 					case 9:
-						bmptemp = new Bitmap(imgCraft.Images[_briefData[_fgTags[i, 0]].Craft]);
 						bmptemp2 = xvtMask(bmptemp, IFF, 4);
 						imageQuad(wpX-11, wpY-11, 4, bmptemp2, g3);
 						bmptemp2 = xvtMask(bmptemp, IFF, 3);
 						imageQuad(wpX-11, wpY-11, 2, bmptemp2, g3);
 						break;
 					case 10:
-						bmptemp = new Bitmap(imgCraft.Images[_briefData[_fgTags[i, 0]].Craft]);
 						bmptemp2 = xvtMask(bmptemp, IFF, 4);
 						imageQuad(wpX-11, wpY-11, 2, bmptemp2, g3);
 						break;
@@ -1708,7 +1619,8 @@ namespace Idmr.Yogeme
 			{
                 wp = _briefData[i].WaypointArr[briefIndex];
 				if (wp[3] != 1) continue;
-				bmptemp = new Bitmap(imgCraft.Images[_briefData[i].Craft]);
+				try { bmptemp = new Bitmap(imgCraft.Images[_briefData[i].Craft]); }
+				catch { bmptemp = new Bitmap(imgCraft.Images[0]); }
 				bmptemp = xvtMask(bmptemp, _briefData[i].IFF, 0);
 				int[] pos = getTagSize(_briefData[i].Craft);
 				// simple base-256 grid coords * zoom to get pixel location, + map offset, - pic size/2 to center
@@ -1809,7 +1721,8 @@ namespace Idmr.Yogeme
 				int frame = hsbTimer.Value - _fgTags[i, 1];
 				if (_fgTags[i, 1] == 0) frame = 12;	// if tagged at t=0, just the box
 				byte r = sb.Color.R, b = sb.Color.B, g = sb.Color.G;
-				bmptemp = new Bitmap(imgCraft.Images[_briefData[_fgTags[i, 0]].Craft]);
+				try { bmptemp = new Bitmap(imgCraft.Images[_briefData[_fgTags[i, 0]].Craft]); }
+				catch { bmptemp = new Bitmap(imgCraft.Images[0]); }	// if it breaks, use an X-wing
 				bmptemp = xwaMask(bmptemp, IFF);
 				if (_briefData[_fgTags[i, 0]].Waypoint[2] == 1) bmptemp.RotateFlip(RotateFlipType.Rotate270FlipNone);
 				else if (_briefData[_fgTags[i, 0]].Waypoint[2] == 2) bmptemp.RotateFlip(RotateFlipType.Rotate180FlipNone);
@@ -1924,7 +1837,8 @@ namespace Idmr.Yogeme
 			for (int i=0;i<_briefData.Length;i++)
 			{
 				if (_briefData[i].Waypoint == null || _briefData[i].Waypoint[3] != 1) continue;
-				bmptemp = new Bitmap(imgCraft.Images[_briefData[i].Craft]);
+				try { bmptemp = new Bitmap(imgCraft.Images[_briefData[i].Craft]); }
+				catch { bmptemp = new Bitmap(imgCraft.Images[0]); }
 				bmptemp = xwaMask(bmptemp, _briefData[i].IFF);
 				if (_briefData[i].Waypoint[2] == 1) bmptemp.RotateFlip(RotateFlipType.Rotate270FlipNone);
 				else if (_briefData[i].Waypoint[2] == 2) bmptemp.RotateFlip(RotateFlipType.Rotate180FlipNone);
@@ -2091,7 +2005,7 @@ namespace Idmr.Yogeme
 		}
 		void cmdOk_Click(object sender, EventArgs e)
 		{
-            BaseBriefing brief = (_platform == Settings.Platform.TIE ? (BaseBriefing)_tieBriefing : (_platform == Settings.Platform.XvT ? (BaseBriefing)_xvtBriefing : (BaseBriefing)_xwaBriefing));
+            BaseBriefing brief = (_platform == Settings.Platform.TIE ? _tieBriefing : (_platform == Settings.Platform.XvT ? _xvtBriefing : (BaseBriefing)_xwaBriefing));
             if(hasAvailableEventSpace(2 + brief.EventParameterCount((int)_eventType)) == false) //Check space for a full event
             {
                 MessageBox.Show("Event list is full, cannot add more.", "Error");
@@ -2605,7 +2519,8 @@ namespace Idmr.Yogeme
 			}
 			lstEvents.SelectedIndex = i;
 			updateList(i);
-			cmdCancel_Click("OK", new System.EventArgs());
+			if (onModified != null) onModified("EventAdd", new EventArgs());
+			cmdCancel_Click("OK", new EventArgs());
 		}
 		void cmdMove_Click(object sender, EventArgs e)
 		{
@@ -2878,6 +2793,7 @@ namespace Idmr.Yogeme
 					{
 						t_Length = (short)Math.Round(Convert.ToDecimal(txtLength.Text) * _timerInterval,0);	// this is the line that could throw
 						_tieBriefing.Length = t_Length;
+						if (onModified != null) onModified("LengthChange", new EventArgs());
 						hsbTimer.Maximum = _tieBriefing.Length + 11;
 						if (Math.Round(((decimal)_tieBriefing.Length / _timerInterval), 2) != Convert.ToDecimal(txtLength.Text))	// so things like .51 become .5, without
 							txtLength.Text = Convert.ToString(Math.Round(((decimal)_tieBriefing.Length / _timerInterval), 2));	// wiping out just a decimal
@@ -2889,6 +2805,7 @@ namespace Idmr.Yogeme
 					{
 						t_Length = (short)Math.Round(Convert.ToDecimal(txtLength.Text) * _timerInterval, 0);	// this is the line that could throw
 						_xvtBriefing.Length = t_Length;
+						if (onModified != null) onModified("LengthChange", new EventArgs());
 						hsbTimer.Maximum = _xvtBriefing.Length + 11;
 						if (Math.Round(((decimal)_xvtBriefing.Length / _timerInterval), 2) != Convert.ToDecimal(txtLength.Text))	// so things like .51 become .5, without
 							txtLength.Text = Convert.ToString(Math.Round(((decimal)_xvtBriefing.Length / _timerInterval), 2));	// wiping out just a decimal
@@ -2900,6 +2817,7 @@ namespace Idmr.Yogeme
 					{
 						t_Length = (short)Math.Round(Convert.ToDecimal(txtLength.Text) * _timerInterval, 0);	// this is the line that could throw
 						_xwaBriefing.Length = t_Length;
+						if (onModified != null) onModified("LengthChange", new EventArgs());
 						hsbTimer.Maximum = _xwaBriefing.Length + 11;
 						if (Math.Round(((decimal)_xwaBriefing.Length / _timerInterval), 2) != Convert.ToDecimal(txtLength.Text))	// so things like .51 become .5, without
 							txtLength.Text = Convert.ToString(Math.Round(((decimal)_xwaBriefing.Length / _timerInterval), 2));	// wiping out just a decimal
@@ -2945,6 +2863,7 @@ namespace Idmr.Yogeme
 
 		void tableStrings_RowChanged(object sender, DataRowChangeEventArgs e)
 		{
+			if (!_loading && onModified != null) onModified("StringsChanged", new EventArgs());
 			int i=0;
 			for (int j=0;j<_strings.Length;j++)
 			{
@@ -2959,6 +2878,7 @@ namespace Idmr.Yogeme
 		}
 		void tableTags_RowChanged(object sender, DataRowChangeEventArgs e)
 		{
+			if (!_loading && onModified != null) onModified("TagsChanged", new EventArgs());
 			int i=0;
 			for(int j=0;j<_tags.Length;j++)
 			{
@@ -2974,6 +2894,7 @@ namespace Idmr.Yogeme
 
 		void txtNotes_Leave(object sender, EventArgs e)
 		{
+			if (_xwaBriefing.BriefingStringsNotes[dataS.CurrentCell.RowNumber] != txtNotes.Text && onModified != null) onModified("NotesMod", new EventArgs());
 			_xwaBriefing.BriefingStringsNotes[dataS.CurrentCell.RowNumber] = txtNotes.Text;
 		}
 		#endregion	tabStrings
@@ -3011,6 +2932,7 @@ namespace Idmr.Yogeme
 			_events[i, 1] = 3;
 			for (int j=2;j<6;j++) _events[i, j] = 0;
 			lstEvents.SelectedIndex = i;
+			if (onModified != null) onModified("EventAdd", new EventArgs());
 		}
 		/// <summary>Swaps one briefing event index with another.</summary>
 		void swapEvent(int index1, int index2)
@@ -3022,6 +2944,7 @@ namespace Idmr.Yogeme
 				_events[index1, j] = _events[index2, j];
 				_events[index2, j] = t;
 			}
+			if (onModified != null) onModified("SwapEvent", new EventArgs());
 		}
 		/// <summary>Shifts briefing events by swapping the contents of the origin index in a linear path until it occupies the end index.</summary>
 		void shiftEvents(int origin, int end)
@@ -3044,7 +2967,7 @@ namespace Idmr.Yogeme
 		void updateList(int index)
 		{
 			if (index == -1) return;
-			string temp = String.Format("{0,-8:0.00}", (decimal)_events[index, 0] / _timerInterval);
+			string temp = string.Format("{0,-8:0.00}", (decimal)_events[index, 0] / _timerInterval);
 			temp += cboEvent.Items[_events[index, 1]-3].ToString();
 			if (_events[index, 1] == (int)BaseBriefing.EventType.TitleText || _events[index, 1] == (int)BaseBriefing.EventType.CaptionText)
 			{
@@ -3208,14 +3131,22 @@ namespace Idmr.Yogeme
 		{
 			int i = lstEvents.SelectedIndex;
 			if (i == -1 || _loading) return;
-			if (_events[i, 1] >= (int)BaseBriefing.EventType.TextTag1 && _events[i, 1] <= (int)BaseBriefing.EventType.TextTag8) _events[i, 5] = (short)cboColor.SelectedIndex;
+			if (_events[i, 1] >= (int)BaseBriefing.EventType.TextTag1 && _events[i, 1] <= (int)BaseBriefing.EventType.TextTag8)
+			{
+				_events[i, 5] = (short)cboColor.SelectedIndex;
+				if (onModified != null) onModified("TagColor", new EventArgs());
+			}
 			updateList(i);
 		}
 		void cboCraft_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			int i = lstEvents.SelectedIndex;
 			if (i == -1 || _loading) return;
-			if (_events[i, 1] == (int)BaseBriefing.EventType.XwaNewIcon) _events[i, 3] = (short)cboCraft.SelectedIndex;
+			if (_events[i, 1] == (int)BaseBriefing.EventType.XwaNewIcon)
+			{
+				_events[i, 3] = (short)cboCraft.SelectedIndex;
+				if (onModified != null) onModified("NewIcon", new EventArgs());
+			}
 			updateList(i);
 		}
 		void cboEvent_SelectedIndexChanged(object sender, EventArgs e)
@@ -3223,7 +3154,7 @@ namespace Idmr.Yogeme
 			int i = lstEvents.SelectedIndex;
 			if (_loading || i == -1 || cboEvent.SelectedIndex == -1) return;
 
-            BaseBriefing brief = (_platform == Settings.Platform.TIE ? (BaseBriefing)_tieBriefing : (_platform == Settings.Platform.XvT ? (BaseBriefing)_xvtBriefing : (BaseBriefing)_xwaBriefing));
+            BaseBriefing brief = (_platform == Settings.Platform.TIE ? _tieBriefing : (_platform == Settings.Platform.XvT ? _xvtBriefing : (BaseBriefing)_xwaBriefing));
             int oldEventSize = 2 + brief.EventParameterCount(_events[i, 1]);
             int newEventSize = 2 + brief.EventParameterCount((short)(cboEvent.SelectedIndex + 3));
             if(hasAvailableEventSpace(newEventSize - oldEventSize) == false)
@@ -3231,6 +3162,7 @@ namespace Idmr.Yogeme
                 MessageBox.Show("Cannot change Event Type because the briefing list is full and the replaced event needs more space than is available.", "Error");
                 return;
             }
+			if (onModified != null) onModified("ChangeEvent", new EventArgs());
 			_events[i, 1] = (short)(cboEvent.SelectedIndex + 3);
 			updateParameters();
 			updateList(i);
@@ -3240,36 +3172,60 @@ namespace Idmr.Yogeme
 			int i = lstEvents.SelectedIndex;
 			if (i == -1 || _loading) return;
 			if ((_events[i, 1] >= (int)BaseBriefing.EventType.FGTag1 && _events[i, 1] <= (int)BaseBriefing.EventType.FGTag8) || _events[i, 1] == (int)BaseBriefing.EventType.XwaNewIcon
-				|| _events[i, 1] == (int)BaseBriefing.EventType.XwaMoveIcon || _events[i, 1] == (int)BaseBriefing.EventType.XwaRotateIcon) _events[i, 2] = (short)cboFG.SelectedIndex;
-			else if (_events[i, 1] == (int)BaseBriefing.EventType.XwaShipInfo) _events[i, 3] = (short)cboFG.SelectedIndex;
+				|| _events[i, 1] == (int)BaseBriefing.EventType.XwaMoveIcon || _events[i, 1] == (int)BaseBriefing.EventType.XwaRotateIcon)
+			{
+				if (onModified != null) onModified("ChangeFG", new EventArgs());
+				_events[i, 2] = (short)cboFG.SelectedIndex;
+			}
+			else if (_events[i, 1] == (int)BaseBriefing.EventType.XwaShipInfo)
+			{
+				if (onModified != null) onModified("ChangeFG", new EventArgs());
+				_events[i, 3] = (short)cboFG.SelectedIndex;
+			}
 			updateList(i);
 		}
 		void cboIFF_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			int i = lstEvents.SelectedIndex;
 			if (i == -1 || _loading) return;
-			if (_events[i, 1] == (int)BaseBriefing.EventType.XwaNewIcon) _events[i, 4] = (short)cboIFF.SelectedIndex;
+			if (_events[i, 1] == (int)BaseBriefing.EventType.XwaNewIcon)
+			{
+				if (onModified != null) onModified("ChangeIFF", new EventArgs());
+				_events[i, 4] = (short)cboIFF.SelectedIndex;
+			}
 			updateList(i);
 		}
 		void cboRotate_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			int i = lstEvents.SelectedIndex;
 			if (i == -1 || _loading) return;
-			if (_events[i, 1] == (int)BaseBriefing.EventType.XwaRotateIcon) _events[i, 3] = (short)cboRotate.SelectedIndex;
+			if (_events[i, 1] == (int)BaseBriefing.EventType.XwaRotateIcon)
+			{
+				if (onModified != null) onModified("RotateIcon", new EventArgs());
+				_events[i, 3] = (short)cboRotate.SelectedIndex;
+			}
 			updateList(i);
 		}
 		void cboString_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			int i = lstEvents.SelectedIndex;
 			if (i == -1 || _loading) return;
-			if (_events[i, 1] == (int)BaseBriefing.EventType.TitleText || _events[i, 1] == (int)BaseBriefing.EventType.CaptionText) _events[i, 2] = (short)cboString.SelectedIndex;
+			if (_events[i, 1] == (int)BaseBriefing.EventType.TitleText || _events[i, 1] == (int)BaseBriefing.EventType.CaptionText)
+			{
+				if (onModified != null) onModified("ChangeString", new EventArgs());
+				_events[i, 2] = (short)cboString.SelectedIndex;
+			}
 			updateList(i);
 		}
 		void cboTag_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			int i = lstEvents.SelectedIndex;
 			if (i == -1 || _loading) return;
-			if (_events[i, 1] >= (int)BaseBriefing.EventType.TextTag1 && _events[i, 1] <= (int)BaseBriefing.EventType.TextTag8) _events[i, 2] = (short)cboTag.SelectedIndex;
+			if (_events[i, 1] >= (int)BaseBriefing.EventType.TextTag1 && _events[i, 1] <= (int)BaseBriefing.EventType.TextTag8)
+			{
+				if (onModified != null) onModified("ChangeTag", new EventArgs());
+				_events[i, 2] = (short)cboTag.SelectedIndex;
+			}
 			updateList(i);
 		}
 
@@ -3283,6 +3239,7 @@ namespace Idmr.Yogeme
 				if (_events[j, 1] == 0) break;
 				for (int h=0;h<6;h++) _events[j, h] = _events[j+1, h];
 			}
+			if (onModified != null) onModified("EventDelete", new EventArgs());
 			try { lstEvents.SelectedIndex = i; }
 			catch { lstEvents.SelectedIndex = i-1; }
 		}
@@ -3298,6 +3255,7 @@ namespace Idmr.Yogeme
 			lstEvents.Items[i] = lstEvents.Items[i+1];
 			lstEvents.Items[i+1] = item;
 			lstEvents.SelectedIndex = i+1;
+			if (onModified != null) onModified("EventDown", new EventArgs());
 		}
 		void cmdNew_Click(object sender, EventArgs e)
 		{
@@ -3334,6 +3292,7 @@ namespace Idmr.Yogeme
 			lstEvents.Items[i] = lstEvents.Items[i-1];
 			lstEvents.Items[i-1] = item;
 			lstEvents.SelectedIndex = i-1;
+			if (onModified != null) onModified("EventUp", new EventArgs());
 		}
 
 		void lstEvents_SelectedIndexChanged(object sender, EventArgs e)
@@ -3363,18 +3322,22 @@ namespace Idmr.Yogeme
 		{
 			int i = lstEvents.SelectedIndex;
 			if (i == -1 || _loading) return;
-			if (_events[i, 1] == (int)BaseBriefing.EventType.XwaChangeRegion) _events[i, 2] = (short)(numRegion.Value - 1);
+			if (_events[i, 1] == (int)BaseBriefing.EventType.XwaChangeRegion)
+			{
+				if (onModified != null) onModified("ChangeRegion", new EventArgs());
+				_events[i, 2] = (short)(numRegion.Value - 1);
+			}
 			updateList(i);
 		}
         void numTime_ValueChanged(object sender, EventArgs e)
 		{
-            lblEventTime.Text = String.Format("{0:= 0.00 seconds}", numTime.Value / _timerInterval);
+            lblEventTime.Text = string.Format("{0:= 0.00 seconds}", numTime.Value / _timerInterval);
             int size = lstEvents.Items.Count;
             int i = lstEvents.SelectedIndex;
             if (_loading || i == -1) return;
             _loading = true;
-
-            short diff = (short)(numTime.Value - _events[i, 0]);
+			if (onModified != null) onModified("ChangeTime", new EventArgs());
+			short diff = (short)(numTime.Value - _events[i, 0]);
             _events[i, 0] = (short)numTime.Value;
 
             int p = i;
@@ -3423,18 +3386,34 @@ namespace Idmr.Yogeme
 		{
 			int i = lstEvents.SelectedIndex;
 			if (i == -1 || _loading) return;
-			if (_events[i, 1] == (int)BaseBriefing.EventType.MoveMap || _events[i, 1] == (int)BaseBriefing.EventType.ZoomMap) _events[i, 2] = (short)numX.Value;
+			if (_events[i, 1] == (int)BaseBriefing.EventType.MoveMap || _events[i, 1] == (int)BaseBriefing.EventType.ZoomMap)
+			{
+				if (onModified != null) onModified("ChangeX", new EventArgs());
+				_events[i, 2] = (short)numX.Value;
+			}
 			else if ((_events[i, 1] >= (int)BaseBriefing.EventType.TextTag1 && _events[i, 1] <= (int)BaseBriefing.EventType.TextTag8)
-				|| _events[i, 1] == (int)BaseBriefing.EventType.XwaMoveIcon) _events[i, 3] = (short)numX.Value;
+				|| _events[i, 1] == (int)BaseBriefing.EventType.XwaMoveIcon)
+			{
+				if (onModified != null) onModified("ChangeX", new EventArgs());
+				_events[i, 3] = (short)numX.Value;
+			}
 			updateList(i);
 		}
 		void numY_ValueChanged(object sender, EventArgs e)
 		{
 			int i = lstEvents.SelectedIndex;
 			if (i == -1 || _loading) return;
-			if (_events[i, 1] == (int)BaseBriefing.EventType.MoveMap || _events[i, 1] == (int)BaseBriefing.EventType.ZoomMap) _events[i, 3] = (short)numY.Value;
+			if (_events[i, 1] == (int)BaseBriefing.EventType.MoveMap || _events[i, 1] == (int)BaseBriefing.EventType.ZoomMap)
+			{
+				if (onModified != null) onModified("ChangeY", new EventArgs());
+				_events[i, 3] = (short)numY.Value;
+			}
 			else if ((_events[i, 1] >= (int)BaseBriefing.EventType.TextTag1 && _events[i, 1] <= (int)BaseBriefing.EventType.TextTag8)
-				|| _events[i, 1] == (int)BaseBriefing.EventType.XwaMoveIcon) _events[i, 4] = (short)numY.Value;
+				|| _events[i, 1] == (int)BaseBriefing.EventType.XwaMoveIcon)
+			{
+				if (onModified != null) onModified("ChangeY", new EventArgs());
+				_events[i, 4] = (short)numY.Value;
+			}
 			updateList(i);
 		}
 
@@ -3442,7 +3421,11 @@ namespace Idmr.Yogeme
 		{
 			int i = lstEvents.SelectedIndex;
 			if (i == -1 || _loading) return;
-			if (_events[i, 1] == (int)BaseBriefing.EventType.XwaShipInfo) _events[i, 2] = (short)(optOn.Checked ? 1 : 0);
+			if (_events[i, 1] == (int)BaseBriefing.EventType.XwaShipInfo)
+			{
+				if (onModified != null) onModified("ToggleInfo", new EventArgs());
+				_events[i, 2] = (short)(optOn.Checked ? 1 : 0);
+			}
 			updateList(i);
 		}
 		#endregion tabEvents
@@ -3580,7 +3563,7 @@ namespace Idmr.Yogeme
 		/// <summary>Switches currently visible team briefing.</summary>
 		void cboBriefIndex1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if(_loading == true) return;
+            if (_loading) return;
             _loading = true;
            cboBriefIndex2.SelectedIndex = cboBriefIndex1.SelectedIndex;
             _loading = false;
@@ -3589,7 +3572,7 @@ namespace Idmr.Yogeme
         }
         void cboBriefIndex2_SelectedIndexChanged(object sender, EventArgs e)
         {
-           if(_loading == true) return;
+           if (_loading) return;
             _loading = true;
            cboBriefIndex1.SelectedIndex = cboBriefIndex2.SelectedIndex;
             _loading = false;
@@ -3646,7 +3629,8 @@ namespace Idmr.Yogeme
                 if(!found)
                     teams[i] = false;
             }
-            updateTitle();
+			if (onModified != null) onModified("ChangeTeams", new EventArgs());
+			updateTitle();
         }
 		#endregion tabTeams
 	}
@@ -3668,5 +3652,7 @@ namespace Idmr.Yogeme
 	 * BYTE width, BYTE height
 	 * BITFIELD; bottom 4 are left px, top 4 are right px, always in pairs even for odd sizes
 	 * reads left to right, top to bottom
+
+	NOTE: the DAT files were deprecated to just use BMPs, but had to keep XvT since it sizes the FG tags according to size, not a fixed box
 	 */
 }
