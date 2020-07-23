@@ -1229,9 +1229,12 @@ namespace Idmr.Yogeme
         void frmMap_FormClosed(object sender, FormClosedEventArgs e) { _map.Dispose(); }
         void frmMap_FormClosing(object sender, FormClosingEventArgs e)
         {
-            onDataModified = null;  //[JB] Remove the event handler so it doesn't get called.
+            onDataModified = null;
             _isClosing = true;
+            //[JB] Stop and deactivate the timer.
+            //Important! There's an issue where the event can trigger after the map is disposed, even after calling Stop(). The event must be unregistered.
             mapPaintRedrawTimer.Stop();
+            mapPaintRedrawTimer.Tick -= mapPaintRedrawTimer_Tick;
         }
         void frmMap_Load(object sender, EventArgs e)
 		{

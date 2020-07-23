@@ -37,7 +37,7 @@ namespace Idmr.Yogeme
 		Mission _mission;
 		bool _applicationExit;				//for frmTIE_Closing, confirms application exit vs switching platforms
 		int _activeFG = 0;			//counter to keep track of current FG being displayed
-		int _startingShips = 0;		//counter for craft in play at start <30s, warning above 28
+		int _startingShips = 1;		//counter for craft in play at start <30s, warning above 28
         int _startingObjects = 0;
 		bool _loading;		//alerts certain functions to disable during the loading process
         bool _noRefresh = false;
@@ -199,8 +199,6 @@ namespace Idmr.Yogeme
 			_mission = new Mission();
 			_config.LastMission = "";
 			_activeFG = 0;
-            _startingShips = 0;
-            _startingObjects = 0;
 			_mission.FlightGroups[0].CraftType = 1;
 			_mission.FlightGroups[0].ObjectType = 0;
 			_mission.FlightGroups[0].IFF = 1;
@@ -564,7 +562,7 @@ namespace Idmr.Yogeme
 			for (int i = 0; i < 3; i++) txtEoM[i].Text = _mission.EndOfMissionMessages[i];
 			numMissionTime.Value = _mission.TimeLimitMinutes;
 			cboEndEvent.SelectedIndex = _mission.EndEvent;
-			numUnknown1.Value = _mission.Unknown1;
+			numRndSeed.Value = _mission.RndSeed;
 			cboMissionLocation.SelectedIndex = _mission.Location;
 
 			//Check if this is a training course.
@@ -1513,7 +1511,7 @@ namespace Idmr.Yogeme
             lblCraft.Visible = !train || start;
             lblCraft.Text = !start ? "# of craft" : "Minutes";
             numCraft.Minimum = !start ? 1 : 0;
-            numCraft.Maximum = !start ? 9 : 32727;  //For starting platforms, it's the minutes on the clock.
+            numCraft.Maximum = !start ? 255 : 32727;  //For starting platforms, it's the minutes on the clock.
             numCraft.Visible = !train || start;
             lblSeconds.Visible = start;
             numSeconds.Visible = start;
@@ -2161,9 +2159,9 @@ namespace Idmr.Yogeme
             if (!isCraftFG) chkSP1.Checked = true; //Always check for display purposes, but value is not saved with mission.
             _table.AcceptChanges();
             _tableRaw.AcceptChanges();
-            numYaw.Value = _mission.FlightGroups[_activeFG].Yaw;
-            numPitch.Value = _mission.FlightGroups[_activeFG].Pitch;
-            numRoll.Value = _mission.FlightGroups[_activeFG].Roll;
+			numYaw.Value = (int)Math.Round((double)_mission.FlightGroups[_activeFG].Yaw / 256 * 360);
+			numPitch.Value = (int)Math.Round((double)_mission.FlightGroups[_activeFG].Pitch / 256 * 360) - 90;
+            numRoll.Value = (int)Math.Round((double)_mission.FlightGroups[_activeFG].Roll / 256 * 360);
             enableRot((_mission.FlightGroups[_activeFG].ObjectType == 0 ? false : true));
             _loading = btemp;
         }
@@ -2179,15 +2177,18 @@ namespace Idmr.Yogeme
 
 		void numPitch_Leave(object sender, EventArgs e)
 		{
-			_mission.FlightGroups[_activeFG].Pitch = Common.Update(this, _mission.FlightGroups[_activeFG].Pitch, (short)numPitch.Value);
+			short Pitch = (short)Math.Round((double)((numPitch.Value >= 270) ? numPitch.Value - 270 : numPitch.Value + 90) / 360 * 256);
+			_mission.FlightGroups[_activeFG].Pitch = Common.Update(this, _mission.FlightGroups[_activeFG].Pitch, Pitch);
 		}
 		void numRoll_Leave(object sender, EventArgs e)
 		{
-			_mission.FlightGroups[_activeFG].Roll = Common.Update(this, _mission.FlightGroups[_activeFG].Roll, (short)numRoll.Value);
+			short Roll = (short)Math.Round((double)numRoll.Value / 360 * 256);
+			_mission.FlightGroups[_activeFG].Roll = Common.Update(this, _mission.FlightGroups[_activeFG].Roll, Roll);
 		}
 		void numYaw_Leave(object sender, EventArgs e)
 		{
-			_mission.FlightGroups[_activeFG].Yaw = Common.Update(this, _mission.FlightGroups[_activeFG].Yaw, (short)numYaw.Value);
+			short Yaw = (short)Math.Round((double)numYaw.Value / 360 * 256);
+			_mission.FlightGroups[_activeFG].Yaw = Common.Update(this, _mission.FlightGroups[_activeFG].Yaw, Yaw);
 		}
 
 		void table_RowChanged(object sender, DataRowChangeEventArgs e)
@@ -2272,7 +2273,7 @@ namespace Idmr.Yogeme
             if (_loading) return;
             _mission.TimeLimitMinutes = Common.Update(this, _mission.TimeLimitMinutes, Convert.ToInt16(numMissionTime.Value));
             _mission.EndEvent = Common.Update(this, _mission.EndEvent, Convert.ToInt16(cboEndEvent.SelectedIndex));
-            _mission.Unknown1 = Common.Update(this, _mission.Unknown1, Convert.ToInt16(numUnknown1.Value));
+            _mission.RndSeed = Common.Update(this, _mission.RndSeed, Convert.ToInt16(numRndSeed.Value));
             _mission.Location = Common.Update(this, _mission.Location, Convert.ToInt16(cboMissionLocation.SelectedIndex));
         }
 		#endregion

@@ -437,7 +437,9 @@ namespace Idmr.Yogeme
         void frmBrief_FormClosing(object sender, FormClosingEventArgs e)
 		{
 			Save();
-            _popupTimer.Stop(); //[JB] Stop and deactivate the timers.  Hopefully this fixes a rare exception (possibly a race condition?) where the event would still try to repaint the map even after everything was disposed.
+            //[JB] Stop and deactivate the timers.
+            //Important! There's an issue where the event can trigger after the map is disposed, even after calling Stop(). The event must be unregistered.
+            _popupTimer.Stop();
             _popupTimer.Tick -= popupTimer_Tick;
             _mapPaintRedrawTimer.Stop();
             _mapPaintRedrawTimer.Tick -= mapPaintRedrawTimer_Tick;

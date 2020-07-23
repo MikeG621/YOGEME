@@ -63,7 +63,7 @@ namespace Idmr.Yogeme
 		void cboFormation_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (cboFormation.SelectedIndex == -1) return;
-			pctFormation.BackgroundImage = (Bitmap)_forms[cboFormation.SelectedIndex];
+			pctFormation.Image = (Bitmap)_forms[cboFormation.SelectedIndex];
 		}
 
 		void cmdCancel_Click(object sender, EventArgs e) { Close(); }

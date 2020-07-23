@@ -142,6 +142,7 @@ namespace Idmr.Yogeme
 		byte _activeFGGoal = 0;
 		byte _activeOrder = 0;
 		byte _activeOptionCraft = 0;
+		byte _activeSkipTrigger = 0;
 		bool _hookBackdropInstalled;
 		#endregion
 		#region control arrays
@@ -561,35 +562,18 @@ namespace Idmr.Yogeme
 		{
 			while (text.Contains("FG:"))
 			{
-				int index = text.IndexOf("FG:") + 3;
-				int length = text.IndexOfAny(new char[] { ' ', ',', '\0' }, index) - index;
-				int fg;
-				if (length > 0) fg = int.Parse(text.Substring(index, length));
-				else fg = int.Parse(text.Substring(index));
-				string s = (fg >= 0 && fg < _mission.FlightGroups.Count) ? _mission.FlightGroups[fg].ToString() : "Undefined";  //[JB] Fixes some potential issues of bad or broken data.
-				text = text.Replace("FG:" + fg, s);
+				int fg = Common.ParseIntAfter(text, "FG:");
+				text = text.Replace("FG:" + fg, (fg >= 0 && fg < _mission.FlightGroups.Count) ? _mission.FlightGroups[fg].ToString() : "Undefined");
 			}
 			while (text.Contains("FG2:"))
 			{
-				int index = text.IndexOf("FG2:") + 4;
-				int length = text.IndexOfAny(new char[] { ' ', ',', '\0' }, index) - index;
-				int fg;
-				if (length > 0) fg = int.Parse(text.Substring(index, length));
-				else fg = int.Parse(text.Substring(index));
-				string s = (fg >= 0 && fg < cboADPara.Items.Count) ? cboADPara.Items[fg].ToString() : "Undefined";
-				text = text.Replace("FG2:" + fg, s);    // this could be any Para, but they should all be the same anyway
+				int fg = Common.ParseIntAfter(text, "FG2:");
+				text = text.Replace("FG2:" + fg, (fg >= 0 && fg < cboADPara.Items.Count) ? cboADPara.Items[fg].ToString() : "Undefined"); // this could be any Para, but they should all be the same anyway
 			}
 			while (text.Contains("TM:"))
 			{
-				int index = text.IndexOf("TM:") + 3;
-				int length = text.IndexOfAny(new char[] { ' ', ',', '\0' }, index) - index;
-				int team;
-				if (length > 0) team = int.Parse(text.Substring(index, length));
-				else team = int.Parse(text.Substring(index));
-				string replace = (_mission.Teams[team].Name == "" ? (team + 1).ToString() : _mission.Teams[team].Name);
-				if (replace.IndexOf("Team") < 0)
-					replace = "Team " + replace;
-				text = text.Replace("TM:" + team, replace);  //[JB] By request, explicitly label as a team.
+				int team = Common.ParseIntAfter(text, "TM:");
+				text = text.Replace("TM:" + team, (team >= 0 && team < 10 && _mission.Teams[team].Name != "") ? _mission.Teams[team].Name : "Team " + (team + 1).ToString());
 			}
 			return text;
 		}
@@ -665,9 +649,10 @@ namespace Idmr.Yogeme
 			else
 			{
 				enableMessages(true);
-				for (int i = 0; i < _mission.Messages.Count; i++) lstMessages.Items.Add(_mission.Messages[i].MessageString);
+				for (int i = 0; i < _mission.Messages.Count; i++)
+					lstMessages.Items.Add(getNumberedMessage(i));
 			}
-			bool btemp = _loading;  //[JB] Not that InstantUpdate exists, we need to be more careful about batch updating of form information.
+			bool btemp = _loading;  //[JB] Now that InstantUpdate exists, we need to be more careful about batch updating of form information.
 			_loading = true;
 			updateMissionTabs();
 			cboGlobalTeam.SelectedIndex = -1;   // otherwise it doesn't trigger an index change
@@ -772,6 +757,8 @@ namespace Idmr.Yogeme
 			}
 			_config.LastPlatform = Settings.Platform.XWA;
 			_applicationExit = true;    //becomes false if selecting "New Mission" from menu
+			_config.LastMission = "";
+			_config.LastPlatform = Settings.Platform.XWA;
 			opnXWA.InitialDirectory = _config.GetWorkingPath(); //[JB] Updated for MRU access.  Defaults to installation and mission folder if not enabled.
 			savXWA.InitialDirectory = _config.GetWorkingPath();
 			_iffs = Strings.IFF;
@@ -921,7 +908,7 @@ namespace Idmr.Yogeme
 			cboRole2Teams.Items.AddRange(Strings.RoleTeams);
 			cboRole1Teams.Items[0] = "Role 1 Disabled";
 			cboRole2Teams.Items[0] = "Role 2 Disabled";
-			for (int i = 0; i < 10; i++)   //Update craft role designation dropdown items.
+			for (int i = 0; i < 8; i++)   //Update craft role designation dropdown items.
 			{
 				if (_mission.Teams[i].Name != "")
 				{
@@ -1249,8 +1236,8 @@ namespace Idmr.Yogeme
 			foreach (Label lbl in lblGlobTrig) setInteractiveLabelColor(lbl, lbl.Tag.ToString() == _activeGlobalTrigger.ToString());
 			foreach (Label lbl in lblTeam) setInteractiveLabelColor(lbl, lbl.Tag.ToString() == _activeTeam.ToString());
 			foreach (Label lbl in lblGG) setInteractiveLabelColor(lbl, false);  //No variable tracks which one is selected, set colors but ignore highlight.
-			setInteractiveLabelColor(lblSkipTrig1, false);  //No variable tracks which one is selected.
-			setInteractiveLabelColor(lblSkipTrig2, false);
+			setInteractiveLabelColor(lblSkipTrig1, _activeSkipTrigger == 0);
+			setInteractiveLabelColor(lblSkipTrig2, _activeSkipTrigger == 1);
 		}
 
 		void briefingModifiedCallback(object sender, EventArgs e)
@@ -2687,13 +2674,27 @@ namespace Idmr.Yogeme
 			parameterRefresh(cboADPara);
 			parameterRefresh(cboMessPara);
 			parameterRefresh(cboGlobalPara);
-			//[JB] This is the simplest way to force all labels to refresh.  May not be the most efficient though...
+			//[JB] This is the simplest way to force all labels to refresh, but not the most efficient. An annoying side effect of forcing clicks is that the current selection will change, so restore after refreshing.
+			int restore = _activeArrDepTrigger; 
 			foreach (var lbl in lblADTrig) lblADTrigArr_Click(lbl, new EventArgs());
+			lblADTrigArr_Click(lblADTrig[restore], new EventArgs());
+
+			restore = _activeGlobalTrigger;
 			foreach (var lbl in lblGlobTrig) lblGlobTrigArr_Click(lbl, new EventArgs());
+			lblGlobTrigArr_Click(lblGlobTrig[restore], new EventArgs());
+
+			restore = _activeOrder;
 			foreach (var lbl in lblOrder) lblOrderArr_Click(lbl, new EventArgs());
+			lblOrderArr_Click(lblOrder[restore], new EventArgs());
+
+			restore = _activeMessageTrigger;
 			foreach (var lbl in lblMessTrig) lblMessTrigArr_Click(lbl, new EventArgs());
-			lblSkipTrigArr_Click(lblSkipTrig1, new EventArgs());
-			lblSkipTrigArr_Click(lblSkipTrig2, new EventArgs());
+			lblMessTrigArr_Click(lblMessTrig[restore], new EventArgs());
+
+			restore = _activeSkipTrigger;
+			lblSkipTrigArr_Click(restore == 0 ? lblSkipTrig2 : lblSkipTrig1, new EventArgs());  //Only two, inactive one first, then active.
+			lblSkipTrigArr_Click(restore == 0 ? lblSkipTrig1 : lblSkipTrig2, new EventArgs());
+
 			_loading = temp;
 			listRefresh();
 		}
@@ -2736,7 +2737,7 @@ namespace Idmr.Yogeme
 			numGG.Value = _mission.FlightGroups[_activeFG].GlobalGroup;
 			numGU.Value = _mission.FlightGroups[_activeFG].GlobalUnit;
 			chkGU.Checked = _mission.FlightGroups[_activeFG].GlobalNumbering;
-			cboStatus.SelectedIndex = _mission.FlightGroups[_activeFG].Status1;
+			refreshStatus();  //Handles Status1, special case for mines.
 			cboStatus2.SelectedIndex = _mission.FlightGroups[_activeFG].Status2;
 			cboWarheads.SelectedIndex = _mission.FlightGroups[_activeFG].Missile;
 			cboBeam.SelectedIndex = _mission.FlightGroups[_activeFG].Beam;
@@ -2904,6 +2905,15 @@ namespace Idmr.Yogeme
 				numSC_ValueChanged("EnableBackdrop", new EventArgs());
 			}
 		}
+		void refreshStatus()
+		{
+			cboStatus.Items.Clear();
+			bool isMine = (_mission.FlightGroups[_activeFG].CraftType >= 0x4B && _mission.FlightGroups[_activeFG].CraftType <= 0x4D);
+			lblStatus.Text = isMine ? "Mine Formation" : "Status";
+			cboStatus.Items.AddRange(isMine ? Strings.FormationMine : Strings.Status);
+			Common.SafeSetCBO(cboStatus, isMine ? (int)_mission.FlightGroups[_activeFG].Status1 & 3 : _mission.FlightGroups[_activeFG].Status1, true);
+			cboFormation.Enabled = isMine ? false : true;
+		}
 
 		void cboCraft_SelectedIndexChanged(object sender, EventArgs e)
 		{
@@ -2911,6 +2921,7 @@ namespace Idmr.Yogeme
 			if (_loading) return;
 			_mission.FlightGroups[_activeFG].CraftType = Common.Update(this, _mission.FlightGroups[_activeFG].CraftType, Convert.ToByte(cboCraft.SelectedIndex));
 			updateFGList();
+			refreshStatus();
 		}
 		void cboFormation_SelectedIndexChanged(object sender, EventArgs e)
 		{
@@ -4082,6 +4093,7 @@ namespace Idmr.Yogeme
 			Mission.Trigger trigger = _mission.FlightGroups[_activeFG].Orders[r, o].SkipTriggers[i];
 			setInteractiveLabelColor(l, true);
 			setInteractiveLabelColor(ll, false);
+			_activeSkipTrigger = (byte)i;
 			bool btemp = _loading;
 			_loading = true;
 			cboSkipTrig.SelectedIndex = trigger.Condition;
@@ -4352,6 +4364,10 @@ namespace Idmr.Yogeme
 				lblMessage.Text = "Message #0 of 0";
 				return;
 			}
+			//The numbering will be wrong, so update all messages from the deletion point onwards.
+			for (int i = _activeMessage; i < _mission.Messages.Count; i++)
+				lstMessages.Items[i] = getNumberedMessage(i);
+
 			lstMessages.SelectedIndex = _activeMessage;
 			Common.Title(this, _loading);
 		}
@@ -4378,9 +4394,7 @@ namespace Idmr.Yogeme
 		void messListRefresh()
 		{
 			if (_mission.Messages.Count == 0) return;
-			string msg = _mission.Messages[_activeMessage].MessageString;
-			if (msg == "") msg = " *"; //[JB] Feature request to display something if the string is empty.
-			lstMessages.Items[_activeMessage] = msg;
+			lstMessages.Items[_activeMessage] = getNumberedMessage(_activeMessage);
 			lstMessages.Invalidate(lstMessages.GetItemRectangle(_activeMessage)); //[JB] Force refresh if color changed
 		}
 		void newMess()
@@ -4392,7 +4406,7 @@ namespace Idmr.Yogeme
 			}
 			_activeMessage = _mission.Messages.Add();
 			if (_mission.Messages.Count == 1) enableMessages(true);
-			lstMessages.Items.Add(_mission.Messages[_activeMessage].MessageString);
+			lstMessages.Items.Add(getNumberedMessage(_activeMessage));
 			lstMessages.SelectedIndex = _activeMessage;
 			Common.Title(this, _loading);
 		}
@@ -4407,6 +4421,10 @@ namespace Idmr.Yogeme
 				lstMessages.SelectedIndex = dstIndex;
 				Common.Title(this, false);
 			}
+		}
+		string getNumberedMessage(int index)
+		{
+			return (index >= 0 && index < _mission.Messages.Count) ? "#" + (index + 1) + ": " + _mission.Messages[index].MessageString : "";
 		}
 
 		void lstMessages_DrawItem(object sender, DrawItemEventArgs e)
@@ -4794,8 +4812,11 @@ namespace Idmr.Yogeme
 			for (int i = 0; i < _mission.Teams.Count; i++)
 				BriefingForm.sharedTeamNames[i] = _mission.Teams[i].Name;
 
-			cboRole1Teams.Items[1 + _activeTeam] = team;   //Each dropdown has 10 teams beginning at index[1]
-			cboRole2Teams.Items[1 + _activeTeam] = team;
+			if (_activeTeam < 8)
+			{
+				cboRole1Teams.Items[1 + _activeTeam] = team;   //Each dropdown has 8 teams beginning at index[1]
+				cboRole2Teams.Items[1 + _activeTeam] = team;
+			}
 
 			if (_activeTeam >= 0 && _activeTeam < 8)       //8 teams in the Radio list beginning at index[1]
 				cboRadio.Items[1 + _activeTeam] = team;

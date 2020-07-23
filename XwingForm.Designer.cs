@@ -153,8 +153,8 @@ namespace Idmr.Yogeme
 			this.cboMissionLocation = new System.Windows.Forms.ComboBox();
 			this.cboEndEvent = new System.Windows.Forms.ComboBox();
 			this.label83 = new System.Windows.Forms.Label();
-			this.numUnknown1 = new System.Windows.Forms.NumericUpDown();
-			this.label82 = new System.Windows.Forms.Label();
+			this.numRndSeed = new System.Windows.Forms.NumericUpDown();
+			this.lblRndSeed = new System.Windows.Forms.Label();
 			this.numMissionTime = new System.Windows.Forms.NumericUpDown();
 			this.label19 = new System.Windows.Forms.Label();
 			this.lblMissionTimeNote = new System.Windows.Forms.Label();
@@ -258,7 +258,7 @@ namespace Idmr.Yogeme
 			this.tabOrders.SuspendLayout();
 			this.tabMission.SuspendLayout();
 			this.grpMission.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.numUnknown1)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.numRndSeed)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numMissionTime)).BeginInit();
 			this.groupBox24.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this._dataWaypoints)).BeginInit();
@@ -533,7 +533,7 @@ namespace Idmr.Yogeme
 			// 
 			this.lblFG.Location = new System.Drawing.Point(296, 349);
 			this.lblFG.Name = "lblFG";
-			this.lblFG.Size = new System.Drawing.Size(120, 16);
+			this.lblFG.Size = new System.Drawing.Size(132, 16);
 			this.lblFG.TabIndex = 11;
 			this.lblFG.Text = "Flight Group #0 of 0";
 			// 
@@ -927,7 +927,7 @@ namespace Idmr.Yogeme
 			// 
 			this.lblStarting.Location = new System.Drawing.Point(296, 374);
 			this.lblStarting.Name = "lblStarting";
-			this.lblStarting.Size = new System.Drawing.Size(120, 32);
+			this.lblStarting.Size = new System.Drawing.Size(132, 32);
 			this.lblStarting.TabIndex = 11;
 			this.lblStarting.Text = "1 Craft at 30 seconds";
 			// 
@@ -1338,12 +1338,12 @@ namespace Idmr.Yogeme
 			// 
 			this.numRoll.Location = new System.Drawing.Point(288, 440);
 			this.numRoll.Maximum = new decimal(new int[] {
-            180,
+            360,
             0,
             0,
             0});
 			this.numRoll.Minimum = new decimal(new int[] {
-            179,
+            359,
             0,
             0,
             -2147483648});
@@ -1356,12 +1356,12 @@ namespace Idmr.Yogeme
 			// 
 			this.numPitch.Location = new System.Drawing.Point(288, 408);
 			this.numPitch.Maximum = new decimal(new int[] {
-            180,
+            360,
             0,
             0,
             0});
 			this.numPitch.Minimum = new decimal(new int[] {
-            179,
+            359,
             0,
             0,
             -2147483648});
@@ -1374,12 +1374,12 @@ namespace Idmr.Yogeme
 			// 
 			this.numYaw.Location = new System.Drawing.Point(288, 376);
 			this.numYaw.Maximum = new decimal(new int[] {
-            180,
+            360,
             0,
             0,
             0});
 			this.numYaw.Minimum = new decimal(new int[] {
-            179,
+            359,
             0,
             0,
             -2147483648});
@@ -1648,8 +1648,8 @@ namespace Idmr.Yogeme
 			this.grpMission.Controls.Add(this.cboMissionLocation);
 			this.grpMission.Controls.Add(this.cboEndEvent);
 			this.grpMission.Controls.Add(this.label83);
-			this.grpMission.Controls.Add(this.numUnknown1);
-			this.grpMission.Controls.Add(this.label82);
+			this.grpMission.Controls.Add(this.numRndSeed);
+			this.grpMission.Controls.Add(this.lblRndSeed);
 			this.grpMission.Controls.Add(this.numMissionTime);
 			this.grpMission.Controls.Add(this.label19);
 			this.grpMission.Location = new System.Drawing.Point(20, 12);
@@ -1695,31 +1695,31 @@ namespace Idmr.Yogeme
 			this.label83.TabIndex = 23;
 			this.label83.Text = "Location:";
 			// 
-			// numUnknown1
+			// numRndSeed
 			// 
-			this.numUnknown1.Location = new System.Drawing.Point(127, 60);
-			this.numUnknown1.Maximum = new decimal(new int[] {
+			this.numRndSeed.Location = new System.Drawing.Point(127, 60);
+			this.numRndSeed.Maximum = new decimal(new int[] {
             32767,
             0,
             0,
             0});
-			this.numUnknown1.Minimum = new decimal(new int[] {
+			this.numRndSeed.Minimum = new decimal(new int[] {
             32768,
             0,
             0,
             -2147483648});
-			this.numUnknown1.Name = "numUnknown1";
-			this.numUnknown1.Size = new System.Drawing.Size(48, 20);
-			this.numUnknown1.TabIndex = 22;
+			this.numRndSeed.Name = "numRndSeed";
+			this.numRndSeed.Size = new System.Drawing.Size(48, 20);
+			this.numRndSeed.TabIndex = 22;
 			// 
-			// label82
+			// lblRndSeed
 			// 
-			this.label82.AutoSize = true;
-			this.label82.Location = new System.Drawing.Point(59, 62);
-			this.label82.Name = "label82";
-			this.label82.Size = new System.Drawing.Size(62, 13);
-			this.label82.TabIndex = 21;
-			this.label82.Text = "Unknown1:";
+			this.lblRndSeed.AutoSize = true;
+			this.lblRndSeed.Location = new System.Drawing.Point(11, 62);
+			this.lblRndSeed.Name = "lblRndSeed";
+			this.lblRndSeed.Size = new System.Drawing.Size(105, 13);
+			this.lblRndSeed.TabIndex = 21;
+			this.lblRndSeed.Text = "Randomizer (unused):";
 			// 
 			// numMissionTime
 			// 
@@ -2308,7 +2308,7 @@ namespace Idmr.Yogeme
 			this.tabMission.ResumeLayout(false);
 			this.grpMission.ResumeLayout(false);
 			this.grpMission.PerformLayout();
-			((System.ComponentModel.ISupportInitialize)(this.numUnknown1)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.numRndSeed)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.numMissionTime)).EndInit();
 			this.groupBox24.ResumeLayout(false);
 			this.groupBox24.PerformLayout();
@@ -2467,8 +2467,8 @@ namespace Idmr.Yogeme
 		private MenuItem menuNewXwing;
 		private NumericUpDown numMissionTime;
 		private Label label19;
-		private Label label82;
-		private NumericUpDown numUnknown1;
+		private Label lblRndSeed;
+		private NumericUpDown numRndSeed;
 		private Label label83;
 		private ComboBox cboEndEvent;
 		private Label label84;

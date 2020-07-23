@@ -245,7 +245,7 @@ namespace Idmr.Yogeme
 			for (int i = 0; i < 103; i++)
 			{
 				thumbs[i].Tag = i;
-				thumbs[i].BackgroundImageLayout = ImageLayout.Zoom;
+				thumbs[i].SizeMode = PictureBoxSizeMode.Zoom;
 			}
 			// TODO: also look for customs in TIE-BoP
 			if (_platform == MissionFile.Platform.TIE || _platform == MissionFile.Platform.XvT)
@@ -278,7 +278,7 @@ namespace Idmr.Yogeme
 				for (int i = 0; i < _planets.NumberOfGroups; i++)
 				{
 					if (i == 24) continue;
-					thumbs[i].BackgroundImage = _planets.Groups[i].Subs[0].Image;
+					thumbs[i].Image = _planets.Groups[i].Subs[0].Image;
 					thumbs[i].BackColor = System.Drawing.Color.Black;
 				}
                 StreamReader sr;
@@ -307,7 +307,7 @@ namespace Idmr.Yogeme
 							if (index != -1)
 							{
 								_planets.Groups[index] = temp.Groups[g];
-								thumbs[index].BackgroundImage = temp.Groups[g].Subs[0].Image;
+								thumbs[index].Image = temp.Groups[g].Subs[0].Image;
 							}
 						}
 					}
@@ -348,7 +348,7 @@ namespace Idmr.Yogeme
 								if (index != -1)
 								{
 									_planets.Groups[index] = temp.Groups[g];
-									thumbs[index].BackgroundImage = temp.Groups[g].Subs[0].Image;
+									thumbs[index].Image = temp.Groups[g].Subs[0].Image;
 								}
 							}
 						}
@@ -366,7 +366,7 @@ namespace Idmr.Yogeme
 		void setThumbnail(string file, int index)
 		{
 			ImageFormat.Act.ActImage act = new ImageFormat.Act.ActImage(file);
-			thumbs[index].BackgroundImage = act.Frames[0].Image;
+			thumbs[index].Image = act.Frames[0].Image;
 			thumbs[index].BackColor = System.Drawing.Color.Black;
 		}
 		/// <summary>XWA</summary>
@@ -480,12 +480,14 @@ namespace Idmr.Yogeme
 			{
 				try
 				{
-					pctBackdrop.Image = thumbs[(int)numBackdrop.Value].BackgroundImage;
+					//pctBackdrop.Image = thumbs[(int)numBackdrop.Value].BackgroundImage;
+					pctBackdrop.Image = thumbs[(int)numBackdrop.Value].Image;
 					_index = (int)numBackdrop.Value;
 				}
 				catch
 				{
-					pctBackdrop.Image = thumbs[_index].BackgroundImage;
+					//pctBackdrop.Image = thumbs[_index].BackgroundImage;
+					pctBackdrop.Image = thumbs[_index].Image;
 					numBackdrop.Value = _index;
 				}
 			}
@@ -496,7 +498,7 @@ namespace Idmr.Yogeme
 			PictureBox p = (PictureBox)sender;
 			int index = 0;
 			index = (int)p.Tag;
-			if (index > _numBackdrops) return;
+			if (index >= _numBackdrops) return;
 			numBackdrop.Value = index;
 		}
 

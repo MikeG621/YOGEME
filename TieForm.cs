@@ -116,6 +116,7 @@ namespace Idmr.Yogeme
 		byte _activeGlobalGoal;
 		byte _activeArrDepTrigger;
 		byte _activeOrder;
+		byte _activeMessageTrig;
 		#endregion
 		#region Control Arrays
 		Label[] lblGlob = new Label[6];
@@ -385,7 +386,8 @@ namespace Idmr.Yogeme
 			else
 			{
 				enableMessage(true);
-				for (int i=0;i<_mission.Messages.Count;i++) lstMessages.Items.Add(_mission.Messages[i].MessageString);
+				for (int i = 0; i < _mission.Messages.Count; i++)
+					lstMessages.Items.Add(_mission.Messages[i].MessageString != "" ? _mission.Messages[i].MessageString : " *");
 			}
             bool btemp = _loading;  //[JB] Now that the IFFs are loaded, replace the list items.  Need to set _loading otherwise it will trigger an IFF reset for the first FG.
             _loading = true;
@@ -444,12 +446,13 @@ namespace Idmr.Yogeme
 		{
 			while (text.Contains("FG:"))
 			{
-				int index = text.IndexOf("FG:") + 3;
-				int length = text.IndexOfAny(new char[] { ' ', ',', '\0' }, index) - index;
-				int fg;
-				if (length > 0) fg = int.Parse(text.Substring(index, length));
-				else fg = int.Parse(text.Substring(index));
-				text = text.Replace("FG:" + fg, _mission.FlightGroups[fg].ToString());
+				int fg = Common.ParseIntAfter(text, "FG:");
+				text = text.Replace("FG:" + fg, (fg >= 0 && fg < _mission.FlightGroups.Count) ? _mission.FlightGroups[fg].ToString() : "");
+			}
+			while (text.Contains("IFF:"))
+			{
+				int iff = Common.ParseIntAfter(text, "IFF:");
+				text = text.Replace("IFF:" + iff, "IFF " + Common.SafeString(getIffStrings(), iff, true));
 			}
 			return text;
 		}
@@ -766,7 +769,8 @@ namespace Idmr.Yogeme
 			optBonOR.Checked = _mission.GlobalGoals.Goals[2].T1AndOrT2;
 			optBonAND.Checked = !optBonOR.Checked;
 			for (int i=0;i<6;i++) labelRefresh(_mission.GlobalGoals.Goals[i/2].Triggers[i%2], lblGlob[i]);
-			lblGlobArr_Click(0, new System.EventArgs());
+			//Preserve the selected label after updating. This also serves to populate the dropdowns if not already done (formerly accomplished with an empty sender).
+			lblGlobArr_Click(lblGlob[_activeGlobalGoal], new EventArgs());
 			#endregion
 			#region Mission tab
 			optCapture.Checked = _mission.CapturedOnEjection;
@@ -808,8 +812,8 @@ namespace Idmr.Yogeme
 			foreach (Label lbl in lblADTrig) setInteractiveLabelColor(lbl, lbl.Tag.ToString() == _activeArrDepTrigger.ToString());  //Tags are set to ints, but casting objects throws an exception, so convert to string and check those instead.
 			foreach (Label lbl in lblGlob) setInteractiveLabelColor(lbl, lbl.Tag.ToString() == _activeGlobalGoal.ToString());
 			foreach (Label lbl in lblOrder) setInteractiveLabelColor(lbl, lbl.Tag.ToString() == _activeOrder.ToString());
-			setInteractiveLabelColor(lblMess1, false);  //No variable tracks which one is selected, set colors but ignore highlight.
-			setInteractiveLabelColor(lblMess2, false);
+			setInteractiveLabelColor(lblMess1, _activeMessageTrig == 0);
+			setInteractiveLabelColor(lblMess2, _activeMessageTrig == 1);
 		}
 
 		void briefingModifiedCallback(object sender, EventArgs e)
@@ -1813,12 +1817,21 @@ namespace Idmr.Yogeme
 			if (cboOT3Type.SelectedIndex == 1) comboReset(cboOT3, fgList, _mission.FlightGroups[_activeFG].Orders[_activeOrder].Target3);
 			if (cboOT4Type.SelectedIndex == 1) comboReset(cboOT4, fgList, _mission.FlightGroups[_activeFG].Orders[_activeOrder].Target4);
 			if (cboMessType.SelectedIndex == 1) comboReset(cboMessVar, fgList, cboMessVar.SelectedIndex);
-			//[JB] This is the simplest way to force all labels to refresh.
+			//[JB] This is the simplest way to force all labels to refresh, but not the most efficient. An annoying side effect of forcing clicks is that the current selection will change, so restore after refreshing.
+			int restore = _activeArrDepTrigger;
 			for (int i = 0; i < lblADTrig.Length; i++) lblADTrigArr_Click(lblADTrig[i], new EventArgs());
-			for (int i = 0; i < lblGlob.Length; i++) lblGlobArr_Click(lblGlob[i], new EventArgs());
+			lblADTrigArr_Click(lblADTrig[restore], new EventArgs());
+
+			//_activeGlobalGoal is handled when switching tabs. See updateMissionTabs(), which refreshes the labels there.
+
+			restore = _activeOrder;
 			for (int i = 0; i < lblOrder.Length; i++) lblOrderArr_Click(lblOrder[i], new EventArgs());
-			lblMessArr_Click(lblMess1, new EventArgs());
-			lblMessArr_Click(lblMess2, new EventArgs());
+			lblOrderArr_Click(lblOrder[restore], new EventArgs());
+
+			restore = _activeMessageTrig;
+			lblMessArr_Click(restore == 0 ? lblMess2 : lblMess1, new EventArgs());  //Only two, inactive one first, then active.
+			lblMessArr_Click(restore == 0 ? lblMess1 : lblMess2, new EventArgs());
+			
 			_loading = temp;
 			listRefresh();
 		}
@@ -1926,11 +1939,11 @@ namespace Idmr.Yogeme
 			cboAI.SelectedIndex = _mission.FlightGroups[_activeFG].AI;
 			cboMarkings.SelectedIndex = _mission.FlightGroups[_activeFG].Markings;
 			cboPlayer.SelectedIndex = _mission.FlightGroups[_activeFG].PlayerCraft;
-			cboFormation.SelectedIndex = _mission.FlightGroups[_activeFG].Formation;
+			Common.SafeSetCBO(cboFormation, _mission.FlightGroups[_activeFG].Formation, true);  //[JB] Sigh... custom missions.
 			chkRadio.Checked = Convert.ToBoolean(_mission.FlightGroups[_activeFG].FollowsOrders);
 			numLead.Value = _mission.FlightGroups[_activeFG].FormLeaderDist;
 			numSpacing.Value = _mission.FlightGroups[_activeFG].FormDistance;
-			cboStatus.SelectedIndex = _mission.FlightGroups[_activeFG].Status1;
+			refreshStatus();  //Handles Status1, special case for mines.
 			cboWarheads.SelectedIndex = _mission.FlightGroups[_activeFG].Missile;
 			cboBeam.SelectedIndex = _mission.FlightGroups[_activeFG].Beam;
 			#endregion
@@ -2015,6 +2028,15 @@ namespace Idmr.Yogeme
 			lblBackdrop.Visible = state;
 			chkRadio.Enabled = !state;
 		}
+		void refreshStatus()
+		{
+			cboStatus.Items.Clear();
+			bool isMine = (_mission.FlightGroups[_activeFG].CraftType >= 0x4B && _mission.FlightGroups[_activeFG].CraftType <= 0x4D);
+			lblStatus.Text = isMine ? "Mine Formation" : "Status";
+			cboStatus.Items.AddRange(isMine ? Strings.FormationMine : Strings.Status);
+			Common.SafeSetCBO(cboStatus, isMine ? (int)_mission.FlightGroups[_activeFG].Status1 & 3 : _mission.FlightGroups[_activeFG].Status1, true);
+			cboFormation.Enabled = isMine ? false : true;
+		}
 
 		void cboCraft_SelectedIndexChanged(object sender, EventArgs e)
 		{
@@ -2023,6 +2045,7 @@ namespace Idmr.Yogeme
 			_mission.FlightGroups[_activeFG].CraftType = Common.Update(this, _mission.FlightGroups[_activeFG].CraftType, Convert.ToByte(cboCraft.SelectedIndex));
 			enableRot((_mission.FlightGroups[_activeFG].CraftType <= 0x45 ? false : true));
 			updateFGList();
+			refreshStatus();
 		}
 		void cboFormation_SelectedIndexChanged(object sender, EventArgs e)
 		{
@@ -2675,10 +2698,8 @@ namespace Idmr.Yogeme
 		void messlistRefresh()
 		{
 			if (_mission.Messages.Count == 0) return;
-			string temp = _mission.Messages[_activeMessage].MessageString;
-            if (temp == "") temp = " *";  //[JB] Feature request to display something if the string is empty.
             int index = lstMessages.SelectedIndex;  //[JB] Backup and restore index so the selected item doesn't lose visibility in the list
-			lstMessages.Items.Insert(_activeMessage, temp);
+			lstMessages.Items.Insert(_activeMessage, _mission.Messages[_activeMessage].MessageString != "" ? _mission.Messages[_activeMessage].MessageString : " *");
 			lstMessages.Items.RemoveAt(_activeMessage+1);
             lstMessages.SelectedIndex = index;
 		}
@@ -2731,6 +2752,7 @@ namespace Idmr.Yogeme
 			catch (InvalidCastException) { m = (int)sender; l = (m==0 ? lblMess1 : lblMess2); }
             setInteractiveLabelColor(l, true);
             setInteractiveLabelColor((m == 0 ? lblMess2 : lblMess1), false);
+			_activeMessageTrig = (byte)m;
 			bool btemp = _loading;
 			_loading = true;
 			cboMessTrig.SelectedIndex = _mission.Messages[_activeMessage].Triggers[m].Condition;
