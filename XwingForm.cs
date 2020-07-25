@@ -8,10 +8,12 @@
  */
 
 /* CHANGELOG:
+ * v1.7, XXXXXX
  * [FIX] Starting ships set to 1 [JB]
  * [UPD] Unk1 now RandomSeed [JB]
  * [UPD] MaxCraft increased to 255 [JB]
  * [UPD] Yaw/Pitch/Roll tweaks, save fixed [JB]
+ * [UPD] form handlers renamed
  * v1.6.5, 200704
  * [NEW] Custom shiplist
  * [FIX #32] bin path now explicitly uses Startup Path to prevent implicit from defaulting to sys32
@@ -604,7 +606,7 @@ namespace Idmr.Yogeme
             e.Graphics.DrawString(e.Index >= 0 ? variable.Items[e.Index].ToString() : "", e.Font, brText, e.Bounds, StringFormat.GenericDefault);
         }
         
-		void frmXwing_Activated(object sender, EventArgs e)
+		void form_Activated(object sender, EventArgs e)
 		{
 			if (_fMap != null)
 			{
@@ -612,7 +614,7 @@ namespace Idmr.Yogeme
 				lstFG.SelectedIndex = _activeFG;
 			}
 		}
-		void frmXwing_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+		void form_Closing(object sender, System.ComponentModel.CancelEventArgs e)
 		{
 			promptSave();
 			if (_config.ConfirmExit && _applicationExit)
@@ -623,7 +625,7 @@ namespace Idmr.Yogeme
 			closeForms();
 			if (_applicationExit) Application.Exit();
 		}
-		void XwingForm_KeyDown(object sender, KeyEventArgs e)
+		void form_KeyDown(object sender, KeyEventArgs e)
 		{
 			//Instead of using a global shortcut for Delete in designer.cs
 			//   this.menuDelete.Shortcut = System.Windows.Forms.Shortcut.Del;

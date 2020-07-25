@@ -7,6 +7,7 @@
  */
 
 /* CHANGELOG
+ * v1.7, XXXXXX
  * [NEW] SafeString(), ParseAfterInt() [JB]
  * v1.6.5, 200704
  * [UPD] More details to ProcessCraftList error message

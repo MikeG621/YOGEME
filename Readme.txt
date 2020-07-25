@@ -14,6 +14,7 @@ original mainstream editors were created.
 ==========
 Version History
 
+v1.7, XX XXX XXXX
  - (TIE) Fixed an issue where current FG's IFF would reset when updating IFF names
  - (TIE) Message colors update immediately
  - (XWA) IFF subsitutions in triggers and controls
@@ -33,7 +34,7 @@ Version History
  -- (XWA) Added numbers to Messages to make use in Triggers easier
  -- (XWA) Craft TeamRoles reduced to 8 from 10
  -- (Xwing) Starting ships count now starts at 1
- -- (Xwing) Unk1 now Rondomizer (unused)
+ -- (Xwing) Unk1 now Randomizer (unused)
  -- (Xwing) Max Craft increased to 255
  -- (Xwing) Yaw/Pitch/Roll tweaks, save fixed
 

@@ -7,6 +7,7 @@
  */
 
 /* CHANGELOG
+ * v1.7, XXXXXX
  * [UPD] Images are now foreground instead of background [JB]
  * v1.2.3, 141214
  * [UPD] change to MPL
@@ -57,7 +58,7 @@ namespace Idmr.Yogeme
 		public void SetToTie95()
 		{
 			cboFormation.Items.Clear();
-			cboFormation.Items.AddRange(Idmr.Platform.Tie.Strings.Formation);
+			cboFormation.Items.AddRange(Platform.Tie.Strings.Formation);
 			cboFormation.SelectedIndex = _index;
 		}
 

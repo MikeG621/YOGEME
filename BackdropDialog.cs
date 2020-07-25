@@ -7,6 +7,7 @@
  */
 
 /* CHANGELOG
+ * v1.7, XXXXXX
  * [UPD] images now use foreground instead of background [JB]
  * [FIX] possible IndexOutOfRange when clicking thumbnails [JB]
  * v1.6.2, 190928

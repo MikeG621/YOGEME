@@ -7,7 +7,9 @@
  */
 
 /* CHANGELOG
+ * v1.7, XXXXXX
  * [FIX] Unregister Tick handler to prevent misfires after closing [JB]
+ * [UPD] form handlers renamed
  * v1.6.5, 200704
  * [NEW] if pulling from imgCraft trips an OutOfRange, default to img[0]
  * v1.5, 180910
@@ -548,7 +550,7 @@ namespace Idmr.Yogeme
 				lblOrder.Visible = true;
 				numOrder.Visible = true;
 			}
-			MouseWheel += new MouseEventHandler(frmMap_MouseWheel);	// this is here because of some stupid reason, MouseWheel isn't available in the GUI
+			MouseWheel += new MouseEventHandler(form_MouseWheel);	// this is here because of some stupid reason, MouseWheel isn't available in the GUI
 
 			_loading = false;
 		}
@@ -1226,9 +1228,9 @@ namespace Idmr.Yogeme
 		}
 		#endregion
 		#region frmMap
-		void frmMap_Activated(object sender, EventArgs e) { MapPaint(true); }
-        void frmMap_FormClosed(object sender, FormClosedEventArgs e) { _map.Dispose(); }
-		void frmMap_FormClosing(object sender, FormClosingEventArgs e)
+		void form_Activated(object sender, EventArgs e) { MapPaint(true); }
+        void form_FormClosed(object sender, FormClosedEventArgs e) { _map.Dispose(); }
+		void form_FormClosing(object sender, FormClosingEventArgs e)
 		{
 			onDataModified = null;
 			_isClosing = true;
@@ -1237,32 +1239,32 @@ namespace Idmr.Yogeme
 			mapPaintRedrawTimer.Stop();
 			mapPaintRedrawTimer.Tick -= mapPaintRedrawTimer_Tick;
 		}
-        void frmMap_Load(object sender, EventArgs e)
+        void form_Load(object sender, EventArgs e)
 		{
 			_map = new Bitmap(w, h, PixelFormat.Format24bppRgb);
 			MapPaint(true);
 		}
-		void frmMap_MouseWheel(object sender, MouseEventArgs e)
+		void form_MouseWheel(object sender, MouseEventArgs e)
 		{
 			if (hscZoom.Value < 25 && e.Delta < 0) hscZoom.Value = 5;
 			else if (hscZoom.Value > 480 && e.Delta > 0) hscZoom.Value = 500;
 			else hscZoom.Value += 10 * Math.Sign(e.Delta);
 		}
-		void MapForm_Resize(object sender, EventArgs e)
+		void form_Resize(object sender, EventArgs e)
 		{
 			if (!_isDragged) updateLayout();
 		}
-		void MapForm_ResizeBegin(object sender, EventArgs e)
+		void form_ResizeBegin(object sender, EventArgs e)
 		{
 			_isDragged = true;
 		}
-		void MapForm_ResizeEnd(object sender, EventArgs e)
+		void form_ResizeEnd(object sender, EventArgs e)
 		{
 			_isDragged = false;
 			updateLayout();
 		}
 
-        void MapForm_KeyDown(object sender, KeyEventArgs e)
+        void form_KeyDown(object sender, KeyEventArgs e)
         {
             if (lstSelected.Focused)
             {
@@ -1338,7 +1340,7 @@ namespace Idmr.Yogeme
             }
             e.Handled = true;
         }
-        void MapForm_KeyUp(object sender, KeyEventArgs e)
+        void form_KeyUp(object sender, KeyEventArgs e)
         {
             if (!_mapFocus) return;
             _shiftState = e.Shift;

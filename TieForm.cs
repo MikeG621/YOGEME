@@ -7,6 +7,7 @@
  */
 
 /* CHANGELOG
+ * v1.7, XXXXXX
  * [UPD] Blank messages now shown as "*" [JB]
  * [UPD] Cleanup index substitions [JB]
  * [UPD] Trigger label refresh updates [JB]
