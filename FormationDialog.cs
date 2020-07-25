@@ -1,12 +1,13 @@
 ﻿/*
- * YOGEME.exe, All-in-one Mission Editor for the X-wing series, TIE through XWA
- * Copyright (C) 2007-2014 Michael Gaisser (mjgaisser@gmail.com)
+ * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
+ * Copyright (C) 2007-2020 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.2.3
+ * VERSION: 1.2.3+
  */
 
 /* CHANGELOG
+ * [UPD] Images are now foreground instead of background [JB]
  * v1.2.3, 141214
  * [UPD] change to MPL
  * v1.1.1, 120814
@@ -33,7 +34,7 @@ namespace Idmr.Yogeme
 		public FormationDialog(int index)
 		{
 			InitializeComponent();
-			cboFormation.Items.AddRange(Idmr.Platform.BaseStrings.Formation);
+			cboFormation.Items.AddRange(Platform.BaseStrings.Formation);
 			_index = index;
 			Assembly a = Assembly.GetExecutingAssembly();
 			string[] resourceNames = a.GetManifestResourceNames();
@@ -44,7 +45,7 @@ namespace Idmr.Yogeme
 				{
 					int num = Convert.ToInt32(s.Substring(23, s.Length-27));
 					System.IO.Stream img = a.GetManifestResourceStream(s);
-					Bitmap bmp = Bitmap.FromStream(img) as Bitmap;
+					Bitmap bmp = Image.FromStream(img) as Bitmap;
 					_forms[num] = bmp;
 					img.Close();
 				}

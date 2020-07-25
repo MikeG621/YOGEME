@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2020 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.6.5
+ * VERSION: 1.6.5+
  */
 
 /* CHANGELOG
+ * [FIX] Unregister Tick handler to prevent misfires after closing [JB]
  * v1.6.5, 200704
  * [NEW] if pulling from imgCraft trips an OutOfRange, default to img[0]
  * v1.5, 180910
@@ -1227,15 +1228,15 @@ namespace Idmr.Yogeme
 		#region frmMap
 		void frmMap_Activated(object sender, EventArgs e) { MapPaint(true); }
         void frmMap_FormClosed(object sender, FormClosedEventArgs e) { _map.Dispose(); }
-        void frmMap_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            onDataModified = null;
-            _isClosing = true;
-            //[JB] Stop and deactivate the timer.
-            //Important! There's an issue where the event can trigger after the map is disposed, even after calling Stop(). The event must be unregistered.
-            mapPaintRedrawTimer.Stop();
-            mapPaintRedrawTimer.Tick -= mapPaintRedrawTimer_Tick;
-        }
+		void frmMap_FormClosing(object sender, FormClosingEventArgs e)
+		{
+			onDataModified = null;
+			_isClosing = true;
+			//[JB] Stop and deactivate the timer.
+			//Important! There's an issue where the event can trigger after the map is disposed, even after calling Stop(). The event must be unregistered.
+			mapPaintRedrawTimer.Stop();
+			mapPaintRedrawTimer.Tick -= mapPaintRedrawTimer_Tick;
+		}
         void frmMap_Load(object sender, EventArgs e)
 		{
 			_map = new Bitmap(w, h, PixelFormat.Format24bppRgb);

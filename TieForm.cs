@@ -3,10 +3,17 @@
  * Copyright (C) 2007-2020 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.6.5
+ * VERSION: 1.6.5+
  */
 
 /* CHANGELOG
+ * [UPD] Blank messages now shown as "*" [JB]
+ * [UPD] Cleanup index substitions [JB]
+ * [UPD] Trigger label refresh updates [JB]
+ * [FIX] Extra protections to handle custom missions using "bad" Status or Formation values [JB]
+ * [FIX] Current FG's IFF would reset when changing IFF names
+ * [FIX] Message color updates right away
+ * [UPD] form handlers renamed
  * v1.6.5, 200704
  * [UPD] More details to ProcessCraftList error message
  * [FIX #32] bin path now explicitly uses Startup Path to prevent implicit from defaulting to sys32
@@ -841,7 +848,7 @@ namespace Idmr.Yogeme
 			e.Graphics.DrawString(e.Index >= 0 ? variable.Items[e.Index].ToString() : "", e.Font, brText, e.Bounds, StringFormat.GenericDefault);
 		}
 
-		void frmTIE_Activated(object sender, EventArgs e)
+		void form_Activated(object sender, EventArgs e)
 		{
 			if (_fMap != null)
 			{
@@ -849,7 +856,7 @@ namespace Idmr.Yogeme
 				lstFG.SelectedIndex = _activeFG;
 			}
 		}
-		void frmTIE_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+		void form_Closing(object sender, System.ComponentModel.CancelEventArgs e)
 		{
 			promptSave();
 			if (_config.ConfirmExit && _applicationExit)
@@ -860,7 +867,7 @@ namespace Idmr.Yogeme
 			closeForms();
 			if (_applicationExit) Application.Exit();
 		}
-		void TieForm_KeyDown(object sender, KeyEventArgs e)
+		void form_KeyDown(object sender, KeyEventArgs e)
 		{
 			//Instead of using a global shortcut for Delete in designer.cs
 			//   this.menuDelete.Shortcut = System.Windows.Forms.Shortcut.Del;
@@ -2698,10 +2705,8 @@ namespace Idmr.Yogeme
 		void messlistRefresh()
 		{
 			if (_mission.Messages.Count == 0) return;
-            int index = lstMessages.SelectedIndex;  //[JB] Backup and restore index so the selected item doesn't lose visibility in the list
-			lstMessages.Items.Insert(_activeMessage, _mission.Messages[_activeMessage].MessageString != "" ? _mission.Messages[_activeMessage].MessageString : " *");
-			lstMessages.Items.RemoveAt(_activeMessage+1);
-            lstMessages.SelectedIndex = index;
+			lstMessages.Items[_activeMessage] = (_mission.Messages[_activeMessage].MessageString != "" ? _mission.Messages[_activeMessage].MessageString : " *");
+			lstMessages.Invalidate(lstMessages.GetItemRectangle(_activeMessage));
 		}
 		void newMess()
 		{
@@ -3183,8 +3188,7 @@ namespace Idmr.Yogeme
 		{
 			TextBox t = (TextBox)sender;
 			_mission.IFFs[(int)t.Tag] = Common.Update(this, _mission.IFFs[(int)t.Tag], t.Text);
-			cboIFF.Items[(int)t.Tag] = t.Text;
-            comboReset(cboIFF, getIffStrings(), 0);
+			comboReset(cboIFF, getIffStrings(), cboIFF.SelectedIndex);
 		}
 
 		void optCapture_CheckedChanged(object sender, System.EventArgs e)
