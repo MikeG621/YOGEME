@@ -16,6 +16,7 @@
  * [NEW] More TriggerTypes added [JB]
  * [UPD] Unk6 renamed to PreventOutcome [JB]
  * [UPD] form handlers renamed
+ * [FIX] re-init if load fails
  * v1.6.5, 200704
  * [UPD] More details to ProcessCraftList error message
  * [FIX #32] bin path now explicitly uses Startup Path to prevent implicit from defaulting to sys32
@@ -376,6 +377,7 @@ namespace Idmr.Yogeme
 			lstMessages.Items.Clear();
 			_startingShips = 0;
 			byte[] buffer = new byte[64];
+			bool startBoP = _mission.IsBop;
 			try
 			{
 				FileStream fs = File.OpenRead(fileMission);
@@ -423,13 +425,14 @@ namespace Idmr.Yogeme
 				catch (Exception x)
 				{
 					fs.Close();
-					MessageBox.Show(x.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-					return false;
+					throw x;
 				}
 			}
 			catch (Exception x)
 			{
 				MessageBox.Show(x.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				if (startBoP) menuNewBoP_Click(0, new EventArgs());
+				else menuNewXvT_Click(0, new EventArgs());
 				return false;
 			}
 			for (int i = 0; i < _mission.FlightGroups.Count; i++)

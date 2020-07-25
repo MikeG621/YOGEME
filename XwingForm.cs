@@ -14,6 +14,7 @@
  * [UPD] MaxCraft increased to 255 [JB]
  * [UPD] Yaw/Pitch/Roll tweaks, save fixed [JB]
  * [UPD] form handlers renamed
+ * [FIX] re-init if load fails
  * v1.6.5, 200704
  * [NEW] Custom shiplist
  * [FIX #32] bin path now explicitly uses Startup Path to prevent implicit from defaulting to sys32
@@ -295,13 +296,13 @@ namespace Idmr.Yogeme
 				catch (Exception x)
 				{
 					fs.Close();
-					MessageBox.Show(x.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-					return false;
+					throw x;
 				}
 			}
 			catch (Exception x)
 			{
 				MessageBox.Show(x.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				menuNewXwing_Click(0, new EventArgs());
 				return false;
 			}
             lstFG.Items.Clear(); 

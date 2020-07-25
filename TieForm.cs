@@ -15,6 +15,7 @@
  * [FIX] Current FG's IFF would reset when changing IFF names
  * [FIX] Message color updates right away
  * [UPD] form handlers renamed
+ * [FIX] re-init if load fails
  * v1.6.5, 200704
  * [UPD] More details to ProcessCraftList error message
  * [FIX #32] bin path now explicitly uses Startup Path to prevent implicit from defaulting to sys32
@@ -372,13 +373,13 @@ namespace Idmr.Yogeme
 				catch (Exception x)
 				{
 					fs.Close();
-					MessageBox.Show(x.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-					return false;
+					throw x;
 				}
             }
 			catch (Exception x)
 			{
 				MessageBox.Show(x.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				menuNewTIE_Click(0, new EventArgs());
 				return false;
 			}
             lstFG.Items.Clear();

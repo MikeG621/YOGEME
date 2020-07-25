@@ -16,6 +16,7 @@
  * [FIX] Craft TeamRoles reduced to 8 from 10 [JB]
  * [NEW] IFF substitutions
  * [UPD] form handlers renamed
+ * [FIX] crash if selecting RecentMission of a different platform
  * v1.6.6, 200719
  * [FIX] Crash when using "Apply DTM SuperBackdrops to new missions" option
  * v1.6.5, 200704
@@ -631,13 +632,14 @@ namespace Idmr.Yogeme
 				catch (Exception x)
 				{
 					fs.Close();
-					MessageBox.Show(x.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-					return false;
+					throw x;
 				}
 			}
 			catch (Exception x)
 			{
 				MessageBox.Show(x.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				menuNewXWA_Click(0, new EventArgs());	// moved fix from RecentMissions_Click otherwise it would crash if the Recent was a different platform
+				// Now, if Recent is a different platform this does result in a new mission initilization before the form closes
 				return false;
 			}
 			for (int i = 0; i < _mission.FlightGroups.Count; i++)
@@ -663,7 +665,7 @@ namespace Idmr.Yogeme
 			lblTeamArr_Click(lblTeam[0], new EventArgs());
 			_loading = btemp;
 			int c = fileMission.LastIndexOf("\\") + 1;
-			this.Text = "Ye Olde Galactic Empire Mission Editor - XWA - " + fileMission.Substring(c);
+			Text = "Ye Olde Galactic Empire Mission Editor - XWA - " + fileMission.Substring(c);
 			_config.LastMission = fileMission;
 			refreshRecent(); //[JB] Setting _config.LastMission modifies the Recent list.  Need to refresh the menu to match.
 			return true;
@@ -1919,11 +1921,6 @@ namespace Idmr.Yogeme
 				lstFG.SelectedIndex = 0;
 				_loading = true;        //turned false in previous line
 				if (_mission.Messages.Count != 0) lstMessages.SelectedIndex = 0;
-			}
-			else
-			{
-				menuNewXWA_Click(0, new EventArgs());  //[JB] Fix if loadMission() failed, which prevents an empty FG list and many potential index-out-of-range exceptions.
-				return;
 			}
 			_config.SetWorkingPath(Path.GetDirectoryName(mission)); //[JB] Update last-accessed
 			opnXWA.InitialDirectory = _config.GetWorkingPath();
