@@ -673,7 +673,29 @@ namespace Idmr.Yogeme
 			}
 			return false;
 		}
+		/// <summary>Calculates and retrieves the average coordinates (in raw map units) of all selected items.</summary>
+		void getAverageSelectionCoords(out int x, out int y, out int z)
+		{
+			int sumX = 0, sumY = 0, sumZ = 0;
+			int ord = 0;
+			if (_platform == Settings.Platform.XWA)
+				ord = (int)((numRegion.Value - 1) * 4 + numOrder.Value - 1);
 
+			foreach (SelectionData sel in _selectionList)
+			{
+				sumX += sel.MapDataRef.WPs[ord][0].RawX;
+				sumY += sel.MapDataRef.WPs[ord][0].RawY;
+				sumZ += sel.MapDataRef.WPs[ord][0].RawZ;
+			}
+			if (_selectionList.Count > 0)
+			{
+				x = sumX / _selectionList.Count;
+				y = sumY / _selectionList.Count;
+				z = sumZ / _selectionList.Count;
+				return;
+			}
+			x = 0; y = 0; z = 0;
+		}
 		#region public functions
 		/// <summary>The down-and-dirty function that handles map display </summary>
 		/// <param name="persistant">When <b>true</b> draws to memory, <b>false</b> draws directly to the image</param>
@@ -1003,6 +1025,7 @@ namespace Idmr.Yogeme
 			_mapData[index].IFF = fg.IFF;
 			_mapData[index].Craft = fg.CraftType;
 			_mapData[index].Difficulty = fg.Difficulty;
+			//Waypoints are attached by reference, so there's no need to update waypoints or position here.
 			string[] abbrev = null;
 			switch (_platform)
 			{
@@ -1067,6 +1090,8 @@ namespace Idmr.Yogeme
 			if (optXY.Checked)
 			{
 				_displayMode = Orientation.XY;
+				getAverageSelectionCoords(out int x, out int y, out int z);
+				updateMapCoord(new PointF((float)x / 160, (float)y / 160));
 				lblCoor1.Text = "X:";
 				lblCoor2.Text = "Y:";
 				MapPaint(false);
@@ -1079,6 +1104,8 @@ namespace Idmr.Yogeme
 			if (optXZ.Checked)
 			{
 				_displayMode = Orientation.XZ;
+				getAverageSelectionCoords(out int x, out int y, out int z);
+				updateMapCoord(new PointF((float)x / 160, (float)z / 160));
 				lblCoor1.Text = "X:";
 				lblCoor2.Text = "Z:";
 				MapPaint(false);
@@ -1090,8 +1117,10 @@ namespace Idmr.Yogeme
 		{
 			if (optYZ.Checked)
 			{
-				mapY = w/2 - mapY + h/2;
+				//mapY = w/2 - mapY + h/2;
 				_displayMode = Orientation.YZ;
+				getAverageSelectionCoords(out int x, out int y, out int z);
+				updateMapCoord(new PointF((float)y / 160, (float)z / 160));
 				lblCoor1.Text = "Y:";
 				lblCoor2.Text = "Z:";
 				MapPaint(false);
