@@ -95,7 +95,7 @@ namespace Idmr.Yogeme
 			// hscZoom
 			// 
 			this.hscZoom.Location = new System.Drawing.Point(402, 504);
-			this.hscZoom.Maximum = 500;
+			this.hscZoom.Maximum = 2000;
 			this.hscZoom.Minimum = 5;
 			this.hscZoom.Name = "hscZoom";
 			this.hscZoom.Size = new System.Drawing.Size(342, 16);

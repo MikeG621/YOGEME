@@ -1272,9 +1272,17 @@ namespace Idmr.Yogeme
 		}
 		void frmMap_MouseWheel(object sender, MouseEventArgs e)
 		{
-			if (hscZoom.Value < 25 && e.Delta < 0) hscZoom.Value = 5;
-			else if (hscZoom.Value > 480 && e.Delta > 0) hscZoom.Value = 500;
-			else hscZoom.Value += 10 * Math.Sign(e.Delta);
+			double mult = _settings.MapMouseWheelZoomPercentage / 100.0;
+			if (mult < 0.01) mult = 0.01; else if (mult > 0.5) mult = 0.5;
+
+			int amount = (int)(hscZoom.Value * mult);
+			if (amount < 1)
+				amount = 1;
+
+			int newZoom = hscZoom.Value + (amount * Math.Sign(e.Delta));
+			if (newZoom < hscZoom.Minimum) newZoom = hscZoom.Minimum;
+			else if (newZoom > hscZoom.Maximum) newZoom = hscZoom.Maximum;
+			hscZoom.Value = newZoom;
 		}
 		void MapForm_Resize(object sender, EventArgs e)
 		{
