@@ -1,0 +1,237 @@
+﻿; Line format is: CraftName,Abbrev,SpeedMGLT,ResourceName
+; Empty lines, leading or trailing spaces are ignored.
+; Use '#' or '*' (without quotes) to autoreplace with slot numbers, or '-' for a completely blank entry.
+; CraftName and Abbrev are only used if Override is enabled in Settings. Resources are always used in the map.
+None,
+X-Wing,X-W,100,Xwing
+Y-Wing,Y-W,80,Ywing
+A-Wing,A-W,120,Awing
+B-Wing,B-W,91,Bwing
+TIE Fighter,T/F,100,TieFighter
+TIE Interceptor,T/I,111,TieInterceptor
+TIE Bomber,T/B,80,TieBomber
+TIE Advanced,T/A,133,TieAdvanced
+TIE Defender,T/D,144,TieDefender
+IRD Fighter,IRD,102,IrdFighter
+Toscan Fighter,TOS,86,ToscanFighter
+Missile Boat,MIS,122,MissileBoat
+T-Wing,T-W,111,Twing
+Z-95 Headhunter,Z-95,100,Z-95
+R-41 Starchaser,R-41,100,R41
+Assault Gunboat,GUN,90,AssaultGunboat
+Shuttle,SHU,67,Shuttle
+Escort Shuttle,E/S,73,EscortShuttle
+Patrol Craft,SPC,77,SystemPatrolCraft
+Scout Craft,SCT,77,ScoutCraft
+Transport,TRN,55,StormtrooperTransport
+Assault Transport,ATR,67,AssaultTransport
+Escort Transport,ETR,60,EscortTransport
+Utility Tug,TUG,33,Tug
+Combat Utility Vehicle,CUV,66,CombatUtilityVehicle
+Container A,CN/A,0,ContainerBrick
+Container B,CN/B,0,ContainerHexBox
+Container C,CN/C,0,ContainerTube
+Container D,CN/D,0,ContainerPronged
+Heavy Lifter,HLF,44,HeavyLifter
+Mole Miner,MINER,22,MoleMiner
+Freighter,FRT,17,BulkFreighter
+Cargo Ferry,CARG,22,CargoFerry
+Modular Conveyor,CNVYR,26,ModularConveyor
+Container Transport,CTRNS,33,ContainerTransport
+Medium Transport,MTRNS,17,TunaBoat2
+Murrian Transport,MUTR,89,MuurianTransport
+Corellian Transport,CORT,89,CorellianTransport2
+Millenium Falcon,FALC,102,MilleniumFalcon2
+Corellian Corvette,CRV,22,Corvette2
+Modified Corvette,M/CRV,22,ModCorvette
+Nebulon-B Frigate,FRG,17,Frigate2
+Modified Frigate,M/FRG,20,ModFrigate
+Passenger Liner,LINER,17,PassengerLiner
+Carrack Cruiser,CRCK,17,CarrackCruiser
+Strike Cruiser,STRKC,17,StrikeCruiser
+Escort Carrier,ESC,13,EscortCarrier
+Dreadnaught,DREAD,13,Dreadnaught2
+Calamari Cruiser,CRS,22,CalamariCruiserNew
+Light Cruiser,CRL,13,LightCalamariCruiser
+Interdictor,INT,8,Interdictor2
+Victory Star Destroyer,VSD,8,VictoryStarDestroyer2
+Imperial Star Destroyer,ISD,11,ImperialStarDestroyer2
+Super Star Destroyer,SSD,11,SuperStarDestroyer
+Container E,CN/E,0,ContainerHemisphere
+Container F,CN/F,0,ContainerSlotted
+Container G,CN/G,0,ContainerHourglass
+Container H,CN/H,0,ContainerGem
+Container I,CN/I,0,ContainerYshaped
+XQ1 Platform,PLT/1,0,Platform1
+XQ2 Platform,PLT/2,0,Platform2
+XQ3 Platform,PLT/3,0,Platform3
+XQ4 Platform,PLT/4,0,Platform4
+XQ5 Platform,PLT/5,0,Platform5
+XQ6 Platform,PLT/6,0,Platform6
+Asteroid R&D Facility,R&D FC,0,AsteroidBase
+Ast. Laser Battery,L BAT,22,AsteroidLaserBattery
+Ast. Warhead Battery,W LNCHR,22,AsteroidWarheadLauncher
+X/7 Factory,FAC/1,0,Factory
+Satellite 1,SAT/1,11,SatB
+Satellite 2,SAT/2,11,SatC
+Satellite 3,SAT/3,11,SatD
+*Satellite 4,*SAT/4
+*Satellite 5,*SAT/5
+Mine A,MN/A,0,MineA
+Mine B,MN/B,0,MineB
+Mine C,MN/C,0,MineC
+Gun Emplacement,GPLT,22,GunPlatform
+*Mine 5,*MN/5
+Probe A,PRB/A,11,Probe
+Probe B,PRB/B,11,ProbeCapsule
+*Probe 3,*PRB/C
+Nav Buoy 1,NAV/1,0,BuoyC
+Nav Buoy 2,NAV/2,0,BuoyB
+Hyper Buoy,HYP,0,BuoyFaux
+Asteroid Field,AST,0,AsteroidHR1
+Planet,PLNT
+Rendezvous Buoy,RDV,0,BuoyRendez
+Cargo Canister,C/C,0,CargoCanister
+Shipyard,SHPYD,0,ShipYard
+Repair Yard,REPYD,0,RepairYard
+*Modified Strike Cruiser,*M/SC,0,ModStrikeCruiser
+Lancer Frigate,L/FRG,20,LancerFrigate
+Bulk Cruiser,B/CRS,11,BulkCruiser
+Assault Frigate,A/FRG,15,AssaultFrigate
+Corellian Gunship,GSP,28,CorellianGunship
+Sentinel Landing Craft,L/C,71,ImpLandingCraft
+Assault Shuttle,A/S,67,AssaultShuttle
+Maurader Corvette,M-CRV,17,MarauderCorvette
+Star Galleon,STARG,17,StarGalleon
+Imperial Research Ship,SRS,8,ImpResearchShip
+Luxury Yacht 3000,LY3K,71,LuxuryYacht
+Ferryboat Liner,F/L,22,FerryboatLiner
+Mod Action IV Trans,M/TRN,20,ModActionTransport
+Mobquet Transport,MOB,15,MobquetTransport
+Xiytiar Transport,Xiy/T,17,XiytiarTransport
+Freight Transport/C,Frt/C,15,FreighterConB
+Freight Transport/H,Frt/H,15,FreighterConG
+Freight Transport/K,Frt/K,15,FreighterBox
+YT-2000,YT2K,95,FamilyTransport
+YT-2400,YT24,102,Outrider
+Suprosa,S/M,15,Suprosa
+Skipray Blastboat,S/B,91,SkiprayBlastBoat
+T/e mk1,T/e1,104,TieBizarro
+T/e mk2,T/e2,100,TieBigGun
+T/e mk3,T/e3,102,TieWarheads
+T/e mk4,T/e4,144,TieBomb
+T/e mk5,T/e5,133,TieBooster
+Cloakshape Fighter,Clk/F,93,CloakshapeFighter
+Razor Fighter,Rzr/F,97,RazorFighter
+Planetary Fighter,Plt/F,137,PlanetaryFighter
+Supa Fighter,Sup/F,88,SupaFighter
+Pinook Fighter,Pnk/F,95,Piggyback
+Booster Pack,B/R,155,Booster
+Preybird Fighter,Pry/F,100,PreybirdFighter
+*StarViper,*Xiz/F,98,Xwing
+Firespray,FRS,91,SlaveOne
+Pursuer,PES,94,SlaveTwo
+Golan 1,G/1,0,GolanOne
+Golan 2,G/2,0,GolanTwo
+Golan 3,G/3,0,GolanThree
+Derilyn Platform,D/P,0,DerilynPlatform
+Sensor Array,S/ARY,0,SensorArray
+Comm Relay,C/RLY,0,CommRelay
+Space Colony 1,SC/1,0,SpaceColony1
+Space Colony 2,SC/2,0,SpaceColony2
+Space Colony 3,SC/3,0,SpaceColony3
+Casino,CAS,0,Casino
+Cargo Facility 1,C/F1,0,CargoFacility1
+Cargo Facility 2,C/F2,0,CargoFacility2
+Asteroid Mining Plant,AMU,0,AsteroidMiningUnit
+Processing Plant,PP,0,ProcessingPlant
+Rebel Platform,BASE,0,RebelPlatform
+Imp. Research Center,IRC,0,ImpResearchCenter
+Family Base,AZZ,0,FamilyBase
+Family Repair Yard,RY/2,0,FamilyRepairYard
+Pirate Shipyard,P/SY,0,PirateShipyard
+Industrial Complex,FAC/2,0,IndustrialComplex
+*Pirate Junkyard Base,*JUNKYD,0,PirateJunkyardBase
+Escape Pod 1,E-POD,44,EscapePod
+Pressure Tank,Pr/Tk,0,PropaneTank
+Container J,CN/J,0,ContainerGrande
+Container K,CN/K,0,ContainerBox
+Container L,CN/L,0,ContainerSphere
+Container Hangar,C/HGR,0,ContainerHanger
+Large Emplacement,G/P,22,GunPad
+Warhead Emplacement,GW/P,22,GunWarheadPad
+Prox Mine A,PM/1,134,ProximityMineA
+Prox Mine B,PM/2,67,ProximityMineB
+*Homing Mine,*H/MN1,89,HomingMineA
+Homing Mine B,H/MN2,111,HomingMineB
+New Laser Battery,L/B,22,LaserBat
+New Ion Battery,I/B,22,IonBat
+Cargo Freighter,CF,33,CrewCabinFront
+*Cargo Freighter 2,*CF/2,11,ConnectorRod
+*Cargo Freighter 3,*CF/3,11,EngineBack
+*Cargo Freighter 4,*CF/4,0,Xwing
+*Cargo Freighter 5,*CF/5,0,Xwing
+Cargo Tanker,CT,13,EngineFront
+*Cargo Tanker 2,*CT/2,13,CrewCabinBack
+*Cargo Tanker 3,*CT/3,13,Xwing
+*Cargo Tanker 4,*CT/4,13,Xwing
+*Cargo Tanker 5,*CT/5,13,Xwing
+Escape Pod 2,E-POD/2,22,EscapePodA
+Rebel Pilot,Reb Pilot,22,RebelPilot
+Imperial Pilot,Imp Pilot,22,ImperialPilot
+Civilian Pilot,Civ Pilot,22,CivilianPilot
+Space Trooper,ZG/S,11,ZeroGStormtrooper
+Zero-G Utility Suit,ZG/U,11,ZeroGUtility
+Emkay,MK-09,11,Marko
+Astromech,R2-D2,11,R2D2
+Worker Droid,Droid
+Backdrop,B/Drop
+*Forest Moon of Endor,*B/Drop
+*Endor,*B/Drop
+*Sullust,*B/Drop
+*Bothuwai,*B/Drop
+*Kothlis,*B/Drop
+*Hoth,*B/Drop
+*DS II backdrop,*B/Drop
+*Nar Shadda,*B/Drop
+*Planet,*B/Drop
+*Planet,*B/Drop
+*Planet,*B/Drop
+*Planet,*B/Drop
+*Planet,*B/Drop
+*Planet,*B/Drop
+*Moon,*B/Drop
+*Moon,*B/Drop
+*Moon,*B/Drop
+*Moon,*B/Drop
+*Moon,*B/Drop
+*Sun,*B/Drop
+*Sun,*B/Drop
+*Sun,*B/Drop
+*Sun,*B/Drop
+*Sun,*B/Drop
+*Sun,*B/Drop
+*Sun,*B/Drop
+*Sun,*B/Drop
+*Sun,*B/Drop
+*Sun,*B/Drop
+*Backdrop,*B/Drop
+*Backdrop,*B/Drop
+*Backdrop,*B/Drop
+*Backdrop,*B/Drop
+*Backdrop,*B/Drop
+*Backdrop,*B/Drop
+*Backdrop,*B/Drop
+*Backdrop,*B/Drop
+*Backdrop,*B/Drop
+*Backdrop,*B/Drop
+*Backdrop,*B/Drop
+*Backdrop,*B/Drop
+*Backdrop,*B/Drop
+*Backdrop,*B/Drop
+*DS II,*B/Drop
+MC80 Liberty-class,WRCS,11,CalamariWinged
+VSD II,VSDII,8,VictoryStarDestroyer2
+ISD II,ISDII,11,ImperialStarDestroyer2
+*Planet,*B/Drop
+*Planet,*B/Drop

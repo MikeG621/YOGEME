@@ -307,6 +307,18 @@ namespace Idmr.Yogeme
             comboReset(cboIFF, getIffStrings(), 0);  //[JB] Changed by feature request.
 			this.Text = "Ye Olde Galactic Empire Mission Editor - TIE - New Mission.tie";
 		}
+		void loadCraftData(string fileMission)
+		{
+			Strings.OverrideShipList(null, null); //Restore defaults.
+			try
+			{
+				CraftDataManager.GetInstance().LoadPlatform(Settings.Platform.TIE, _config, Strings.CraftType, Strings.CraftAbbrv, fileMission);
+				Strings.OverrideShipList(CraftDataManager.GetInstance().GetLongNames(), CraftDataManager.GetInstance().GetShortNames());
+			}
+			catch (Exception x) { MessageBox.Show("Error processing custom TIE ship list, using defaults.\n\n" + x.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); }
+			cboCraft.Items.Clear();
+			cboCraft.Items.AddRange(Strings.CraftType);
+		}
 		void labelRefresh(Mission.Trigger trigger, Label lbl)
 		{	// lbl is the affected label
 			string triggerText = trigger.ToString();
@@ -373,6 +385,7 @@ namespace Idmr.Yogeme
 				MessageBox.Show(x.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return false;
 			}
+			loadCraftData(fileMission);
             lstFG.Items.Clear();
 			lstMessages.Items.Clear();
 			_startingShips = 0;
@@ -475,19 +488,7 @@ namespace Idmr.Yogeme
 		}
 		void startup()
 		{
-			if (File.Exists(Application.StartupPath + "\\tie_shiplist.txt"))
-			{
-				System.Diagnostics.Debug.WriteLine("custom TIE list found");
-				string[] crafts;
-				string[] abbrvs;
-				try
-				{
-					Common.ProcessCraftList(Application.StartupPath + "\\tie_shiplist.txt", out crafts, out abbrvs);
-					Strings.OverrideShipList(crafts, abbrvs);
-					initializeMission();    // have to re-init since lstFG is already populated
-				}
-				catch (Exception x) { MessageBox.Show("Error processing custom TIE ship list, using defaults.\n(" + x.Message + ").", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); }
-			}
+			loadCraftData("");
 			//initializes cbo's, IFFs, resets bAppExit
             comboReset(cboIFF, getIffStrings(), 0);  //[JB] Changed by feature request.
             _config.LastMission = "";
@@ -517,7 +518,7 @@ namespace Idmr.Yogeme
 			refreshRecent();
 			#endregion
 			#region Craft
-			cboCraft.Items.AddRange(Strings.CraftType); cboCraft.SelectedIndex = _mission.FlightGroups[0].CraftType;
+			cboCraft.SelectedIndex = _mission.FlightGroups[0].CraftType; // already loaded in loadCraftData
 			cboIFF.SelectedIndex = _mission.FlightGroups[0].IFF;	// already loaded default IFFs at start of function through txtIFF#.Text
 			cboAI.Items.AddRange(Strings.Rating); cboAI.SelectedIndex = 3;
 			cboMarkings.Items.AddRange(Strings.Color); cboMarkings.SelectedIndex = 0;

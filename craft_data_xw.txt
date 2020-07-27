@@ -1,0 +1,123 @@
+﻿; Line format is: CraftName,Abbrev,SpeedMGLT,ResourceName
+; Empty lines, leading or trailing spaces are ignored.
+; Use '#' or '*' (without quotes) to autoreplace with slot numbers, or '-' for a completely blank entry.
+; CraftName and Abbrev are only used if Override is enabled in Settings. Resources are always used in the map.
+; X-wing is a special case and has two lists. One for the craft names, and another for the wireframe resources,
+; hence the second list further down. It needs this because the map converts craft types from XW to TIE.
+[EDITOR]
+None
+X-Wing,X-W
+Y-Wing,Y-W
+A-Wing,A-W
+TIE Fighter,T/F
+TIE Interceptor,T/I
+TIE Bomber,T/B
+Assault Gunboat,GUN
+Transport,TRN
+Shuttle,SHU
+Tug,TUG
+Container,CON
+Freighter,FRT
+Cruiser,CRS
+Frigate,FRG
+Corvette,CRV
+Star Destroyer,STD
+TIE Advanced,T/A
+B-Wing,B-W
+
+; CraftName and Abbrev are completely ignored here, even if Override is enabled. This is purely for map wireframes.
+; Different resource names are separated by a pipe "|" and DOS resources can be scaled by appending a value like "*2".
+[MAP]
+None
+X-Wing,X-W,100,XWING|XWING21
+Y-Wing,Y-W,80,YWING|YWING21
+A-Wing,A-W,120,AWING|AWING21
+B-Wing,B-W,91,BWING
+TIE Fighter,T/F,100,TIEFTR|TIEFTR1
+TIE Interceptor,T/I,111,TIEINT|TIEINT1
+TIE Bomber,T/B,80,TIEBMB|TIEBMB1
+TIE Advanced,T/A,145,DARTH|DARTH92|TIEADV
+---
+---
+---
+---
+---
+---
+---
+Assault Gunboat,GUN,90,ASSAULT
+Shuttle,SHU,67,SHUTTLE
+---
+---
+---
+Transport,TRN,55,TRANSPT|TRNSPRT
+---
+---
+Tug,TUG,11,TUG|TUGTTLE
+---
+Container,CON,0,CONTAIN
+---
+---
+---
+---
+---
+Freighter,FRT,17,FREIGHT
+---
+---
+---
+---
+---
+---
+---
+Corvette,CRV,22,CORVETTE|CORV3|CORV35|CORV
+---
+Frigate,FRG,17,NEBULON|NEBCD5|NEB
+---
+---
+---
+---
+---
+---
+Cruiser,CRS,11,CALAMARI*2|CALCD9*2|CAL
+---
+---
+---
+Star Destroyer,STD,11,STARDEST*2|ISDCD92*2|ISD
+---
+---
+---
+---
+---
+---
+---
+---
+---
+---
+---
+---
+---
+---
+---
+---
+---
+---
+---
+---
+---
+Mine A,MINE A,0,mine1
+Mine B,MINE B,0,mine2
+Mine C,MINE C,0,mine3
+77,,,
+78,,,
+Probe A,PROBE A,0,probe1
+Probe B,PROBE B,0,probea
+81,,,
+Nav Buoy 1,NAV 1,0,probea
+Nav Buoy 2,NAV 2,0,probea
+Asteroid Field 1,Asteroid,0,astroid1
+Asteroid Field 2,Asteroid,0,astroid2
+Asteroid3,Asteroid3,0,ASTROID3
+Asteroid4,Asteroid4,0,ASTROID4
+Asteroid5,Asteroid5,0,ASTROID5
+Asteroid6,Asteroid6,0,ASTROID6
+Asteroid7,Asteroid5,0,ASTROID1
+Asteroid8,Asteroid6,0,ASTROID2

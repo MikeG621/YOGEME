@@ -216,6 +216,18 @@ namespace Idmr.Yogeme
             _mission.MissionPath = "\\NewMission.xwi";
 			Text = "Ye Olde Galactic Empire Mission Editor - X-wing - NewMission.xwi";
 		}
+		void loadCraftData(string fileMission)
+		{
+			Strings.OverrideShipList(null, null); //Restore defaults.
+			try
+			{
+				CraftDataManager.GetInstance().LoadPlatform(Settings.Platform.XWING, _config, Strings.CraftType, Strings.CraftAbbrv, fileMission);
+				Strings.OverrideShipList(CraftDataManager.GetInstance().GetLongNames(), CraftDataManager.GetInstance().GetShortNames());
+			}
+			catch (Exception x) { MessageBox.Show("Error processing custom XW ship list, using defaults.\n\n" + x.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); }
+			cboCraft.Items.Clear();
+			cboCraft.Items.AddRange(Strings.CraftType);
+		}
 		string replaceTargetText(string text)
 		{
 			while (text.Contains("FG:"))
@@ -298,6 +310,7 @@ namespace Idmr.Yogeme
 				MessageBox.Show(x.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return false;
 			}
+			loadCraftData(fileMission);
             lstFG.Items.Clear(); 
             _startingShips = 0;
 			for (int i=0;i<_mission.FlightGroups.Count;i++)
@@ -383,19 +396,7 @@ namespace Idmr.Yogeme
 		}
 		void startup()
 		{
-			if (File.Exists(Application.StartupPath + "\\xw_shiplist.txt"))
-			{
-				System.Diagnostics.Debug.WriteLine("custom XW list found");
-				string[] crafts;
-				string[] abbrvs;
-				try
-				{
-					Common.ProcessCraftList(Application.StartupPath + "\\xw_shiplist.txt", out crafts, out abbrvs);
-					Strings.OverrideShipList(crafts, abbrvs);
-					initializeMission();    // have to re-init since lstFG is already populated
-				}
-				catch (Exception x) { MessageBox.Show("Error processing custom XW ship list, using defaults.\n(" + x.Message + ").", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); }
-			}
+			loadCraftData("");
 			switchTo(EditorMode.XWI);
 			//initializes cbo's, IFFs, resets bAppExit
 			_config.LastMission = "";
@@ -426,7 +427,7 @@ namespace Idmr.Yogeme
 			refreshRecent();
 			#endregion
 			#region Craft
-			cboCraft.Items.AddRange(Strings.CraftType); cboCraft.SelectedIndex = _mission.FlightGroups[0].CraftType;
+			cboCraft.SelectedIndex = _mission.FlightGroups[0].CraftType; // already loaded in loadCraftData
 			cboObject.Items.AddRange(Strings.ObjectType); cboObject.SelectedIndex = _mission.FlightGroups[0].ObjectType;
 			cboIFF.SelectedIndex = _mission.FlightGroups[0].IFF;	// already loaded default IFFs at start of function through txtIFF#.Text
 			cboAI.Items.AddRange(Strings.Rating); cboAI.SelectedIndex = 3;

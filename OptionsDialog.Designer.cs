@@ -42,6 +42,8 @@ namespace Idmr.Yogeme
             this.chkVerify = new System.Windows.Forms.CheckBox();
             this.chkSave = new System.Windows.Forms.CheckBox();
             this.tabMap = new System.Windows.Forms.TabPage();
+            this.lblMouseWheelZoom = new System.Windows.Forms.Label();
+            this.numMousewheelZoom = new System.Windows.Forms.NumericUpDown();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.chkSP1 = new System.Windows.Forms.CheckBox();
             this.chkSP2 = new System.Windows.Forms.CheckBox();
@@ -60,7 +62,22 @@ namespace Idmr.Yogeme
             this.chkWP8 = new System.Windows.Forms.CheckBox();
             this.chkFG = new System.Windows.Forms.CheckBox();
             this.chkTrace = new System.Windows.Forms.CheckBox();
+            this.tabWireframe = new System.Windows.Forms.TabPage();
+            this.cmdWireMeshDefault = new System.Windows.Forms.Button();
+            this.lblQuickToggle = new System.Windows.Forms.Label();
+            this.lblDrawMeshes = new System.Windows.Forms.Label();
+            this.chkWireToggleHangar = new System.Windows.Forms.CheckBox();
+            this.chkWireToggleWeapon = new System.Windows.Forms.CheckBox();
+            this.chkWireToggleMisc = new System.Windows.Forms.CheckBox();
+            this.chkWireToggleHull = new System.Windows.Forms.CheckBox();
+            this.numWireMeshIcon = new System.Windows.Forms.NumericUpDown();
+            this.numWireIconThreshold = new System.Windows.Forms.NumericUpDown();
+            this.chkWireMeshIcon = new System.Windows.Forms.CheckBox();
+            this.chkWireIconThreshold = new System.Windows.Forms.CheckBox();
+            this.lstWireMeshTypes = new System.Windows.Forms.ListBox();
+            this.chkWireEnabled = new System.Windows.Forms.CheckBox();
             this.tabXW = new System.Windows.Forms.TabPage();
+            this.chkXwingOverrideExternal = new System.Windows.Forms.CheckBox();
             this.cmdXW = new System.Windows.Forms.Button();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
             this.label8 = new System.Windows.Forms.Label();
@@ -70,6 +87,7 @@ namespace Idmr.Yogeme
             this.txtXW = new System.Windows.Forms.TextBox();
             this.chkXWInstall = new System.Windows.Forms.CheckBox();
             this.tabOpt2 = new System.Windows.Forms.TabPage();
+            this.chkTieOverrideExternal = new System.Windows.Forms.CheckBox();
             this.cmdTie = new System.Windows.Forms.Button();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.label1 = new System.Windows.Forms.Label();
@@ -79,6 +97,7 @@ namespace Idmr.Yogeme
             this.txtTIE = new System.Windows.Forms.TextBox();
             this.chkTIEInstall = new System.Windows.Forms.CheckBox();
             this.tabOpt3 = new System.Windows.Forms.TabPage();
+            this.chkXvtOverrideExternal = new System.Windows.Forms.CheckBox();
             this.cmdBop = new System.Windows.Forms.Button();
             this.cmdXvt = new System.Windows.Forms.Button();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
@@ -99,6 +118,10 @@ namespace Idmr.Yogeme
             this.txtBoP = new System.Windows.Forms.TextBox();
             this.chkBoPInstall = new System.Windows.Forms.CheckBox();
             this.tabOpt4 = new System.Windows.Forms.TabPage();
+            this.chkXwaFlagRemappedCraft = new System.Windows.Forms.CheckBox();
+            this.cmdExport = new System.Windows.Forms.Button();
+            this.chkXwaOverrideScan = new System.Windows.Forms.CheckBox();
+            this.chkXwaOverrideExternal = new System.Windows.Forms.CheckBox();
             this.chkBackdrops = new System.Windows.Forms.CheckBox();
             this.cmdXwa = new System.Windows.Forms.Button();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
@@ -131,11 +154,20 @@ namespace Idmr.Yogeme
             this.opnVerify = new System.Windows.Forms.OpenFileDialog();
             this.dirPlatform = new System.Windows.Forms.FolderBrowserDialog();
             this.colorSelector = new System.Windows.Forms.ColorDialog();
+            this.lblExportWarning = new System.Windows.Forms.Label();
+            this.chkXwingDetectMission = new System.Windows.Forms.CheckBox();
+            this.chkTieDetectMission = new System.Windows.Forms.CheckBox();
+            this.chkXvtDetectMission = new System.Windows.Forms.CheckBox();
+            this.chkXwaDetectMission = new System.Windows.Forms.CheckBox();
             this.tabOptions.SuspendLayout();
             this.tabOpt1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.tabMap.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numMousewheelZoom)).BeginInit();
             this.groupBox2.SuspendLayout();
+            this.tabWireframe.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numWireMeshIcon)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numWireIconThreshold)).BeginInit();
             this.tabXW.SuspendLayout();
             this.groupBox6.SuspendLayout();
             this.tabOpt2.SuspendLayout();
@@ -153,6 +185,7 @@ namespace Idmr.Yogeme
             // 
             this.tabOptions.Controls.Add(this.tabOpt1);
             this.tabOptions.Controls.Add(this.tabMap);
+            this.tabOptions.Controls.Add(this.tabWireframe);
             this.tabOptions.Controls.Add(this.tabXW);
             this.tabOptions.Controls.Add(this.tabOpt2);
             this.tabOptions.Controls.Add(this.tabOpt3);
@@ -342,6 +375,8 @@ namespace Idmr.Yogeme
             // 
             // tabMap
             // 
+            this.tabMap.Controls.Add(this.lblMouseWheelZoom);
+            this.tabMap.Controls.Add(this.numMousewheelZoom);
             this.tabMap.Controls.Add(this.groupBox2);
             this.tabMap.Controls.Add(this.chkFG);
             this.tabMap.Controls.Add(this.chkTrace);
@@ -350,6 +385,38 @@ namespace Idmr.Yogeme
             this.tabMap.Size = new System.Drawing.Size(384, 238);
             this.tabMap.TabIndex = 4;
             this.tabMap.Text = "Map";
+            // 
+            // lblMouseWheelZoom
+            // 
+            this.lblMouseWheelZoom.AutoSize = true;
+            this.lblMouseWheelZoom.Location = new System.Drawing.Point(13, 83);
+            this.lblMouseWheelZoom.Name = "lblMouseWheelZoom";
+            this.lblMouseWheelZoom.Size = new System.Drawing.Size(108, 13);
+            this.lblMouseWheelZoom.TabIndex = 4;
+            this.lblMouseWheelZoom.Text = "Mousewheel Zoom %";
+            // 
+            // numMousewheelZoom
+            // 
+            this.numMousewheelZoom.DecimalPlaces = 1;
+            this.numMousewheelZoom.Location = new System.Drawing.Point(16, 99);
+            this.numMousewheelZoom.Maximum = new decimal(new int[] {
+            50,
+            0,
+            0,
+            0});
+            this.numMousewheelZoom.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.numMousewheelZoom.Name = "numMousewheelZoom";
+            this.numMousewheelZoom.Size = new System.Drawing.Size(51, 20);
+            this.numMousewheelZoom.TabIndex = 3;
+            this.numMousewheelZoom.Value = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
             // 
             // groupBox2
             // 
@@ -511,8 +578,200 @@ namespace Idmr.Yogeme
             this.chkTrace.TabIndex = 2;
             this.chkTrace.Text = "WP Traces";
             // 
+            // tabWireframe
+            // 
+            this.tabWireframe.Controls.Add(this.cmdWireMeshDefault);
+            this.tabWireframe.Controls.Add(this.lblQuickToggle);
+            this.tabWireframe.Controls.Add(this.lblDrawMeshes);
+            this.tabWireframe.Controls.Add(this.chkWireToggleHangar);
+            this.tabWireframe.Controls.Add(this.chkWireToggleWeapon);
+            this.tabWireframe.Controls.Add(this.chkWireToggleMisc);
+            this.tabWireframe.Controls.Add(this.chkWireToggleHull);
+            this.tabWireframe.Controls.Add(this.numWireMeshIcon);
+            this.tabWireframe.Controls.Add(this.numWireIconThreshold);
+            this.tabWireframe.Controls.Add(this.chkWireMeshIcon);
+            this.tabWireframe.Controls.Add(this.chkWireIconThreshold);
+            this.tabWireframe.Controls.Add(this.lstWireMeshTypes);
+            this.tabWireframe.Controls.Add(this.chkWireEnabled);
+            this.tabWireframe.Location = new System.Drawing.Point(4, 22);
+            this.tabWireframe.Name = "tabWireframe";
+            this.tabWireframe.Size = new System.Drawing.Size(384, 238);
+            this.tabWireframe.TabIndex = 7;
+            this.tabWireframe.Text = "Wireframe";
+            this.tabWireframe.UseVisualStyleBackColor = true;
+            // 
+            // cmdWireMeshDefault
+            // 
+            this.cmdWireMeshDefault.Location = new System.Drawing.Point(70, 210);
+            this.cmdWireMeshDefault.Name = "cmdWireMeshDefault";
+            this.cmdWireMeshDefault.Size = new System.Drawing.Size(93, 23);
+            this.cmdWireMeshDefault.TabIndex = 10;
+            this.cmdWireMeshDefault.Text = "Default Meshes";
+            this.cmdWireMeshDefault.UseVisualStyleBackColor = true;
+            this.cmdWireMeshDefault.Click += new System.EventHandler(this.cmdWireMeshDefault_Click);
+            // 
+            // lblQuickToggle
+            // 
+            this.lblQuickToggle.AutoSize = true;
+            this.lblQuickToggle.Location = new System.Drawing.Point(191, 144);
+            this.lblQuickToggle.Name = "lblQuickToggle";
+            this.lblQuickToggle.Size = new System.Drawing.Size(70, 13);
+            this.lblQuickToggle.TabIndex = 14;
+            this.lblQuickToggle.Text = "Quick toggle:";
+            // 
+            // lblDrawMeshes
+            // 
+            this.lblDrawMeshes.AutoSize = true;
+            this.lblDrawMeshes.Location = new System.Drawing.Point(264, 0);
+            this.lblDrawMeshes.Name = "lblDrawMeshes";
+            this.lblDrawMeshes.Size = new System.Drawing.Size(103, 13);
+            this.lblDrawMeshes.TabIndex = 13;
+            this.lblDrawMeshes.Text = "Draw these meshes:";
+            // 
+            // chkWireToggleHangar
+            // 
+            this.chkWireToggleHangar.AutoSize = true;
+            this.chkWireToggleHangar.Location = new System.Drawing.Point(169, 214);
+            this.chkWireToggleHangar.Name = "chkWireToggleHangar";
+            this.chkWireToggleHangar.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.chkWireToggleHangar.Size = new System.Drawing.Size(92, 17);
+            this.chkWireToggleHangar.TabIndex = 9;
+            this.chkWireToggleHangar.Text = "Hangar/Dock";
+            this.chkWireToggleHangar.UseVisualStyleBackColor = true;
+            this.chkWireToggleHangar.CheckedChanged += new System.EventHandler(this.chkWireToggleHangar_CheckedChanged);
+            // 
+            // chkWireToggleWeapon
+            // 
+            this.chkWireToggleWeapon.AutoSize = true;
+            this.chkWireToggleWeapon.Location = new System.Drawing.Point(180, 196);
+            this.chkWireToggleWeapon.Name = "chkWireToggleWeapon";
+            this.chkWireToggleWeapon.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.chkWireToggleWeapon.Size = new System.Drawing.Size(81, 17);
+            this.chkWireToggleWeapon.TabIndex = 8;
+            this.chkWireToggleWeapon.Text = "All Weapon";
+            this.chkWireToggleWeapon.UseVisualStyleBackColor = true;
+            this.chkWireToggleWeapon.CheckedChanged += new System.EventHandler(this.chkWireToggleWeapon_CheckedChanged);
+            // 
+            // chkWireToggleMisc
+            // 
+            this.chkWireToggleMisc.AutoSize = true;
+            this.chkWireToggleMisc.Location = new System.Drawing.Point(199, 178);
+            this.chkWireToggleMisc.Name = "chkWireToggleMisc";
+            this.chkWireToggleMisc.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.chkWireToggleMisc.Size = new System.Drawing.Size(62, 17);
+            this.chkWireToggleMisc.TabIndex = 7;
+            this.chkWireToggleMisc.Text = "All Misc";
+            this.chkWireToggleMisc.UseVisualStyleBackColor = true;
+            this.chkWireToggleMisc.CheckedChanged += new System.EventHandler(this.chkWireToggleMisc_CheckedChanged);
+            // 
+            // chkWireToggleHull
+            // 
+            this.chkWireToggleHull.AutoSize = true;
+            this.chkWireToggleHull.Location = new System.Drawing.Point(203, 160);
+            this.chkWireToggleHull.Name = "chkWireToggleHull";
+            this.chkWireToggleHull.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.chkWireToggleHull.Size = new System.Drawing.Size(58, 17);
+            this.chkWireToggleHull.TabIndex = 6;
+            this.chkWireToggleHull.Text = "All Hull";
+            this.chkWireToggleHull.UseVisualStyleBackColor = true;
+            this.chkWireToggleHull.CheckedChanged += new System.EventHandler(this.chkWireToggleHull_CheckedChanged);
+            // 
+            // numWireMeshIcon
+            // 
+            this.numWireMeshIcon.Location = new System.Drawing.Point(217, 63);
+            this.numWireMeshIcon.Name = "numWireMeshIcon";
+            this.numWireMeshIcon.Size = new System.Drawing.Size(44, 20);
+            this.numWireMeshIcon.TabIndex = 4;
+            // 
+            // numWireIconThreshold
+            // 
+            this.numWireIconThreshold.Location = new System.Drawing.Point(217, 40);
+            this.numWireIconThreshold.Maximum = new decimal(new int[] {
+            250,
+            0,
+            0,
+            0});
+            this.numWireIconThreshold.Name = "numWireIconThreshold";
+            this.numWireIconThreshold.Size = new System.Drawing.Size(44, 20);
+            this.numWireIconThreshold.TabIndex = 2;
+            // 
+            // chkWireMeshIcon
+            // 
+            this.chkWireMeshIcon.AutoSize = true;
+            this.chkWireMeshIcon.Location = new System.Drawing.Point(8, 64);
+            this.chkWireMeshIcon.Name = "chkWireMeshIcon";
+            this.chkWireMeshIcon.Size = new System.Drawing.Size(197, 17);
+            this.chkWireMeshIcon.TabIndex = 3;
+            this.chkWireMeshIcon.Text = "Use mesh as 3D icon (size in pixels):";
+            this.chkWireMeshIcon.UseVisualStyleBackColor = true;
+            // 
+            // chkWireIconThreshold
+            // 
+            this.chkWireIconThreshold.AutoSize = true;
+            this.chkWireIconThreshold.Location = new System.Drawing.Point(8, 41);
+            this.chkWireIconThreshold.Name = "chkWireIconThreshold";
+            this.chkWireIconThreshold.Size = new System.Drawing.Size(204, 17);
+            this.chkWireIconThreshold.TabIndex = 1;
+            this.chkWireIconThreshold.Text = "Use icons when smaller than (meters):";
+            this.chkWireIconThreshold.UseVisualStyleBackColor = true;
+            // 
+            // lstWireMeshTypes
+            // 
+            this.lstWireMeshTypes.FormattingEnabled = true;
+            this.lstWireMeshTypes.Items.AddRange(new object[] {
+            "Default",
+            "MainHull",
+            "Wing",
+            "Fuselage",
+            "GunTurret",
+            "SmallGun",
+            "Engine",
+            "Bridge",
+            "ShieldGenerator",
+            "EnergyGenerator",
+            "Launcher",
+            "CommunicationSystem",
+            "BeamSystem",
+            "CommandSystem",
+            "DockingPlatform",
+            "LandingPlatform",
+            "Hangar",
+            "CargoPod",
+            "MiscHull",
+            "Antenna",
+            "RotaryWing",
+            "RotaryGunTurret",
+            "RotaryLauncher",
+            "RotaryCommunicationSystem",
+            "RotaryBeamSystem",
+            "RotaryCommandSystem",
+            "Hatch",
+            "Custom",
+            "WeaponSystem1",
+            "WeaponSystem2",
+            "PowerRegenerator",
+            "Reactor"});
+            this.lstWireMeshTypes.Location = new System.Drawing.Point(267, 16);
+            this.lstWireMeshTypes.Name = "lstWireMeshTypes";
+            this.lstWireMeshTypes.SelectionMode = System.Windows.Forms.SelectionMode.MultiSimple;
+            this.lstWireMeshTypes.Size = new System.Drawing.Size(114, 212);
+            this.lstWireMeshTypes.TabIndex = 5;
+            this.lstWireMeshTypes.SelectedIndexChanged += new System.EventHandler(this.lstWireMeshTypes_SelectedIndexChanged);
+            // 
+            // chkWireEnabled
+            // 
+            this.chkWireEnabled.AutoSize = true;
+            this.chkWireEnabled.Location = new System.Drawing.Point(8, 18);
+            this.chkWireEnabled.Name = "chkWireEnabled";
+            this.chkWireEnabled.Size = new System.Drawing.Size(121, 17);
+            this.chkWireEnabled.TabIndex = 0;
+            this.chkWireEnabled.Text = "Wireframes Enabled";
+            this.chkWireEnabled.UseVisualStyleBackColor = true;
+            // 
             // tabXW
             // 
+            this.tabXW.Controls.Add(this.chkXwingDetectMission);
+            this.tabXW.Controls.Add(this.chkXwingOverrideExternal);
             this.tabXW.Controls.Add(this.cmdXW);
             this.tabXW.Controls.Add(this.groupBox6);
             this.tabXW.Controls.Add(this.txtXW);
@@ -525,12 +784,22 @@ namespace Idmr.Yogeme
             this.tabXW.Text = "X-wing";
             this.tabXW.UseVisualStyleBackColor = true;
             // 
+            // chkXwingOverrideExternal
+            // 
+            this.chkXwingOverrideExternal.AutoSize = true;
+            this.chkXwingOverrideExternal.Location = new System.Drawing.Point(182, 76);
+            this.chkXwingOverrideExternal.Name = "chkXwingOverrideExternal";
+            this.chkXwingOverrideExternal.Size = new System.Drawing.Size(203, 17);
+            this.chkXwingOverrideExternal.TabIndex = 8;
+            this.chkXwingOverrideExternal.Text = "Override craft names from external file";
+            this.chkXwingOverrideExternal.UseVisualStyleBackColor = true;
+            // 
             // cmdXW
             // 
             this.cmdXW.Location = new System.Drawing.Point(357, 15);
             this.cmdXW.Name = "cmdXW";
             this.cmdXW.Size = new System.Drawing.Size(24, 24);
-            this.cmdXW.TabIndex = 7;
+            this.cmdXW.TabIndex = 3;
             this.cmdXW.Text = "...";
             this.cmdXW.UseVisualStyleBackColor = true;
             this.cmdXW.Click += new System.EventHandler(this.cmdXW_Click);
@@ -544,7 +813,7 @@ namespace Idmr.Yogeme
             this.groupBox6.Location = new System.Drawing.Point(8, 56);
             this.groupBox6.Name = "groupBox6";
             this.groupBox6.Size = new System.Drawing.Size(168, 128);
-            this.groupBox6.TabIndex = 5;
+            this.groupBox6.TabIndex = 4;
             this.groupBox6.TabStop = false;
             this.groupBox6.Text = "Default Craft";
             // 
@@ -561,7 +830,7 @@ namespace Idmr.Yogeme
             this.cboXWCraft.Location = new System.Drawing.Point(8, 40);
             this.cboXWCraft.Name = "cboXWCraft";
             this.cboXWCraft.Size = new System.Drawing.Size(160, 21);
-            this.cboXWCraft.TabIndex = 3;
+            this.cboXWCraft.TabIndex = 5;
             // 
             // cboXWIFF
             // 
@@ -574,7 +843,7 @@ namespace Idmr.Yogeme
             this.cboXWIFF.Location = new System.Drawing.Point(8, 96);
             this.cboXWIFF.Name = "cboXWIFF";
             this.cboXWIFF.Size = new System.Drawing.Size(96, 21);
-            this.cboXWIFF.TabIndex = 4;
+            this.cboXWIFF.TabIndex = 6;
             // 
             // label9
             // 
@@ -590,19 +859,21 @@ namespace Idmr.Yogeme
             this.txtXW.Location = new System.Drawing.Point(86, 16);
             this.txtXW.Name = "txtXW";
             this.txtXW.Size = new System.Drawing.Size(266, 20);
-            this.txtXW.TabIndex = 6;
+            this.txtXW.TabIndex = 2;
             // 
             // chkXWInstall
             // 
             this.chkXWInstall.Location = new System.Drawing.Point(8, 16);
             this.chkXWInstall.Name = "chkXWInstall";
             this.chkXWInstall.Size = new System.Drawing.Size(72, 24);
-            this.chkXWInstall.TabIndex = 4;
+            this.chkXWInstall.TabIndex = 1;
             this.chkXWInstall.Text = "Installed";
             this.chkXWInstall.CheckedChanged += new System.EventHandler(this.chkXWInstall_CheckedChanged);
             // 
             // tabOpt2
             // 
+            this.tabOpt2.Controls.Add(this.chkTieDetectMission);
+            this.tabOpt2.Controls.Add(this.chkTieOverrideExternal);
             this.tabOpt2.Controls.Add(this.cmdTie);
             this.tabOpt2.Controls.Add(this.groupBox3);
             this.tabOpt2.Controls.Add(this.txtTIE);
@@ -612,6 +883,16 @@ namespace Idmr.Yogeme
             this.tabOpt2.Size = new System.Drawing.Size(384, 238);
             this.tabOpt2.TabIndex = 1;
             this.tabOpt2.Text = "TIE";
+            // 
+            // chkTieOverrideExternal
+            // 
+            this.chkTieOverrideExternal.AutoSize = true;
+            this.chkTieOverrideExternal.Location = new System.Drawing.Point(182, 76);
+            this.chkTieOverrideExternal.Name = "chkTieOverrideExternal";
+            this.chkTieOverrideExternal.Size = new System.Drawing.Size(203, 17);
+            this.chkTieOverrideExternal.TabIndex = 8;
+            this.chkTieOverrideExternal.Text = "Override craft names from external file";
+            this.chkTieOverrideExternal.UseVisualStyleBackColor = true;
             // 
             // cmdTie
             // 
@@ -632,7 +913,7 @@ namespace Idmr.Yogeme
             this.groupBox3.Location = new System.Drawing.Point(8, 56);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(168, 128);
-            this.groupBox3.TabIndex = 2;
+            this.groupBox3.TabIndex = 4;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Default Craft";
             // 
@@ -649,7 +930,7 @@ namespace Idmr.Yogeme
             this.cboTIECraft.Location = new System.Drawing.Point(8, 40);
             this.cboTIECraft.Name = "cboTIECraft";
             this.cboTIECraft.Size = new System.Drawing.Size(160, 21);
-            this.cboTIECraft.TabIndex = 3;
+            this.cboTIECraft.TabIndex = 5;
             // 
             // cboTIEIFF
             // 
@@ -663,7 +944,7 @@ namespace Idmr.Yogeme
             this.cboTIEIFF.Location = new System.Drawing.Point(8, 96);
             this.cboTIEIFF.Name = "cboTIEIFF";
             this.cboTIEIFF.Size = new System.Drawing.Size(96, 21);
-            this.cboTIEIFF.TabIndex = 4;
+            this.cboTIEIFF.TabIndex = 6;
             // 
             // label2
             // 
@@ -692,6 +973,8 @@ namespace Idmr.Yogeme
             // 
             // tabOpt3
             // 
+            this.tabOpt3.Controls.Add(this.chkXvtDetectMission);
+            this.tabOpt3.Controls.Add(this.chkXvtOverrideExternal);
             this.tabOpt3.Controls.Add(this.cmdBop);
             this.tabOpt3.Controls.Add(this.cmdXvt);
             this.tabOpt3.Controls.Add(this.groupBox5);
@@ -706,12 +989,21 @@ namespace Idmr.Yogeme
             this.tabOpt3.TabIndex = 2;
             this.tabOpt3.Text = "XvT, BoP";
             // 
+            // chkXvtOverrideExternal
+            // 
+            this.chkXvtOverrideExternal.Location = new System.Drawing.Point(270, 122);
+            this.chkXvtOverrideExternal.Name = "chkXvtOverrideExternal";
+            this.chkXvtOverrideExternal.Size = new System.Drawing.Size(104, 60);
+            this.chkXvtOverrideExternal.TabIndex = 20;
+            this.chkXvtOverrideExternal.Text = "Override craft names from external file";
+            this.chkXvtOverrideExternal.UseVisualStyleBackColor = true;
+            // 
             // cmdBop
             // 
             this.cmdBop.Location = new System.Drawing.Point(357, 49);
             this.cmdBop.Name = "cmdBop";
             this.cmdBop.Size = new System.Drawing.Size(24, 24);
-            this.cmdBop.TabIndex = 9;
+            this.cmdBop.TabIndex = 6;
             this.cmdBop.Text = "...";
             this.cmdBop.UseVisualStyleBackColor = true;
             this.cmdBop.Click += new System.EventHandler(this.cmdBop_Click);
@@ -721,7 +1013,7 @@ namespace Idmr.Yogeme
             this.cmdXvt.Location = new System.Drawing.Point(357, 15);
             this.cmdXvt.Name = "cmdXvt";
             this.cmdXvt.Size = new System.Drawing.Size(24, 24);
-            this.cmdXvt.TabIndex = 8;
+            this.cmdXvt.TabIndex = 3;
             this.cmdXvt.Text = "...";
             this.cmdXvt.UseVisualStyleBackColor = true;
             this.cmdXvt.Click += new System.EventHandler(this.cmdXvt_Click);
@@ -738,7 +1030,7 @@ namespace Idmr.Yogeme
             this.groupBox5.Location = new System.Drawing.Point(191, 78);
             this.groupBox5.Name = "groupBox5";
             this.groupBox5.Size = new System.Drawing.Size(73, 144);
-            this.groupBox5.TabIndex = 7;
+            this.groupBox5.TabIndex = 10;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Additional Waypoints";
             // 
@@ -748,7 +1040,7 @@ namespace Idmr.Yogeme
             this.chkBRF8.Location = new System.Drawing.Point(6, 124);
             this.chkBRF8.Name = "chkBRF8";
             this.chkBRF8.Size = new System.Drawing.Size(53, 17);
-            this.chkBRF8.TabIndex = 13;
+            this.chkBRF8.TabIndex = 18;
             this.chkBRF8.Text = "BRF8";
             this.chkBRF8.UseVisualStyleBackColor = true;
             // 
@@ -758,7 +1050,7 @@ namespace Idmr.Yogeme
             this.chkBRF7.Location = new System.Drawing.Point(6, 108);
             this.chkBRF7.Name = "chkBRF7";
             this.chkBRF7.Size = new System.Drawing.Size(53, 17);
-            this.chkBRF7.TabIndex = 12;
+            this.chkBRF7.TabIndex = 17;
             this.chkBRF7.Text = "BRF7";
             this.chkBRF7.UseVisualStyleBackColor = true;
             // 
@@ -768,7 +1060,7 @@ namespace Idmr.Yogeme
             this.chkBRF6.Location = new System.Drawing.Point(6, 92);
             this.chkBRF6.Name = "chkBRF6";
             this.chkBRF6.Size = new System.Drawing.Size(53, 17);
-            this.chkBRF6.TabIndex = 11;
+            this.chkBRF6.TabIndex = 16;
             this.chkBRF6.Text = "BRF6";
             this.chkBRF6.UseVisualStyleBackColor = true;
             // 
@@ -778,7 +1070,7 @@ namespace Idmr.Yogeme
             this.chkBRF5.Location = new System.Drawing.Point(6, 76);
             this.chkBRF5.Name = "chkBRF5";
             this.chkBRF5.Size = new System.Drawing.Size(53, 17);
-            this.chkBRF5.TabIndex = 10;
+            this.chkBRF5.TabIndex = 15;
             this.chkBRF5.Text = "BRF5";
             this.chkBRF5.UseVisualStyleBackColor = true;
             // 
@@ -788,7 +1080,7 @@ namespace Idmr.Yogeme
             this.chkBRF4.Location = new System.Drawing.Point(6, 60);
             this.chkBRF4.Name = "chkBRF4";
             this.chkBRF4.Size = new System.Drawing.Size(53, 17);
-            this.chkBRF4.TabIndex = 9;
+            this.chkBRF4.TabIndex = 14;
             this.chkBRF4.Text = "BRF4";
             this.chkBRF4.UseVisualStyleBackColor = true;
             // 
@@ -798,7 +1090,7 @@ namespace Idmr.Yogeme
             this.chkBRF3.Location = new System.Drawing.Point(6, 44);
             this.chkBRF3.Name = "chkBRF3";
             this.chkBRF3.Size = new System.Drawing.Size(53, 17);
-            this.chkBRF3.TabIndex = 8;
+            this.chkBRF3.TabIndex = 13;
             this.chkBRF3.Text = "BRF3";
             this.chkBRF3.UseVisualStyleBackColor = true;
             // 
@@ -808,7 +1100,7 @@ namespace Idmr.Yogeme
             this.chkBRF2.Location = new System.Drawing.Point(6, 28);
             this.chkBRF2.Name = "chkBRF2";
             this.chkBRF2.Size = new System.Drawing.Size(53, 17);
-            this.chkBRF2.TabIndex = 7;
+            this.chkBRF2.TabIndex = 11;
             this.chkBRF2.Text = "BRF2";
             this.chkBRF2.UseVisualStyleBackColor = true;
             // 
@@ -821,7 +1113,7 @@ namespace Idmr.Yogeme
             this.groupBox4.Location = new System.Drawing.Point(8, 78);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Size = new System.Drawing.Size(168, 128);
-            this.groupBox4.TabIndex = 6;
+            this.groupBox4.TabIndex = 7;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Default Craft";
             // 
@@ -838,7 +1130,7 @@ namespace Idmr.Yogeme
             this.cboXvTCraft.Location = new System.Drawing.Point(8, 40);
             this.cboXvTCraft.Name = "cboXvTCraft";
             this.cboXvTCraft.Size = new System.Drawing.Size(160, 21);
-            this.cboXvTCraft.TabIndex = 5;
+            this.cboXvTCraft.TabIndex = 8;
             // 
             // cboXvTIFF
             // 
@@ -852,7 +1144,7 @@ namespace Idmr.Yogeme
             this.cboXvTIFF.Location = new System.Drawing.Point(8, 96);
             this.cboXvTIFF.Name = "cboXvTIFF";
             this.cboXvTIFF.Size = new System.Drawing.Size(96, 21);
-            this.cboXvTIFF.TabIndex = 6;
+            this.cboXvTIFF.TabIndex = 9;
             // 
             // label4
             // 
@@ -885,19 +1177,25 @@ namespace Idmr.Yogeme
             this.txtBoP.Location = new System.Drawing.Point(110, 50);
             this.txtBoP.Name = "txtBoP";
             this.txtBoP.Size = new System.Drawing.Size(242, 20);
-            this.txtBoP.TabIndex = 4;
+            this.txtBoP.TabIndex = 5;
             // 
             // chkBoPInstall
             // 
             this.chkBoPInstall.Location = new System.Drawing.Point(8, 48);
             this.chkBoPInstall.Name = "chkBoPInstall";
             this.chkBoPInstall.Size = new System.Drawing.Size(96, 24);
-            this.chkBoPInstall.TabIndex = 3;
+            this.chkBoPInstall.TabIndex = 4;
             this.chkBoPInstall.Text = "BoP Installed";
             this.chkBoPInstall.CheckedChanged += new System.EventHandler(this.chkBoPInstall_CheckedChanged);
             // 
             // tabOpt4
             // 
+            this.tabOpt4.Controls.Add(this.lblExportWarning);
+            this.tabOpt4.Controls.Add(this.chkXwaDetectMission);
+            this.tabOpt4.Controls.Add(this.chkXwaFlagRemappedCraft);
+            this.tabOpt4.Controls.Add(this.cmdExport);
+            this.tabOpt4.Controls.Add(this.chkXwaOverrideScan);
+            this.tabOpt4.Controls.Add(this.chkXwaOverrideExternal);
             this.tabOpt4.Controls.Add(this.chkBackdrops);
             this.tabOpt4.Controls.Add(this.cmdXwa);
             this.tabOpt4.Controls.Add(this.groupBox7);
@@ -909,13 +1207,53 @@ namespace Idmr.Yogeme
             this.tabOpt4.TabIndex = 3;
             this.tabOpt4.Text = "XWA";
             // 
+            // chkXwaFlagRemappedCraft
+            // 
+            this.chkXwaFlagRemappedCraft.AutoSize = true;
+            this.chkXwaFlagRemappedCraft.Location = new System.Drawing.Point(181, 116);
+            this.chkXwaFlagRemappedCraft.Name = "chkXwaFlagRemappedCraft";
+            this.chkXwaFlagRemappedCraft.Size = new System.Drawing.Size(202, 17);
+            this.chkXwaFlagRemappedCraft.TabIndex = 8;
+            this.chkXwaFlagRemappedCraft.Text = "Indicate remapped craft from scan (+)";
+            this.chkXwaFlagRemappedCraft.UseVisualStyleBackColor = true;
+            // 
+            // cmdExport
+            // 
+            this.cmdExport.Location = new System.Drawing.Point(241, 136);
+            this.cmdExport.Name = "cmdExport";
+            this.cmdExport.Size = new System.Drawing.Size(134, 23);
+            this.cmdExport.TabIndex = 9;
+            this.cmdExport.Text = "Export Loaded Craft List";
+            this.cmdExport.UseVisualStyleBackColor = true;
+            this.cmdExport.Click += new System.EventHandler(this.cmdExport_Click);
+            // 
+            // chkXwaOverrideScan
+            // 
+            this.chkXwaOverrideScan.AutoSize = true;
+            this.chkXwaOverrideScan.Location = new System.Drawing.Point(181, 96);
+            this.chkXwaOverrideScan.Name = "chkXwaOverrideScan";
+            this.chkXwaOverrideScan.Size = new System.Drawing.Size(201, 17);
+            this.chkXwaOverrideScan.TabIndex = 7;
+            this.chkXwaOverrideScan.Text = "Scan craft list directly from installation";
+            this.chkXwaOverrideScan.UseVisualStyleBackColor = true;
+            // 
+            // chkXwaOverrideExternal
+            // 
+            this.chkXwaOverrideExternal.AutoSize = true;
+            this.chkXwaOverrideExternal.Location = new System.Drawing.Point(181, 76);
+            this.chkXwaOverrideExternal.Name = "chkXwaOverrideExternal";
+            this.chkXwaOverrideExternal.Size = new System.Drawing.Size(203, 17);
+            this.chkXwaOverrideExternal.TabIndex = 6;
+            this.chkXwaOverrideExternal.Text = "Override craft names from external file";
+            this.chkXwaOverrideExternal.UseVisualStyleBackColor = true;
+            // 
             // chkBackdrops
             // 
             this.chkBackdrops.Enabled = false;
-            this.chkBackdrops.Location = new System.Drawing.Point(182, 56);
+            this.chkBackdrops.Location = new System.Drawing.Point(182, 193);
             this.chkBackdrops.Name = "chkBackdrops";
             this.chkBackdrops.Size = new System.Drawing.Size(185, 40);
-            this.chkBackdrops.TabIndex = 5;
+            this.chkBackdrops.TabIndex = 10;
             this.chkBackdrops.Text = "Apply DTM Super Backdrops to new missions";
             this.chkBackdrops.UseVisualStyleBackColor = true;
             // 
@@ -924,7 +1262,7 @@ namespace Idmr.Yogeme
             this.cmdXwa.Location = new System.Drawing.Point(357, 15);
             this.cmdXwa.Name = "cmdXwa";
             this.cmdXwa.Size = new System.Drawing.Size(24, 24);
-            this.cmdXwa.TabIndex = 4;
+            this.cmdXwa.TabIndex = 3;
             this.cmdXwa.Text = "...";
             this.cmdXwa.UseVisualStyleBackColor = true;
             this.cmdXwa.Click += new System.EventHandler(this.cmdXwa_Click);
@@ -938,7 +1276,7 @@ namespace Idmr.Yogeme
             this.groupBox7.Location = new System.Drawing.Point(8, 56);
             this.groupBox7.Name = "groupBox7";
             this.groupBox7.Size = new System.Drawing.Size(168, 128);
-            this.groupBox7.TabIndex = 3;
+            this.groupBox7.TabIndex = 4;
             this.groupBox7.TabStop = false;
             this.groupBox7.Text = "Default Craft";
             // 
@@ -1222,6 +1560,54 @@ namespace Idmr.Yogeme
             // 
             this.dirPlatform.Description = "Select the root install directory of the platform";
             // 
+            // lblExportWarning
+            // 
+            this.lblExportWarning.AutoSize = true;
+            this.lblExportWarning.Location = new System.Drawing.Point(186, 162);
+            this.lblExportWarning.Name = "lblExportWarning";
+            this.lblExportWarning.Size = new System.Drawing.Size(87, 13);
+            this.lblExportWarning.TabIndex = 11;
+            this.lblExportWarning.Text = "lblExportWarning";
+            // 
+            // chkXwingDetectMission
+            // 
+            this.chkXwingDetectMission.AutoSize = true;
+            this.chkXwingDetectMission.Location = new System.Drawing.Point(182, 56);
+            this.chkXwingDetectMission.Name = "chkXwingDetectMission";
+            this.chkXwingDetectMission.Size = new System.Drawing.Size(194, 17);
+            this.chkXwingDetectMission.TabIndex = 7;
+            this.chkXwingDetectMission.Text = "Detect installation from mission path";
+            this.chkXwingDetectMission.UseVisualStyleBackColor = true;
+            // 
+            // chkTieDetectMission
+            // 
+            this.chkTieDetectMission.AutoSize = true;
+            this.chkTieDetectMission.Location = new System.Drawing.Point(182, 56);
+            this.chkTieDetectMission.Name = "chkTieDetectMission";
+            this.chkTieDetectMission.Size = new System.Drawing.Size(194, 17);
+            this.chkTieDetectMission.TabIndex = 7;
+            this.chkTieDetectMission.Text = "Detect installation from mission path";
+            this.chkTieDetectMission.UseVisualStyleBackColor = true;
+            // 
+            // chkXvtDetectMission
+            // 
+            this.chkXvtDetectMission.Location = new System.Drawing.Point(270, 79);
+            this.chkXvtDetectMission.Name = "chkXvtDetectMission";
+            this.chkXvtDetectMission.Size = new System.Drawing.Size(104, 44);
+            this.chkXvtDetectMission.TabIndex = 19;
+            this.chkXvtDetectMission.Text = "Detect installation from mission path";
+            this.chkXvtDetectMission.UseVisualStyleBackColor = true;
+            // 
+            // chkXwaDetectMission
+            // 
+            this.chkXwaDetectMission.AutoSize = true;
+            this.chkXwaDetectMission.Location = new System.Drawing.Point(181, 56);
+            this.chkXwaDetectMission.Name = "chkXwaDetectMission";
+            this.chkXwaDetectMission.Size = new System.Drawing.Size(194, 17);
+            this.chkXwaDetectMission.TabIndex = 5;
+            this.chkXwaDetectMission.Text = "Detect installation from mission path";
+            this.chkXwaDetectMission.UseVisualStyleBackColor = true;
+            // 
             // OptionsDialog
             // 
             this.AcceptButton = this.cmdOK;
@@ -1244,7 +1630,13 @@ namespace Idmr.Yogeme
             this.tabOpt1.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.tabMap.ResumeLayout(false);
+            this.tabMap.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numMousewheelZoom)).EndInit();
             this.groupBox2.ResumeLayout(false);
+            this.tabWireframe.ResumeLayout(false);
+            this.tabWireframe.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numWireMeshIcon)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numWireIconThreshold)).EndInit();
             this.tabXW.ResumeLayout(false);
             this.tabXW.PerformLayout();
             this.groupBox6.ResumeLayout(false);
@@ -1376,5 +1768,33 @@ namespace Idmr.Yogeme
         private Label label14;
         private Label label15;
         private ComboBox cboInteractiveTheme;
+		private TabPage tabWireframe;
+		private ListBox lstWireMeshTypes;
+		private CheckBox chkWireEnabled;
+		private Label lblQuickToggle;
+		private Label lblDrawMeshes;
+		private CheckBox chkWireToggleWeapon;
+		private CheckBox chkWireToggleMisc;
+		private CheckBox chkWireToggleHull;
+		private NumericUpDown numWireMeshIcon;
+		private NumericUpDown numWireIconThreshold;
+		private Label lblMouseWheelZoom;
+		private NumericUpDown numMousewheelZoom;
+		private CheckBox chkWireMeshIcon;
+		private CheckBox chkWireIconThreshold;
+		private CheckBox chkWireToggleHangar;
+		private Button cmdWireMeshDefault;
+		private CheckBox chkXwaOverrideScan;
+		private CheckBox chkXwaOverrideExternal;
+		private Button cmdExport;
+		private CheckBox chkXwaFlagRemappedCraft;
+		private CheckBox chkXvtOverrideExternal;
+		private CheckBox chkTieOverrideExternal;
+		private CheckBox chkXwingOverrideExternal;
+		private CheckBox chkXwingDetectMission;
+		private CheckBox chkTieDetectMission;
+		private CheckBox chkXvtDetectMission;
+		private CheckBox chkXwaDetectMission;
+		private Label lblExportWarning;
 	}
 }

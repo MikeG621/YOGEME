@@ -106,6 +106,27 @@ namespace Idmr.Yogeme
             ColorInteractSelected = Color.Blue;
             ColorInteractNonSelected = Color.Black;
             ColorInteractBackground = Color.RosyBrown;
+
+			MapMouseWheelZoomPercentage = 10.0;
+			WireframeEnabled = true;
+			WireframeIconThresholdEnabled = false;
+			WireframeIconThresholdSize = 25;
+			WireframeMeshIconEnabled = true;
+			WireframeMeshIconSize = 18;
+			WireframeMeshTypeVisibility = MeshTypeHelper.GetDefaultFlags();
+
+			XwingDetectMission = true;
+			TieDetectMission = true;
+			XvtDetectMission = true;
+			XwaDetectMission = true;
+
+			XwingOverrideExternal = false;
+			TieOverrideExternal = false; 
+			XvtOverrideExternal = false;
+			XwaOverrideExternal = false;
+
+			XwaOverrideScan = true;
+			XwaFlagRemappedCraft = true;
 		}
 		
 		/// <summary>Loads saved settings</summary>
@@ -200,6 +221,26 @@ namespace Idmr.Yogeme
                     ColorInteractSelected = Color.FromArgb(br.ReadInt32());
                     ColorInteractNonSelected = Color.FromArgb(br.ReadInt32());
                     ColorInteractBackground = Color.FromArgb(br.ReadInt32());
+
+					MapMouseWheelZoomPercentage = br.ReadDouble();
+					WireframeEnabled = br.ReadBoolean();
+					WireframeIconThresholdEnabled = br.ReadBoolean();
+					WireframeIconThresholdSize = br.ReadInt32();
+					WireframeMeshIconEnabled = br.ReadBoolean();
+					WireframeMeshIconSize = br.ReadInt32();
+					WireframeMeshTypeVisibility = br.ReadInt64();
+
+					XwingDetectMission = br.ReadBoolean();
+					TieDetectMission = br.ReadBoolean();
+					XvtDetectMission = br.ReadBoolean();
+					XwaDetectMission = br.ReadBoolean();
+
+					XwingOverrideExternal = br.ReadBoolean();
+					TieOverrideExternal = br.ReadBoolean();
+					XvtOverrideExternal = br.ReadBoolean();
+					XwaOverrideExternal = br.ReadBoolean();
+					XwaOverrideScan = br.ReadBoolean();
+					XwaFlagRemappedCraft = br.ReadBoolean();
                 }
 				catch { /*do nothing*/ }
 
@@ -518,6 +559,27 @@ namespace Idmr.Yogeme
             bw.Write(ColorInteractNonSelected.ToArgb());
             bw.Write(ColorInteractBackground.ToArgb());
            
+			bw.Write(MapMouseWheelZoomPercentage);
+			bw.Write(WireframeEnabled);
+			bw.Write(WireframeIconThresholdEnabled);
+			bw.Write(WireframeIconThresholdSize);
+			bw.Write(WireframeMeshIconEnabled);
+			bw.Write(WireframeMeshIconSize);
+			bw.Write(WireframeMeshTypeVisibility);
+
+			bw.Write(XwingDetectMission);
+			bw.Write(TieDetectMission);
+			bw.Write(XvtDetectMission);
+			bw.Write(XwaDetectMission);
+
+			bw.Write(XwingOverrideExternal);
+			bw.Write(TieOverrideExternal);
+			bw.Write(XvtOverrideExternal);
+			bw.Write(XwaOverrideExternal);
+
+			bw.Write(XwaOverrideScan);
+			bw.Write(XwaFlagRemappedCraft);
+
             fs.SetLength(fs.Position);
 			fs.Close();
 			#endregion
@@ -704,6 +766,43 @@ namespace Idmr.Yogeme
 			get { return _xwingPath; }
 			set { if (Directory.Exists(value)) { _xwingPath = value; } }
 		}
+		/// <summary>Gets or sets the percentage (of the current zoom level) to adjust when using mousewheel zoom in the map.</summary>
+		public double MapMouseWheelZoomPercentage { get; set; }
+		/// <summary>Gets or sets whether craft wireframes are enabled for drawing in the map.</summary>
+		public bool WireframeEnabled { get; set; }
+		/// <summary>Gets or sets whether a bitmap icon should be drawn instead of a wireframe when a craft's length is too short.</summary>
+		public bool WireframeIconThresholdEnabled { get; set; }
+		/// <summary>Gets or sets the craft size threshold (in meters) that must be achieved for a wireframe to be drawn.</summary>
+		public int WireframeIconThresholdSize { get; set; }
+		/// <summary>Gets or sets whether to scale up a wireframe to simulate an icon if its render size is too small.</summary>
+		public bool WireframeMeshIconEnabled { get; set; }
+		/// <summary>Gets or sets the minimum size (in pixels) that a wireframe should be scaled to simulate an icon.</summary>
+		public int WireframeMeshIconSize { get; set; }
+		/// <summary>Gets or sets the collection of bit flags that determine which mesh types should be drawn.</summary>
+		public long WireframeMeshTypeVisibility { get; set; }
+
+		/// <summary>Gets or sets whether to detect the platform installation path from a loaded X-wing mission.</summary>
+		public bool XwingDetectMission { get; set; }
+		/// <summary>Gets or sets whether to detect the platform installation path from a loaded TIE Fighter mission.</summary>
+		public bool TieDetectMission { get; set; }
+		/// <summary>Gets or sets whether to detect the platform installation path from a loaded X-wing vs TIE Fighter (or Balance of Power) mission.</summary>
+		public bool XvtDetectMission { get; set; }
+		/// <summary>Gets or sets whether to detect the platform installation path from a loaded X-wing Alliance mission.</summary>
+		public bool XwaDetectMission { get; set; }
+
+		/// <summary>Gets or sets whether craft names should be overridden by the external X-wing craft data file.</summary>
+		public bool XwingOverrideExternal { get; set; }
+		/// <summary>Gets or sets whether craft names should be overridden by the external TIE Fighter craft data file.</summary>
+		public bool TieOverrideExternal { get; set; }
+		/// <summary>Gets or sets whether craft names should be overridden by the external X-wing vs TIE Fighter (and Balance of Power) craft data file.</summary>
+		public bool XvtOverrideExternal { get; set; }
+		/// <summary>Gets or sets whether craft names should be overridden by the external X-wing Alliance craft data file.</summary>
+		public bool XwaOverrideExternal { get; set; }
+
+		/// <summary>Gets or sets whether to scan the craft list directly from the XWA installation files. This will further override <see cref="XwaOverrideExternal"/> if enabled.</summary>
+		public bool XwaOverrideScan { get; set; }
+		/// <summary>Gets or sets whether a suffix should be added to craft names, indicating a craft type that has been remapped. Only applies when <see cref="XwaOverrideScan"/> is used.</summary>
+		public bool XwaFlagRemappedCraft { get; set; }
 		#endregion
 	}
 	/* Settings and values

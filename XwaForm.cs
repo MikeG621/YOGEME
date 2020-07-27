@@ -458,6 +458,18 @@ namespace Idmr.Yogeme
 			if (!_config.XwaInstalled) cmdBackdrop.Enabled = false;
 			_applicationExit = true;    //becomes false if selecting "New Mission" from menu
 		}
+		void loadCraftData(string fileMission)
+		{
+			Strings.OverrideShipList(null, null); //Restore defaults.
+			try
+			{
+				CraftDataManager.GetInstance().LoadPlatform(Settings.Platform.XWA, _config, Strings.CraftType, Strings.CraftAbbrv, fileMission);
+				Strings.OverrideShipList(CraftDataManager.GetInstance().GetLongNames(), CraftDataManager.GetInstance().GetShortNames());
+			}
+			catch (Exception x) { MessageBox.Show("Error processing custom XWA ship list, using defaults.\n\n" + x.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); }
+			cboCraft.Items.Clear();
+			cboCraft.Items.AddRange(Strings.CraftType);
+		}
 		bool isMissionCraft(int fgIndex, Mission.Trigger trigger)
 		{
 			if (trigger.Amount == 0 && trigger.VariableType == 1 && trigger.Variable == 0 && trigger.Condition == 0)
@@ -639,6 +651,7 @@ namespace Idmr.Yogeme
 				MessageBox.Show(x.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return false;
 			}
+			loadCraftData(fileMission);
 			for (int i = 0; i < _mission.FlightGroups.Count; i++)
 			{
 				lstFG.Items.Add(_mission.FlightGroups[i].ToString(true));
@@ -742,19 +755,7 @@ namespace Idmr.Yogeme
 		}
 		void startup()
 		{
-			if (File.Exists(Application.StartupPath + "\\xwa_shiplist.txt"))
-			{
-				System.Diagnostics.Debug.WriteLine("custom XWA list found");
-				string[] crafts;
-				string[] abbrvs;
-				try
-				{
-					Common.ProcessCraftList(Application.StartupPath + "\\xwa_shiplist.txt", out crafts, out abbrvs);
-					Strings.OverrideShipList(crafts, abbrvs);
-					initializeMission();    // have to re-init since lstFG is already populated
-				}
-				catch (Exception x) { MessageBox.Show("Error processing custom XWA ship list, using defaults.\n(" + x.Message + ").", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); }
-			}
+			loadCraftData("");
 			_config.LastPlatform = Settings.Platform.XWA;
 			_applicationExit = true;    //becomes false if selecting "New Mission" from menu
 			_config.LastMission = "";
@@ -787,7 +788,7 @@ namespace Idmr.Yogeme
 			#endregion
 			#region FlightGroups
 			#region Craft
-			cboCraft.Items.AddRange(Strings.CraftType); cboCraft.SelectedIndex = _mission.FlightGroups[0].CraftType;
+			cboCraft.SelectedIndex = _mission.FlightGroups[0].CraftType; // already loaded in loadCraftData
 			cboIFF.Items.AddRange(Strings.IFF); cboIFF.SelectedIndex = _mission.FlightGroups[0].IFF;
 			cboAI.Items.AddRange(Strings.Rating); cboAI.SelectedIndex = _mission.FlightGroups[0].AI;
 			cboMarkings.Items.AddRange(Strings.Color);
