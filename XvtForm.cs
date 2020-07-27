@@ -1408,7 +1408,7 @@ namespace Idmr.Yogeme
 		{
 			try { _fMap.Close(); }
 			catch { /* do nothing */ }
-            _fMap = new MapForm(_config, _mission.FlightGroups, mapForm_DataChangedCallback);
+			_fMap = new MapForm(_config, _mission.IsBop, _mission.FlightGroups, mapForm_DataChangedCallback);
 			_fMap.Show();
 		}
         void mapForm_DataChangedCallback(object sender, EventArgs e)

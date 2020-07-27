@@ -142,9 +142,9 @@ namespace Idmr.Yogeme
 		}
 
 		/// <param name="fg">XFlights array</param>
-        public MapForm(Settings settings, Platform.Xvt.FlightGroupCollection fg, EventHandler dataModifiedCallback)
+        public MapForm(Settings settings, bool isBoP, Platform.Xvt.FlightGroupCollection fg, EventHandler dataModifiedCallback)
 		{
-			_platform = Settings.Platform.XvT;
+			_platform = isBoP ? Settings.Platform.BoP : Settings.Platform.XvT;
 			InitializeComponent();
 			Import(fg);
 			try { imgCraft.Images.AddStrip(Image.FromFile(Application.StartupPath + "\\images\\craft_XvT.bmp")); }
@@ -562,7 +562,7 @@ namespace Idmr.Yogeme
 				for (int i = 0; i < 15; i++) chkWP[i].Checked = Convert.ToBoolean(t & (1 << i));
 				for (int i = 15; i < 22; i++) chkWP[i].Enabled = false;
 			}
-			else if (_platform == Settings.Platform.XvT) for (int i = 0; i < 22; i++) chkWP[i].Checked = Convert.ToBoolean(t & (1 << i));
+			else if (_platform == Settings.Platform.XvT || _platform == Settings.Platform.BoP) for (int i = 0; i < 22; i++) chkWP[i].Checked = Convert.ToBoolean(t & (1 << i));
 			else if (_platform == Settings.Platform.XWA)
 			{
 				for (int i = 0; i < 12; i++) chkWP[i].Checked = Convert.ToBoolean(t & (1 << i));
