@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2020 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.6.5
+ * VERSION: 1.6.5+
  */
 
 /* CHANGELOG
+ * [FIX] XWA MoveIcon selecting wrong icon
  * v1.6.5, 200704
  * [UPD] Icons now use BMPs instead of the DATs, importDats() renamed to importIcons()
  * [UPD] If the craft index is OutOfRange, use the first one
@@ -1868,6 +1869,9 @@ namespace Idmr.Yogeme
 			if (_loading) return;
 			if (_tempX != -621 && _tempY != -621)
 			{
+				// here, temp is the OLD location of the icon
+				short selectedX = _briefData[cboMoveIcon.SelectedIndex].Waypoint[0];
+				short selectedY = _briefData[cboMoveIcon.SelectedIndex].Waypoint[1];
 				try
 				{
 					_briefData[cboMoveIcon.SelectedIndex].Waypoint[0] = _briefData[_icon].Waypoint[0];
@@ -1882,9 +1886,11 @@ namespace Idmr.Yogeme
 						_briefData[_icon].Waypoint[1] = _tempY;
 					}
 					catch (NullReferenceException) { /* do nothing*/ }
-					_icon = (short)cboMoveIcon.SelectedIndex;
+					_tempX = selectedX;
+					_tempY = selectedY;
 				}
 			}
+			_icon = (short)cboMoveIcon.SelectedIndex;
 			MapPaint();
 		}
 		void cboNCraft_SelectedIndexChanged(object sender, EventArgs e)

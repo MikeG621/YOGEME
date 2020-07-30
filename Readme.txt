@@ -18,6 +18,7 @@ v1.7, XX XXX XXXX
  - (TIE) Fixed an issue where current FG's IFF would reset when updating IFF names
  - (TIE) Message colors update immediately
  - (XWA) IFF subsitutions in triggers and controls
+ - (XWA Briefing) Fixed wrong icon being selected while setting up MoveIcon
  - Various fixes and tweaks by Random Starfighter (JB)
  -- (Backdrops) Images are now foregraound instead of background
  -- (Backdrops) Fixed a possible IndexOutOfRange when clicking thumbnails
