@@ -3,10 +3,13 @@
  * Copyright (C) 2007-2020 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.6.5
+ * VERSION: 1.6.5+
  */
 
 /* CHANGELOG
+ * v1.7, XXXXXX
+ * [FIX] Unregister Tick handler to prevent misfires after closing [JB]
+ * [UPD] form handlers renamed
  * v1.6.5, 200704
  * [NEW] if pulling from imgCraft trips an OutOfRange, default to img[0]
  * v1.5, 180910
@@ -573,7 +576,7 @@ namespace Idmr.Yogeme
 				lblOrder.Visible = true;
 				numOrder.Visible = true;
 			}
-			MouseWheel += new MouseEventHandler(frmMap_MouseWheel);	// this is here because of some stupid reason, MouseWheel isn't available in the GUI
+			MouseWheel += new MouseEventHandler(form_MouseWheel);	// this is here because of some stupid reason, MouseWheel isn't available in the GUI
 
 			_loading = false;
 		}
@@ -1283,23 +1286,23 @@ namespace Idmr.Yogeme
 		}
 		#endregion
 		#region frmMap
-		void frmMap_Activated(object sender, EventArgs e) { MapPaint(true); }
-        void frmMap_FormClosed(object sender, FormClosedEventArgs e) { _map.Dispose(); }
-        void frmMap_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            onDataModified = null;
-            _isClosing = true;
-            //[JB] Stop and deactivate the timer.
-            //Important! There's an issue where the event can trigger after the map is disposed, even after calling Stop(). The event must be unregistered.
-            mapPaintRedrawTimer.Stop();
-            mapPaintRedrawTimer.Tick -= mapPaintRedrawTimer_Tick;
-        }
-        void frmMap_Load(object sender, EventArgs e)
+		void form_Activated(object sender, EventArgs e) { MapPaint(true); }
+        void form_FormClosed(object sender, FormClosedEventArgs e) { _map.Dispose(); }
+		void form_FormClosing(object sender, FormClosingEventArgs e)
+		{
+			onDataModified = null;
+			_isClosing = true;
+			//[JB] Stop and deactivate the timer.
+			//Important! There's an issue where the event can trigger after the map is disposed, even after calling Stop(). The event must be unregistered.
+			mapPaintRedrawTimer.Stop();
+			mapPaintRedrawTimer.Tick -= mapPaintRedrawTimer_Tick;
+		}
+        void form_Load(object sender, EventArgs e)
 		{
 			_map = new Bitmap(w, h, PixelFormat.Format24bppRgb);
 			MapPaint(true);
 		}
-		void frmMap_MouseWheel(object sender, MouseEventArgs e)
+		void form_MouseWheel(object sender, MouseEventArgs e)
 		{
 			double mult = _settings.MapMouseWheelZoomPercentage / 100.0;
 			if (mult < 0.01) mult = 0.01; else if (mult > 0.5) mult = 0.5;
@@ -1313,21 +1316,21 @@ namespace Idmr.Yogeme
 			else if (newZoom > hscZoom.Maximum) newZoom = hscZoom.Maximum;
 			hscZoom.Value = newZoom;
 		}
-		void MapForm_Resize(object sender, EventArgs e)
+		void form_Resize(object sender, EventArgs e)
 		{
 			if (!_isDragged) updateLayout();
 		}
-		void MapForm_ResizeBegin(object sender, EventArgs e)
+		void form_ResizeBegin(object sender, EventArgs e)
 		{
 			_isDragged = true;
 		}
-		void MapForm_ResizeEnd(object sender, EventArgs e)
+		void form_ResizeEnd(object sender, EventArgs e)
 		{
 			_isDragged = false;
 			updateLayout();
 		}
 
-        void MapForm_KeyDown(object sender, KeyEventArgs e)
+        void form_KeyDown(object sender, KeyEventArgs e)
         {
             if (lstSelected.Focused)
             {
@@ -1403,7 +1406,7 @@ namespace Idmr.Yogeme
             }
             e.Handled = true;
         }
-        void MapForm_KeyUp(object sender, KeyEventArgs e)
+        void form_KeyUp(object sender, KeyEventArgs e)
         {
             if (!_mapFocus) return;
             _shiftState = e.Shift;

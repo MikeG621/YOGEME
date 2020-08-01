@@ -4,10 +4,17 @@
  * This file authored by "JB" (Random Starfighter) (randomstarfighter@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.6.5
+ * VERSION: 1.6.5+
  */
 
 /* CHANGELOG:
+ * v1.7, XXXXXX
+ * [FIX] Starting ships set to 1 [JB]
+ * [UPD] Unk1 now RandomSeed [JB]
+ * [UPD] MaxCraft increased to 255 [JB]
+ * [UPD] Yaw/Pitch/Roll tweaks, save fixed [JB]
+ * [UPD] form handlers renamed
+ * [FIX] re-init if load fails
  * v1.6.5, 200704
  * [NEW] Custom shiplist
  * [FIX #32] bin path now explicitly uses Startup Path to prevent implicit from defaulting to sys32
@@ -38,16 +45,16 @@ namespace Idmr.Yogeme
 		bool _applicationExit;				//for frmTIE_Closing, confirms application exit vs switching platforms
 		int _activeFG = 0;			//counter to keep track of current FG being displayed
 		int _startingShips = 1;		//counter for craft in play at start <30s, warning above 28
-        int _startingObjects = 0;
+		int _startingObjects = 0;
 		bool _loading;		//alerts certain functions to disable during the loading process
-        bool _noRefresh = false;
-        enum EditorMode
-        {
-            XWI,
-            BRF
-        }
-        EditorMode _mode = EditorMode.XWI;      //Which FG selection we're currently viewing and editing (0=XWI, 1=BRF)
-        Color _original_lstFG_BackColor;
+		bool _noRefresh = false;
+		enum EditorMode
+		{
+			XWI,
+			BRF
+		}
+		EditorMode _mode = EditorMode.XWI;      //Which FG selection we're currently viewing and editing (0=XWI, 1=BRF)
+		Color _original_lstFG_BackColor;
 
 		private readonly int[] WaypointMapping = new int[10] {   //The raw waypoint data is not in a convenient order (Start1,Waypt1,Waypt2,Waypt3,Start2,Start3,Hyper) so assists in providing an intuitive datagrid, mapping the display row (array index) to the actual FG waypoint index (element value).
 			0, 4, 5,    //Start1, Start2, Start3
@@ -301,13 +308,13 @@ namespace Idmr.Yogeme
 				catch (Exception x)
 				{
 					fs.Close();
-					MessageBox.Show(x.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-					return false;
+					throw x;
 				}
 			}
 			catch (Exception x)
 			{
 				MessageBox.Show(x.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				menuNewXwing_Click(0, new EventArgs());
 				return false;
 			}
 			loadCraftData(fileMission);
@@ -589,7 +596,7 @@ namespace Idmr.Yogeme
             e.Graphics.DrawString(e.Index >= 0 ? variable.Items[e.Index].ToString() : "", e.Font, brText, e.Bounds, StringFormat.GenericDefault);
         }
         
-		void frmXwing_Activated(object sender, EventArgs e)
+		void form_Activated(object sender, EventArgs e)
 		{
 			if (_fMap != null)
 			{
@@ -597,7 +604,7 @@ namespace Idmr.Yogeme
 				lstFG.SelectedIndex = _activeFG;
 			}
 		}
-		void frmXwing_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+		void form_Closing(object sender, System.ComponentModel.CancelEventArgs e)
 		{
 			promptSave();
 			if (_config.ConfirmExit && _applicationExit)
@@ -608,7 +615,7 @@ namespace Idmr.Yogeme
 			closeForms();
 			if (_applicationExit) Application.Exit();
 		}
-		void XwingForm_KeyDown(object sender, KeyEventArgs e)
+		void form_KeyDown(object sender, KeyEventArgs e)
 		{
 			//Instead of using a global shortcut for Delete in designer.cs
 			//   this.menuDelete.Shortcut = System.Windows.Forms.Shortcut.Del;
@@ -2114,53 +2121,53 @@ namespace Idmr.Yogeme
 			}
 		}
 		void refreshWaypointTab()  //[JB] New function to refresh the contents the waypoint tab, since we want to call this from more than one place.
-        {
-            bool btemp = _loading;
-            _loading = true;
-            bool isCraftFG = (_mission.FlightGroups[_activeFG].ObjectType == 0);
-            chkWP1.Enabled = isCraftFG && _mode == EditorMode.XWI;
-            chkWP2.Enabled = isCraftFG && _mode == EditorMode.XWI;
-            chkWP3.Enabled = isCraftFG && _mode == EditorMode.XWI;
-            chkSP2.Enabled = isCraftFG && _mode == EditorMode.XWI;
-            chkSP3.Enabled = isCraftFG && _mode == EditorMode.XWI;
-            chkWPHyp.Enabled = isCraftFG && _mode == EditorMode.XWI;
-            cmdCopyWPSP.Enabled = isCraftFG && _mode == EditorMode.XWI;
-            lblCS1.Enabled = (_mode == EditorMode.BRF);
-            lblCS2.Enabled = (_mode == EditorMode.BRF);
-            lblCS3.Enabled = (_mode == EditorMode.BRF);
-            int wpSkipMin = -1, wpSkipMax = -1;
-            if (isCraftFG && _mode == EditorMode.XWI) { wpSkipMin = 7; wpSkipMax = 10; }  //XWI FGs skip the CS points
-            else if (!isCraftFG && _mode == EditorMode.XWI) { wpSkipMin = 1; wpSkipMax = 10; }  //XWI Objects skip everything that isn't SP1.
-            else if (_mode == EditorMode.BRF) { wpSkipMin = 1; wpSkipMax = 7; }  //XWI and BRF objects skip SP2, SP3, WP1, WP2, WP3, and HYP
-            chkSP1.Text = (_mode == EditorMode.XWI) ? "Start Point 1" : "SP1 / CS1";
-            for (int i = 0; i < 10; i++)
-            {
-                int wpIndex = WaypointMapping[i]; // 'i' is the display order, wpIndex is the actual index in the FG waypoint list
-                for (int j = 0; j < 3; j++)
-                {
-                    if ((wpSkipMin >= 0 && i >= wpSkipMin) && (wpSkipMax >= 0 && i < wpSkipMax))
-                    {
-                        _tableRaw.Rows[i][j] = "";
-                        _table.Rows[i][j] = "";
-                    }
-                    else
-                    {
-                        _tableRaw.Rows[i][j] = _mission.FlightGroups[_activeFG].Waypoints[wpIndex][j];
-                        _table.Rows[i][j] = Math.Round((double)_mission.FlightGroups[_activeFG].Waypoints[wpIndex][j] / 160, 2);
-                    }
-                }
-                if (i < 7)  //Only the first 7 waypoints are real and have checkboxes.  The remaining waypoints are virtualized as an abstraction for easier BRF coord-set editing behind the scenes.
-                    chkWP[i].Checked = _mission.FlightGroups[_activeFG].Waypoints[wpIndex].Enabled;
-            }
-            if (!isCraftFG) chkSP1.Checked = true; //Always check for display purposes, but value is not saved with mission.
-            _table.AcceptChanges();
-            _tableRaw.AcceptChanges();
+		{
+			bool btemp = _loading;
+			_loading = true;
+			bool isCraftFG = (_mission.FlightGroups[_activeFG].ObjectType == 0);
+			chkWP1.Enabled = isCraftFG && _mode == EditorMode.XWI;
+			chkWP2.Enabled = isCraftFG && _mode == EditorMode.XWI;
+			chkWP3.Enabled = isCraftFG && _mode == EditorMode.XWI;
+			chkSP2.Enabled = isCraftFG && _mode == EditorMode.XWI;
+			chkSP3.Enabled = isCraftFG && _mode == EditorMode.XWI;
+			chkWPHyp.Enabled = isCraftFG && _mode == EditorMode.XWI;
+			cmdCopyWPSP.Enabled = isCraftFG && _mode == EditorMode.XWI;
+			lblCS1.Enabled = (_mode == EditorMode.BRF);
+			lblCS2.Enabled = (_mode == EditorMode.BRF);
+			lblCS3.Enabled = (_mode == EditorMode.BRF);
+			int wpSkipMin = -1, wpSkipMax = -1;
+			if (isCraftFG && _mode == EditorMode.XWI) { wpSkipMin = 7; wpSkipMax = 10; }  //XWI FGs skip the CS points
+			else if (!isCraftFG && _mode == EditorMode.XWI) { wpSkipMin = 1; wpSkipMax = 10; }  //XWI Objects skip everything that isn't SP1.
+			else if (_mode == EditorMode.BRF) { wpSkipMin = 1; wpSkipMax = 7; }  //XWI and BRF objects skip SP2, SP3, WP1, WP2, WP3, and HYP
+			chkSP1.Text = (_mode == EditorMode.XWI) ? "Start Point 1" : "SP1 / CS1";
+			for (int i = 0; i < 10; i++)
+			{
+				int wpIndex = WaypointMapping[i]; // 'i' is the display order, wpIndex is the actual index in the FG waypoint list
+				for (int j = 0; j < 3; j++)
+				{
+					if ((wpSkipMin >= 0 && i >= wpSkipMin) && (wpSkipMax >= 0 && i < wpSkipMax))
+					{
+						_tableRaw.Rows[i][j] = "";
+						_table.Rows[i][j] = "";
+					}
+					else
+					{
+						_tableRaw.Rows[i][j] = _mission.FlightGroups[_activeFG].Waypoints[wpIndex][j];
+						_table.Rows[i][j] = Math.Round((double)_mission.FlightGroups[_activeFG].Waypoints[wpIndex][j] / 160, 2);
+					}
+				}
+				if (i < 7)  //Only the first 7 waypoints are real and have checkboxes.  The remaining waypoints are virtualized as an abstraction for easier BRF coord-set editing behind the scenes.
+					chkWP[i].Checked = _mission.FlightGroups[_activeFG].Waypoints[wpIndex].Enabled;
+			}
+			if (!isCraftFG) chkSP1.Checked = true; //Always check for display purposes, but value is not saved with mission.
+			_table.AcceptChanges();
+			_tableRaw.AcceptChanges();
 			numYaw.Value = (int)Math.Round((double)_mission.FlightGroups[_activeFG].Yaw / 256 * 360);
 			numPitch.Value = (int)Math.Round((double)_mission.FlightGroups[_activeFG].Pitch / 256 * 360) - 90;
-            numRoll.Value = (int)Math.Round((double)_mission.FlightGroups[_activeFG].Roll / 256 * 360);
-            enableRot((_mission.FlightGroups[_activeFG].ObjectType == 0 ? false : true));
-            _loading = btemp;
-        }
+			numRoll.Value = (int)Math.Round((double)_mission.FlightGroups[_activeFG].Roll / 256 * 360);
+			enableRot((_mission.FlightGroups[_activeFG].ObjectType == 0 ? false : true));
+			_loading = btemp;
+		}
 
 		void chkWPArr_CheckedChanged(object sender, EventArgs e)
 		{

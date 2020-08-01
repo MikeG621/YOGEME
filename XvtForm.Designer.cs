@@ -6011,6 +6011,7 @@ namespace Idmr.Yogeme
 			this.tabMission.Controls.Add(this.groupBox36);
 			this.tabMission.Controls.Add(this.optXvT);
 			this.tabMission.Controls.Add(this.label104);
+			this.tabMission.Controls.Add(this.chkPreventOutcome);
 			this.tabMission.Controls.Add(this.label102);
 			this.tabMission.Controls.Add(this.numMissTimeMin);
 			this.tabMission.Controls.Add(this.label101);
@@ -6141,17 +6142,16 @@ namespace Idmr.Yogeme
 			this.groupBox36.Controls.Add(this.label105);
 			this.groupBox36.Controls.Add(this.label106);
 			this.groupBox36.Controls.Add(this.numMissUnk2);
-			this.groupBox36.Controls.Add(this.chkPreventOutcome);
 			this.groupBox36.Location = new System.Drawing.Point(273, 368);
 			this.groupBox36.Name = "groupBox36";
-			this.groupBox36.Size = new System.Drawing.Size(233, 95);
+			this.groupBox36.Size = new System.Drawing.Size(281, 56);
 			this.groupBox36.TabIndex = 9;
 			this.groupBox36.TabStop = false;
 			this.groupBox36.Text = "Unknown";
 			// 
 			// chkMissUnk3
 			// 
-			this.chkMissUnk3.Location = new System.Drawing.Point(11, 56);
+			this.chkMissUnk3.Location = new System.Drawing.Point(213, 25);
 			this.chkMissUnk3.Name = "chkMissUnk3";
 			this.chkMissUnk3.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
 			this.chkMissUnk3.Size = new System.Drawing.Size(48, 16);
@@ -6205,7 +6205,7 @@ namespace Idmr.Yogeme
 			// 
 			// chkPreventOutcome
 			// 
-			this.chkPreventOutcome.Location = new System.Drawing.Point(75, 56);
+			this.chkPreventOutcome.Location = new System.Drawing.Point(348, 430);
 			this.chkPreventOutcome.Name = "chkPreventOutcome";
 			this.chkPreventOutcome.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
 			this.chkPreventOutcome.Size = new System.Drawing.Size(152, 16);
@@ -6842,9 +6842,9 @@ namespace Idmr.Yogeme
 			this.Name = "XvtForm";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "Ye Olde Galactic Empire Mission Editor - XvT";
-			this.Activated += new System.EventHandler(this.frmXvT_Activated);
-			this.Closing += new System.ComponentModel.CancelEventHandler(this.frmXvT_Closing);
-			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.XvtForm_KeyDown);
+			this.Activated += new System.EventHandler(this.form_Activated);
+			this.Closing += new System.ComponentModel.CancelEventHandler(this.form_Closing);
+			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.form_KeyDown);
 			this.tabMain.ResumeLayout(false);
 			this.tabFG.ResumeLayout(false);
 			this.tabFGMinor.ResumeLayout(false);

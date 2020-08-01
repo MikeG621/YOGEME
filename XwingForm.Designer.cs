@@ -2262,9 +2262,9 @@ namespace Idmr.Yogeme
 			this.Name = "XwingForm";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "Ye Olde Galactic Empire Mission Editor - X-wing";
-			this.Activated += new System.EventHandler(this.frmXwing_Activated);
-			this.Closing += new System.ComponentModel.CancelEventHandler(this.frmXwing_Closing);
-			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.XwingForm_KeyDown);
+			this.Activated += new System.EventHandler(this.form_Activated);
+			this.Closing += new System.ComponentModel.CancelEventHandler(this.form_Closing);
+			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.form_KeyDown);
 			this.tabMain.ResumeLayout(false);
 			this.tabFG.ResumeLayout(false);
 			this.tabFGMinor.ResumeLayout(false);

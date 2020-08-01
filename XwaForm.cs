@@ -3,10 +3,20 @@
  * Copyright (C) 2007-2020 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.6.6
+ * VERSION: 1.6.6+
  */
 
 /* CHANGELOG
+ * v1.7, XXXXXX
+ * [UPD] Blank messages now shown as "*" [JB]
+ * [UPD] Cleanup index substitions [JB]
+ * [UPD] Trigger label refresh updates [JB]
+ * [FIX] Extra protections to handle custom missions using "bad" Status or Formation values [JB]
+ * [UPD] Added numbers to Messages to make use in Triggers easier [JB]
+ * [FIX] Craft TeamRoles reduced to 8 from 10 [JB]
+ * [NEW] IFF substitutions
+ * [UPD] form handlers renamed
+ * [FIX] crash if selecting RecentMission of a different platform
  * v1.6.6, 200719
  * [FIX] Crash when using "Apply DTM SuperBackdrops to new missions" option
  * v1.6.5, 200704
@@ -129,7 +139,6 @@ namespace Idmr.Yogeme
 		bool _applicationExit;
 		int _activeFG = 0;
 		int _startingShips = 1;
-		string[] _iffs;
 		int _activeMessage = 0;
 		DataTable _tableWP = new DataTable("Waypoints");
 		DataTable _tableWPRaw = new DataTable("Waypoints_Raw");
@@ -235,7 +244,7 @@ namespace Idmr.Yogeme
 					cbo.Items.AddRange(Strings.ObjectType);
 					break;
 				case 5: // IFF
-					cbo.Items.AddRange(Strings.IFF);
+					cbo.Items.AddRange(getIffStrings());
 					break;
 				case 6: // Ship Orders
 					cbo.Items.AddRange(Strings.Orders);
@@ -278,7 +287,7 @@ namespace Idmr.Yogeme
 					cbo.Items.AddRange(Strings.ObjectType);
 					break;
 				case 19: // All IFFs except
-					cbo.Items.AddRange(Strings.IFF);
+					cbo.Items.AddRange(getIffStrings());
 					break;
 				//case 20: // All Global Groups except
 				case 21: // All Teams except
@@ -524,6 +533,18 @@ namespace Idmr.Yogeme
 			return brText;
 		}
 		Color getHighlightColor() { return _config.ColorInteractSelected; }
+		/// <summary>Generates a string list of IFF names which provide default names instead of an empty string when no custom names are defined</summary>
+		string[] getIffStrings()
+		{
+			string[] t = new string[_mission.IFFs.Length];
+			for (int i = 0; i < t.Length; i++)
+			{
+				t[i] = _mission.IFFs[i];
+				if (t[i] == "")
+					t[i] = Strings.IFF[i];
+			}
+			return t;
+		}
 		string getMessagePreview(int index)
 		{
 			if (index < 0 || index >= _mission.Messages.Count)
@@ -569,25 +590,6 @@ namespace Idmr.Yogeme
 			}
 			lbl.Text = triggerText;
 
-		}
-		string replaceTargetText(string text)
-		{
-			while (text.Contains("FG:"))
-			{
-				int fg = Common.ParseIntAfter(text, "FG:");
-				text = text.Replace("FG:" + fg, (fg >= 0 && fg < _mission.FlightGroups.Count) ? _mission.FlightGroups[fg].ToString() : "Undefined");
-			}
-			while (text.Contains("FG2:"))
-			{
-				int fg = Common.ParseIntAfter(text, "FG2:");
-				text = text.Replace("FG2:" + fg, (fg >= 0 && fg < cboADPara.Items.Count) ? cboADPara.Items[fg].ToString() : "Undefined"); // this could be any Para, but they should all be the same anyway
-			}
-			while (text.Contains("TM:"))
-			{
-				int team = Common.ParseIntAfter(text, "TM:");
-				text = text.Replace("TM:" + team, (team >= 0 && team < 10 && _mission.Teams[team].Name != "") ? _mission.Teams[team].Name : "Team " + (team + 1).ToString());
-			}
-			return text;
 		}
 		bool loadMission(string fileMission)
 		{
@@ -642,13 +644,14 @@ namespace Idmr.Yogeme
 				catch (Exception x)
 				{
 					fs.Close();
-					MessageBox.Show(x.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-					return false;
+					throw x;
 				}
 			}
 			catch (Exception x)
 			{
 				MessageBox.Show(x.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				menuNewXWA_Click(0, new EventArgs());	// moved fix from RecentMissions_Click otherwise it would crash if the Recent was a different platform
+				// Now, if Recent is a different platform this does result in a new mission initilization before the form closes
 				return false;
 			}
 			loadCraftData(fileMission);
@@ -675,7 +678,7 @@ namespace Idmr.Yogeme
 			lblTeamArr_Click(lblTeam[0], new EventArgs());
 			_loading = btemp;
 			int c = fileMission.LastIndexOf("\\") + 1;
-			this.Text = "Ye Olde Galactic Empire Mission Editor - XWA - " + fileMission.Substring(c);
+			Text = "Ye Olde Galactic Empire Mission Editor - XWA - " + fileMission.Substring(c);
 			_config.LastMission = fileMission;
 			refreshRecent(); //[JB] Setting _config.LastMission modifies the Recent list.  Need to refresh the menu to match.
 			return true;
@@ -735,6 +738,30 @@ namespace Idmr.Yogeme
 			else if (ct == "System.Windows.Forms.CheckBox") ((CheckBox)control).CheckedChanged += instantUpdateHandler;
 			else if (ct == "System.Windows.Forms.RadioButton") ((RadioButton)control).CheckedChanged += instantUpdateHandler;
 		}
+		string replaceTargetText(string text)
+		{
+			while (text.Contains("FG:"))
+			{
+				int fg = Common.ParseIntAfter(text, "FG:");
+				text = text.Replace("FG:" + fg, ((fg >= 0 && fg < _mission.FlightGroups.Count) ? _mission.FlightGroups[fg].ToString() : "Undefined"));
+			}
+			while (text.Contains("FG2:"))
+			{
+				int fg = Common.ParseIntAfter(text, "FG2:");
+				text = text.Replace("FG2:" + fg, ((fg >= 0 && fg < cboADPara.Items.Count) ? cboADPara.Items[fg].ToString() : "Undefined")); // this could be any Para, but they should all be the same anyway
+			}
+			while (text.Contains("IFF:"))
+			{
+				int iff = Common.ParseIntAfter(text, "IFF:");
+				text = text.Replace("IFF:" + iff, "IFF " + Common.SafeString(getIffStrings(), iff, true));
+			}
+			while (text.Contains("TM:"))
+			{
+				int team = Common.ParseIntAfter(text, "TM:");
+				text = text.Replace("TM:" + team, ((team >= 0 && team < 10 && _mission.Teams[team].Name != "") ? _mission.Teams[team].Name : "Team " + (team + 1).ToString()));
+			}
+			return text;
+		}
 		void saveMission(string fileMission)
 		{
 			try { _fBrief.Save(); }
@@ -756,13 +783,11 @@ namespace Idmr.Yogeme
 		void startup()
 		{
 			loadCraftData("");
-			_config.LastPlatform = Settings.Platform.XWA;
 			_applicationExit = true;    //becomes false if selecting "New Mission" from menu
 			_config.LastMission = "";
 			_config.LastPlatform = Settings.Platform.XWA;
 			opnXWA.InitialDirectory = _config.GetWorkingPath(); //[JB] Updated for MRU access.  Defaults to installation and mission folder if not enabled.
 			savXWA.InitialDirectory = _config.GetWorkingPath();
-			_iffs = Strings.IFF;
 			#region Menu
 			menuText.Enabled = _config.XwaInstalled;
 			if (_config.RestrictPlatforms)
@@ -1275,7 +1300,7 @@ namespace Idmr.Yogeme
 			e.Graphics.DrawString(e.Index >= 0 ? variable.Items[e.Index].ToString() : "", e.Font, brText, e.Bounds, StringFormat.GenericDefault);
 		}
 
-		void frmXWA_Activated(object sender, EventArgs e)
+		void form_Activated(object sender, EventArgs e)
 		{
 			if (_fMap != null)
 			{
@@ -1283,7 +1308,7 @@ namespace Idmr.Yogeme
 				lstFG.SelectedIndex = _activeFG;
 			}
 		}
-		void frmXWA_Closing(object sender, FormClosingEventArgs e)
+		void form_Closing(object sender, FormClosingEventArgs e)
 		{
 			if (e.CloseReason == CloseReason.ApplicationExitCall) return;
 			promptSave();
@@ -1295,7 +1320,7 @@ namespace Idmr.Yogeme
 			closeForms();
 			if (_applicationExit) Application.Exit();
 		}
-		void XwaForm_KeyDown(object sender, KeyEventArgs e)
+		void form_KeyDown(object sender, KeyEventArgs e)
 		{
 			//Instead of assigning this in designer.cs
 			//  this.menuDelete.Shortcut = System.Windows.Forms.Shortcut.Del;
@@ -1898,11 +1923,6 @@ namespace Idmr.Yogeme
 				lstFG.SelectedIndex = 0;
 				_loading = true;        //turned false in previous line
 				if (_mission.Messages.Count != 0) lstMessages.SelectedIndex = 0;
-			}
-			else
-			{
-				menuNewXWA_Click(0, new EventArgs());  //[JB] Fix if loadMission() failed, which prevents an empty FG list and many potential index-out-of-range exceptions.
-				return;
 			}
 			_config.SetWorkingPath(Path.GetDirectoryName(mission)); //[JB] Update last-accessed
 			opnXWA.InitialDirectory = _config.GetWorkingPath();
@@ -4418,7 +4438,7 @@ namespace Idmr.Yogeme
 		}
 		string getNumberedMessage(int index)
 		{
-			return (index >= 0 && index < _mission.Messages.Count) ? "#" + (index + 1) + ": " + _mission.Messages[index].MessageString : "";
+			return (index >= 0 && index < _mission.Messages.Count) ? "#" + (index + 1) + ": " + (_mission.Messages[index].MessageString != "" ? _mission.Messages[index].MessageString : " *") : "";
 		}
 
 		void lstMessages_DrawItem(object sender, DrawItemEventArgs e)
@@ -4914,8 +4934,7 @@ namespace Idmr.Yogeme
 			#region M2
 			for (int i = 0; i < 4; i++)
 			{
-				_iffs[i + 2] = _mission.Iffs[i + 2];
-				txtIFFs[i].Text = _mission.Iffs[i + 2];
+				txtIFFs[i].Text = _mission.IFFs[i + 2];
 				txtRegions[i].Text = _mission.Regions[i];
 			}
 			numGlobCargo.Value = 2;
@@ -5034,9 +5053,8 @@ namespace Idmr.Yogeme
 		void txtIFFsArr_Leave(object sender, EventArgs e)
 		{
 			TextBox t = (TextBox)sender;
-			_mission.Iffs[(int)t.Tag] = Common.Update(this, _mission.Iffs[(int)t.Tag], t.Text);
-			_iffs[(int)t.Tag] = t.Text;
-			comboReset(cboIFF, _iffs, cboIFF.SelectedIndex);
+			_mission.IFFs[(int)t.Tag] = Common.Update(this, _mission.IFFs[(int)t.Tag], t.Text);
+			comboReset(cboIFF, getIffStrings(), cboIFF.SelectedIndex);
 		}
 		void txtRegionsArr_Leave(object sender, EventArgs e)
 		{

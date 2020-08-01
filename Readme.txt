@@ -14,6 +14,31 @@ original mainstream editors were created.
 ==========
 Version History
 
+v1.7, XX XXX XXXX
+ - (TIE) Fixed an issue where current FG's IFF would reset when updating IFF names
+ - (TIE) Message colors update immediately
+ - (XWA) IFF subsitutions in triggers and controls
+ - (XWA Briefing) Fixed wrong icon being selected while setting up MoveIcon
+ - Various fixes and tweaks by Random Starfighter (JB)
+ -- (Backdrops) Images are now foregraound instead of background
+ -- (Backdrops) Fixed a possible IndexOutOfRange when clicking thumbnails
+ -- (Common) SafeString and ParseAfterInt added
+ -- (Formations) Images are now foreground instead of background
+ -- (Map) Timer handler disabled when closing
+ -- (All) Cleanup index substitutions
+ -- (All) Blanks messages now show as "*"
+ -- (All) Trigger label refresh updates
+ -- (All) Extra protections to handle custom missions using "bad" Status or Formation values
+ -- (XvT) BoP IFF names implemented (consumes Unknowns 4 and 5)
+ -- (XvT) More TriggerTypes added
+ -- (XvT) Unk6 renamed to PreventOutcome
+ -- (XWA) Added numbers to Messages to make use in Triggers easier
+ -- (XWA) Craft TeamRoles reduced to 8 from 10
+ -- (Xwing) Starting ships count now starts at 1
+ -- (Xwing) Unk1 now Randomizer (unused)
+ -- (Xwing) Max Craft increased to 255
+ -- (Xwing) Yaw/Pitch/Roll tweaks, save fixed
+
 v1.6.6, 19 Jul 2020
  - (XWA) Fixed a crash when using "Apply DTM SuperBackdrops to new missions" option
 

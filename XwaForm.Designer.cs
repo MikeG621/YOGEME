@@ -9254,9 +9254,9 @@ namespace Idmr.Yogeme
 			this.Name = "XwaForm";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "Ye Olde Galactic Empire Mission Editor - XWA";
-			this.Activated += new System.EventHandler(this.frmXWA_Activated);
-			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmXWA_Closing);
-			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.XwaForm_KeyDown);
+			this.Activated += new System.EventHandler(this.form_Activated);
+			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.form_Closing);
+			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.form_KeyDown);
 			((System.ComponentModel.ISupportInitialize)(this.dataWaypoints)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.dataWaypoints_Raw)).EndInit();
 			this.tabMain.ResumeLayout(false);

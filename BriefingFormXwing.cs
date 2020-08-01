@@ -390,12 +390,12 @@ namespace Idmr.Yogeme
         void frmBrief_FormClosing(object sender, FormClosingEventArgs e)
 		{
 			Save();
-            //[JB] Stop and deactivate the timers.
-            //Important! There's an issue where the event can trigger after the map is disposed, even after calling Stop(). The event must be unregistered.
-            _popupTimer.Stop();
-            _popupTimer.Tick -= popupTimer_Tick;
-            _mapPaintRedrawTimer.Stop();
-            _mapPaintRedrawTimer.Tick -= mapPaintRedrawTimer_Tick;
+			//[JB] Stop and deactivate the timers.
+			//Important! There's an issue where the event can trigger after the map is disposed, even after calling Stop(). The event must be unregistered.
+			_popupTimer.Stop();
+			_popupTimer.Tick -= popupTimer_Tick;
+			_mapPaintRedrawTimer.Stop();
+			_mapPaintRedrawTimer.Tick -= mapPaintRedrawTimer_Tick;
 			onModified = null;
 		}
 		void frmBrief_Load(object sender, EventArgs e)
