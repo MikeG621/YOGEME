@@ -1,0 +1,97 @@
+﻿; Line format is: CraftName,Abbrev,SpeedMGLT,ResourceName
+; Empty lines, leading or trailing spaces are ignored.
+; Use '#' or '*' (without quotes) to autoreplace with slot numbers, or '-' for a completely blank entry.
+; CraftName and Abbrev are only used if Override is enabled in Settings. Resources are always used in the map.
+None,,,
+X-Wing,X-W,100,xwing
+Y-Wing,Y-W,80,ywing
+A-Wing,A-W,120,awing
+B-Wing,B-W,91,bwing
+TIE Fighter,T/F,100,tieftr
+TIE Interceptor,T/I,111,tieint
+TIE Bomber,T/B,80,tiebmb
+TIE Advanced,T/A,135,tieadv
+TIE Defender,T/D,145,tiedel
+10,,,
+11,,,
+Missile Boat,MIS,122,mislbt
+T-Wing,T-W,111,fghta
+Z-95 Headhunter,Z-95,100,z-95
+R-41 Starchaser,R-41,100,fghtb
+Assault Gunboat,GUN,90,assault
+Shuttle,SHU,67,shuttle
+Escort Shuttle,E/S,73,shutb
+Patrol Craft,SPC,78,patrl
+Scout Craft,SCT,78,patrlb
+Transport,TRN,55,trnsprt
+Assault Transport,ATR,67,transb
+Escort Transport,ETR,67,esctrp
+Tug,TUG,11,tug
+Combat Utility Vehicle,CUV,33,utila
+Container A,CN/A,0,contain
+Container B,CN/B,0,cona
+Container C,CN/C,0,conb
+Container D,CN/D,0,conc
+Heavy Lifter,HLF,22,barge
+*Gun Emplacement,*GPLT,,
+Freighter,FRT,17,freight
+Cargo Ferry,CARG,22,frtb
+Modular Conveyor,CNVYR,26,frta
+Container Transport,CTRNS,33,frtc
+*Medium Transport,*MDTRN,17,rebtuna
+Murrian Transport,MUTR,89,ltfrta
+Corellian Transport,CORT,89,cortn
+*Modified Strike Cruiser,*M/SC,,
+Corellian Corvette,CRV,22,corv
+Modified Corvette,M/CRV,22,corvta
+Nebulon-B Frigate,FRG,17,neb
+Modified Frigate,M/FRG,17,friga
+Passenger Liner,LINER,17,pasngr
+Carrack Cruiser,CRCK,17,crusa
+Strike Cruiser,STRCK,17,crusb
+Escort Carrier,ESC,13,escrt
+Dreadnaught,DREAD,13,dread
+Calamari Cruiser,CRS,11,cal
+Light Cruiser,CRL,13,ltcal
+Interdictor,INT,8,interd
+Victory Star Destroyer,VSD,8,vsd
+Imperial Star Destroyer,ISD,11,isd
+*Super Star Destroyer,*SSD,11,ssd
+Container E,CN/E,0,cond
+Container F,CN/F,0,cone
+Container G,CN/G,0,conf
+Container H,CN/H,0,cong
+Container I,CN/I,0,conh
+Platform A,PLT/1,0,plata
+Platform B,PLT/2,0,platb
+Platform C,PLT/3,0,platc
+Platform D,PLT/4,0,platab
+Platform E,PLT/5,0,platba
+Platform F,PLT/6,0,platca
+Asteroid R&D Facility,R&D FC,0,asth44
+Ast. Laser Battery,LAS BAT,0,astg33
+Ast. Warhead Battery,W LNCHR,0,astw21
+X/7 Factory,FAC/1,0,factry
+Satellite 1,SAT 1,0,sat1
+Satellite 2,SAT/2,0,sat1
+72,,,
+73,,,
+74,,,
+Mine A,MINE 1,0,mine1
+Mine B,MINE B,0,mine2
+Mine C,MINE C,0,mine3
+Gun Platform,GPLT,0,gunplat
+79,,,
+Probe A,PROBE A,0,probe1
+Probe B,PROBE B,0,probea
+82,,,
+Nav Buoy 1,NAV 1,0,probea
+Nav Buoy 2,NAV 2,0,probea
+Asteroid Field 1,Asteroid,0,astroid1
+Asteroid Field 2,Asteroid,0,astroid2
+Planet,Planet,,
+88
+89
+Shipyard,SHPYD,0,shipyard
+Repair Yard,REPYD,0,repairyd
+*Modified Strike Cruiser,M/SC,17,crusc

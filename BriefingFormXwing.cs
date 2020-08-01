@@ -121,7 +121,7 @@ namespace Idmr.Yogeme
             cboEvent.Items.AddRange(_xwingBriefing.GetUsableEventTypeStrings());
 
             Import(fg);	// FGs are separate so they can be updated without running the BRF as well
-			importDat(Application.StartupPath + "\\images\\TIE_BRF.dat", 34);
+			importIcons(Application.StartupPath + "\\images\\TIE_BRF.bmp", 34);
 			_tags = _xwingBriefing.BriefingTag;
 			_strings = _xwingBriefing.BriefingString;
 			importStrings();
@@ -232,70 +232,23 @@ namespace Idmr.Yogeme
 			cboFG.Items.Add(name);
 			cboFGTag.Items.Add(name);
 		}
-		void importDat(string filename, int size)
+		BaseBriefing getBriefing()
+		{
+		    //[JB] Retained for compatibility with code structure.  The idea was that virtual functions and overrides could be used to call code that was specific to X-wing or the other platforms.
+			return _xwingBriefing;
+		}
+		void importIcons(string filename, int size)
 		{
 			try
 			{
-				FileStream fs = File.OpenRead(filename);
-				BinaryReader br = new BinaryReader(fs);
-				int count = br.ReadInt16();
-				Bitmap bm = new Bitmap(count * size, size, PixelFormat.Format24bppRgb);
-				Graphics g = Graphics.FromImage(bm);
-				SolidBrush sb = new SolidBrush(Color.Black);
-				g.FillRectangle(sb, 0, 0, bm.Width, bm.Height);
-				byte[] blue = { 0, 0x48, 0x60, 0x78, 0x94, 0xAC, 0xC8, 0xE0, 0xFC };
-				byte[] green = { 0, 0, 4, 0x10, 0x24, 0x3C, 0x58, 0x78, 0xA0 };
-				for (int i=0;i<count;i++)
-				{
-					fs.Position = i*2+2;
-					fs.Position = br.ReadUInt16();
-					byte b;
-					w = br.ReadByte();	// using these vars just because I can
-					h = br.ReadByte();
-					int x;
-					for (int q=0;q<h;q++)
-					{
-						for (int r=0;r<(w+1)/2;r++)
-						{
-							b = br.ReadByte();
-							int p1 = b & 0xF;
-							int p2 = (b & 0xF0) >> 4;
-							x = (size-w)/2 + size*i + r*2;
-							if (_platform == Settings.Platform.XWING)
-							{
-								x = size/2 - w + size*i + r*4;
-								if (p1 != 0)
-								{
-									bm.SetPixel(x, size/2 - h + q*2, Color.FromArgb(0, green[p1], blue[p1]));
-									bm.SetPixel(x + 1, size/2 - h + q*2, Color.FromArgb(0, green[p1], blue[p1]));
-									bm.SetPixel(x, size/2 - h + q*2 + 1, Color.FromArgb(0, green[p1], blue[p1]));
-									bm.SetPixel(x + 1, size/2 - h + q*2 + 1, Color.FromArgb(0, green[p1], blue[p1]));
-								}
-								if (p2 != 0)
-								{
-									bm.SetPixel(x + 2, size/2 - h + q*2, Color.FromArgb(0, green[p2], blue[p2]));
-									bm.SetPixel(x + 3, size/2 - h + q*2, Color.FromArgb(0, green[p2], blue[p2]));
-									bm.SetPixel(x + 2, size/2 - h + q*2 + 1, Color.FromArgb(0, green[p2], blue[p2]));
-									bm.SetPixel(x + 3, size/2 - h + q*2 + 1, Color.FromArgb(0, green[p2], blue[p2]));
-								}
-							}
-						}
-					}
-				}
 				imgCraft.ImageSize = new Size(size, size);
-				imgCraft.Images.AddStrip(bm);
-				fs.Close();
+				imgCraft.Images.AddStrip(Image.FromFile(filename));
 			}
 			catch (Exception x)
 			{
 				MessageBox.Show(x.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				Close();
 			}
-		}
-		BaseBriefing getBriefing()
-		{
-		    //[JB] Retained for compatibility with code structure.  The idea was that virtual functions and overrides could be used to call code that was specific to X-wing or the other platforms.
-			return _xwingBriefing;
 		}
 		void importEvents(short[] rawEvents)
 		{

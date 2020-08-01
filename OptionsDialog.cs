@@ -135,6 +135,32 @@ namespace Idmr.Yogeme
             cboInteractiveTheme.SelectedIndex = (txtColorBackground.Text == "BC8F8F" ? 0 : txtColorBackground.Text == "BFBFFF" ? 1 : 0);  //Select YOGEME or XvTED by looking at background color, otherwise default to YOGEME. What's selected here doesn't actually matter unless the user clicks it, so it's just a matter of display consistency.
             refreshColors();
 
+			numMousewheelZoom.Value = Convert.ToDecimal(_config.MapMouseWheelZoomPercentage);
+			chkWireEnabled.Checked = _config.WireframeEnabled;
+			chkWireIconThreshold.Checked = _config.WireframeIconThresholdEnabled;
+			numWireIconThreshold.Value = _config.WireframeIconThresholdSize;
+			chkWireMeshIcon.Checked = _config.WireframeMeshIconEnabled;
+			numWireMeshIcon.Value = _config.WireframeMeshIconSize;
+
+			for (int i = 0; i < 32; i++)
+				lstWireMeshTypes.SetSelected(i, (_config.WireframeMeshTypeVisibility & (1 << i)) != 0);
+			refreshAllMeshCollectionCheckbox();
+
+			chkXwingDetectMission.Checked = _config.XwingDetectMission;
+			chkTieDetectMission.Checked = _config.TieDetectMission;
+			chkXvtDetectMission.Checked = _config.XvtDetectMission;
+			chkXwaDetectMission.Checked = _config.XwaDetectMission;
+			chkXwingOverrideExternal.Checked = _config.XwingOverrideExternal;
+			chkTieOverrideExternal.Checked = _config.TieOverrideExternal;
+			chkXvtOverrideExternal.Checked = _config.XvtOverrideExternal;
+			chkXwaOverrideExternal.Checked = _config.XwaOverrideExternal;
+			chkXwaOverrideScan.Checked = _config.XwaOverrideScan;
+			chkXwaFlagRemappedCraft.Checked = _config.XwaFlagRemappedCraft;
+
+			bool exportInUse = _config.XwaOverrideExternal && CraftDataManager.GetInstance().XwaInstallSpecificExternalDataLoaded;
+			lblExportWarning.Enabled = exportInUse;
+			lblExportWarning.Text = exportInUse ? "Exported override in use in game folder!" : "";
+
             _closeCallback = callback;
 		}
 
@@ -301,6 +327,27 @@ namespace Idmr.Yogeme
             _config.ColorInteractNonSelected = Color.FromArgb(nsel);
             _config.ColorInteractBackground = Color.FromArgb(background);
             
+			_config.MapMouseWheelZoomPercentage = Convert.ToDouble(numMousewheelZoom.Value);
+			_config.WireframeEnabled = chkWireEnabled.Checked;
+			_config.WireframeIconThresholdEnabled = chkWireIconThreshold.Checked;
+			_config.WireframeIconThresholdSize = Convert.ToInt32(numWireIconThreshold.Value);
+			_config.WireframeMeshIconEnabled = chkWireMeshIcon.Checked;
+			_config.WireframeMeshIconSize = Convert.ToInt32(numWireMeshIcon.Value);
+			int[] selectionArray = new int[lstWireMeshTypes.Items.Count];
+			lstWireMeshTypes.SelectedIndices.CopyTo(selectionArray, 0);
+			_config.WireframeMeshTypeVisibility = MeshTypeHelper.GetFlags(selectionArray);
+
+			_config.XwingDetectMission = chkXwingDetectMission.Checked;
+			_config.TieDetectMission = chkTieDetectMission.Checked;
+			_config.XvtDetectMission = chkXvtDetectMission.Checked;
+			_config.XwaDetectMission = chkXwaDetectMission.Checked;
+			_config.XwingOverrideExternal = chkXwingOverrideExternal.Checked;
+			_config.TieOverrideExternal = chkTieOverrideExternal.Checked;
+			_config.XvtOverrideExternal = chkXvtOverrideExternal.Checked;
+			_config.XwaOverrideExternal = chkXwaOverrideExternal.Checked;
+			_config.XwaOverrideScan = chkXwaOverrideScan.Checked;
+			_config.XwaFlagRemappedCraft = chkXwaFlagRemappedCraft.Checked;
+
             if (_closeCallback != null) _closeCallback(0, new EventArgs());
 			Close();
 		}
@@ -340,5 +387,111 @@ namespace Idmr.Yogeme
         {
             refreshColors();
         }
+
+		/// <summary>Broadly sets or clears visibility states of an entire range of meshtypes.</summary>
+		private void applyBatchVisibilityState(bool state, MeshType[] items)
+		{
+			foreach (var i in items)
+			{
+				int index = (int)i;
+				if (index >= 0 && index < lstWireMeshTypes.Items.Count)
+					lstWireMeshTypes.SetSelected(index, state);
+			}
+		}
+
+		/// <summary>Refreshes the checked state of a single checkbox.</summary>
+		/// <remarks>Compares the specified list of meshtypes against the current visibility list. The checkbox will be grayed out in a partial match, otherwise fully on or off.</remarks>
+		private void refreshMeshCollectionCheckbox(CheckBox chk, MeshType[] items)
+		{
+			int count = 0;
+			foreach (var i in items)
+			{
+				int index = (int)i;
+				if (index >= 0 && index < lstWireMeshTypes.Items.Count)
+					if (lstWireMeshTypes.GetSelected(index))
+						count++;
+			}
+			chk.ThreeState = false;
+			if (count == items.Length)
+				chk.CheckState = CheckState.Checked;
+			else if (count == 0)
+				chk.CheckState = CheckState.Unchecked;
+			else
+			{
+				chk.ThreeState = true;
+				chk.CheckState = CheckState.Indeterminate;
+			}
+		}
+
+		/// <summary>Refreshes the checked state of all meshtype checkboxes.</summary>
+		private void refreshAllMeshCollectionCheckbox()
+		{
+			refreshMeshCollectionCheckbox(chkWireToggleHull, MeshTypeHelper.HullMeshes);
+			refreshMeshCollectionCheckbox(chkWireToggleMisc, MeshTypeHelper.MiscMeshes);
+			refreshMeshCollectionCheckbox(chkWireToggleWeapon, MeshTypeHelper.WeaponMeshes);
+			refreshMeshCollectionCheckbox(chkWireToggleHangar, MeshTypeHelper.HangarMeshes);
+		}
+
+		private void chkWireToggleHull_CheckedChanged(object sender, EventArgs e)
+		{
+			if (ActiveControl == chkWireToggleHull)
+			{
+				chkWireToggleHull.ThreeState = false;
+				applyBatchVisibilityState(chkWireToggleHull.Checked, MeshTypeHelper.HullMeshes);
+			}
+		}
+		private void chkWireToggleMisc_CheckedChanged(object sender, EventArgs e)
+		{
+			if (ActiveControl == chkWireToggleMisc)
+			{
+				chkWireToggleMisc.ThreeState = false;
+				applyBatchVisibilityState(chkWireToggleMisc.Checked, MeshTypeHelper.MiscMeshes);
+			}
+		}
+		private void chkWireToggleWeapon_CheckedChanged(object sender, EventArgs e)
+		{
+			if (ActiveControl == chkWireToggleWeapon)
+			{
+				chkWireToggleWeapon.ThreeState = false;
+				applyBatchVisibilityState(chkWireToggleWeapon.Checked, MeshTypeHelper.WeaponMeshes);
+			}
+		}
+		private void chkWireToggleHangar_CheckedChanged(object sender, EventArgs e)
+		{
+			if (ActiveControl == chkWireToggleHangar)
+			{
+				chkWireToggleHangar.ThreeState = false;
+				applyBatchVisibilityState(chkWireToggleHangar.Checked, MeshTypeHelper.HangarMeshes);
+			}
+		}
+		private void lstWireMeshTypes_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			if (ActiveControl == lstWireMeshTypes)
+				refreshAllMeshCollectionCheckbox();
+		}
+
+		private void cmdWireMeshDefault_Click(object sender, EventArgs e)
+		{
+			lstWireMeshTypes.ClearSelected();
+			applyBatchVisibilityState(true, MeshTypeHelper.DefaultMeshes);
+			refreshAllMeshCollectionCheckbox();
+		}
+
+		private void cmdExport_Click(object sender, EventArgs e)
+		{
+			SaveFileDialog dlg = new SaveFileDialog();
+			dlg.FileName = "craft_data_xwa.txt";
+			string path = CraftDataManager.GetInstance().GetInstallPath();
+			if (path == "")
+				path = Environment.CurrentDirectory;
+			dlg.InitialDirectory = path;
+			dlg.Filter = "Text files (*.txt)|*.txt|All files|*.*";
+			if (dlg.ShowDialog() == DialogResult.OK)
+			{
+				string result = CraftDataManager.GetInstance().SaveToFile(dlg.FileName);
+				if (result != "")
+					MessageBox.Show(result, "Failed to save file.", MessageBoxButtons.OK, MessageBoxIcon.Error);
+			}
+		}
 	}
 }

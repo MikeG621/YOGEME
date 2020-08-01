@@ -47,7 +47,6 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.IO;
 using System.Windows.Forms;
 
 namespace Idmr.Yogeme
@@ -56,9 +55,9 @@ namespace Idmr.Yogeme
 	public partial class MapForm : Form
 	{
 		#region vars and stuff
-		int _zoom = 40;
-		int w, h, mapX, mapY, mapZ;
-		enum Orientation { XY, XZ, YZ };
+		int _zoom = 40;               //Current zoom scale, in pixels per kilometer
+		int w, h, mapX, mapY, mapZ;   //The map vars store offset of the center of the game world (0,0,0) relative to the top left corner of the viewport, taking zoom into account.
+		public enum Orientation { XY, XZ, YZ };
 		Orientation _displayMode = Orientation.XY;
 		Bitmap _map;
 		MapData[] _mapData;
@@ -85,9 +84,10 @@ namespace Idmr.Yogeme
         int _selectionCount = 0;
         bool _norefresh = false;
         bool _mapPaintScheduled = false;      //True if a paint is scheduled, that is a paint request is called while a paint is already in progress.
-        //WireframeManager wireframes = new WireframeManager();
+        static WireframeManager wireframeManager = null;
         EventHandler onDataModified = null;
         bool _isClosing = false;              //Need a flag during form close to check whether external MapPaint() calls should be ignored.
+        Settings _settings = null;
 		#endregion vars
 
 		#region ctors
@@ -96,6 +96,27 @@ namespace Idmr.Yogeme
         {
             _platform = Settings.Platform.XWING;
             InitializeComponent();
+			if (settings.XwingOverrideExternal)
+			{
+				//Since the XW craft list is mapped to use TIE's list for the sake of the map, replace TIE's strings. Must be done prior to import.
+				Platform.Tie.Strings.OverrideShipList(null, null);
+				string[] xwType = Platform.Xwing.Strings.CraftType;
+				string[] xwAbbrev = Platform.Xwing.Strings.CraftAbbrv;
+				string[] newType = Platform.Tie.Strings.CraftType;
+				string[] newAbbrev = Platform.Tie.Strings.CraftAbbrv;
+				Platform.Xwing.FlightGroup temp = new Platform.Xwing.FlightGroup();
+				for (int i = 0; i < xwType.Length; i++)
+				{
+					temp.CraftType = (byte)i;
+					int remap = (i == xwType.Length - 1) ? 4 : temp.GetTIECraftType();  //B-wing is special case, last item in XW list. Replace directly.
+					if (remap >= 0 && remap < newType.Length)
+					{
+						newType[remap] = xwType[i];
+						newAbbrev[remap] = xwAbbrev[i];
+					}
+				}
+				Platform.Tie.Strings.OverrideShipList(newType, newAbbrev);
+			}
             Import(fg);
             try { imgCraft.Images.AddStrip(Image.FromFile(Application.StartupPath + "\\images\\craft_TIE.bmp")); }
             catch (Exception x)
@@ -124,9 +145,9 @@ namespace Idmr.Yogeme
 		}
 
 		/// <param name="fg">XFlights array</param>
-        public MapForm(Settings settings, Platform.Xvt.FlightGroupCollection fg, EventHandler dataModifiedCallback)
+        public MapForm(Settings settings, bool isBoP, Platform.Xvt.FlightGroupCollection fg, EventHandler dataModifiedCallback)
 		{
-			_platform = Settings.Platform.XvT;
+			_platform = isBoP ? Settings.Platform.BoP : Settings.Platform.XvT;
 			InitializeComponent();
 			Import(fg);
 			try { imgCraft.Images.AddStrip(Image.FromFile(Application.StartupPath + "\\images\\craft_XvT.bmp")); }
@@ -482,6 +503,11 @@ namespace Idmr.Yogeme
 		/// <summary>Intialization routine, loads settings and config per platform</summary>
 		void startup(Settings config)
 		{
+			_settings = config;
+			if (wireframeManager == null)
+				wireframeManager = new WireframeManager();
+			wireframeManager.SetPlatform(_platform, config);
+
 			#region checkbox array
 			chkWP[0] = chkSP1;
 			chkWP[1] = chkSP2;
@@ -539,7 +565,7 @@ namespace Idmr.Yogeme
 				for (int i = 0; i < 15; i++) chkWP[i].Checked = Convert.ToBoolean(t & (1 << i));
 				for (int i = 15; i < 22; i++) chkWP[i].Enabled = false;
 			}
-			else if (_platform == Settings.Platform.XvT) for (int i = 0; i < 22; i++) chkWP[i].Checked = Convert.ToBoolean(t & (1 << i));
+			else if (_platform == Settings.Platform.XvT || _platform == Settings.Platform.BoP) for (int i = 0; i < 22; i++) chkWP[i].Checked = Convert.ToBoolean(t & (1 << i));
 			else if (_platform == Settings.Platform.XWA)
 			{
 				for (int i = 0; i < 12; i++) chkWP[i].Checked = Convert.ToBoolean(t & (1 << i));
@@ -650,7 +676,29 @@ namespace Idmr.Yogeme
 			}
 			return false;
 		}
+		/// <summary>Calculates and retrieves the average coordinates (in raw map units) of all selected items.</summary>
+		void getAverageSelectionCoords(out int x, out int y, out int z)
+		{
+			int sumX = 0, sumY = 0, sumZ = 0;
+			int ord = 0;
+			if (_platform == Settings.Platform.XWA)
+				ord = (int)((numRegion.Value - 1) * 4 + numOrder.Value - 1);
 
+			foreach (SelectionData sel in _selectionList)
+			{
+				sumX += sel.MapDataRef.WPs[ord][0].RawX;
+				sumY += sel.MapDataRef.WPs[ord][0].RawY;
+				sumZ += sel.MapDataRef.WPs[ord][0].RawZ;
+			}
+			if (_selectionList.Count > 0)
+			{
+				x = sumX / _selectionList.Count;
+				y = sumY / _selectionList.Count;
+				z = sumZ / _selectionList.Count;
+				return;
+			}
+			x = 0; y = 0; z = 0;
+		}
 		#region public functions
 		/// <summary>The down-and-dirty function that handles map display </summary>
 		/// <param name="persistant">When <b>true</b> draws to memory, <b>false</b> draws directly to the image</param>
@@ -735,8 +783,8 @@ namespace Idmr.Yogeme
 				{
 					if (chkWP[k].Checked && _mapData[i].WPs[0][k].Enabled && (_platform == Settings.Platform.XWA ? _mapData[i].WPs[0][k][4] == (short)(numRegion.Value - 1) : true))
 					{
-						//DrawWireframe(ref g3, _mapData[i], _zoom * _mapData[i].WPs[0][k][coord1] / 160 + X, -_zoom * _mapData[i].WPs[0][k][coord2] / 160 + Y);
-						g3.DrawImageUnscaled(bmptemp, _zoom * _mapData[i].WPs[0][k][coord1] / 160 + X - 8, -_zoom * _mapData[i].WPs[0][k][coord2] / 160 + Y - 8);
+						DrawCraft(g3, bmptemp, _mapData[i], _zoom * _mapData[i].WPs[0][k][coord1] / 160 + X, -_zoom * _mapData[i].WPs[0][k][coord2] / 160 + Y);
+						//g3.DrawImageUnscaled(bmptemp, _zoom * _mapData[i].WPs[0][k][coord1] / 160 + X - 8, -_zoom * _mapData[i].WPs[0][k][coord2] / 160 + Y - 8);
 						if (chkTags.Checked) g3.DrawString(_mapData[i].Name + " " + chkWP[k].Text, MapForm.DefaultFont, sbg, _zoom * _mapData[i].WPs[0][k][coord1] / 160 + X + 8, -_zoom * _mapData[i].WPs[0][k][coord2] / 160 + Y + 8);
 					}
 				}
@@ -869,6 +917,7 @@ namespace Idmr.Yogeme
                 //Convert Craft, IFF, and remap the Waypoints to use the TIE formats so that the rest of the map can function correctly.
                 _mapData[i] = new MapData(_platform);
                 _mapData[i].Craft = fg[i].GetTIECraftType();
+				_mapData[i].fgIndex = i;
                 Platform.Xwing.FlightGroup.Waypoint[] arr = new Platform.Xwing.FlightGroup.Waypoint[17];  //TIE has 15 waypoints, need extra to virtualize the Coordinate Set points throught the XvT briefing coords
                 for (int j = 0; j < 15; j++)
                     arr[j] = new Platform.Xwing.FlightGroup.Waypoint();
@@ -913,6 +962,7 @@ namespace Idmr.Yogeme
 			{
 				_mapData[i] = new MapData(_platform);
 				_mapData[i].Craft = fg[i].CraftType;
+				_mapData[i].fgIndex = i;
 				_mapData[i].WPs[0] = fg[i].Waypoints;
 				_mapData[i].IFF = fg[i].IFF;
 				_mapData[i].Name = fg[i].Name;
@@ -931,6 +981,7 @@ namespace Idmr.Yogeme
 			{
 				_mapData[i] = new MapData(_platform);
 				_mapData[i].Craft = fg[i].CraftType;
+				_mapData[i].fgIndex = i;
 				_mapData[i].WPs[0] = fg[i].Waypoints;
 				_mapData[i].IFF = fg[i].IFF;
 				_mapData[i].Name = fg[i].Name;
@@ -950,6 +1001,7 @@ namespace Idmr.Yogeme
 			{
 				_mapData[i] = new MapData(_platform);
 				_mapData[i].Craft = fg[i].CraftType;
+				_mapData[i].fgIndex = i;
 				_mapData[i].WPs[0] = fg[i].Waypoints;
 				for (int j = 0; j < 16; j++)
 				{
@@ -960,7 +1012,6 @@ namespace Idmr.Yogeme
 				_mapData[i].IFF = fg[i].IFF;
 				_mapData[i].Name = fg[i].Name;
 				_mapData[i].FullName = Platform.Xwa.Strings.CraftAbbrv[_mapData[i].Craft] + " " + fg[i].Name;
-				//_mapData[i].wireframe = wireframes.GetNewActiveInstance(_platform, _mapData[i].Craft);
 			}
             reloadSelectionControls();
 		}
@@ -977,6 +1028,7 @@ namespace Idmr.Yogeme
 			_mapData[index].IFF = fg.IFF;
 			_mapData[index].Craft = fg.CraftType;
 			_mapData[index].Difficulty = fg.Difficulty;
+			//Waypoints are attached by reference, so there's no need to update waypoints or position here.
 			string[] abbrev = null;
 			switch (_platform)
 			{
@@ -1041,6 +1093,8 @@ namespace Idmr.Yogeme
 			if (optXY.Checked)
 			{
 				_displayMode = Orientation.XY;
+				getAverageSelectionCoords(out int x, out int y, out int z);
+				updateMapCoord(new PointF((float)x / 160, (float)y / 160));
 				lblCoor1.Text = "X:";
 				lblCoor2.Text = "Y:";
 				MapPaint(false);
@@ -1053,6 +1107,8 @@ namespace Idmr.Yogeme
 			if (optXZ.Checked)
 			{
 				_displayMode = Orientation.XZ;
+				getAverageSelectionCoords(out int x, out int y, out int z);
+				updateMapCoord(new PointF((float)x / 160, (float)z / 160));
 				lblCoor1.Text = "X:";
 				lblCoor2.Text = "Z:";
 				MapPaint(false);
@@ -1064,8 +1120,10 @@ namespace Idmr.Yogeme
 		{
 			if (optYZ.Checked)
 			{
-				mapY = w/2 - mapY + h/2;
+				//mapY = w/2 - mapY + h/2;
 				_displayMode = Orientation.YZ;
+				getAverageSelectionCoords(out int x, out int y, out int z);
+				updateMapCoord(new PointF((float)y / 160, (float)z / 160));
 				lblCoor1.Text = "Y:";
 				lblCoor2.Text = "Z:";
 				MapPaint(false);
@@ -1246,9 +1304,17 @@ namespace Idmr.Yogeme
 		}
 		void form_MouseWheel(object sender, MouseEventArgs e)
 		{
-			if (hscZoom.Value < 25 && e.Delta < 0) hscZoom.Value = 5;
-			else if (hscZoom.Value > 480 && e.Delta > 0) hscZoom.Value = 500;
-			else hscZoom.Value += 10 * Math.Sign(e.Delta);
+			double mult = _settings.MapMouseWheelZoomPercentage / 100.0;
+			if (mult < 0.01) mult = 0.01; else if (mult > 0.5) mult = 0.5;
+
+			int amount = (int)(hscZoom.Value * mult);
+			if (amount < 1)
+				amount = 1;
+
+			int newZoom = hscZoom.Value + (amount * Math.Sign(e.Delta));
+			if (newZoom < hscZoom.Minimum) newZoom = hscZoom.Minimum;
+			else if (newZoom > hscZoom.Maximum) newZoom = hscZoom.Maximum;
+			hscZoom.Value = newZoom;
 		}
 		void form_Resize(object sender, EventArgs e)
 		{
@@ -1444,27 +1510,28 @@ namespace Idmr.Yogeme
 			public MapData(Settings.Platform platform)
 			{
 				Craft = 0;
+				fgIndex = 0;
 				IFF = 0;
 				Name = "";
-                WPs = null;
-                FullName = "";
-                Visible = true;
-                Selected = false;
-                Difficulty = 0;
-                //wireframe = null;
+				WPs = null;
+				FullName = "";
+				Visible = true;
+				Selected = false;
+				Difficulty = 0;
 				switch (platform)
 				{
-                    case Settings.Platform.XWING:
-                        WPs = new Platform.Xwing.FlightGroup.Waypoint[1][];
-                        //WPs[0] = new Platform.Xwing.FlightGroup.Waypoint[7];
-                        //for(int i = 0; i < WPs[0].Length; i++) WPs[0][i] = new Platform.Xwing.FlightGroup.Waypoint();
-                        break;
-                    case Settings.Platform.TIE:
+					case Settings.Platform.XWING:
+						WPs = new Platform.Xwing.FlightGroup.Waypoint[1][];
+						//WPs[0] = new Platform.Xwing.FlightGroup.Waypoint[7];
+						//for(int i = 0; i < WPs[0].Length; i++) WPs[0][i] = new Platform.Xwing.FlightGroup.Waypoint();
+						break;
+					case Settings.Platform.TIE:
 						WPs = new Platform.Tie.FlightGroup.Waypoint[1][];
 						//WPs[0] = new Platform.Tie.FlightGroup.Waypoint[15];
 						//for(int i = 0; i < WPs[0].Length; i++) WPs[0][i] = new Platform.Tie.FlightGroup.Waypoint();
 						break;
 					case Settings.Platform.XvT:
+					case Settings.Platform.BoP:
 						WPs = new Platform.Xvt.FlightGroup.Waypoint[1][];
 						//WPs[0] = new Platform.Xvt.FlightGroup.Waypoint[22];
 						//for (int i = 0; i < WPs[0].Length; i++) WPs[0][i] = new Platform.Xvt.FlightGroup.Waypoint();
@@ -1477,13 +1544,13 @@ namespace Idmr.Yogeme
 			}
 
 			public int Craft;
+			public int fgIndex;
 			public byte IFF;
 			public string Name;
-            public string FullName;
-            public bool Visible;
-            public bool Selected;
-            public int Difficulty;
-            //public WireframeInstance wireframe;
+			public string FullName;
+			public bool Visible;
+			public bool Selected;
+			public int Difficulty;
 
 			public Platform.BaseFlightGroup.BaseWaypoint[][] WPs;
 		}
@@ -1502,73 +1569,103 @@ namespace Idmr.Yogeme
             public Platform.BaseFlightGroup.BaseWaypoint wpRef;
         }
 
-        
-        /*void drawWireframe(ref Graphics g, MapData dat, int x, int y)
-        {
-            if (dat.wireframe == null) return;
-            if (dat.wireframe.def == null) return;
+		void DrawCraft(Graphics g, Bitmap bmp, MapData dat, int x, int y)
+		{
+			WireframeInstance model = wireframeManager.GetOrCreateWireframeInstance(dat.Craft, dat.fgIndex);
 
-            Platform.BaseFlightGroup.BaseWaypoint dst;
+			if (!_settings.WireframeEnabled || model == null || model.modelDef == null || (_settings.WireframeIconThresholdEnabled && model.modelDef.longestSpanMeters < _settings.WireframeIconThresholdSize))
+			{
+				g.DrawImageUnscaled(bmp, x - 8, y - 8);
+				return;
+			}
 
-            if(_platform == Settings.Platform.XWA)
-            {
-                int ord = (int)((numRegion.Value - 1) * 4 + (numOrder.Value - 1) + 1);
-                dst = dat.WPs[ord][0];
-            }
-            else
-            {
-                dst = dat.WPs[0][4];
-            }
-            dat.wireframe.SetRotation(dat.WPs[0][0], dst, _zoom, _displayMode);
+			//Simple bounds check to determine if it's definitely off screen.
+			double calcSpan = (double)model.modelDef.longestSpanRaw / 40960 * _zoom;
+			int viewSpan = (int)calcSpan;
+			if (x + viewSpan < 0 || x - viewSpan > w || y + viewSpan < 0 || y - viewSpan > h)
+				return;
 
-            Pen body = new Pen(getIFFColor(dat.IFF));
-            Pen hangar = new Pen(Color.White);
-            Pen dock = new Pen(Color.Yellow);
-            Pen p;
-            int x1, x2, y1, y2;
-            for (int s = 0; s < dat.wireframe.sectionverts.Length; s++)
-            {
-                string name = dat.wireframe.def.section[s].Name.ToLower();
-                if(name.Contains("hangar")) p = hangar;
-                else if(name.Contains("dock")) p = dock;
-                else p = body;
+			Platform.BaseFlightGroup.BaseWaypoint dst;
 
-                if (_displayMode == Orientation.XY)
-                {
-                    foreach (Line line in dat.wireframe.def.section[s].lines)
-                    {
-                        x1 = x + (int)(dat.wireframe.sectionverts[s][line.v1].x);
-                        x2 = x + (int)(dat.wireframe.sectionverts[s][line.v2].x);
-                        y1 = y + (int)(dat.wireframe.sectionverts[s][line.v1].y);
-                        y2 = y + (int)(dat.wireframe.sectionverts[s][line.v2].y);
-                        g.DrawLine(p, x1, y1, x2, y2);
-                    }
-                }
-                else if (_displayMode == Orientation.XZ)
-                {
-                    foreach (Line line in dat.wireframe.def.section[s].lines)
-                    {
-                        x1 = x + (int)(dat.wireframe.sectionverts[s][line.v1].x);
-                        x2 = x + (int)(dat.wireframe.sectionverts[s][line.v2].x);
-                        y1 = y + (int)(dat.wireframe.sectionverts[s][line.v1].z);
-                        y2 = y + (int)(dat.wireframe.sectionverts[s][line.v2].z);
-                        g.DrawLine(p, x1, y1, x2, y2);
-                    }
-                }
-                else if (_displayMode == Orientation.YZ)
-                {
-                    foreach (Line line in dat.wireframe.def.section[s].lines)
-                    {
-                        x1 = x + (int)(-dat.wireframe.sectionverts[s][line.v1].y);
-                        x2 = x + (int)(-dat.wireframe.sectionverts[s][line.v2].y);
-                        y1 = y + (int)(dat.wireframe.sectionverts[s][line.v1].z);
-                        y2 = y + (int)(dat.wireframe.sectionverts[s][line.v2].z);
-                        g.DrawLine(p, x1, y1, x2, y2);
-                    }
-                }
-            }
-        }*/
-        
+			if(_platform == Settings.Platform.XWA)
+			{
+				int ord = (int)((numRegion.Value - 1) * 4 + numOrder.Value);
+				dst = dat.WPs[ord][0];
+			}
+			else
+			{
+				dst = dat.WPs[0][4];
+			}
+
+			int meshZoom = _zoom;
+			if(_settings.WireframeMeshIconEnabled && _settings.WireframeMeshIconSize > 0 && calcSpan < _settings.WireframeMeshIconSize)
+			{
+				if (calcSpan < 0.00001)
+					calcSpan = 0.00001;
+				double scale = (double)_settings.WireframeMeshIconSize / (double)calcSpan;
+				meshZoom = (int)((double)_zoom * scale);
+			}
+
+			model.UpdateParams(dat.WPs[0][0], dst, meshZoom, _displayMode, _settings.WireframeMeshTypeVisibility);
+
+			Pen body = new Pen(getIFFColor(dat.IFF));
+			Pen hangar = new Pen(Color.White);
+			Pen dock = new Pen(Color.Yellow);
+			Pen p;
+			int x1, x2, y1, y2;
+			int lineDrawCount = 0;
+			foreach (MeshLayerInstance layer in model.layerInstances)
+			{
+				if (layer.MatchMeshFilter(_settings.WireframeMeshTypeVisibility))
+				{
+					p = body;
+					MeshType mt = layer.meshLayerDefinition.meshType;
+					if (mt == MeshType.Hangar)
+						p = hangar;
+					else if (mt == MeshType.DockingPlatform || mt == MeshType.LandingPlatform)
+						p = dock;
+					lineDrawCount += layer.meshLayerDefinition.lines.Count;
+					if (_displayMode == Orientation.XY)
+					{
+						foreach (Line line in layer.meshLayerDefinition.lines)
+						{
+							x1 = x + (int)(layer.vertices[line.v1].x);
+							x2 = x + (int)(layer.vertices[line.v2].x);
+							y1 = y + (int)(layer.vertices[line.v1].y);
+							y2 = y + (int)(layer.vertices[line.v2].y);
+							g.DrawLine(p, x1, y1, x2, y2);
+						}
+					}
+					else if (_displayMode == Orientation.XZ)
+					{
+						foreach (Line line in layer.meshLayerDefinition.lines)
+						{
+							x1 = x + (int)(layer.vertices[line.v1].x);
+							x2 = x + (int)(layer.vertices[line.v2].x);
+							y1 = y + (int)(layer.vertices[line.v1].z);
+							y2 = y + (int)(layer.vertices[line.v2].z); g.DrawLine(p, x1, y1, x2, y2);
+						}
+					}
+					else if (_displayMode == Orientation.YZ)
+					{
+						foreach (Line line in layer.meshLayerDefinition.lines)
+						{
+							x1 = x + (int)(-layer.vertices[line.v1].y);  // Hmm, they were the wrong direction.
+							x2 = x + (int)(-layer.vertices[line.v2].y);
+							y1 = y + (int)(layer.vertices[line.v1].z);
+							y2 = y + (int)(layer.vertices[line.v2].z); g.DrawLine(p, x1, y1, x2, y2);
+						}
+					}
+				}
+			}
+			//If we didn't draw anything at all (empty model, or none matched the mesh filter) then our failsafe is a normal icon just so it's not invisible.
+			//For larger models that appear large enough on screen, draw a pip at the origin so the user knows where the selection point is.
+			if (lineDrawCount == 0)
+				g.DrawImageUnscaled(bmp, x - 8, y - 8);
+			else if (model.modelDef.longestSpanMeters > 30 && viewSpan > 32)
+				g.DrawEllipse(hangar, x - 1, y - 1, 2, 2);
+		}
+
         /*Bitmap getBitmap(int craftType)
         {
             if (imgCraft.Images.Count == 0)

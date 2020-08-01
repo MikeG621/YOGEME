@@ -223,6 +223,18 @@ namespace Idmr.Yogeme
             _mission.MissionPath = "\\NewMission.xwi";
 			Text = "Ye Olde Galactic Empire Mission Editor - X-wing - NewMission.xwi";
 		}
+		void loadCraftData(string fileMission)
+		{
+			Strings.OverrideShipList(null, null); //Restore defaults.
+			try
+			{
+				CraftDataManager.GetInstance().LoadPlatform(Settings.Platform.XWING, _config, Strings.CraftType, Strings.CraftAbbrv, fileMission);
+				Strings.OverrideShipList(CraftDataManager.GetInstance().GetLongNames(), CraftDataManager.GetInstance().GetShortNames());
+			}
+			catch (Exception x) { MessageBox.Show("Error processing custom XW ship list, using defaults.\n\n" + x.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); }
+			cboCraft.Items.Clear();
+			cboCraft.Items.AddRange(Strings.CraftType);
+		}
 		string replaceTargetText(string text)
 		{
 			while (text.Contains("FG:"))
@@ -305,6 +317,7 @@ namespace Idmr.Yogeme
 				menuNewXwing_Click(0, new EventArgs());
 				return false;
 			}
+			loadCraftData(fileMission);
             lstFG.Items.Clear(); 
             _startingShips = 0;
 			for (int i=0;i<_mission.FlightGroups.Count;i++)
@@ -330,18 +343,6 @@ namespace Idmr.Yogeme
 					if (_mission.MissionPath == "\\NewMission.xwi") savXW.ShowDialog();
 					else saveMission(_mission.MissionPath);
 				}
-			}
-		}
-		void refreshMapForm()
-		{
-			if (_fMap != null)
-			{
-				try
-				{
-					_fMap.Import(_mission.FlightGroups);
-					_fMap.MapPaint(true);
-				}
-				catch { /* do nothing */ }
 			}
 		}
 		void refreshRecent()
@@ -390,19 +391,7 @@ namespace Idmr.Yogeme
 		}
 		void startup()
 		{
-			if (File.Exists(Application.StartupPath + "\\xw_shiplist.txt"))
-			{
-				System.Diagnostics.Debug.WriteLine("custom XW list found");
-				string[] crafts;
-				string[] abbrvs;
-				try
-				{
-					Common.ProcessCraftList(Application.StartupPath + "\\xw_shiplist.txt", out crafts, out abbrvs);
-					Strings.OverrideShipList(crafts, abbrvs);
-					initializeMission();    // have to re-init since lstFG is already populated
-				}
-				catch (Exception x) { MessageBox.Show("Error processing custom XW ship list, using defaults.\n(" + x.Message + ").", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); }
-			}
+			loadCraftData("");
 			switchTo(EditorMode.XWI);
 			//initializes cbo's, IFFs, resets bAppExit
 			_config.LastMission = "";
@@ -433,7 +422,7 @@ namespace Idmr.Yogeme
 			refreshRecent();
 			#endregion
 			#region Craft
-			cboCraft.Items.AddRange(Strings.CraftType); cboCraft.SelectedIndex = _mission.FlightGroups[0].CraftType;
+			cboCraft.SelectedIndex = _mission.FlightGroups[0].CraftType; // already loaded in loadCraftData
 			cboObject.Items.AddRange(Strings.ObjectType); cboObject.SelectedIndex = _mission.FlightGroups[0].ObjectType;
 			cboIFF.SelectedIndex = _mission.FlightGroups[0].IFF;	// already loaded default IFFs at start of function through txtIFF#.Text
 			cboAI.Items.AddRange(Strings.Rating); cboAI.SelectedIndex = 3;
@@ -1046,6 +1035,7 @@ namespace Idmr.Yogeme
                         bool isCraft = fg_temp.IsFlightGroup();
                         newFG(isCraft);
                         _mission.FlightGroups[_activeFG] = fg_temp;
+						refreshMap(-1);
                         updateFGList(); //[JB] Update all the downdown lists.
                         listRefresh();
 						_startingShips--;
@@ -1269,7 +1259,7 @@ namespace Idmr.Yogeme
             updateFGList();
 			lstFG.SelectedIndex = _activeFG;
 			Common.Title(this, _loading);
-            refreshMapForm();
+			refreshMap(-1);
 			try
 			{
                 if (_mode == EditorMode.BRF)
@@ -1365,7 +1355,7 @@ namespace Idmr.Yogeme
             _activeFG = slot; //listRefreshAll() seems to change _activeFG somehow, so reset to proper index.
 			lstFG.SelectedIndex = _activeFG;
 			Common.Title(this, _loading);
-            refreshMapForm();
+			refreshMap(-1);
 			try
 			{
 				_fBrief.Import(_mission.FlightGroups);
@@ -1376,6 +1366,8 @@ namespace Idmr.Yogeme
 		/// <summary>Scans all Flight Groups to detect duplicate names, to provide helpful craft numbering within the editor so that the user can easily tell duplicates apart in triggers.</summary>
 		void recalculateEditorCraftNumbering()
         {
+            // Note: changing an item in lstFG will activate lstFG_SelectedIndexChanged, which changes _activeFG and potentially cause bugs elsewhere. So need to restore before exiting the function.
+            int currentFG = _activeFG;
             //A-W Red and X-W Red should not be considered duplicates, so this structure maps a CraftType to a sub-dictionary of CraftName and Count.  
             //Due to the complexity and careful error checking involved (throwing exceptions is incredibly slow), two separate functions are provided to manipulate and access them.
             Dictionary<int, Dictionary<string, int>> dupeCount = new Dictionary<int, Dictionary<string, int>>();
@@ -1404,6 +1396,7 @@ namespace Idmr.Yogeme
                     lstFG.Items[i] = _mission.FlightGroups[i].ToString(true);
                 }
             }
+            _activeFG = currentFG;
         }
 		/// <summary>Updates the clipboard contents from containing broken indexes.</summary>
 		/// <remarks>Should be called during swap or delete (dstIndex < 0) operations.</remarks>
@@ -1700,7 +1693,7 @@ namespace Idmr.Yogeme
                 if (_mission.FlightGroups.MoveUp(lstFG.SelectedIndex))
                 {
                     replaceClipboardFGReference(_activeFG, _activeFG - 1);
-                    refreshMapForm();
+                    refreshMap(-1);
                     updateFGList();
                     _activeFG = lstFG.SelectedIndex; listRefresh();
                     _activeFG = lstFG.SelectedIndex - 1; listRefresh();
@@ -1718,7 +1711,7 @@ namespace Idmr.Yogeme
                     _mission.Briefing.TransformFGReferences(start, end);
                     _mission.Briefing.TransformFGReferences(32767, start);
                     replaceClipboardFGReference(start, end);
-                    refreshMapForm();
+                    refreshMap(-1);
                     updateFGList();
                     _activeFG = lstFG.SelectedIndex; listRefresh();
                     _activeFG = lstFG.SelectedIndex - 1; listRefresh();
@@ -1733,7 +1726,7 @@ namespace Idmr.Yogeme
                 if (_mission.FlightGroups.MoveDown(lstFG.SelectedIndex))
                 {
                     replaceClipboardFGReference(_activeFG, _activeFG + 1);
-                    refreshMapForm();
+                    refreshMap(-1);
                     updateFGList();
                     _activeFG = lstFG.SelectedIndex; listRefresh();
                     _activeFG = lstFG.SelectedIndex + 1; listRefresh();
@@ -1751,7 +1744,7 @@ namespace Idmr.Yogeme
                     _mission.Briefing.TransformFGReferences(start, end);
                     _mission.Briefing.TransformFGReferences(32767, start);
                     replaceClipboardFGReference(start, end);
-                    refreshMapForm();
+                    refreshMap(-1);
                     updateFGList();
                     _activeFG = lstFG.SelectedIndex; listRefresh();
                     _activeFG = lstFG.SelectedIndex + 1; listRefresh();
@@ -1817,7 +1810,7 @@ namespace Idmr.Yogeme
                 _mission.FlightGroups[_activeFG].ObjectType = Common.Update(this, _mission.FlightGroups[_activeFG].ObjectType, Convert.ToByte(otype));
                 updateFGList();
             }
-            refreshMapForm();  //Since not just craft type but possibly index could change as well, refresh the entire thing.
+            refreshMap(-1);  //Since not just craft type but possibly index could change as well, refresh the entire thing.
         }
 		void cboObject_SelectedIndexChanged(object sender, EventArgs e)
 		{
@@ -1851,7 +1844,7 @@ namespace Idmr.Yogeme
                 _mission.FlightGroups[_activeFG].CraftType = 0;
                 listRefreshAll();
             }
-            refreshMapForm();  //Since not just craft type but possibly index could change as well, refresh the entire thing.
+            refreshMap(-1);  //Since not just craft type but possibly index could change as well, refresh the entire thing.
         }
 		void cboFormation_SelectedIndexChanged(object sender, EventArgs e)
 		{
@@ -2116,12 +2109,15 @@ namespace Idmr.Yogeme
 		}
 		/// <summary>Checks if the map exists and requests a paint operation</summary>
 		/// <remarks>Useful to keep the map synced to the main form's waypoint tab.</remarks>
-		void refreshMap()
+		void refreshMap(int fgIndex)
 		{
-			if (_fMap != null)
+			if (_fMap != null && !_fMap.IsDisposed)
 			{
-				if (!_fMap.IsDisposed)
-					_fMap.MapPaint(true);
+				if (fgIndex < 0)
+					_fMap.Import(_mission.FlightGroups);
+				else if (fgIndex < _mission.FlightGroups.Count)
+					_fMap.UpdateFlightGroup(fgIndex, _mission.FlightGroups[fgIndex]);
+				_fMap.MapPaint(true);
 			}
 		}
 		void refreshWaypointTab()  //[JB] New function to refresh the contents the waypoint tab, since we want to call this from more than one place.
@@ -2179,7 +2175,7 @@ namespace Idmr.Yogeme
 			CheckBox c = (CheckBox)sender;
 			int wpIndex = WaypointMapping[(int)c.Tag];
 			_mission.FlightGroups[_activeFG].Waypoints[wpIndex].Enabled = Common.Update(this, _mission.FlightGroups[_activeFG].Waypoints[wpIndex].Enabled, c.Checked);
-            refreshMap(); //[JB] Sync map.
+			refreshMap(_activeFG);
         }
 
 		void numPitch_Leave(object sender, EventArgs e)
@@ -2216,7 +2212,7 @@ namespace Idmr.Yogeme
 			}
 			catch { for (i=0;i<3;i++) _table.Rows[j][i] = Math.Round((double)_mission.FlightGroups[_activeFG].Waypoints[j][i] / 160, 2); }
 			_loading = false;
-            refreshMap(); //[JB] Sync map.
+			refreshMap(_activeFG);
         }
 		void tableRaw_RowChanged(object sender, DataRowChangeEventArgs e)
 		{
@@ -2236,7 +2232,7 @@ namespace Idmr.Yogeme
 			}
 			catch { for (i=0;i<3;i++) _tableRaw.Rows[j][i] = Convert.ToInt16(_mission.FlightGroups[_activeFG].Waypoints[j][i]); }
 			_loading = false;
-            refreshMap(); //[JB] Sync map.
+			refreshMap(_activeFG);
         }
 		void cmdCopyWPSP_Click(object sender, EventArgs e)
 		{
@@ -2265,7 +2261,7 @@ namespace Idmr.Yogeme
 			chkSP2.Checked = true;  //Have to refresh the display manually, even though the data is all set.
 			chkSP3.Checked = true;
 			_loading = btemp;
-            refreshMap(); //[JB] Sync map.
+			refreshMap(-1);
         }
 		#endregion
 		#endregion
