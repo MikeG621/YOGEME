@@ -159,19 +159,7 @@
     <None Include="images\XWA_BRF.bmp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="xw_shiplist_template.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Include="License.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="tie_shiplist_template.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="xvt_shiplist_template.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="xwa_shiplist_template.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Converter.exe">
@@ -256,7 +244,7 @@
     <Compile Include="BackdropDialog.Designer.cs">
       <DependentUpon>BackdropDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="CraftData.cs" />
+    <Compile Include="classes\CraftData.cs" />
     <Compile Include="FormationDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -269,7 +257,7 @@
     <Compile Include="HyperbuoyDialog.Designer.cs">
       <DependentUpon>HyperbuoyDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="MapWireframe.cs" />
+    <Compile Include="classes\MapWireframe.cs" />
     <Compile Include="RegionSelectDialog.cs">
       <SubType>Form</SubType>
     </Compile>

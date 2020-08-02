@@ -8,6 +8,8 @@
 
 /* CHANGELOG
  * v1.7, XXXXXX
+ * [FIX] recalculateEditorCraftNumbering() handles _activeFG now [JB]
+ * [UPD] shiplist and Map calls updated for Wireframe implementation [JB]
  * [UPD] Blank messages now shown as "*" [JB]
  * [UPD] Cleanup index substitions [JB]
  * [UPD] Trigger label refresh updates [JB]
@@ -650,8 +652,8 @@ namespace Idmr.Yogeme
 			catch (Exception x)
 			{
 				MessageBox.Show(x.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				menuNewXWA_Click(0, new EventArgs());	// moved fix from RecentMissions_Click otherwise it would crash if the Recent was a different platform
-				// Now, if Recent is a different platform this does result in a new mission initilization before the form closes
+				menuNewXWA_Click(0, new EventArgs());   // moved fix from RecentMissions_Click otherwise it would crash if the Recent was a different platform
+														// Now, if Recent is a different platform this does result in a new mission initilization before the form closes
 				return false;
 			}
 			loadCraftData(fileMission);
@@ -772,7 +774,7 @@ namespace Idmr.Yogeme
 			Text = "Ye Olde Galactic Empire Mission Editor - XWA - " + _mission.MissionFileName;
 			_config.LastMission = fileMission;
 			refreshRecent();  //[JB] Setting _config.LastMission modifies the Recent list.  Need to refresh the menu to match.
-			//Verify the mission after it's been saved
+							  //Verify the mission after it's been saved
 			if (_config.Verify) Common.RunVerify(_mission.MissionPath, _config.VerifyLocation);
 		}
 		void setInteractiveLabelColor(Label control, bool highlight)
@@ -2686,7 +2688,7 @@ namespace Idmr.Yogeme
 			parameterRefresh(cboMessPara);
 			parameterRefresh(cboGlobalPara);
 			//[JB] This is the simplest way to force all labels to refresh, but not the most efficient. An annoying side effect of forcing clicks is that the current selection will change, so restore after refreshing.
-			int restore = _activeArrDepTrigger; 
+			int restore = _activeArrDepTrigger;
 			foreach (var lbl in lblADTrig) lblADTrigArr_Click(lbl, new EventArgs());
 			lblADTrigArr_Click(lblADTrig[restore], new EventArgs());
 
@@ -2964,7 +2966,7 @@ namespace Idmr.Yogeme
 
 		void cmdBackdrop_Click(object sender, EventArgs e)
 		{
-			
+
 			cmdBackdrop.Text = "Loading...";
 			cmdBackdrop.Enabled = false;
 			try

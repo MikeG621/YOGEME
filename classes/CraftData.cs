@@ -1,4 +1,18 @@
-﻿using System;
+﻿/*
+ * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
+ * Copyright (C) 2007-2020 Michael Gaisser (mjgaisser@gmail.com)
+ * This file authored by "JB" (Random Starfighter) (randomstarfighter@gmail.com)
+ * Licensed under the MPL v2.0 or later
+ * 
+ * VERSION: 1.6.6+
+ */
+
+/* CHANGELOG
+* v1.7, XXXXXX
+* [NEW] created [JB]
+*/
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -234,7 +248,7 @@ namespace Idmr.Yogeme
 			{
 				CraftData entry = new CraftData(null);
 				entry.name = longNames[i];
-				if(i < shortNames.Length)
+				if (i < shortNames.Length)
 					entry.abbrev = shortNames[i];
 				defaultCraftData.Add(entry);
 			}
@@ -358,7 +372,7 @@ namespace Idmr.Yogeme
 				int pos = lookPath.LastIndexOf(Path.DirectorySeparatorChar);
 				if (pos >= 0)
 					lookPath = lookPath.Remove(pos);
-				if(pos < 0 || lookPath == "")
+				if (pos < 0 || lookPath == "")
 					break;
 				result = TestExist(lookPath, subfolder, filename);
 				if (result != "")
@@ -421,9 +435,9 @@ namespace Idmr.Yogeme
 				detectedModelPath = DetectExistMultiple(currentMissionPath, modelCriteria);
 			}
 			// If not assigned, detection failed or the mission path was not specified for detection purposes. Check installation path instead.
-			if(detectedInstallPath == "")
+			if (detectedInstallPath == "")
 				detectedInstallPath = DetectExistMultiple(currentInstallPath, installCriteria);
-			if(detectedModelPath == "")
+			if (detectedModelPath == "")
 				detectedModelPath = DetectExistMultiple(currentInstallPath, modelCriteria);
 		}
 
@@ -433,7 +447,7 @@ namespace Idmr.Yogeme
 		{
 			// This is the default vanilla craft mapping that converts a mission FlightGroup craft type into its corresponding object in game.
 			// It's added here for an extra feature to detect new craft slots (when modded with an upgrade pack). It is unable to detect craft slots that have been replaced, only if they've been remapped to a different slot.
-			int[] defaultMapping = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,50,51,55,56,52,53,54,43,44,71,72,73,74,45,46,91,92,93,94,95,57,58,59,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,75,76,77,78,79,153,154,155,156,157,158,159,194,195,160,210,211,212,212,212,219,220,221,196,221,213,214,213,215,216,218,223,223,217,80,161,162,141,142,143,144,145,61,62,146,96,147,63,64,97,98,99,100,101,102,65,60,115,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,163,164,165,166,167,168,169,170,171,172,173,174,175,176,177,178,179,180,181,182,183,47,81,82,83,84,85,197,198,201,202,199,200,192,193,105,106,107,108,109,110,111,112,113,114,48,203,204,205,206,207,208,209,209,263,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,148,149,150,0,0};
+			int[] defaultMapping = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 50, 51, 55, 56, 52, 53, 54, 43, 44, 71, 72, 73, 74, 45, 46, 91, 92, 93, 94, 95, 57, 58, 59, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 75, 76, 77, 78, 79, 153, 154, 155, 156, 157, 158, 159, 194, 195, 160, 210, 211, 212, 212, 212, 219, 220, 221, 196, 221, 213, 214, 213, 215, 216, 218, 223, 223, 217, 80, 161, 162, 141, 142, 143, 144, 145, 61, 62, 146, 96, 147, 63, 64, 97, 98, 99, 100, 101, 102, 65, 60, 115, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 163, 164, 165, 166, 167, 168, 169, 170, 171, 172, 173, 174, 175, 176, 177, 178, 179, 180, 181, 182, 183, 47, 81, 82, 83, 84, 85, 197, 198, 201, 202, 199, 200, 192, 193, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 48, 203, 204, 205, 206, 207, 208, 209, 209, 263, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 148, 149, 150, 0, 0 };
 
 			List<CraftData> result = new List<CraftData>();
 			string exePath = Path.Combine(detectedInstallPath, "XwingAlliance.exe");
@@ -615,7 +629,7 @@ namespace Idmr.Yogeme
 			// This editor stuff is only needed for X-wing.
 			bool editorSection = false;
 			List<CraftData> editor = new List<CraftData>();
-			
+
 			List<CraftData> list = new List<CraftData>();
 			try
 			{
@@ -711,7 +725,7 @@ namespace Idmr.Yogeme
 		/// <summary>Creates a new instance. If a source item is specified, the data will be initialized to a copy of the source.</summary>
 		public CraftData(CraftData source)
 		{
-			if(source != null)
+			if (source != null)
 				CopyFrom(source);
 		}
 		/// <summary>Directly copies all data elements from the source object.</summary>

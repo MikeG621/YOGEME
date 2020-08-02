@@ -1,12 +1,14 @@
 /*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
- * Copyright (C) 2007-2018 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2020 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.5
+ * VERSION: 1.5+
  */
 
 /* CHANGELOG
+ * v1.7, XXXXXX
+ * [NEW] new settings for Map wireframes [JB]
  * v1.5, 180910
  * [UPD] added callback [JB]
  * [NEW] X-wing options [JB]
@@ -38,7 +40,7 @@ namespace Idmr.Yogeme
 	{
 		CheckBox[] chkWP = new CheckBox[22];
 		Settings _config;
-        EventHandler _closeCallback;
+		EventHandler _closeCallback;
 
 		/// <summary>Initialize and load the user's settings</summary>
 		/// <param name="config">The Settings config of the current user</param>
@@ -68,7 +70,7 @@ namespace Idmr.Yogeme
 			chkWP[20] = chkBRF7;
 			chkWP[21] = chkBRF8;
 			_config = config;
-			switch(_config.Startup)
+			switch (_config.Startup)
 			{
 				case Settings.StartupMode.Normal:
 					optStartNormal.Checked = true;
@@ -88,13 +90,13 @@ namespace Idmr.Yogeme
 			chkSave.Checked = _config.ConfirmSave;
 			chkVerify.Checked = _config.Verify;
 			txtVerify.Text = _config.VerifyLocation;
-            chkXWInstall.Checked = _config.XwingInstalled;
-            txtXW.Text = _config.XwingPath;
-            txtXW.Enabled = chkXWInstall.Checked;
-            cboXWCraft.Items.AddRange(Platform.Xwing.Strings.CraftType);
-            cboXWCraft.SelectedIndex = _config.XwingCraft;
-            cboXWIFF.SelectedIndex = _config.XwingIff;
-            chkTIEInstall.Checked = _config.TieInstalled;
+			chkXWInstall.Checked = _config.XwingInstalled;
+			txtXW.Text = _config.XwingPath;
+			txtXW.Enabled = chkXWInstall.Checked;
+			cboXWCraft.Items.AddRange(Platform.Xwing.Strings.CraftType);
+			cboXWCraft.SelectedIndex = _config.XwingCraft;
+			cboXWIFF.SelectedIndex = _config.XwingIff;
+			chkTIEInstall.Checked = _config.TieInstalled;
 			txtTIE.Text = _config.TiePath;
 			txtTIE.Enabled = chkTIEInstall.Checked;
 			cboTIECraft.Items.AddRange(Platform.Tie.Strings.CraftType);
@@ -118,22 +120,22 @@ namespace Idmr.Yogeme
 			chkFG.Checked = Convert.ToBoolean(_config.MapOptions & Settings.MapOpts.FGTags);
 			chkTrace.Checked = Convert.ToBoolean(_config.MapOptions & Settings.MapOpts.Traces);
 			chkDeletePilot.Checked = _config.DeleteTestPilots;
-            chkRememberPlatformFolder.Checked = _config.RememberPlatformFolder; //[JB]
-            chkConfirmFGDelete.Checked = _config.ConfirmFGDelete;               //[JB]
-            chkTest.Checked = _config.ConfirmTest;
+			chkRememberPlatformFolder.Checked = _config.RememberPlatformFolder; //[JB]
+			chkConfirmFGDelete.Checked = _config.ConfirmFGDelete;               //[JB]
+			chkTest.Checked = _config.ConfirmTest;
 			chkVerifyTest.Checked = _config.VerifyTest;
 			chkVerifyTest.Enabled = !_config.Verify;
 			chkBackdrops.Enabled = _config.SuperBackdropsInstalled;
 			chkBackdrops.Checked = _config.InitializeUsingSuperBackdrops;
 			int t = _config.Waypoints;
-			for (int i=0;i<22;i++) chkWP[i].Checked = Convert.ToBoolean(t & (1 << i));
+			for (int i = 0; i < 22; i++) chkWP[i].Checked = Convert.ToBoolean(t & (1 << i));
 
-            chkColorizeFG.Checked = _config.ColorizedDropDowns;
-            txtColorSelected.Text = (_config.ColorInteractSelected.ToArgb() & 0x00FFFFFF).ToString("X6");  //ARGB values include 0xFF for alpha, trim that out to just display RGB.
-            txtColorNonSelected.Text = (_config.ColorInteractNonSelected.ToArgb() & 0x00FFFFFF).ToString("X6");
-            txtColorBackground.Text = (_config.ColorInteractBackground.ToArgb() & 0x00FFFFFF).ToString("X6");
-            cboInteractiveTheme.SelectedIndex = (txtColorBackground.Text == "BC8F8F" ? 0 : txtColorBackground.Text == "BFBFFF" ? 1 : 0);  //Select YOGEME or XvTED by looking at background color, otherwise default to YOGEME. What's selected here doesn't actually matter unless the user clicks it, so it's just a matter of display consistency.
-            refreshColors();
+			chkColorizeFG.Checked = _config.ColorizedDropDowns;
+			txtColorSelected.Text = (_config.ColorInteractSelected.ToArgb() & 0x00FFFFFF).ToString("X6");  //ARGB values include 0xFF for alpha, trim that out to just display RGB.
+			txtColorNonSelected.Text = (_config.ColorInteractNonSelected.ToArgb() & 0x00FFFFFF).ToString("X6");
+			txtColorBackground.Text = (_config.ColorInteractBackground.ToArgb() & 0x00FFFFFF).ToString("X6");
+			cboInteractiveTheme.SelectedIndex = (txtColorBackground.Text == "BC8F8F" ? 0 : txtColorBackground.Text == "BFBFFF" ? 1 : 0);  //Select YOGEME or XvTED by looking at background color, otherwise default to YOGEME. What's selected here doesn't actually matter unless the user clicks it, so it's just a matter of display consistency.
+			refreshColors();
 
 			numMousewheelZoom.Value = Convert.ToDecimal(_config.MapMouseWheelZoomPercentage);
 			chkWireEnabled.Checked = _config.WireframeEnabled;
@@ -161,7 +163,7 @@ namespace Idmr.Yogeme
 			lblExportWarning.Enabled = exportInUse;
 			lblExportWarning.Text = exportInUse ? "Exported override in use in game folder!" : "";
 
-            _closeCallback = callback;
+			_closeCallback = callback;
 		}
 
 		void refreshColors()
@@ -216,10 +218,10 @@ namespace Idmr.Yogeme
 			_config.ColorizedDropDowns = chkColorizeFG.Checked;
 		}
 		void chkXWInstall_CheckedChanged(object sender, EventArgs e)
-        {
-            txtXW.Enabled = chkXWInstall.Checked;
-        }
-        void chkTIEInstall_CheckedChanged(object sender, EventArgs e)
+		{
+			txtXW.Enabled = chkXWInstall.Checked;
+		}
+		void chkTIEInstall_CheckedChanged(object sender, EventArgs e)
 		{
 			txtTIE.Enabled = chkTIEInstall.Checked;
 		}
@@ -283,9 +285,9 @@ namespace Idmr.Yogeme
 			_config.RestrictPlatforms = chkRestrict.Checked;
 			_config.ConfirmExit = chkExit.Checked;
 			_config.ConfirmSave = chkSave.Checked;
-            _config.XwingInstalled = chkXWInstall.Checked;
-            _config.XwingPath = txtXW.Text;
-            _config.TieInstalled = chkTIEInstall.Checked;
+			_config.XwingInstalled = chkXWInstall.Checked;
+			_config.XwingPath = txtXW.Text;
+			_config.TieInstalled = chkTIEInstall.Checked;
 			_config.TiePath = txtTIE.Text;
 			_config.XvtInstalled = chkXvTInstall.Checked;
 			_config.XvtPath = txtXvT.Text;
@@ -295,13 +297,13 @@ namespace Idmr.Yogeme
 			_config.XwaPath = txtXWA.Text;
 			_config.Verify = chkVerify.Checked;
 			_config.VerifyLocation = txtVerify.Text;
-			int temp=0;
+			int temp = 0;
 			for (int i = 0; i < 22; i++) temp += (chkWP[i].Checked ? 1 << i : 0);
 			_config.Waypoints = temp;
 			_config.MapOptions = (chkFG.Checked ? Settings.MapOpts.FGTags : Settings.MapOpts.None) | (chkTrace.Checked ? Settings.MapOpts.Traces : Settings.MapOpts.None);
-            _config.XwingCraft = (byte)cboXWCraft.SelectedIndex;
-            _config.XwingIff = (byte)cboXWIFF.SelectedIndex;
-            _config.TieCraft = (byte)cboTIECraft.SelectedIndex;
+			_config.XwingCraft = (byte)cboXWCraft.SelectedIndex;
+			_config.XwingIff = (byte)cboXWIFF.SelectedIndex;
+			_config.TieCraft = (byte)cboTIECraft.SelectedIndex;
 			_config.TieIff = (byte)cboTIEIFF.SelectedIndex;
 			_config.XvtCraft = (byte)cboXvTCraft.SelectedIndex;
 			_config.XvtIff = (byte)cboXvTIFF.SelectedIndex;
@@ -309,24 +311,24 @@ namespace Idmr.Yogeme
 			_config.XwaIff = (byte)cboXWAIFF.SelectedIndex;
 			_config.ConfirmTest = chkTest.Checked;
 			_config.DeleteTestPilots = chkDeletePilot.Checked;
-            _config.RememberPlatformFolder = chkRememberPlatformFolder.Checked;  //[JB]
-            _config.ConfirmFGDelete = chkConfirmFGDelete.Checked;  //[JB]
+			_config.RememberPlatformFolder = chkRememberPlatformFolder.Checked;  //[JB]
+			_config.ConfirmFGDelete = chkConfirmFGDelete.Checked;  //[JB]
 			_config.VerifyTest = chkVerifyTest.Checked;
 			_config.InitializeUsingSuperBackdrops = chkBackdrops.Checked;
 
-            int sel = Color.Blue.ToArgb();
-            int nsel = Color.Black.ToArgb();
-            int background = Color.RosyBrown.ToArgb();
-            int.TryParse(txtColorSelected.Text, System.Globalization.NumberStyles.HexNumber, null, out sel);
-            int.TryParse(txtColorNonSelected.Text, System.Globalization.NumberStyles.HexNumber, null, out nsel);
-            int.TryParse(txtColorBackground.Text, System.Globalization.NumberStyles.HexNumber, null, out background);
-            sel += 0xFF << 24;  //Add the alpha channel back in
-            nsel += 0xFF << 24;
-            background += 0xFF << 24;
-            _config.ColorInteractSelected = Color.FromArgb(sel);
-            _config.ColorInteractNonSelected = Color.FromArgb(nsel);
-            _config.ColorInteractBackground = Color.FromArgb(background);
-            
+			int sel = Color.Blue.ToArgb();
+			int nsel = Color.Black.ToArgb();
+			int background = Color.RosyBrown.ToArgb();
+			int.TryParse(txtColorSelected.Text, System.Globalization.NumberStyles.HexNumber, null, out sel);
+			int.TryParse(txtColorNonSelected.Text, System.Globalization.NumberStyles.HexNumber, null, out nsel);
+			int.TryParse(txtColorBackground.Text, System.Globalization.NumberStyles.HexNumber, null, out background);
+			sel += 0xFF << 24;  //Add the alpha channel back in
+			nsel += 0xFF << 24;
+			background += 0xFF << 24;
+			_config.ColorInteractSelected = Color.FromArgb(sel);
+			_config.ColorInteractNonSelected = Color.FromArgb(nsel);
+			_config.ColorInteractBackground = Color.FromArgb(background);
+
 			_config.MapMouseWheelZoomPercentage = Convert.ToDouble(numMousewheelZoom.Value);
 			_config.WireframeEnabled = chkWireEnabled.Checked;
 			_config.WireframeIconThresholdEnabled = chkWireIconThreshold.Checked;
@@ -348,14 +350,14 @@ namespace Idmr.Yogeme
 			_config.XwaOverrideScan = chkXwaOverrideScan.Checked;
 			_config.XwaFlagRemappedCraft = chkXwaFlagRemappedCraft.Checked;
 
-            if (_closeCallback != null) _closeCallback(0, new EventArgs());
+			if (_closeCallback != null) _closeCallback(0, new EventArgs());
 			Close();
 		}
-        void cmdXW_Click(object sender, EventArgs e)
-        {
-            selectPlatform(txtXW, chkXWInstall);
-        }
-        void cmdTie_Click(object sender, EventArgs e)
+		void cmdXW_Click(object sender, EventArgs e)
+		{
+			selectPlatform(txtXW, chkXWInstall);
+		}
+		void cmdTie_Click(object sender, EventArgs e)
 		{
 			selectPlatform(txtTIE, chkTIEInstall);
 		}
@@ -375,18 +377,18 @@ namespace Idmr.Yogeme
 			selectPlatform(txtXWA, chkXWAInstall);
 		}
 
-        void txtColorSelected_TextChanged(object sender, EventArgs e)
-        {
-            refreshColors();
-        }
-        void txtColorNonSelected_TextChanged(object sender, EventArgs e)
-        {
-            refreshColors();
-        }
-        void txtColorBackground_TextChanged(object sender, EventArgs e)
-        {
-            refreshColors();
-        }
+		void txtColorSelected_TextChanged(object sender, EventArgs e)
+		{
+			refreshColors();
+		}
+		void txtColorNonSelected_TextChanged(object sender, EventArgs e)
+		{
+			refreshColors();
+		}
+		void txtColorBackground_TextChanged(object sender, EventArgs e)
+		{
+			refreshColors();
+		}
 
 		/// <summary>Broadly sets or clears visibility states of an entire range of meshtypes.</summary>
 		private void applyBatchVisibilityState(bool state, MeshType[] items)

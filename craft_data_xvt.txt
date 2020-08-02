@@ -1,6 +1,6 @@
 ﻿; Line format is: CraftName,Abbrev,SpeedMGLT,ResourceName
 ; Empty lines, leading or trailing spaces are ignored.
-; Use '#' or '*' (without quotes) to autoreplace with slot numbers, or '-' for a completely blank entry.
+; Use '#' or '*' (without quotes) to autoreplace with slot numbers ('*' uses a "Slot " prefix), or '-' for a completely blank entry.
 ; CraftName and Abbrev are only used if Override is enabled in Settings. Resources are always used in the map.
 None,,,
 X-Wing,X-W,100,xwing

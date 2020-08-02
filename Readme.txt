@@ -19,16 +19,22 @@ v1.7, XX XXX XXXX
  - (TIE) Message colors update immediately
  - (XWA) IFF subsitutions in triggers and controls
  - (XWA Briefing) Fixed wrong icon being selected while setting up MoveIcon
+ - (All) Mission Map now supports ship wireframe display (JB)
+ -- Works for all platforms, reads resources from the install directory, mod compatable
+ -- Touches a lot of things, not going to spell it out here
+ -- *_shiplist.txt files for custom craft replaced with craft_data_*.txt
  - Various fixes and tweaks by Random Starfighter (JB)
  -- (Backdrops) Images are now foregraound instead of background
  -- (Backdrops) Fixed a possible IndexOutOfRange when clicking thumbnails
  -- (Common) SafeString and ParseAfterInt added
  -- (Formations) Images are now foreground instead of background
  -- (Map) Timer handler disabled when closing
+ -- (Map) Max zoom and zoom speed adjusted
  -- (All) Cleanup index substitutions
  -- (All) Blanks messages now show as "*"
  -- (All) Trigger label refresh updates
  -- (All) Extra protections to handle custom missions using "bad" Status or Formation values
+ -- (All) Fixed editor craft number processing that could cause issues
  -- (XvT) BoP IFF names implemented (consumes Unknowns 4 and 5)
  -- (XvT) More TriggerTypes added
  -- (XvT) Unk6 renamed to PreventOutcome
@@ -38,6 +44,12 @@ v1.7, XX XXX XXXX
  -- (Xwing) Unk1 now Randomizer (unused)
  -- (Xwing) Max Craft increased to 255
  -- (Xwing) Yaw/Pitch/Roll tweaks, save fixed
+ -- (Xwing) Briefing Icons now use BMPs instead of the DATs
+ 
+With this release I'm also going to mark [Issue #14] and [Issue #12] closed,
+which are "Pre-TIE95" and "OPT import". Probably could've closed out 14 a
+couple years ago, but I think it's in better shape now. Thanks to Random for
+the work on X-wing and the OPT overhaul.
 
 v1.6.6, 19 Jul 2020
  - (XWA) Fixed a crash when using "Apply DTM SuperBackdrops to new missions" option

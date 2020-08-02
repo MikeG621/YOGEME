@@ -8,6 +8,9 @@
 
 /* CHANGELOG
  * v1.7, XXXXXX
+ * [NEW #12] Wireframe implementation [JB]
+ * [UPD] Max zoom and zoom speed adjusted [JB]
+ * [UPD] FgIndex added to MapData [JB]
  * [FIX] Unregister Tick handler to prevent misfires after closing [JB]
  * [UPD] form handlers renamed
  * v1.6.5, 200704
@@ -61,41 +64,41 @@ namespace Idmr.Yogeme
 		Orientation _displayMode = Orientation.XY;
 		Bitmap _map;
 		MapData[] _mapData;
-        List<SelectionData> _selectionList = new List<SelectionData>();
-        List<SelectionData> _selectionTmp = new List<SelectionData>();
-        List<int> _selectionListFGs = new List<int>();
-		int[] _dragIcon = new int[2];	// [0] = fg, [1] = wp
+		List<SelectionData> _selectionList = new List<SelectionData>();
+		List<SelectionData> _selectionTmp = new List<SelectionData>();
+		List<int> _selectionListFGs = new List<int>();
+		int[] _dragIcon = new int[2];   // [0] = fg, [1] = wp
 		bool _loading = false;
 		CheckBox[] chkWP = new CheckBox[22];
 		Settings.Platform _platform;
 		//int _wpSetCount = 1;	// assigned, never used
 		bool _isDragged;
-        //string _lastButtonClicked = "";	// assigned, never used
-        bool _leftButtonDown = false;   //Left mouse button currently held down.
-        bool _rightButtonDown = false;
-        bool _dragSelectState = false;  //True if pressed
-        Point _clickPixelDown = new Point(0, 0);  //Form pixel coordinates of mouse click.
-        Point _clickPixelUp = new Point(0, 0);
-        Point _clickMapDown = new Point(0, 0);    //Virtual map coordinates of mouse click
-        Point _clickMapUp = new Point(0, 0);
-        Point _dragMapPrevious = new Point(0, 0);  //If dragging continuously, holds the last position so we know how much to update.
-        bool _mapFocus = false;
-        bool _shiftState = false;
-        int _selectionCount = 0;
-        bool _norefresh = false;
-        bool _mapPaintScheduled = false;      //True if a paint is scheduled, that is a paint request is called while a paint is already in progress.
-        static WireframeManager wireframeManager = null;
-        EventHandler onDataModified = null;
-        bool _isClosing = false;              //Need a flag during form close to check whether external MapPaint() calls should be ignored.
-        Settings _settings = null;
+		//string _lastButtonClicked = "";	// assigned, never used
+		bool _leftButtonDown = false;   //Left mouse button currently held down.
+		bool _rightButtonDown = false;
+		bool _dragSelectState = false;  //True if pressed
+		Point _clickPixelDown = new Point(0, 0);  //Form pixel coordinates of mouse click.
+		Point _clickPixelUp = new Point(0, 0);
+		Point _clickMapDown = new Point(0, 0);    //Virtual map coordinates of mouse click
+		Point _clickMapUp = new Point(0, 0);
+		Point _dragMapPrevious = new Point(0, 0);  //If dragging continuously, holds the last position so we know how much to update.
+		bool _mapFocus = false;
+		bool _shiftState = false;
+		int _selectionCount = 0;
+		bool _norefresh = false;
+		bool _mapPaintScheduled = false;      //True if a paint is scheduled, that is a paint request is called while a paint is already in progress.
+		static WireframeManager wireframeManager = null;
+		EventHandler onDataModified = null;
+		bool _isClosing = false;              //Need a flag during form close to check whether external MapPaint() calls should be ignored.
+		Settings _settings = null;
 		#endregion vars
 
 		#region ctors
 		/// <param name="fg">XwingFlights array</param>
 		public MapForm(Settings settings, Platform.Xwing.FlightGroupCollection fg, EventHandler dataModifiedCallback)
-        {
-            _platform = Settings.Platform.XWING;
-            InitializeComponent();
+		{
+			_platform = Settings.Platform.XWING;
+			InitializeComponent();
 			if (settings.XwingOverrideExternal)
 			{
 				//Since the XW craft list is mapped to use TIE's list for the sake of the map, replace TIE's strings. Must be done prior to import.
@@ -117,35 +120,35 @@ namespace Idmr.Yogeme
 				}
 				Platform.Tie.Strings.OverrideShipList(newType, newAbbrev);
 			}
-            Import(fg);
-            try { imgCraft.Images.AddStrip(Image.FromFile(Application.StartupPath + "\\images\\craft_TIE.bmp")); }
-            catch (Exception x)
-            {
-                MessageBox.Show(x.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                Close();
-            }
-            onDataModified = dataModifiedCallback;
-            startup(settings);
-        }
+			Import(fg);
+			try { imgCraft.Images.AddStrip(Image.FromFile(Application.StartupPath + "\\images\\craft_TIE.bmp")); }
+			catch (Exception x)
+			{
+				MessageBox.Show(x.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				Close();
+			}
+			onDataModified = dataModifiedCallback;
+			startup(settings);
+		}
 
-        /// <param name="fg">TFlights array</param>
-        public MapForm(Settings settings, Platform.Tie.FlightGroupCollection fg, EventHandler dataModifiedCallback)
+		/// <param name="fg">TFlights array</param>
+		public MapForm(Settings settings, Platform.Tie.FlightGroupCollection fg, EventHandler dataModifiedCallback)
 		{
 			_platform = Settings.Platform.TIE;
 			InitializeComponent();
 			Import(fg);
 			try { imgCraft.Images.AddStrip(Image.FromFile(Application.StartupPath + "\\images\\craft_TIE.bmp")); }
-			catch(Exception x)
+			catch (Exception x)
 			{
 				MessageBox.Show(x.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				Close();
 			}
-            onDataModified = dataModifiedCallback;
+			onDataModified = dataModifiedCallback;
 			startup(settings);
 		}
 
 		/// <param name="fg">XFlights array</param>
-        public MapForm(Settings settings, bool isBoP, Platform.Xvt.FlightGroupCollection fg, EventHandler dataModifiedCallback)
+		public MapForm(Settings settings, bool isBoP, Platform.Xvt.FlightGroupCollection fg, EventHandler dataModifiedCallback)
 		{
 			_platform = isBoP ? Settings.Platform.BoP : Settings.Platform.XvT;
 			InitializeComponent();
@@ -156,7 +159,7 @@ namespace Idmr.Yogeme
 				MessageBox.Show(x.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				Close();
 			}
-            onDataModified = dataModifiedCallback;
+			onDataModified = dataModifiedCallback;
 			startup(settings);
 		}
 
@@ -172,7 +175,7 @@ namespace Idmr.Yogeme
 				MessageBox.Show(x.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				Close();
 			}
-            onDataModified = dataModifiedCallback;
+			onDataModified = dataModifiedCallback;
 			startup(settings);
 		}
 		#endregion ctors
@@ -538,28 +541,28 @@ namespace Idmr.Yogeme
 			}
 			#endregion
 			updateLayout();
-			mapX = w/2;
-			mapY = h/2;
-			mapZ = h/2;
+			mapX = w / 2;
+			mapY = h / 2;
+			mapZ = h / 2;
 			_dragIcon[0] = -1;
 			_loading = true;
 			chkTags.Checked = Convert.ToBoolean(config.MapOptions & Settings.MapOpts.FGTags);
 			chkTrace.Checked = Convert.ToBoolean(config.MapOptions & Settings.MapOpts.Traces);
-            chkDistance.Enabled = chkTrace.Checked;
+			chkDistance.Enabled = chkTrace.Checked;
 			int t = config.Waypoints;
-            if (_platform == Settings.Platform.XWING)
-            {
-                for (int i = 0; i < 3; i++) chkWP[i].Checked = Convert.ToBoolean(t & (1 << i));
-                chkWP[3].Enabled = false;
-                for (int i = 4; i < 7; i++) chkWP[i].Checked = Convert.ToBoolean(t & (1 << i));
-                for (int i = 7; i < 13; i++) chkWP[i].Enabled = false;
-                //[13] = hyper point
-                //[14,15,16] CS points, replacing HYP points.
-                for (int i = 17; i < 22; i++) chkWP[i].Enabled = false;
-                chkBRF.Text = "CS2";
-                chkBRF2.Text = "CS3";
-                chkBRF3.Text = "CS4";
-            }
+			if (_platform == Settings.Platform.XWING)
+			{
+				for (int i = 0; i < 3; i++) chkWP[i].Checked = Convert.ToBoolean(t & (1 << i));
+				chkWP[3].Enabled = false;
+				for (int i = 4; i < 7; i++) chkWP[i].Checked = Convert.ToBoolean(t & (1 << i));
+				for (int i = 7; i < 13; i++) chkWP[i].Enabled = false;
+				//[13] = hyper point
+				//[14,15,16] CS points, replacing HYP points.
+				for (int i = 17; i < 22; i++) chkWP[i].Enabled = false;
+				chkBRF.Text = "CS2";
+				chkBRF2.Text = "CS3";
+				chkBRF3.Text = "CS4";
+			}
 			if (_platform == Settings.Platform.TIE)
 			{
 				for (int i = 0; i < 15; i++) chkWP[i].Checked = Convert.ToBoolean(t & (1 << i));
@@ -576,7 +579,7 @@ namespace Idmr.Yogeme
 				lblOrder.Visible = true;
 				numOrder.Visible = true;
 			}
-			MouseWheel += new MouseEventHandler(form_MouseWheel);	// this is here because of some stupid reason, MouseWheel isn't available in the GUI
+			MouseWheel += new MouseEventHandler(form_MouseWheel);   // this is here because of some stupid reason, MouseWheel isn't available in the GUI
 
 			_loading = false;
 		}
@@ -627,9 +630,9 @@ namespace Idmr.Yogeme
 			grpPoints.Left = grpDir.Left;
 			chkTags.Left = grpDir.Left;
 			chkTrace.Left = grpDir.Left;
-            chkDistance.Left = grpDir.Left;
+			chkDistance.Left = grpDir.Left;
 			updateMapCoord(center);
-            lstVisible.Height = pctMap.Bottom - lstVisible.Top;
+			lstVisible.Height = pctMap.Bottom - lstVisible.Top;
 			MapPaint(true);
 		}
 
@@ -704,11 +707,11 @@ namespace Idmr.Yogeme
 		/// <param name="persistant">When <b>true</b> draws to memory, <b>false</b> draws directly to the image</param>
 		public void MapPaint(bool persistant)
 		{
-            if(_isClosing) return;
-            //_lastMapPaintTime = Environment.TickCount;
-            
-            if (_loading)
-                return;
+			if (_isClosing) return;
+			//_lastMapPaintTime = Environment.TickCount;
+
+			if (_loading)
+				return;
 			#region orientation setup
 			int X = mapX, Y = mapZ, coord1 = 0, coord2 = 2;
 			switch (_displayMode)
@@ -725,42 +728,42 @@ namespace Idmr.Yogeme
 			#endregion
 			#region brush, pen and graphics setup
 			// Create a new pen that we shall use for drawing the lines
-			Pen pn = new Pen(Color.DarkRed);		
+			Pen pn = new Pen(Color.DarkRed);
 			SolidBrush sb = new SolidBrush(Color.Black);
-			SolidBrush sbg = new SolidBrush(Color.DimGray);	// for FG tags
-			Pen pnTrace = new Pen(Color.Gray);		// for WP traces
-            Pen pnSel = new Pen(Color.White);  //[JB] For selection boxes
+			SolidBrush sbg = new SolidBrush(Color.DimGray); // for FG tags
+			Pen pnTrace = new Pen(Color.Gray);      // for WP traces
+			Pen pnSel = new Pen(Color.White);  //[JB] For selection boxes
 			Graphics g3;
-			if (persistant) 
+			if (persistant)
 			{
-				g3 = Graphics.FromImage(_map);		//graphics obj, load from the memory bitmap
-				g3.Clear(SystemColors.Control);		//clear it
+				g3 = Graphics.FromImage(_map);      //graphics obj, load from the memory bitmap
+				g3.Clear(SystemColors.Control);     //clear it
 			}
-			else 
+			else
 			{
-				g3 = pctMap.CreateGraphics();		//paint directly to pict
+				g3 = pctMap.CreateGraphics();       //paint directly to pict
 			}
 			#endregion
 			#region BG and grid
-			g3.FillRectangle(sb, 0, 0, w, h);		//background
-			for(int i = 0; i<200; i++)
+			g3.FillRectangle(sb, 0, 0, w, h);       //background
+			for (int i = 0; i < 200; i++)
 			{
-				g3.DrawLine(pn, 0, _zoom*i + Y, w, _zoom*i + Y);	//min lines, every klick
-				g3.DrawLine(pn, 0, Y - _zoom*i, w, Y - _zoom*i);
-				g3.DrawLine(pn, _zoom*i + X, 0, _zoom*i + X, h);
-				g3.DrawLine(pn, X - _zoom*i, 0,X - _zoom*i, h);
+				g3.DrawLine(pn, 0, _zoom * i + Y, w, _zoom * i + Y);    //min lines, every klick
+				g3.DrawLine(pn, 0, Y - _zoom * i, w, Y - _zoom * i);
+				g3.DrawLine(pn, _zoom * i + X, 0, _zoom * i + X, h);
+				g3.DrawLine(pn, X - _zoom * i, 0, X - _zoom * i, h);
 			}
 			pn.Width = 3;
-			for(int i = 0; i<40; i++)
+			for (int i = 0; i < 40; i++)
 			{
-				g3.DrawLine(pn, 0, _zoom*i*5 + Y, w, _zoom*i*5 + Y);	//maj lines, every 5 klicks
-				g3.DrawLine(pn, 0, Y - _zoom*i*5, w, Y - _zoom*i*5);
-				g3.DrawLine(pn, _zoom*i*5 + X, 0, _zoom*i*5 + X, h);
-				g3.DrawLine(pn, X - _zoom*i*5, 0, X - _zoom*i*5, h);
+				g3.DrawLine(pn, 0, _zoom * i * 5 + Y, w, _zoom * i * 5 + Y);    //maj lines, every 5 klicks
+				g3.DrawLine(pn, 0, Y - _zoom * i * 5, w, Y - _zoom * i * 5);
+				g3.DrawLine(pn, _zoom * i * 5 + X, 0, _zoom * i * 5 + X, h);
+				g3.DrawLine(pn, X - _zoom * i * 5, 0, X - _zoom * i * 5, h);
 			}
 			pn.Color = Color.Red;
 			pn.Width = 1;
-			g3.DrawLine(pn, 0, Y, w, Y);	// origin lines
+			g3.DrawLine(pn, 0, Y, w, Y);    // origin lines
 			g3.DrawLine(pn, X, 0, X, h);
 			#endregion
 			Bitmap bmptemp;
@@ -878,97 +881,97 @@ namespace Idmr.Yogeme
 					}
 				}
 			}
-            foreach (SelectionData dat in _selectionList)
-            {
-                int x = _zoom * dat.wpRef[coord1] / 160 + X;
-                int y = -_zoom * dat.wpRef[coord2] / 160 + Y;
-                x += 1;  //Doesn't seem to line up with icon correctly, push it over.
-                //[JB] Draws a four corner selection box like in-game.
-                g3.DrawLine(pnSel, x-8, y-8, x-4, y-8); //Horizontal top
-                g3.DrawLine(pnSel, x+4, y-8, x+8, y-8);
-                g3.DrawLine(pnSel, x-8, y+8, x-4, y+8); //Horizontal bottom
-                g3.DrawLine(pnSel, x+4, y+8, x+8, y+8);
-                g3.DrawLine(pnSel, x-8, y-8, x-8, y-4); //Vertical Left
-                g3.DrawLine(pnSel, x-8, y+4, x-8, y+8);
-                g3.DrawLine(pnSel, x+8, y-8, x+8, y-4); //Vertical right
-                g3.DrawLine(pnSel, x+8, y+4, x+8, y+8);
-            }
-            if (_dragSelectState == true)
-            {
-                Pen sel = new Pen(Color.White);
-                Point p1 = _clickPixelDown;
-                Point p2 = _clickPixelUp;
-                normalizePoint(ref p1, ref p2);
-                Rectangle r = new Rectangle(p1.X, p1.Y, p2.X - p1.X, p2.Y - p1.Y);
-                g3.DrawRectangle(sel, r);
-            }
-			if (persistant) pctMap.Invalidate();		// since it's drawing to memory, this refreshes the pct.  Removes the flicker when zooming
+			foreach (SelectionData dat in _selectionList)
+			{
+				int x = _zoom * dat.wpRef[coord1] / 160 + X;
+				int y = -_zoom * dat.wpRef[coord2] / 160 + Y;
+				x += 1;  //Doesn't seem to line up with icon correctly, push it over.
+						 //[JB] Draws a four corner selection box like in-game.
+				g3.DrawLine(pnSel, x - 8, y - 8, x - 4, y - 8); //Horizontal top
+				g3.DrawLine(pnSel, x + 4, y - 8, x + 8, y - 8);
+				g3.DrawLine(pnSel, x - 8, y + 8, x - 4, y + 8); //Horizontal bottom
+				g3.DrawLine(pnSel, x + 4, y + 8, x + 8, y + 8);
+				g3.DrawLine(pnSel, x - 8, y - 8, x - 8, y - 4); //Vertical Left
+				g3.DrawLine(pnSel, x - 8, y + 4, x - 8, y + 8);
+				g3.DrawLine(pnSel, x + 8, y - 8, x + 8, y - 4); //Vertical right
+				g3.DrawLine(pnSel, x + 8, y + 4, x + 8, y + 8);
+			}
+			if (_dragSelectState == true)
+			{
+				Pen sel = new Pen(Color.White);
+				Point p1 = _clickPixelDown;
+				Point p2 = _clickPixelUp;
+				normalizePoint(ref p1, ref p2);
+				Rectangle r = new Rectangle(p1.X, p1.Y, p2.X - p1.X, p2.Y - p1.Y);
+				g3.DrawRectangle(sel, r);
+			}
+			if (persistant) pctMap.Invalidate();        // since it's drawing to memory, this refreshes the pct.  Removes the flicker when zooming
 			g3.Dispose();
 		}
 
-        /// <summary>Loads FG data into the MapData class the form uses</summary>
-        /// <param name="fg">XwingFlights array</param>
-        public void Import(Platform.Xwing.FlightGroupCollection fg)
-        {
-            int numCraft = fg.Count;
-            _mapData = new MapData[numCraft];
-            for (int i = 0; i < numCraft; i++)
-            {
-                //Convert Craft, IFF, and remap the Waypoints to use the TIE formats so that the rest of the map can function correctly.
-                _mapData[i] = new MapData(_platform);
-                _mapData[i].Craft = fg[i].GetTIECraftType();
-				_mapData[i].fgIndex = i;
-                Platform.Xwing.FlightGroup.Waypoint[] arr = new Platform.Xwing.FlightGroup.Waypoint[17];  //TIE has 15 waypoints, need extra to virtualize the Coordinate Set points throught the XvT briefing coords
-                for (int j = 0; j < 15; j++)
-                    arr[j] = new Platform.Xwing.FlightGroup.Waypoint();
-                arr[0] = fg[i].Waypoints[0]; //SP1
-                arr[1] = fg[i].Waypoints[4]; //SP2
-                arr[2] = fg[i].Waypoints[5]; //SP3
-                arr[4] = fg[i].Waypoints[1]; //WP1
-                arr[5] = fg[i].Waypoints[2]; //WP2
-                arr[6] = fg[i].Waypoints[3]; //WP3
-                arr[13] = fg[i].Waypoints[6]; //HYP
-                arr[14] = fg[i].Waypoints[7]; //CS1 (BRF1)
-                arr[15] = fg[i].Waypoints[8]; //CS2 (BRF2)
-                arr[16] = fg[i].Waypoints[9]; //CS3 (BRF3)
-                fg[i].Waypoints[7][3] = 1;  //For map purposes, we need to activate these waypoints.
-                fg[i].Waypoints[8][3] = 1;
-                fg[i].Waypoints[9][3] = 1;
-               
-                _mapData[i].WPs[0] = arr; // fg[i].Waypoints;
-                _mapData[i].IFF = fg[i].GetTIEIFF();
-                if (fg[i].IFF == 0 && fg[i].IsObjectGroup()) _mapData[i].IFF = 1; //None/Default objects appear as Imperial.
-                _mapData[i].Name = fg[i].Name;
-                _mapData[i].FullName = Platform.Tie.Strings.CraftAbbrv[_mapData[i].Craft] + " " + fg[i].Name; //We converted craft to TIE, so load TIE strings.
-                if (fg[i].ObjectType >= 58 && fg[i].ObjectType <= 69)
-                {
-                    _mapData[i].FullName = "TPlt" + (fg[i].ObjectType - 57).ToString();
-                }
-                if (fg[i].ObjectType >= 26 && fg[i].ObjectType <= 33)  //Asteroids always display as red in game.
-                {
-                    _mapData[i].IFF = 1;
-                }
-            }
-            reloadSelectionControls();
-        }
+		/// <summary>Loads FG data into the MapData class the form uses</summary>
+		/// <param name="fg">XwingFlights array</param>
+		public void Import(Platform.Xwing.FlightGroupCollection fg)
+		{
+			int numCraft = fg.Count;
+			_mapData = new MapData[numCraft];
+			for (int i = 0; i < numCraft; i++)
+			{
+				//Convert Craft, IFF, and remap the Waypoints to use the TIE formats so that the rest of the map can function correctly.
+				_mapData[i] = new MapData(_platform);
+				_mapData[i].Craft = fg[i].GetTIECraftType();
+				_mapData[i].FgIndex = i;
+				Platform.Xwing.FlightGroup.Waypoint[] arr = new Platform.Xwing.FlightGroup.Waypoint[17];  //TIE has 15 waypoints, need extra to virtualize the Coordinate Set points throught the XvT briefing coords
+				for (int j = 0; j < 15; j++)
+					arr[j] = new Platform.Xwing.FlightGroup.Waypoint();
+				arr[0] = fg[i].Waypoints[0]; //SP1
+				arr[1] = fg[i].Waypoints[4]; //SP2
+				arr[2] = fg[i].Waypoints[5]; //SP3
+				arr[4] = fg[i].Waypoints[1]; //WP1
+				arr[5] = fg[i].Waypoints[2]; //WP2
+				arr[6] = fg[i].Waypoints[3]; //WP3
+				arr[13] = fg[i].Waypoints[6]; //HYP
+				arr[14] = fg[i].Waypoints[7]; //CS1 (BRF1)
+				arr[15] = fg[i].Waypoints[8]; //CS2 (BRF2)
+				arr[16] = fg[i].Waypoints[9]; //CS3 (BRF3)
+				fg[i].Waypoints[7][3] = 1;  //For map purposes, we need to activate these waypoints.
+				fg[i].Waypoints[8][3] = 1;
+				fg[i].Waypoints[9][3] = 1;
 
-        /// <summary>Loads FG data into the MapData class the form uses</summary>
+				_mapData[i].WPs[0] = arr; // fg[i].Waypoints;
+				_mapData[i].IFF = fg[i].GetTIEIFF();
+				if (fg[i].IFF == 0 && fg[i].IsObjectGroup()) _mapData[i].IFF = 1; //None/Default objects appear as Imperial.
+				_mapData[i].Name = fg[i].Name;
+				_mapData[i].FullName = Platform.Tie.Strings.CraftAbbrv[_mapData[i].Craft] + " " + fg[i].Name; //We converted craft to TIE, so load TIE strings.
+				if (fg[i].ObjectType >= 58 && fg[i].ObjectType <= 69)
+				{
+					_mapData[i].FullName = "TPlt" + (fg[i].ObjectType - 57).ToString();
+				}
+				if (fg[i].ObjectType >= 26 && fg[i].ObjectType <= 33)  //Asteroids always display as red in game.
+				{
+					_mapData[i].IFF = 1;
+				}
+			}
+			reloadSelectionControls();
+		}
+
+		/// <summary>Loads FG data into the MapData class the form uses</summary>
 		/// <param name="fg">TFlights array</param>
 		public void Import(Platform.Tie.FlightGroupCollection fg)
 		{
 			int numCraft = fg.Count;
 			_mapData = new MapData[numCraft];
-			for (int i=0;i<numCraft;i++)
+			for (int i = 0; i < numCraft; i++)
 			{
 				_mapData[i] = new MapData(_platform);
 				_mapData[i].Craft = fg[i].CraftType;
-				_mapData[i].fgIndex = i;
+				_mapData[i].FgIndex = i;
 				_mapData[i].WPs[0] = fg[i].Waypoints;
 				_mapData[i].IFF = fg[i].IFF;
 				_mapData[i].Name = fg[i].Name;
-                _mapData[i].FullName = Platform.Tie.Strings.CraftAbbrv[_mapData[i].Craft] + " " + fg[i].Name;
-            }
-            reloadSelectionControls();
+				_mapData[i].FullName = Platform.Tie.Strings.CraftAbbrv[_mapData[i].Craft] + " " + fg[i].Name;
+			}
+			reloadSelectionControls();
 		}
 
 		/// <summary>Loads FG data into the MapData class the form uses</summary>
@@ -977,17 +980,17 @@ namespace Idmr.Yogeme
 		{
 			int numCraft = fg.Count;
 			_mapData = new MapData[numCraft];
-			for (int i=0;i<numCraft;i++)
+			for (int i = 0; i < numCraft; i++)
 			{
 				_mapData[i] = new MapData(_platform);
 				_mapData[i].Craft = fg[i].CraftType;
-				_mapData[i].fgIndex = i;
+				_mapData[i].FgIndex = i;
 				_mapData[i].WPs[0] = fg[i].Waypoints;
 				_mapData[i].IFF = fg[i].IFF;
 				_mapData[i].Name = fg[i].Name;
-                _mapData[i].FullName = Platform.Xvt.Strings.CraftAbbrv[_mapData[i].Craft] + " " + fg[i].Name;
-            }
-            reloadSelectionControls();
+				_mapData[i].FullName = Platform.Xvt.Strings.CraftAbbrv[_mapData[i].Craft] + " " + fg[i].Name;
+			}
+			reloadSelectionControls();
 		}
 
 		/// <summary>Loads FG data into the MapData class the form uses</summary>
@@ -1001,7 +1004,7 @@ namespace Idmr.Yogeme
 			{
 				_mapData[i] = new MapData(_platform);
 				_mapData[i].Craft = fg[i].CraftType;
-				_mapData[i].fgIndex = i;
+				_mapData[i].FgIndex = i;
 				_mapData[i].WPs[0] = fg[i].Waypoints;
 				for (int j = 0; j < 16; j++)
 				{
@@ -1013,7 +1016,7 @@ namespace Idmr.Yogeme
 				_mapData[i].Name = fg[i].Name;
 				_mapData[i].FullName = Platform.Xwa.Strings.CraftAbbrv[_mapData[i].Craft] + " " + fg[i].Name;
 			}
-            reloadSelectionControls();
+			reloadSelectionControls();
 		}
 
 		/// <summary>Updates the mapdata properties of a FlightGroup.</summary>
@@ -1093,7 +1096,8 @@ namespace Idmr.Yogeme
 			if (optXY.Checked)
 			{
 				_displayMode = Orientation.XY;
-				getAverageSelectionCoords(out int x, out int y, out int z);
+				int x, y, z;
+				getAverageSelectionCoords(out x, out y, out z);
 				updateMapCoord(new PointF((float)x / 160, (float)y / 160));
 				lblCoor1.Text = "X:";
 				lblCoor2.Text = "Y:";
@@ -1107,7 +1111,8 @@ namespace Idmr.Yogeme
 			if (optXZ.Checked)
 			{
 				_displayMode = Orientation.XZ;
-				getAverageSelectionCoords(out int x, out int y, out int z);
+				int x, y, z;
+				getAverageSelectionCoords(out x, out y, out z);
 				updateMapCoord(new PointF((float)x / 160, (float)z / 160));
 				lblCoor1.Text = "X:";
 				lblCoor2.Text = "Z:";
@@ -1122,13 +1127,14 @@ namespace Idmr.Yogeme
 			{
 				//mapY = w/2 - mapY + h/2;
 				_displayMode = Orientation.YZ;
-				getAverageSelectionCoords(out int x, out int y, out int z);
+				int x, y, z;
+				getAverageSelectionCoords(out x, out y, out z);
 				updateMapCoord(new PointF((float)y / 160, (float)z / 160));
 				lblCoor1.Text = "Y:";
 				lblCoor2.Text = "Z:";
 				MapPaint(false);
 			}
-			else mapY = w/2 + h/2 - mapY;
+			else mapY = w / 2 + h / 2 - mapY;
 		}
 
 		/// <summary>Timer that handles the calling of the actual map rendering, when using TimeRestrictedMapPaint()</summary>
@@ -1149,73 +1155,73 @@ namespace Idmr.Yogeme
 		#region pctMap
 		void pctMap_MouseDown(object sender, MouseEventArgs e)
 		{
-            //_lastButtonClicked = e.Button.ToString(); //[JB] Added this to help filter out only left clicks for mouse zooming
+			//_lastButtonClicked = e.Button.ToString(); //[JB] Added this to help filter out only left clicks for mouse zooming
 			// move map, center on mouse
 			if (e.Button.ToString() == "Right")
 			{
-                _rightButtonDown = true;
-                if (!_leftButtonDown)  //To begin right click dragging.
-                {
-                    _clickPixelDown.X = e.X;
-                    _clickPixelDown.Y = e.Y;
-                    _clickPixelUp = _clickPixelDown;
-                    _dragMapPrevious = _clickPixelUp;
-                    Cursor.Current = Cursors.SizeAll;
-                }
-            }
+				_rightButtonDown = true;
+				if (!_leftButtonDown)  //To begin right click dragging.
+				{
+					_clickPixelDown.X = e.X;
+					_clickPixelDown.Y = e.Y;
+					_clickPixelUp = _clickPixelDown;
+					_dragMapPrevious = _clickPixelUp;
+					Cursor.Current = Cursors.SizeAll;
+				}
+			}
 			else if (e.Button.ToString() == "Left")
 			{
-                _leftButtonDown = true;
+				_leftButtonDown = true;
 
-                if (!_rightButtonDown)
-                {
-                    if (!_dragSelectState) convertMousepointToWaypoint(e.X, e.Y, ref _clickMapDown);
+				if (!_rightButtonDown)
+				{
+					if (!_dragSelectState) convertMousepointToWaypoint(e.X, e.Y, ref _clickMapDown);
 
-                    if (!_shiftState) _dragSelectState = true;
+					if (!_shiftState) _dragSelectState = true;
 
-                    _clickPixelDown.X = e.X;
-                    _clickPixelDown.Y = e.Y;
-                    convertMousepointToWaypoint(e.X, e.Y, ref _clickMapUp);
-                    _dragMapPrevious = _clickMapUp;
-                }
+					_clickPixelDown.X = e.X;
+					_clickPixelDown.Y = e.Y;
+					convertMousepointToWaypoint(e.X, e.Y, ref _clickMapUp);
+					_dragMapPrevious = _clickMapUp;
+				}
 			}
 			else if (e.Button.ToString() == "Middle")
 			{
-				mapX = w/2;
-				mapY = h/2;
-				mapZ = h/2;
+				mapX = w / 2;
+				mapY = h / 2;
+				mapZ = h / 2;
 				hscZoom.Value = 40;
 				MapPaint(false);
 			}
 		}
-        void pctMap_MouseEnter(object sender, EventArgs e) { pctMap.Focus(); _mapFocus = true; }
-        void pctMap_MouseLeave(object sender, EventArgs e) { _mapFocus = false; }
-        void pctMap_MouseMove(object sender, MouseEventArgs e)
+		void pctMap_MouseEnter(object sender, EventArgs e) { pctMap.Focus(); _mapFocus = true; }
+		void pctMap_MouseLeave(object sender, EventArgs e) { _mapFocus = false; }
+		void pctMap_MouseMove(object sender, MouseEventArgs e)
 		{
-            if (_leftButtonDown)
-            {
-                _clickPixelUp.X = e.X;
-                _clickPixelUp.Y = e.Y;
-                convertMousepointToWaypoint(e.X, e.Y, ref _clickMapUp);
+			if (_leftButtonDown)
+			{
+				_clickPixelUp.X = e.X;
+				_clickPixelUp.Y = e.Y;
+				convertMousepointToWaypoint(e.X, e.Y, ref _clickMapUp);
 
-                //Calling MapPaint() directly every "frame" of mouse movement when there's a lot of items to draw, will produce a significant amount of slowdown. 
-                if (_dragSelectState)
-                {
-                    scheduleMapPaint(); //Repaint to draw selection box.
-                }
-                else if (_shiftState && _selectionCount > 0)
-                {
-                    moveSelectionToCursor();  //Dragging selected items, so move them.
-                    scheduleMapPaint(); //Repaint with new positions.
-                }
-            }
-            else if (_rightButtonDown)
-            {
-                _clickPixelUp.X = e.X;
-                _clickPixelUp.Y = e.Y;
-                moveMapToCursor();  //Dragging selected items, so move them.
-                scheduleMapPaint(); //Repaint with new positions.
-            }
+				//Calling MapPaint() directly every "frame" of mouse movement when there's a lot of items to draw, will produce a significant amount of slowdown. 
+				if (_dragSelectState)
+				{
+					scheduleMapPaint(); //Repaint to draw selection box.
+				}
+				else if (_shiftState && _selectionCount > 0)
+				{
+					moveSelectionToCursor();  //Dragging selected items, so move them.
+					scheduleMapPaint(); //Repaint with new positions.
+				}
+			}
+			else if (_rightButtonDown)
+			{
+				_clickPixelUp.X = e.X;
+				_clickPixelUp.Y = e.Y;
+				moveMapToCursor();  //Dragging selected items, so move them.
+				scheduleMapPaint(); //Repaint with new positions.
+			}
 
 			// gets the current mouse location in klicks
 			double msX, msY;
@@ -1224,44 +1230,44 @@ namespace Idmr.Yogeme
 				case Orientation.XY:
 					msX = (e.X - mapX) / Convert.ToDouble(_zoom);
 					msY = (mapY - e.Y) / Convert.ToDouble(_zoom);
-					lblCoor1.Text = "X: " + Math.Round(msX,2).ToString();
-					lblCoor2.Text = "Y: " + Math.Round(msY,2).ToString();  
+					lblCoor1.Text = "X: " + Math.Round(msX, 2).ToString();
+					lblCoor2.Text = "Y: " + Math.Round(msY, 2).ToString();
 					break;
 				case Orientation.XZ:
 					msX = (e.X - mapX) / Convert.ToDouble(_zoom);
 					msY = (mapZ - e.Y) / Convert.ToDouble(_zoom);
-					lblCoor1.Text = "X: " + Math.Round(msX,2).ToString();
-					lblCoor2.Text = "Z: " + Math.Round(msY,2).ToString();
+					lblCoor1.Text = "X: " + Math.Round(msX, 2).ToString();
+					lblCoor2.Text = "Z: " + Math.Round(msY, 2).ToString();
 					break;
 				case Orientation.YZ:
 					msX = (e.X - mapY) / Convert.ToDouble(_zoom);
 					msY = (mapZ - e.Y) / Convert.ToDouble(_zoom);
-					lblCoor1.Text = "Y: " + Math.Round(msX,2).ToString();
-					lblCoor2.Text = "Z: " + Math.Round(msY,2).ToString();
+					lblCoor1.Text = "Y: " + Math.Round(msX, 2).ToString();
+					lblCoor2.Text = "Z: " + Math.Round(msY, 2).ToString();
 					break;
 			}
 		}
 		void pctMap_MouseUp(object sender, MouseEventArgs e)
 		{
-            if (e.Button.ToString() == "Left")
-            {
-                _leftButtonDown = false;
-                _clickPixelUp.X = e.X;
-                _clickPixelUp.Y = e.Y;
-                convertMousepointToWaypoint(e.X, e.Y, ref _clickMapUp);
-                _dragSelectState = false;
-                if (!_shiftState)
-                {
-                    performSelection();
-                    MapPaint(true);
-                }
-            }
-            else if (e.Button.ToString() == "Right")
-            {
-                _rightButtonDown = false;
-                if(!_leftButtonDown)
-                    Cursor.Current = Cursors.Default;  //Doesn't seem to be necessary, but thought it might be good practice to reset to default.
-            }
+			if (e.Button.ToString() == "Left")
+			{
+				_leftButtonDown = false;
+				_clickPixelUp.X = e.X;
+				_clickPixelUp.Y = e.Y;
+				convertMousepointToWaypoint(e.X, e.Y, ref _clickMapUp);
+				_dragSelectState = false;
+				if (!_shiftState)
+				{
+					performSelection();
+					MapPaint(true);
+				}
+			}
+			else if (e.Button.ToString() == "Right")
+			{
+				_rightButtonDown = false;
+				if (!_leftButtonDown)
+					Cursor.Current = Cursors.Default;  //Doesn't seem to be necessary, but thought it might be good practice to reset to default.
+			}
 		}
 		void pctMap_Paint(object sender, PaintEventArgs e)
 		{
@@ -1271,23 +1277,23 @@ namespace Idmr.Yogeme
 			// Draw the contents of the bitmap on the form.
 			objGraphics.DrawImage(_map, 0, 0, _map.Width, _map.Height);
 		}
-        void pctMap_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
-        {
-            e.IsInputKey = true;
-        }
+		void pctMap_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
+		{
+			e.IsInputKey = true;
+		}
 
 		/// <summary>Used to determine if mouse click is near a craft waypoint</summary>
 		/// <returns>True if num1==(num2 ± 6)</returns>
 		bool isApprox(int num1, double num2)
 		{
 			// +/- 6 is a good enough size
-			if (num1 <= (num2+6) && num1 >= (num2-6)) return true;
+			if (num1 <= (num2 + 6) && num1 >= (num2 - 6)) return true;
 			else return false;
 		}
 		#endregion
 		#region frmMap
 		void form_Activated(object sender, EventArgs e) { MapPaint(true); }
-        void form_FormClosed(object sender, FormClosedEventArgs e) { _map.Dispose(); }
+		void form_FormClosed(object sender, FormClosedEventArgs e) { _map.Dispose(); }
 		void form_FormClosing(object sender, FormClosingEventArgs e)
 		{
 			onDataModified = null;
@@ -1297,7 +1303,7 @@ namespace Idmr.Yogeme
 			mapPaintRedrawTimer.Stop();
 			mapPaintRedrawTimer.Tick -= mapPaintRedrawTimer_Tick;
 		}
-        void form_Load(object sender, EventArgs e)
+		void form_Load(object sender, EventArgs e)
 		{
 			_map = new Bitmap(w, h, PixelFormat.Format24bppRgb);
 			MapPaint(true);
@@ -1330,31 +1336,31 @@ namespace Idmr.Yogeme
 			updateLayout();
 		}
 
-        void form_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (lstSelected.Focused)
-            {
-                if (e.KeyCode == Keys.A || e.KeyCode == Keys.N)
-                {
-                    bool state = (e.KeyCode == Keys.A ? true : false);
-                    _norefresh = true;
-                    for (int i = 0; i < lstSelected.Items.Count; i++)
-                        lstSelected.SetSelected(i, state);
-                    _norefresh = false;
-                    lstSelected_SelectedIndexChanged(sender, new EventArgs());
-                    e.Handled = true;
-                    return;
-                }
-            }
-            if (!_mapFocus) return;
+		void form_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (lstSelected.Focused)
+			{
+				if (e.KeyCode == Keys.A || e.KeyCode == Keys.N)
+				{
+					bool state = (e.KeyCode == Keys.A ? true : false);
+					_norefresh = true;
+					for (int i = 0; i < lstSelected.Items.Count; i++)
+						lstSelected.SetSelected(i, state);
+					_norefresh = false;
+					lstSelected_SelectedIndexChanged(sender, new EventArgs());
+					e.Handled = true;
+					return;
+				}
+			}
+			if (!_mapFocus) return;
 
-            _shiftState = e.Shift;
+			_shiftState = e.Shift;
 
-            int xOffset = 0;
-            int yOffset = 0;
-            int amount = 16;             // 16 / 160 = 0.10 km
-            if (e.Shift) amount = 2;     // 2 / 160 ~ 0.01 km
-            if (e.Control) amount = 40;  // 40 / 160 = 0.25 km
+			int xOffset = 0;
+			int yOffset = 0;
+			int amount = 16;             // 16 / 160 = 0.10 km
+			if (e.Shift) amount = 2;     // 2 / 160 ~ 0.01 km
+			if (e.Control) amount = 40;  // 40 / 160 = 0.25 km
 			switch (e.KeyCode)
 			{
 				case Keys.Up: yOffset = amount; break;
@@ -1362,68 +1368,68 @@ namespace Idmr.Yogeme
 				case Keys.Left: xOffset = -amount; break;
 				case Keys.Right: xOffset = amount; break;
 			}
-            foreach (SelectionData dat in _selectionList)
-            {
-                switch (_displayMode)
-                {
-                    case Orientation.XY:
-                        dat.wpRef.RawX += (short)xOffset;
-                        dat.wpRef.RawY += (short)yOffset;
-                        break;
-                    case Orientation.XZ:
-                        dat.wpRef.RawX += (short)xOffset;
-                        dat.wpRef.RawZ += (short)yOffset;
-                        break;
-                    case Orientation.YZ:
-                        dat.wpRef.RawY += (short)xOffset;
-                        dat.wpRef.RawZ += (short)yOffset;
-                        break;
-                }
-            }
-            if (_selectionList.Count == 1 && !_leftButtonDown && (xOffset != 0 || yOffset != 0)) //Display new coordinates if using the keyboard we're not dragging
-            {
-                SelectionData dat = _selectionList[0];
-                switch (_displayMode)
-                {
-                    case Orientation.XY:
-                        lblCoor1.Text = "New X: " + Math.Round(dat.wpRef.X, 2).ToString();
-                        lblCoor2.Text = "New Y: " + Math.Round(dat.wpRef.Y, 2).ToString();
-                        break;
-                    case Orientation.XZ:
-                        lblCoor1.Text = "New X: " + Math.Round(dat.wpRef.X, 2).ToString();
-                        lblCoor2.Text = "New Z: " + Math.Round(dat.wpRef.Z, 2).ToString();
-                        break;
-                    case Orientation.YZ:
-                        lblCoor1.Text = "New Y: " + Math.Round(dat.wpRef.Y, 2).ToString();
-                        lblCoor2.Text = "New Z: " + Math.Round(dat.wpRef.Z, 2).ToString();
-                        break;
-                }
-            }
-            if(_selectionList.Count > 0 && (xOffset != 0 || yOffset != 0) && onDataModified != null)
-            {
-                onDataModified(0, new EventArgs());
-                MapPaint(true);
-            }
-            e.Handled = true;
-        }
-        void form_KeyUp(object sender, KeyEventArgs e)
-        {
-            if (!_mapFocus) return;
-            _shiftState = e.Shift;
-        }
+			foreach (SelectionData dat in _selectionList)
+			{
+				switch (_displayMode)
+				{
+					case Orientation.XY:
+						dat.wpRef.RawX += (short)xOffset;
+						dat.wpRef.RawY += (short)yOffset;
+						break;
+					case Orientation.XZ:
+						dat.wpRef.RawX += (short)xOffset;
+						dat.wpRef.RawZ += (short)yOffset;
+						break;
+					case Orientation.YZ:
+						dat.wpRef.RawY += (short)xOffset;
+						dat.wpRef.RawZ += (short)yOffset;
+						break;
+				}
+			}
+			if (_selectionList.Count == 1 && !_leftButtonDown && (xOffset != 0 || yOffset != 0)) //Display new coordinates if using the keyboard we're not dragging
+			{
+				SelectionData dat = _selectionList[0];
+				switch (_displayMode)
+				{
+					case Orientation.XY:
+						lblCoor1.Text = "New X: " + Math.Round(dat.wpRef.X, 2).ToString();
+						lblCoor2.Text = "New Y: " + Math.Round(dat.wpRef.Y, 2).ToString();
+						break;
+					case Orientation.XZ:
+						lblCoor1.Text = "New X: " + Math.Round(dat.wpRef.X, 2).ToString();
+						lblCoor2.Text = "New Z: " + Math.Round(dat.wpRef.Z, 2).ToString();
+						break;
+					case Orientation.YZ:
+						lblCoor1.Text = "New Y: " + Math.Round(dat.wpRef.Y, 2).ToString();
+						lblCoor2.Text = "New Z: " + Math.Round(dat.wpRef.Z, 2).ToString();
+						break;
+				}
+			}
+			if (_selectionList.Count > 0 && (xOffset != 0 || yOffset != 0) && onDataModified != null)
+			{
+				onDataModified(0, new EventArgs());
+				MapPaint(true);
+			}
+			e.Handled = true;
+		}
+		void form_KeyUp(object sender, KeyEventArgs e)
+		{
+			if (!_mapFocus) return;
+			_shiftState = e.Shift;
+		}
 		#endregion
 
 		#region Checkboxes
 		void chkTags_CheckedChanged(object sender, EventArgs e) { if (!_loading) MapPaint(true); }
-        void chkTrace_CheckedChanged(object sender, EventArgs e) { if (!_loading) { MapPaint(true); chkDistance.Enabled = chkTrace.Checked; } }
-        void chkDistance_CheckedChanged(object sender, EventArgs e) { if (!_loading) MapPaint(true); }
-        void chkWPArr_CheckedChanged(object sender, EventArgs e)
+		void chkTrace_CheckedChanged(object sender, EventArgs e) { if (!_loading) { MapPaint(true); chkDistance.Enabled = chkTrace.Checked; } }
+		void chkDistance_CheckedChanged(object sender, EventArgs e) { if (!_loading) MapPaint(true); }
+		void chkWPArr_CheckedChanged(object sender, EventArgs e)
 		{
 			if (_loading) return;
-			if ((CheckBox)sender == chkWP[14] && chkWP[14].Checked) for (int i=0;i<14;i++) chkWP[i].Checked = false;
-            if (((CheckBox)sender).Checked == false) //[JB] Disabled points might still be selected.
-                deselect();
-            MapPaint(true);
+			if ((CheckBox)sender == chkWP[14] && chkWP[14].Checked) for (int i = 0; i < 14; i++) chkWP[i].Checked = false;
+			if (((CheckBox)sender).Checked == false) //[JB] Disabled points might still be selected.
+				deselect();
+			MapPaint(true);
 		}
 		#endregion
 
@@ -1472,7 +1478,7 @@ namespace Idmr.Yogeme
 			_norefresh = false;
 			lstVisible_SelectedIndexChanged(sender, new EventArgs());
 		}
-		
+
 		void cmdHideNone_Click(object sender, EventArgs e)
 		{
 			lstVisible.ClearSelected();
@@ -1502,7 +1508,7 @@ namespace Idmr.Yogeme
 		#endregion Selection and visibility
 
 		void numOrder_ValueChanged(object sender, EventArgs e) { if (!_loading) { deselect(); MapPaint(true); } }  //[JB] Added deselect
-        void numRegion_ValueChanged(object sender, EventArgs e) { if (!_loading) { deselect(); MapPaint(true); } }
+		void numRegion_ValueChanged(object sender, EventArgs e) { if (!_loading) { deselect(); MapPaint(true); } }
 		#endregion controls
 
 		struct MapData
@@ -1510,7 +1516,7 @@ namespace Idmr.Yogeme
 			public MapData(Settings.Platform platform)
 			{
 				Craft = 0;
-				fgIndex = 0;
+				FgIndex = 0;
 				IFF = 0;
 				Name = "";
 				WPs = null;
@@ -1544,7 +1550,7 @@ namespace Idmr.Yogeme
 			}
 
 			public int Craft;
-			public int fgIndex;
+			public int FgIndex;
 			public byte IFF;
 			public string Name;
 			public string FullName;
@@ -1555,23 +1561,23 @@ namespace Idmr.Yogeme
 			public Platform.BaseFlightGroup.BaseWaypoint[][] WPs;
 		}
 
-        [Serializable]
-        struct SelectionData
-        {
-            public SelectionData(int index, MapData mapData, Platform.BaseFlightGroup.BaseWaypoint wp)
-            {
-                MapDataIndex = index;
-                MapDataRef = mapData;
-                wpRef = wp;
-            }
-            public int MapDataIndex;
-            public MapData MapDataRef;
-            public Platform.BaseFlightGroup.BaseWaypoint wpRef;
-        }
+		[Serializable]
+		struct SelectionData
+		{
+			public SelectionData(int index, MapData mapData, Platform.BaseFlightGroup.BaseWaypoint wp)
+			{
+				MapDataIndex = index;
+				MapDataRef = mapData;
+				wpRef = wp;
+			}
+			public int MapDataIndex;
+			public MapData MapDataRef;
+			public Platform.BaseFlightGroup.BaseWaypoint wpRef;
+		}
 
 		void DrawCraft(Graphics g, Bitmap bmp, MapData dat, int x, int y)
 		{
-			WireframeInstance model = wireframeManager.GetOrCreateWireframeInstance(dat.Craft, dat.fgIndex);
+			WireframeInstance model = wireframeManager.GetOrCreateWireframeInstance(dat.Craft, dat.FgIndex);
 
 			if (!_settings.WireframeEnabled || model == null || model.modelDef == null || (_settings.WireframeIconThresholdEnabled && model.modelDef.longestSpanMeters < _settings.WireframeIconThresholdSize))
 			{
@@ -1587,7 +1593,7 @@ namespace Idmr.Yogeme
 
 			Platform.BaseFlightGroup.BaseWaypoint dst;
 
-			if(_platform == Settings.Platform.XWA)
+			if (_platform == Settings.Platform.XWA)
 			{
 				int ord = (int)((numRegion.Value - 1) * 4 + numOrder.Value);
 				dst = dat.WPs[ord][0];
@@ -1598,12 +1604,12 @@ namespace Idmr.Yogeme
 			}
 
 			int meshZoom = _zoom;
-			if(_settings.WireframeMeshIconEnabled && _settings.WireframeMeshIconSize > 0 && calcSpan < _settings.WireframeMeshIconSize)
+			if (_settings.WireframeMeshIconEnabled && _settings.WireframeMeshIconSize > 0 && calcSpan < _settings.WireframeMeshIconSize)
 			{
 				if (calcSpan < 0.00001)
 					calcSpan = 0.00001;
-				double scale = (double)_settings.WireframeMeshIconSize / (double)calcSpan;
-				meshZoom = (int)((double)_zoom * scale);
+				double scale = _settings.WireframeMeshIconSize / calcSpan;
+				meshZoom = (int)(_zoom * scale);
 			}
 
 			model.UpdateParams(dat.WPs[0][0], dst, meshZoom, _displayMode, _settings.WireframeMeshTypeVisibility);
@@ -1666,7 +1672,7 @@ namespace Idmr.Yogeme
 				g.DrawEllipse(hangar, x - 1, y - 1, 2, 2);
 		}
 
-        /*Bitmap getBitmap(int craftType)
+		/*Bitmap getBitmap(int craftType)
         {
             if (imgCraft.Images.Count == 0)
             {
@@ -1769,5 +1775,5 @@ namespace Idmr.Yogeme
                 Close();
             }
         }*/
-    }
+	}
 }

@@ -9,6 +9,9 @@
 
 /* CHANGELOG:
  * v1.7, XXXXXX
+ * [UPD #14] Nothing specific, but closing that issue
+ * [FIX] recalculateEditorCraftNumbering() handles _activeFG now [JB]
+ * [UPD] shiplist and Map calls updated for Wireframe implementation [JB]
  * [FIX] Starting ships set to 1 [JB]
  * [UPD] Unk1 now RandomSeed [JB]
  * [UPD] MaxCraft increased to 255 [JB]
@@ -42,11 +45,11 @@ namespace Idmr.Yogeme
 		#region vars and stuff
 		Settings _config;
 		Mission _mission;
-		bool _applicationExit;				//for frmTIE_Closing, confirms application exit vs switching platforms
-		int _activeFG = 0;			//counter to keep track of current FG being displayed
-		int _startingShips = 1;		//counter for craft in play at start <30s, warning above 28
+		bool _applicationExit;              //for frmTIE_Closing, confirms application exit vs switching platforms
+		int _activeFG = 0;          //counter to keep track of current FG being displayed
+		int _startingShips = 1;     //counter for craft in play at start <30s, warning above 28
 		int _startingObjects = 0;
-		bool _loading;		//alerts certain functions to disable during the loading process
+		bool _loading;      //alerts certain functions to disable during the loading process
 		bool _noRefresh = false;
 		enum EditorMode
 		{
@@ -74,11 +77,11 @@ namespace Idmr.Yogeme
 		TextBox[] txtEoM = new TextBox[3];
 		Label[] lblOrder = new Label[3];
 		CheckBox[] chkWP = new CheckBox[7];
-        CheckBox[] chkGunPlatform = new CheckBox[6];
+		CheckBox[] chkGunPlatform = new CheckBox[6];
 		MenuItem[] menuRecentMissions = new MenuItem[6];
-        Dictionary<Control, EventHandler> instantUpdate = new Dictionary<Control, EventHandler>();   //[JB] This system allows standard form controls to hook their normal YOGEME event handlers (typically Leave) to update immediately when the data is changed.
-        Dictionary<ComboBox, ComboBox> ColorizedFGList = new Dictionary<ComboBox, ComboBox>();  //[JB] Maps a control that should have a colorized FG list with a control that determines whether the list actually contains a FG list.
-        #endregion
+		Dictionary<Control, EventHandler> instantUpdate = new Dictionary<Control, EventHandler>();   //[JB] This system allows standard form controls to hook their normal YOGEME event handlers (typically Leave) to update immediately when the data is changed.
+		Dictionary<ComboBox, ComboBox> ColorizedFGList = new Dictionary<ComboBox, ComboBox>();  //[JB] Maps a control that should have a colorized FG list with a control that determines whether the list actually contains a FG list.
+		#endregion
 
 		public XwingForm(Settings settings)
 		{
@@ -91,13 +94,13 @@ namespace Idmr.Yogeme
 			_loading = false;
 		}
 		public XwingForm(Settings settings, string path)
-		{	//this is the command line and "Open..." support
+		{   //this is the command line and "Open..." support
 			_config = settings;
 			InitializeComponent();
 			_loading = true;
 			initializeMission();
 			startup();
-			if(!loadMission(path)) return;
+			if (!loadMission(path)) return;
 			lstFG.SelectedIndex = 0;
 			_loading = false;
 		}
@@ -141,35 +144,35 @@ namespace Idmr.Yogeme
 			cbo.Items.AddRange(items);
 			cbo.SelectedIndex = index;
 		}
-        void recalculateStart()
-        {
-            _startingShips = 0;
-            _startingObjects = 0;
-            for (int i = 0; i < _mission.FlightGroups.Count; i++)
-                craftStart(_mission.FlightGroups[i], true);
-        }
+		void recalculateStart()
+		{
+			_startingShips = 0;
+			_startingObjects = 0;
+			for (int i = 0; i < _mission.FlightGroups.Count; i++)
+				craftStart(_mission.FlightGroups[i], true);
+		}
 		void craftStart(FlightGroup fg, bool add)
 		{
-            if (fg.IsFlightGroup() && fg.ArrivalEvent != 0) return;
-            if (!fg.ArrivesIn30Seconds) return;
+			if (fg.IsFlightGroup() && fg.ArrivalEvent != 0) return;
+			if (!fg.ArrivesIn30Seconds) return;
 
-            if (fg.IsFlightGroup())
-            {
-                if (add) _startingShips += fg.NumberOfCraft;
-                else _startingShips -= fg.NumberOfCraft;
-            }
-            else
-            {
-                int count = fg.NumberOfCraft;
-                if (fg.ObjectType >= 18 && fg.ObjectType <= 21)
-                    count *= fg.NumberOfCraft; //Square minefield.
-                if (fg.IsTrainingPlatform())  //Training Platform 1 uses the NumberOfCraft field for minutes on the clock.  Other platforms use it to activate guns.
-                    count = 1;
+			if (fg.IsFlightGroup())
+			{
+				if (add) _startingShips += fg.NumberOfCraft;
+				else _startingShips -= fg.NumberOfCraft;
+			}
+			else
+			{
+				int count = fg.NumberOfCraft;
+				if (fg.ObjectType >= 18 && fg.ObjectType <= 21)
+					count *= fg.NumberOfCraft; //Square minefield.
+				if (fg.IsTrainingPlatform())  //Training Platform 1 uses the NumberOfCraft field for minutes on the clock.  Other platforms use it to activate guns.
+					count = 1;
 
-                if (add) _startingObjects += count;
-                else _startingObjects -= count;
-            }
-			lblStarting.Text = _startingShips.ToString() + " Craft at 30 seconds" + Environment.NewLine + _startingObjects.ToString() + " Object" + (_startingObjects != 1 ? "s" : "") ;
+				if (add) _startingObjects += count;
+				else _startingObjects -= count;
+			}
+			lblStarting.Text = _startingShips.ToString() + " Craft at 30 seconds" + Environment.NewLine + _startingObjects.ToString() + " Object" + (_startingObjects != 1 ? "s" : "");
 			if (_startingShips > Mission.CraftLimit) lblStarting.ForeColor = Color.Red;
 			else lblStarting.ForeColor = SystemColors.ControlText;
 		}
@@ -220,7 +223,7 @@ namespace Idmr.Yogeme
 			tabFGMinor.SelectedIndex = 0;
 			cboIFF.Items.Clear();
 			cboIFF.Items.AddRange(Strings.IFF);
-            _mission.MissionPath = "\\NewMission.xwi";
+			_mission.MissionPath = "\\NewMission.xwi";
 			Text = "Ye Olde Galactic Empire Mission Editor - X-wing - NewMission.xwi";
 		}
 		void loadCraftData(string fileMission)
@@ -252,7 +255,7 @@ namespace Idmr.Yogeme
 		{
 			/* return true if successful, returns false if aborted or failed
 			 * code is fairly straight-forward. read the crap and save it */
-            switchTo(EditorMode.XWI);
+			switchTo(EditorMode.XWI);
 			closeForms();
 			try
 			{
@@ -269,25 +272,25 @@ namespace Idmr.Yogeme
 							_applicationExit = false;
 							new TieForm(_config, fileMission).Show();
 							Close();
-                            fs.Close(); //[JB] Files were being left open, which could cause access violations.  Need to close stream before returning.
+							fs.Close(); //[JB] Files were being left open, which could cause access violations.  Need to close stream before returning.
 							return false;
 						case Platform.MissionFile.Platform.XvT:
 							_applicationExit = false;
 							new XvtForm(_config, fileMission).Show();
 							Close();
-                            fs.Close();
+							fs.Close();
 							return false;
 						case Platform.MissionFile.Platform.BoP:
 							_applicationExit = false;
 							new XvtForm(_config, fileMission).Show();
 							Close();
-                            fs.Close();
+							fs.Close();
 							return false;
 						case Platform.MissionFile.Platform.XWA:
 							_applicationExit = false;
 							new XwaForm(_config, fileMission).Show();
 							Close();
-                            fs.Close();
+							fs.Close();
 							return false;
 						default:
 							throw new Exception("File is not a valid mission file for any platform, please select an appropriate *.tie or *.xwi file.");
@@ -318,14 +321,14 @@ namespace Idmr.Yogeme
 				return false;
 			}
 			loadCraftData(fileMission);
-            lstFG.Items.Clear(); 
-            _startingShips = 0;
-			for (int i=0;i<_mission.FlightGroups.Count;i++)
+			lstFG.Items.Clear();
+			_startingShips = 0;
+			for (int i = 0; i < _mission.FlightGroups.Count; i++)
 			{
 				lstFG.Items.Add(_mission.FlightGroups[i].ToString(true));
 				if (_mission.FlightGroups[i].ArrivesIn30Seconds) craftStart(_mission.FlightGroups[i], true);
 			}
-            updateFGList();
+			updateFGList();
 			updateMissionTabs();
 			Text = "Ye Olde Galactic Empire Mission Editor - X-wing - " + _mission.MissionFileName;
 			_config.LastMission = fileMission;
@@ -378,15 +381,15 @@ namespace Idmr.Yogeme
 		}
 		void saveMission(string fileMission)
 		{
-            switchTo(EditorMode.XWI);
+			switchTo(EditorMode.XWI);
 			try { _fBrief.Save(); }
 			catch { /* do nothing */ }
 			try { _mission.Save(fileMission); }
 			catch (Exception x) { MessageBox.Show(x.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); }
 			Text = "Ye Olde Galactic Empire Mission Editor - X-wing - " + _mission.MissionFileName;
 			_config.LastMission = fileMission;
-  			refreshRecent();  //[JB] Setting _config.LastMission modifies the Recent list.  Need to refresh the menu to match.
-			//Verify the mission after it's been saved
+			refreshRecent();  //[JB] Setting _config.LastMission modifies the Recent list.  Need to refresh the menu to match.
+							  //Verify the mission after it's been saved
 			if (_config.Verify) Common.RunVerify(_mission.MissionPath, _config.VerifyLocation);
 		}
 		void startup()
@@ -398,7 +401,7 @@ namespace Idmr.Yogeme
 			_config.LastPlatform = Settings.Platform.XWING;
 			opnXW.InitialDirectory = _config.GetWorkingPath(); //[JB] Updated for MRU access.  Defaults to installation and mission folder if not enabled.
 			savXW.InitialDirectory = _config.GetWorkingPath();
-			_applicationExit = true;	//becomes false if selecting "New Mission" from menu
+			_applicationExit = true;    //becomes false if selecting "New Mission" from menu
 			#region Menu
 			menuTest.Enabled = _config.XwingInstalled;
 			if (_config.RestrictPlatforms)
@@ -424,7 +427,7 @@ namespace Idmr.Yogeme
 			#region Craft
 			cboCraft.SelectedIndex = _mission.FlightGroups[0].CraftType; // already loaded in loadCraftData
 			cboObject.Items.AddRange(Strings.ObjectType); cboObject.SelectedIndex = _mission.FlightGroups[0].ObjectType;
-			cboIFF.SelectedIndex = _mission.FlightGroups[0].IFF;	// already loaded default IFFs at start of function through txtIFF#.Text
+			cboIFF.SelectedIndex = _mission.FlightGroups[0].IFF;    // already loaded default IFFs at start of function through txtIFF#.Text
 			cboAI.Items.AddRange(Strings.Rating); cboAI.SelectedIndex = 3;
 			cboMarkings.Items.AddRange(Strings.Color); cboMarkings.SelectedIndex = 0;
 			cboPlayer.SelectedIndex = 0;
@@ -434,21 +437,21 @@ namespace Idmr.Yogeme
 			#region Arr/Dep
 			comboReset(cboArrCondition, Strings.Trigger, 0);
 			comboReset(cboOrder, Strings.Orders, 0);
-            cboOrderValue.Items.AddRange(Strings.OrderValue);
-            for (int i = cboOrderValue.Items.Count; i <= 20; i++)
-                cboOrderValue.Items.Add(i.ToString());
+			cboOrderValue.Items.AddRange(Strings.OrderValue);
+			for (int i = cboOrderValue.Items.Count; i <= 20; i++)
+				cboOrderValue.Items.Add(i.ToString());
 			#endregion
 			#region Waypoints
 			_table.Columns.Add("X"); _table.Columns.Add("Y"); _table.Columns.Add("Z");
 			_tableRaw.Columns.Add("X"); _tableRaw.Columns.Add("Y"); _tableRaw.Columns.Add("Z");
-			for (int i=0;i<10;i++)	//initialize WPs
+			for (int i = 0; i < 10; i++)    //initialize WPs
 			{
 				DataRow dr = _table.NewRow();
 				int j;
-				for(j=0;j<3;j++) dr[j] = 0;	//set X Y Z to zero
+				for (j = 0; j < 3; j++) dr[j] = 0;  //set X Y Z to zero
 				_table.Rows.Add(dr);
 				dr = _tableRaw.NewRow();
-				for(j=0;j<3;j++) dr[j] = 0;	//mirror in raw table
+				for (j = 0; j < 3; j++) dr[j] = 0;  //mirror in raw table
 				_tableRaw.Rows.Add(dr);
 			}
 			_dataWaypoints.Table = _table;
@@ -464,7 +467,7 @@ namespace Idmr.Yogeme
 			chkWP[4] = chkWP2;
 			chkWP[5] = chkWP3;
 			chkWP[6] = chkWPHyp;
-			for (int i=0;i<7;i++)
+			for (int i = 0; i < 7; i++)
 			{
 				chkWP[i].CheckedChanged += new EventHandler(chkWPArr_CheckedChanged);
 				chkWP[i].Tag = i;
@@ -480,38 +483,38 @@ namespace Idmr.Yogeme
 			txtEoM[0] = txtPrimComp1;
 			txtEoM[1] = txtPrimComp2;
 			txtEoM[2] = txtPrimComp3;
-			for (int i=0;i<3;i++)
+			for (int i = 0; i < 3; i++)
 			{
 				txtEoM[i].Leave += new EventHandler(txtEoMArr_Leave);
 				txtEoM[i].Tag = i;
 			}
 			#endregion
-            chkGunPlatform[0] = chkGun1;
-            chkGunPlatform[1] = chkGun2;
-            chkGunPlatform[2] = chkGun3;
-            chkGunPlatform[3] = chkGun4;
-            chkGunPlatform[4] = chkGun5;
-            chkGunPlatform[5] = chkGun6;
-            for (int i = 0; i < 6; i++)
-                chkGunPlatform[i].CheckedChanged += new EventHandler(chkGunArr_CheckedChanged);
+			chkGunPlatform[0] = chkGun1;
+			chkGunPlatform[1] = chkGun2;
+			chkGunPlatform[2] = chkGun3;
+			chkGunPlatform[3] = chkGun4;
+			chkGunPlatform[4] = chkGun5;
+			chkGunPlatform[5] = chkGun6;
+			for (int i = 0; i < 6; i++)
+				chkGunPlatform[i].CheckedChanged += new EventHandler(chkGunArr_CheckedChanged);
 			updateMissionTabs();
 
-            #region InstantUpdate
-            //RegisterInstantUpdate(txtName, txtName_Leave);
-            registerInstantUpdate(numWaves, grpCraft3_Leave);
-            registerInstantUpdate(numCraft, grpCraft3_Leave);
-            registerInstantUpdate(cboIFF, grpCraft2_Leave);
-            registerInstantUpdate(cboPlayer, grpCraft2_Leave);
+			#region InstantUpdate
+			//RegisterInstantUpdate(txtName, txtName_Leave);
+			registerInstantUpdate(numWaves, grpCraft3_Leave);
+			registerInstantUpdate(numCraft, grpCraft3_Leave);
+			registerInstantUpdate(cboIFF, grpCraft2_Leave);
+			registerInstantUpdate(cboPlayer, grpCraft2_Leave);
 
-            registerColorizedFGList(cboMothership, null);
-            registerColorizedFGList(cboArrFG, null);
-            registerColorizedFGList(cboOrderPrimary, null);
-            registerColorizedFGList(cboOrderSecondary, null);
-            #endregion InstantUpdate
+			registerColorizedFGList(cboMothership, null);
+			registerColorizedFGList(cboArrFG, null);
+			registerColorizedFGList(cboOrderPrimary, null);
+			registerColorizedFGList(cboOrderSecondary, null);
+			#endregion InstantUpdate
 
-            _original_lstFG_BackColor = lstFG.BackColor;
-            lblBRFNotice.Visible = (_mode == EditorMode.BRF);
-            cmdImportXWI.Visible = (_mode == EditorMode.BRF);
+			_original_lstFG_BackColor = lstFG.BackColor;
+			lblBRFNotice.Visible = (_mode == EditorMode.BRF);
+			cmdImportXWI.Visible = (_mode == EditorMode.BRF);
 		}
 		void switchTo(EditorMode mode)
 		{
@@ -579,23 +582,23 @@ namespace Idmr.Yogeme
 		}
 
 		void colorizedComboBox_DrawItem(object sender, DrawItemEventArgs e)
-        {
-            //X-wing does not use VariableType like the other platforms do
-            ComboBox variable = (ComboBox)sender;
-            bool colorize = true;
+		{
+			//X-wing does not use VariableType like the other platforms do
+			ComboBox variable = (ComboBox)sender;
+			bool colorize = true;
 
-            if (e.Index == -1 || e.Index >= _mission.FlightGroups.Count + 1) colorize = false;  //+1 because of None
-            //else if(e.Index == 0) colorize = false; //The first entry is always "None"
+			if (e.Index == -1 || e.Index >= _mission.FlightGroups.Count + 1) colorize = false;  //+1 because of None
+																								//else if(e.Index == 0) colorize = false; //The first entry is always "None"
 
 			if (variable.BackColor == Color.Black || variable.BackColor == SystemColors.Window)
 				variable.BackColor = (colorize == true) ? Color.Black : SystemColors.Window;
 
 			e.DrawBackground();
-            Brush brText = SystemBrushes.ControlText;
-            if (colorize == true) brText = getFlightGroupDrawColor(e.Index - 1);
-            e.Graphics.DrawString(e.Index >= 0 ? variable.Items[e.Index].ToString() : "", e.Font, brText, e.Bounds, StringFormat.GenericDefault);
-        }
-        
+			Brush brText = SystemBrushes.ControlText;
+			if (colorize == true) brText = getFlightGroupDrawColor(e.Index - 1);
+			e.Graphics.DrawString(e.Index >= 0 ? variable.Items[e.Index].ToString() : "", e.Font, brText, e.Bounds, StringFormat.GenericDefault);
+		}
+
 		void form_Activated(object sender, EventArgs e)
 		{
 			if (_fMap != null)
@@ -628,29 +631,29 @@ namespace Idmr.Yogeme
 					e.Handled = true;
 				}
 			}
-            else if (e.KeyCode == Keys.Enter) //Allows the Enter key to submit changes in a TextBox or similar control by triggering a Leave() event.
-            {
-                Control c = ActiveControl;
-                bool text = c.GetType().ToString() == "System.Windows.Forms.TextBox";
-                int caret = 0;
-                if (text)  //Focus() on a TextBox control might cause it to select all text, so preserve the caret position. 
-                {
-                    if (((TextBox)c).Multiline == true) return;  //Multiline textboxes need to allow newlines.
-                    caret = ((TextBox)c).SelectionStart;
-                }
+			else if (e.KeyCode == Keys.Enter) //Allows the Enter key to submit changes in a TextBox or similar control by triggering a Leave() event.
+			{
+				Control c = ActiveControl;
+				bool text = c.GetType().ToString() == "System.Windows.Forms.TextBox";
+				int caret = 0;
+				if (text)  //Focus() on a TextBox control might cause it to select all text, so preserve the caret position. 
+				{
+					if (((TextBox)c).Multiline == true) return;  //Multiline textboxes need to allow newlines.
+					caret = ((TextBox)c).SelectionStart;
+				}
 
-                tabMain.Focus();
-                c.Focus();
-                if (text)
-                {
-                    ((TextBox)c).SelectionStart = caret;
-                    ((TextBox)c).SelectionLength = 0;
-                }
+				tabMain.Focus();
+				c.Focus();
+				if (text)
+				{
+					((TextBox)c).SelectionStart = caret;
+					((TextBox)c).SelectionLength = 0;
+				}
 
-                e.Handled = true;
-                e.SuppressKeyPress = true; //Stop the Windows UI beeping
-            }
-        }
+				e.Handled = true;
+				e.SuppressKeyPress = true; //Stop the Windows UI beeping
+			}
+		}
 
 		void instantUpdateHandler(object sender, EventArgs e)
 		{
@@ -689,8 +692,8 @@ namespace Idmr.Yogeme
 					toolPaste.ToolTipText = "Paste FlightGroup";
 					break;
 				case 1:
-                    updateMissionTabs();
-                    break;
+					updateMissionTabs();
+					break;
 				default:
 					toolNewItem.Enabled = false;
 					toolDeleteItem.Enabled = false;
@@ -705,47 +708,47 @@ namespace Idmr.Yogeme
 		void toolXwing_ButtonClick(object sender, ToolBarButtonClickEventArgs e)
 		{
 			toolXwing.Focus();
-            switch (toolXwing.Buttons.IndexOf(e.Button))
+			switch (toolXwing.Buttons.IndexOf(e.Button))
 			{
-				case 0:		//New Mission
+				case 0:     //New Mission
 					menuNewXwing_Click("toolbar", new EventArgs());
 					_loading = false;
 					break;
-				case 1:		//Open Mission
+				case 1:     //Open Mission
 					menuOpen_Click("toolbar", new EventArgs());
 					_loading = false;
 					break;
-				case 2:		//Save Mission
+				case 2:     //Save Mission
 					menuSave_Click("toolbar", new EventArgs());
 					break;
-				case 3:		//Save As
+				case 3:     //Save As
 					savXW.ShowDialog();
 					break;
-				case 5:		//New Item
+				case 5:     //New Item
 					if (tabMain.SelectedIndex == 0) newFG(true);
 					break;
-				case 6:		//Delete Item
+				case 6:     //Delete Item
 					menuDelete_Click("toolbar", new EventArgs());
 					break;
-				case 7:		//Copy Item
+				case 7:     //Copy Item
 					menuCopy_Click("toolbar", new EventArgs());
 					break;
-				case 8:		//Paste Item
+				case 8:     //Paste Item
 					menuPaste_Click("toolbar", new EventArgs());
 					break;
-				case 10:	//Map
+				case 10:    //Map
 					menuMap_Click("toolbat", new EventArgs());
 					break;
-				case 11:	//Briefing
+				case 11:    //Briefing
 					menuBriefing_Click("toolbar", new EventArgs());
 					break;
-				case 12:	//Verify
+				case 12:    //Verify
 					menuVerify_Click("toolbar", new EventArgs());
 					break;
-				case 14:	//Options
+				case 14:    //Options
 					menuOptions_Click("toolbar", new EventArgs());
 					break;
-				case 15:	//Help
+				case 15:    //Help
 					menuHelpInfo_Click("toolbar", new EventArgs());
 					break;
 			}
@@ -760,10 +763,10 @@ namespace Idmr.Yogeme
 		{
 			try { _fBrief.Close(); }
 			catch { /* do nothing */ }
-            if(_mode == EditorMode.XWI)
-			    _fBrief = new BriefingFormXwing(_mission.FlightGroupsBriefing, _mission.Briefing, briefingModifiedCallback);
-            else
-                _fBrief = new BriefingFormXwing(_mission.FlightGroups, _mission.Briefing, briefingModifiedCallback);
+			if (_mode == EditorMode.XWI)
+				_fBrief = new BriefingFormXwing(_mission.FlightGroupsBriefing, _mission.Briefing, briefingModifiedCallback);
+			else
+				_fBrief = new BriefingFormXwing(_mission.FlightGroups, _mission.Briefing, briefingModifiedCallback);
 			_fBrief.Show();
 		}
 		//[JB] Added function for menu item and modified for extra safety checks to prevent deleting when the list controls don't have focus.
@@ -772,7 +775,7 @@ namespace Idmr.Yogeme
 			//Ensure controls have focus, otherwise editing various text controls will trigger deletions.
 			if (tabMain.SelectedIndex == 0)
 			{
-				if((sender.ToString() == "toolbar") || (lstFG.Focused)) deleteFG();
+				if ((sender.ToString() == "toolbar") || (lstFG.Focused)) deleteFG();
 			}
 		}
 		void menuCopy_Click(object sender, EventArgs e)
@@ -782,43 +785,43 @@ namespace Idmr.Yogeme
 			#region ArrDep
 			if (sender.ToString() == "AD")
 			{
-                formatter.Serialize(stream, _mission.FlightGroups[_activeFG]);
+				formatter.Serialize(stream, _mission.FlightGroups[_activeFG]);
 				stream.Close();
 				return;
 			}
 			#endregion
-            #region Order
-            if (sender.ToString() == "Order")
-            {
-                formatter.Serialize(stream, _mission.FlightGroups[_activeFG]);
-                stream.Close();
-                return;
-            }
-            #endregion
-            #region generic form controls
-            if (ActiveControl.GetType().ToString() == "System.Windows.Forms.TextBox")
-            {
-                TextBox txt_t = (TextBox)ActiveControl;
-                if (txt_t.SelectedText != "")
-                {
-                    formatter.Serialize(stream, txt_t.SelectedText);
-                    stream.Close();
-                    return;
-                }
-            }
-            else if (ActiveControl.GetType().ToString() == "System.Windows.Forms.NumericUpDown")  //[JB] Added copy/paste for this
-            {
-                NumericUpDown num_t = (NumericUpDown)ActiveControl;
-                formatter.Serialize(stream, num_t.Value);
-                stream.Close();
-                return;
-            }
-            else if (ActiveControl.GetType().ToString() == "System.Windows.Forms.DataGridTextBox")
-            {
-                stream.Close(); //[JB] I can't get it to copy/paste the current cell content, but this will prevent the entire FG from copy/paste.
-                return;
-            }
-            #endregion
+			#region Order
+			if (sender.ToString() == "Order")
+			{
+				formatter.Serialize(stream, _mission.FlightGroups[_activeFG]);
+				stream.Close();
+				return;
+			}
+			#endregion
+			#region generic form controls
+			if (ActiveControl.GetType().ToString() == "System.Windows.Forms.TextBox")
+			{
+				TextBox txt_t = (TextBox)ActiveControl;
+				if (txt_t.SelectedText != "")
+				{
+					formatter.Serialize(stream, txt_t.SelectedText);
+					stream.Close();
+					return;
+				}
+			}
+			else if (ActiveControl.GetType().ToString() == "System.Windows.Forms.NumericUpDown")  //[JB] Added copy/paste for this
+			{
+				NumericUpDown num_t = (NumericUpDown)ActiveControl;
+				formatter.Serialize(stream, num_t.Value);
+				stream.Close();
+				return;
+			}
+			else if (ActiveControl.GetType().ToString() == "System.Windows.Forms.DataGridTextBox")
+			{
+				stream.Close(); //[JB] I can't get it to copy/paste the current cell content, but this will prevent the entire FG from copy/paste.
+				return;
+			}
+			#endregion
 			switch (tabMain.SelectedIndex)
 			{
 				case 0:
@@ -837,14 +840,14 @@ namespace Idmr.Yogeme
 		}
 		void menuGoalSummary_Click(object sender, EventArgs e)
 		{
-            string dsGoal = "";
-            if (_mission.Location == 1) //Death Star surface
-            {
-                if (_mission.EndEvent == 1) dsGoal = "Death Star Surface: Clear Laser Towers";
-                else if (_mission.EndEvent == 5) dsGoal = "Death Star Surface: Hit Exhaust Port";
-                if (dsGoal.Length > 0) dsGoal += "\r\n\r\n";
-            }
-            new GoalSummaryDialog(dsGoal + generateGoalSummary()).Show();
+			string dsGoal = "";
+			if (_mission.Location == 1) //Death Star surface
+			{
+				if (_mission.EndEvent == 1) dsGoal = "Death Star Surface: Clear Laser Towers";
+				else if (_mission.EndEvent == 5) dsGoal = "Death Star Surface: Hit Exhaust Port";
+				if (dsGoal.Length > 0) dsGoal += "\r\n\r\n";
+			}
+			new GoalSummaryDialog(dsGoal + generateGoalSummary()).Show();
 		}
 		void menuHelpInfo_Click(object sender, EventArgs e)
 		{
@@ -861,15 +864,15 @@ namespace Idmr.Yogeme
 			_fMap = new MapForm(_config, _mission.FlightGroups, mapForm_DataChangedCallback);
 			_fMap.Show();
 		}
-        void mapForm_DataChangedCallback(object sender, EventArgs e)
-        {
-            Common.Title(this, false);
-            if (tabFGMinor.SelectedIndex == 3)  //Update waypoints tab.
-                refreshWaypointTab();
-        }
-        void menuNewXwing_Click(object sender, EventArgs e)
+		void mapForm_DataChangedCallback(object sender, EventArgs e)
 		{
-            switchTo(EditorMode.XWI);
+			Common.Title(this, false);
+			if (tabFGMinor.SelectedIndex == 3)  //Update waypoints tab.
+				refreshWaypointTab();
+		}
+		void menuNewXwing_Click(object sender, EventArgs e)
+		{
+			switchTo(EditorMode.XWI);
 			promptSave();
 			closeForms();
 			_loading = true;
@@ -879,7 +882,7 @@ namespace Idmr.Yogeme
 			lblStarting.Text = "1 Craft at 30 seconds";
 			updateMissionTabs();
 			_loading = false;
-			if (Text.EndsWith("*")) Text = Text.Substring(0, Text.Length-1);
+			if (Text.EndsWith("*")) Text = Text.Substring(0, Text.Length - 1);
 		}
 		void menuNewBoP_Click(object sender, EventArgs e)
 		{
@@ -913,7 +916,7 @@ namespace Idmr.Yogeme
 		{
 			promptSave();
 			opnXW.FileName = _mission.MissionFileName;
-			if(opnXW.ShowDialog() == DialogResult.OK)  //[JB] Fixes bug where dialog could be stuck open. 
+			if (opnXW.ShowDialog() == DialogResult.OK)  //[JB] Fixes bug where dialog could be stuck open. 
 			{
 				opnXW_FileOk(0, new System.ComponentModel.CancelEventArgs());
 				_config.SetWorkingPath(Path.GetDirectoryName(opnXW.FileName));
@@ -931,91 +934,91 @@ namespace Idmr.Yogeme
 			try { stream = new FileStream(Application.StartupPath + "YOGEME.bin", FileMode.Open, FileAccess.Read, FileShare.Read); }
 			catch { return; }
 			#region ArrDep
-			if (sender.ToString()== "AD")
+			if (sender.ToString() == "AD")
 			{
 				try
 				{
-                    FlightGroup fg_temp = (FlightGroup)formatter.Deserialize(stream);
-                    if (fg_temp == null) throw new Exception();
-                    FlightGroup cur = _mission.FlightGroups[_activeFG];
-                    cur.ArrivalHyperspace = fg_temp.ArrivalHyperspace;
-                    cur.DepartureHyperspace = fg_temp.DepartureHyperspace;
-                    cur.Mothership = fg_temp.Mothership;
-                    if (cur.Mothership >= _mission.FlightGroups.Count)
-                        cur.Mothership = -1;
-                    cur.ArrivalFG = fg_temp.ArrivalFG;
-                    if (cur.ArrivalFG >= _mission.FlightGroups.Count)
-                        cur.ArrivalFG = -1;
-                    cur.ArrivalEvent = fg_temp.ArrivalEvent;
-                    cur.ArrivalDelay = fg_temp.ArrivalDelay;
-                    lstFG_SelectedIndexChanged(0, new EventArgs());
-                    listRefresh();
-                    Common.Title(this, false);
+					FlightGroup fg_temp = (FlightGroup)formatter.Deserialize(stream);
+					if (fg_temp == null) throw new Exception();
+					FlightGroup cur = _mission.FlightGroups[_activeFG];
+					cur.ArrivalHyperspace = fg_temp.ArrivalHyperspace;
+					cur.DepartureHyperspace = fg_temp.DepartureHyperspace;
+					cur.Mothership = fg_temp.Mothership;
+					if (cur.Mothership >= _mission.FlightGroups.Count)
+						cur.Mothership = -1;
+					cur.ArrivalFG = fg_temp.ArrivalFG;
+					if (cur.ArrivalFG >= _mission.FlightGroups.Count)
+						cur.ArrivalFG = -1;
+					cur.ArrivalEvent = fg_temp.ArrivalEvent;
+					cur.ArrivalDelay = fg_temp.ArrivalDelay;
+					lstFG_SelectedIndexChanged(0, new EventArgs());
+					listRefresh();
+					Common.Title(this, false);
 				}
 				catch { /* do nothing */ }
 				stream.Close();
 				return;
 			}
 			#endregion
-            #region Order
-            if (sender.ToString() == "Order")
-            {
-                try
-                {
-                    FlightGroup fg_temp = (FlightGroup)formatter.Deserialize(stream);
-                    if (fg_temp == null) throw new Exception();
-                    FlightGroup cur = _mission.FlightGroups[_activeFG];
-                    cur.Order = fg_temp.Order;
-                    cur.TargetPrimary = fg_temp.TargetPrimary;
-                    if (cur.TargetPrimary >= _mission.FlightGroups.Count)
-                        cur.TargetPrimary = -1;
-                    cur.TargetSecondary = fg_temp.TargetSecondary;
-                    if (cur.TargetSecondary >= _mission.FlightGroups.Count)
-                        cur.TargetSecondary = -1;
-                    cur.DockTimeThrottle = fg_temp.DockTimeThrottle;
-                    lstFG_SelectedIndexChanged(0, new EventArgs());
-                    listRefresh();
-                    Common.Title(this, false);
-                }
-                catch { /* do nothing */ }
-                stream.Close();
-                return;
-            }
-            #endregion
-            #region generic form controls
-            try
-            {
-                if (ActiveControl.GetType().ToString() == "System.Windows.Forms.TextBox")
-                {
-                    string s = formatter.Deserialize(stream).ToString();
-                    if (s.IndexOf("System.", 0) != -1) return;
-                    if (s.IndexOf("Idmr.", 0) != -1) return;
-                    TextBox t = (TextBox)ActiveControl;
-                    t.SelectedText = s;
-                    stream.Close();
-                    Common.Title(this, false);
-                    return;
-                }
-                else if (ActiveControl.GetType().ToString() == "System.Windows.Forms.NumericUpDown") //[JB] Added copy/paste for this
-                {
-                    string str_t = formatter.Deserialize(stream).ToString();
-                    NumericUpDown control = (NumericUpDown)ActiveControl;
-                    decimal value = Convert.ToDecimal(str_t);
-                    if (value > control.Maximum) value = control.Maximum;
-                    else if (value < control.Minimum) value = control.Minimum;
-                    control.Value = value;
-                    Common.Title(this, false);
-                    stream.Close();
-                    return;
-                }
-                else if (ActiveControl.GetType().ToString() == "System.Windows.Forms.DataGridTextBox")
-                {
-                    stream.Close(); //[JB] I can't get it to copy/paste the current cell content, but this will prevent the entire FG from copy/paste.
-                    return;
-                }
-            }
-            catch { /* do nothing*/ }
-            #endregion
+			#region Order
+			if (sender.ToString() == "Order")
+			{
+				try
+				{
+					FlightGroup fg_temp = (FlightGroup)formatter.Deserialize(stream);
+					if (fg_temp == null) throw new Exception();
+					FlightGroup cur = _mission.FlightGroups[_activeFG];
+					cur.Order = fg_temp.Order;
+					cur.TargetPrimary = fg_temp.TargetPrimary;
+					if (cur.TargetPrimary >= _mission.FlightGroups.Count)
+						cur.TargetPrimary = -1;
+					cur.TargetSecondary = fg_temp.TargetSecondary;
+					if (cur.TargetSecondary >= _mission.FlightGroups.Count)
+						cur.TargetSecondary = -1;
+					cur.DockTimeThrottle = fg_temp.DockTimeThrottle;
+					lstFG_SelectedIndexChanged(0, new EventArgs());
+					listRefresh();
+					Common.Title(this, false);
+				}
+				catch { /* do nothing */ }
+				stream.Close();
+				return;
+			}
+			#endregion
+			#region generic form controls
+			try
+			{
+				if (ActiveControl.GetType().ToString() == "System.Windows.Forms.TextBox")
+				{
+					string s = formatter.Deserialize(stream).ToString();
+					if (s.IndexOf("System.", 0) != -1) return;
+					if (s.IndexOf("Idmr.", 0) != -1) return;
+					TextBox t = (TextBox)ActiveControl;
+					t.SelectedText = s;
+					stream.Close();
+					Common.Title(this, false);
+					return;
+				}
+				else if (ActiveControl.GetType().ToString() == "System.Windows.Forms.NumericUpDown") //[JB] Added copy/paste for this
+				{
+					string str_t = formatter.Deserialize(stream).ToString();
+					NumericUpDown control = (NumericUpDown)ActiveControl;
+					decimal value = Convert.ToDecimal(str_t);
+					if (value > control.Maximum) value = control.Maximum;
+					else if (value < control.Minimum) value = control.Minimum;
+					control.Value = value;
+					Common.Title(this, false);
+					stream.Close();
+					return;
+				}
+				else if (ActiveControl.GetType().ToString() == "System.Windows.Forms.DataGridTextBox")
+				{
+					stream.Close(); //[JB] I can't get it to copy/paste the current cell content, but this will prevent the entire FG from copy/paste.
+					return;
+				}
+			}
+			catch { /* do nothing*/ }
+			#endregion
 			#region overalls by tab
 			switch (tabMain.SelectedIndex)
 			{
@@ -1024,26 +1027,26 @@ namespace Idmr.Yogeme
 					{
 						FlightGroup fg_temp = (FlightGroup)formatter.Deserialize(stream);
 						if (fg_temp == null) throw new Exception();
-                        if (_mode == EditorMode.BRF)  //Can't validate anything if pasting into BRF, so reset indexes.
-                        {
-                            fg_temp.Mothership = -1;
-                            fg_temp.ArrivalFG = -1;
-                            fg_temp.ArrivalEvent = 0;
-                            fg_temp.TargetPrimary = -1;
-                            fg_temp.TargetSecondary = -1;
-                        }
-                        bool isCraft = fg_temp.IsFlightGroup();
-                        newFG(isCraft);
-                        _mission.FlightGroups[_activeFG] = fg_temp;
+						if (_mode == EditorMode.BRF)  //Can't validate anything if pasting into BRF, so reset indexes.
+						{
+							fg_temp.Mothership = -1;
+							fg_temp.ArrivalFG = -1;
+							fg_temp.ArrivalEvent = 0;
+							fg_temp.TargetPrimary = -1;
+							fg_temp.TargetSecondary = -1;
+						}
+						bool isCraft = fg_temp.IsFlightGroup();
+						newFG(isCraft);
+						_mission.FlightGroups[_activeFG] = fg_temp;
 						refreshMap(-1);
-                        updateFGList(); //[JB] Update all the downdown lists.
-                        listRefresh();
+						updateFGList(); //[JB] Update all the downdown lists.
+						listRefresh();
 						_startingShips--;
 						lstFG.SelectedIndex = _activeFG;
-                        lstFG_SelectedIndexChanged(0, new EventArgs()); //[JB] Need to force refresh of form controls.
+						lstFG_SelectedIndexChanged(0, new EventArgs()); //[JB] Need to force refresh of form controls.
 						craftStart(fg_temp, true);
-                        lstFG.Focus();  //[JB] Return focus to list.  Lets the user delete the pasted FG without having to manually select it again.
-                    }
+						lstFG.Focus();  //[JB] Return focus to list.  Lets the user delete the pasted FG without having to manually select it again.
+					}
 					catch { /* do nothing */ }
 					break;
 			}
@@ -1052,11 +1055,11 @@ namespace Idmr.Yogeme
 		}
 		void menuRecentMissions_Click(object sender, EventArgs e)
 		{
-            switchTo(EditorMode.XWI);
+			switchTo(EditorMode.XWI);
 			string mission = _config.RecentMissions[(int)((MenuItem)sender).Tag];
 			promptSave();
 			initializeMission();
-            if (loadMission(mission))
+			if (loadMission(mission))
 			{
 				tabMain.SelectedIndex = 0;
 				tabFGMinor.SelectedIndex = 0;
@@ -1070,7 +1073,7 @@ namespace Idmr.Yogeme
 		}
 		void menuSave_Click(object sender, EventArgs e)
 		{
-            switchTo(EditorMode.XWI);
+			switchTo(EditorMode.XWI);
 			if (_mission.MissionPath == "\\NewMission.xwi") savXW.ShowDialog();
 			else saveMission(_mission.MissionPath);
 		}
@@ -1091,41 +1094,41 @@ namespace Idmr.Yogeme
 		{
 			menuSave_Click("SaveAsXvT", new EventArgs());
 			try
-            {
-                Platform.Xvt.Mission converted = Platform.Converter.XwingToXvtBop(_mission, false);
-                converted.Save();
-            }
-            catch (ArgumentException x)
-            {
-                MessageBox.Show(x.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+			{
+				Platform.Xvt.Mission converted = Platform.Converter.XwingToXvtBop(_mission, false);
+				converted.Save();
+			}
+			catch (ArgumentException x)
+			{
+				MessageBox.Show(x.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+			}
 		}
-        void menuSaveAsBoP_Click(object sender, EventArgs e)
-        {
+		void menuSaveAsBoP_Click(object sender, EventArgs e)
+		{
 			menuSave_Click("SaveAsBoP", new EventArgs());
 			try
-            {
-                Platform.Xvt.Mission converted = Platform.Converter.XwingToXvtBop(_mission, true);
-                converted.Save();
-            }
-            catch (ArgumentException x)
-            {
-                MessageBox.Show(x.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-        void menuSaveAsXWA_Click(object sender, EventArgs e)
+			{
+				Platform.Xvt.Mission converted = Platform.Converter.XwingToXvtBop(_mission, true);
+				converted.Save();
+			}
+			catch (ArgumentException x)
+			{
+				MessageBox.Show(x.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+			}
+		}
+		void menuSaveAsXWA_Click(object sender, EventArgs e)
 		{
 			menuSave_Click("SaveAsXWA", new EventArgs());
 			try
-            {
-                Platform.Xwa.Mission converted = Platform.Converter.XwingToXwa(_mission);
-                converted.Save();
-            }
-            catch (ArgumentException x)
-            {
-                MessageBox.Show(x.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
+			{
+				Platform.Xwa.Mission converted = Platform.Converter.XwingToXwa(_mission);
+				converted.Save();
+			}
+			catch (ArgumentException x)
+			{
+				MessageBox.Show(x.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+			}
+		}
 		void menuSaveAsXwing_Click(object sender, EventArgs e)
 		{
 			switchTo(EditorMode.XWI);
@@ -1133,12 +1136,12 @@ namespace Idmr.Yogeme
 		}
 		void menuVerify_Click(object sender, EventArgs e)
 		{
-            switchTo(EditorMode.XWI);
+			switchTo(EditorMode.XWI);
 			MessageBox.Show("This feature is not supported for X-wing.", "Notice");
 		}
 		void menuTest_Click(object sender, EventArgs e)
 		{
-            switchTo(EditorMode.XWI);
+			switchTo(EditorMode.XWI);
 			MessageBox.Show("This feature is not supported for X-wing.", "Notice");
 		}
 
@@ -1150,43 +1153,43 @@ namespace Idmr.Yogeme
 		int[] countFlightGroupReferences(int fgIndex)
 		{
 			int[] count = new int[7];
-            const int cMothership = 1, cArrDep = 2, cOrder = 3, cBrief = 6;
-			for(int i = 0; i < _mission.FlightGroups.Count; i++)
+			const int cMothership = 1, cArrDep = 2, cOrder = 3, cBrief = 6;
+			for (int i = 0; i < _mission.FlightGroups.Count; i++)
 			{
-				if(fgIndex == i)
+				if (fgIndex == i)
 					continue;
 
 				FlightGroup fg = _mission.FlightGroups[i];
-                if (fg.Mothership == fgIndex) count[cMothership]++;
-                if (fg.ArrivalFG == fgIndex) count[cArrDep]++;
-                if (fg.TargetPrimary == fgIndex) count[cOrder]++;
-                if (fg.TargetSecondary == fgIndex) count[cOrder]++;
+				if (fg.Mothership == fgIndex) count[cMothership]++;
+				if (fg.ArrivalFG == fgIndex) count[cArrDep]++;
+				if (fg.TargetPrimary == fgIndex) count[cOrder]++;
+				if (fg.TargetSecondary == fgIndex) count[cOrder]++;
 			}
 
-            if(_mode == EditorMode.BRF)
-            {
-                Briefing br = _mission.Briefing;
-                for (int page = 0; page < br.pages.Count; page++)
-                {
-                    BriefingPage pg = br.GetBriefingPage(page);
-                    int briefLen = br.GetEventsLength(page);
-                    int p = 0;
-                    while (p < briefLen)
-                    {
-                        if (pg.Events[p + 1] >= (int)Briefing.EventType.FGTag1 && pg.Events[p + 1] <= (int)Briefing.EventType.FGTag4)
-                        {
-                            if (pg.Events[p + 2] == fgIndex)
-                                count[cBrief]++;
-                        }
-                        else if (pg.Events[p + 1] == (int)Briefing.EventType.EndBriefing || pg.Events[p + 1] == (int)Briefing.EventType.None)
-                        {
-                            break;
-                        }
-                        p += 2 + br.EventParameterCount(pg.Events[p + 1]);
-                    }
-                }
-            }
-			for(int i = 1; i < 7; i++)
+			if (_mode == EditorMode.BRF)
+			{
+				Briefing br = _mission.Briefing;
+				for (int page = 0; page < br.pages.Count; page++)
+				{
+					BriefingPage pg = br.GetBriefingPage(page);
+					int briefLen = br.GetEventsLength(page);
+					int p = 0;
+					while (p < briefLen)
+					{
+						if (pg.Events[p + 1] >= (int)Briefing.EventType.FGTag1 && pg.Events[p + 1] <= (int)Briefing.EventType.FGTag4)
+						{
+							if (pg.Events[p + 2] == fgIndex)
+								count[cBrief]++;
+						}
+						else if (pg.Events[p + 1] == (int)Briefing.EventType.EndBriefing || pg.Events[p + 1] == (int)Briefing.EventType.None)
+						{
+							break;
+						}
+						p += 2 + br.EventParameterCount(pg.Events[p + 1]);
+					}
+				}
+			}
+			for (int i = 1; i < 7; i++)
 				count[0] += count[i];
 			return count;
 		}
@@ -1216,22 +1219,22 @@ namespace Idmr.Yogeme
 		}
 		void deleteFG()
 		{
-            if (_fBrief != null)  //Close (which also saves) the briefing before accessing it.  Don't call save directly since this may cause FG index corruption if multiple FGs are deleted.
-                _fBrief.Close();
+			if (_fBrief != null)  //Close (which also saves) the briefing before accessing it.  Don't call save directly since this may cause FG index corruption if multiple FGs are deleted.
+				_fBrief.Close();
 
-            //[JB] Confirm delete
-			if(_config.ConfirmFGDelete)
+			//[JB] Confirm delete
+			if (_config.ConfirmFGDelete)
 			{
 				int[] count = countFlightGroupReferences(_activeFG);
 				if (count[0] > 0)
 				{
 					string[] Reasons = new string[7] { "", "Mothership reference", "Arrival/Departure trigger", "Order target reference", "Global Goal trigger", "Message trigger", "Briefing FG Tag" };
 					string breakdown = "";
-					for(int i = 1; i < 7; i++)
-						if(count[i] > 0) breakdown += "    " + count[i] + " " + Reasons[i] + ((count[i]>1)?"s":"") + "\n";
+					for (int i = 1; i < 7; i++)
+						if (count[i] > 0) breakdown += "    " + count[i] + " " + Reasons[i] + ((count[i] > 1) ? "s" : "") + "\n";
 
-					string s = "This Flight Group is referenced " + count[0] + " time" + ((count[0]>1)?"s":"") + " in these cases:\n" + breakdown + "\nAll references targeting this flight group will be reset to default.";
-					if(count[6] > 0) s += "\nAssociated Briefing FG Tag events will be deleted.";
+					string s = "This Flight Group is referenced " + count[0] + " time" + ((count[0] > 1) ? "s" : "") + " in these cases:\n" + breakdown + "\nAll references targeting this flight group will be reset to default.";
+					if (count[6] > 0) s += "\nAssociated Briefing FG Tag events will be deleted.";
 					s += "\n\nAre you sure you want to delete this Flight Group?";
 					DialogResult res = MessageBox.Show(s, "WARNING: Confirm Delete", MessageBoxButtons.YesNo);
 					if (res == DialogResult.No)
@@ -1239,16 +1242,16 @@ namespace Idmr.Yogeme
 				}
 			}
 
-            replaceClipboardFGReference(_activeFG, -1);
-            if (_mode == EditorMode.BRF)
-                _mission.Briefing.TransformFGReferences(_activeFG, -1);
+			replaceClipboardFGReference(_activeFG, -1);
+			if (_mode == EditorMode.BRF)
+				_mission.Briefing.TransformFGReferences(_activeFG, -1);
 
 			if (_mission.FlightGroups.Count != 1) lstFG.Items.RemoveAt(_activeFG);
 			craftStart(_mission.FlightGroups[_activeFG], false);
 			if (_mission.FlightGroups.Count == 1)
 			{
-                _activeFG = _mission.FlightGroups.RemoveAt(_activeFG);  //[JB] Still need to delete to clear the indexes.  The delete function always ensures that Count==1, so it has to be inside this block, not before.
-                _mission.FlightGroups.Clear();
+				_activeFG = _mission.FlightGroups.RemoveAt(_activeFG);  //[JB] Still need to delete to clear the indexes.  The delete function always ensures that Count==1, so it has to be inside this block, not before.
+				_mission.FlightGroups.Clear();
 				_activeFG = 0;
 				_mission.FlightGroups[0].CraftType = 1;
 				_mission.FlightGroups[0].ObjectType = 0;
@@ -1256,17 +1259,17 @@ namespace Idmr.Yogeme
 				craftStart(_mission.FlightGroups[0], true);
 			}
 			else _activeFG = _mission.FlightGroups.RemoveAt(_activeFG);
-            updateFGList();
+			updateFGList();
 			lstFG.SelectedIndex = _activeFG;
 			Common.Title(this, _loading);
 			refreshMap(-1);
 			try
 			{
-                if (_mode == EditorMode.BRF)
-                {
-                    _fBrief.Import(_mission.FlightGroups);
-                    _fBrief.MapPaint();
-                }
+				if (_mode == EditorMode.BRF)
+				{
+					_fBrief.Import(_mission.FlightGroups);
+					_fBrief.MapPaint();
+				}
 			}
 			catch { /* do nothing */ }
 
@@ -1321,29 +1324,29 @@ namespace Idmr.Yogeme
 		}
 		void listRefresh()
 		{
-            _noRefresh = true;  //Prevent full lstFG refresh.
-            lstFG.Items[_activeFG] = ((_mode == EditorMode.XWI) ? "" : "[BRF] ") + _mission.FlightGroups[_activeFG].ToString(true);
-            if(!lstFG.IsDisposed)  //[JB] Not sure if this fix is needed for this platform, but including for safety.
-                lstFG.Invalidate(lstFG.GetItemRectangle(_activeFG));
-            _noRefresh = false;
-            if(_fMap != null) _fMap.UpdateFlightGroup(_activeFG, _mission.FlightGroups[_activeFG]);  //[JB] If the display name needs to be updated, the map most likely does too.
+			_noRefresh = true;  //Prevent full lstFG refresh.
+			lstFG.Items[_activeFG] = ((_mode == EditorMode.XWI) ? "" : "[BRF] ") + _mission.FlightGroups[_activeFG].ToString(true);
+			if (!lstFG.IsDisposed)  //[JB] Not sure if this fix is needed for this platform, but including for safety.
+				lstFG.Invalidate(lstFG.GetItemRectangle(_activeFG));
+			_noRefresh = false;
+			if (_fMap != null) _fMap.UpdateFlightGroup(_activeFG, _mission.FlightGroups[_activeFG]);  //[JB] If the display name needs to be updated, the map most likely does too.
 		}
-        void listRefreshAll()
-        {
-            bool btemp = _loading;
-            _loading = true;
-            for (int i = 0; i < lstFG.Items.Count; i++)
-                lstFG.Items[i] = ((_mode == EditorMode.XWI) ? "" : "[BRF] ") + _mission.FlightGroups[i].ToString(true);
-            _loading = btemp;
-        }
-        void newFG(bool isCraft)  //[JB] We have to explicitly determine whether the new FG should be created in the craft section or object section.
+		void listRefreshAll()
+		{
+			bool btemp = _loading;
+			_loading = true;
+			for (int i = 0; i < lstFG.Items.Count; i++)
+				lstFG.Items[i] = ((_mode == EditorMode.XWI) ? "" : "[BRF] ") + _mission.FlightGroups[i].ToString(true);
+			_loading = btemp;
+		}
+		void newFG(bool isCraft)  //[JB] We have to explicitly determine whether the new FG should be created in the craft section or object section.
 		{
 			if (_mission.FlightGroups.Count == Mission.FlightGroupLimit)
 			{
 				MessageBox.Show("Mission contains maximum number of Flight Groups", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return;
 			}
-            int slot = isCraft ? _mission.FlightGroups.GetLastOfFlightGroup() + 1 : _mission.FlightGroups.Count;
+			int slot = isCraft ? _mission.FlightGroups.GetLastOfFlightGroup() + 1 : _mission.FlightGroups.Count;
 			_activeFG = _mission.FlightGroups.Insert(slot);
 			_mission.FlightGroups[_activeFG].CraftType = _config.XwingCraft;
 			_mission.FlightGroups[_activeFG].ObjectType = 0;
@@ -1351,8 +1354,8 @@ namespace Idmr.Yogeme
 			craftStart(_mission.FlightGroups[_activeFG], true);
 			lstFG.Items.Insert(slot, _mission.FlightGroups[_activeFG].ToString(true));
 			updateFGList();
-            listRefreshAll(); //[JB] Since Flight Groups are inserted before Object Groups, need to refresh the entire list.
-            _activeFG = slot; //listRefreshAll() seems to change _activeFG somehow, so reset to proper index.
+			listRefreshAll(); //[JB] Since Flight Groups are inserted before Object Groups, need to refresh the entire list.
+			_activeFG = slot; //listRefreshAll() seems to change _activeFG somehow, so reset to proper index.
 			lstFG.SelectedIndex = _activeFG;
 			Common.Title(this, _loading);
 			refreshMap(-1);
@@ -1365,39 +1368,39 @@ namespace Idmr.Yogeme
 		}
 		/// <summary>Scans all Flight Groups to detect duplicate names, to provide helpful craft numbering within the editor so that the user can easily tell duplicates apart in triggers.</summary>
 		void recalculateEditorCraftNumbering()
-        {
-            // Note: changing an item in lstFG will activate lstFG_SelectedIndexChanged, which changes _activeFG and potentially cause bugs elsewhere. So need to restore before exiting the function.
-            int currentFG = _activeFG;
-            //A-W Red and X-W Red should not be considered duplicates, so this structure maps a CraftType to a sub-dictionary of CraftName and Count.  
-            //Due to the complexity and careful error checking involved (throwing exceptions is incredibly slow), two separate functions are provided to manipulate and access them.
-            Dictionary<int, Dictionary<string, int>> dupeCount = new Dictionary<int, Dictionary<string, int>>();
-            Dictionary<int, Dictionary<string, int>> nameCount = new Dictionary<int, Dictionary<string, int>>();
+		{
+			// Note: changing an item in lstFG will activate lstFG_SelectedIndexChanged, which changes _activeFG and potentially cause bugs elsewhere. So need to restore before exiting the function.
+			int currentFG = _activeFG;
+			//A-W Red and X-W Red should not be considered duplicates, so this structure maps a CraftType to a sub-dictionary of CraftName and Count.  
+			//Due to the complexity and careful error checking involved (throwing exceptions is incredibly slow), two separate functions are provided to manipulate and access them.
+			Dictionary<int, Dictionary<string, int>> dupeCount = new Dictionary<int, Dictionary<string, int>>();
+			Dictionary<int, Dictionary<string, int>> nameCount = new Dictionary<int, Dictionary<string, int>>();
 
-            foreach (var fg in _mission.FlightGroups)     //Need to know the duplicates ahead of time, so that even the first craft encountered can be numbered accordingly.
-            {
-                int iff = fg.GetActualIFF();
-                Common.AddFGCounter(fg.CraftType, iff, fg.Name, 1, dupeCount);
-            }
+			foreach (var fg in _mission.FlightGroups)     //Need to know the duplicates ahead of time, so that even the first craft encountered can be numbered accordingly.
+			{
+				int iff = fg.GetActualIFF();
+				Common.AddFGCounter(fg.CraftType, iff, fg.Name, 1, dupeCount);
+			}
 
-            for (int i = 0; i < _mission.FlightGroups.Count; i++)
-            {
-                FlightGroup fg = _mission.FlightGroups[i];
-                int iff = fg.GetActualIFF();
-                bool isDupe = (Common.GetFGCounter(fg.CraftType, iff, fg.Name, dupeCount) >= 2);
+			for (int i = 0; i < _mission.FlightGroups.Count; i++)
+			{
+				FlightGroup fg = _mission.FlightGroups[i];
+				int iff = fg.GetActualIFF();
+				bool isDupe = (Common.GetFGCounter(fg.CraftType, iff, fg.Name, dupeCount) >= 2);
 
-                int count = Common.AddFGCounter(fg.CraftType, iff, fg.Name, 1, nameCount);
-                if (!isDupe)
-                    count = 0;
+				int count = Common.AddFGCounter(fg.CraftType, iff, fg.Name, 1, nameCount);
+				if (!isDupe)
+					count = 0;
 
-                if (fg.EditorCraftNumber != count)
-                {
-                    fg.EditorCraftNumber = count;
-                    fg.EditorCraftExplicit = false;  //X-wing does not have Flight Group numbering beyond single waves.
-                    lstFG.Items[i] = _mission.FlightGroups[i].ToString(true);
-                }
-            }
-            _activeFG = currentFG;
-        }
+				if (fg.EditorCraftNumber != count)
+				{
+					fg.EditorCraftNumber = count;
+					fg.EditorCraftExplicit = false;  //X-wing does not have Flight Group numbering beyond single waves.
+					lstFG.Items[i] = _mission.FlightGroups[i].ToString(true);
+				}
+			}
+			_activeFG = currentFG;
+		}
 		/// <summary>Updates the clipboard contents from containing broken indexes.</summary>
 		/// <remarks>Should be called during swap or delete (dstIndex < 0) operations.</remarks>
 		void replaceClipboardFGReference(int srcIndex, int dstIndex)
@@ -1471,116 +1474,116 @@ namespace Idmr.Yogeme
 		{
 			if (e.Index == -1 || _mission.FlightGroups[e.Index] == null) return;
 			e.DrawBackground();
-            Brush brText = getFlightGroupDrawColor(e.Index);  //[JB] Moved color selection to different function so that colorized dropdowns could use it too.
-            e.Graphics.DrawString(lstFG.Items[e.Index].ToString(), e.Font, brText, e.Bounds, StringFormat.GenericDefault);
-        }
+			Brush brText = getFlightGroupDrawColor(e.Index);  //[JB] Moved color selection to different function so that colorized dropdowns could use it too.
+			e.Graphics.DrawString(lstFG.Items[e.Index].ToString(), e.Font, brText, e.Bounds, StringFormat.GenericDefault);
+		}
 		void lstFG_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (lstFG.SelectedIndex == -1) return;
-            if (_noRefresh == true && lstFG.SelectedIndex == _activeFG) return;   //[JB] See also listRefresh().  Replacing the item text will trigger lstFG_SelectedIndexChanged.  Improves performance by avoiding massive slowdown caused by multiple repeated refreshing.  Also avoids a stack overflow which can be caused by an endless loop of event conflicts.
-            _activeFG = lstFG.SelectedIndex;
+			if (_noRefresh == true && lstFG.SelectedIndex == _activeFG) return;   //[JB] See also listRefresh().  Replacing the item text will trigger lstFG_SelectedIndexChanged.  Improves performance by avoiding massive slowdown caused by multiple repeated refreshing.  Also avoids a stack overflow which can be caused by an endless loop of event conflicts.
+			_activeFG = lstFG.SelectedIndex;
 			string text = "";
-            int min = 0, max = 0;
-            bool isFG = _mission.FlightGroups[_activeFG].IsFlightGroup();
-            bool train = _mission.FlightGroups[_activeFG].IsTrainingPlatform();
-            bool start = _mission.FlightGroups[_activeFG].IsStartingGate();
-            if (_mode == EditorMode.XWI)
-            {
-                if (isFG)
-                {
-                    text = "Flight Group: " + (countGroups(true, true) + 1) + " of " + (countGroups(true, false) + 1);
-                    min = _mission.FlightGroups.GetFirstOfFlightGroup();
-                    max = _mission.FlightGroups.GetLastOfFlightGroup();
-                    lblFG.ForeColor = (max - min < 16) ? SystemColors.ControlText : Color.Red;  //Indexes are 0 to 15
-                }
-                else
-                {
-                    text = "Object Group: " + (countGroups(false, true) + 1) + " of " + (countGroups(false, false) + 1);
-                    min = _mission.FlightGroups.GetFirstOfObjectGroup();
-                    max = _mission.FlightGroups.GetLastOfObjectGroup();
-                    lblFG.ForeColor = (max - min < 64) ? SystemColors.ControlText : Color.Red;
-                }
-            }
-            else
-            {
-                train = false; start = false;  //Hide other stuff.
-                min = 0;
-                max = _mission.FlightGroups.Count - 1; //Max needs to be a valid index for the cmdMove buttons to operate.
-                text = "Briefing Icon: " + (_activeFG + 1) + " of " + (max + 1);
-            }
-            lblCraft.Visible = !train || start;
-            lblCraft.Text = !start ? "# of craft" : "Minutes";
-            numCraft.Minimum = !start ? 1 : 0;
-            numCraft.Maximum = !start ? 255 : 32727;  //For starting platforms, it's the minutes on the clock.
-            numCraft.Visible = !train || start;
-            lblSeconds.Visible = start;
-            numSeconds.Visible = start;
-            grpCraft5.Visible = train;
-            grpCraft5.Enabled = !start;
+			int min = 0, max = 0;
+			bool isFG = _mission.FlightGroups[_activeFG].IsFlightGroup();
+			bool train = _mission.FlightGroups[_activeFG].IsTrainingPlatform();
+			bool start = _mission.FlightGroups[_activeFG].IsStartingGate();
+			if (_mode == EditorMode.XWI)
+			{
+				if (isFG)
+				{
+					text = "Flight Group: " + (countGroups(true, true) + 1) + " of " + (countGroups(true, false) + 1);
+					min = _mission.FlightGroups.GetFirstOfFlightGroup();
+					max = _mission.FlightGroups.GetLastOfFlightGroup();
+					lblFG.ForeColor = (max - min < 16) ? SystemColors.ControlText : Color.Red;  //Indexes are 0 to 15
+				}
+				else
+				{
+					text = "Object Group: " + (countGroups(false, true) + 1) + " of " + (countGroups(false, false) + 1);
+					min = _mission.FlightGroups.GetFirstOfObjectGroup();
+					max = _mission.FlightGroups.GetLastOfObjectGroup();
+					lblFG.ForeColor = (max - min < 64) ? SystemColors.ControlText : Color.Red;
+				}
+			}
+			else
+			{
+				train = false; start = false;  //Hide other stuff.
+				min = 0;
+				max = _mission.FlightGroups.Count - 1; //Max needs to be a valid index for the cmdMove buttons to operate.
+				text = "Briefing Icon: " + (_activeFG + 1) + " of " + (max + 1);
+			}
+			lblCraft.Visible = !train || start;
+			lblCraft.Text = !start ? "# of craft" : "Minutes";
+			numCraft.Minimum = !start ? 1 : 0;
+			numCraft.Maximum = !start ? 255 : 32727;  //For starting platforms, it's the minutes on the clock.
+			numCraft.Visible = !train || start;
+			lblSeconds.Visible = start;
+			numSeconds.Visible = start;
+			grpCraft5.Visible = train;
+			grpCraft5.Enabled = !start;
 
-            numObjectValue.Visible = train;
-            cboFormation.Visible = !train;
-            cmdForms.Visible = !train;
-            label15.Visible = !train;  //Formation label
-            grpPlatformBitfield.Visible = !isFG;
-            lblPlatformWarning.Visible = train;
-            if (!isFG)
-            {
-                lblObjectValue.Text = start ? "Seconds:" : "Raw value:";
-               
-                grpPlatformBitfield.Enabled = (train && !start);
-                UpdateGunBitfield();
-            }
+			numObjectValue.Visible = train;
+			cboFormation.Visible = !train;
+			cmdForms.Visible = !train;
+			label15.Visible = !train;  //Formation label
+			grpPlatformBitfield.Visible = !isFG;
+			lblPlatformWarning.Visible = train;
+			if (!isFG)
+			{
+				lblObjectValue.Text = start ? "Seconds:" : "Raw value:";
 
-            label9.Enabled = isFG;
-            cboAI.Enabled = isFG;
+				grpPlatformBitfield.Enabled = (train && !start);
+				UpdateGunBitfield();
+			}
 
-            label14.Enabled = isFG;
-            cboMarkings.Enabled = isFG;
+			label9.Enabled = isFG;
+			cboAI.Enabled = isFG;
 
-            label13.Enabled = isFG;
-            cboPlayer.Enabled = isFG;
+			label14.Enabled = isFG;
+			cboMarkings.Enabled = isFG;
 
-            label10.Enabled = isFG;
-            numWaves.Enabled = isFG;
+			label13.Enabled = isFG;
+			cboPlayer.Enabled = isFG;
 
-            grpCraft4.Enabled = isFG;
-            //cboStatus.Enabled = isFG;
+			label10.Enabled = isFG;
+			numWaves.Enabled = isFG;
 
-            //label2.Enabled = isFG;  //Name
-            label4.Enabled = isFG;
-            label5.Enabled = isFG;
-            label6.Enabled = isFG;
+			grpCraft4.Enabled = isFG;
+			//cboStatus.Enabled = isFG;
 
-            cmdMoveUp.Enabled = (_activeFG > min);
-            cmdMoveDown.Enabled = (_activeFG < max);
+			//label2.Enabled = isFG;  //Name
+			label4.Enabled = isFG;
+			label5.Enabled = isFG;
+			label6.Enabled = isFG;
 
-            lblFG.Text = text;
+			cmdMoveUp.Enabled = (_activeFG > min);
+			cmdMoveDown.Enabled = (_activeFG < max);
+
+			lblFG.Text = text;
 			bool btemp = _loading;
 			_loading = true;
 			#region Craft
-            txtName.Text = _mission.FlightGroups[_activeFG].Name;
+			txtName.Text = _mission.FlightGroups[_activeFG].Name;
 			txtCargo.Text = _mission.FlightGroups[_activeFG].Cargo;
 			txtSpecCargo.Text = _mission.FlightGroups[_activeFG].SpecialCargo;
-            if (_mission.FlightGroups[_activeFG].SpecialCargoCraft < -1 || _mission.FlightGroups[_activeFG].SpecialCargoCraft >= 255)
+			if (_mission.FlightGroups[_activeFG].SpecialCargoCraft < -1 || _mission.FlightGroups[_activeFG].SpecialCargoCraft >= 255)
 				_mission.FlightGroups[_activeFG].SpecialCargoCraft = -1;
 			numSC.Value = _mission.FlightGroups[_activeFG].SpecialCargoCraft + 1;
 			numCraft.Value = _mission.FlightGroups[_activeFG].NumberOfCraft;
 			numWaves.Value = _mission.FlightGroups[_activeFG].NumberOfWaves + 1;  //[JB] Modifying the logic so the mission data reflects actual raw values
-            if (train)
-            {
-                chkPlatformGuns.Checked = (_mission.FlightGroups[_activeFG].NumberOfCraft > 1);
-                numObjectValue.Value = _mission.FlightGroups[_activeFG].Formation & 0x3F; //Extract the usable bitfield to prevent overflow if data is somehow out of range.
-                numSeconds.Value = _mission.FlightGroups[_activeFG].Formation;  //Uses the same value, different control for UI grouping purposes
-            }
-            if(_mission.FlightGroups[_activeFG].CraftType == 2 && _mission.FlightGroups[_activeFG].Status1 >= 10)
+			if (train)
+			{
+				chkPlatformGuns.Checked = (_mission.FlightGroups[_activeFG].NumberOfCraft > 1);
+				numObjectValue.Value = _mission.FlightGroups[_activeFG].Formation & 0x3F; //Extract the usable bitfield to prevent overflow if data is somehow out of range.
+				numSeconds.Value = _mission.FlightGroups[_activeFG].Formation;  //Uses the same value, different control for UI grouping purposes
+			}
+			if (_mission.FlightGroups[_activeFG].CraftType == 2 && _mission.FlightGroups[_activeFG].Status1 >= 10)
 				cboCraft.SelectedIndex = 18;  //Adjust for B-wing
-			else if(_mode == EditorMode.BRF && _mission.FlightGroups[_activeFG].CraftType == 25)
-                cboCraft.SelectedIndex = 18;  //Adjust for the object mode's B-wing used in briefings.
-            else
+			else if (_mode == EditorMode.BRF && _mission.FlightGroups[_activeFG].CraftType == 25)
+				cboCraft.SelectedIndex = 18;  //Adjust for the object mode's B-wing used in briefings.
+			else
 				cboCraft.SelectedIndex = _mission.FlightGroups[_activeFG].CraftType;
 			int objindex = _mission.FlightGroups[_activeFG].ObjectType - 17;
-			if(objindex < 0) objindex = 0;
+			if (objindex < 0) objindex = 0;
 			cboObject.SelectedIndex = objindex;
 			cboIFF.SelectedIndex = _mission.FlightGroups[_activeFG].IFF;
 			cboAI.SelectedIndex = _mission.FlightGroups[_activeFG].AI;
@@ -1596,7 +1599,7 @@ namespace Idmr.Yogeme
 			comboLoadIndex(cboMothership, _mission.FlightGroups[_activeFG].Mothership, true);
 			comboLoadIndex(cboArrFG, _mission.FlightGroups[_activeFG].ArrivalFG, true);
 			comboLoadIndex(cboArrCondition, _mission.FlightGroups[_activeFG].ArrivalEvent, false);
-			
+
 			numArrMin.Value = _mission.FlightGroups[_activeFG].GetArrivalMinutes();
 			numArrSec.Value = _mission.FlightGroups[_activeFG].GetArrivalSeconds();
 
@@ -1605,32 +1608,32 @@ namespace Idmr.Yogeme
 			comboLoadIndex(cboOrderSecondary, _mission.FlightGroups[_activeFG].TargetSecondary, true);
 			cboOrderValue.SelectedIndex = _mission.FlightGroups[_activeFG].DockTimeThrottle;
 			cboFormation.Items.Clear();
-            cboPrimGoalT.Items.Clear();
-            if (objindex > 0)
+			cboPrimGoalT.Items.Clear();
+			if (objindex > 0)
 			{
 				cboFormation.Items.AddRange(Strings.FormationObject);
-                cboPrimGoalT.Items.AddRange(Strings.ObjectObjective);
+				cboPrimGoalT.Items.AddRange(Strings.ObjectObjective);
 
-                cboFormation.SelectedIndex = _mission.FlightGroups[_activeFG].Formation % 4;
-                int goal = _mission.FlightGroups[_activeFG].Formation / 4;
-                if (goal > 2)
-                    goal = 2;
-                cboPrimGoalT.SelectedIndex = goal;
+				cboFormation.SelectedIndex = _mission.FlightGroups[_activeFG].Formation % 4;
+				int goal = _mission.FlightGroups[_activeFG].Formation / 4;
+				if (goal > 2)
+					goal = 2;
+				cboPrimGoalT.SelectedIndex = goal;
 			}
 			else
 			{
 				cboFormation.Items.AddRange(Strings.Formation);
-                cboPrimGoalT.Items.AddRange(Strings.Objective);
-                cboFormation.SelectedIndex = _mission.FlightGroups[_activeFG].Formation;
+				cboPrimGoalT.Items.AddRange(Strings.Objective);
+				cboFormation.SelectedIndex = _mission.FlightGroups[_activeFG].Formation;
 				cboPrimGoalT.SelectedIndex = _mission.FlightGroups[_activeFG].Objective;
 			}
 			#endregion
 			#region Waypoints
-            refreshWaypointTab();  //[JB] Code moved to separate function so that the map callback can refresh it too.
-            #endregion
+			refreshWaypointTab();  //[JB] Code moved to separate function so that the map callback can refresh it too.
+			#endregion
 			_loading = btemp;
-            if (!lstFG.Focused) lstFG.Focus();  //[JB] Return control back to the list (helpful to maintain navigation using the arrow keys when certain tabs are open)
-        }
+			if (!lstFG.Focused) lstFG.Focus();  //[JB] Return control back to the list (helpful to maintain navigation using the arrow keys when certain tabs are open)
+		}
 
 		void cmdImportXWI_Click(object sender, EventArgs e)
 		{
@@ -1687,71 +1690,71 @@ namespace Idmr.Yogeme
 			}
 		}
 		void cmdMoveUp_Click(object sender, EventArgs e)
-        {
-            if (_mode == EditorMode.XWI)
-            {
-                if (_mission.FlightGroups.MoveUp(lstFG.SelectedIndex))
-                {
-                    replaceClipboardFGReference(_activeFG, _activeFG - 1);
-                    refreshMap(-1);
-                    updateFGList();
-                    _activeFG = lstFG.SelectedIndex; listRefresh();
-                    _activeFG = lstFG.SelectedIndex - 1; listRefresh();
-                    lstFG.SelectedIndex = _activeFG;
-                }
-            }
-            else  //BRF slot movement needs to perform a raw swap without Flight Group/Object Group considerations.
-            {
-                int start = _activeFG;
-                int end = _activeFG - 1;
-                if (end >= 0)
-                {
-                    _mission.FlightGroups.Swap(start, end);
-                    _mission.Briefing.TransformFGReferences(end, 32767);
-                    _mission.Briefing.TransformFGReferences(start, end);
-                    _mission.Briefing.TransformFGReferences(32767, start);
-                    replaceClipboardFGReference(start, end);
-                    refreshMap(-1);
-                    updateFGList();
-                    _activeFG = lstFG.SelectedIndex; listRefresh();
-                    _activeFG = lstFG.SelectedIndex - 1; listRefresh();
-                    lstFG.SelectedIndex = _activeFG;
-                }
-            }
-        }
-        void cmdMoveDown_Click(object sender, EventArgs e)
-        {
-            if (_mode == EditorMode.XWI)
-            {
-                if (_mission.FlightGroups.MoveDown(lstFG.SelectedIndex))
-                {
-                    replaceClipboardFGReference(_activeFG, _activeFG + 1);
-                    refreshMap(-1);
-                    updateFGList();
-                    _activeFG = lstFG.SelectedIndex; listRefresh();
-                    _activeFG = lstFG.SelectedIndex + 1; listRefresh();
-                    lstFG.SelectedIndex = _activeFG;
-                }
-            }
-            else  //BRF slot movement needs to perform a raw swap without Flight Group/Object Group considerations.
-            {
-                int start = _activeFG;
-                int end = _activeFG + 1;
-                if (end < _mission.FlightGroups.Count)
-                {
-                    _mission.FlightGroups.Swap(start, end);
-                    _mission.Briefing.TransformFGReferences(end, 32767);
-                    _mission.Briefing.TransformFGReferences(start, end);
-                    _mission.Briefing.TransformFGReferences(32767, start);
-                    replaceClipboardFGReference(start, end);
-                    refreshMap(-1);
-                    updateFGList();
-                    _activeFG = lstFG.SelectedIndex; listRefresh();
-                    _activeFG = lstFG.SelectedIndex + 1; listRefresh();
-                    lstFG.SelectedIndex = _activeFG;
-                }
-            }
-        }
+		{
+			if (_mode == EditorMode.XWI)
+			{
+				if (_mission.FlightGroups.MoveUp(lstFG.SelectedIndex))
+				{
+					replaceClipboardFGReference(_activeFG, _activeFG - 1);
+					refreshMap(-1);
+					updateFGList();
+					_activeFG = lstFG.SelectedIndex; listRefresh();
+					_activeFG = lstFG.SelectedIndex - 1; listRefresh();
+					lstFG.SelectedIndex = _activeFG;
+				}
+			}
+			else  //BRF slot movement needs to perform a raw swap without Flight Group/Object Group considerations.
+			{
+				int start = _activeFG;
+				int end = _activeFG - 1;
+				if (end >= 0)
+				{
+					_mission.FlightGroups.Swap(start, end);
+					_mission.Briefing.TransformFGReferences(end, 32767);
+					_mission.Briefing.TransformFGReferences(start, end);
+					_mission.Briefing.TransformFGReferences(32767, start);
+					replaceClipboardFGReference(start, end);
+					refreshMap(-1);
+					updateFGList();
+					_activeFG = lstFG.SelectedIndex; listRefresh();
+					_activeFG = lstFG.SelectedIndex - 1; listRefresh();
+					lstFG.SelectedIndex = _activeFG;
+				}
+			}
+		}
+		void cmdMoveDown_Click(object sender, EventArgs e)
+		{
+			if (_mode == EditorMode.XWI)
+			{
+				if (_mission.FlightGroups.MoveDown(lstFG.SelectedIndex))
+				{
+					replaceClipboardFGReference(_activeFG, _activeFG + 1);
+					refreshMap(-1);
+					updateFGList();
+					_activeFG = lstFG.SelectedIndex; listRefresh();
+					_activeFG = lstFG.SelectedIndex + 1; listRefresh();
+					lstFG.SelectedIndex = _activeFG;
+				}
+			}
+			else  //BRF slot movement needs to perform a raw swap without Flight Group/Object Group considerations.
+			{
+				int start = _activeFG;
+				int end = _activeFG + 1;
+				if (end < _mission.FlightGroups.Count)
+				{
+					_mission.FlightGroups.Swap(start, end);
+					_mission.Briefing.TransformFGReferences(end, 32767);
+					_mission.Briefing.TransformFGReferences(start, end);
+					_mission.Briefing.TransformFGReferences(32767, start);
+					replaceClipboardFGReference(start, end);
+					refreshMap(-1);
+					updateFGList();
+					_activeFG = lstFG.SelectedIndex; listRefresh();
+					_activeFG = lstFG.SelectedIndex + 1; listRefresh();
+					lstFG.SelectedIndex = _activeFG;
+				}
+			}
+		}
 		void cmdSwitchFG_Click(object sender, EventArgs e)
 		{
 			switchTo((_mode == EditorMode.XWI) ? EditorMode.BRF : EditorMode.XWI);
@@ -1761,97 +1764,97 @@ namespace Idmr.Yogeme
 		void cboCraft_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (_loading) return;
-            if (_mode == EditorMode.XWI)
-            {
-                craftStart(_mission.FlightGroups[_activeFG], false);  //Remove just in case we're changing between craft and object
-                _mission.FlightGroups[_activeFG].CraftType = Common.Update(this, _mission.FlightGroups[_activeFG].CraftType, Convert.ToByte(cboCraft.SelectedIndex));
-                bool swap = !_mission.FlightGroups[_activeFG].IsFlightGroup();
-                int dest = _mission.FlightGroups.GetLastOfFlightGroup(); //Need to get the destination before changing the craft type, otherwise this function will return the wrong data.
-                if (_mission.FlightGroups[_activeFG].CraftType == 18)  //B-wing selected in Craft List
-                {
-                    _mission.FlightGroups[_activeFG].CraftType = 2;  //Replace with Y-W
-                    _mission.FlightGroups[_activeFG].Status1 = (byte)((_mission.FlightGroups[_activeFG].Status1 % 10) + 10);
-                }
-                else
-                {
-                    if (_mission.FlightGroups[_activeFG].Status1 >= 10)
-                        _mission.FlightGroups[_activeFG].Status1 = (byte)(_mission.FlightGroups[_activeFG].Status1 % 10);
-                }
-                _mission.FlightGroups[_activeFG].ObjectType = 0;
-                enableRot((_mission.FlightGroups[_activeFG].ObjectType == 0 ? false : true));
-                if (swap)
-                {
-                    _mission.FlightGroups[_activeFG].Formation = 0;  //Swapping from Object to Craft, so reset these fields since objects often use these values for other things which can easily exceed the expected values for ordinary craft FGs.
-                    _mission.FlightGroups[_activeFG].NumberOfCraft = 1;
-                    for (int i = _activeFG; i > dest + 1; i--)
-                        _mission.FlightGroups.Swap(i, i - 1);
-                    listRefreshAll();
-                    _activeFG = dest + 1;
-                    lstFG.SelectedIndex = _activeFG;
-                }
-                updateFGList();
-                craftStart(_mission.FlightGroups[_activeFG], true);
-            }
-            else
-            {
-                int ctype = cboCraft.SelectedIndex;
-                int otype = 0;
-                if(ctype == 18)  //If selecting B-wing, change to B-wing Icon instead.
-                {
-                    ctype = 0;
-                    otype = 25;
-                }
+			if (_mode == EditorMode.XWI)
+			{
+				craftStart(_mission.FlightGroups[_activeFG], false);  //Remove just in case we're changing between craft and object
+				_mission.FlightGroups[_activeFG].CraftType = Common.Update(this, _mission.FlightGroups[_activeFG].CraftType, Convert.ToByte(cboCraft.SelectedIndex));
+				bool swap = !_mission.FlightGroups[_activeFG].IsFlightGroup();
+				int dest = _mission.FlightGroups.GetLastOfFlightGroup(); //Need to get the destination before changing the craft type, otherwise this function will return the wrong data.
+				if (_mission.FlightGroups[_activeFG].CraftType == 18)  //B-wing selected in Craft List
+				{
+					_mission.FlightGroups[_activeFG].CraftType = 2;  //Replace with Y-W
+					_mission.FlightGroups[_activeFG].Status1 = (byte)((_mission.FlightGroups[_activeFG].Status1 % 10) + 10);
+				}
+				else
+				{
+					if (_mission.FlightGroups[_activeFG].Status1 >= 10)
+						_mission.FlightGroups[_activeFG].Status1 = (byte)(_mission.FlightGroups[_activeFG].Status1 % 10);
+				}
+				_mission.FlightGroups[_activeFG].ObjectType = 0;
+				enableRot((_mission.FlightGroups[_activeFG].ObjectType == 0 ? false : true));
+				if (swap)
+				{
+					_mission.FlightGroups[_activeFG].Formation = 0;  //Swapping from Object to Craft, so reset these fields since objects often use these values for other things which can easily exceed the expected values for ordinary craft FGs.
+					_mission.FlightGroups[_activeFG].NumberOfCraft = 1;
+					for (int i = _activeFG; i > dest + 1; i--)
+						_mission.FlightGroups.Swap(i, i - 1);
+					listRefreshAll();
+					_activeFG = dest + 1;
+					lstFG.SelectedIndex = _activeFG;
+				}
+				updateFGList();
+				craftStart(_mission.FlightGroups[_activeFG], true);
+			}
+			else
+			{
+				int ctype = cboCraft.SelectedIndex;
+				int otype = 0;
+				if (ctype == 18)  //If selecting B-wing, change to B-wing Icon instead.
+				{
+					ctype = 0;
+					otype = 25;
+				}
 
-                _loading = true;
-                cboCraft.SelectedIndex = ctype;
-                cboObject.SelectedIndex = (otype == 25) ? 8 : 0;  //Select the B-wing icon index, otherwise nothing.
-                _loading = false;
-                _mission.FlightGroups[_activeFG].CraftType = Common.Update(this, _mission.FlightGroups[_activeFG].CraftType, Convert.ToByte(ctype));
-                _mission.FlightGroups[_activeFG].ObjectType = Common.Update(this, _mission.FlightGroups[_activeFG].ObjectType, Convert.ToByte(otype));
-                updateFGList();
-            }
-            refreshMap(-1);  //Since not just craft type but possibly index could change as well, refresh the entire thing.
-        }
+				_loading = true;
+				cboCraft.SelectedIndex = ctype;
+				cboObject.SelectedIndex = (otype == 25) ? 8 : 0;  //Select the B-wing icon index, otherwise nothing.
+				_loading = false;
+				_mission.FlightGroups[_activeFG].CraftType = Common.Update(this, _mission.FlightGroups[_activeFG].CraftType, Convert.ToByte(ctype));
+				_mission.FlightGroups[_activeFG].ObjectType = Common.Update(this, _mission.FlightGroups[_activeFG].ObjectType, Convert.ToByte(otype));
+				updateFGList();
+			}
+			refreshMap(-1);  //Since not just craft type but possibly index could change as well, refresh the entire thing.
+		}
 		void cboObject_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (_loading) return;
-            if (_mode == EditorMode.XWI)
-            {
-                if (cboObject.SelectedIndex == 0 && _mission.FlightGroups[_activeFG].ObjectType == 0)
-                    return;  //Nothing actually changed, so don't update.  This skips form initializations from changing the object type.
+			if (_mode == EditorMode.XWI)
+			{
+				if (cboObject.SelectedIndex == 0 && _mission.FlightGroups[_activeFG].ObjectType == 0)
+					return;  //Nothing actually changed, so don't update.  This skips form initializations from changing the object type.
 
-                craftStart(_mission.FlightGroups[_activeFG], false);  //Remove just in case we're changing between craft and object
-                bool swap = _mission.FlightGroups[_activeFG].IsFlightGroup();
-                _mission.FlightGroups[_activeFG].ObjectType = Common.Update(this, _mission.FlightGroups[_activeFG].ObjectType, Convert.ToByte(cboObject.SelectedIndex + 17));
-                _mission.FlightGroups[_activeFG].CraftType = 0;
-                enableRot((_mission.FlightGroups[_activeFG].ObjectType == 0 ? false : true));
-                if (swap)
-                {
-                    _mission.FlightGroups.NullifyReferences(_activeFG);
-                    for (int i = _activeFG; i < _mission.FlightGroups.Count - 1; i++)
-                        _mission.FlightGroups.Swap(i, i + 1);
-                    listRefreshAll();
-                    _activeFG = lstFG.Items.Count - 1;
-                    lstFG.SelectedIndex = _activeFG;
-                }
-                updateFGList();
-                craftStart(_mission.FlightGroups[_activeFG], true);
-                lstFG_SelectedIndexChanged(this, new EventArgs());  //Objects have a lot of controls that need updating, depending on type.
-            }
-            else
-            {
-                _mission.FlightGroups[_activeFG].ObjectType = Common.Update(this, _mission.FlightGroups[_activeFG].ObjectType, Convert.ToByte(cboObject.SelectedIndex + 17));
-                _mission.FlightGroups[_activeFG].CraftType = 0;
-                listRefreshAll();
-            }
-            refreshMap(-1);  //Since not just craft type but possibly index could change as well, refresh the entire thing.
-        }
+				craftStart(_mission.FlightGroups[_activeFG], false);  //Remove just in case we're changing between craft and object
+				bool swap = _mission.FlightGroups[_activeFG].IsFlightGroup();
+				_mission.FlightGroups[_activeFG].ObjectType = Common.Update(this, _mission.FlightGroups[_activeFG].ObjectType, Convert.ToByte(cboObject.SelectedIndex + 17));
+				_mission.FlightGroups[_activeFG].CraftType = 0;
+				enableRot((_mission.FlightGroups[_activeFG].ObjectType == 0 ? false : true));
+				if (swap)
+				{
+					_mission.FlightGroups.NullifyReferences(_activeFG);
+					for (int i = _activeFG; i < _mission.FlightGroups.Count - 1; i++)
+						_mission.FlightGroups.Swap(i, i + 1);
+					listRefreshAll();
+					_activeFG = lstFG.Items.Count - 1;
+					lstFG.SelectedIndex = _activeFG;
+				}
+				updateFGList();
+				craftStart(_mission.FlightGroups[_activeFG], true);
+				lstFG_SelectedIndexChanged(this, new EventArgs());  //Objects have a lot of controls that need updating, depending on type.
+			}
+			else
+			{
+				_mission.FlightGroups[_activeFG].ObjectType = Common.Update(this, _mission.FlightGroups[_activeFG].ObjectType, Convert.ToByte(cboObject.SelectedIndex + 17));
+				_mission.FlightGroups[_activeFG].CraftType = 0;
+				listRefreshAll();
+			}
+			refreshMap(-1);  //Since not just craft type but possibly index could change as well, refresh the entire thing.
+		}
 		void cboFormation_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (!_loading)
 			{
 				int value = cboFormation.SelectedIndex;
-				if(_mission.FlightGroups[_activeFG].ObjectType > 0)
+				if (_mission.FlightGroups[_activeFG].ObjectType > 0)
 					value += (cboPrimGoalT.SelectedIndex * 4);
 				_mission.FlightGroups[_activeFG].Formation = Common.Update(this, _mission.FlightGroups[_activeFG].Formation, Convert.ToByte(value));
 			}
@@ -1877,21 +1880,21 @@ namespace Idmr.Yogeme
 
 		void grpCraft2_Leave(object sender, EventArgs e)
 		{
-            if (_loading) return; 
-            _mission.FlightGroups[_activeFG].IFF = Common.Update(this, _mission.FlightGroups[_activeFG].IFF, Convert.ToByte(cboIFF.SelectedIndex));
+			if (_loading) return;
+			_mission.FlightGroups[_activeFG].IFF = Common.Update(this, _mission.FlightGroups[_activeFG].IFF, Convert.ToByte(cboIFF.SelectedIndex));
 			_mission.FlightGroups[_activeFG].AI = Common.Update(this, _mission.FlightGroups[_activeFG].AI, Convert.ToByte(cboAI.SelectedIndex));
 			_mission.FlightGroups[_activeFG].Markings = Common.Update(this, _mission.FlightGroups[_activeFG].Markings, Convert.ToByte(cboMarkings.SelectedIndex));
 			_mission.FlightGroups[_activeFG].PlayerCraft = Common.Update(this, _mission.FlightGroups[_activeFG].PlayerCraft, Convert.ToByte(cboPlayer.SelectedIndex));
 
-            if (ActiveControl == cboIFF)
-                updateFGList();  //[JB] Update everything, including craft counter.
-            else
-                listRefresh();   //Otherwise default to simple refresh.
-        }
+			if (ActiveControl == cboIFF)
+				updateFGList();  //[JB] Update everything, including craft counter.
+			else
+				listRefresh();   //Otherwise default to simple refresh.
+		}
 		void grpCraft3_Leave(object sender, EventArgs e)
 		{
-            if (_loading) return; 
-            _mission.FlightGroups[_activeFG].NumberOfWaves = Common.Update(this, _mission.FlightGroups[_activeFG].NumberOfWaves, Convert.ToByte(numWaves.Value - 1));  //[JB] Modified
+			if (_loading) return;
+			_mission.FlightGroups[_activeFG].NumberOfWaves = Common.Update(this, _mission.FlightGroups[_activeFG].NumberOfWaves, Convert.ToByte(numWaves.Value - 1));  //[JB] Modified
 			craftStart(_mission.FlightGroups[_activeFG], false);
 			_mission.FlightGroups[_activeFG].NumberOfCraft = Common.Update(this, _mission.FlightGroups[_activeFG].NumberOfCraft, Convert.ToByte(numCraft.Value));
 			craftStart(_mission.FlightGroups[_activeFG], true);
@@ -1909,7 +1912,7 @@ namespace Idmr.Yogeme
 			else
 			{
 				if (!_loading)
-                    _mission.FlightGroups[_activeFG].SpecialCargoCraft = Common.Update(this, _mission.FlightGroups[_activeFG].SpecialCargoCraft, Convert.ToInt16(numSC.Value - 1));   //In the XWI, a value of 0 is the first craft.  Must be outside range to have no special craft.
+					_mission.FlightGroups[_activeFG].SpecialCargoCraft = Common.Update(this, _mission.FlightGroups[_activeFG].SpecialCargoCraft, Convert.ToInt16(numSC.Value - 1));   //In the XWI, a value of 0 is the first craft.  Must be outside range to have no special craft.
 				txtSpecCargo.Visible = true;
 				lblNotUsed.Visible = false;
 			}
@@ -1919,62 +1922,62 @@ namespace Idmr.Yogeme
 		{
 			_mission.FlightGroups[_activeFG].Cargo = Common.Update(this, _mission.FlightGroups[_activeFG].Cargo, txtCargo.Text);
 		}
-        void txtName_Leave(object sender, EventArgs e)
+		void txtName_Leave(object sender, EventArgs e)
 		{
 			_mission.FlightGroups[_activeFG].Name = Common.Update(this, _mission.FlightGroups[_activeFG].Name, txtName.Text);
-            updateFGList();
+			updateFGList();
 		}
 		void txtSpecCargo_Leave(object sender, EventArgs e)
 		{
 			_mission.FlightGroups[_activeFG].SpecialCargo = Common.Update(this, _mission.FlightGroups[_activeFG].SpecialCargo, txtSpecCargo.Text);
 		}
-        #endregion
-        #region Objects
-        void numObjectValue_ValueChanged(object sender, EventArgs e)
-        {
-            if (!_loading)
-            {
-                _mission.FlightGroups[_activeFG].Formation = (byte)numObjectValue.Value;
-                UpdateGunBitfield();
-            }
-        }
-        void chkPlatformGuns_CheckedChanged(object sender, EventArgs e)
-        {
-            if (!_loading)
-            {
-                _mission.FlightGroups[_activeFG].NumberOfCraft = (byte)(chkPlatformGuns.Checked ? 2 : 1);
-                numCraft.Value = _mission.FlightGroups[_activeFG].NumberOfCraft;
-                listRefresh();
-            }
-        }
-        void chkGunArr_CheckedChanged(object sender, EventArgs e)
-        {
-            if (_loading) return;
-            bool[] arr = new bool[6];
-            for (int i = 0; i < 6; i++)
-                arr[i] = chkGunPlatform[i].Checked;
+		#endregion
+		#region Objects
+		void numObjectValue_ValueChanged(object sender, EventArgs e)
+		{
+			if (!_loading)
+			{
+				_mission.FlightGroups[_activeFG].Formation = (byte)numObjectValue.Value;
+				UpdateGunBitfield();
+			}
+		}
+		void chkPlatformGuns_CheckedChanged(object sender, EventArgs e)
+		{
+			if (!_loading)
+			{
+				_mission.FlightGroups[_activeFG].NumberOfCraft = (byte)(chkPlatformGuns.Checked ? 2 : 1);
+				numCraft.Value = _mission.FlightGroups[_activeFG].NumberOfCraft;
+				listRefresh();
+			}
+		}
+		void chkGunArr_CheckedChanged(object sender, EventArgs e)
+		{
+			if (_loading) return;
+			bool[] arr = new bool[6];
+			for (int i = 0; i < 6; i++)
+				arr[i] = chkGunPlatform[i].Checked;
 
-            int value = _mission.FlightGroups[_activeFG].PlatformBitfieldPack(arr);
-            _mission.FlightGroups[_activeFG].Formation = (byte)value;
-            numObjectValue.Value = value;
-        }
-        void UpdateGunBitfield()
-        {
-            bool btemp = _loading;
-            _loading = true;
-            bool[] arr = _mission.FlightGroups[_activeFG].PlatformBitfieldUnpack();
-            for (int i = 0; i < 6; i++)
-                chkGunPlatform[i].Checked = arr[i];
-            _loading = btemp;
-        }
-        void numSeconds_ValueChanged(object sender, EventArgs e)
-        {
-            if (!_loading)
-                _mission.FlightGroups[_activeFG].Formation = (byte)numSeconds.Value;
-        }
-        #endregion Objects
-        #region ArrDep
-        void cmdCopyAD_Click(object sender, EventArgs e)
+			int value = _mission.FlightGroups[_activeFG].PlatformBitfieldPack(arr);
+			_mission.FlightGroups[_activeFG].Formation = (byte)value;
+			numObjectValue.Value = value;
+		}
+		void UpdateGunBitfield()
+		{
+			bool btemp = _loading;
+			_loading = true;
+			bool[] arr = _mission.FlightGroups[_activeFG].PlatformBitfieldUnpack();
+			for (int i = 0; i < 6; i++)
+				chkGunPlatform[i].Checked = arr[i];
+			_loading = btemp;
+		}
+		void numSeconds_ValueChanged(object sender, EventArgs e)
+		{
+			if (!_loading)
+				_mission.FlightGroups[_activeFG].Formation = (byte)numSeconds.Value;
+		}
+		#endregion Objects
+		#region ArrDep
+		void cmdCopyAD_Click(object sender, EventArgs e)
 		{
 			menuCopy_Click("AD", new System.EventArgs());
 		}
@@ -2013,51 +2016,51 @@ namespace Idmr.Yogeme
 		}
 		void cboMothership_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			if(!_loading)
+			if (!_loading)
 				_mission.FlightGroups[_activeFG].Mothership = Common.Update(this, _mission.FlightGroups[_activeFG].Mothership, Convert.ToInt16(translateNullableFG(cboMothership)));
 		}
 
 		void cboArrFG_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			if(!_loading)
+			if (!_loading)
 				_mission.FlightGroups[_activeFG].ArrivalFG = Common.Update(this, _mission.FlightGroups[_activeFG].ArrivalFG, Convert.ToInt16(translateNullableFG(cboArrFG)));
 		}
 		void cboArrCondition_SelectedIndexChanged(object sender, EventArgs e)
 		{
-            if (!_loading)
-            {
-                if(_mission.FlightGroups[_activeFG].ArrivalEvent == 0)
-                    craftStart(_mission.FlightGroups[_activeFG], false);
+			if (!_loading)
+			{
+				if (_mission.FlightGroups[_activeFG].ArrivalEvent == 0)
+					craftStart(_mission.FlightGroups[_activeFG], false);
 
-                _mission.FlightGroups[_activeFG].ArrivalEvent = Common.Update(this, _mission.FlightGroups[_activeFG].ArrivalEvent, Convert.ToInt16(cboArrCondition.SelectedIndex));
-                craftStart(_mission.FlightGroups[_activeFG], true);
-            }
+				_mission.FlightGroups[_activeFG].ArrivalEvent = Common.Update(this, _mission.FlightGroups[_activeFG].ArrivalEvent, Convert.ToInt16(cboArrCondition.SelectedIndex));
+				craftStart(_mission.FlightGroups[_activeFG], true);
+			}
 		}
 
-        void numArrMin_ValueChanged(object sender, EventArgs e)
+		void numArrMin_ValueChanged(object sender, EventArgs e)
 		{
-			if(!_loading)
+			if (!_loading)
 			{
-                FlightGroup fg = _mission.FlightGroups[_activeFG];
-                craftStart(fg, false);
+				FlightGroup fg = _mission.FlightGroups[_activeFG];
+				craftStart(fg, false);
 				fg.ArrivalDelay = Common.Update(this, fg.ArrivalDelay, Convert.ToInt16(fg.CreateArrivalDelay((int)numArrMin.Value, (int)numArrSec.Value)));
-                craftStart(fg, true);
+				craftStart(fg, true);
 			}
 		}
 		void numArrSec_ValueChanged(object sender, EventArgs e)
 		{
-			if(!_loading)
+			if (!_loading)
 			{
-                FlightGroup fg = _mission.FlightGroups[_activeFG];
+				FlightGroup fg = _mission.FlightGroups[_activeFG];
 				int value = (int)numArrSec.Value / 6 * 6; //Strip out all values that are not multiples of 6
-				if((int)numArrSec.Value != value) numArrSec.Value = value;
+				if ((int)numArrSec.Value != value) numArrSec.Value = value;
 
-                craftStart(fg, false);
+				craftStart(fg, false);
 				fg.ArrivalDelay = Common.Update(this, fg.ArrivalDelay, Convert.ToInt16(fg.CreateArrivalDelay((int)numArrMin.Value, (int)numArrSec.Value)));
-                craftStart(fg, true);
+				craftStart(fg, true);
 			}
 		}
-        #endregion
+		#endregion
 		#region Orders
 		void cmdCopyOrder_Click(object sender, EventArgs e)
 		{
@@ -2081,24 +2084,24 @@ namespace Idmr.Yogeme
 		}
 		void cboOrder_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			if(!_loading)
+			if (!_loading)
 				_mission.FlightGroups[_activeFG].Order = Common.Update(this, _mission.FlightGroups[_activeFG].Order, Convert.ToInt16(cboOrder.SelectedIndex));
 		}
 		void cboOrderPrimary_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			if(!_loading)
+			if (!_loading)
 				_mission.FlightGroups[_activeFG].TargetPrimary = Common.Update(this, _mission.FlightGroups[_activeFG].TargetPrimary, Convert.ToInt16(translateNullableFG(cboOrderPrimary)));
 		}
 		void cboOrderSecondary_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			if(!_loading)
+			if (!_loading)
 				_mission.FlightGroups[_activeFG].TargetSecondary = Common.Update(this, _mission.FlightGroups[_activeFG].TargetSecondary, Convert.ToInt16(translateNullableFG(cboOrderSecondary)));
 		}
-        void cboOrderValue_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (!_loading)
-                _mission.FlightGroups[_activeFG].DockTimeThrottle = Common.Update(this, _mission.FlightGroups[_activeFG].DockTimeThrottle, Convert.ToInt16(cboOrderValue.SelectedIndex));
-        }
+		void cboOrderValue_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			if (!_loading)
+				_mission.FlightGroups[_activeFG].DockTimeThrottle = Common.Update(this, _mission.FlightGroups[_activeFG].DockTimeThrottle, Convert.ToInt16(cboOrderValue.SelectedIndex));
+		}
 		#endregion
 		#region Waypoints
 		void enableRot(bool state)
@@ -2176,7 +2179,7 @@ namespace Idmr.Yogeme
 			int wpIndex = WaypointMapping[(int)c.Tag];
 			_mission.FlightGroups[_activeFG].Waypoints[wpIndex].Enabled = Common.Update(this, _mission.FlightGroups[_activeFG].Waypoints[wpIndex].Enabled, c.Checked);
 			refreshMap(_activeFG);
-        }
+		}
 
 		void numPitch_Leave(object sender, EventArgs e)
 		{
@@ -2196,30 +2199,30 @@ namespace Idmr.Yogeme
 
 		void table_RowChanged(object sender, DataRowChangeEventArgs e)
 		{
-			int i,j=0;
+			int i, j = 0;
 			if (_loading) return;
 			_loading = true;
-			for (j = 0; j < 10; j++) if (_table.Rows[j].Equals(e.Row)) break;	//find the row index that you're changing
+			for (j = 0; j < 10; j++) if (_table.Rows[j].Equals(e.Row)) break;   //find the row index that you're changing
 			try
 			{
 				int wpIndex = WaypointMapping[j];
-				for (i=0;i<3;i++)
+				for (i = 0; i < 3; i++)
 				{
 					short raw = (short)(Convert.ToDouble(_table.Rows[j][i]) * 160);
 					_mission.FlightGroups[_activeFG].Waypoints[wpIndex][i] = Common.Update(this, _mission.FlightGroups[_activeFG].Waypoints[wpIndex][i], raw);
 					_tableRaw.Rows[j][i] = raw;
 				}
 			}
-			catch { for (i=0;i<3;i++) _table.Rows[j][i] = Math.Round((double)_mission.FlightGroups[_activeFG].Waypoints[j][i] / 160, 2); }
+			catch { for (i = 0; i < 3; i++) _table.Rows[j][i] = Math.Round((double)_mission.FlightGroups[_activeFG].Waypoints[j][i] / 160, 2); }
 			_loading = false;
 			refreshMap(_activeFG);
-        }
+		}
 		void tableRaw_RowChanged(object sender, DataRowChangeEventArgs e)
 		{
 			int i, j = 0;
 			if (_loading) return;
 			_loading = true;
-			for (j = 0; j < 10; j++) if (_tableRaw.Rows[j].Equals(e.Row)) break;	//find the row index that you're changing
+			for (j = 0; j < 10; j++) if (_tableRaw.Rows[j].Equals(e.Row)) break;    //find the row index that you're changing
 			try
 			{
 				int wpIndex = WaypointMapping[j];
@@ -2230,23 +2233,23 @@ namespace Idmr.Yogeme
 					_table.Rows[j][i] = Math.Round((double)raw / 160, 2);
 				}
 			}
-			catch { for (i=0;i<3;i++) _tableRaw.Rows[j][i] = Convert.ToInt16(_mission.FlightGroups[_activeFG].Waypoints[j][i]); }
+			catch { for (i = 0; i < 3; i++) _tableRaw.Rows[j][i] = Convert.ToInt16(_mission.FlightGroups[_activeFG].Waypoints[j][i]); }
 			_loading = false;
 			refreshMap(_activeFG);
-        }
+		}
 		void cmdCopyWPSP_Click(object sender, EventArgs e)
 		{
 			//Setting _table.Rows[] will overwrite the waypoints unless _loading is enabled.  Want to make sure we copy the raw data to avoid any bugs with rounding.
 			bool btemp = _loading;
 			_loading = true;
 			short[] row = new short[3];
-			for(int i = 0; i < 3; i++)
+			for (int i = 0; i < 3; i++)
 				row[i] = _mission.FlightGroups[_activeFG].Waypoints[0][i];  //Get SP1
 
 			for (int j = 1; j <= 2; j++)
 			{
 				int wpIndex = WaypointMapping[j];
-				
+
 				//Enable the Start Points.  Not really necessary since X-wing will always choose a randomized point, but this offers display consistency.
 				_mission.FlightGroups[_activeFG].Waypoints[wpIndex][3] = Common.Update(this, _mission.FlightGroups[_activeFG].Waypoints[wpIndex][3], (short)1);
 				_mission.FlightGroups[_activeFG].Waypoints[wpIndex].Enabled = Common.Update(this, _mission.FlightGroups[_activeFG].Waypoints[wpIndex].Enabled, true);
@@ -2262,7 +2265,7 @@ namespace Idmr.Yogeme
 			chkSP3.Checked = true;
 			_loading = btemp;
 			refreshMap(-1);
-        }
+		}
 		#endregion
 		#endregion
 		#region Mission
@@ -2271,14 +2274,14 @@ namespace Idmr.Yogeme
 			TextBox t = (TextBox)sender;
 			_mission.EndOfMissionMessages[(int)t.Tag] = Common.Update(this, _mission.EndOfMissionMessages[(int)t.Tag], t.Text);
 		}
-        void grpMission_Leave(object sender, EventArgs e)
-        {
-            if (_loading) return;
-            _mission.TimeLimitMinutes = Common.Update(this, _mission.TimeLimitMinutes, Convert.ToInt16(numMissionTime.Value));
-            _mission.EndEvent = Common.Update(this, _mission.EndEvent, Convert.ToInt16(cboEndEvent.SelectedIndex));
-            _mission.RndSeed = Common.Update(this, _mission.RndSeed, Convert.ToInt16(numRndSeed.Value));
-            _mission.Location = Common.Update(this, _mission.Location, Convert.ToInt16(cboMissionLocation.SelectedIndex));
-        }
+		void grpMission_Leave(object sender, EventArgs e)
+		{
+			if (_loading) return;
+			_mission.TimeLimitMinutes = Common.Update(this, _mission.TimeLimitMinutes, Convert.ToInt16(numMissionTime.Value));
+			_mission.EndEvent = Common.Update(this, _mission.EndEvent, Convert.ToInt16(cboEndEvent.SelectedIndex));
+			_mission.RndSeed = Common.Update(this, _mission.RndSeed, Convert.ToInt16(numRndSeed.Value));
+			_mission.Location = Common.Update(this, _mission.Location, Convert.ToInt16(cboMissionLocation.SelectedIndex));
+		}
 		#endregion
 	}
 }

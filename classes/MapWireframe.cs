@@ -1,4 +1,18 @@
-﻿using System;
+﻿/*
+ * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
+ * Copyright (C) 2007-2020 Michael Gaisser (mjgaisser@gmail.com)
+ * This file authored by "JB" (Random Starfighter) (randomstarfighter@gmail.com)
+ * Licensed under the MPL v2.0 or later
+ * 
+ * VERSION: 1.6.6+
+ */
+
+/* CHANGELOG
+* v1.7, XXXXXX
+* [NEW] created [JB]
+*/
+
+using System;
 using System.IO;
 using System.Collections.Generic;
 
@@ -6,7 +20,7 @@ using System.Collections.Generic;
  * Jérémy Ansel for documentation of the OPT format https://github.com/JeremyAnsel/XwaOptEditor
  * Rob for documentation of the CRFT, CPLX and SHIP formats used by XW93, XW94, and TIE DOS.
  */
- 
+
 /* [JB] I am not familiar with 3D math so there may potentially be errors or inefficiencies in the wireframe
  * implementation here. My prototyping code was originally written in C++ and ported here. I hope the result
  * is adequate.
@@ -156,7 +170,7 @@ namespace Idmr.Yogeme
 	public static class MeshTypeHelper
 	{
 		// These predefined arrays help initialize the user's configuration as well as offering quick toggles to include or exclude a selection of visible mesh types.
-		public static MeshType[] DefaultMeshes = new MeshType[] { MeshType.Default, MeshType.MainHull, MeshType.Wing, MeshType.Fuselage, MeshType.Bridge, MeshType.DockingPlatform, MeshType.LandingPlatform, MeshType.Hangar, MeshType.CargoPod, MeshType.MiscHull, MeshType.Engine, MeshType.RotaryWing, MeshType.Launcher};
+		public static MeshType[] DefaultMeshes = new MeshType[] { MeshType.Default, MeshType.MainHull, MeshType.Wing, MeshType.Fuselage, MeshType.Bridge, MeshType.DockingPlatform, MeshType.LandingPlatform, MeshType.Hangar, MeshType.CargoPod, MeshType.MiscHull, MeshType.Engine, MeshType.RotaryWing, MeshType.Launcher };
 		public static MeshType[] HullMeshes = new MeshType[] { MeshType.Default, MeshType.MainHull, MeshType.Wing, MeshType.Fuselage, MeshType.Engine, MeshType.Bridge, MeshType.Launcher, MeshType.MiscHull, MeshType.RotaryWing };
 		public static MeshType[] MiscMeshes = new MeshType[] { MeshType.ShieldGenerator, MeshType.EnergyGenerator, MeshType.CommunicationSystem, MeshType.BeamSystem, MeshType.CommandSystem, MeshType.CargoPod, MeshType.Antenna, MeshType.RotaryCommunicationSystem, MeshType.RotaryBeamSystem, MeshType.RotaryCommandSystem, MeshType.Hatch, MeshType.Custom, MeshType.PowerRegenerator, MeshType.Reactor };
 		public static MeshType[] WeaponMeshes = new MeshType[] { MeshType.GunTurret, MeshType.SmallGun, MeshType.RotaryGunTurret, MeshType.RotaryLauncher, MeshType.WeaponSystem1, MeshType.WeaponSystem2 };
@@ -186,7 +200,7 @@ namespace Idmr.Yogeme
 			return retval;
 		}
 	}
-	
+
 	/// <summary>Container to store the vertices of a single polygon face, which may have 3 or 4 vertices.</summary>
 	public struct OptFace
 	{
@@ -586,7 +600,7 @@ namespace Idmr.Yogeme
 				}
 			}
 		}
-		
+
 		/// <summary>Parses the header and top-level contents of the SHIP format used in TIE.</summary>
 		private void ParseTie(FileStream fs, BinaryReader br)
 		{
@@ -727,7 +741,7 @@ namespace Idmr.Yogeme
 		{
 			MeshLayerDefinition layer = GetOrCreateMeshLayerDefinition(MeshType.MainHull);  // Create a default entry so that it's first in the list, for drawing purposes.
 
-			foreach(OptComponent comp in opt.components)
+			foreach (OptComponent comp in opt.components)
 			{
 				if (comp.lods.Count == 0)
 					continue;
@@ -736,39 +750,39 @@ namespace Idmr.Yogeme
 				HashSet<int> lineUsed = new HashSet<int>();
 
 				layer = GetOrCreateMeshLayerDefinition(comp.meshType);
-				foreach(OptFace face in comp.lods[0].faces)
+				foreach (OptFace face in comp.lods[0].faces)
 				{
-					for(int i = 0; i < 4; i++)
+					for (int i = 0; i < 4; i++)
 					{
 						int vi = face.vertexIndex[i];
 						// If the face is a triangle (rather than a quad), the last index will be -1.
-						if(vi == -1)
+						if (vi == -1)
 							continue;
-						if(vertUsed[vi] == 0)
+						if (vertUsed[vi] == 0)
 						{
 							layer.vertices.Add(comp.vertices[vi]);
 							vertUsed[vi] = layer.vertices.Count;  // One-based value.
 						}
 					}
-					for(int i = 0; i < 3; i++)
+					for (int i = 0; i < 3; i++)
 					{
 						int v1 = face.vertexIndex[i];
 						int v2 = face.vertexIndex[i + 1];
-						if(v1 == -1)
+						if (v1 == -1)
 							continue;
 						// For a triangle, the last vertex is missing. Link back to the first vertex in the face.
-						if(v2 == -1)
+						if (v2 == -1)
 							v2 = face.vertexIndex[0];
-						
+
 						// Normalize and construct a key to determine if this line already exists. Add if it doesn't.
-						if(v2 < v1)
+						if (v2 < v1)
 						{
 							int temp = v1;
 							v1 = v2;
 							v2 = temp;
 						}
 						int key = v1 | (v2 << 16);
-						if(!lineUsed.Contains(key))
+						if (!lineUsed.Contains(key))
 						{
 							v1 = vertUsed[v1] - 1; // Convert from one-based back to zero-based.
 							v2 = vertUsed[v2] - 1;
@@ -778,18 +792,18 @@ namespace Idmr.Yogeme
 					}
 					// If the face is quadrilateral, we haven't linked the first and last vertices.
 					// Perform the same thing as above.
-					if(face.vertexIndex[0] >= 0 && face.vertexIndex[3] >= 0)
+					if (face.vertexIndex[0] >= 0 && face.vertexIndex[3] >= 0)
 					{
 						int v1 = face.vertexIndex[0];
 						int v2 = face.vertexIndex[3];
-						if(v2 < v1)
+						if (v2 < v1)
 						{
 							int temp = v1;
 							v1 = v2;
 							v2 = temp;
 						}
 						int key = v1 | (v2 << 16);
-						if(!lineUsed.Contains(key))
+						if (!lineUsed.Contains(key))
 						{
 							v1 = vertUsed[v1] - 1; // Convert from one-based back to zero-based.
 							v2 = vertUsed[v2] - 1;
@@ -808,10 +822,10 @@ namespace Idmr.Yogeme
 		{
 			// This function is conceptually similar to creating from OPT, except we already have our lines and don't need to examine the faces.
 			MeshLayerDefinition layer = GetOrCreateMeshLayerDefinition(MeshType.MainHull);
-			for(int i = 0; i < craft.components.Count; i++)
+			for (int i = 0; i < craft.components.Count; i++)
 			{
 				CraftComponent comp = craft.components[i];
-				if(comp.lods.Count == 0)
+				if (comp.lods.Count == 0)
 					continue;
 				CraftLod lod = comp.lods[0];
 
@@ -819,12 +833,12 @@ namespace Idmr.Yogeme
 				HashSet<int> lineUsed = new HashSet<int>();
 
 				layer = GetOrCreateMeshLayerDefinition(comp.meshType);
-				for(int j = 0; j < lod.lines.Count; j++)
+				for (int j = 0; j < lod.lines.Count; j++)
 				{
 					int v1 = lod.lines[j].v1;
 					int v2 = lod.lines[j].v2;
 
-					if(vertUsed[v1] == 0)
+					if (vertUsed[v1] == 0)
 					{
 						int x = lod.vertices[v1].data[0];
 						int y = lod.vertices[v1].data[1];
@@ -832,7 +846,7 @@ namespace Idmr.Yogeme
 						layer.vertices.Add(new Vector3(x, y, z));
 						vertUsed[v1] = layer.vertices.Count; // One-based.
 					}
-					if(vertUsed[v2] == 0)
+					if (vertUsed[v2] == 0)
 					{
 						int x = lod.vertices[v2].data[0];
 						int y = lod.vertices[v2].data[1];
@@ -842,14 +856,14 @@ namespace Idmr.Yogeme
 					}
 
 					// Normalize and construct a key to determine if this line already exists. Add if it doesn't.
-					if(v2 < v1)
+					if (v2 < v1)
 					{
 						int temp = v1;
 						v1 = v2;
 						v2 = temp;
 					}
 					int key = v1 | (v2 << 16);
-					if(!lineUsed.Contains(key))
+					if (!lineUsed.Contains(key))
 					{
 						v1 = vertUsed[v1] - 1;  // Convert back to zero-based index.
 						v2 = vertUsed[v2] - 1;
@@ -1078,7 +1092,7 @@ namespace Idmr.Yogeme
 			{
 				if (!cinst.MatchMeshFilter(curVisibilityFlags))
 					continue;
-				for(int i = 0; i < cinst.vertices.Count; i++)
+				for (int i = 0; i < cinst.vertices.Count; i++)
 				{
 					Vector3 v = cinst.vertices[i];
 					v.x = (float)(cinst.meshLayerDefinition.vertices[i].x * scaleMult);
@@ -1117,7 +1131,7 @@ namespace Idmr.Yogeme
 			name = new string(br.ReadChars(8)).Trim();
 			if (type.IndexOf('\0') >= 0)
 				type = type.Remove(type.IndexOf('\0'));
-			if(name.IndexOf('\0') >= 0)
+			if (name.IndexOf('\0') >= 0)
 				name = name.Remove(name.IndexOf('\0'));
 			length = br.ReadInt32();
 		}
