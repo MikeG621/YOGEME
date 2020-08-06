@@ -230,7 +230,7 @@ namespace Idmr.Yogeme
 			if (index < 0) return 0;
 			index += substr.Length;
 			int length = text.IndexOfAny(new char[] { ' ', ',', '\0' }, index) - index;
-			int value = 0;
+			int value;
 			if (length > 0) value = int.Parse(text.Substring(index, length));
 			else value = int.Parse(text.Substring(index));
 			return value;

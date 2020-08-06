@@ -131,18 +131,19 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="App.ico" />
-    <Content Include="craft_data_tie.txt">
+    <None Include=".editorconfig" />
+    <None Include="craft_data_tie.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="craft_data_xvt.txt">
+    </None>
+    <None Include="craft_data_xvt.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="craft_data_xw.txt">
+    </None>
+    <None Include="craft_data_xw.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="craft_data_xwa.txt">
+    </None>
+    <None Include="craft_data_xwa.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    </None>
     <None Include="images\craft_XWA_DSUCPv2.6.bmp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

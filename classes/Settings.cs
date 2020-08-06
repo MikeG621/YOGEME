@@ -58,7 +58,6 @@ namespace Idmr.Yogeme
 	{
 		#region defaults
 		string _verifyLocation = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location), "MissionVerify.exe");
-		string _lastMission = "";
 		string _xwingPath = "";
 		string _tiePath = "";
 		string _xvtPath = "";
@@ -68,11 +67,11 @@ namespace Idmr.Yogeme
 		string _mruTiePath = ""; //[JB] stores the most recently used folders
 		string _mruXvtPath = ""; //XvT and BoP share paths
 		string _mruXwaPath = "";
-		string _settingsDir = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)
+		readonly string _settingsDir = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)
 			+ "\\Imperial Department of Military Research\\YOGEME\\";
 		#endregion
-		string[] _recentMissions = new string[6];
-		Platform[] _recentPlatforms = new Platform[6];
+		readonly string[] _recentMissions = new string[6];
+		readonly Platform[] _recentPlatforms = new Platform[6];
 		public enum Platform { None, TIE, XvT, BoP, XWA, XWING }
 		public enum StartupMode { Normal, LastPlatform, LastMission }
 		[Flags]
@@ -244,7 +243,7 @@ namespace Idmr.Yogeme
 					XwaOverrideScan = br.ReadBoolean();
 					XwaFlagRemappedCraft = br.ReadBoolean();
 				}
-				catch { /*do nothing*/ }
+				catch { System.Diagnostics.Debug.WriteLine("old settings file"); /*do nothing*/ }
 
 				fs.Close();
 				#endregion
@@ -257,7 +256,7 @@ namespace Idmr.Yogeme
 				_bopPath = (string)key.GetValue("BoPInstall", "");
 				ConfirmExit = Convert.ToBoolean(key.GetValue("ConfirmExit", true));
 				ConfirmSave = Convert.ToBoolean(key.GetValue("ConfirmSave", true));
-				_lastMission = (string)key.GetValue("LastMission", "");
+				_recentMissions[0] = (string)key.GetValue("LastMission", "");
 				LastPlatform = (Platform)key.GetValue("LastPlatform", 0);
 				MapOptions = (MapOpts)key.GetValue("MapOptions", 3);
 				RestrictPlatforms = Convert.ToBoolean(key.GetValue("RestrictPlatforms", true));

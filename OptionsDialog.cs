@@ -38,9 +38,11 @@ namespace Idmr.Yogeme
 	/// <summary>Options dialog for YOGEME</summary>
 	public partial class OptionsDialog : Form
 	{
-		CheckBox[] chkWP = new CheckBox[22];
-		Settings _config;
-		EventHandler _closeCallback;
+#pragma warning disable IDE1006 // Naming Styles
+		readonly CheckBox[] chkWP = new CheckBox[22];
+#pragma warning restore IDE1006 // Naming Styles
+		readonly Settings _config;
+		readonly EventHandler _closeCallback;
 
 		/// <summary>Initialize and load the user's settings</summary>
 		/// <param name="config">The Settings config of the current user</param>
@@ -160,17 +162,18 @@ namespace Idmr.Yogeme
 			chkXwaFlagRemappedCraft.Checked = _config.XwaFlagRemappedCraft;
 
 			bool exportInUse = _config.XwaOverrideExternal && CraftDataManager.GetInstance().XwaInstallSpecificExternalDataLoaded;
-			lblExportWarning.Enabled = exportInUse;
-			lblExportWarning.Text = exportInUse ? "Exported override in use in game folder!" : "";
+			lblExportWarning.Visible = exportInUse;
 
 			_closeCallback = callback;
 		}
 
 		void refreshColors()
 		{
+#pragma warning disable IDE0059 // Unnecessary assignment of a value
 			int sel = Color.Blue.ToArgb();
 			int nsel = Color.Black.ToArgb();
 			int background = Color.RosyBrown.ToArgb();
+#pragma warning restore IDE0059 // Unnecessary assignment of a value
 			int.TryParse(txtColorSelected.Text, System.Globalization.NumberStyles.HexNumber, null, out sel);
 			int.TryParse(txtColorNonSelected.Text, System.Globalization.NumberStyles.HexNumber, null, out nsel);
 			int.TryParse(txtColorBackground.Text, System.Globalization.NumberStyles.HexNumber, null, out background);
@@ -316,9 +319,11 @@ namespace Idmr.Yogeme
 			_config.VerifyTest = chkVerifyTest.Checked;
 			_config.InitializeUsingSuperBackdrops = chkBackdrops.Checked;
 
+#pragma warning disable IDE0059 // Unnecessary assignment of a value
 			int sel = Color.Blue.ToArgb();
 			int nsel = Color.Black.ToArgb();
 			int background = Color.RosyBrown.ToArgb();
+#pragma warning restore IDE0059 // Unnecessary assignment of a value
 			int.TryParse(txtColorSelected.Text, System.Globalization.NumberStyles.HexNumber, null, out sel);
 			int.TryParse(txtColorNonSelected.Text, System.Globalization.NumberStyles.HexNumber, null, out nsel);
 			int.TryParse(txtColorBackground.Text, System.Globalization.NumberStyles.HexNumber, null, out background);
@@ -350,7 +355,7 @@ namespace Idmr.Yogeme
 			_config.XwaOverrideScan = chkXwaOverrideScan.Checked;
 			_config.XwaFlagRemappedCraft = chkXwaFlagRemappedCraft.Checked;
 
-			if (_closeCallback != null) _closeCallback(0, new EventArgs());
+			_closeCallback?.Invoke(0, new EventArgs());
 			Close();
 		}
 		void cmdXW_Click(object sender, EventArgs e)
@@ -481,13 +486,16 @@ namespace Idmr.Yogeme
 
 		private void cmdExport_Click(object sender, EventArgs e)
 		{
-			SaveFileDialog dlg = new SaveFileDialog();
-			dlg.FileName = "craft_data_xwa.txt";
+			SaveFileDialog dlg = new SaveFileDialog
+			{
+				FileName = "craft_data_xwa.txt",
+				Filter = "Text files (*.txt)|*.txt|All files|*.*"
+			};
 			string path = CraftDataManager.GetInstance().GetInstallPath();
 			if (path == "")
 				path = Environment.CurrentDirectory;
 			dlg.InitialDirectory = path;
-			dlg.Filter = "Text files (*.txt)|*.txt|All files|*.*";
+			
 			if (dlg.ShowDialog() == DialogResult.OK)
 			{
 				string result = CraftDataManager.GetInstance().SaveToFile(dlg.FileName);

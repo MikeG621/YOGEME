@@ -59,18 +59,22 @@ namespace Idmr.Yogeme
 	{
 		#region vars and stuff
 		int _zoom = 40;               //Current zoom scale, in pixels per kilometer
-		int w, h, mapX, mapY, mapZ;   //The map vars store offset of the center of the game world (0,0,0) relative to the top left corner of the viewport, taking zoom into account.
+#pragma warning disable IDE1006 // Naming Styles
+		int w, h, _mapX, _mapY, _mapZ;   //The map vars store offset of the center of the game world (0,0,0) relative to the top left corner of the viewport, taking zoom into account.
+#pragma warning restore IDE1006 // Naming Styles
 		public enum Orientation { XY, XZ, YZ };
 		Orientation _displayMode = Orientation.XY;
 		Bitmap _map;
 		MapData[] _mapData;
-		List<SelectionData> _selectionList = new List<SelectionData>();
-		List<SelectionData> _selectionTmp = new List<SelectionData>();
-		List<int> _selectionListFGs = new List<int>();
-		int[] _dragIcon = new int[2];   // [0] = fg, [1] = wp
+		readonly List<SelectionData> _selectionList = new List<SelectionData>();
+		readonly List<SelectionData> _selectionTmp = new List<SelectionData>();
+		readonly List<int> _selectionListFGs = new List<int>();
+		readonly int[] _dragIcon = new int[2];   // [0] = fg, [1] = wp
 		bool _loading = false;
-		CheckBox[] chkWP = new CheckBox[22];
-		Settings.Platform _platform;
+#pragma warning disable IDE1006 // Naming Styles
+		readonly CheckBox[] chkWP = new CheckBox[22];
+#pragma warning restore IDE1006 // Naming Styles
+		readonly Settings.Platform _platform;
 		//int _wpSetCount = 1;	// assigned, never used
 		bool _isDragged;
 		//string _lastButtonClicked = "";	// assigned, never used
@@ -87,8 +91,10 @@ namespace Idmr.Yogeme
 		int _selectionCount = 0;
 		bool _norefresh = false;
 		bool _mapPaintScheduled = false;      //True if a paint is scheduled, that is a paint request is called while a paint is already in progress.
-		static WireframeManager wireframeManager = null;
+		static WireframeManager _wireframeManager = null;
+#pragma warning disable IDE1006 // Naming Styles
 		EventHandler onDataModified = null;
+#pragma warning restore IDE1006 // Naming Styles
 		bool _isClosing = false;              //Need a flag during form close to check whether external MapPaint() calls should be ignored.
 		Settings _settings = null;
 		#endregion vars
@@ -186,16 +192,16 @@ namespace Idmr.Yogeme
 			switch (_displayMode)
 			{
 				case Orientation.XY:
-					pt.X = Convert.ToInt32((mouseX - mapX) / Convert.ToDouble(_zoom) * 160);
-					pt.Y = Convert.ToInt32((mapY - mouseY) / Convert.ToDouble(_zoom) * 160);
+					pt.X = Convert.ToInt32((mouseX - _mapX) / Convert.ToDouble(_zoom) * 160);
+					pt.Y = Convert.ToInt32((_mapY - mouseY) / Convert.ToDouble(_zoom) * 160);
 					break;
 				case Orientation.XZ:
-					pt.X = Convert.ToInt32((mouseX - mapX) / Convert.ToDouble(_zoom) * 160);
-					pt.Y = Convert.ToInt32((mapZ - mouseY) / Convert.ToDouble(_zoom) * 160);
+					pt.X = Convert.ToInt32((mouseX - _mapX) / Convert.ToDouble(_zoom) * 160);
+					pt.Y = Convert.ToInt32((_mapZ - mouseY) / Convert.ToDouble(_zoom) * 160);
 					break;
 				case Orientation.YZ:
-					pt.X = Convert.ToInt32((mouseX - mapY) / Convert.ToDouble(_zoom) * 160);
-					pt.Y = Convert.ToInt32((mapZ - mouseY) / Convert.ToDouble(_zoom) * 160);
+					pt.X = Convert.ToInt32((mouseX - _mapY) / Convert.ToDouble(_zoom) * 160);
+					pt.Y = Convert.ToInt32((_mapZ - mouseY) / Convert.ToDouble(_zoom) * 160);
 					break;
 			}
 		}
@@ -218,16 +224,16 @@ namespace Idmr.Yogeme
 			switch (_displayMode)
 			{
 				case Orientation.XY:
-					coord.X = (w / 2 - mapX) / Convert.ToSingle(_zoom);
-					coord.Y = (mapY - h / 2) / Convert.ToSingle(_zoom);
+					coord.X = (w / 2 - _mapX) / Convert.ToSingle(_zoom);
+					coord.Y = (_mapY - h / 2) / Convert.ToSingle(_zoom);
 					break;
 				case Orientation.XZ:
-					coord.X = (w / 2 - mapX) / Convert.ToSingle(_zoom);
-					coord.Y = (mapZ - h / 2) / Convert.ToSingle(_zoom);
+					coord.X = (w / 2 - _mapX) / Convert.ToSingle(_zoom);
+					coord.Y = (_mapZ - h / 2) / Convert.ToSingle(_zoom);
 					break;
 				case Orientation.YZ:
-					coord.X = (w / 2 - mapY) / Convert.ToSingle(_zoom);
-					coord.Y = (mapZ - h / 2) / Convert.ToSingle(_zoom);
+					coord.X = (w / 2 - _mapY) / Convert.ToSingle(_zoom);
+					coord.Y = (_mapZ - h / 2) / Convert.ToSingle(_zoom);
 					break;
 			}
 			return coord;
@@ -328,16 +334,16 @@ namespace Idmr.Yogeme
 			switch (_displayMode)
 			{
 				case Orientation.XY:
-					mapX += offx;
-					mapY += offy;
+					_mapX += offx;
+					_mapY += offy;
 					break;
 				case Orientation.XZ:
-					mapX += offx;
-					mapZ += offy;
+					_mapX += offx;
+					_mapZ += offy;
 					break;
 				case Orientation.YZ:
-					mapY += offx;
-					mapZ += offy;
+					_mapY += offx;
+					_mapZ += offy;
 					break;
 			}
 			_dragMapPrevious = _clickPixelUp;
@@ -345,7 +351,7 @@ namespace Idmr.Yogeme
 
 		void moveSelectionToCursor()
 		{
-			if (onDataModified != null) onDataModified(0, new EventArgs());
+			onDataModified?.Invoke(0, new EventArgs());
 			int offx = _clickMapUp.X - _dragMapPrevious.X;
 			int offy = _clickMapUp.Y - _dragMapPrevious.Y;
 			foreach (SelectionData dat in _selectionList)
@@ -353,16 +359,16 @@ namespace Idmr.Yogeme
 				switch (_displayMode)
 				{
 					case Orientation.XY:
-						dat.wpRef.RawX += (short)offx;
-						dat.wpRef.RawY += (short)offy;
+						dat.WPRef.RawX += (short)offx;
+						dat.WPRef.RawY += (short)offy;
 						break;
 					case Orientation.XZ:
-						dat.wpRef.RawX += (short)offx;
-						dat.wpRef.RawZ += (short)offy;
+						dat.WPRef.RawX += (short)offx;
+						dat.WPRef.RawZ += (short)offy;
 						break;
 					case Orientation.YZ:
-						dat.wpRef.RawY += (short)offx;
-						dat.wpRef.RawZ += (short)offy;
+						dat.WPRef.RawY += (short)offx;
+						dat.WPRef.RawZ += (short)offy;
 						break;
 				}
 			}
@@ -399,8 +405,8 @@ namespace Idmr.Yogeme
 
 			if (c2.X - c1.X <= 5 && c2.Y - c1.Y <= 5)
 			{
-				double msX = (c2.X - mapX) / Convert.ToDouble(_zoom) * 160;
-				double msY = (mapY - c2.Y) / Convert.ToDouble(_zoom) * 160;
+				double msX = (c2.X - _mapX) / Convert.ToDouble(_zoom) * 160;
+				double msY = (_mapY - c2.Y) / Convert.ToDouble(_zoom) * 160;
 
 				p1.X = (int)msX - 8;
 				p1.Y = (int)msY - 8;
@@ -507,9 +513,9 @@ namespace Idmr.Yogeme
 		void startup(Settings config)
 		{
 			_settings = config;
-			if (wireframeManager == null)
-				wireframeManager = new WireframeManager();
-			wireframeManager.SetPlatform(_platform, config);
+			if (_wireframeManager == null)
+				_wireframeManager = new WireframeManager();
+			_wireframeManager.SetPlatform(_platform, config);
 
 			#region checkbox array
 			chkWP[0] = chkSP1;
@@ -541,9 +547,9 @@ namespace Idmr.Yogeme
 			}
 			#endregion
 			updateLayout();
-			mapX = w / 2;
-			mapY = h / 2;
-			mapZ = h / 2;
+			_mapX = w / 2;
+			_mapY = h / 2;
+			_mapZ = h / 2;
 			_dragIcon[0] = -1;
 			_loading = true;
 			chkTags.Checked = Convert.ToBoolean(config.MapOptions & Settings.MapOpts.FGTags);
@@ -643,24 +649,24 @@ namespace Idmr.Yogeme
 			switch (_displayMode)
 			{
 				case Orientation.XY:
-					mapX = Convert.ToInt32(w / 2 - coord.X * Convert.ToSingle(_zoom));
-					mapY = Convert.ToInt32(h / 2 + coord.Y * Convert.ToSingle(_zoom));
+					_mapX = Convert.ToInt32(w / 2 - coord.X * Convert.ToSingle(_zoom));
+					_mapY = Convert.ToInt32(h / 2 + coord.Y * Convert.ToSingle(_zoom));
 					break;
 				case Orientation.XZ:
-					mapX = Convert.ToInt32(w / 2 - coord.X * Convert.ToSingle(_zoom));
-					mapZ = Convert.ToInt32(h / 2 + coord.Y * Convert.ToSingle(_zoom));
+					_mapX = Convert.ToInt32(w / 2 - coord.X * Convert.ToSingle(_zoom));
+					_mapZ = Convert.ToInt32(h / 2 + coord.Y * Convert.ToSingle(_zoom));
 					break;
 				case Orientation.YZ:
-					mapY = Convert.ToInt32(w / 2 - coord.X * Convert.ToSingle(_zoom));
-					mapZ = Convert.ToInt32(h / 2 + coord.Y * Convert.ToSingle(_zoom));
+					_mapY = Convert.ToInt32(w / 2 - coord.X * Convert.ToSingle(_zoom));
+					_mapZ = Convert.ToInt32(h / 2 + coord.Y * Convert.ToSingle(_zoom));
 					break;
 			}
-			if (mapX / _zoom > 150) mapX = 150 * _zoom;
-			if ((mapX - w) / _zoom < -150) mapX = -150 * _zoom + w;
-			if (mapY / _zoom > 150) mapY = 150 * _zoom;
-			if ((mapY - h) / _zoom < -150) mapY = -150 * _zoom + h;
-			if (mapZ / _zoom > 150) mapZ = 150 * _zoom;
-			if ((mapZ - h) / _zoom < -150) mapZ = -150 * _zoom + h;
+			if (_mapX / _zoom > 150) _mapX = 150 * _zoom;
+			if ((_mapX - w) / _zoom < -150) _mapX = -150 * _zoom + w;
+			if (_mapY / _zoom > 150) _mapY = 150 * _zoom;
+			if ((_mapY - h) / _zoom < -150) _mapY = -150 * _zoom + h;
+			if (_mapZ / _zoom > 150) _mapZ = 150 * _zoom;
+			if ((_mapZ - h) / _zoom < -150) _mapZ = -150 * _zoom + h;
 		}
 
 		/// <summary>Determines if a waypoint (raw units) is within a bounding box formed by a top/left and bottom/right point.</summary>
@@ -713,15 +719,15 @@ namespace Idmr.Yogeme
 			if (_loading)
 				return;
 			#region orientation setup
-			int X = mapX, Y = mapZ, coord1 = 0, coord2 = 2;
+			int X = _mapX, Y = _mapZ, coord1 = 0, coord2 = 2;
 			switch (_displayMode)
 			{
 				case Orientation.XY:
-					Y = mapY;
+					Y = _mapY;
 					coord2 = 1;
 					break;
 				case Orientation.YZ:
-					X = mapY;
+					X = _mapY;
 					coord1 = 1;
 					break;
 			}
@@ -784,9 +790,9 @@ namespace Idmr.Yogeme
 				// if previous sequential WP is checked and trace is required, draw trace line according to WP type
 				for (int k = 0; k < 4; k++) // Start
 				{
-					if (chkWP[k].Checked && _mapData[i].WPs[0][k].Enabled && (_platform == Settings.Platform.XWA ? _mapData[i].WPs[0][k][4] == (short)(numRegion.Value - 1) : true))
+					if (chkWP[k].Checked && _mapData[i].WPs[0][k].Enabled && (_platform != Settings.Platform.XWA || _mapData[i].WPs[0][k][4] == (short)(numRegion.Value - 1)))
 					{
-						DrawCraft(g3, bmptemp, _mapData[i], _zoom * _mapData[i].WPs[0][k][coord1] / 160 + X, -_zoom * _mapData[i].WPs[0][k][coord2] / 160 + Y);
+						drawCraft(g3, bmptemp, _mapData[i], _zoom * _mapData[i].WPs[0][k][coord1] / 160 + X, -_zoom * _mapData[i].WPs[0][k][coord2] / 160 + Y);
 						//g3.DrawImageUnscaled(bmptemp, _zoom * _mapData[i].WPs[0][k][coord1] / 160 + X - 8, -_zoom * _mapData[i].WPs[0][k][coord2] / 160 + Y - 8);
 						if (chkTags.Checked) g3.DrawString(_mapData[i].Name + " " + chkWP[k].Text, MapForm.DefaultFont, sbg, _zoom * _mapData[i].WPs[0][k][coord1] / 160 + X + 8, -_zoom * _mapData[i].WPs[0][k][coord2] / 160 + Y + 8);
 					}
@@ -883,8 +889,8 @@ namespace Idmr.Yogeme
 			}
 			foreach (SelectionData dat in _selectionList)
 			{
-				int x = _zoom * dat.wpRef[coord1] / 160 + X;
-				int y = -_zoom * dat.wpRef[coord2] / 160 + Y;
+				int x = _zoom * dat.WPRef[coord1] / 160 + X;
+				int y = -_zoom * dat.WPRef[coord2] / 160 + Y;
 				x += 1;  //Doesn't seem to line up with icon correctly, push it over.
 						 //[JB] Draws a four corner selection box like in-game.
 				g3.DrawLine(pnSel, x - 8, y - 8, x - 4, y - 8); //Horizontal top
@@ -1096,8 +1102,8 @@ namespace Idmr.Yogeme
 			if (optXY.Checked)
 			{
 				_displayMode = Orientation.XY;
-				int x, y, z;
-				getAverageSelectionCoords(out x, out y, out z);
+				int x, y;
+				getAverageSelectionCoords(out x, out y, out _);
 				updateMapCoord(new PointF((float)x / 160, (float)y / 160));
 				lblCoor1.Text = "X:";
 				lblCoor2.Text = "Y:";
@@ -1111,8 +1117,8 @@ namespace Idmr.Yogeme
 			if (optXZ.Checked)
 			{
 				_displayMode = Orientation.XZ;
-				int x, y, z;
-				getAverageSelectionCoords(out x, out y, out z);
+				int x, z;
+				getAverageSelectionCoords(out x, out _, out z);
 				updateMapCoord(new PointF((float)x / 160, (float)z / 160));
 				lblCoor1.Text = "X:";
 				lblCoor2.Text = "Z:";
@@ -1127,14 +1133,14 @@ namespace Idmr.Yogeme
 			{
 				//mapY = w/2 - mapY + h/2;
 				_displayMode = Orientation.YZ;
-				int x, y, z;
-				getAverageSelectionCoords(out x, out y, out z);
+				int y, z;
+				getAverageSelectionCoords(out _, out y, out z);
 				updateMapCoord(new PointF((float)y / 160, (float)z / 160));
 				lblCoor1.Text = "Y:";
 				lblCoor2.Text = "Z:";
 				MapPaint(false);
 			}
-			else mapY = w / 2 + h / 2 - mapY;
+			else _mapY = w / 2 + h / 2 - _mapY;
 		}
 
 		/// <summary>Timer that handles the calling of the actual map rendering, when using TimeRestrictedMapPaint()</summary>
@@ -1187,9 +1193,9 @@ namespace Idmr.Yogeme
 			}
 			else if (e.Button.ToString() == "Middle")
 			{
-				mapX = w / 2;
-				mapY = h / 2;
-				mapZ = h / 2;
+				_mapX = w / 2;
+				_mapY = h / 2;
+				_mapZ = h / 2;
 				hscZoom.Value = 40;
 				MapPaint(false);
 			}
@@ -1228,20 +1234,20 @@ namespace Idmr.Yogeme
 			switch (_displayMode)
 			{
 				case Orientation.XY:
-					msX = (e.X - mapX) / Convert.ToDouble(_zoom);
-					msY = (mapY - e.Y) / Convert.ToDouble(_zoom);
+					msX = (e.X - _mapX) / Convert.ToDouble(_zoom);
+					msY = (_mapY - e.Y) / Convert.ToDouble(_zoom);
 					lblCoor1.Text = "X: " + Math.Round(msX, 2).ToString();
 					lblCoor2.Text = "Y: " + Math.Round(msY, 2).ToString();
 					break;
 				case Orientation.XZ:
-					msX = (e.X - mapX) / Convert.ToDouble(_zoom);
-					msY = (mapZ - e.Y) / Convert.ToDouble(_zoom);
+					msX = (e.X - _mapX) / Convert.ToDouble(_zoom);
+					msY = (_mapZ - e.Y) / Convert.ToDouble(_zoom);
 					lblCoor1.Text = "X: " + Math.Round(msX, 2).ToString();
 					lblCoor2.Text = "Z: " + Math.Round(msY, 2).ToString();
 					break;
 				case Orientation.YZ:
-					msX = (e.X - mapY) / Convert.ToDouble(_zoom);
-					msY = (mapZ - e.Y) / Convert.ToDouble(_zoom);
+					msX = (e.X - _mapY) / Convert.ToDouble(_zoom);
+					msY = (_mapZ - e.Y) / Convert.ToDouble(_zoom);
 					lblCoor1.Text = "Y: " + Math.Round(msX, 2).ToString();
 					lblCoor2.Text = "Z: " + Math.Round(msY, 2).ToString();
 					break;
@@ -1281,7 +1287,7 @@ namespace Idmr.Yogeme
 		{
 			e.IsInputKey = true;
 		}
-
+		/*
 		/// <summary>Used to determine if mouse click is near a craft waypoint</summary>
 		/// <returns>True if num1==(num2 ± 6)</returns>
 		bool isApprox(int num1, double num2)
@@ -1289,7 +1295,7 @@ namespace Idmr.Yogeme
 			// +/- 6 is a good enough size
 			if (num1 <= (num2 + 6) && num1 >= (num2 - 6)) return true;
 			else return false;
-		}
+		}*/
 		#endregion
 		#region frmMap
 		void form_Activated(object sender, EventArgs e) { MapPaint(true); }
@@ -1342,7 +1348,7 @@ namespace Idmr.Yogeme
 			{
 				if (e.KeyCode == Keys.A || e.KeyCode == Keys.N)
 				{
-					bool state = (e.KeyCode == Keys.A ? true : false);
+					bool state = (e.KeyCode == Keys.A);
 					_norefresh = true;
 					for (int i = 0; i < lstSelected.Items.Count; i++)
 						lstSelected.SetSelected(i, state);
@@ -1373,16 +1379,16 @@ namespace Idmr.Yogeme
 				switch (_displayMode)
 				{
 					case Orientation.XY:
-						dat.wpRef.RawX += (short)xOffset;
-						dat.wpRef.RawY += (short)yOffset;
+						dat.WPRef.RawX += (short)xOffset;
+						dat.WPRef.RawY += (short)yOffset;
 						break;
 					case Orientation.XZ:
-						dat.wpRef.RawX += (short)xOffset;
-						dat.wpRef.RawZ += (short)yOffset;
+						dat.WPRef.RawX += (short)xOffset;
+						dat.WPRef.RawZ += (short)yOffset;
 						break;
 					case Orientation.YZ:
-						dat.wpRef.RawY += (short)xOffset;
-						dat.wpRef.RawZ += (short)yOffset;
+						dat.WPRef.RawY += (short)xOffset;
+						dat.WPRef.RawZ += (short)yOffset;
 						break;
 				}
 			}
@@ -1392,16 +1398,16 @@ namespace Idmr.Yogeme
 				switch (_displayMode)
 				{
 					case Orientation.XY:
-						lblCoor1.Text = "New X: " + Math.Round(dat.wpRef.X, 2).ToString();
-						lblCoor2.Text = "New Y: " + Math.Round(dat.wpRef.Y, 2).ToString();
+						lblCoor1.Text = "New X: " + Math.Round(dat.WPRef.X, 2).ToString();
+						lblCoor2.Text = "New Y: " + Math.Round(dat.WPRef.Y, 2).ToString();
 						break;
 					case Orientation.XZ:
-						lblCoor1.Text = "New X: " + Math.Round(dat.wpRef.X, 2).ToString();
-						lblCoor2.Text = "New Z: " + Math.Round(dat.wpRef.Z, 2).ToString();
+						lblCoor1.Text = "New X: " + Math.Round(dat.WPRef.X, 2).ToString();
+						lblCoor2.Text = "New Z: " + Math.Round(dat.WPRef.Z, 2).ToString();
 						break;
 					case Orientation.YZ:
-						lblCoor1.Text = "New Y: " + Math.Round(dat.wpRef.Y, 2).ToString();
-						lblCoor2.Text = "New Z: " + Math.Round(dat.wpRef.Z, 2).ToString();
+						lblCoor1.Text = "New Y: " + Math.Round(dat.WPRef.Y, 2).ToString();
+						lblCoor2.Text = "New Z: " + Math.Round(dat.WPRef.Z, 2).ToString();
 						break;
 				}
 			}
@@ -1568,25 +1574,25 @@ namespace Idmr.Yogeme
 			{
 				MapDataIndex = index;
 				MapDataRef = mapData;
-				wpRef = wp;
+				WPRef = wp;
 			}
 			public int MapDataIndex;
 			public MapData MapDataRef;
-			public Platform.BaseFlightGroup.BaseWaypoint wpRef;
+			public Platform.BaseFlightGroup.BaseWaypoint WPRef;
 		}
 
-		void DrawCraft(Graphics g, Bitmap bmp, MapData dat, int x, int y)
+		void drawCraft(Graphics g, Bitmap bmp, MapData dat, int x, int y)
 		{
-			WireframeInstance model = wireframeManager.GetOrCreateWireframeInstance(dat.Craft, dat.FgIndex);
+			WireframeInstance model = _wireframeManager.GetOrCreateWireframeInstance(dat.Craft, dat.FgIndex);
 
-			if (!_settings.WireframeEnabled || model == null || model.modelDef == null || (_settings.WireframeIconThresholdEnabled && model.modelDef.longestSpanMeters < _settings.WireframeIconThresholdSize))
+			if (!_settings.WireframeEnabled || model == null || model.ModelDef == null || (_settings.WireframeIconThresholdEnabled && model.ModelDef.LongestSpanMeters < _settings.WireframeIconThresholdSize))
 			{
 				g.DrawImageUnscaled(bmp, x - 8, y - 8);
 				return;
 			}
 
 			//Simple bounds check to determine if it's definitely off screen.
-			double calcSpan = (double)model.modelDef.longestSpanRaw / 40960 * _zoom;
+			double calcSpan = (double)model.ModelDef.LongestSpanRaw / 40960 * _zoom;
 			int viewSpan = (int)calcSpan;
 			if (x + viewSpan < 0 || x - viewSpan > w || y + viewSpan < 0 || y - viewSpan > h)
 				return;
@@ -1620,46 +1626,46 @@ namespace Idmr.Yogeme
 			Pen p;
 			int x1, x2, y1, y2;
 			int lineDrawCount = 0;
-			foreach (MeshLayerInstance layer in model.layerInstances)
+			foreach (MeshLayerInstance layer in model.LayerInstances)
 			{
 				if (layer.MatchMeshFilter(_settings.WireframeMeshTypeVisibility))
 				{
 					p = body;
-					MeshType mt = layer.meshLayerDefinition.meshType;
+					MeshType mt = layer.MeshLayerDefinition.MeshType;
 					if (mt == MeshType.Hangar)
 						p = hangar;
 					else if (mt == MeshType.DockingPlatform || mt == MeshType.LandingPlatform)
 						p = dock;
-					lineDrawCount += layer.meshLayerDefinition.lines.Count;
+					lineDrawCount += layer.MeshLayerDefinition.Lines.Count;
 					if (_displayMode == Orientation.XY)
 					{
-						foreach (Line line in layer.meshLayerDefinition.lines)
+						foreach (Line line in layer.MeshLayerDefinition.Lines)
 						{
-							x1 = x + (int)(layer.vertices[line.v1].x);
-							x2 = x + (int)(layer.vertices[line.v2].x);
-							y1 = y + (int)(layer.vertices[line.v1].y);
-							y2 = y + (int)(layer.vertices[line.v2].y);
+							x1 = x + (int)(layer.Vertices[line.V1].X);
+							x2 = x + (int)(layer.Vertices[line.V2].X);
+							y1 = y + (int)(layer.Vertices[line.V1].Y);
+							y2 = y + (int)(layer.Vertices[line.V2].Y);
 							g.DrawLine(p, x1, y1, x2, y2);
 						}
 					}
 					else if (_displayMode == Orientation.XZ)
 					{
-						foreach (Line line in layer.meshLayerDefinition.lines)
+						foreach (Line line in layer.MeshLayerDefinition.Lines)
 						{
-							x1 = x + (int)(layer.vertices[line.v1].x);
-							x2 = x + (int)(layer.vertices[line.v2].x);
-							y1 = y + (int)(layer.vertices[line.v1].z);
-							y2 = y + (int)(layer.vertices[line.v2].z); g.DrawLine(p, x1, y1, x2, y2);
+							x1 = x + (int)(layer.Vertices[line.V1].X);
+							x2 = x + (int)(layer.Vertices[line.V2].X);
+							y1 = y + (int)(layer.Vertices[line.V1].Z);
+							y2 = y + (int)(layer.Vertices[line.V2].Z); g.DrawLine(p, x1, y1, x2, y2);
 						}
 					}
 					else if (_displayMode == Orientation.YZ)
 					{
-						foreach (Line line in layer.meshLayerDefinition.lines)
+						foreach (Line line in layer.MeshLayerDefinition.Lines)
 						{
-							x1 = x + (int)(-layer.vertices[line.v1].y);  // Hmm, they were the wrong direction.
-							x2 = x + (int)(-layer.vertices[line.v2].y);
-							y1 = y + (int)(layer.vertices[line.v1].z);
-							y2 = y + (int)(layer.vertices[line.v2].z); g.DrawLine(p, x1, y1, x2, y2);
+							x1 = x + (int)(-layer.Vertices[line.V1].Y);  // Hmm, they were the wrong direction.
+							x2 = x + (int)(-layer.Vertices[line.V2].Y);
+							y1 = y + (int)(layer.Vertices[line.V1].Z);
+							y2 = y + (int)(layer.Vertices[line.V2].Z); g.DrawLine(p, x1, y1, x2, y2);
 						}
 					}
 				}
@@ -1668,7 +1674,7 @@ namespace Idmr.Yogeme
 			//For larger models that appear large enough on screen, draw a pip at the origin so the user knows where the selection point is.
 			if (lineDrawCount == 0)
 				g.DrawImageUnscaled(bmp, x - 8, y - 8);
-			else if (model.modelDef.longestSpanMeters > 30 && viewSpan > 32)
+			else if (model.ModelDef.LongestSpanMeters > 30 && viewSpan > 32)
 				g.DrawEllipse(hangar, x - 1, y - 1, 2, 2);
 		}
 
