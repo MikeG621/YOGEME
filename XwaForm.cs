@@ -2044,7 +2044,7 @@ namespace Idmr.Yogeme
 			try
 			{
 				_fMap.Import(_mission.FlightGroups);
-				_fMap.MapPaint(true);
+				_fMap.MapPaint();
 			}
 			catch { /* do nothing */ }
 		}
@@ -3800,7 +3800,7 @@ namespace Idmr.Yogeme
 					_fMap.Import(_mission.FlightGroups);
 				else if (fgIndex < _mission.FlightGroups.Count)
 					_fMap.UpdateFlightGroup(fgIndex, _mission.FlightGroups[fgIndex]);
-				_fMap.MapPaint(true);
+				_fMap.MapPaint();
 			}
 		}
 		void refreshWaypointTab()

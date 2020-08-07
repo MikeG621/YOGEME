@@ -37,6 +37,7 @@ using System.Collections.Generic;
  *     MeshLayerInstance: vertices are transformed into screen coordinates relative to the mesh origin.
  */
 
+//TODO: overall, should add XML to just about everything, change fields to auto-properties, etc. Also, clear up Vertex/Vector, since it looks like they're not named properly
 namespace Idmr.Yogeme
 {
 	public class Vector3
@@ -119,7 +120,7 @@ namespace Idmr.Yogeme
 		VertexNormals = 11,
 		TextureCoordinates = 13,
 		Texture = 20,
-		FaceGrouping = 21,
+		FaceGrouping = 21,	// aka Mesh Data
 		Hardpoint = 22,
 		RotationScale = 23,
 		NodeSwitch = 24,
@@ -263,29 +264,14 @@ namespace Idmr.Yogeme
 				{
 					using (BinaryReader br = new BinaryReader(fs))
 					{
-						// TODO: confirm edits
-						/*fs.Seek(0, SeekOrigin.End);
-						long fileSize = fs.Position;
-						fs.Seek(0, SeekOrigin.Begin);*/
-
 						int version = br.ReadInt32();
-						if (version > 0)
-						{
-							/*fileSize = version;
-							version = 0;*/
-						}
-						else
-						{
-							/*version = -version;
-							fileSize = br.ReadInt32();*/
-							fs.Position += 4;
-						}
+						if (version <= 0) fs.Position += 4;
 
 						parseTopNodes(fs, br);
 					}
 				}
 			}
-			catch (Exception)
+			catch
 			{
 				return false;
 			}
@@ -451,14 +437,14 @@ namespace Idmr.Yogeme
 	public class CraftLod
 	{
 		public int Distance;
-		public short GileOffset;
+		public short FileOffset;
 		public List<Vector3_Int16> Vertices = new List<Vector3_Int16>();
 		public List<Line> Lines = new List<Line>();
 
 		public CraftLod(int distance, short fileOffset)
 		{
 			Distance = distance;
-			GileOffset = fileOffset;
+			FileOffset = fileOffset;
 		}
 	}
 
@@ -654,7 +640,7 @@ namespace Idmr.Yogeme
 
 			for (int i = 0; i < node.Lods.Count; i++)
 			{
-				fs.Position = nodeBasePosition + (i * 6) + node.Lods[i].GileOffset;
+				fs.Position = nodeBasePosition + (i * 6) + node.Lods[i].FileOffset;
 
 				//short header = br.ReadInt16();
 				fs.Position += 2;

@@ -8,6 +8,7 @@
 
 /* CHANGELOG
  * v1.7, XXXXXX
+ * [UPD] MapPaint now always persistent
  * [NEW #12] Wireframe implementation [JB]
  * [UPD] Max zoom and zoom speed adjusted [JB]
  * [UPD] FgIndex added to MapData [JB]
@@ -214,6 +215,103 @@ namespace Idmr.Yogeme
 			_selectionListFGs.Clear();
 			lstSelected.Items.Clear();
 			lstSelected.Visible = false;
+		}
+
+		void drawCraft(Graphics g, Bitmap bmp, MapData dat, int x, int y)
+		{
+			WireframeInstance model = _wireframeManager.GetOrCreateWireframeInstance(dat.Craft, dat.FgIndex);
+
+			if (!_settings.WireframeEnabled || model == null || model.ModelDef == null || (_settings.WireframeIconThresholdEnabled && model.ModelDef.LongestSpanMeters < _settings.WireframeIconThresholdSize))
+			{
+				g.DrawImageUnscaled(bmp, x - 8, y - 8);
+				return;
+			}
+
+			//Simple bounds check to determine if it's definitely off screen.
+			double calcSpan = (double)model.ModelDef.LongestSpanRaw / 40960 * _zoom;
+			int viewSpan = (int)calcSpan;
+			if (x + viewSpan < 0 || x - viewSpan > w || y + viewSpan < 0 || y - viewSpan > h)
+				return;
+
+			Platform.BaseFlightGroup.BaseWaypoint dst;
+
+			if (_platform == Settings.Platform.XWA)
+			{
+				int ord = (int)((numRegion.Value - 1) * 4 + numOrder.Value);
+				dst = dat.WPs[ord][0];
+			}
+			else
+			{
+				dst = dat.WPs[0][4];
+			}
+
+			int meshZoom = _zoom;
+			if (_settings.WireframeMeshIconEnabled && _settings.WireframeMeshIconSize > 0 && calcSpan < _settings.WireframeMeshIconSize)
+			{
+				if (calcSpan < 0.00001)
+					calcSpan = 0.00001;
+				double scale = _settings.WireframeMeshIconSize / calcSpan;
+				meshZoom = (int)(_zoom * scale);
+			}
+
+			model.UpdateParams(dat.WPs[0][0], dst, meshZoom, _displayMode, _settings.WireframeMeshTypeVisibility);
+
+			Pen body = new Pen(getIFFColor(dat.IFF));
+			Pen hangar = new Pen(Color.White);
+			Pen dock = new Pen(Color.Yellow);
+			Pen p;
+			int x1, x2, y1, y2;
+			int lineDrawCount = 0;
+			foreach (MeshLayerInstance layer in model.LayerInstances)
+			{
+				if (layer.MatchMeshFilter(_settings.WireframeMeshTypeVisibility))
+				{
+					p = body;
+					MeshType mt = layer.MeshLayerDefinition.MeshType;
+					if (mt == MeshType.Hangar)
+						p = hangar;
+					else if (mt == MeshType.DockingPlatform || mt == MeshType.LandingPlatform)
+						p = dock;
+					lineDrawCount += layer.MeshLayerDefinition.Lines.Count;
+					if (_displayMode == Orientation.XY)
+					{
+						foreach (Line line in layer.MeshLayerDefinition.Lines)
+						{
+							x1 = x + (int)(layer.Vertices[line.V1].X);
+							x2 = x + (int)(layer.Vertices[line.V2].X);
+							y1 = y + (int)(layer.Vertices[line.V1].Y);
+							y2 = y + (int)(layer.Vertices[line.V2].Y);
+							g.DrawLine(p, x1, y1, x2, y2);
+						}
+					}
+					else if (_displayMode == Orientation.XZ)
+					{
+						foreach (Line line in layer.MeshLayerDefinition.Lines)
+						{
+							x1 = x + (int)(layer.Vertices[line.V1].X);
+							x2 = x + (int)(layer.Vertices[line.V2].X);
+							y1 = y + (int)(layer.Vertices[line.V1].Z);
+							y2 = y + (int)(layer.Vertices[line.V2].Z); g.DrawLine(p, x1, y1, x2, y2);
+						}
+					}
+					else if (_displayMode == Orientation.YZ)
+					{
+						foreach (Line line in layer.MeshLayerDefinition.Lines)
+						{
+							x1 = x + (int)(-layer.Vertices[line.V1].Y);  // Hmm, they were the wrong direction.
+							x2 = x + (int)(-layer.Vertices[line.V2].Y);
+							y1 = y + (int)(layer.Vertices[line.V1].Z);
+							y2 = y + (int)(layer.Vertices[line.V2].Z); g.DrawLine(p, x1, y1, x2, y2);
+						}
+					}
+				}
+			}
+			//If we didn't draw anything at all (empty model, or none matched the mesh filter) then our failsafe is a normal icon just so it's not invisible.
+			//For larger models that appear large enough on screen, draw a pip at the origin so the user knows where the selection point is.
+			if (lineDrawCount == 0)
+				g.DrawImageUnscaled(bmp, x - 8, y - 8);
+			else if (model.ModelDef.LongestSpanMeters > 30 && viewSpan > 32)
+				g.DrawEllipse(hangar, x - 1, y - 1, 2, 2);
 		}
 
 		/// <summary>Get the center pixel of pctMap and the coordinates it pertains to</summary>
@@ -639,7 +737,7 @@ namespace Idmr.Yogeme
 			chkDistance.Left = grpDir.Left;
 			updateMapCoord(center);
 			lstVisible.Height = pctMap.Bottom - lstVisible.Top;
-			MapPaint(true);
+			MapPaint();
 		}
 
 		/// <summary>Update mapX and mapY</summary>
@@ -708,10 +806,11 @@ namespace Idmr.Yogeme
 			}
 			x = 0; y = 0; z = 0;
 		}
+
 		#region public functions
 		/// <summary>The down-and-dirty function that handles map display </summary>
 		/// <param name="persistant">When <b>true</b> draws to memory, <b>false</b> draws directly to the image</param>
-		public void MapPaint(bool persistant)
+		public void MapPaint()
 		{
 			if (_isClosing) return;
 			//_lastMapPaintTime = Environment.TickCount;
@@ -719,15 +818,15 @@ namespace Idmr.Yogeme
 			if (_loading)
 				return;
 			#region orientation setup
-			int X = _mapX, Y = _mapZ, coord1 = 0, coord2 = 2;
+			int mX = _mapX, mY = _mapZ, coord1 = 0, coord2 = 2;
 			switch (_displayMode)
 			{
 				case Orientation.XY:
-					Y = _mapY;
+					mY = _mapY;
 					coord2 = 1;
 					break;
 				case Orientation.YZ:
-					X = _mapY;
+					mX = _mapY;
 					coord1 = 1;
 					break;
 			}
@@ -740,37 +839,30 @@ namespace Idmr.Yogeme
 			Pen pnTrace = new Pen(Color.Gray);      // for WP traces
 			Pen pnSel = new Pen(Color.White);  //[JB] For selection boxes
 			Graphics g3;
-			if (persistant)
-			{
-				g3 = Graphics.FromImage(_map);      //graphics obj, load from the memory bitmap
-				g3.Clear(SystemColors.Control);     //clear it
-			}
-			else
-			{
-				g3 = pctMap.CreateGraphics();       //paint directly to pict
-			}
+			g3 = Graphics.FromImage(_map);      //graphics obj, load from the memory bitmap
+			g3.Clear(SystemColors.Control);     //clear it
 			#endregion
 			#region BG and grid
 			g3.FillRectangle(sb, 0, 0, w, h);       //background
 			for (int i = 0; i < 200; i++)
 			{
-				g3.DrawLine(pn, 0, _zoom * i + Y, w, _zoom * i + Y);    //min lines, every klick
-				g3.DrawLine(pn, 0, Y - _zoom * i, w, Y - _zoom * i);
-				g3.DrawLine(pn, _zoom * i + X, 0, _zoom * i + X, h);
-				g3.DrawLine(pn, X - _zoom * i, 0, X - _zoom * i, h);
+				g3.DrawLine(pn, 0, _zoom * i + mY, w, _zoom * i + mY);    //min lines, every klick
+				g3.DrawLine(pn, 0, mY - _zoom * i, w, mY - _zoom * i);
+				g3.DrawLine(pn, _zoom * i + mX, 0, _zoom * i + mX, h);
+				g3.DrawLine(pn, mX - _zoom * i, 0, mX - _zoom * i, h);
 			}
 			pn.Width = 3;
 			for (int i = 0; i < 40; i++)
 			{
-				g3.DrawLine(pn, 0, _zoom * i * 5 + Y, w, _zoom * i * 5 + Y);    //maj lines, every 5 klicks
-				g3.DrawLine(pn, 0, Y - _zoom * i * 5, w, Y - _zoom * i * 5);
-				g3.DrawLine(pn, _zoom * i * 5 + X, 0, _zoom * i * 5 + X, h);
-				g3.DrawLine(pn, X - _zoom * i * 5, 0, X - _zoom * i * 5, h);
+				g3.DrawLine(pn, 0, _zoom * i * 5 + mY, w, _zoom * i * 5 + mY);    //maj lines, every 5 klicks
+				g3.DrawLine(pn, 0, mY - _zoom * i * 5, w, mY - _zoom * i * 5);
+				g3.DrawLine(pn, _zoom * i * 5 + mX, 0, _zoom * i * 5 + mX, h);
+				g3.DrawLine(pn, mX - _zoom * i * 5, 0, mX - _zoom * i * 5, h);
 			}
 			pn.Color = Color.Red;
 			pn.Width = 1;
-			g3.DrawLine(pn, 0, Y, w, Y);    // origin lines
-			g3.DrawLine(pn, X, 0, X, h);
+			g3.DrawLine(pn, 0, mY, w, mY);    // origin lines
+			g3.DrawLine(pn, mX, 0, mX, h);
 			#endregion
 			Bitmap bmptemp;
 			byte[] bAdd = new byte[3];      // [0] = R, [1] = G, [2] = B
@@ -792,9 +884,9 @@ namespace Idmr.Yogeme
 				{
 					if (chkWP[k].Checked && _mapData[i].WPs[0][k].Enabled && (_platform != Settings.Platform.XWA || _mapData[i].WPs[0][k][4] == (short)(numRegion.Value - 1)))
 					{
-						drawCraft(g3, bmptemp, _mapData[i], _zoom * _mapData[i].WPs[0][k][coord1] / 160 + X, -_zoom * _mapData[i].WPs[0][k][coord2] / 160 + Y);
+						drawCraft(g3, bmptemp, _mapData[i], _zoom * _mapData[i].WPs[0][k][coord1] / 160 + mX, -_zoom * _mapData[i].WPs[0][k][coord2] / 160 + mY);
 						//g3.DrawImageUnscaled(bmptemp, _zoom * _mapData[i].WPs[0][k][coord1] / 160 + X - 8, -_zoom * _mapData[i].WPs[0][k][coord2] / 160 + Y - 8);
-						if (chkTags.Checked) g3.DrawString(_mapData[i].Name + " " + chkWP[k].Text, MapForm.DefaultFont, sbg, _zoom * _mapData[i].WPs[0][k][coord1] / 160 + X + 8, -_zoom * _mapData[i].WPs[0][k][coord2] / 160 + Y + 8);
+						if (chkTags.Checked) g3.DrawString(_mapData[i].Name + " " + chkWP[k].Text, DefaultFont, sbg, _zoom * _mapData[i].WPs[0][k][coord1] / 160 + mX + 8, -_zoom * _mapData[i].WPs[0][k][coord2] / 160 + mY + 8);
 					}
 				}
 				if (_platform == Settings.Platform.XWA) // WPs     [JB] XWA's north/south is inverted compared to XvT.
@@ -804,8 +896,8 @@ namespace Idmr.Yogeme
 					{
 						if (chkWP[k + 4].Checked && _mapData[i].WPs[ord][k].Enabled)
 						{
-							g3.DrawEllipse(pn, _zoom * _mapData[i].WPs[ord][k][coord1] / 160 + X - 1, -_zoom * _mapData[i].WPs[ord][k][coord2] / 160 + Y - 1, 3, 3);
-							if (chkTags.Checked) g3.DrawString(_mapData[i].Name + " " + chkWP[k + 4].Text, DefaultFont, sbg, _zoom * _mapData[i].WPs[ord][k][coord1] / 160 + X + 4, -_zoom * _mapData[i].WPs[ord][k][coord2] / 160 + Y + 4);
+							g3.DrawEllipse(pn, _zoom * _mapData[i].WPs[ord][k][coord1] / 160 + mX - 1, -_zoom * _mapData[i].WPs[ord][k][coord2] / 160 + mY - 1, 3, 3);
+							if (chkTags.Checked) g3.DrawString(_mapData[i].Name + " " + chkWP[k + 4].Text, DefaultFont, sbg, _zoom * _mapData[i].WPs[ord][k][coord1] / 160 + mX + 4, -_zoom * _mapData[i].WPs[ord][k][coord2] / 160 + mY + 4);
 							if (chkTrace.Checked)  //[JB] Restructured drawing to expand with distance labels, and fixed index out of range error and incorrect access of hyperspace point.
 							{
 								Platform.BaseFlightGroup.BaseWaypoint comp = _mapData[i].WPs[0][0];
@@ -817,11 +909,11 @@ namespace Idmr.Yogeme
 										continue;
 									comp = _mapData[i].WPs[ord][k - 1];
 								}
-								g3.DrawLine(pnTrace, _zoom * comp[coord1] / 160 + X, -_zoom * comp[coord2] / 160 + Y, _zoom * _mapData[i].WPs[ord][k][coord1] / 160 + X, -_zoom * _mapData[i].WPs[ord][k][coord2] / 160 + Y);
+								g3.DrawLine(pnTrace, _zoom * comp[coord1] / 160 + mX, -_zoom * comp[coord2] / 160 + mY, _zoom * _mapData[i].WPs[ord][k][coord1] / 160 + mX, -_zoom * _mapData[i].WPs[ord][k][coord2] / 160 + mY);
 								if (chkDistance.Checked)
 								{
 									int offy = chkTags.Checked ? 14 : 0; //To render it below the FG tag
-									g3.DrawString(getDistanceString(_mapData[i].WPs[ord][k], comp), DefaultFont, sbg, _zoom * _mapData[i].WPs[ord][k][coord1] / 160 + X + 4, -_zoom * _mapData[i].WPs[ord][k][coord2] / 160 + Y + 4 + offy);
+									g3.DrawString(getDistanceString(_mapData[i].WPs[ord][k], comp), DefaultFont, sbg, _zoom * _mapData[i].WPs[ord][k][coord1] / 160 + mX + 4, -_zoom * _mapData[i].WPs[ord][k][coord2] / 160 + mY + 4 + offy);
 								}
 							}
 						}
@@ -834,16 +926,16 @@ namespace Idmr.Yogeme
 					{
 						if (chkWP[k].Checked && _mapData[i].WPs[0][k].Enabled)
 						{
-							g3.DrawEllipse(pn, _zoom * _mapData[i].WPs[0][k][coord1] / 160 + X - 1, -_zoom * _mapData[i].WPs[0][k][coord2] / 160 + Y - 1, 3, 3);
-							if (chkTags.Checked) g3.DrawString(_mapData[i].Name + " " + chkWP[k].Text, DefaultFont, sbg, _zoom * _mapData[i].WPs[0][k][coord1] / 160 + X + 4, -_zoom * _mapData[i].WPs[0][k][coord2] / 160 + Y + 4);
+							g3.DrawEllipse(pn, _zoom * _mapData[i].WPs[0][k][coord1] / 160 + mX - 1, -_zoom * _mapData[i].WPs[0][k][coord2] / 160 + mY - 1, 3, 3);
+							if (chkTags.Checked) g3.DrawString(_mapData[i].Name + " " + chkWP[k].Text, DefaultFont, sbg, _zoom * _mapData[i].WPs[0][k][coord1] / 160 + mX + 4, -_zoom * _mapData[i].WPs[0][k][coord2] / 160 + mY + 4);
 							if (chkWP[(k == 4 ? 0 : (k - 1))].Checked && chkTrace.Checked)
 							{
 								int comp = (k == 4 ? 0 : (k - 1));
-								g3.DrawLine(pnTrace, _zoom * _mapData[i].WPs[0][comp][coord1] / 160 + X, -_zoom * _mapData[i].WPs[0][comp][coord2] / 160 + Y, _zoom * _mapData[i].WPs[0][k][coord1] / 160 + X, -_zoom * _mapData[i].WPs[0][k][coord2] / 160 + Y);
+								g3.DrawLine(pnTrace, _zoom * _mapData[i].WPs[0][comp][coord1] / 160 + mX, -_zoom * _mapData[i].WPs[0][comp][coord2] / 160 + mY, _zoom * _mapData[i].WPs[0][k][coord1] / 160 + mX, -_zoom * _mapData[i].WPs[0][k][coord2] / 160 + mY);
 								if (chkDistance.Checked)
 								{
 									int offy = chkTags.Checked ? 14 : 0; //To render it below the FG tag
-									g3.DrawString(getDistanceString(_mapData[i].WPs[0][k], _mapData[i].WPs[0][comp]), DefaultFont, sbg, _zoom * _mapData[i].WPs[0][k][coord1] / 160 + X + 4, -_zoom * _mapData[i].WPs[0][k][coord2] / 160 + Y + 4 + offy);
+									g3.DrawString(getDistanceString(_mapData[i].WPs[0][k], _mapData[i].WPs[0][comp]), DefaultFont, sbg, _zoom * _mapData[i].WPs[0][k][coord1] / 160 + mX + 4, -_zoom * _mapData[i].WPs[0][k][coord2] / 160 + mY + 4 + offy);
 								}
 							}
 						}
@@ -852,13 +944,13 @@ namespace Idmr.Yogeme
 				// remaining are not valid for XWA
 				if (chkWP[12].Checked && _mapData[i].WPs[0][12].Enabled) // RND
 				{
-					g3.DrawEllipse(pn, _zoom * _mapData[i].WPs[0][12][coord1] / 160 + X - 1, -_zoom * _mapData[i].WPs[0][12][coord2] / 160 + Y - 1, 3, 3);
-					if (chkTags.Checked) g3.DrawString(_mapData[i].Name + " " + chkWP[12].Text, DefaultFont, sbg, _zoom * _mapData[i].WPs[0][12][coord1] / 160 + X + 4, -_zoom * _mapData[i].WPs[0][12][coord2] / 160 + Y + 4);
+					g3.DrawEllipse(pn, _zoom * _mapData[i].WPs[0][12][coord1] / 160 + mX - 1, -_zoom * _mapData[i].WPs[0][12][coord2] / 160 + mY - 1, 3, 3);
+					if (chkTags.Checked) g3.DrawString(_mapData[i].Name + " " + chkWP[12].Text, DefaultFont, sbg, _zoom * _mapData[i].WPs[0][12][coord1] / 160 + mX + 4, -_zoom * _mapData[i].WPs[0][12][coord2] / 160 + mY + 4);
 				}
 				if (chkWP[13].Checked && _mapData[i].WPs[0][13].Enabled)    // HYP
 				{
-					g3.DrawEllipse(pn, _zoom * _mapData[i].WPs[0][13][coord1] / 160 + X - 1, -_zoom * _mapData[i].WPs[0][13][coord2] / 160 + Y - 1, 3, 3);
-					if (chkTags.Checked) g3.DrawString(_mapData[i].Name + " " + chkWP[13].Text, DefaultFont, sbg, _zoom * _mapData[i].WPs[0][13][coord1] / 160 + X + 4, -_zoom * _mapData[i].WPs[0][13][coord2] / 160 + Y + 4);
+					g3.DrawEllipse(pn, _zoom * _mapData[i].WPs[0][13][coord1] / 160 + mX - 1, -_zoom * _mapData[i].WPs[0][13][coord2] / 160 + mY - 1, 3, 3);
+					if (chkTags.Checked) g3.DrawString(_mapData[i].Name + " " + chkWP[13].Text, DefaultFont, sbg, _zoom * _mapData[i].WPs[0][13][coord1] / 160 + mX + 4, -_zoom * _mapData[i].WPs[0][13][coord2] / 160 + mY + 4);
 					if (chkTrace.Checked)
 					{
 						// in this case, make sure last visible WP is the last enabled before tracing to HYP
@@ -869,11 +961,11 @@ namespace Idmr.Yogeme
 							{
 								if (chkWP[k].Checked && _mapData[i].WPs[0][k].Enabled && !_mapData[i].WPs[0][k + 1].Enabled)
 								{
-									g3.DrawLine(pnTrace, _zoom * _mapData[i].WPs[0][k][coord1] / 160 + X, -_zoom * _mapData[i].WPs[0][k][coord2] / 160 + Y, _zoom * _mapData[i].WPs[0][13][coord1] / 160 + X, -_zoom * _mapData[i].WPs[0][13][coord2] / 160 + Y);
+									g3.DrawLine(pnTrace, _zoom * _mapData[i].WPs[0][k][coord1] / 160 + mX, -_zoom * _mapData[i].WPs[0][k][coord2] / 160 + mY, _zoom * _mapData[i].WPs[0][13][coord1] / 160 + mX, -_zoom * _mapData[i].WPs[0][13][coord2] / 160 + mY);
 									break;
 								}
 							}
-							else if (chkWP[k].Checked && _mapData[i].WPs[0][k].Enabled) g3.DrawLine(pnTrace, _zoom * _mapData[i].WPs[0][11][coord1] / 160 + X, -_zoom * _mapData[i].WPs[0][11][coord2] / 160 + Y, _zoom * _mapData[i].WPs[0][13][coord1] / 160 + X, -_zoom * _mapData[i].WPs[0][13][coord2] / 160 + Y); ;
+							else if (chkWP[k].Checked && _mapData[i].WPs[0][k].Enabled) g3.DrawLine(pnTrace, _zoom * _mapData[i].WPs[0][11][coord1] / 160 + mX, -_zoom * _mapData[i].WPs[0][11][coord2] / 160 + mY, _zoom * _mapData[i].WPs[0][13][coord1] / 160 + mX, -_zoom * _mapData[i].WPs[0][13][coord2] / 160 + mY); ;
 						}
 						pnTrace.DashStyle = System.Drawing.Drawing2D.DashStyle.Solid;
 					}
@@ -882,15 +974,15 @@ namespace Idmr.Yogeme
 				{
 					if (chkWP[k].Checked && _mapData[i].WPs[0][k].Enabled)
 					{
-						g3.DrawImageUnscaled(bmptemp, _zoom * _mapData[i].WPs[0][k][coord1] / 160 + X - 8, -_zoom * _mapData[i].WPs[0][k][coord2] / 160 + Y - 8);
-						if (chkTags.Checked) g3.DrawString(_mapData[i].Name + " " + chkWP[k].Text, MapForm.DefaultFont, sbg, _zoom * _mapData[i].WPs[0][k][coord1] / 160 + X + 8, -_zoom * _mapData[i].WPs[0][k][coord2] / 160 + Y + 8);
+						g3.DrawImageUnscaled(bmptemp, _zoom * _mapData[i].WPs[0][k][coord1] / 160 + mX - 8, -_zoom * _mapData[i].WPs[0][k][coord2] / 160 + mY - 8);
+						if (chkTags.Checked) g3.DrawString(_mapData[i].Name + " " + chkWP[k].Text, DefaultFont, sbg, _zoom * _mapData[i].WPs[0][k][coord1] / 160 + mX + 8, -_zoom * _mapData[i].WPs[0][k][coord2] / 160 + mY + 8);
 					}
 				}
 			}
 			foreach (SelectionData dat in _selectionList)
 			{
-				int x = _zoom * dat.WPRef[coord1] / 160 + X;
-				int y = -_zoom * dat.WPRef[coord2] / 160 + Y;
+				int x = _zoom * dat.WPRef[coord1] / 160 + mX;
+				int y = -_zoom * dat.WPRef[coord2] / 160 + mY;
 				x += 1;  //Doesn't seem to line up with icon correctly, push it over.
 						 //[JB] Draws a four corner selection box like in-game.
 				g3.DrawLine(pnSel, x - 8, y - 8, x - 4, y - 8); //Horizontal top
@@ -911,7 +1003,7 @@ namespace Idmr.Yogeme
 				Rectangle r = new Rectangle(p1.X, p1.Y, p2.X - p1.X, p2.Y - p1.Y);
 				g3.DrawRectangle(sel, r);
 			}
-			if (persistant) pctMap.Invalidate();        // since it's drawing to memory, this refreshes the pct.  Removes the flicker when zooming
+			pctMap.Invalidate();        // since it's drawing to memory, this refreshes the pct.  Removes the flicker when zooming
 			g3.Dispose();
 		}
 
@@ -1107,7 +1199,7 @@ namespace Idmr.Yogeme
 				updateMapCoord(new PointF((float)x / 160, (float)y / 160));
 				lblCoor1.Text = "X:";
 				lblCoor2.Text = "Y:";
-				MapPaint(false);
+				MapPaint();
 			}
 		}
 
@@ -1122,7 +1214,7 @@ namespace Idmr.Yogeme
 				updateMapCoord(new PointF((float)x / 160, (float)z / 160));
 				lblCoor1.Text = "X:";
 				lblCoor2.Text = "Z:";
-				MapPaint(false);
+				MapPaint();
 			}
 		}
 
@@ -1138,7 +1230,7 @@ namespace Idmr.Yogeme
 				updateMapCoord(new PointF((float)y / 160, (float)z / 160));
 				lblCoor1.Text = "Y:";
 				lblCoor2.Text = "Z:";
-				MapPaint(false);
+				MapPaint();
 			}
 			else _mapY = w / 2 + h / 2 - _mapY;
 		}
@@ -1148,7 +1240,7 @@ namespace Idmr.Yogeme
 		{
 			if (_mapPaintScheduled)
 			{
-				MapPaint(true);
+				MapPaint();
 				_mapPaintScheduled = false;
 				mapPaintRedrawTimer.Stop();
 			}
@@ -1197,7 +1289,7 @@ namespace Idmr.Yogeme
 				_mapY = h / 2;
 				_mapZ = h / 2;
 				hscZoom.Value = 40;
-				MapPaint(false);
+				MapPaint();
 			}
 		}
 		void pctMap_MouseEnter(object sender, EventArgs e) { pctMap.Focus(); _mapFocus = true; }
@@ -1265,7 +1357,7 @@ namespace Idmr.Yogeme
 				if (!_shiftState)
 				{
 					performSelection();
-					MapPaint(true);
+					MapPaint();
 				}
 			}
 			else if (e.Button.ToString() == "Right")
@@ -1298,7 +1390,7 @@ namespace Idmr.Yogeme
 		}*/
 		#endregion
 		#region frmMap
-		void form_Activated(object sender, EventArgs e) { MapPaint(true); }
+		void form_Activated(object sender, EventArgs e) { MapPaint(); }
 		void form_FormClosed(object sender, FormClosedEventArgs e) { _map.Dispose(); }
 		void form_FormClosing(object sender, FormClosingEventArgs e)
 		{
@@ -1312,7 +1404,7 @@ namespace Idmr.Yogeme
 		void form_Load(object sender, EventArgs e)
 		{
 			_map = new Bitmap(w, h, PixelFormat.Format24bppRgb);
-			MapPaint(true);
+			MapPaint();
 		}
 		void form_MouseWheel(object sender, MouseEventArgs e)
 		{
@@ -1414,7 +1506,7 @@ namespace Idmr.Yogeme
 			if (_selectionList.Count > 0 && (xOffset != 0 || yOffset != 0) && onDataModified != null)
 			{
 				onDataModified(0, new EventArgs());
-				MapPaint(true);
+				MapPaint();
 			}
 			e.Handled = true;
 		}
@@ -1426,16 +1518,16 @@ namespace Idmr.Yogeme
 		#endregion
 
 		#region Checkboxes
-		void chkTags_CheckedChanged(object sender, EventArgs e) { if (!_loading) MapPaint(true); }
-		void chkTrace_CheckedChanged(object sender, EventArgs e) { if (!_loading) { MapPaint(true); chkDistance.Enabled = chkTrace.Checked; } }
-		void chkDistance_CheckedChanged(object sender, EventArgs e) { if (!_loading) MapPaint(true); }
+		void chkTags_CheckedChanged(object sender, EventArgs e) { if (!_loading) MapPaint(); }
+		void chkTrace_CheckedChanged(object sender, EventArgs e) { if (!_loading) { MapPaint(); chkDistance.Enabled = chkTrace.Checked; } }
+		void chkDistance_CheckedChanged(object sender, EventArgs e) { if (!_loading) MapPaint(); }
 		void chkWPArr_CheckedChanged(object sender, EventArgs e)
 		{
 			if (_loading) return;
 			if ((CheckBox)sender == chkWP[14] && chkWP[14].Checked) for (int i = 0; i < 14; i++) chkWP[i].Checked = false;
 			if (((CheckBox)sender).Checked == false) //[JB] Disabled points might still be selected.
 				deselect();
-			MapPaint(true);
+			MapPaint();
 		}
 		#endregion
 
@@ -1468,7 +1560,7 @@ namespace Idmr.Yogeme
 				_mapData[lstVisible.SelectedIndices[i]].Visible = false;
 				swapSelectedItems(lstVisible.SelectedIndices[i], true);
 			}
-			MapPaint(true);
+			MapPaint();
 			_norefresh = false;
 		}
 		void lstSelected_SelectedIndexChanged(object sender, EventArgs e)
@@ -1513,8 +1605,8 @@ namespace Idmr.Yogeme
 		}
 		#endregion Selection and visibility
 
-		void numOrder_ValueChanged(object sender, EventArgs e) { if (!_loading) { deselect(); MapPaint(true); } }  //[JB] Added deselect
-		void numRegion_ValueChanged(object sender, EventArgs e) { if (!_loading) { deselect(); MapPaint(true); } }
+		void numOrder_ValueChanged(object sender, EventArgs e) { if (!_loading) { deselect(); MapPaint(); } }  //[JB] Added deselect
+		void numRegion_ValueChanged(object sender, EventArgs e) { if (!_loading) { deselect(); MapPaint(); } }
 		#endregion controls
 
 		struct MapData
@@ -1581,102 +1673,7 @@ namespace Idmr.Yogeme
 			public Platform.BaseFlightGroup.BaseWaypoint WPRef;
 		}
 
-		void drawCraft(Graphics g, Bitmap bmp, MapData dat, int x, int y)
-		{
-			WireframeInstance model = _wireframeManager.GetOrCreateWireframeInstance(dat.Craft, dat.FgIndex);
-
-			if (!_settings.WireframeEnabled || model == null || model.ModelDef == null || (_settings.WireframeIconThresholdEnabled && model.ModelDef.LongestSpanMeters < _settings.WireframeIconThresholdSize))
-			{
-				g.DrawImageUnscaled(bmp, x - 8, y - 8);
-				return;
-			}
-
-			//Simple bounds check to determine if it's definitely off screen.
-			double calcSpan = (double)model.ModelDef.LongestSpanRaw / 40960 * _zoom;
-			int viewSpan = (int)calcSpan;
-			if (x + viewSpan < 0 || x - viewSpan > w || y + viewSpan < 0 || y - viewSpan > h)
-				return;
-
-			Platform.BaseFlightGroup.BaseWaypoint dst;
-
-			if (_platform == Settings.Platform.XWA)
-			{
-				int ord = (int)((numRegion.Value - 1) * 4 + numOrder.Value);
-				dst = dat.WPs[ord][0];
-			}
-			else
-			{
-				dst = dat.WPs[0][4];
-			}
-
-			int meshZoom = _zoom;
-			if (_settings.WireframeMeshIconEnabled && _settings.WireframeMeshIconSize > 0 && calcSpan < _settings.WireframeMeshIconSize)
-			{
-				if (calcSpan < 0.00001)
-					calcSpan = 0.00001;
-				double scale = _settings.WireframeMeshIconSize / calcSpan;
-				meshZoom = (int)(_zoom * scale);
-			}
-
-			model.UpdateParams(dat.WPs[0][0], dst, meshZoom, _displayMode, _settings.WireframeMeshTypeVisibility);
-
-			Pen body = new Pen(getIFFColor(dat.IFF));
-			Pen hangar = new Pen(Color.White);
-			Pen dock = new Pen(Color.Yellow);
-			Pen p;
-			int x1, x2, y1, y2;
-			int lineDrawCount = 0;
-			foreach (MeshLayerInstance layer in model.LayerInstances)
-			{
-				if (layer.MatchMeshFilter(_settings.WireframeMeshTypeVisibility))
-				{
-					p = body;
-					MeshType mt = layer.MeshLayerDefinition.MeshType;
-					if (mt == MeshType.Hangar)
-						p = hangar;
-					else if (mt == MeshType.DockingPlatform || mt == MeshType.LandingPlatform)
-						p = dock;
-					lineDrawCount += layer.MeshLayerDefinition.Lines.Count;
-					if (_displayMode == Orientation.XY)
-					{
-						foreach (Line line in layer.MeshLayerDefinition.Lines)
-						{
-							x1 = x + (int)(layer.Vertices[line.V1].X);
-							x2 = x + (int)(layer.Vertices[line.V2].X);
-							y1 = y + (int)(layer.Vertices[line.V1].Y);
-							y2 = y + (int)(layer.Vertices[line.V2].Y);
-							g.DrawLine(p, x1, y1, x2, y2);
-						}
-					}
-					else if (_displayMode == Orientation.XZ)
-					{
-						foreach (Line line in layer.MeshLayerDefinition.Lines)
-						{
-							x1 = x + (int)(layer.Vertices[line.V1].X);
-							x2 = x + (int)(layer.Vertices[line.V2].X);
-							y1 = y + (int)(layer.Vertices[line.V1].Z);
-							y2 = y + (int)(layer.Vertices[line.V2].Z); g.DrawLine(p, x1, y1, x2, y2);
-						}
-					}
-					else if (_displayMode == Orientation.YZ)
-					{
-						foreach (Line line in layer.MeshLayerDefinition.Lines)
-						{
-							x1 = x + (int)(-layer.Vertices[line.V1].Y);  // Hmm, they were the wrong direction.
-							x2 = x + (int)(-layer.Vertices[line.V2].Y);
-							y1 = y + (int)(layer.Vertices[line.V1].Z);
-							y2 = y + (int)(layer.Vertices[line.V2].Z); g.DrawLine(p, x1, y1, x2, y2);
-						}
-					}
-				}
-			}
-			//If we didn't draw anything at all (empty model, or none matched the mesh filter) then our failsafe is a normal icon just so it's not invisible.
-			//For larger models that appear large enough on screen, draw a pip at the origin so the user knows where the selection point is.
-			if (lineDrawCount == 0)
-				g.DrawImageUnscaled(bmp, x - 8, y - 8);
-			else if (model.ModelDef.LongestSpanMeters > 30 && viewSpan > 32)
-				g.DrawEllipse(hangar, x - 1, y - 1, 2, 2);
-		}
+		
 
 		/*Bitmap getBitmap(int craftType)
         {
