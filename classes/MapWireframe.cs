@@ -1079,7 +1079,7 @@ namespace Idmr.Yogeme
 				}
 				else if (_curOrientation == MapForm.Orientation.YZ)
 				{
-					yaw = -Math.Atan2(_dstX - _curX, _curY - _dstY);
+					yaw = Math.Atan2(_dstX - _curX, -_curY - -_dstY);
 					pitch = -Math.Atan2(diffZ, Math.Sqrt(diffX * diffX + diffY * diffY));
 				}
 				if (yaw > Math.PI)
