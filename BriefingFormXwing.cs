@@ -328,7 +328,7 @@ namespace Idmr.Yogeme
 		void setCurrentPage(int index)
 		{
 			//Just in case, make sure there's a default page that exists to edit
-			if (_xwingBriefing.pages.Count == 0)
+			if (_xwingBriefing.Pages.Count == 0)
 				_xwingBriefing.ResetPages(1);
 
 			if (index < 0)
@@ -853,7 +853,7 @@ namespace Idmr.Yogeme
 			#region FG tags
 			Bitmap bmptemp2;
 
-			int csIndex = _xwingBriefing.pages[currentPage].CoordSet;
+			int csIndex = _xwingBriefing.Pages[currentPage].CoordSet;
 			int wpIndex = 0; //Default to SP1
 			if (csIndex >= 1 && csIndex <= 3)
 				wpIndex = 7 + csIndex - 1;  //Switch to CS point.
@@ -1889,7 +1889,7 @@ namespace Idmr.Yogeme
 		void refreshDisplayElements()
 		{
 			BriefingPage pg = _xwingBriefing.GetBriefingPage(currentPage);
-			BriefingUIPage uip = _xwingBriefing.windowSettings[pg.PageType];
+			BriefingUIPage uip = _xwingBriefing.WindowSettings[(int)pg.PageType];
 
 			//int newWidth = 420;  Target size at maximum width
 			const int Top = 5;   //Coordinates to begin painting the entire preview area in YOGEME.
@@ -1902,7 +1902,7 @@ namespace Idmr.Yogeme
 			const float yMult = 1.90F;  //
 			const int minTitleHeight = 20;  //Only used if map is visible.
 
-			BriefingUIItem panel = null;
+			BriefingUIItem panel;
 			int x, y, width, height;
 			int mapTop = 0, mapBottom = 165;
 			bool mapEnabled = false;
@@ -1917,21 +1917,21 @@ namespace Idmr.Yogeme
 			//If the map is visble, the title.
 			//Need to figure out the map first.  If the map is visible, then the title is always positioned above the map (title.bottom joins map.top) and the caption is always positioned below (caption.top = map.bottom).  Additionally, the caption's height is always recalculated to fill the entire remaining space.
 			panel = uip.GetElement(BriefingUIPage.Elements.Map);
-			if (panel.IsVisible())
+			if (panel.IsVisible)
 			{
 				int oldHeight = this.h;
 				mapEnabled = true;
-				x = panel.left;
-				y = panel.top;
+				x = panel.Left;
+				y = panel.Top;
 
 				BriefingUIItem title = uip.GetElement(BriefingUIPage.Elements.Title);
-				int titleHeight = title.bottom - title.top;
+				int titleHeight = title.Bottom - title.Top;
 				if (titleHeight < minTitleHeight)
 					titleHeight = minTitleHeight;
-				y = title.top + titleHeight;  //The map aligns to the title, this seems be accurate (or reasonably so) to the game even if the title top/bottom are inverted.
+				y = title.Top + titleHeight;  //The map aligns to the title, this seems be accurate (or reasonably so) to the game even if the title top/bottom are inverted.
 
-				width = panel.right - panel.left;
-				height = panel.bottom - panel.top;
+				width = panel.Right - panel.Left;
+				height = panel.Bottom - panel.Top;
 				if (height < 1)
 				{
 					pctBrief.Visible = false;
@@ -1953,10 +1953,10 @@ namespace Idmr.Yogeme
 			}
 
 			panel = uip.GetElement(BriefingUIPage.Elements.Title);
-			x = panel.left;
-			y = panel.top;
-			width = panel.right - panel.left;
-			height = panel.bottom - panel.top;
+			x = panel.Left;
+			y = panel.Top;
+			width = panel.Right - panel.Left;
+			height = panel.Bottom - panel.Top;
 			if (mapEnabled == true)
 			{
 				if (height < minTitleHeight)
@@ -1969,10 +1969,10 @@ namespace Idmr.Yogeme
 			lblTitle.Size = new Size(width, height);
 
 			panel = uip.GetElement(BriefingUIPage.Elements.Text);
-			x = panel.left;
-			y = panel.top;
-			width = panel.right - panel.left;
-			height = panel.bottom - panel.top;
+			x = panel.Left;
+			y = panel.Top;
+			width = panel.Right - panel.Left;
+			height = panel.Bottom - panel.Top;
 			if (mapEnabled == true)
 				y = mapBottom;
 			height = maxGameHeight - y;  //Height always set to maximum bottom
@@ -1986,9 +1986,9 @@ namespace Idmr.Yogeme
 
 			lblCaption.Padding = new Padding(mapEnabled == true ? 72 : 6, 0, 0, 0);
 
-			pctBrief.Visible = uip.GetElement(BriefingUIPage.Elements.Map).IsVisible();
-			lblTitle.Visible = uip.GetElement(BriefingUIPage.Elements.Title).IsVisible();
-			lblCaption.Visible = uip.GetElement(BriefingUIPage.Elements.Text).IsVisible();
+			pctBrief.Visible = uip.GetElement(BriefingUIPage.Elements.Map).IsVisible;
+			lblTitle.Visible = uip.GetElement(BriefingUIPage.Elements.Title).IsVisible;
+			lblCaption.Visible = uip.GetElement(BriefingUIPage.Elements.Text).IsVisible;
 			this.Refresh();
 		}
 		#endregion	tabDisplay
@@ -2521,10 +2521,10 @@ namespace Idmr.Yogeme
 			int index = lstPages.SelectedIndex;
 			if (index <= 0) return;
 			saveCurrentPage();
-			BriefingPage temp = _xwingBriefing.pages[index];
-			_xwingBriefing.pages[index] = _xwingBriefing.pages[index - 1];
-			_xwingBriefing.pages[index - 1] = temp;
-			if (onModified != null) onModified("PageUp", new EventArgs());
+			BriefingPage temp = _xwingBriefing.Pages[index];
+			_xwingBriefing.Pages[index] = _xwingBriefing.Pages[index - 1];
+			_xwingBriefing.Pages[index - 1] = temp;
+			onModified?.Invoke("PageUp", new EventArgs());
 			rebuildPageList();
 			setCurrentPage(index - 1);
 			lstPages.SelectedIndex = index - 1;
@@ -2532,12 +2532,12 @@ namespace Idmr.Yogeme
 		void cmdPageMoveDown_Click(object sender, EventArgs e)
 		{
 			int index = lstPages.SelectedIndex;
-			if (index < 0 || index >= _xwingBriefing.pages.Count - 1) return;
+			if (index < 0 || index >= _xwingBriefing.Pages.Count - 1) return;
 			saveCurrentPage();
-			BriefingPage temp = _xwingBriefing.pages[index];
-			_xwingBriefing.pages[index] = _xwingBriefing.pages[index + 1];
-			_xwingBriefing.pages[index + 1] = temp;
-			if (onModified != null) onModified("PageDown", new EventArgs());
+			BriefingPage temp = _xwingBriefing.Pages[index];
+			_xwingBriefing.Pages[index] = _xwingBriefing.Pages[index + 1];
+			_xwingBriefing.Pages[index + 1] = temp;
+			onModified?.Invoke("PageDown", new EventArgs());
 			rebuildPageList();
 			setCurrentPage(index + 1);
 			lstPages.SelectedIndex = index + 1;
@@ -2546,7 +2546,7 @@ namespace Idmr.Yogeme
 		{
 			int index = lstPages.SelectedIndex;
 			if (index < 0) return;
-			if (index == 0 && _xwingBriefing.pages.Count == 1)
+			if (index == 0 && _xwingBriefing.Pages.Count == 1)
 			{
 				MessageBox.Show("You cannot delete the first page.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return;
@@ -2554,13 +2554,13 @@ namespace Idmr.Yogeme
 
 			saveCurrentPage();
 
-			int newPage = clampValue(currentPage - 1, 0, _xwingBriefing.pages.Count - 1);
+			int newPage = clampValue(currentPage - 1, 0, _xwingBriefing.Pages.Count - 1);
 			currentPage = newPage;  //Directly set the current page so that SetCurrentPage() doesn't try to save a non-existent page when switching. 
 			setCurrentPage(newPage);
 			lstPages.SelectedIndex = newPage;
 
-			_xwingBriefing.pages.RemoveAt(index);
-			if (onModified != null) onModified("PageDelete", new EventArgs());
+			_xwingBriefing.Pages.RemoveAt(index);
+			onModified?.Invoke("PageDelete", new EventArgs());
 			rebuildPageList();
 		}
 		void cmdPageAdd_Click(object sender, EventArgs e)
@@ -2611,10 +2611,10 @@ namespace Idmr.Yogeme
 				_strings = _xwingBriefing.BriefingString;
 				importStrings();  //Just in case new strings were added.
 			}
-			_xwingBriefing.pages.Add(pg);
-			if (onModified != null) onModified("PageAdd", new EventArgs());
-			int pgIndex = _xwingBriefing.pages.Count - 1;
-			_xwingBriefing.pages[pgIndex].EventsLength = (short)_xwingBriefing.GetEventsLength(pgIndex);
+			_xwingBriefing.Pages.Add(pg);
+			onModified?.Invoke("PageAdd", new EventArgs());
+			int pgIndex = _xwingBriefing.Pages.Count - 1;
+			_xwingBriefing.Pages[pgIndex].EventsLength = (short)_xwingBriefing.GetEventsLength(pgIndex);
 			rebuildPageList();
 			lstPages.SelectedIndex = pgIndex;
 		}
@@ -2640,16 +2640,16 @@ namespace Idmr.Yogeme
 		void numPageCoordSet_ValueChanged(object sender, EventArgs e)
 		{
 			if (_loading) return;
-			_xwingBriefing.pages[lstPages.SelectedIndex].CoordSet = (short)(numPageCoordSet.Value - 1);  //Base zero in data, Base 1 in editor.
-			if (onModified != null) onModified("PageCoords", new EventArgs());
+			_xwingBriefing.Pages[lstPages.SelectedIndex].CoordSet = (short)(numPageCoordSet.Value - 1);  //Base zero in data, Base 1 in editor.
+			onModified?.Invoke("PageCoords", new EventArgs());
 		}
 
 		void cboPageType_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (!_loading)
 			{
-				_xwingBriefing.pages[lstPages.SelectedIndex].PageType = (short)cboPageType.SelectedIndex;
-				if (onModified != null) onModified("PageType", new EventArgs());
+				_xwingBriefing.Pages[lstPages.SelectedIndex].PageType = (short)cboPageType.SelectedIndex;
+				onModified?.Invoke("PageType", new EventArgs());
 				rebuildPageList();
 			}
 		}
@@ -2660,7 +2660,7 @@ namespace Idmr.Yogeme
 				int index = cboPageAddType.SelectedIndex;
 				lblPageAddTitle.Enabled = (index == 0);
 				cboPageAddTitle.Enabled = (index == 0);
-				if (onModified != null) onModified("PageAddType", new EventArgs());
+				onModified?.Invoke("PageAddType", new EventArgs());
 			}
 		}
 
@@ -2686,14 +2686,14 @@ namespace Idmr.Yogeme
 			int page = lstPageType.SelectedIndex;
 			if (page < 0) page = 0;
 			int index = lstViewport.SelectedIndex % 5;
-			BriefingUIItem item = _xwingBriefing.windowSettings[page].items[index];
-			item.top = (short)numUItop.Value;
-			item.left = (short)numUIleft.Value;
-			item.bottom = (short)numUIbottom.Value;
-			item.right = (short)numUIright.Value;
-			int oldVis = item.visible;
-			item.visible = (short)(chkUIvisible.Checked ? 1 : 0);
-			if (oldVis != item.visible)
+			BriefingUIItem item = _xwingBriefing.WindowSettings[page].Items[index];
+			item.Top = (short)numUItop.Value;
+			item.Left = (short)numUIleft.Value;
+			item.Bottom = (short)numUIbottom.Value;
+			item.Right = (short)numUIright.Value;
+			bool oldVis = item.IsVisible;
+			item.IsVisible = chkUIvisible.Checked;
+			if (oldVis != item.IsVisible)
 				refreshPageTypes();
 		}
 
@@ -2701,16 +2701,16 @@ namespace Idmr.Yogeme
 		{
 			_xwingBriefing.ResetUISettings(2);
 			//Iterate through briefing pages and adjust indexes
-			for (int i = 0; i < _xwingBriefing.pages.Count; i++)
+			for (int i = 0; i < _xwingBriefing.Pages.Count; i++)
 			{
-				if (_xwingBriefing.pages[i].PageType >= _xwingBriefing.windowSettings.Count)
+				if (_xwingBriefing.Pages[i].PageType >= _xwingBriefing.WindowSettings.Count)
 				{
-					_xwingBriefing.pages[i].PageType = (short)(_xwingBriefing.windowSettings.Count - 1);
+					_xwingBriefing.Pages[i].PageType = (short)(_xwingBriefing.WindowSettings.Count - 1);
 					if (i == lstPages.SelectedIndex)
 						lstPages_SelectedIndexChanged(this, new EventArgs()); //Force refresh of form control values of currently selected briefing page.
 				}
 			}
-			if (onModified != null) onModified("ResetUI", new EventArgs());
+			onModified?.Invoke("ResetUI", new EventArgs());
 			refreshPageTypes();
 			rebuildPageList();
 		}
@@ -2718,26 +2718,25 @@ namespace Idmr.Yogeme
 		{
 			int page = lstPageType.SelectedIndex;
 			if (page < 0) page = 0;
-			_xwingBriefing.windowSettings[page].SetDefaultsToMapPage();
-			if (onModified != null) onModified("SetPageMap", new EventArgs());
+			_xwingBriefing.WindowSettings[page].SetDefaultsToMapPage();
+			onModified?.Invoke("SetPageMap", new EventArgs());
 			refreshPageTypes();
 		}
 		void cmdPageTypeText_Click(object sender, EventArgs e)
 		{
 			int page = lstPageType.SelectedIndex;
 			if (page < 0) page = 0;
-			_xwingBriefing.windowSettings[page].SetDefaultsToTextPage();
-			if (onModified != null) onModified("SetPageText", new EventArgs());
+			_xwingBriefing.WindowSettings[page].SetDefaultsToTextPage();
+			onModified?.Invoke("SetPageText", new EventArgs());
 			refreshPageTypes();
 		}
 		void cmdPageTypeAdd_Click(object sender, EventArgs e)
 		{
 			int curPage = lstPageType.SelectedIndex;
 			if (curPage < 0) curPage = 0;
-			BriefingUIPage newPage = new BriefingUIPage();
-			newPage = _xwingBriefing.windowSettings[curPage];
-			_xwingBriefing.windowSettings.Add(newPage);
-			if (onModified != null) onModified("AddPage", new EventArgs());
+			BriefingUIPage newPage = _xwingBriefing.WindowSettings[curPage];
+			_xwingBriefing.WindowSettings.Add(newPage);
+			onModified?.Invoke("AddPage", new EventArgs());
 			refreshPageTypes();
 			//The dropdown list of page types might've changed and adjusted index, so force refresh.
 			lstPages_SelectedIndexChanged(this, new EventArgs());
@@ -2746,18 +2745,18 @@ namespace Idmr.Yogeme
 		{
 			int curPage = lstPageType.SelectedIndex;
 			if (curPage < 0) curPage = 0;
-			if (_xwingBriefing.windowSettings.Count >= 2)  //Only delete if more than two pages.
+			if (_xwingBriefing.WindowSettings.Count >= 2)  //Only delete if more than two pages.
 			{
-				_xwingBriefing.windowSettings.RemoveAt(curPage);
-				if (onModified != null) onModified("DeletePage", new EventArgs());
+				_xwingBriefing.WindowSettings.RemoveAt(curPage);
+				onModified?.Invoke("DeletePage", new EventArgs());
 				refreshPageTypes();
 
 				//Iterate through briefing pages and adjust indexes
-				for (int i = 0; i < _xwingBriefing.pages.Count; i++)
+				for (int i = 0; i < _xwingBriefing.Pages.Count; i++)
 				{
-					if (_xwingBriefing.pages[i].PageType > curPage)
+					if (_xwingBriefing.Pages[i].PageType > curPage)
 					{
-						_xwingBriefing.pages[i].PageType--;
+						_xwingBriefing.Pages[i].PageType--;
 						if (i == lstPages.SelectedIndex)
 							lstPages_SelectedIndexChanged(this, new EventArgs()); //Force refresh of form control values of currently selected briefing page.
 					}
@@ -2771,16 +2770,16 @@ namespace Idmr.Yogeme
 			if (!_loading)
 			{
 				_xwingBriefing.MaxCoordSet = (short)(2 + cboMaxCoordSet.SelectedIndex);
-				for (int i = 0; i < _xwingBriefing.pages.Count; i++)
+				for (int i = 0; i < _xwingBriefing.Pages.Count; i++)
 				{
-					if (_xwingBriefing.pages[i].CoordSet > _xwingBriefing.MaxCoordSet)
+					if (_xwingBriefing.Pages[i].CoordSet > _xwingBriefing.MaxCoordSet)
 					{
-						_xwingBriefing.pages[i].CoordSet = (short)(_xwingBriefing.MaxCoordSet - 1);  //Base zero in data, Base 1 in editor.
+						_xwingBriefing.Pages[i].CoordSet = (short)(_xwingBriefing.MaxCoordSet - 1);  //Base zero in data, Base 1 in editor.
 						if (i == lstPages.SelectedIndex)
 							refreshPageTypes();
 					}
 				}
-				if (onModified != null) onModified("ChangeCoords", new EventArgs());
+				onModified?.Invoke("ChangeCoords", new EventArgs());
 			}
 			numPageCoordSet.Maximum = _xwingBriefing.MaxCoordSet;
 		}
@@ -2788,7 +2787,7 @@ namespace Idmr.Yogeme
 		{
 			if (_loading) return;
 			_xwingBriefing.MissionLocation = (short)cboMissionLocation.SelectedIndex;
-			if (onModified != null) onModified("LocationChanged", new EventArgs());
+			onModified?.Invoke("LocationChanged", new EventArgs());
 		}
 		void cboSelectPage1_SelectedIndexChanged(object sender, EventArgs e)
 		{
@@ -2805,14 +2804,14 @@ namespace Idmr.Yogeme
 			lstPages.Items.Clear();
 			cboSelectPage1.Items.Clear();
 			cboSelectPage2.Items.Clear();
-			for (int i = 0; i < _xwingBriefing.pages.Count; i++)
+			for (int i = 0; i < _xwingBriefing.Pages.Count; i++)
 			{
-				BriefingPage pg = _xwingBriefing.pages[i];
+				BriefingPage pg = _xwingBriefing.Pages[i];
 				string entry = "#" + (i + 1) + " ";
-				if (pg.PageType < 0 || pg.PageType >= _xwingBriefing.windowSettings.Count)
+				if (pg.PageType < 0 || pg.PageType >= _xwingBriefing.WindowSettings.Count)
 					entry += "Unknown:" + pg.PageType;
 				else
-					entry += _xwingBriefing.windowSettings[pg.PageType].GetPageDesc();
+					entry += _xwingBriefing.WindowSettings[pg.PageType].GetPageDesc();
 				short[] events = pg.Events;
 
 				//int hintString = _xwingBriefing.FindStringList(Strings.BriefingPageHintTitle);
@@ -2866,9 +2865,9 @@ namespace Idmr.Yogeme
 			lstPageType.Items.Clear();
 			int oldPgType = cboPageType.SelectedIndex;
 			cboPageType.Items.Clear();
-			for (int i = 0; i < _xwingBriefing.windowSettings.Count; i++)
+			for (int i = 0; i < _xwingBriefing.WindowSettings.Count; i++)
 			{
-				BriefingUIPage pg = _xwingBriefing.windowSettings[i];
+				BriefingUIPage pg = _xwingBriefing.WindowSettings[i];
 				string t = "#" + (i + 1) + " " + pg.GetPageDesc();
 				lstPageType.Items.Add(t);
 				cboPageType.Items.Add(t);
@@ -2884,7 +2883,7 @@ namespace Idmr.Yogeme
 			if (oldPgType < 0) oldPgType = 0;
 			if (oldPgType >= lstPageType.Items.Count)
 				oldPgType = lstPageType.Items.Count - 1;
-			cboPageType.SelectedIndex = oldIndex;
+			cboPageType.SelectedIndex = oldPgType;
 			_loading = btemp;
 		}
 		void refreshViewports()
@@ -2894,12 +2893,12 @@ namespace Idmr.Yogeme
 			int page = lstPageType.SelectedIndex;
 			if (page < 0) page = 0;
 			int index = lstViewport.SelectedIndex % 5;
-			BriefingUIItem item = _xwingBriefing.windowSettings[page].items[index];
-			numUItop.Value = item.top;
-			numUIleft.Value = item.left;
-			numUIbottom.Value = item.bottom;
-			numUIright.Value = item.right;
-			chkUIvisible.Checked = (item.visible != 0);
+			BriefingUIItem item = _xwingBriefing.WindowSettings[page].Items[index];
+			numUItop.Value = item.Top;
+			numUIleft.Value = item.Left;
+			numUIbottom.Value = item.Bottom;
+			numUIright.Value = item.Right;
+			chkUIvisible.Checked = item.IsVisible;
 			_loading = btemp;
 		}
 		#endregion tabPages

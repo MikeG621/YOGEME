@@ -1981,7 +1981,7 @@ namespace Idmr.Yogeme
 			refreshWaypointTab();  //[JB] Code moved to separate function so that the map callback can refresh it too.
 			for (_activeOrder = 0; _activeOrder < 3; _activeOrder++) orderLabelRefresh();
 			lblOrderArr_Click(lblOrder[0], new EventArgs());
-			chkPermaDeath.Checked = (_mission.FlightGroups[_activeFG].PermaDeathEnabled > 0);
+			chkPermaDeath.Checked = _mission.FlightGroups[_activeFG].PermaDeathEnabled;
 			numPermaDeathID.Value = _mission.FlightGroups[_activeFG].PermaDeathID;
 			for (int i = 0; i < 7; i++) numUnk[i].Value = _mission.FlightGroups[_activeFG].Unknowns[i];
 			chkUnk19.Checked = _mission.FlightGroups[_activeFG].Unknowns.Unknown19;
@@ -2668,7 +2668,7 @@ namespace Idmr.Yogeme
 		#region Options
 		void grpPermaDeath_Leave(object sender, EventArgs e)
 		{
-			_mission.FlightGroups[_activeFG].PermaDeathEnabled = Common.Update(this, _mission.FlightGroups[_activeFG].PermaDeathEnabled, Convert.ToByte(chkPermaDeath.Checked));
+			_mission.FlightGroups[_activeFG].PermaDeathEnabled = Common.Update(this, _mission.FlightGroups[_activeFG].PermaDeathEnabled, chkPermaDeath.Checked);
 			_mission.FlightGroups[_activeFG].PermaDeathID = Common.Update(this, _mission.FlightGroups[_activeFG].PermaDeathID, Convert.ToByte(numPermaDeathID.Value));
 		}
 		#endregion

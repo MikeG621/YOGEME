@@ -131,7 +131,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="App.ico" />
-    <None Include=".editorconfig" />
     <None Include="craft_data_tie.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

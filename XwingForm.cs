@@ -1169,7 +1169,7 @@ namespace Idmr.Yogeme
 			if (_mode == EditorMode.BRF)
 			{
 				Briefing br = _mission.Briefing;
-				for (int page = 0; page < br.pages.Count; page++)
+				for (int page = 0; page < br.Pages.Count; page++)
 				{
 					BriefingPage pg = br.GetBriefingPage(page);
 					int briefLen = br.GetEventsLength(page);
