@@ -115,9 +115,4 @@ Nav Buoy 1,NAV 1,0,probea
 Nav Buoy 2,NAV 2,0,probea
 Asteroid Field 1,Asteroid,0,astroid1
 Asteroid Field 2,Asteroid,0,astroid2
-Asteroid3,Asteroid3,0,ASTROID3
-Asteroid4,Asteroid4,0,ASTROID4
-Asteroid5,Asteroid5,0,ASTROID5
-Asteroid6,Asteroid6,0,ASTROID6
-Asteroid7,Asteroid5,0,ASTROID1
-Asteroid8,Asteroid6,0,ASTROID2
+Planet,Planet,,
