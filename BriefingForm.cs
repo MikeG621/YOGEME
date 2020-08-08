@@ -108,6 +108,7 @@ namespace Idmr.Yogeme
         bool _mapPaintScheduled = false;      //True if a paint is scheduled, that is a paint request is called while a paint is already in progress.
         static public string[] sharedTeamNames = new string[10]; //[JB] The other platforms need a way to communicate the team names to the briefing
         int _previousTimeIndex = 0;           //Tracks the previous time index of the briefing so we can detect when the user is manually scrolling through arbitrary times.
+		static int[] _xvtTagSizeCache = null;
 		EventHandler onModified = null;
 		#endregion
 
@@ -884,14 +885,41 @@ namespace Idmr.Yogeme
 		}
 		int[] getTagSize(int craft)
 		{
-			FileStream fs = File.OpenRead(Application.StartupPath + "\\images\\XvT_BRF.dat");
-			BinaryReader br = new BinaryReader(fs);
-			fs.Position = craft*2+2;
-			fs.Position = br.ReadInt16();
+			if (_xvtTagSizeCache == null)
+				_xvtTagSizeCache = new int[imgCraft.Images.Count];
+
 			int[] size = new int[2];
-			size[0] = br.ReadByte();
-			size[1] = br.ReadByte();
-			fs.Close();
+			if (craft >= 0 && craft < _xvtTagSizeCache.Length)
+			{
+				if (_xvtTagSizeCache[craft] == 0)
+				{
+					//Not scanned yet. Scan the bitmap for non RGB(0,0,0) pixels to detect its dimensions.
+					Bitmap bmpNew = new Bitmap(imgCraft.Images[craft]);
+					BitmapData bmData = GraphicsFunctions.GetBitmapData(bmpNew, PixelFormat.Format24bppRgb);
+					byte[] pix = new byte[bmData.Stride*bmData.Height];
+					GraphicsFunctions.CopyImageToBytes(bmData, pix);
+
+					int left = imgCraft.Images[craft].Width, right = 0;
+					int top = imgCraft.Images[craft].Height, bottom = 0;
+					for (int y = 0;y < bmpNew.Height;y++)
+					{
+						for (int x = 0, pos = bmData.Stride*y;x < bmpNew.Width;x++)
+						{
+							if (pix[pos+x*3] != 0 || pix[pos+x*3+1] != 0 || pix[pos+x*3+2] != 0)
+							{
+								if (x < left) left = x;
+								if (x > right) right = x;
+								if (y < top) top = y;
+								if (y > bottom) bottom = y;
+							}
+						}
+					}
+					//Pack in the result. High word for width, low word for height.
+					_xvtTagSizeCache[craft] = ((right - left + 1) << 16) | (bottom - top + 1);
+				}
+				size[0] = _xvtTagSizeCache[craft] >> 16;
+				size[1] = _xvtTagSizeCache[craft] & 0xFFFF;
+			}
 			return size;	// size of base craft image as [width,height]
 		}
 		void imageQuad(int x, int y, int spacing, Bitmap craftImage, Graphics g)

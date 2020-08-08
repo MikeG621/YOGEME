@@ -1586,12 +1586,12 @@ namespace Idmr.Yogeme
 			// 
 			this.numSC.Location = new System.Drawing.Point(96, 88);
 			this.numSC.Maximum = new decimal(new int[] {
-            6,
+            255,
             0,
             0,
             0});
 			this.numSC.Name = "numSC";
-			this.numSC.Size = new System.Drawing.Size(32, 20);
+			this.numSC.Size = new System.Drawing.Size(42, 20);
 			this.numSC.TabIndex = 8;
 			this.numSC.ValueChanged += new System.EventHandler(this.numSC_ValueChanged);
 			// 
