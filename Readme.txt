@@ -30,6 +30,7 @@ v1.7, XX XXX XXXX
  -- (Formations) Images are now foreground instead of background
  -- (Map) Timer handler disabled when closing
  -- (Map) Max zoom and zoom speed adjusted
+ -- (Map) XvT craft icon fix
  -- (All) Cleanup index substitutions
  -- (All) Blanks messages now show as "*"
  -- (All) Trigger label refresh updates

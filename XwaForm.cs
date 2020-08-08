@@ -4828,7 +4828,7 @@ namespace Idmr.Yogeme
 
 			//[JB] Update the Briefing's list of team names.
 			for (int i = 0; i < _mission.Teams.Count; i++)
-				BriefingForm.sharedTeamNames[i] = _mission.Teams[i].Name;
+				BriefingForm.SharedTeamNames[i] = _mission.Teams[i].Name;
 
 			if (_activeTeam < 8)
 			{
