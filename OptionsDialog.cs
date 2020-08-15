@@ -3,11 +3,11 @@
  * Copyright (C) 2007-2020 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.5+
+ * VERSION: 1.7
  */
 
 /* CHANGELOG
- * v1.7, XXXXXX
+ * v1.7, 200816
  * [NEW] new settings for Map wireframes [JB]
  * v1.5, 180910
  * [UPD] added callback [JB]

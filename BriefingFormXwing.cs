@@ -4,11 +4,11 @@
  * This file authored by "JB" (Random Starfighter) (randomstarfighter@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.6.5+
+ * VERSION: 1.7
  */
 
 /* CHANGELOG
- * v1.7, XXXXXX
+ * v1.7, 200816
  * [UPD #14] Nothing specific, but closing that issue
  * [UPD] Icons now use BMPs instead of the DATs, importDats() renamed to importIcons() [JB]
  * v1.6.5, 200704
@@ -51,38 +51,40 @@ namespace Idmr.Yogeme
 		#region Vars
 		BriefData[] _briefData;
 		BriefData _tempBD;
-		Briefing _xwingBriefing;
+		readonly Briefing _xwingBriefing;
 		bool _loading = false;
-		Color _normalColor;
-		Color _highlightColor;
-		Color _titleColor;
-		short[,] _events;   // this will contain the event listing for use, raw data is in Briefing.Events[]
+		readonly Color _normalColor;
+		//readonly Color _highlightColor;	// TODO: currently unused
+		readonly Color _titleColor;
+		readonly short[,] _events;   // this will contain the event listing for use, raw data is in Briefing.Events[]
 
 		//New for X-wing
-		int currentPage = 0;    // The current briefing page currently being edited.
-		bool resizeNeeded = false;
+		int _currentPage = 0;    // The current briefing page currently being edited.
+		bool _resizeNeeded = false;
 
 		short _zoomX = 48;
 		short _zoomY;
+#pragma warning disable IDE1006 // Naming Styles
 		int w, h;
+#pragma warning restore IDE1006 // Naming Styles
 		short _mapX, _mapY; // mapX and mapY will be different, namely the grid coordinates of the center, like how TIE handles it
 		Bitmap _map;
-		int[,] _fgTags = new int[8, 2]; // [#, 0=FG/Icon 1=Time]
+		readonly int[,] _fgTags = new int[8, 2]; // [#, 0=FG/Icon 1=Time]
 		int[,] _textTags = new int[8, 4];   // [#, X, Y, color]
-		DataTable _tableTags = new DataTable("Tags");
-		int _timerInterval;
+		readonly DataTable _tableTags = new DataTable("Tags");
+		readonly int _timerInterval;
 		Briefing.EventType _eventType;
 		short _tempX, _tempY;
 		int[,] _tempTags;
-		Settings.Platform _platform;
-		string[] _tags;
+		readonly Settings.Platform _platform;
+		readonly string[] _tags;
 		string[] _strings;
-		int _maxEvents;
+		readonly int _maxEvents;
 		int _regionDelay = -1;
 		int _page = 1;
 		short _icon = 0;
 		bool _popupPreviewActive = false; //[JB] New feature
-		Timer _popupTimer = new Timer();
+		readonly Timer _popupTimer = new Timer();
 		short _popupPreviewZoomX;
 		short _popupPreviewZoomY;
 		short _popupPreviewMapX;
@@ -90,10 +92,12 @@ namespace Idmr.Yogeme
 		bool _popupIsDragging = false;
 		int _popupMiddleX;
 		int _popupMiddleY;
-		Timer _mapPaintRedrawTimer = new Timer();  //[JB] Added a timer to control map painting in an attempt to smooth re-drawing performance.
+		readonly Timer _mapPaintRedrawTimer = new Timer();  //[JB] Added a timer to control map painting in an attempt to smooth re-drawing performance.
 		bool _mapPaintScheduled = false;      //True if a paint is scheduled, that is a paint request is called while a paint is already in progress.
 		int _previousTimeIndex = 0;           //Tracks the previous time index of the briefing so we can detect when the user is manually scrolling through arbitrary times.
+#pragma warning disable IDE1006 // Naming Styles
 		EventHandler onModified = null;
+#pragma warning restore IDE1006 // Naming Styles
 		#endregion
 
 		public BriefingFormXwing(FlightGroupCollection fg, Briefing briefing, EventHandler onModifiedCallback)
@@ -102,7 +106,7 @@ namespace Idmr.Yogeme
 			_platform = Settings.Platform.XWING;
 			_titleColor = Color.FromArgb(0xFC, 0xFC, 0x54);
 			_normalColor = Color.FromArgb(0xFC, 0xFC, 0xFC);
-			_highlightColor = Color.FromArgb(0x00, 0xA8, 0x00);
+			//_highlightColor = Color.FromArgb(0x00, 0xA8, 0x00);
 			_zoomY = _zoomX;            // in most cases, these will remain the same
 			_xwingBriefing = briefing;
 			_maxEvents = Briefing.EventQuantityLimit;
@@ -314,16 +318,16 @@ namespace Idmr.Yogeme
 					}
 				}
 				saveCurrentPage();
-				if (onModified != null) onModified("XW Save", new EventArgs());
+				onModified?.Invoke("XW Save", new EventArgs());
 			}
 		}
 
 		void saveCurrentPage()
 		{
 			//Saves the event list we're currently editing back into the Briefing.
-			BriefingPage pg = _xwingBriefing.GetBriefingPage(currentPage);
+			BriefingPage pg = _xwingBriefing.GetBriefingPage(_currentPage);
 			Array.Copy(_xwingBriefing.Events, pg.Events, pg.Events.Length);
-			pg.EventsLength = (short)_xwingBriefing.GetEventsLength(currentPage);
+			pg.EventsLength = (short)_xwingBriefing.GetEventsLength(_currentPage);
 		}
 		void setCurrentPage(int index)
 		{
@@ -334,10 +338,10 @@ namespace Idmr.Yogeme
 			if (index < 0)
 				return;
 
-			if (index != currentPage)
+			if (index != _currentPage)
 				Save();
-			currentPage = index;
-			BriefingPage pg = _xwingBriefing.GetBriefingPage(currentPage);
+			_currentPage = index;
+			BriefingPage pg = _xwingBriefing.GetBriefingPage(_currentPage);
 			Array.Copy(pg.Events, _xwingBriefing.Events, pg.Events.Length);
 
 			lstEvents.Items.Clear();
@@ -358,7 +362,7 @@ namespace Idmr.Yogeme
 		{
 			string title = Text;
 			string prefix = "   (Now Editing Page ";
-			string update = prefix + (currentPage + 1) + " of " + lstPages.Items.Count + ")";
+			string update = prefix + (_currentPage + 1) + " of " + lstPages.Items.Count + ")";
 			int pos = title.IndexOf(prefix);
 			if (pos >= 0)
 				title = title.Remove(pos);
@@ -372,10 +376,10 @@ namespace Idmr.Yogeme
 			if (tabBrief.SelectedIndex != 0) hsbTimer.Value = 1;
 			else
 			{
-				if (resizeNeeded == true)
+				if (_resizeNeeded == true)
 				{
 					refreshDisplayElements(); //If any of the page UI settings were updated, make sure they take effect when switching back.
-					resizeNeeded = false;
+					_resizeNeeded = false;
 				}
 				hsbTimer.Value = 0; // force refresh, since pct doesn't want to update when hidden
 			}
@@ -496,7 +500,7 @@ namespace Idmr.Yogeme
 
 		void hsbTimer_ValueChanged(object sender, EventArgs e)
 		{
-			BaseBriefing brief = getBriefing();
+			//BaseBriefing brief = getBriefing();
 
 			bool paint = false;
 			if (hsbTimer.Value != 0 && ((hsbTimer.Value - _previousTimeIndex >= 2) || hsbTimer.Value <= _previousTimeIndex))  //A non-incremental or reverse change (if incremental the timer should be +1 to previous), the user most likely manually moved the scrollbar.  Iterate through all past events and rebuild the briefing state.
@@ -591,8 +595,10 @@ namespace Idmr.Yogeme
 		{
 			//x = ClampValue(x, 0, w);  //The Death Star missions usually have a map very far in one direction which breaks the coordinates of the lines unless we clamp them down.
 			//y = ClampValue(y, 0, h);
-			Pen pn = new Pen(Color.FromArgb(0x50, 0, 0));
-			pn.Width = 1;
+			Pen pn = new Pen(Color.FromArgb(0x50, 0, 0))
+			{
+				Width = 1
+			};
 			if (_platform == Settings.Platform.XWING)
 			{
 				if (_xwingBriefing.MissionLocation == 0)
@@ -705,7 +711,7 @@ namespace Idmr.Yogeme
 			}
 			return (i + 10000); // actually somehow got through the entire loop. odds of this happening is likely zero, but some moron will do it eventually
 		}
-		int findNext() { return findNext(hsbTimer.Value); }
+		/*int findNext() { return findNext(hsbTimer.Value); }
 		int findNext(int time)
 		{
 			int i;
@@ -715,7 +721,7 @@ namespace Idmr.Yogeme
 				if (_events[i, 0] > time) break;
 			}
 			return i;
-		}
+		}*/
 		Bitmap flatMask(Bitmap craftImage, byte iff, byte intensity)
 		{
 			// okay, this one is just for FG tags.  flat image, I only care about the shape.
@@ -759,7 +765,7 @@ namespace Idmr.Yogeme
 			bmpNew.MakeTransparent(Color.Black);
 			return bmpNew;
 		}
-		int[] getTagSize(int craft)
+		/*int[] getTagSize(int craft)
 		{
 			FileStream fs = File.OpenRead(Application.StartupPath + "\\images\\XvT_BRF.dat");
 			BinaryReader br = new BinaryReader(fs);
@@ -770,7 +776,7 @@ namespace Idmr.Yogeme
 			size[1] = br.ReadByte();
 			fs.Close();
 			return size;    // size of base craft image as [width,height]
-		}
+		}*/
 		void imageQuad(int x, int y, int spacing, Bitmap craftImage, Graphics g)
 		{
 			g.DrawImageUnscaled(craftImage, x + spacing, y + spacing);
@@ -853,7 +859,7 @@ namespace Idmr.Yogeme
 			#region FG tags
 			Bitmap bmptemp2;
 
-			int csIndex = _xwingBriefing.Pages[currentPage].CoordSet;
+			int csIndex = _xwingBriefing.Pages[_currentPage].CoordSet;
 			int wpIndex = 0; //Default to SP1
 			if (csIndex >= 1 && csIndex <= 3)
 				wpIndex = 7 + csIndex - 1;  //Switch to CS point.
@@ -1097,7 +1103,7 @@ namespace Idmr.Yogeme
 
 		void cmdCancel_Click(object sender, EventArgs e)
 		{
-			BaseBriefing brief = getBriefing();
+			//BaseBriefing brief = getBriefing();
 			cboText.Enabled = false;
 			optFG.Enabled = false;
 			optText.Enabled = false;
@@ -1468,7 +1474,7 @@ namespace Idmr.Yogeme
 				lstEvents.SelectedIndex = i;
 				updateList(i);
 			}
-			if (onModified != null) onModified("EventAdd", new EventArgs());
+			onModified?.Invoke("EventAdd", new EventArgs());
 			cmdCancel_Click("OK", new EventArgs());
 		}
 		void cmdMove_Click(object sender, EventArgs e)
@@ -1560,7 +1566,7 @@ namespace Idmr.Yogeme
 		}
 		void pctBrief_MouseDown(object sender, MouseEventArgs e)
 		{
-			BaseBriefing brief = getBriefing();
+			//BaseBriefing brief = getBriefing();
 			if (e.Button.ToString() != "Left")
 			{
 				if (e.Button == MouseButtons.Middle)
@@ -1652,8 +1658,8 @@ namespace Idmr.Yogeme
 					{
 						t_Length = (short)Math.Round(Convert.ToDecimal(txtLength.Text) * _timerInterval, 0);    // this is the line that could throw
 						_xwingBriefing.Length = t_Length;
-						if (onModified != null) onModified("LengthChange", new EventArgs());
-						BriefingPage pg = _xwingBriefing.GetBriefingPage(currentPage);
+						onModified?.Invoke("LengthChange", new EventArgs());
+						BriefingPage pg = _xwingBriefing.GetBriefingPage(_currentPage);
 						pg.Length = t_Length;
 						hsbTimer.Maximum = _xwingBriefing.Length + 11;
 						if (Math.Round(((decimal)_xwingBriefing.Length / _timerInterval), 2) != Convert.ToDecimal(txtLength.Text))  // so things like .51 become .5, without
@@ -1888,7 +1894,7 @@ namespace Idmr.Yogeme
 		}
 		void refreshDisplayElements()
 		{
-			BriefingPage pg = _xwingBriefing.GetBriefingPage(currentPage);
+			BriefingPage pg = _xwingBriefing.GetBriefingPage(_currentPage);
 			BriefingUIPage uip = _xwingBriefing.WindowSettings[(int)pg.PageType];
 
 			//int newWidth = 420;  Target size at maximum width
@@ -1919,10 +1925,9 @@ namespace Idmr.Yogeme
 			panel = uip.GetElement(BriefingUIPage.Elements.Map);
 			if (panel.IsVisible)
 			{
-				int oldHeight = this.h;
+				int oldHeight = h;
 				mapEnabled = true;
 				x = panel.Left;
-				y = panel.Top;
 
 				BriefingUIItem title = uip.GetElement(BriefingUIPage.Elements.Title);
 				int titleHeight = title.Bottom - title.Top;
@@ -2053,7 +2058,7 @@ namespace Idmr.Yogeme
 			int index = lstString.SelectedIndex;
 			if (index >= 0 && index < _strings.Length)
 			{
-				if (onModified != null) onModified("StringChanged", new EventArgs());
+				onModified?.Invoke("StringChanged", new EventArgs());
 				string s = txtStringEdit.Text;
 				s = s.Replace(Environment.NewLine, "$");
 				s = s.Replace("\r", "");  //Not sure if needed, just in case.
@@ -2099,7 +2104,7 @@ namespace Idmr.Yogeme
 				_events[i, 1] = 3;
 			for (int j = 2; j < 6; j++) _events[i, j] = 0;
 			lstEvents.SelectedIndex = i;
-			if (onModified != null) onModified("EventAdd", new EventArgs());
+			onModified?.Invoke("EventAdd", new EventArgs());
 		}
 		void updateList(int index)
 		{
@@ -2233,7 +2238,7 @@ namespace Idmr.Yogeme
 				_events[i, 1] = (short)_xwingBriefing.GetEventTypeByName(cboEvent.Items[cboEvent.SelectedIndex].ToString());
 			else
 				_events[i, 1] = (short)(cboEvent.SelectedIndex + 3);
-			if (onModified != null) onModified("EventChanged", new EventArgs());
+			onModified?.Invoke("EventChanged", new EventArgs());
 			updateParameters();
 			updateList(i);
 		}
@@ -2252,7 +2257,7 @@ namespace Idmr.Yogeme
 					|| _events[i, 1] == (int)BaseBriefing.EventType.XwaMoveIcon || _events[i, 1] == (int)BaseBriefing.EventType.XwaRotateIcon) _events[i, 2] = (short)cboFG.SelectedIndex;
 				else if (_events[i, 1] == (int)BaseBriefing.EventType.XwaShipInfo) _events[i, 3] = (short)cboFG.SelectedIndex;
 			}
-			if (onModified != null) onModified("FG Changed", new EventArgs());
+			onModified?.Invoke("FG Changed", new EventArgs());
 			updateList(i);
 		}
 		void cboString_SelectedIndexChanged(object sender, EventArgs e)
@@ -2267,7 +2272,7 @@ namespace Idmr.Yogeme
 			{
 				if (_events[i, 1] == (int)Briefing.EventType.TitleText || _events[i, 1] == (int)Briefing.EventType.CaptionText) _events[i, 2] = (short)cboString.SelectedIndex;
 			}
-			if (onModified != null) onModified("String Changed", new EventArgs());
+			onModified?.Invoke("String Changed", new EventArgs());
 			updateList(i);
 		}
 		void cboTag_SelectedIndexChanged(object sender, EventArgs e)
@@ -2282,7 +2287,7 @@ namespace Idmr.Yogeme
 			{
 				if (_events[i, 1] >= (int)Briefing.EventType.TextTag1 && _events[i, 1] <= (int)Briefing.EventType.TextTag4) _events[i, 2] = (short)cboTag.SelectedIndex;
 			}
-			if (onModified != null) onModified("Tag Changed", new EventArgs());
+			onModified?.Invoke("Tag Changed", new EventArgs());
 			updateList(i);
 		}
 
@@ -2291,13 +2296,12 @@ namespace Idmr.Yogeme
 			int i = lstEvents.SelectedIndex;
 			if (i == -1) return;
 			lstEvents.Items.RemoveAt(i);
-			int j = 0;
-			for (j = i; j < _maxEvents - 1; j++)
+			for (int j = i; j < _maxEvents - 1; j++)
 			{
 				if (_events[j, 1] == 0) break;
 				for (int h = 0; h < 6; h++) _events[j, h] = _events[j + 1, h];
 			}
-			if (onModified != null) onModified("EventDelete", new EventArgs());
+			onModified?.Invoke("EventDelete", new EventArgs());
 			try { lstEvents.SelectedIndex = i; }
 			catch { lstEvents.SelectedIndex = i - 1; }
 		}
@@ -2313,7 +2317,7 @@ namespace Idmr.Yogeme
 			lstEvents.Items[i] = lstEvents.Items[i + 1];
 			lstEvents.Items[i + 1] = item;
 			lstEvents.SelectedIndex = i + 1;
-			if (onModified != null) onModified("EventDown", new EventArgs());
+			onModified?.Invoke("EventDown", new EventArgs());
 		}
 		void cmdNew_Click(object sender, EventArgs e)
 		{
@@ -2350,7 +2354,7 @@ namespace Idmr.Yogeme
 			lstEvents.Items[i] = lstEvents.Items[i - 1];
 			lstEvents.Items[i - 1] = item;
 			lstEvents.SelectedIndex = i - 1;
-			if (onModified != null) onModified("EventUp", new EventArgs());
+			onModified?.Invoke("EventUp", new EventArgs());
 		}
 
 		int getEventListIndex(int eventType)
@@ -2393,22 +2397,22 @@ namespace Idmr.Yogeme
 				_events[index1, j] = _events[index2, j];
 				_events[index2, j] = t;
 			}
-			if (onModified != null) onModified("SwapEvent", new EventArgs());
+			onModified?.Invoke("SwapEvent", new EventArgs());
 		}
-		void shiftEvents(int iorigin, int iend)
+		void shiftEvents(int origin, int end)
 		{
 			//Shifts briefing events by swapping the contents of the origin index in a linear path until it occupies the end index.
-			if (onModified != null) onModified("ShiftEvent", new EventArgs());
-			if (iend > iorigin)  //swap downward
+			onModified?.Invoke("ShiftEvent", new EventArgs());
+			if (end > origin)  //swap downward
 			{
-				for (int i = iorigin; i < iend; i++)
+				for (int i = origin; i < end; i++)
 				{
 					swapEvent(i, i + 1);
 				}
 			}
-			else if (iend < iorigin)  //swap upward
+			else if (end < origin)  //swap upward
 			{
-				for (int i = iorigin; i > iend; i--)
+				for (int i = origin; i > end; i--)
 				{
 					swapEvent(i, i - 1);
 				}
@@ -2454,7 +2458,7 @@ namespace Idmr.Yogeme
 			}
 
 			_loading = false;
-			if (onModified != null) onModified("TimeChanged", new EventArgs());
+			onModified?.Invoke("TimeChanged", new EventArgs());
 			try
 			{
 				if (_events[i - 1, 0] == _events[i, 0]) cmdUp.Enabled = true;
@@ -2486,7 +2490,7 @@ namespace Idmr.Yogeme
 				if (_events[i, 1] == (int)Briefing.EventType.ZoomMap && _events[i, 2] < 1)
 					_events[i, 2] = 1;  //Prevent zoom factor 0 which crashes the game
 			}
-			if (onModified != null) onModified("ChangeX", new EventArgs());
+			onModified?.Invoke("ChangeX", new EventArgs());
 			updateList(i);
 		}
 		void numY_ValueChanged(object sender, EventArgs e)
@@ -2507,7 +2511,7 @@ namespace Idmr.Yogeme
 				if (_events[i, 1] == (int)Briefing.EventType.ZoomMap && _events[i, 3] < 1)
 					_events[i, 3] = 1;  //Prevent zoom factor 0 which crashes the game
 			}
-			if (onModified != null) onModified("ChangeY", new EventArgs());
+			onModified?.Invoke("ChangeY", new EventArgs());
 			updateList(i);
 		}
 		#endregion tabEvents
@@ -2554,8 +2558,8 @@ namespace Idmr.Yogeme
 
 			saveCurrentPage();
 
-			int newPage = clampValue(currentPage - 1, 0, _xwingBriefing.Pages.Count - 1);
-			currentPage = newPage;  //Directly set the current page so that SetCurrentPage() doesn't try to save a non-existent page when switching. 
+			int newPage = clampValue(_currentPage - 1, 0, _xwingBriefing.Pages.Count - 1);
+			_currentPage = newPage;  //Directly set the current page so that SetCurrentPage() doesn't try to save a non-existent page when switching. 
 			setCurrentPage(newPage);
 			lstPages.SelectedIndex = newPage;
 
@@ -2571,8 +2575,10 @@ namespace Idmr.Yogeme
 			int titleText = cboPageAddTitle.SelectedIndex;
 			int captionText = cboPageAddCaption.SelectedIndex;
 
-			BriefingPage pg = new BriefingPage();
-			pg.PageType = (short)Briefing.PageType.Text;
+			BriefingPage pg = new BriefingPage
+			{
+				PageType = (short)Briefing.PageType.Text
+			};
 			int pos = 0;
 			if (textType == 0) //Text only
 			{
@@ -2681,7 +2687,7 @@ namespace Idmr.Yogeme
 			if (_loading || lstViewport.SelectedIndex < 0)
 				return;
 
-			resizeNeeded = true;
+			_resizeNeeded = true;
 
 			int page = lstPageType.SelectedIndex;
 			if (page < 0) page = 0;

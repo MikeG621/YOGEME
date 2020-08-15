@@ -406,8 +406,8 @@ namespace Idmr.Yogeme
 			this.menuER = new System.Windows.Forms.MenuItem();
 			this.opnTIE = new System.Windows.Forms.OpenFileDialog();
 			this.savTIE = new System.Windows.Forms.SaveFileDialog();
-			this._dataWaypoints = new System.Data.DataView();
-			this._dataWaypointsRaw = new System.Data.DataView();
+			this.dataWaypoints = new System.Data.DataView();
+			this.dataWaypointsRaw = new System.Data.DataView();
 			this.tabMain.SuspendLayout();
 			this.tabFG.SuspendLayout();
 			this.tabFGMinor.SuspendLayout();
@@ -480,8 +480,8 @@ namespace Idmr.Yogeme
 			this.groupBox24.SuspendLayout();
 			this.groupBox22.SuspendLayout();
 			this.groupBox21.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this._dataWaypoints)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this._dataWaypointsRaw)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.dataWaypoints)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.dataWaypointsRaw)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// tabMain
@@ -4402,13 +4402,13 @@ namespace Idmr.Yogeme
 			// 
 			// _dataWaypoints
 			// 
-			this._dataWaypoints.AllowDelete = false;
-			this._dataWaypoints.AllowNew = false;
+			this.dataWaypoints.AllowDelete = false;
+			this.dataWaypoints.AllowNew = false;
 			// 
 			// _dataWaypointsRaw
 			// 
-			this._dataWaypointsRaw.AllowDelete = false;
-			this._dataWaypointsRaw.AllowNew = false;
+			this.dataWaypointsRaw.AllowDelete = false;
+			this.dataWaypointsRaw.AllowNew = false;
 			// 
 			// TieForm
 			// 
@@ -4511,8 +4511,8 @@ namespace Idmr.Yogeme
 			this.groupBox22.ResumeLayout(false);
 			this.groupBox22.PerformLayout();
 			this.groupBox21.ResumeLayout(false);
-			((System.ComponentModel.ISupportInitialize)(this._dataWaypoints)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this._dataWaypointsRaw)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.dataWaypoints)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.dataWaypointsRaw)).EndInit();
 			this.ResumeLayout(false);
 
 		}
@@ -4904,5 +4904,7 @@ namespace Idmr.Yogeme
         private ComboBox cboPF1Color;
         private ComboBox cboSC2Color;
         private ComboBox cboSC1Color;
+		System.Data.DataView dataWaypoints;
+		System.Data.DataView dataWaypointsRaw;
 	}
 }

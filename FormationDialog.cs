@@ -3,11 +3,11 @@
  * Copyright (C) 2007-2020 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.2.3+
+ * VERSION: 1.7
  */
 
 /* CHANGELOG
- * v1.7, XXXXXX
+ * v1.7, 200816
  * [UPD] Images are now foreground instead of background [JB]
  * v1.2.3, 141214
  * [UPD] change to MPL
@@ -29,8 +29,9 @@ namespace Idmr.Yogeme
 	public partial class FormationDialog : Form
 	{
 		public int Formation { get { return cboFormation.SelectedIndex; } }
-		int _index;
-		ArrayList _forms = new ArrayList(34);
+
+		readonly int _index;
+		readonly ArrayList _forms = new ArrayList(34);
 
 		public FormationDialog(int index)
 		{

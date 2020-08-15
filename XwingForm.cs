@@ -4,11 +4,11 @@
  * This file authored by "JB" (Random Starfighter) (randomstarfighter@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.6.5+
+ * VERSION: 1.7
  */
 
 /* CHANGELOG:
- * v1.7, XXXXXX
+ * v1.7, 200816
  * [UPD #14] Nothing specific, but closing that issue
  * [FIX] recalculateEditorCraftNumbering() handles _activeFG now [JB]
  * [UPD] shiplist and Map calls updated for Wireframe implementation [JB]
@@ -43,7 +43,7 @@ namespace Idmr.Yogeme
 	public partial class XwingForm : Form
 	{
 		#region vars and stuff
-		Settings _config;
+		readonly Settings _config;
 		Mission _mission;
 		bool _applicationExit;              //for frmTIE_Closing, confirms application exit vs switching platforms
 		int _activeFG = 0;          //counter to keep track of current FG being displayed
@@ -59,28 +59,27 @@ namespace Idmr.Yogeme
 		EditorMode _mode = EditorMode.XWI;      //Which FG selection we're currently viewing and editing (0=XWI, 1=BRF)
 		Color _original_lstFG_BackColor;
 
-		private readonly int[] WaypointMapping = new int[10] {   //The raw waypoint data is not in a convenient order (Start1,Waypt1,Waypt2,Waypt3,Start2,Start3,Hyper) so assists in providing an intuitive datagrid, mapping the display row (array index) to the actual FG waypoint index (element value).
+		private readonly int[] _waypointMapping = new int[10] {   //The raw waypoint data is not in a convenient order (Start1,Waypt1,Waypt2,Waypt3,Start2,Start3,Hyper) so assists in providing an intuitive datagrid, mapping the display row (array index) to the actual FG waypoint index (element value).
 			0, 4, 5,    //Start1, Start2, Start3
 		    1, 2, 3,    //Waypt1, Waypt2, Waypt3
 		    6,          //Hyper
             7, 8, 9     //BRF coordinate sets, listed here as virtual waypoints for ease of editing.
 		};
-
-		DataView _dataWaypoints;
-		DataTable _table = new DataTable("Waypoints");
-		DataTable _tableRaw = new DataTable("Waypoints_Raw");
-		DataView _dataWaypointsRaw;
+		readonly DataTable _table = new DataTable("Waypoints");
+		readonly DataTable _tableRaw = new DataTable("Waypoints_Raw");
+		
 		MapForm _fMap;
 		BriefingFormXwing _fBrief;
 		#endregion
 		#region Control Arrays
-		TextBox[] txtEoM = new TextBox[3];
-		Label[] lblOrder = new Label[3];
-		CheckBox[] chkWP = new CheckBox[7];
-		CheckBox[] chkGunPlatform = new CheckBox[6];
-		MenuItem[] menuRecentMissions = new MenuItem[6];
-		Dictionary<Control, EventHandler> instantUpdate = new Dictionary<Control, EventHandler>();   //[JB] This system allows standard form controls to hook their normal YOGEME event handlers (typically Leave) to update immediately when the data is changed.
-		Dictionary<ComboBox, ComboBox> ColorizedFGList = new Dictionary<ComboBox, ComboBox>();  //[JB] Maps a control that should have a colorized FG list with a control that determines whether the list actually contains a FG list.
+#pragma warning disable IDE1006 // Naming Styles
+		readonly TextBox[] txtEoM = new TextBox[3];
+		readonly CheckBox[] chkWP = new CheckBox[7];
+		readonly CheckBox[] chkGunPlatform = new CheckBox[6];
+		readonly MenuItem[] menuRecentMissions = new MenuItem[6];
+		readonly Dictionary<Control, EventHandler> instantUpdate = new Dictionary<Control, EventHandler>();   //[JB] This system allows standard form controls to hook their normal YOGEME event handlers (typically Leave) to update immediately when the data is changed.
+		readonly Dictionary<ComboBox, ComboBox> ColorizedFGList = new Dictionary<ComboBox, ComboBox>();  //[JB] Maps a control that should have a colorized FG list with a control that determines whether the list actually contains a FG list.
+#pragma warning restore IDE1006 // Naming Styles
 		#endregion
 
 		public XwingForm(Settings settings)
@@ -212,7 +211,7 @@ namespace Idmr.Yogeme
 			_mission.FlightGroups[0].CraftType = 1;
 			_mission.FlightGroups[0].ObjectType = 0;
 			_mission.FlightGroups[0].IFF = 1;
-			string[] fgList = _mission.FlightGroups.GetList();
+			//string[] fgList = _mission.FlightGroups.GetList();
 			comboRefreshFGList(cboMothership, true);
 			comboRefreshFGList(cboArrFG, true);
 			comboRefreshFGList(cboOrderPrimary, true);
@@ -238,7 +237,7 @@ namespace Idmr.Yogeme
 			cboCraft.Items.Clear();
 			cboCraft.Items.AddRange(Strings.CraftType);
 		}
-		string replaceTargetText(string text)
+		/*string replaceTargetText(string text)
 		{
 			while (text.Contains("FG:"))
 			{
@@ -250,7 +249,7 @@ namespace Idmr.Yogeme
 				text = text.Replace("FG:" + fg, _mission.FlightGroups[fg].ToString());
 			}
 			return text;
-		}
+		}*/
 		bool loadMission(string fileMission)
 		{
 			/* return true if successful, returns false if aborted or failed
@@ -454,10 +453,10 @@ namespace Idmr.Yogeme
 				for (j = 0; j < 3; j++) dr[j] = 0;  //mirror in raw table
 				_tableRaw.Rows.Add(dr);
 			}
-			_dataWaypoints.Table = _table;
-			_dataWaypointsRaw.Table = _tableRaw;
-			dataWP.DataSource = _dataWaypoints;
-			dataWP_Raw.DataSource = _dataWaypointsRaw;
+			dataWaypoints.Table = _table;
+			dataWaypointsRaw.Table = _tableRaw;
+			dataWP.DataSource = dataWaypoints;
+			dataWP_Raw.DataSource = dataWaypointsRaw;
 			this._table.RowChanged += new DataRowChangeEventHandler(table_RowChanged);
 			this._tableRaw.RowChanged += new DataRowChangeEventHandler(tableRaw_RowChanged);
 			chkWP[0] = chkSP1;
@@ -525,8 +524,7 @@ namespace Idmr.Yogeme
 
 			bool btemp = _loading;
 			_loading = true;
-			FlightGroupCollection temp = new FlightGroupCollection();
-			temp = _mission.FlightGroups;
+			FlightGroupCollection temp = _mission.FlightGroups;
 			_mission.FlightGroups = _mission.FlightGroupsBriefing;
 			_mission.FlightGroupsBriefing = temp;
 
@@ -1459,7 +1457,7 @@ namespace Idmr.Yogeme
 			if (_mode == EditorMode.XWI)
 				recalculateEditorCraftNumbering();
 
-			string[] fgList = _mission.FlightGroups.GetList();
+			//string[] fgList = _mission.FlightGroups.GetList();
 			bool temp = _loading;
 			_loading = true;
 			comboRefreshFGList(cboMothership, true);
@@ -1482,8 +1480,8 @@ namespace Idmr.Yogeme
 			if (lstFG.SelectedIndex == -1) return;
 			if (_noRefresh == true && lstFG.SelectedIndex == _activeFG) return;   //[JB] See also listRefresh().  Replacing the item text will trigger lstFG_SelectedIndexChanged.  Improves performance by avoiding massive slowdown caused by multiple repeated refreshing.  Also avoids a stack overflow which can be caused by an endless loop of event conflicts.
 			_activeFG = lstFG.SelectedIndex;
-			string text = "";
-			int min = 0, max = 0;
+			string text;
+			int min, max;
 			bool isFG = _mission.FlightGroups[_activeFG].IsFlightGroup();
 			bool train = _mission.FlightGroups[_activeFG].IsTrainingPlatform();
 			bool start = _mission.FlightGroups[_activeFG].IsStartingGate();
@@ -1532,7 +1530,7 @@ namespace Idmr.Yogeme
 				lblObjectValue.Text = start ? "Seconds:" : "Raw value:";
 
 				grpPlatformBitfield.Enabled = (train && !start);
-				UpdateGunBitfield();
+				updateGunBitfield();
 			}
 
 			label9.Enabled = isFG;
@@ -1646,27 +1644,31 @@ namespace Idmr.Yogeme
 					FlightGroupCollection fglist = new FlightGroupCollection();
 					foreach (FlightGroup fg in _mission.FlightGroupsBriefing)
 					{
-						FlightGroup temp = new FlightGroup();
-						temp.CraftType = fg.CraftType;
-						temp.ObjectType = fg.ObjectType;
-						temp.IFF = fg.IFF;
-						temp.NumberOfCraft = fg.NumberOfCraft;
-						temp.NumberOfWaves = fg.NumberOfWaves;
-						temp.Name = String.Copy(fg.Name);
-						temp.Cargo = String.Copy(fg.Cargo);
-						temp.SpecialCargo = String.Copy(fg.SpecialCargo);
-						temp.SpecialCargoCraft = fg.SpecialCargoCraft;
-						temp.Pitch = fg.Pitch;
-						temp.Yaw = fg.Yaw;
-						temp.Roll = fg.Roll;
-						temp.Status1 = fg.Status1; //Can't forget this, for B-wing.
+						FlightGroup temp = new FlightGroup
+						{
+							CraftType = fg.CraftType,
+							ObjectType = fg.ObjectType,
+							IFF = fg.IFF,
+							NumberOfCraft = fg.NumberOfCraft,
+							NumberOfWaves = fg.NumberOfWaves,
+							Name = string.Copy(fg.Name),
+							Cargo = string.Copy(fg.Cargo),
+							SpecialCargo = string.Copy(fg.SpecialCargo),
+							SpecialCargoCraft = fg.SpecialCargoCraft,
+							Pitch = fg.Pitch,
+							Yaw = fg.Yaw,
+							Roll = fg.Roll,
+							Status1 = fg.Status1 //Can't forget this, for B-wing.
+						};
 						for (int i = 0; i < temp.Waypoints.Length; i++)
 						{
-							FlightGroup.Waypoint wp = new FlightGroup.Waypoint();
-							wp.RawX = fg.Waypoints[i].RawX;
-							wp.RawY = fg.Waypoints[i].RawY;
-							wp.RawZ = fg.Waypoints[i].RawZ;
-							wp.Enabled = fg.Waypoints[i].Enabled;
+							FlightGroup.Waypoint wp = new FlightGroup.Waypoint
+							{
+								RawX = fg.Waypoints[i].RawX,
+								RawY = fg.Waypoints[i].RawY,
+								RawZ = fg.Waypoints[i].RawZ,
+								Enabled = fg.Waypoints[i].Enabled
+							};
 							temp.Waypoints[i] = wp;
 						}
 
@@ -1781,7 +1783,7 @@ namespace Idmr.Yogeme
 						_mission.FlightGroups[_activeFG].Status1 = (byte)(_mission.FlightGroups[_activeFG].Status1 % 10);
 				}
 				_mission.FlightGroups[_activeFG].ObjectType = 0;
-				enableRot((_mission.FlightGroups[_activeFG].ObjectType == 0 ? false : true));
+				enableRot(_mission.FlightGroups[_activeFG].ObjectType != 0);
 				if (swap)
 				{
 					_mission.FlightGroups[_activeFG].Formation = 0;  //Swapping from Object to Craft, so reset these fields since objects often use these values for other things which can easily exceed the expected values for ordinary craft FGs.
@@ -1827,7 +1829,7 @@ namespace Idmr.Yogeme
 				bool swap = _mission.FlightGroups[_activeFG].IsFlightGroup();
 				_mission.FlightGroups[_activeFG].ObjectType = Common.Update(this, _mission.FlightGroups[_activeFG].ObjectType, Convert.ToByte(cboObject.SelectedIndex + 17));
 				_mission.FlightGroups[_activeFG].CraftType = 0;
-				enableRot((_mission.FlightGroups[_activeFG].ObjectType == 0 ? false : true));
+				enableRot(_mission.FlightGroups[_activeFG].ObjectType != 0);
 				if (swap)
 				{
 					_mission.FlightGroups.NullifyReferences(_activeFG);
@@ -1938,7 +1940,7 @@ namespace Idmr.Yogeme
 			if (!_loading)
 			{
 				_mission.FlightGroups[_activeFG].Formation = (byte)numObjectValue.Value;
-				UpdateGunBitfield();
+				updateGunBitfield();
 			}
 		}
 		void chkPlatformGuns_CheckedChanged(object sender, EventArgs e)
@@ -1961,7 +1963,7 @@ namespace Idmr.Yogeme
 			_mission.FlightGroups[_activeFG].Formation = (byte)value;
 			numObjectValue.Value = value;
 		}
-		void UpdateGunBitfield()
+		void updateGunBitfield()
 		{
 			bool btemp = _loading;
 			_loading = true;
@@ -2145,7 +2147,7 @@ namespace Idmr.Yogeme
 			chkSP1.Text = (_mode == EditorMode.XWI) ? "Start Point 1" : "SP1 / CS1";
 			for (int i = 0; i < 10; i++)
 			{
-				int wpIndex = WaypointMapping[i]; // 'i' is the display order, wpIndex is the actual index in the FG waypoint list
+				int wpIndex = _waypointMapping[i]; // 'i' is the display order, wpIndex is the actual index in the FG waypoint list
 				for (int j = 0; j < 3; j++)
 				{
 					if ((wpSkipMin >= 0 && i >= wpSkipMin) && (wpSkipMax >= 0 && i < wpSkipMax))
@@ -2168,7 +2170,7 @@ namespace Idmr.Yogeme
 			numYaw.Value = (int)Math.Round((double)_mission.FlightGroups[_activeFG].Yaw / 256 * 360);
 			numPitch.Value = (int)Math.Round((double)_mission.FlightGroups[_activeFG].Pitch / 256 * 360) - 90;
 			numRoll.Value = (int)Math.Round((double)_mission.FlightGroups[_activeFG].Roll / 256 * 360);
-			enableRot((_mission.FlightGroups[_activeFG].ObjectType == 0 ? false : true));
+			enableRot(_mission.FlightGroups[_activeFG].ObjectType != 0);
 			_loading = btemp;
 		}
 
@@ -2176,7 +2178,7 @@ namespace Idmr.Yogeme
 		{
 			if (_loading) return;
 			CheckBox c = (CheckBox)sender;
-			int wpIndex = WaypointMapping[(int)c.Tag];
+			int wpIndex = _waypointMapping[(int)c.Tag];
 			_mission.FlightGroups[_activeFG].Waypoints[wpIndex].Enabled = Common.Update(this, _mission.FlightGroups[_activeFG].Waypoints[wpIndex].Enabled, c.Checked);
 			refreshMap(_activeFG);
 		}
@@ -2199,13 +2201,13 @@ namespace Idmr.Yogeme
 
 		void table_RowChanged(object sender, DataRowChangeEventArgs e)
 		{
-			int i, j = 0;
+			int i, j;
 			if (_loading) return;
 			_loading = true;
 			for (j = 0; j < 10; j++) if (_table.Rows[j].Equals(e.Row)) break;   //find the row index that you're changing
 			try
 			{
-				int wpIndex = WaypointMapping[j];
+				int wpIndex = _waypointMapping[j];
 				for (i = 0; i < 3; i++)
 				{
 					short raw = (short)(Convert.ToDouble(_table.Rows[j][i]) * 160);
@@ -2219,13 +2221,13 @@ namespace Idmr.Yogeme
 		}
 		void tableRaw_RowChanged(object sender, DataRowChangeEventArgs e)
 		{
-			int i, j = 0;
+			int i, j;
 			if (_loading) return;
 			_loading = true;
 			for (j = 0; j < 10; j++) if (_tableRaw.Rows[j].Equals(e.Row)) break;    //find the row index that you're changing
 			try
 			{
-				int wpIndex = WaypointMapping[j];
+				int wpIndex = _waypointMapping[j];
 				for (i = 0; i < 3; i++)
 				{
 					short raw = Convert.ToInt16(_tableRaw.Rows[j][i]);
@@ -2248,7 +2250,7 @@ namespace Idmr.Yogeme
 
 			for (int j = 1; j <= 2; j++)
 			{
-				int wpIndex = WaypointMapping[j];
+				int wpIndex = _waypointMapping[j];
 
 				//Enable the Start Points.  Not really necessary since X-wing will always choose a randomized point, but this offers display consistency.
 				_mission.FlightGroups[_activeFG].Waypoints[wpIndex][3] = Common.Update(this, _mission.FlightGroups[_activeFG].Waypoints[wpIndex][3], (short)1);

@@ -4,11 +4,11 @@
  * This file authored by "JB" (Random Starfighter) (randomstarfighter@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.6.6+
+ * VERSION: 1.7
  */
 
 /* CHANGELOG
-* v1.7, XXXXXX
+* v1.7, 200816
 * [NEW] created [JB]
 */
 

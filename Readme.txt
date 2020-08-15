@@ -2,8 +2,8 @@
 ======================================
 
 Author: Michael Gaisser (mjgaisser@gmail.com)
-Version: 1.6.6
-Date: 2020.07.19
+Version: 1.7
+Date: 2020.08.16
 
 Thank you for downloading YOGEME, the all-in-one mission editor for the X-Wing
 series, Xwing95 through X-wing Alliance.  This program allows easy mission
@@ -14,7 +14,7 @@ original mainstream editors were created.
 ==========
 Version History
 
-v1.7, XX XXX XXXX
+v1.7, 16 Aug 2020
  - (TIE) Fixed an issue where current FG's IFF would reset when updating IFF names
  - (TIE) Message colors update immediately
  - (XWA) IFF subsitutions in triggers and controls

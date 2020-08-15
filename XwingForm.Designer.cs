@@ -224,8 +224,8 @@ namespace Idmr.Yogeme
 			this.menuER = new System.Windows.Forms.MenuItem();
 			this.opnXW = new System.Windows.Forms.OpenFileDialog();
 			this.savXW = new System.Windows.Forms.SaveFileDialog();
-			this._dataWaypoints = new System.Data.DataView();
-			this._dataWaypointsRaw = new System.Data.DataView();
+			this.dataWaypoints = new System.Data.DataView();
+			this.dataWaypointsRaw = new System.Data.DataView();
 			this.tabMain.SuspendLayout();
 			this.tabFG.SuspendLayout();
 			this.tabFGMinor.SuspendLayout();
@@ -261,8 +261,8 @@ namespace Idmr.Yogeme
 			((System.ComponentModel.ISupportInitialize)(this.numRndSeed)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numMissionTime)).BeginInit();
 			this.groupBox24.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this._dataWaypoints)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this._dataWaypointsRaw)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.dataWaypoints)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.dataWaypointsRaw)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// tabMain
@@ -2238,13 +2238,13 @@ namespace Idmr.Yogeme
 			// 
 			// _dataWaypoints
 			// 
-			this._dataWaypoints.AllowDelete = false;
-			this._dataWaypoints.AllowNew = false;
+			this.dataWaypoints.AllowDelete = false;
+			this.dataWaypoints.AllowNew = false;
 			// 
 			// _dataWaypointsRaw
 			// 
-			this._dataWaypointsRaw.AllowDelete = false;
-			this._dataWaypointsRaw.AllowNew = false;
+			this.dataWaypointsRaw.AllowDelete = false;
+			this.dataWaypointsRaw.AllowNew = false;
 			// 
 			// XwingForm
 			// 
@@ -2312,8 +2312,8 @@ namespace Idmr.Yogeme
 			((System.ComponentModel.ISupportInitialize)(this.numMissionTime)).EndInit();
 			this.groupBox24.ResumeLayout(false);
 			this.groupBox24.PerformLayout();
-			((System.ComponentModel.ISupportInitialize)(this._dataWaypoints)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this._dataWaypointsRaw)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.dataWaypoints)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.dataWaypointsRaw)).EndInit();
 			this.ResumeLayout(false);
 
 		}
@@ -2523,5 +2523,7 @@ namespace Idmr.Yogeme
         private Label lblOrderNote;
         private GroupBox grpMission;
 		private MenuItem menuSaveAsXwing;
+		System.Data.DataView dataWaypoints;
+		System.Data.DataView dataWaypointsRaw;
 	}
 }

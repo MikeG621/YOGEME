@@ -3,11 +3,12 @@
  * Copyright (C) 2007-2020 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.6.5+
+ * VERSION: 1.7
  */
 
 /* CHANGELOG
- * v1.7, XXXXXX
+ * v1.7, 200816
+ * [UPD] newFG() is now bool return
  * [FIX] recalculateEditorCraftNumbering() handles _activeFG now [JB]
  * [UPD] shiplist and Map calls updated for Wireframe implementation [JB]
  * [UPD] Blank messages now shown as "*" [JB]
@@ -108,7 +109,7 @@ namespace Idmr.Yogeme
 	public partial class TieForm : Form
 	{
 		#region vars and stuff
-		Settings _config;
+		readonly Settings _config;
 		Mission _mission;
 		bool _applicationExit;              //for frmTIE_Closing, confirms application exit vs switching platforms
 		int _activeFG = 0;          //counter to keep track of current FG being displayed
@@ -116,10 +117,8 @@ namespace Idmr.Yogeme
 		bool _loading;      //alerts certain functions to disable during the loading process
 		bool _noRefresh = false;
 		int _activeMessage = 0;
-		DataView _dataWaypoints;
-		DataTable _table = new DataTable("Waypoints");
-		DataTable _tableRaw = new DataTable("Waypoints_Raw");
-		DataView _dataWaypointsRaw;
+		readonly DataTable _table = new DataTable("Waypoints");
+		readonly DataTable _tableRaw = new DataTable("Waypoints_Raw");
 		MapForm _fMap;
 		BriefingForm _fBrief;
 		BattleForm _fBattle;
@@ -130,20 +129,22 @@ namespace Idmr.Yogeme
 		byte _activeMessageTrig;
 		#endregion
 		#region Control Arrays
-		Label[] lblGlob = new Label[6];
-		ComboBox[] cboEoMColor = new ComboBox[6];  //[JB] Added color dropdowns for TIE.
-		TextBox[] txtEoM = new TextBox[6];
-		CheckBox[] chkIFF = new CheckBox[6];
-		TextBox[] txtIFF = new TextBox[6];
-		Label[] lblADTrig = new Label[3];
-		ComboBox[] cboGoal = new ComboBox[8];
-		Label[] lblOrder = new Label[3];
-		CheckBox[] chkWP = new CheckBox[15];
-		NumericUpDown[] numUnk = new NumericUpDown[7];  //[JB] Was 9, removed 2 unknowns
-		RadioButton[] optOfficers = new RadioButton[4];
-		MenuItem[] menuRecentMissions = new MenuItem[6];
-		Dictionary<Control, EventHandler> instantUpdate = new Dictionary<Control, EventHandler>();   //[JB] This system allows standard form controls to hook their normal YOGEME event handlers (typically Leave) to update immediately when the data is changed.
-		Dictionary<ComboBox, ComboBox> colorizedFGList = new Dictionary<ComboBox, ComboBox>();  //[JB] Maps a control that should have a colorized FG list with a control that determines whether the list actually contains a FG list.
+#pragma warning disable IDE1006 // Naming Styles
+		readonly Label[] lblGlob = new Label[6];
+		readonly ComboBox[] cboEoMColor = new ComboBox[6];  //[JB] Added color dropdowns for TIE.
+		readonly TextBox[] txtEoM = new TextBox[6];
+		readonly CheckBox[] chkIFF = new CheckBox[6];
+		readonly TextBox[] txtIFF = new TextBox[6];
+		readonly Label[] lblADTrig = new Label[3];
+		readonly ComboBox[] cboGoal = new ComboBox[8];
+		readonly Label[] lblOrder = new Label[3];
+		readonly CheckBox[] chkWP = new CheckBox[15];
+		readonly NumericUpDown[] numUnk = new NumericUpDown[7];  //[JB] Was 9, removed 2 unknowns
+		readonly RadioButton[] optOfficers = new RadioButton[4];
+		readonly MenuItem[] menuRecentMissions = new MenuItem[6];
+		readonly Dictionary<Control, EventHandler> instantUpdate = new Dictionary<Control, EventHandler>();   //[JB] This system allows standard form controls to hook their normal YOGEME event handlers (typically Leave) to update immediately when the data is changed.
+		readonly Dictionary<ComboBox, ComboBox> colorizedFGList = new Dictionary<ComboBox, ComboBox>();  //[JB] Maps a control that should have a colorized FG list with a control that determines whether the list actually contains a FG list.
+#pragma warning restore IDE1006 // Naming Styles
 		#endregion
 
 		public TieForm(Settings settings)
@@ -581,10 +582,10 @@ namespace Idmr.Yogeme
 				for (j = 0; j < 3; j++) dr[j] = 0;  //mirror in raw table
 				_tableRaw.Rows.Add(dr);
 			}
-			_dataWaypoints.Table = _table;
-			_dataWaypointsRaw.Table = _tableRaw;
-			dataWP.DataSource = _dataWaypoints;
-			dataWP_Raw.DataSource = _dataWaypointsRaw;
+			dataWaypoints.Table = _table;
+			dataWaypointsRaw.Table = _tableRaw;
+			dataWP.DataSource = dataWaypoints;
+			dataWP_Raw.DataSource = dataWaypointsRaw;
 			this._table.RowChanged += new DataRowChangeEventHandler(table_RowChanged);
 			this._tableRaw.RowChanged += new DataRowChangeEventHandler(tableRaw_RowChanged);
 			chkWP[0] = chkSP1;
@@ -836,7 +837,7 @@ namespace Idmr.Yogeme
 		void colorizedComboBox_DrawItem(object sender, DrawItemEventArgs e)
 		{
 			ComboBox variable = (ComboBox)sender;
-			ComboBox variableType = null;
+			ComboBox variableType;
 			colorizedFGList.TryGetValue(variable, out variableType);
 			bool colorize = true;
 			if (variableType != null)        //If a VariableType selection control is attached, check that Flight Group is selected.
@@ -1329,8 +1330,11 @@ namespace Idmr.Yogeme
 					try
 					{
 						FlightGroup fg_temp = (FlightGroup)formatter.Deserialize(stream);
+#pragma warning disable IDE0016 // Use 'throw' expression
 						if (fg_temp == null) throw new Exception();
-						newFG();
+#pragma warning restore IDE0016 // Use 'throw' expression
+						if (newFG() == false)
+							break;
 						_mission.FlightGroups[_activeFG] = fg_temp;
 						refreshMap(-1);
 						updateFGList(); //[JB] Update all the downdown lists.
@@ -1347,7 +1351,9 @@ namespace Idmr.Yogeme
 					try
 					{
 						Platform.Tie.Message mess_temp = (Platform.Tie.Message)formatter.Deserialize(stream);
+#pragma warning disable IDE0016 // Use 'throw' expression
 						if (mess_temp == null) throw new Exception();
+#pragma warning restore IDE0016 // Use 'throw' expression
 						newMess();
 						_mission.Messages[_activeMessage] = mess_temp;
 						messlistRefresh();
@@ -1608,9 +1614,7 @@ namespace Idmr.Yogeme
 			{
 				FlightGroup fg = _mission.FlightGroups[i];
 				string c = Strings.CraftAbbrv[fg.CraftType] + " " + fg.Name;
-				string n = "";
-
-				n = composeGoalString(c, fg.Goals.PrimaryAmount, fg.Goals.PrimaryCondition);
+				string n = composeGoalString(c, fg.Goals.PrimaryAmount, fg.Goals.PrimaryCondition);
 				if (n != "") goalList[0].Add(n);
 
 				n = composeGoalString(c, fg.Goals.SecondaryAmount, fg.Goals.SecondaryCondition);
@@ -1659,12 +1663,12 @@ namespace Idmr.Yogeme
 			_noRefresh = false;
 			if (_fMap != null) _fMap.UpdateFlightGroup(_activeFG, _mission.FlightGroups[_activeFG]);  //[JB] If the display name needs to be updated, the map most likely does too.
 		}
-		void newFG()
+		bool newFG()
 		{
 			if (_mission.FlightGroups.Count == Mission.FlightGroupLimit)
 			{
 				MessageBox.Show("Mission contains maximum number of Flight Groups", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				return;
+				return false;
 			}
 			_activeFG = _mission.FlightGroups.Add();
 			_mission.FlightGroups[_activeFG].CraftType = _config.TieCraft;
@@ -1681,6 +1685,7 @@ namespace Idmr.Yogeme
 				_fBrief.MapPaint();
 			}
 			catch { /* do nothing */ }
+			return true;
 		}
 		/// <summary>Updates the clipboard contents from containing broken indexes.</summary>
 		/// <remarks>Should be called during swap or delete (dstIndex &lt; 0) operations.</remarks>
@@ -1907,7 +1912,7 @@ namespace Idmr.Yogeme
 				labelRefresh(_mission.Messages[_activeMessage].Triggers[1], lblMess2);
 				lblMessArr_Click(_activeMessage, new EventArgs());
 			}
-			return (!update ? ggCount == 0 && refCount > 0 : false);
+			return !update && ggCount == 0 && refCount > 0;
 		}
 
 		void lstFG_DrawItem(object sender, DrawItemEventArgs e)
@@ -1988,7 +1993,7 @@ namespace Idmr.Yogeme
 			numUnk20.Value = _mission.FlightGroups[_activeFG].Unknowns.Unknown20;
 			chkUnk21.Checked = _mission.FlightGroups[_activeFG].Unknowns.Unknown21;
 			_loading = btemp;
-			enableBackdrop((_mission.FlightGroups[_activeFG].CraftType == 0x57 ? true : false));
+			enableBackdrop(_mission.FlightGroups[_activeFG].CraftType == 0x57);
 			if (numBackdrop.Visible) //[JB] If the backdrop control is visible, update the control value
 				numBackdrop.Value = _mission.FlightGroups[_activeFG].Status1;
 
@@ -2035,16 +2040,16 @@ namespace Idmr.Yogeme
 			bool isMine = (_mission.FlightGroups[_activeFG].CraftType >= 0x4B && _mission.FlightGroups[_activeFG].CraftType <= 0x4D);
 			lblStatus.Text = isMine ? "Mine Formation" : "Status";
 			cboStatus.Items.AddRange(isMine ? Strings.FormationMine : Strings.Status);
-			Common.SafeSetCBO(cboStatus, isMine ? (int)_mission.FlightGroups[_activeFG].Status1 & 3 : _mission.FlightGroups[_activeFG].Status1, true);
-			cboFormation.Enabled = isMine ? false : true;
+			Common.SafeSetCBO(cboStatus, isMine ? _mission.FlightGroups[_activeFG].Status1 & 3 : _mission.FlightGroups[_activeFG].Status1, true);
+			cboFormation.Enabled = !isMine;
 		}
 
 		void cboCraft_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			enableBackdrop((cboCraft.SelectedIndex == 0x57 ? true : false));
+			enableBackdrop((cboCraft.SelectedIndex == 0x57));
 			if (_loading) return;
 			_mission.FlightGroups[_activeFG].CraftType = Common.Update(this, _mission.FlightGroups[_activeFG].CraftType, Convert.ToByte(cboCraft.SelectedIndex));
-			enableRot((_mission.FlightGroups[_activeFG].CraftType <= 0x45 ? false : true));
+			enableRot(_mission.FlightGroups[_activeFG].CraftType > 0x45);
 			updateFGList();
 			refreshStatus();
 		}
@@ -2202,7 +2207,7 @@ namespace Idmr.Yogeme
 		#region ArrDep
 		void lblADTrigArr_Click(object sender, EventArgs e)
 		{
-			Label l = null;
+			Label l;
 			try
 			{
 				l = (Label)sender;
@@ -2332,7 +2337,7 @@ namespace Idmr.Yogeme
 
 		void lblOrderArr_Click(object sender, EventArgs e)
 		{
-			Label l = null;
+			Label l;
 			try
 			{
 				l = (Label)sender;
@@ -2628,7 +2633,7 @@ namespace Idmr.Yogeme
 
 		void table_RowChanged(object sender, DataRowChangeEventArgs e)
 		{
-			int i, j = 0;
+			int i, j;
 			if (_loading) return;
 			_loading = true;
 			for (j = 0; j < 15; j++) if (_table.Rows[j].Equals(e.Row)) break;   //find the row index that you're changing
@@ -2647,7 +2652,7 @@ namespace Idmr.Yogeme
 		}
 		void tableRaw_RowChanged(object sender, DataRowChangeEventArgs e)
 		{
-			int i, j = 0;
+			int i, j;
 			if (_loading) return;
 			_loading = true;
 			for (j = 0; j < 15; j++) if (_tableRaw.Rows[j].Equals(e.Row)) break;    //find the row index that you're changing
@@ -2761,7 +2766,7 @@ namespace Idmr.Yogeme
 		void lblMessArr_Click(object sender, EventArgs e)
 		{
 			if (_mission.Messages.Count == 0) return;  //[JB] Avoid exception if no messages.
-			Label l = null;
+			Label l;
 			int m;
 			try
 			{
@@ -2897,7 +2902,7 @@ namespace Idmr.Yogeme
 		#region Globals
 		void lblGlobArr_Click(object sender, EventArgs e)
 		{
-			Label l = null;
+			Label l;
 			try
 			{
 				l = (Label)sender;
@@ -2971,11 +2976,10 @@ namespace Idmr.Yogeme
 		void checkQuestionLength()
 		{
 			int qi = (cboOfficer.SelectedIndex * 5) + cboQuestion.SelectedIndex;
-			int size = 0;
-			size = txtQuestion.Text.Length + txtAnswer.Text.Length + 2;  //Strings + 2 bytes (Q/A separator, reserved null terminator in game)
+			int size = txtQuestion.Text.Length + txtAnswer.Text.Length + 2;  //Strings + 2 bytes (Q/A separator, reserved null terminator in game)
 			if (qi >= 10) size += 2;  //Condition byte, Type byte also consume space
 
-			string note = "";
+			string note;
 			if (size > 0x400)
 				note = "Warning! Game text limit exceeded!" + Environment.NewLine + (size - 0x400) + " character" + ((size - 0x400 > 1) ? "s" : "") + " over limit!";
 			else
@@ -3156,7 +3160,7 @@ namespace Idmr.Yogeme
 
 		void txtAnswer_Leave(object sender, EventArgs e)
 		{
-			string t = null;
+			string t;
 			if (cboOfficer.SelectedIndex == 0) t = _mission.BriefingQuestions.PreMissAnswers[cboQuestion.SelectedIndex];
 			else if (cboOfficer.SelectedIndex == 1) t = _mission.BriefingQuestions.PreMissAnswers[cboQuestion.SelectedIndex + 5];
 			else if (cboOfficer.SelectedIndex == 2) t = _mission.BriefingQuestions.PostMissAnswers[cboQuestion.SelectedIndex];
@@ -3175,7 +3179,7 @@ namespace Idmr.Yogeme
 		}
 		void txtQuestion_Leave(object sender, EventArgs e)
 		{
-			string t = null;
+			string t;
 			if (cboOfficer.SelectedIndex == 0) t = _mission.BriefingQuestions.PreMissQuestions[cboQuestion.SelectedIndex];
 			else if (cboOfficer.SelectedIndex == 1) t = _mission.BriefingQuestions.PreMissQuestions[cboQuestion.SelectedIndex + 5];
 			else if (cboOfficer.SelectedIndex == 2) t = _mission.BriefingQuestions.PostMissQuestions[cboQuestion.SelectedIndex];

@@ -3,11 +3,11 @@
  * Copyright (C) 2007-2020 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.6.2+
+ * VERSION: 1.7
  */
 
 /* CHANGELOG
- * v1.7, XXXXXX
+ * v1.7, 200816
  * [UPD] images now use foreground instead of background [JB]
  * [FIX] possible IndexOutOfRange when clicking thumbnails [JB]
  * v1.6.2, 190928
@@ -46,16 +46,18 @@ namespace Idmr.Yogeme
 	public partial class BackdropDialog : Form
 	{
 		// TODO: look into making _planets static, so it only has to initialize the first time each session
-		MissionFile.Platform _platform;
+		readonly MissionFile.Platform _platform;
 		int _index;
 		int _shadow = 0;
 		string _backdropDirectory = "";
 		string _installDirectory = "";
 		int _numBackdrops = 0;
 		DatFile _planets;
-		PictureBox[] thumbs = new PictureBox[103];
-		bool _hookInstalled;
-		string _fileName;
+#pragma warning disable IDE1006 // Naming Styles
+		readonly PictureBox[] thumbs = new PictureBox[103];
+#pragma warning restore IDE1006 // Naming Styles
+		readonly bool _hookInstalled;
+		readonly string _fileName;
 
 		/// <summary>The selected Shadow setting</summary>
 		/// <remarks>XWA only</remarks>
@@ -286,18 +288,18 @@ namespace Idmr.Yogeme
 				}
                 StreamReader sr;
 				System.Collections.Generic.List<string> resdata = new System.Collections.Generic.List<string>(50);
-				string line = "";
 				DatFile temp;
+				string line;
 				try
-                {
+				{
 					sr = new StreamReader(_installDirectory + "\\RESDATA.TXT");
 					while ((line = sr.ReadLine()) != null) if (line != "") resdata.Add(line);
 					sr.Close();
 				}
-                catch
-                {
-                    MessageBox.Show("Could not open resource file:\n" + _installDirectory + "\\RESDATA.TXT", "Error");
-                }
+				catch
+				{
+					MessageBox.Show("Could not open resource file:\n" + _installDirectory + "\\RESDATA.TXT", "Error");
+				}
 				for (int i = 0; i < resdata.Count - 38; i++)	// 38 original entries, customs must be at top
 				{
 					try
@@ -499,8 +501,7 @@ namespace Idmr.Yogeme
 		private void thmbArr_Click(object sender, EventArgs e)
 		{
 			PictureBox p = (PictureBox)sender;
-			int index = 0;
-			index = (int)p.Tag;
+			int index = (int)p.Tag;
 			if (index >= _numBackdrops) return;
 			numBackdrop.Value = index;
 		}

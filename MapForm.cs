@@ -3,11 +3,11 @@
  * Copyright (C) 2007-2020 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.6.5+
+ * VERSION: 1.7
  */
 
 /* CHANGELOG
- * v1.7, XXXXXX
+ * v1.7, 200816
  * [UPD] MapPaint now always persistent
  * [NEW #12] Wireframe implementation [JB]
  * [UPD] Max zoom and zoom speed adjusted [JB]
@@ -1016,9 +1016,13 @@ namespace Idmr.Yogeme
 			for (int i = 0; i < numCraft; i++)
 			{
 				//Convert Craft, IFF, and remap the Waypoints to use the TIE formats so that the rest of the map can function correctly.
-				_mapData[i] = new MapData(_platform);
-				_mapData[i].Craft = fg[i].GetTIECraftType();
-				_mapData[i].FgIndex = i;
+				_mapData[i] = new MapData(_platform)
+				{
+					Craft = fg[i].GetTIECraftType(),
+					FgIndex = i,
+					IFF = fg[i].GetTIEIFF(),
+					Name = fg[i].Name
+				};
 				Platform.Xwing.FlightGroup.Waypoint[] arr = new Platform.Xwing.FlightGroup.Waypoint[17];  //TIE has 15 waypoints, need extra to virtualize the Coordinate Set points throught the XvT briefing coords
 				for (int j = 0; j < 15; j++)
 					arr[j] = new Platform.Xwing.FlightGroup.Waypoint();
@@ -1037,9 +1041,7 @@ namespace Idmr.Yogeme
 				fg[i].Waypoints[9][3] = 1;
 
 				_mapData[i].WPs[0] = arr; // fg[i].Waypoints;
-				_mapData[i].IFF = fg[i].GetTIEIFF();
 				if (fg[i].IFF == 0 && fg[i].IsObjectGroup()) _mapData[i].IFF = 1; //None/Default objects appear as Imperial.
-				_mapData[i].Name = fg[i].Name;
 				_mapData[i].FullName = Platform.Tie.Strings.CraftAbbrv[_mapData[i].Craft] + " " + fg[i].Name; //We converted craft to TIE, so load TIE strings.
 				if (fg[i].ObjectType >= 58 && fg[i].ObjectType <= 69)
 				{
@@ -1061,12 +1063,14 @@ namespace Idmr.Yogeme
 			_mapData = new MapData[numCraft];
 			for (int i = 0; i < numCraft; i++)
 			{
-				_mapData[i] = new MapData(_platform);
-				_mapData[i].Craft = fg[i].CraftType;
-				_mapData[i].FgIndex = i;
+				_mapData[i] = new MapData(_platform)
+				{
+					Craft = fg[i].CraftType,
+					FgIndex = i,
+					IFF = fg[i].IFF,
+					Name = fg[i].Name
+				};
 				_mapData[i].WPs[0] = fg[i].Waypoints;
-				_mapData[i].IFF = fg[i].IFF;
-				_mapData[i].Name = fg[i].Name;
 				_mapData[i].FullName = Platform.Tie.Strings.CraftAbbrv[_mapData[i].Craft] + " " + fg[i].Name;
 			}
 			reloadSelectionControls();
@@ -1080,12 +1084,14 @@ namespace Idmr.Yogeme
 			_mapData = new MapData[numCraft];
 			for (int i = 0; i < numCraft; i++)
 			{
-				_mapData[i] = new MapData(_platform);
-				_mapData[i].Craft = fg[i].CraftType;
-				_mapData[i].FgIndex = i;
+				_mapData[i] = new MapData(_platform)
+				{
+					Craft = fg[i].CraftType,
+					FgIndex = i,
+					IFF = fg[i].IFF,
+					Name = fg[i].Name
+				};
 				_mapData[i].WPs[0] = fg[i].Waypoints;
-				_mapData[i].IFF = fg[i].IFF;
-				_mapData[i].Name = fg[i].Name;
 				_mapData[i].FullName = Platform.Xvt.Strings.CraftAbbrv[_mapData[i].Craft] + " " + fg[i].Name;
 			}
 			reloadSelectionControls();
@@ -1100,9 +1106,13 @@ namespace Idmr.Yogeme
 			//_wpSetCount = 17;
 			for (int i = 0; i < numCraft; i++)
 			{
-				_mapData[i] = new MapData(_platform);
-				_mapData[i].Craft = fg[i].CraftType;
-				_mapData[i].FgIndex = i;
+				_mapData[i] = new MapData(_platform)
+				{
+					Craft = fg[i].CraftType,
+					FgIndex = i,
+					IFF = fg[i].IFF,
+					Name = fg[i].Name
+				};
 				_mapData[i].WPs[0] = fg[i].Waypoints;
 				for (int j = 0; j < 16; j++)
 				{
@@ -1110,8 +1120,6 @@ namespace Idmr.Yogeme
 					int order = j % 4;
 					_mapData[i].WPs[j + 1] = fg[i].Orders[region, order].Waypoints;
 				}
-				_mapData[i].IFF = fg[i].IFF;
-				_mapData[i].Name = fg[i].Name;
 				_mapData[i].FullName = Platform.Xwa.Strings.CraftAbbrv[_mapData[i].Craft] + " " + fg[i].Name;
 			}
 			reloadSelectionControls();

@@ -3,11 +3,11 @@
  * Copyright (C) 2007-2020 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.6.5+
+ * VERSION: 1.7
  */
 
 /* CHANGELOG
- * v1.7, xxxxxx
+ * v1.7, 200816
  * [FIX] XWA MoveIcon selecting wrong icon
  * [FIX] XvT craft icons [JB]
  * v1.6.5, 200704
@@ -78,7 +78,7 @@ namespace Idmr.Yogeme
 		Platform.Xwa.Briefing _xwaBriefing;
 		bool _loading = false;
 		readonly Color _normalColor;
-		readonly Color _highlightColor; // TODO this is currently unused, maybe at some point work highlighting in
+		//readonly Color _highlightColor; // TODO this is currently unused, maybe at some point work highlighting in
 		readonly Color _titleColor;
 		short[,] _events;   // this will contain the event listing for use, raw data is in Briefing.Events[]
 		short _zoomX = 48;
@@ -123,7 +123,7 @@ namespace Idmr.Yogeme
 			_platform = Settings.Platform.TIE;
 			_titleColor = Color.FromArgb(0xFC, 0xFC, 0x54);
 			_normalColor = Color.FromArgb(0xFC, 0xFC, 0xFC);
-			_highlightColor = Color.FromArgb(0x00, 0xA8, 0x00);
+			//_highlightColor = Color.FromArgb(0x00, 0xA8, 0x00);
 			_zoomY = _zoomX;            // in most cases, these will remain the same
 			_tieBriefing = briefing;
 			_maxEvents = Platform.Tie.Briefing.EventQuantityLimit;
@@ -173,7 +173,7 @@ namespace Idmr.Yogeme
 			_platform = Settings.Platform.XvT;
 			_titleColor = Color.FromArgb(0xFC, 0xFC, 0x00);
 			_normalColor = Color.FromArgb(0xF8, 0xFC, 0xF8);
-			_highlightColor = Color.FromArgb(0x40, 0xC4, 0x40);
+			//_highlightColor = Color.FromArgb(0x40, 0xC4, 0x40);
 			_zoomY = _zoomX;
 			_xvtBriefingCollection = briefing; //[JB] Added
 			_currentCollectionIndex = 0;
@@ -262,7 +262,7 @@ namespace Idmr.Yogeme
 			_platform = Settings.Platform.XWA;
 			_titleColor = Color.FromArgb(0x63, 0x82, 0xFF);
 			_normalColor = Color.FromArgb(0xFF, 0xFF, 0xFF);
-			_highlightColor = _titleColor;
+			//_highlightColor = _titleColor;
 			_zoomX = 32;
 			_zoomY = _zoomX;
 			_xwaBriefingCollection = briefing;
