@@ -8,6 +8,7 @@
 <ul>
 <li><a href="#overall">Overall</a>
 <li><a href="#map">Map</a>
+<li><a href="#wireframe">Wireframe</a>
 <li><a href="#xw">Xwing</a>
 <li><a href="#tie">TIE</a>
 <li><a href="#xvt">XvT/BoP</a>
@@ -21,7 +22,7 @@ This is where you control some of the defaults and global settings used in YOGEM
 <h3><a name="overall" class="anchor">Overall</a></h3>
 This tab is for YOGEME global behaviours. The <i>Startup</i> panel on the left defines if you see the initial windows to select a platform (default) or launch directly into whichever platform/mission you had open last. If launching the mission doesn't work, it will try launch the last platform.<br><br>
 
-The checkboxes all default to checked. The first one will disable editing on a platform if it's not installed, since you can't test what you don't have, so I intentionally discourage you from touching it. In the event that you have none of the platforms installed, this will automatically uncheck the first time you run YOGEME and you can edit everything. YOGEME will detect normal installations as well as those on 64-bit systems up to Windows 10 using the MSI installers from <a href="http://www.markusegger.at/Software/Games.aspx">Markus Egger</a>, as well as Steam installations.<br><br>
+The checkboxes all default to checked. The first one will disable editing on a platform if it's not installed, since you can't test what you don't have, so I intentionally discourage you from touching it. In the event that you have none of the platforms installed, this will automatically uncheck the first time you run YOGEME and you can edit everything. YOGEME will detect normal installations as well as those on 64-bit systems up to Windows 10 using the MSI installers from <a href="http://www.markusegger.at/Software/Games.aspx">Markus Egger</a>and Steam installations.<br><br>
 
 The next two boxes are your typical annoying "Are you sure you want to?" boxes that I'm betting you'll disable anyway. The <i>Verify</i> box and field at the bottom will decide if the mission will be run through my MissionVerify program every time you save. If you don't want this, that's fine, you can run it from the toolbar and menu whenever you want. If you have something else that you want to screen your missions, you can stick anything here you want, really. What my MissionVerify does is checks the file for common errors and other issues that can render it unplayable or unwinnable. Examples are Global Goals with "* AND FALSE" set, no player craft, mission limits exceeded (which shouldn't be an issue here), no briefing (not required, but you should), etc. It'll give you a list of warnings and errors and you can fix/ignore what you will. Made it for easy checking of missions submitted to the GE but also a good check for anyone making missions.<br><br>
 
@@ -31,7 +32,11 @@ The last two check boxes were added in v1.3. One simply uses the Recent Director
 
 <h3><a name="map" class="anchor">Map</a></h3>
 <p align=center><img src="../../images/Opt-Map.png"></p>
-A couple options that can be set at the Map Dialog, but set for defaults here.<br>
+A couple options that can be set at the Map Dialog, but set for defaults here. The Zoom setting is the percentage of the current zoom level that increments when using the mousewheel.<br>
+
+<h3><a name="wireframe" class="anchor">Wireframe</a></h3>
+<p align=center><img src="../../images/Opt-wireframe.png"></p>
+New in 1.7 is the ability to display wireframes in the Map, so along with that are several ways to control it. There's the overall enable/disable option to start, then two options that control how small items are shown. The first one will display the craft icon instead of loading the wireframe if the ship is below the given size, and the second one is the smallest that a mesh will be drawn before it becomes a fixed size and is treated like an icon. To the right of that is a list of all mesh types than can be displayed. I would suggest not changing these, as the default include all of the major structures but remove small meshed such as weapons and other systems. While it would be more detailed, it would be slower and each model would appear more cluttered. If you do decide to mess with it, there's a button to restore the default selections.<br><br>
 
 <h3><a name="xw" class="anchor">Xwing</a></h3>
 <p align=center><img src="../../images/Opt-XW.png"></p>
@@ -41,7 +46,9 @@ Same as TIE.<br>
 <p align=center><img src="../../images/Opt-TIE.png"></p>
 The platform tabs primarily exist to control the default new FlightGroup and the platform installation directory. You can fake platform installations if you have the appropriate support files in the correct directory structure at this location (like BATTLE#.LFD files and the required files to support the galaxy image). If you do this, YOGEME will not be able to auto-detect the fake install should your settings be reset.<br><br>
 
-If you are using a custom shiplist, they will also be reflected here.<br>
+If you are using a custom shiplist, they will also be reflected here.<br><br>
+
+The "Detect installation" option for each platform will have YOGEME assume the mission file is in a valid MISSION (or appropriate) directory for the platform, and use that location to attempt loading the wireframes in the Map. The "Override" option loads the external "craft_data_*.txt" files for craft information.<br><br>
 
 <h3><a name="xvt" class="anchor">XvT/BoP</a></h3>
 <p align=center><img src="../../images/Opt-XvT.png"></p>
@@ -49,7 +56,7 @@ Same as TIE, but adds in the additional briefing waypoints you can activate by d
 
 <h3><a name="xwa" class="anchor">XWA</a></h3>
 <p align=center><img src="../../images/Opt-XWA.png"></p>
-The only special item here is the option to automatically apply DTM Super Backdrops to missions by default. This will only be available if the installation of DSB is detected.<br>
+Two new options, the "Scan" option will read the installation itself for the installed craft, helpful for detected mods. The option following that will mark modded craft with a "+" in lists, followed by a button to export the currently installed craft list. There is also the option to automatically apply DTM Super Backdrops to missions by default. This will only be available if the installation of DSB is detected.<br>
 
 <h3><a name="clr" class="anchor">Colors</a></h3>
 <p align=center><img src="../../images/Opt-colors.png"></p>
