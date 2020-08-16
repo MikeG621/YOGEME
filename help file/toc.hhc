@@ -354,6 +354,10 @@
 			<param name="Name" value="Briefing Dialog">
 			<param name="Local" value="pages\XWA\brief.html">
 			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Hook Dialog">
+			<param name="Local" value="pages\XWA\hooks.html">
+			</OBJECT>
 	</UL>
 </UL>
 </BODY></HTML>

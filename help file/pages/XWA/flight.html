@@ -54,7 +54,9 @@ The Arrival and Departures tab controls when, how and if the FG shows up during 
 The Mothership settings should be straight forward, craft will default to Hyperspace. You can select any FG in the mission to be a Mothership, even if they aren't equipped with a hangar. Forgetting to reassign the Mothership's FG can lead to amusing instances of large craft leaving the "hangar" of the first FG, which is usually the player, sending them tumbling, sometimes into tiny pieces.<br><u>Player craft must have a Mothership assigned, even if assigned to itself</u>.<br>
 FlightGroups will attempt the the first option (<i>Via</i> panel) when the appropriate trigger fires and will go to the <i>Alternate</i> when the primary Mothership is not in theater. If both condtions cannot be met, the FG will hang around either holding still or sometimes flying in a straight line forever, depending on their last order.<br><br>
 
-The Arrival <i>Delay</i> doesn't have any tricks to it; if there's a trigger set it will delay after that firing, if there's no triggers (both TRUE) it will delay from the mission start. The Departure <i>Delay</i> now works as you would hope, the delay starts after the trigger fires. Also, individual craft will leave when the <i>Abort</i> condition is met, such as "Warheads Depleted" or "50% Hull".
+The Arrival <i>Delay</i> doesn't have any tricks to it; if there's a trigger set it will delay after that firing, if there's no triggers (both TRUE) it will delay from the mission start. The Departure <i>Delay</i> now works as you would hope, the delay starts after the trigger fires. Also, individual craft will leave when the <i>Abort</i> condition is met, such as "Warheads Depleted" or "50% Hull".<br><br>
+
+The "Set Mission Craft" button reassign (with a warning if necessary) the arrival triggers such taht the craft will appear in the pre-mission Craft list.
 
 <h3><a name="goal" class="anchor">Goals</a></h3>
 <p align=center><img src="../../images/XWA/FG-Goals.png"></p>
@@ -75,7 +77,9 @@ Orders make the world go 'round. XWA gives you four orders in each Region to con
 
 <i>Throttle %</i> is just that, a very basic throttle control, while <i>Speed</i> gives you a more precise number suited well for convoy craft of differing ship types. As of 1.4.3, this will be shown in MGLT. The three variables next to it change meaning as you select orders, so pay attention and play with them to get a full understanding.<br><br>
 
-<i>Targets</i> behave similarly to triggers, using the Type and Variable fields as well as the And/Or controls. FlightGroups will go after Primary targets first, with Secondaries being saved for afterwards or as targets of opportunity. The order text will update to reflect any changes and ensure the result is what you're looking for.
+<i>Targets</i> behave similarly to triggers, using the Type and Variable fields as well as the And/Or controls. FlightGroups will go after Primary targets first, with Secondaries being saved for afterwards or as targets of opportunity. The order text will update to reflect any changes and ensure the result is what you're looking for.<br><br>
+
+Orders in the list shown with the "&gt;&gt;" prefix denote that there is a Skip trigger defined for it. A "??" prefix means that there is a Skip trigger, but it's broken and will never fire. A "XX" prefix means that there's a Skip trigger and it's explicitly set to "FALSE", which is completely worthless.
 
 <h3><a name="opt" class="anchor">Options</a></h3>
 <p align=center><img src="../../images/XWA/FG-Opt.png"></p>
@@ -83,7 +87,7 @@ This tab lets you set a bunch of miscellaneous settings for the FG, most of them
 
 <i>Roles</i> primarily are for message updates, such as "Your Command Ship is under attack!" etc.  The <i>Pilot</i> note is primarily for note-keeping, no real affect.<br><br>
 
-XWA also provides Skip triggers for every order, instead of just Order #4 like in XvT.  This also helps with the dynamic capability of the missions.
+XWA also provides Skip triggers for every order, instead of just Order #4 like in XvT.  This also helps with the dynamic capability of the missions. If the trigger is defined, the drop-down will denote it with "&lt;&lt;".  The "??" and "XX" markers are also used here.
 
 <h3><a name="unk" class="anchor">Unknown</a></h3>
 <p align=center><img src="../../images/XWA/FG-Unk.png"></p>

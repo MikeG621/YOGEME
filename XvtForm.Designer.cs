@@ -320,12 +320,9 @@ namespace Idmr.Yogeme
 			this.chkOptWIonPulse = new System.Windows.Forms.CheckBox();
 			this.tabUnk = new System.Windows.Forms.TabPage();
 			this.grpUnkOther = new System.Windows.Forms.GroupBox();
-			this.numUnk20 = new System.Windows.Forms.NumericUpDown();
 			this.label93 = new System.Windows.Forms.Label();
 			this.chkUnk17 = new System.Windows.Forms.CheckBox();
 			this.chkUnk18 = new System.Windows.Forms.CheckBox();
-			this.chkUnk19 = new System.Windows.Forms.CheckBox();
-			this.numUnk21 = new System.Windows.Forms.NumericUpDown();
 			this.label94 = new System.Windows.Forms.Label();
 			this.chkUnk23 = new System.Windows.Forms.CheckBox();
 			this.chkUnk22 = new System.Windows.Forms.CheckBox();
@@ -366,9 +363,7 @@ namespace Idmr.Yogeme
 			this.chkUnk11 = new System.Windows.Forms.CheckBox();
 			this.chkUnk12 = new System.Windows.Forms.CheckBox();
 			this.chkUnk14 = new System.Windows.Forms.CheckBox();
-			this.numUnk16 = new System.Windows.Forms.NumericUpDown();
 			this.label91 = new System.Windows.Forms.Label();
-			this.chkUnk15 = new System.Windows.Forms.CheckBox();
 			this.label1 = new System.Windows.Forms.Label();
 			this.lstFG = new System.Windows.Forms.ListBox();
 			this.tabMess = new System.Windows.Forms.TabPage();
@@ -528,9 +523,9 @@ namespace Idmr.Yogeme
 			this.label105 = new System.Windows.Forms.Label();
 			this.label106 = new System.Windows.Forms.Label();
 			this.numMissUnk2 = new System.Windows.Forms.NumericUpDown();
-			this.chkPreventOutcome = new System.Windows.Forms.CheckBox();
 			this.optXvT = new System.Windows.Forms.RadioButton();
 			this.label104 = new System.Windows.Forms.Label();
+			this.chkPreventOutcome = new System.Windows.Forms.CheckBox();
 			this.label102 = new System.Windows.Forms.Label();
 			this.numMissTimeMin = new System.Windows.Forms.NumericUpDown();
 			this.label101 = new System.Windows.Forms.Label();
@@ -610,6 +605,7 @@ namespace Idmr.Yogeme
 			this.savXvT = new System.Windows.Forms.SaveFileDialog();
 			this.dataWaypoints = new System.Data.DataView();
 			this.dataWaypoints_Raw = new System.Data.DataView();
+			this.label26 = new System.Windows.Forms.Label();
 			this.tabMain.SuspendLayout();
 			this.tabFG.SuspendLayout();
 			this.tabFGMinor.SuspendLayout();
@@ -671,8 +667,6 @@ namespace Idmr.Yogeme
 			this.groupBox19.SuspendLayout();
 			this.tabUnk.SuspendLayout();
 			this.grpUnkOther.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.numUnk20)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.numUnk21)).BeginInit();
 			this.grpUnkOrder.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numUnk6)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numUnkOrder)).BeginInit();
@@ -688,7 +682,6 @@ namespace Idmr.Yogeme
 			this.grpUnkGoal.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numUnkGoal)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numUnk13)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.numUnk16)).BeginInit();
 			this.tabMess.SuspendLayout();
 			this.grpMessages.SuspendLayout();
 			this.panel8.SuspendLayout();
@@ -3949,12 +3942,10 @@ namespace Idmr.Yogeme
 			// 
 			// grpUnkOther
 			// 
-			this.grpUnkOther.Controls.Add(this.numUnk20);
+			this.grpUnkOther.Controls.Add(this.label26);
 			this.grpUnkOther.Controls.Add(this.label93);
 			this.grpUnkOther.Controls.Add(this.chkUnk17);
 			this.grpUnkOther.Controls.Add(this.chkUnk18);
-			this.grpUnkOther.Controls.Add(this.chkUnk19);
-			this.grpUnkOther.Controls.Add(this.numUnk21);
 			this.grpUnkOther.Controls.Add(this.label94);
 			this.grpUnkOther.Controls.Add(this.chkUnk23);
 			this.grpUnkOther.Controls.Add(this.chkUnk22);
@@ -3966,34 +3957,19 @@ namespace Idmr.Yogeme
 			this.grpUnkOther.Controls.Add(this.chkUnk27);
 			this.grpUnkOther.Location = new System.Drawing.Point(8, 344);
 			this.grpUnkOther.Name = "grpUnkOther";
-			this.grpUnkOther.Size = new System.Drawing.Size(480, 104);
+			this.grpUnkOther.Size = new System.Drawing.Size(533, 104);
 			this.grpUnkOther.TabIndex = 10;
 			this.grpUnkOther.TabStop = false;
 			this.grpUnkOther.Text = "Options/Other";
 			this.grpUnkOther.Leave += new System.EventHandler(this.grpUnkOther_Leave);
 			// 
-			// numUnk20
-			// 
-			this.numUnk20.Enabled = false;
-			this.numUnk20.Location = new System.Drawing.Point(224, 30);
-			this.numUnk20.Maximum = new decimal(new int[] {
-            256,
-            0,
-            0,
-            0});
-			this.numUnk20.Name = "numUnk20";
-			this.numUnk20.Size = new System.Drawing.Size(48, 20);
-			this.numUnk20.TabIndex = 11;
-			// 
 			// label93
 			// 
-			this.label93.Enabled = false;
-			this.label93.Location = new System.Drawing.Point(176, 30);
+			this.label93.Location = new System.Drawing.Point(269, 33);
 			this.label93.Name = "label93";
-			this.label93.Size = new System.Drawing.Size(40, 16);
+			this.label93.Size = new System.Drawing.Size(120, 23);
 			this.label93.TabIndex = 12;
-			this.label93.Text = "0x521";
-			this.label93.TextAlign = System.Drawing.ContentAlignment.BottomRight;
+			this.label93.Text = "0x521 AbortClockMin";
 			// 
 			// chkUnk17
 			// 
@@ -4013,38 +3989,13 @@ namespace Idmr.Yogeme
 			this.chkUnk18.TabIndex = 10;
 			this.chkUnk18.Text = "0x518";
 			// 
-			// chkUnk19
-			// 
-			this.chkUnk19.Enabled = false;
-			this.chkUnk19.Location = new System.Drawing.Point(120, 24);
-			this.chkUnk19.Name = "chkUnk19";
-			this.chkUnk19.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-			this.chkUnk19.Size = new System.Drawing.Size(56, 32);
-			this.chkUnk19.TabIndex = 10;
-			this.chkUnk19.Text = "0x520";
-			// 
-			// numUnk21
-			// 
-			this.numUnk21.Enabled = false;
-			this.numUnk21.Location = new System.Drawing.Point(320, 30);
-			this.numUnk21.Maximum = new decimal(new int[] {
-            256,
-            0,
-            0,
-            0});
-			this.numUnk21.Name = "numUnk21";
-			this.numUnk21.Size = new System.Drawing.Size(48, 20);
-			this.numUnk21.TabIndex = 11;
-			// 
 			// label94
 			// 
-			this.label94.Enabled = false;
-			this.label94.Location = new System.Drawing.Point(272, 30);
+			this.label94.Location = new System.Drawing.Point(395, 33);
 			this.label94.Name = "label94";
-			this.label94.Size = new System.Drawing.Size(40, 16);
+			this.label94.Size = new System.Drawing.Size(123, 23);
 			this.label94.TabIndex = 12;
-			this.label94.Text = "0x522";
-			this.label94.TextAlign = System.Drawing.ContentAlignment.BottomRight;
+			this.label94.Text = "0x522 AbortClockSec";
 			// 
 			// chkUnk23
 			// 
@@ -4387,12 +4338,10 @@ namespace Idmr.Yogeme
 			this.grpUnkGoal.Controls.Add(this.chkUnk11);
 			this.grpUnkGoal.Controls.Add(this.chkUnk12);
 			this.grpUnkGoal.Controls.Add(this.chkUnk14);
-			this.grpUnkGoal.Controls.Add(this.numUnk16);
 			this.grpUnkGoal.Controls.Add(this.label91);
-			this.grpUnkGoal.Controls.Add(this.chkUnk15);
 			this.grpUnkGoal.Location = new System.Drawing.Point(8, 248);
 			this.grpUnkGoal.Name = "grpUnkGoal";
-			this.grpUnkGoal.Size = new System.Drawing.Size(496, 80);
+			this.grpUnkGoal.Size = new System.Drawing.Size(430, 80);
 			this.grpUnkGoal.TabIndex = 9;
 			this.grpUnkGoal.TabStop = false;
 			this.grpUnkGoal.Text = "Goals";
@@ -4488,37 +4437,13 @@ namespace Idmr.Yogeme
 			this.chkUnk14.TabIndex = 9;
 			this.chkUnk14.Text = "(0xC)";
 			// 
-			// numUnk16
-			// 
-			this.numUnk16.Enabled = false;
-			this.numUnk16.Location = new System.Drawing.Point(432, 46);
-			this.numUnk16.Maximum = new decimal(new int[] {
-            256,
-            0,
-            0,
-            0});
-			this.numUnk16.Name = "numUnk16";
-			this.numUnk16.Size = new System.Drawing.Size(48, 20);
-			this.numUnk16.TabIndex = 7;
-			// 
 			// label91
 			// 
-			this.label91.Location = new System.Drawing.Point(384, 46);
+			this.label91.Location = new System.Drawing.Point(334, 49);
 			this.label91.Name = "label91";
-			this.label91.Size = new System.Drawing.Size(40, 16);
+			this.label91.Size = new System.Drawing.Size(90, 23);
 			this.label91.TabIndex = 8;
-			this.label91.Text = "(0xE)";
-			this.label91.TextAlign = System.Drawing.ContentAlignment.BottomRight;
-			// 
-			// chkUnk15
-			// 
-			this.chkUnk15.Enabled = false;
-			this.chkUnk15.Location = new System.Drawing.Point(328, 40);
-			this.chkUnk15.Name = "chkUnk15";
-			this.chkUnk15.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-			this.chkUnk15.Size = new System.Drawing.Size(56, 32);
-			this.chkUnk15.TabIndex = 9;
-			this.chkUnk15.Text = "(0xD)";
+			this.label91.Text = "(0xE) TimeLimit";
 			// 
 			// label1
 			// 
@@ -6203,16 +6128,6 @@ namespace Idmr.Yogeme
 			this.numMissUnk2.TabIndex = 1;
 			this.numMissUnk2.Leave += new System.EventHandler(this.numMissUnk2_Leave);
 			// 
-			// chkPreventOutcome
-			// 
-			this.chkPreventOutcome.Location = new System.Drawing.Point(348, 430);
-			this.chkPreventOutcome.Name = "chkPreventOutcome";
-			this.chkPreventOutcome.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-			this.chkPreventOutcome.Size = new System.Drawing.Size(152, 16);
-			this.chkPreventOutcome.TabIndex = 2;
-			this.chkPreventOutcome.Text = "Prevent mission outcome";
-			this.chkPreventOutcome.Leave += new System.EventHandler(this.chkPreventOutcome_Leave);
-			// 
 			// optXvT
 			// 
 			this.optXvT.Checked = true;
@@ -6231,6 +6146,16 @@ namespace Idmr.Yogeme
 			this.label104.Size = new System.Drawing.Size(72, 16);
 			this.label104.TabIndex = 7;
 			this.label104.Text = "Platform";
+			// 
+			// chkPreventOutcome
+			// 
+			this.chkPreventOutcome.Location = new System.Drawing.Point(348, 430);
+			this.chkPreventOutcome.Name = "chkPreventOutcome";
+			this.chkPreventOutcome.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+			this.chkPreventOutcome.Size = new System.Drawing.Size(152, 16);
+			this.chkPreventOutcome.TabIndex = 2;
+			this.chkPreventOutcome.Text = "Prevent mission outcome";
+			this.chkPreventOutcome.Leave += new System.EventHandler(this.chkPreventOutcome_Leave);
 			// 
 			// label102
 			// 
@@ -6827,6 +6752,14 @@ namespace Idmr.Yogeme
 			this.dataWaypoints_Raw.AllowDelete = false;
 			this.dataWaypoints_Raw.AllowNew = false;
 			// 
+			// label26
+			// 
+			this.label26.Location = new System.Drawing.Point(126, 33);
+			this.label26.Name = "label26";
+			this.label26.Size = new System.Drawing.Size(137, 23);
+			this.label26.TabIndex = 13;
+			this.label26.Text = "0x520 PreventNumbering";
+			// 
 			// XvtForm
 			// 
 			this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
@@ -6911,8 +6844,6 @@ namespace Idmr.Yogeme
 			this.groupBox19.ResumeLayout(false);
 			this.tabUnk.ResumeLayout(false);
 			this.grpUnkOther.ResumeLayout(false);
-			((System.ComponentModel.ISupportInitialize)(this.numUnk20)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.numUnk21)).EndInit();
 			this.grpUnkOrder.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.numUnk6)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.numUnkOrder)).EndInit();
@@ -6928,7 +6859,6 @@ namespace Idmr.Yogeme
 			this.grpUnkGoal.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.numUnkGoal)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.numUnk13)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.numUnk16)).EndInit();
 			this.tabMess.ResumeLayout(false);
 			this.tabMess.PerformLayout();
 			this.grpMessages.ResumeLayout(false);
@@ -7090,16 +7020,11 @@ namespace Idmr.Yogeme
 		CheckBox chkUnk11;
 		CheckBox chkUnk12;
 		CheckBox chkUnk14;
-		NumericUpDown numUnk16;
 		Label label91;
-		CheckBox chkUnk15;
 		GroupBox grpUnkOther;
 		CheckBox chkUnk17;
 		CheckBox chkUnk18;
-		CheckBox chkUnk19;
-		NumericUpDown numUnk20;
 		Label label93;
-		NumericUpDown numUnk21;
 		Label label94;
 		CheckBox chkUnk23;
 		CheckBox chkUnk22;
@@ -7565,5 +7490,6 @@ namespace Idmr.Yogeme
         private TextBox txtIFF4;
         private TextBox txtIFF5;
         private TextBox txtIFF6;
-    }
+		private Label label26;
+	}
 }

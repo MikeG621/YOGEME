@@ -12,6 +12,7 @@
 <li><a href="#goal">Goals</a>
 <li><a href="#wp">Waypoints</a>
 <li><a href="#ord">Orders</a>
+<li><a href="#opt">Options</a>
 <li><a href="#unk">Unknowns</a>
 </ul>
 When you start YOGEME and launch the TIE95 platform you will be greeted by the FlightGroups-Craft tab.<br>
@@ -19,7 +20,7 @@ When you start YOGEME and launch the TIE95 platform you will be greeted by the F
 This page includes most of the basic information for the given FlightGroup. On the left you have the list of FGs with a briefing summary of their details. On the right you have several tabs to help find the settings you wish to edit. But for right now we're going to focus on here.<br><br>
 
 The ListBox on the left shows every single FG in the mission and is accessible from every FG tab. There is a maximum of <u>48 FlightGroups</u> allowed in a mission file. Past that results in various corruptions. YOGEME will enforce this limit.<br>
-The ListBox gives you the IFF Index (as well as the appropriate color), Global Group, Number of Waves x Number of Craft, FG Name. The FG with an asterisk is the player's FG. Simply click on a FG to load that craft's settings.<br>
+The ListBox gives you the IFF Index (as well as the appropriate color), Global Group, Number of Waves x Number of Craft, FG Name, editor number if enabled (to differentiate FGs with the same name) and the difficulty setting the FG appears if not default. The FG with an asterisk is the player's FG. Simply click on a FG to load that craft's settings.<br>
 
 <h3><a name="craft" class="anchor">Craft</a></h3>
 The first group includes the craft <i>Name</i>, <i>Pilot</i> and <i>Cargos</i>. These strings all have a maximum length of 12 that is enforced. Pilot isn't really used by TIE, and you'll never see it in-game. It's more for note-keeping, and the LucasArts mission makes used it to mark who designed the mission.<br>
@@ -72,6 +73,10 @@ Orders make the world go 'round. TIE gives you three orders to control FG behavi
 <i>Percent of Full Speed</i> is just that, a very basic throttle control. The two variables next to it change meaning as you select orders, so pay attention and play with them to get a full understanding.<br><br>
 
 <i>Targets</i> behave similarly to triggers, using the Type and Variable fields as well as the And/Or controls. FlightGroups will go after Primary targets first, with Secondaries being saved for afterwards or as targets of opportunity. The order text will update to reflect any changes and ensure the result is what you're looking for.<br>
+
+<h3><a name="opt" class="anchor">Options</a></h3>
+<p align=center><img src="../../images/TIE/FG-options.png"></p>
+Discovered and implemented for v1.5, the simple Options are for the Campaign perma-death.
 
 <h3><a name="unk" class="anchor">Unknown</a></h3>
 <p align=center><img src="../../images/TIE/FG-Unk.png"></p>

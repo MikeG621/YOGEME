@@ -8,6 +8,8 @@
 
 /* CHANGELOG
  * v1.7, 200816
+ * [FIX] regions in Parameter cbos drawing black-on-black
+ * [FIX] crash when leaving the GG name without a selection
  * [FIX] recalculateEditorCraftNumbering() handles _activeFG now [JB]
  * [UPD] shiplist and Map calls updated for Wireframe implementation [JB]
  * [UPD] Blank messages now shown as "*" [JB]
@@ -1139,7 +1141,6 @@ namespace Idmr.Yogeme
 				lblGG[i].Click += new EventHandler(lblGGArr_Click);
 				lblGG[i].Tag = i;
 			}
-			lblGGArr_Click(lblGG[0], new EventArgs());
 			txtIFFs[0] = txtIFF3;
 			txtIFFs[1] = txtIFF4;
 			txtIFFs[2] = txtIFF5;
@@ -1264,6 +1265,7 @@ namespace Idmr.Yogeme
 			foreach (Label lbl in lblGlobTrig) setInteractiveLabelColor(lbl, lbl.Tag.ToString() == _activeGlobalTrigger.ToString());
 			foreach (Label lbl in lblTeam) setInteractiveLabelColor(lbl, lbl.Tag.ToString() == _activeTeam.ToString());
 			foreach (Label lbl in lblGG) setInteractiveLabelColor(lbl, false);  //No variable tracks which one is selected, set colors but ignore highlight.
+			lblGGArr_Click(lblGG[0], new EventArgs());
 			setInteractiveLabelColor(lblSkipTrig1, _activeSkipTrigger == 0);
 			setInteractiveLabelColor(lblSkipTrig2, _activeSkipTrigger == 1);
 		}
@@ -1294,11 +1296,12 @@ namespace Idmr.Yogeme
 			if (e.Index == -1 || e.Index - paramOffset >= _mission.FlightGroups.Count) colorize = false;
 
 			if (variable.BackColor == Color.Black || variable.BackColor == SystemColors.Window)
-				variable.BackColor = (colorize == true) ? Color.Black : SystemColors.Window;
+				variable.BackColor = (colorize ? Color.Black : SystemColors.Window);
 
 			e.DrawBackground();
 			Brush brText = SystemBrushes.ControlText;
-			if (colorize == true) brText = getFlightGroupDrawColor(e.Index - paramOffset);
+			if (colorize) brText = getFlightGroupDrawColor(e.Index - paramOffset);
+			if (brText == SystemBrushes.ControlText && variable.BackColor == Color.Black) brText = Brushes.LightGray;
 			e.Graphics.DrawString(e.Index >= 0 ? variable.Items[e.Index].ToString() : "", e.Font, brText, e.Bounds, StringFormat.GenericDefault);
 		}
 

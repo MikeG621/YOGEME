@@ -17,8 +17,11 @@ Version History
 v1.7, 16 Aug 2020
  - (TIE) Fixed an issue where current FG's IFF would reset when updating IFF names
  - (TIE) Message colors update immediately
+ - (XvT) Cleaned up the FG Unknowns tab
  - (XWA) IFF subsitutions in triggers and controls
  - (XWA Briefing) Fixed wrong icon being selected while setting up MoveIcon
+ - (XWA Mission2) Fixed a crash when leaving the Global Group text box without a selection
+ - (XWA) Fixed regions in Parameter drop-downs being drawn as black-on-black
  - (All) Mission Map now supports ship wireframe display (JB)
  -- Works for all platforms, reads resources from the install directory, mod compatable
  -- Touches a lot of things, not going to spell it out here

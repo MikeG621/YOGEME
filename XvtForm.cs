@@ -8,6 +8,7 @@
 
 /* CHANGELOG
  * v1.7, 200816
+ * [UPD] Unknowns tab cleanup
  * [FIX] recalculateEditorCraftNumbering() handles _activeFG now [JB]
  * [UPD] shiplist and Map calls updated for Wireframe implementation [JB]
  * [UPD] Blank messages now shown as "*" [JB]
