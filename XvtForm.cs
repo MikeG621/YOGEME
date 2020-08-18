@@ -690,6 +690,7 @@ namespace Idmr.Yogeme
 				optADAndOr[i].CheckedChanged += new EventHandler(optADAndOrArr_CheckedChanged);
 				optADAndOr[i].Tag = i;
 			}
+			cboStopArrivingWhen.Items.AddRange(Strings.StopArrivingWhen);
 			#endregion
 			#region Orders
 			cboOrders.Items.AddRange(Strings.Orders);
@@ -2419,6 +2420,9 @@ namespace Idmr.Yogeme
 			chkArrHuman.Checked = _mission.FlightGroups[_activeFG].ArriveOnlyIfHuman;
 			for (int i = 0; i < 6; i++) labelRefresh(_mission.FlightGroups[_activeFG].ArrDepTriggers[i], lblADTrig[i]);
 			lblADTrigArr_Click(lblADTrig[0], new EventArgs());  //[JB] Added sender.  Fixes massive slowdown from exception handling a null control.  Also fixed the remaining _Click() calls with the relevant senders.
+			Common.SafeSetCBO(cboStopArrivingWhen, _mission.FlightGroups[_activeFG].StopArrivingWhen, true);
+			numRandomArrivalDelayMinutes.Value = _mission.FlightGroups[_activeFG].RandomArrivalDelayMinutes;
+			numRandomArrivalDelaySeconds.Value = _mission.FlightGroups[_activeFG].RandomArrivalDelaySeconds;
 			#endregion
 			for (_activeFGGoal = 0; _activeFGGoal < 8; _activeFGGoal++) goalLabelRefresh();
 			lblGoalArr_Click(lblGoal[0], new EventArgs());
@@ -2446,9 +2450,6 @@ namespace Idmr.Yogeme
 			#endregion
 			#region Unknowns
 			numUnk1.Value = _mission.FlightGroups[_activeFG].Unknowns.Unknown1;
-			chkUnk2.Checked = _mission.FlightGroups[_activeFG].Unknowns.Unknown2;
-			numUnk3.Value = _mission.FlightGroups[_activeFG].Unknowns.Unknown3;
-			numUnk4.Value = _mission.FlightGroups[_activeFG].Unknowns.Unknown4;
 			numUnk5.Value = _mission.FlightGroups[_activeFG].Unknowns.Unknown5;
 			numUnkOrder.Value = 1;
 			numUnkOrder_ValueChanged(0, new EventArgs()); //[JB] Force refresh of associated checkboxes
@@ -2832,6 +2833,13 @@ namespace Idmr.Yogeme
 		{
 			cboDepMSAlt.Enabled = optDepMSAlt.Checked;
 			if (!_loading) _mission.FlightGroups[_activeFG].DepartureMethod2 = Common.Update(this, _mission.FlightGroups[_activeFG].DepartureMethod2, optDepMSAlt.Checked);
+		}
+
+		private void grpMoreArrival_Leave(object sender, EventArgs e)
+		{
+			_mission.FlightGroups[_activeFG].StopArrivingWhen = Common.Update(this, _mission.FlightGroups[_activeFG].StopArrivingWhen, Convert.ToByte(cboStopArrivingWhen.SelectedIndex));
+			_mission.FlightGroups[_activeFG].RandomArrivalDelayMinutes = Common.Update(this, _mission.FlightGroups[_activeFG].RandomArrivalDelayMinutes, Convert.ToByte(numRandomArrivalDelayMinutes.Value));
+			_mission.FlightGroups[_activeFG].RandomArrivalDelaySeconds = Common.Update(this, _mission.FlightGroups[_activeFG].RandomArrivalDelaySeconds, Convert.ToByte(numRandomArrivalDelaySeconds.Value));
 		}
 		#endregion
 		#region Orders
@@ -3598,14 +3606,11 @@ namespace Idmr.Yogeme
 		#region Unknowns
 		void grpUnkAD_Leave(object sender, EventArgs e)
 		{
-			_mission.FlightGroups[_activeFG].Unknowns.Unknown3 = Common.Update(this, _mission.FlightGroups[_activeFG].Unknowns.Unknown3, Convert.ToByte(numUnk3.Value));
-			_mission.FlightGroups[_activeFG].Unknowns.Unknown4 = Common.Update(this, _mission.FlightGroups[_activeFG].Unknowns.Unknown4, Convert.ToByte(numUnk4.Value));
 			_mission.FlightGroups[_activeFG].Unknowns.Unknown5 = Common.Update(this, _mission.FlightGroups[_activeFG].Unknowns.Unknown5, Convert.ToByte(numUnk5.Value));
 		}
 		void grpUnkCraft_Leave(object sender, EventArgs e)
 		{
 			_mission.FlightGroups[_activeFG].Unknowns.Unknown1 = Common.Update(this, _mission.FlightGroups[_activeFG].Unknowns.Unknown1, Convert.ToByte(numUnk1.Value));
-			_mission.FlightGroups[_activeFG].Unknowns.Unknown2 = Common.Update(this, _mission.FlightGroups[_activeFG].Unknowns.Unknown2, chkUnk2.Checked);
 		}
 		void grpUnkGoal_Leave(object sender, EventArgs e)
 		{
