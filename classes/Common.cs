@@ -3,10 +3,12 @@
  * Copyright (C) 2007-2020 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.7
+ * VERSION: 1.7+
  */
 
 /* CHANGELOG
+ * v1.7.1, xxxxxx
+ * [FIX] Converter call didn't have new path
  * v1.7, 200816
  * [NEW] SafeString(), ParseAfterInt() [JB]
  * v1.6.5, 200704
@@ -108,9 +110,13 @@ namespace Idmr.Yogeme
 		{
 			try
 			{
+				string newFile = "";
+				if (mode == 1) newFile = current.ToLower().Replace(".tie", "_XvT.tie");
+				else newFile = current.ToLower().Replace(".tie", "_XWA.tie");
+
 				Process MV = new Process();
 				MV.StartInfo.FileName = Application.StartupPath + "\\Converter.exe";
-				MV.StartInfo.Arguments = current + " " + mode;
+				MV.StartInfo.Arguments = "\"" + current + "\" \"" + newFile + "\" " + mode;
 				MV.Start();
 			}
 			catch (Exception x) { MessageBox.Show(x.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); }

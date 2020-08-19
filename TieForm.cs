@@ -7,6 +7,9 @@
  */
 
 /* CHANGELOG
+ * v1.7.1, xxxxxx
+ * [FIX] SaveAs for XvT and XWA fixed
+ * [UPD] saveMission now won't save/rewrite file if unmodifed
  * v1.7, 200816
  * [UPD] newFG() is now bool return
  * [FIX] recalculateEditorCraftNumbering() handles _activeFG now [JB]
@@ -485,6 +488,7 @@ namespace Idmr.Yogeme
 		{
 			try { _fBrief.Save(); }
 			catch { /* do nothing */ }
+			if (Text.IndexOf("*") == -1) return;	// don't save if unmodifed
 			try { _mission.Save(fileMission); }
 			catch (Exception x) { MessageBox.Show(x.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); }
 			Text = "Ye Olde Galactic Empire Mission Editor - TIE - " + _mission.MissionFileName;
@@ -1399,6 +1403,7 @@ namespace Idmr.Yogeme
 		}
 		void menuSaveAsBoP_Click(object sender, EventArgs e)
 		{
+			// currently disabled, as the external Converter doesn't differentiate
 			menuSaveAsXvT_Click("SaveAsBoP", new EventArgs());
 		}
 		void menuSaveAsTIE_Click(object sender, EventArgs e)
@@ -1407,13 +1412,13 @@ namespace Idmr.Yogeme
 		}
 		void menuSaveAsXvT_Click(object sender, EventArgs e)
 		{
-			menuSave_Click("SaveAsXvT", new System.EventArgs());
-			Common.RunConverter(_mission.MissionPath, 0);
+			menuSave_Click("SaveAsXvT", new EventArgs());
+			Common.RunConverter(_mission.MissionPath, 1);
 		}
 		void menuSaveAsXWA_Click(object sender, EventArgs e)
 		{
-			menuSave_Click("SaveAsXWA", new System.EventArgs());
-			Common.RunConverter(_mission.MissionPath, 1);
+			menuSave_Click("SaveAsXWA", new EventArgs());
+			Common.RunConverter(_mission.MissionPath, 2);
 		}
 		void menuVerify_Click(object sender, EventArgs e)
 		{

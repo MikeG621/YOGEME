@@ -4400,12 +4400,12 @@ namespace Idmr.Yogeme
 			this.savTIE.Filter = "Mission Files|*.tie|X-wing Missions|*.xwi";
 			this.savTIE.FileOk += new System.ComponentModel.CancelEventHandler(this.savTIE_FileOk);
 			// 
-			// _dataWaypoints
+			// dataWaypoints
 			// 
 			this.dataWaypoints.AllowDelete = false;
 			this.dataWaypoints.AllowNew = false;
 			// 
-			// _dataWaypointsRaw
+			// dataWaypointsRaw
 			// 
 			this.dataWaypointsRaw.AllowDelete = false;
 			this.dataWaypointsRaw.AllowNew = false;
