@@ -356,6 +356,12 @@ If disabled, a flat delay of half this amount is added.</value>
   <metadata name="chkWPBrief8.Locked" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
+  <data name="lblRandomArrivalDelayDesc.Text" xml:space="preserve">
+    <value>Randomized arrival delay. Stacks more delay time with the normal arrival trigger delay,
+based on whether the mission Randomize feature is enabled in-game.
+If enabled, a randomized delay from 1 second up to the amount here is added.
+If disabled, a flat delay of half this amount is added.</value>
+  </data>
   <metadata name="menuXvT.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>
