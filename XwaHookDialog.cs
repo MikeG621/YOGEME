@@ -974,17 +974,30 @@ namespace Idmr.Yogeme
 				if (parts.Length == 7) offset = 1;
 				else if (parts.Length != 6) return false;
 
-				ModelIndex = Convert.ToInt32(parts[0], 16);
-				if (offset != 0) Markings = Convert.ToByte(parts[1], 16);
+				ModelIndex = parseInt32(parts[0]);
+				if (offset != 0) Markings = Convert.ToByte(parseInt32(parts[1]) & 0xFF);
 				else Markings = 0;
-				PositionX = Convert.ToInt32(parts[1 + offset], 16);
-				PositionY = Convert.ToInt32(parts[2 + offset], 16);
+				PositionX = parseInt32(parts[1 + offset]);
+				PositionY = parseInt32(parts[2 + offset]);
 				IsGrounded = (parts[3 + offset].ToLower() == "0x7fffffff");
-				if (!IsGrounded) PositionZ = Convert.ToInt32(parts[3 + offset], 16);
-				HeadingXY = Convert.ToInt32(parts[4 + offset], 16);
-				HeadingZ = Convert.ToInt32(parts[5 + offset], 16);
+				if (!IsGrounded) PositionZ = parseInt32(parts[3 + offset]);
+				HeadingXY = parseInt32(parts[4 + offset]);
+				HeadingZ = parseInt32(parts[5 + offset]);
 
 				return true;
+			}
+
+			private int parseInt32(string token)
+			{
+				// Using this because Convert.ToInt32 was throwing an exception on signed integers.
+				token = token.Trim();
+				int result = 0;
+				if (token.StartsWith("0x") && Int32.TryParse(token.Substring(2), System.Globalization.NumberStyles.HexNumber, null, out result))
+					return result;
+				if (Int32.TryParse(token, System.Globalization.NumberStyles.Integer, null, out result))
+					return result;
+				Int32.TryParse(token, System.Globalization.NumberStyles.HexNumber, null, out result);
+				return result;
 			}
 		}
 	}
