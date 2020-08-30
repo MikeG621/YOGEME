@@ -3996,6 +3996,7 @@ namespace Idmr.Yogeme
 		}
 		void refreshSkipIndicators()  //[JB] Maintain order indicators when a Skip Trigger is modified.
 		{
+			byte restore = _activeOrder;
 			//Scan through all of the orders in each region.  Determine if the Skip Trigger is potentially used.  If so update the dropdown list with an indicator, and also force a refresh on the corresponding item in the Orders tab.
 			for (int o = 0; o < 4; o++)
 			{
@@ -4029,6 +4030,7 @@ namespace Idmr.Yogeme
 					}
 				}
 			}
+			lblOrderArr_Click(lblOrder[restore], new EventArgs());  //Refreshing any of the labels will have changed the order selection, so restore it.
 		}
 
 		void chkOptArr_CheckedChanged(object sender, EventArgs e)
