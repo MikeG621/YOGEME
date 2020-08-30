@@ -258,8 +258,13 @@ namespace Idmr.Yogeme
 				case 7: // Craft when
 					cbo.Items.AddRange(Strings.CraftWhen);
 					break;
-				//case 8: Global Group
-				//since it's just numbers, same as default, left out for specifics
+				case 8:  //Global Group
+				case 20: //All Global Groups except
+					temp = new string[256];
+					for(int i = 0; i < 256; i++)
+						temp[i] = ((i < 16 && _mission.GlobalGroups[i] != "") ? i.ToString() + ": " + _mission.GlobalGroups[i] : i.ToString());
+					cbo.Items.AddRange(temp);
+					break;
 				case 9: // Rating
 					cbo.Items.AddRange(Strings.Rating);
 					break;
@@ -295,7 +300,7 @@ namespace Idmr.Yogeme
 				case 19: // All IFFs except
 					cbo.Items.AddRange(getIffStrings());
 					break;
-				//case 20: // All Global Groups except
+				//case 20: // All Global Groups except (handled above with Global Group)
 				case 21: // All Teams except
 					temp = _mission.Teams.GetList();
 					for (int i = 0; i < temp.Length; i++)
@@ -763,6 +768,11 @@ namespace Idmr.Yogeme
 			{
 				int team = Common.ParseIntAfter(text, "TM:");
 				text = text.Replace("TM:" + team, ((team >= 0 && team < 10 && _mission.Teams[team].Name != "") ? _mission.Teams[team].Name : "Team " + (team + 1).ToString()));
+			}
+			while (text.Contains("GG:"))
+			{
+				int gg = Common.ParseIntAfter(text, "GG:");
+				text = text.Replace("GG:" + gg, ((gg >= 0 && gg < 16 && _mission.GlobalGroups[gg] != "") ? "GG " + gg + ": " + _mission.GlobalGroups[gg] : "Global Group " + gg));
 			}
 			return text;
 		}
@@ -5024,7 +5034,7 @@ namespace Idmr.Yogeme
 		{
 			for (int i = 0; i < 16; i++)
 				if (_mission.GlobalGroups[i] != "") lblGG[i].Text = _mission.GlobalGroups[i];
-				else lblGG[i].Text = "Global Group " + (i + 1).ToString();
+				else lblGG[i].Text = "Global Group " + i.ToString();
 		}
 
 		void numGlobCargo_ValueChanged(object sender, EventArgs e)
@@ -5107,6 +5117,7 @@ namespace Idmr.Yogeme
 			for (i = 0; i < 16; i++) if (lblGG[i].ForeColor == getHighlightColor()) break;
 			_mission.GlobalGroups[i] = Common.Update(this, _mission.GlobalGroups[i], txtGlobGroup.Text);
 			ggRefresh();
+			updateFGList(); //Force refresh of any trigger labels that might contain the GG text.
 		}
 		void txtNotes_Leave(object sender, EventArgs e)
 		{
