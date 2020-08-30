@@ -1295,7 +1295,7 @@ namespace Idmr.Yogeme
 				colorize = (variableType.SelectedIndex == 1 || variableType.SelectedIndex == 0xF);
 
 			int paramOffset = 0;
-			if (variableType == null && variable.Items.Count == _mission.FlightGroups.Count + 5 && _mission.FlightGroups.Count >= 1)  //Detect if it's a parameter dropdown, which have 5 entries (for region #) before the FG list starts.  Parameter dropdowns are not attached to VariableType dropdowns, either.
+			if (variableType == null && variable.Items.Count >= _mission.FlightGroups.Count + 5 && _mission.FlightGroups.Count >= 1)  //Detect if it's a parameter dropdown, which have 5 entries (for region #) before the FG list starts.  Parameter dropdowns are not attached to VariableType dropdowns, either.
 			{
 				if (variable.Items[5].ToString() == _mission.FlightGroups[0].ToString(false))  //Check to make sure it really does contain FGs by checking the first one.
 					paramOffset = 5;
@@ -1305,10 +1305,9 @@ namespace Idmr.Yogeme
 
 			if (e.Index == -1 || e.Index - paramOffset >= _mission.FlightGroups.Count) colorize = false;
 
-			if (variable.BackColor == Color.Black || variable.BackColor == SystemColors.Window)
-				variable.BackColor = (colorize ? Color.Black : SystemColors.Window);
-
 			e.DrawBackground();
+			// Setting the control BackColor will interrupt the drawing, so draw each item manually.
+			if (colorize && !e.State.HasFlag(DrawItemState.Selected)) e.Graphics.FillRectangle(Brushes.Black, e.Bounds);
 			Brush brText = SystemBrushes.ControlText;
 			if (colorize) brText = getFlightGroupDrawColor(e.Index - paramOffset);
 			if (brText == SystemBrushes.ControlText && variable.BackColor == Color.Black) brText = Brushes.LightGray;
@@ -3152,10 +3151,7 @@ namespace Idmr.Yogeme
 			cboADTrigType.SelectedIndex = _mission.FlightGroups[_activeFG].ArrDepTriggers[_activeArrDepTrigger].VariableType;
 			cboADTrigAmount.SelectedIndex = _mission.FlightGroups[_activeFG].ArrDepTriggers[_activeArrDepTrigger].Amount;
 			//[JB] Fixes exceptions for backdrop FGs in B4M2B.TIE, B4M3FB.TIE, B4M4B.TIE which use have Parameter1 values around 78 to 80
-			int v = _mission.FlightGroups[_activeFG].ArrDepTriggers[_activeArrDepTrigger].Parameter1;
-			if (v >= cboADPara.Items.Count)
-				v = cboADPara.Items.Count - 1;
-			cboADPara.SelectedIndex = v; //_mission.FlightGroups[_activeFG].ArrDepTriggers[_activeArrDepTrigger].Parameter1;
+			Common.SafeSetCBO(cboADPara, _mission.FlightGroups[_activeFG].ArrDepTriggers[_activeArrDepTrigger].Parameter1, true);
 			numADPara.Value = _mission.FlightGroups[_activeFG].ArrDepTriggers[_activeArrDepTrigger].Parameter2;
 			_loading = btemp;
 		}
@@ -4131,7 +4127,7 @@ namespace Idmr.Yogeme
 			cboSkipType.SelectedIndex = -1;
 			cboSkipType.SelectedIndex = trigger.VariableType;
 			cboSkipAmount.SelectedIndex = trigger.Amount;
-			cboSkipPara.SelectedIndex = trigger.Parameter1;
+			Common.SafeSetCBO(cboSkipPara, trigger.Parameter1, true);
 			numSkipPara.Value = trigger.Parameter2;
 			_loading = btemp;
 		}
