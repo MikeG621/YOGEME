@@ -507,6 +507,8 @@ namespace Idmr.Yogeme
 			this.lblTeam9 = new System.Windows.Forms.Label();
 			this.lblTeam10 = new System.Windows.Forms.Label();
 			this.tabMission = new System.Windows.Forms.TabPage();
+			this.numRndSeed = new System.Windows.Forms.NumericUpDown();
+			this.label29 = new System.Windows.Forms.Label();
 			this.grpIFF = new System.Windows.Forms.GroupBox();
 			this.txtIFF6 = new System.Windows.Forms.TextBox();
 			this.txtIFF5 = new System.Windows.Forms.TextBox();
@@ -705,6 +707,7 @@ namespace Idmr.Yogeme
 			this.groupBox31.SuspendLayout();
 			this.groupBox30.SuspendLayout();
 			this.tabMission.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.numRndSeed)).BeginInit();
 			this.grpIFF.SuspendLayout();
 			this.groupBox36.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numMissUnk1)).BeginInit();
@@ -5897,6 +5900,8 @@ namespace Idmr.Yogeme
 			// 
 			// tabMission
 			// 
+			this.tabMission.Controls.Add(this.numRndSeed);
+			this.tabMission.Controls.Add(this.label29);
 			this.tabMission.Controls.Add(this.grpIFF);
 			this.tabMission.Controls.Add(this.label150);
 			this.tabMission.Controls.Add(this.groupBox36);
@@ -5922,6 +5927,28 @@ namespace Idmr.Yogeme
 			this.tabMission.Size = new System.Drawing.Size(785, 510);
 			this.tabMission.TabIndex = 4;
 			this.tabMission.Text = "Mission";
+			// 
+			// numRndSeed
+			// 
+			this.numRndSeed.Location = new System.Drawing.Point(451, 451);
+			this.numRndSeed.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+			this.numRndSeed.Name = "numRndSeed";
+			this.numRndSeed.Size = new System.Drawing.Size(49, 20);
+			this.numRndSeed.TabIndex = 20;
+			this.numRndSeed.ValueChanged += new System.EventHandler(this.numRndSeed_ValueChanged);
+			// 
+			// label29
+			// 
+			this.label29.AutoSize = true;
+			this.label29.Location = new System.Drawing.Point(318, 453);
+			this.label29.Name = "label29";
+			this.label29.Size = new System.Drawing.Size(128, 13);
+			this.label29.TabIndex = 19;
+			this.label29.Text = "Asteroid randomizer seed:";
 			// 
 			// grpIFF
 			// 
@@ -6849,6 +6876,7 @@ namespace Idmr.Yogeme
 			this.groupBox30.ResumeLayout(false);
 			this.tabMission.ResumeLayout(false);
 			this.tabMission.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.numRndSeed)).EndInit();
 			this.grpIFF.ResumeLayout(false);
 			this.grpIFF.PerformLayout();
 			this.groupBox36.ResumeLayout(false);
@@ -7448,5 +7476,7 @@ namespace Idmr.Yogeme
 		private ListBox lstGoalTeams;
 		private Label label28;
 		private Label label92;
+		private NumericUpDown numRndSeed;
+		private Label label29;
 	}
 }

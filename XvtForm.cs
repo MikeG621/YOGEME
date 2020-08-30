@@ -1058,6 +1058,7 @@ namespace Idmr.Yogeme
 			}
 			cboMissType.SelectedIndex = (int)_mission.MissionType;
 			chkPreventOutcome.Checked = _mission.PreventMissionOutcome;
+			numRndSeed.Value = _mission.RndSeed;
 			numMissTimeMin.Value = _mission.TimeLimitMin;
 			numMissTimeSec.Value = _mission.TimeLimitSec;
 			txtMissDesc.Text = _mission.MissionDescription;
@@ -4090,7 +4091,10 @@ namespace Idmr.Yogeme
 		{
 			_mission.PreventMissionOutcome = Common.Update(this, _mission.PreventMissionOutcome, chkPreventOutcome.Checked);
 		}
-
+		private void numRndSeed_ValueChanged(object sender, EventArgs e)
+		{
+			_mission.RndSeed = Common.Update(this, _mission.RndSeed, Convert.ToByte(numRndSeed.Value));
+		}
 		void numMissTimeMin_Leave(object sender, EventArgs e)
 		{
 			_mission.TimeLimitMin = Common.Update(this, _mission.TimeLimitMin, Convert.ToByte(numMissTimeMin.Value));
