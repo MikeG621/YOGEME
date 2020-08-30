@@ -1291,8 +1291,8 @@ namespace Idmr.Yogeme
 			ComboBox variableType;
 			colorizedFGList.TryGetValue(variable, out variableType);
 			bool colorize = true;
-			if (variableType != null)        //If a VariableType selection control is attached, check that Flight Group is selected.
-				colorize = (variableType.SelectedIndex == 1);
+			if (variableType != null)        //If a VariableType selection control is attached, check that a Flight Group type is selected.
+				colorize = (variableType.SelectedIndex == 1 || variableType.SelectedIndex == 0xF);
 
 			int paramOffset = 0;
 			if (variableType == null && variable.Items.Count == _mission.FlightGroups.Count + 5 && _mission.FlightGroups.Count >= 1)  //Detect if it's a parameter dropdown, which have 5 entries (for region #) before the FG list starts.  Parameter dropdowns are not attached to VariableType dropdowns, either.

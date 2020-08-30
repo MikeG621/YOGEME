@@ -1091,8 +1091,8 @@ namespace Idmr.Yogeme
 			ComboBox variableType;
 			ColorizedFGList.TryGetValue(variable, out variableType);
 			bool colorize = true;
-			if (variableType != null)        //If a VariableType selection control is attached, check that Flight Group is selected.
-				colorize = (variableType.SelectedIndex == 1);
+			if (variableType != null)        //If a VariableType selection control is attached, check that a Flight Group type is selected.
+				colorize = (variableType.SelectedIndex == 1 || variableType.SelectedIndex == 0xF);
 
 			if (e.Index == -1 || e.Index >= _mission.FlightGroups.Count) colorize = false;
 
