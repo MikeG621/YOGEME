@@ -61,7 +61,7 @@ namespace Idmr.Yogeme
 				cmdCancel_Click("NewMission", new EventArgs());
 				return;
 			}
-			_fileName = mission.MissionPath.Replace(".tie", ".ini");
+			_fileName = mission.MissionPath.ToLower().Replace(".tie", ".ini");
 
 			#region initialize
 			cboIff.Items.AddRange(Strings.IFF);
