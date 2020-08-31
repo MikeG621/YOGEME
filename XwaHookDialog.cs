@@ -91,6 +91,8 @@ namespace Idmr.Yogeme
 				cboFamMapIndex.Items.Add(i);
 			}
 			cboShuttleModel.SelectedIndex = 50;
+			numHangarRoofCranePositionY.Value = 786;
+			numHangarRoofCranePositionZ.Value = -282;
 			cboMapIndex.SelectedIndex = 0;
 			cboFamMapIndex.SelectedIndex = 0;
 			for (int i = 4; i >= 0; i--)
@@ -205,6 +207,9 @@ namespace Idmr.Yogeme
 							try { cboShuAnimation.SelectedIndex = (int)Enum.Parse(typeof(ShuttleAnimation), parts[1], true); }
 							catch { MessageBox.Show("Error reading ShuttleAnimation, using default.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); }
 						else if (parts[0] == "shuttleanimiationstraightline") numShuDistance.Value = int.Parse(parts[1]);
+						else if (parts[0] == "hangarroofcranepositiony") numHangarRoofCranePositionY.Value = int.Parse(parts[1]);
+						else if (parts[0] == "hangarroofcranepositionz") numHangarRoofCranePositionZ.Value = int.Parse(parts[1]);
+						else if (parts[0] == "playeranimationelevation") numPlayerAnimationElevation.Value = int.Parse(parts[1]);
 						else lstHangarObjects.Items.Add(line);
 					}
 				}
@@ -341,6 +346,9 @@ namespace Idmr.Yogeme
 								try { cboShuAnimation.SelectedIndex = (int)Enum.Parse(typeof(ShuttleAnimation), parts[1], true); }
 								catch { MessageBox.Show("Error reading ShuttleAnimation, using default.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); }
 							else if (parts[0] == "shuttleanimationstraightline") numShuDistance.Value = int.Parse(parts[1]);
+							else if (parts[0] == "hangarroofcranepositiony") numHangarRoofCranePositionY.Value = int.Parse(parts[1]);
+							else if (parts[0] == "hangarroofcranepositionz") numHangarRoofCranePositionZ.Value = int.Parse(parts[1]);
+							else if (parts[0] == "playeranimationelevation") numPlayerAnimationElevation.Value = int.Parse(parts[1]);
 							else lstHangarObjects.Items.Add(line);
 						}
 					}
@@ -876,6 +884,9 @@ namespace Idmr.Yogeme
 						if (chkFloor.Checked) sw.WriteLine("IsHangarFloorInverted = 1");
 						if (cboShuAnimation.SelectedIndex != 0) sw.WriteLine("ShuttleAnimation = " + cboShuAnimation.Text);
 						if (numShuDistance.Value != 0) sw.WriteLine("ShuttleAnimationStraightLine = " + (int)numShuDistance.Value);
+						if (numHangarRoofCranePositionY.Value != 786) sw.WriteLine("HangarRoofCranePositionY = " + (int)numHangarRoofCranePositionY.Value);
+						if (numHangarRoofCranePositionZ.Value != -282) sw.WriteLine("HangarRoofCranePositionZ = " + (int)numHangarRoofCranePositionZ.Value);
+						if (numPlayerAnimationElevation.Value != 0) sw.WriteLine("PlayerAnimationElevation = " + (int)numPlayerAnimationElevation.Value);
 						for (int i = 0; i < lstHangarObjects.Items.Count; i++) sw.WriteLine(lstHangarObjects.Items[i]);
 						sw.WriteLine("");
 					}
