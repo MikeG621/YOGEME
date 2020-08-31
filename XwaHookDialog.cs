@@ -405,6 +405,7 @@ namespace Idmr.Yogeme
 
 			chkBackdrops.Checked = (lstBackdrops.Items.Count > 0);
 			chkMission.Checked = (lstMission.Items.Count > 0);
+			chkSounds.Checked = (lstSounds.Items.Count > 0);
 			chkObjects.Checked = (lstObjects.Items.Count > 0);
 			chkHangars.Checked = useHangarObjects | useHangarCamera | useFamilyHangarCamera | useHangarMap;
 		}
