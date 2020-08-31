@@ -405,6 +405,7 @@ namespace Idmr.Yogeme
 
 			chkBackdrops.Checked = (lstBackdrops.Items.Count > 0);
 			chkMission.Checked = (lstMission.Items.Count > 0);
+			chkObjects.Checked = (lstObjects.Items.Count > 0);
 			chkHangars.Checked = useHangarObjects | useHangarCamera | useFamilyHangarCamera | useHangarMap;
 		}
 
@@ -785,6 +786,7 @@ namespace Idmr.Yogeme
 			if (!chkMission.Checked && _missionTxtFile != "") File.Delete(_missionTxtFile);
 
 			if (!chkSounds.Checked && _soundFile != "") File.Delete(_soundFile);
+			if (!chkObjects.Checked && _objFile != "") File.Delete(_objFile);
 
 			if (!useHangarObjects && _hangarObjectsFile != "") File.Delete(_hangarObjectsFile);
 			if (!useHangarCamera && _hangarCameraFile != "") File.Delete(_hangarCameraFile);
@@ -792,7 +794,7 @@ namespace Idmr.Yogeme
 			if (!useHangarMap && _hangarMapFile != "") File.Delete(_hangarMapFile);
 			if (!useFamilyHangarMap && _famHangarMapFile != "") File.Delete(_famHangarMapFile);
 
-			if (!chkBackdrops.Checked && !chkMission.Checked && !chkSounds.Checked && !useHangarObjects && !useHangarCamera && !useFamilyHangarCamera && !useHangarMap && !useFamilyHangarMap)
+			if (!chkBackdrops.Checked && !chkMission.Checked && !chkSounds.Checked && !chkObjects.Checked && !useHangarObjects && !useHangarCamera && !useFamilyHangarCamera && !useHangarMap && !useFamilyHangarMap)
 			{
 				File.Delete(_fileName);
 				Close();
@@ -853,6 +855,12 @@ namespace Idmr.Yogeme
 				{
 					sw.WriteLine("[Sounds]");
 					for (int i = 0; i < lstSounds.Items.Count; i++) sw.WriteLine(lstSounds.Items[i]);
+					sw.WriteLine("");
+				}
+				if (chkObjects.Checked && lstObjects.Items.Count > 0)
+				{
+					sw.WriteLine("[Objects]");
+					for (int i = 0; i < lstObjects.Items.Count; i++) sw.WriteLine(lstObjects.Items[i]);
 					sw.WriteLine("");
 				}
 				if (chkHangars.Checked)
@@ -926,6 +934,7 @@ namespace Idmr.Yogeme
 				if (_bdFile != "") File.Delete(_bdFile);
 				if (_missionTxtFile != "") File.Delete(_missionTxtFile);
 				if (_soundFile != "") File.Delete(_soundFile);
+				if (_objFile != "") File.Delete(_objFile);
 				if (_hangarObjectsFile != "") File.Delete(_hangarObjectsFile);
 				if (_hangarCameraFile != "") File.Delete(_hangarCameraFile);
 				if (_famHangarCameraFile != "") File.Delete(_famHangarCameraFile);
