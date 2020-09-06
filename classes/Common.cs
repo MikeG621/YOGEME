@@ -9,6 +9,7 @@
 /* CHANGELOG
  * v1.7.1, xxxxxx
  * [FIX] Converter call didn't have new path
+ * [NEW] Added BoP Converter support
  * v1.7, 200816
  * [NEW] SafeString(), ParseAfterInt() [JB]
  * v1.6.5, 200704
@@ -112,6 +113,7 @@ namespace Idmr.Yogeme
 			{
 				string newFile = "";
 				if (mode == 1) newFile = current.ToLower().Replace(".tie", "_XvT.tie");
+				else if (mode == 4) newFile = current.ToLower().Replace(".tie", "_BoP.tie");
 				else newFile = current.ToLower().Replace(".tie", "_XWA.tie");
 
 				Process MV = new Process();

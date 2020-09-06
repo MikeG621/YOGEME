@@ -9,6 +9,7 @@
 /* CHANGELOG
  * v1.7.1, xxxxxx
  * [FIX] SaveAs for XvT and XWA fixed
+ * [NEW] SaveAs BoP
  * [UPD] saveMission now won't save/rewrite file if unmodifed
  * v1.7, 200816
  * [UPD] newFG() is now bool return
@@ -1403,8 +1404,8 @@ namespace Idmr.Yogeme
 		}
 		void menuSaveAsBoP_Click(object sender, EventArgs e)
 		{
-			// currently disabled, as the external Converter doesn't differentiate
-			menuSaveAsXvT_Click("SaveAsBoP", new EventArgs());
+			menuSave_Click("SaveAsBoP", new EventArgs());
+			Common.RunConverter(_mission.MissionPath, 4);
 		}
 		void menuSaveAsTIE_Click(object sender, EventArgs e)
 		{
