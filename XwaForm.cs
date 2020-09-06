@@ -3,10 +3,12 @@
  * Copyright (C) 2007-2020 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.7
+ * VERSION: 1.7+
  */
 
 /* CHANGELOG
+ * v1.7.1, xxxxxx
+ * [UPD] saveMission now won't save/rewrite file if unmodifed
  * v1.7, 200816
  * [FIX] regions in Parameter cbos drawing black-on-black
  * [FIX] crash when leaving the GG name without a selection

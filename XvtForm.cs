@@ -3,10 +3,12 @@
  * Copyright (C) 2007-2020 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.7
+ * VERSION: 1.7+
  */
 
 /* CHANGELOG
+ * v1.7.1, xxxxxx
+ * [UPD] saveMission now won't save/rewrite file if unmodifed
  * v1.7, 200816
  * [UPD] Unknowns tab cleanup
  * [FIX] recalculateEditorCraftNumbering() handles _activeFG now [JB]
@@ -548,9 +550,10 @@ namespace Idmr.Yogeme
 			try { _fBrief.Save(); }
 			catch { /* do nothing */ }
 			lblTeamArr_Click(lblTeam[_activeTeam], new EventArgs());
+			if (Text.IndexOf("*") == -1) return;    // don't save if unmodifed
 			try { _mission.Save(fileMission); }
 			catch (Exception x) { MessageBox.Show(x.Message, "File Error", MessageBoxButtons.OK, MessageBoxIcon.Error); }
-			this.Text = "Ye Olde Galactic Empire Mission Editor - " + (_mission.IsBop ? "BoP" : "XvT") + " - " + _mission.MissionFileName;
+			Text = "Ye Olde Galactic Empire Mission Editor - " + (_mission.IsBop ? "BoP" : "XvT") + " - " + _mission.MissionFileName;
 			_config.LastMission = fileMission;
 			refreshRecent();  //[JB] Setting _config.LastMission modifies the Recent list.  Need to refresh the menu to match.
 							  //Verify the mission after it's been saved

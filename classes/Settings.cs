@@ -3,10 +3,12 @@
  * Copyright (C) 2007-2020 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.7
+ * VERSION: 1.7+
  */
 
 /* CHANGELOG
+ * v1.7.1, xxxxxx
+ * [UPD] Added detection for SBD v3.1
  * v1.7, 200816
  * [NEW] Map options for Wireframe implementation [JB]
  * v1.6.3, 200101
@@ -467,7 +469,7 @@ namespace Idmr.Yogeme
 				}
 			}
 			#endregion
-			if (XwaInstalled) SuperBackdropsInstalled = File.Exists(_xwaPath + "\\DTMSBReadme.rtf");
+			if (XwaInstalled) SuperBackdropsInstalled = (File.Exists(_xwaPath + "\\DTMSBReadme.rtf") || File.Exists(_xwaPath + "\\Backup\\SBPReadme_v3.1.rtf"));
 		}
 		/// <summary>Saves current settings to user's settings file</summary>
 		/// <remarks>Registry use has been deprecated</remarks>

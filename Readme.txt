@@ -14,6 +14,12 @@ original mainstream editors were created.
 ==========
 Version History
 
+v1.7.1, xx xxx xxxx
+ - (XWA) Added detection for DTM Super Backdrops v3.1
+ - (TIE) Fixed SaveAs for XvT and XWA
+ - (All) Save no longer rewrites the file if not modified
+ - Fixed Converter.exe call
+
 v1.7, 16 Aug 2020
  - (TIE) Fixed an issue where current FG's IFF would reset when updating IFF names
  - (TIE) Message colors update immediately
