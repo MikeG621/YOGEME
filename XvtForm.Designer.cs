@@ -597,6 +597,7 @@ namespace Idmr.Yogeme
 			this.menuLST = new System.Windows.Forms.MenuItem();
 			this.menuOptions = new System.Windows.Forms.MenuItem();
 			this.menuGoalSummary = new System.Windows.Forms.MenuItem();
+			this.menuLibrary = new System.Windows.Forms.MenuItem();
 			this.menuTest = new System.Windows.Forms.MenuItem();
 			this.menuHelp = new System.Windows.Forms.MenuItem();
 			this.menuHelpInfo = new System.Windows.Forms.MenuItem();
@@ -6643,7 +6644,8 @@ namespace Idmr.Yogeme
             this.menuBrief,
             this.menuLST,
             this.menuOptions,
-            this.menuGoalSummary});
+            this.menuGoalSummary,
+            this.menuLibrary});
 			this.menuTools.Text = "&Tools";
 			// 
 			// menuVerify
@@ -6681,6 +6683,12 @@ namespace Idmr.Yogeme
 			this.menuGoalSummary.Index = 5;
 			this.menuGoalSummary.Text = "FG &Goal Summary";
 			this.menuGoalSummary.Click += new System.EventHandler(this.menuGoalSummary_Click);
+			// 
+			// menuLibrary
+			// 
+			this.menuLibrary.Index = 6;
+			this.menuLibrary.Text = "FG Librar&y";
+			this.menuLibrary.Click += new System.EventHandler(this.menuLibrary_Click);
 			// 
 			// menuTest
 			// 
@@ -7476,6 +7484,7 @@ namespace Idmr.Yogeme
 		private ListBox lstGoalTeams;
 		private Label label28;
 		private Label label92;
+		private MenuItem menuLibrary;
 		private NumericUpDown numRndSeed;
 		private Label label29;
 	}

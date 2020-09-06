@@ -59,6 +59,7 @@ namespace Idmr.Yogeme
 			this.menuGoalSummary = new System.Windows.Forms.MenuItem();
 			this.menuHyperbuoy = new System.Windows.Forms.MenuItem();
 			this.menuSuperBackdrops = new System.Windows.Forms.MenuItem();
+			this.menuHooks = new System.Windows.Forms.MenuItem();
 			this.menuText = new System.Windows.Forms.MenuItem();
 			this.menuHelp = new System.Windows.Forms.MenuItem();
 			this.menuHelpInfo = new System.Windows.Forms.MenuItem();
@@ -783,7 +784,7 @@ namespace Idmr.Yogeme
 			this.txtNotes = new System.Windows.Forms.TextBox();
 			this.dataOrders = new System.Data.DataView();
 			this.dataOrders_Raw = new System.Data.DataView();
-			this.menuHooks = new System.Windows.Forms.MenuItem();
+			this.menuLibrary = new System.Windows.Forms.MenuItem();
 			((System.ComponentModel.ISupportInitialize)(this.dataWaypoints)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.dataWaypoints_Raw)).BeginInit();
 			this.tabMain.SuspendLayout();
@@ -1183,6 +1184,7 @@ namespace Idmr.Yogeme
             this.menuLST,
             this.menuOptions,
             this.menuGoalSummary,
+            this.menuLibrary,
             this.menuHyperbuoy,
             this.menuSuperBackdrops,
             this.menuHooks});
@@ -1226,15 +1228,22 @@ namespace Idmr.Yogeme
 			// 
 			// menuHyperbuoy
 			// 
-			this.menuHyperbuoy.Index = 6;
+			this.menuHyperbuoy.Index = 7;
 			this.menuHyperbuoy.Text = "&Hyperbouy Wizard";
 			this.menuHyperbuoy.Click += new System.EventHandler(this.menuHyperbuoy_Click);
 			// 
 			// menuSuperBackdrops
 			// 
-			this.menuSuperBackdrops.Index = 7;
+			this.menuSuperBackdrops.Index = 8;
 			this.menuSuperBackdrops.Text = "Apply &Super Backdrops";
 			this.menuSuperBackdrops.Click += new System.EventHandler(this.menuSuperBackdrops_Click);
+			// 
+			// menuHooks
+			// 
+			this.menuHooks.Enabled = false;
+			this.menuHooks.Index = 9;
+			this.menuHooks.Text = "Hoo&k Assignment";
+			this.menuHooks.Click += new System.EventHandler(this.menuHooks_Click);
 			// 
 			// menuText
 			// 
@@ -9232,12 +9241,11 @@ namespace Idmr.Yogeme
 			this.dataOrders_Raw.AllowDelete = false;
 			this.dataOrders_Raw.AllowNew = false;
 			// 
-			// menuHooks
+			// menuLibrary
 			// 
-			this.menuHooks.Enabled = false;
-			this.menuHooks.Index = 8;
-			this.menuHooks.Text = "Hoo&k Assignment";
-			this.menuHooks.Click += new System.EventHandler(this.menuHooks_Click);
+			this.menuLibrary.Index = 6;
+			this.menuLibrary.Text = "FG Librar&y";
+			this.menuLibrary.Click += new System.EventHandler(this.menuLibrary_Click);
 			// 
 			// XwaForm
 			// 
@@ -10238,5 +10246,6 @@ namespace Idmr.Yogeme
 		private NumericUpDown numUnk42;
 		private Label label152;
 		private MenuItem menuHooks;
+		private MenuItem menuLibrary;
 	}
 }

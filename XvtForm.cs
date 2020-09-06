@@ -127,6 +127,7 @@ namespace Idmr.Yogeme
 		MapForm _fMap;
 		BriefingForm _fBrief;
 		LstForm _fLST;
+		FlightGroupLibraryForm _fLibrary;
 		byte _activeMessageTrigger = 0;
 		byte _activeGlobalTrigger = 0;
 		byte _activeTeam = 0;
@@ -189,6 +190,7 @@ namespace Idmr.Yogeme
 			if (_fMap != null) _fMap.Close();
 			if (_fBrief != null) _fBrief.Close();
 			if (_fLST != null) _fLST.Close();
+			if (_fLibrary != null) _fLibrary.Close();
 		}
 		void comboVarRefresh(int index, ComboBox cbo)
 		{   //index is usually cboTrigType.SelectedIndex, cbo = cboTrigVar
@@ -1405,6 +1407,25 @@ namespace Idmr.Yogeme
 		{
 			string output = "(global goals not included):\r\n----------\r\n" + generateGoalSummary();
 			new GoalSummaryDialog(output).Show();
+		}
+		void menuLibrary_Click(object sender, EventArgs e)
+		{
+			if (_fLibrary != null)
+				_fLibrary.Close();
+			_fLibrary = new FlightGroupLibraryForm(Settings.Platform.XvT, _mission.FlightGroups, flightGroupLibraryCallback);
+		}
+		void flightGroupLibraryCallback(object sender, EventArgs e)
+		{
+			foreach (FlightGroup fg in (object[])sender)
+			{
+				if (fg == null || newFG() == false)
+					break;
+				_mission.FlightGroups[_activeFG] = fg;
+				updateFGList();
+				listRefresh();
+				_startingShips--;
+				craftStart(fg, true);
+			}
 		}
 		void menuHelpInfo_Click(object sender, EventArgs e)
 		{
