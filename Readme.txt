@@ -14,13 +14,22 @@ original mainstream editors were created.
 ==========
 Version History
 
-v1.7.1, xx xxx xxxx
+v1.8, xx xxx xxxx
  - (XWA) Added detection for DTM Super Backdrops v3.1
- - (TIE) Fixed SaveAs for XvT and XWA
+ - (TIE) Fixed SaveAs XvT and XWA
  - (TIE) SaveAs BoP implemented (required Converter update)
  - (All) Save no longer rewrites the file if not modified
  - Fixed Converter.exe call
  - Converter.exe updated to v1.6
+ - More updates and fixes by Random Starfighter (JB)
+ -- (All) New FlightGroup Library function 
+ -- (XvT/XWA) Colorized cbos now work with "Not FG"
+ -- (XvT) Fixed double listing of IFFs on the Craft tab
+ -- (XvT) Implementation of uncovered Unknowns; StopArrivingWhen, RndSeed, FG Goal TeamEnabled array, RandomArrDep Min/Sec
+ -- (XWA) Global Group strings used for GG 0-15
+ -- (XWA) Tweaked how the colorized cbos draw
+ -- (XWA) SafeSetCbos added to more places to prevent exceptions
+ -- (XWA) Skip Indicators update now retains selection
 
 v1.7, 16 Aug 2020
  - (TIE) Fixed an issue where current FG's IFF would reset when updating IFF names

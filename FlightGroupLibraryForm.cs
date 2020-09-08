@@ -1,4 +1,18 @@
-﻿using System;
+﻿/*
+ * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
+ * Copyright (C) 2007-2020 Michael Gaisser (mjgaisser@gmail.com)
+ * This file authored by "JB" (Random Starfighter) (randomstarfighter@gmail.com)
+ * Licensed under the MPL v2.0 or later
+ * 
+ * VERSION: 1.8
+ */
+
+/* CHANGELOG:
+ * v1.8, xxxxxx
+ * [NEW] Release [JB]
+ */
+
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
@@ -543,7 +557,7 @@ namespace Idmr.Yogeme
 						}
 						if (trig.Parameter1 > 4)
 						{
-							logProblem("ArrDep trigger #" + (i + 1) + " parameter references FG:" + trig.Parameter1, errors);
+							logProblem("ArrDep trigger #" + (i + 1) + " parameter references FG:" + (trig.Parameter1 - 1), errors);
 							if (scrubProblems) { trig.Parameter1 = 0; }
 						}
 					}
@@ -566,7 +580,7 @@ namespace Idmr.Yogeme
 								}
 								if (trig.Parameter1 > 4)
 								{
-									logProblem("Region #" + (reg + 1) + " Order #" + (i + 1) + " Skip trigger #" + (k + 1) + " parameter references FG:" + trig.Parameter1, errors);
+									logProblem("Region #" + (reg + 1) + " Order #" + (i + 1) + " Skip trigger #" + (k + 1) + " parameter references FG:" + (trig.Parameter1 - 1), errors);
 									if (scrubProblems) { trig.Parameter1 = 0; }
 								}
 							}

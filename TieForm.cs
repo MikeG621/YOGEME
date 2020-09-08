@@ -3,14 +3,15 @@
  * Copyright (C) 2007-2020 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.7
+ * VERSION: 1.7+
  */
 
 /* CHANGELOG
- * v1.7.1, xxxxxx
+ * v1.8, xxxxxx
  * [FIX] SaveAs for XvT and XWA fixed
  * [NEW] SaveAs BoP
  * [UPD] saveMission now won't save/rewrite file if unmodifed
+ * [NEW] FlightGroupLibrary [JB]
  * v1.7, 200816
  * [UPD] newFG() is now bool return
  * [FIX] recalculateEditorCraftNumbering() handles _activeFG now [JB]

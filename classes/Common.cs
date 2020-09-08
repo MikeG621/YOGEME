@@ -7,7 +7,7 @@
  */
 
 /* CHANGELOG
- * v1.7.1, xxxxxx
+ * v1.8, xxxxxx
  * [FIX] Converter call didn't have new path
  * [NEW] Added BoP Converter support
  * v1.7, 200816

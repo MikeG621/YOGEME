@@ -7,8 +7,12 @@
  */
 
 /* CHANGELOG
- * v1.7.1, xxxxxx
+ * v1.8, xxxxxx
  * [UPD] saveMission now won't save/rewrite file if unmodifed
+ * [NEW] FlightGroupLibrary [JB]
+ * [FIX] double listing of IFFs [JB]
+ * [UPD] changes due to Unknown definitions: StopArrivingWhen, RndSeed, FG Goal TeamEnabled array, RandomArrDep Min/Sec [JB]
+ * [UPD] colorized cbos now work with "not FG" [JB]
  * v1.7, 200816
  * [UPD] Unknowns tab cleanup
  * [FIX] recalculateEditorCraftNumbering() handles _activeFG now [JB]

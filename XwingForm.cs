@@ -4,10 +4,12 @@
  * This file authored by "JB" (Random Starfighter) (randomstarfighter@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.7
+ * VERSION: 1.7+
  */
 
 /* CHANGELOG:
+ * v1.8, xxxxxx
+ * [NEW] FlightGroupLibrary [JB]
  * v1.7, 200816
  * [UPD #14] Nothing specific, but closing that issue
  * [FIX] recalculateEditorCraftNumbering() handles _activeFG now [JB]
@@ -862,6 +864,7 @@ namespace Idmr.Yogeme
 			{
 				if (fg == null)
 					break;
+				// TODO: newFG to be bool, add to break check
 				newFG(fg.IsFlightGroup());
 				_mission.FlightGroups[_activeFG] = fg;
 				updateFGList();
@@ -1360,6 +1363,7 @@ namespace Idmr.Yogeme
 				lstFG.Items[i] = ((_mode == EditorMode.XWI) ? "" : "[BRF] ") + _mission.FlightGroups[i].ToString(true);
 			_loading = btemp;
 		}
+		// TODO: change this to return bool
 		void newFG(bool isCraft)  //[JB] We have to explicitly determine whether the new FG should be created in the craft section or object section.
 		{
 			if (_mission.FlightGroups.Count == Mission.FlightGroupLimit)

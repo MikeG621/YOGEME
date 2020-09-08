@@ -3,10 +3,16 @@
  * Copyright (C) 2007-2020 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.6.3
+ * VERSION: 1.6.3+
  */
 
 /* CHANGELOG
+ * v1.8, xxxxxx
+ * [FIX] case-sensitivity in filename [JB]
+ * [FIX] added missing checks for chkObjects and chkSounds state [JB]
+ * [FIX] handling of hex values and negative integers [JB]
+ * [ADD] HangarRoofCranePositionY, HangarRoofCranePositionZ, PlayerAnimationElevation [JB]
+ * [FIX] missing Write section for [Objects] [JB]
  * v1.6.3, 200101
  * [ADD] ShuttleAnimation and ShuttleAnimationStraightLine
  * v1.6.2, 190928

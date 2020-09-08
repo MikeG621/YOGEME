@@ -7,8 +7,14 @@
  */
 
 /* CHANGELOG
- * v1.7.1, xxxxxx
+ * v1.8, xxxxxx
  * [UPD] saveMission now won't save/rewrite file if unmodifed
+ * [NEW] FlightGroupLibrary [JB]
+ * [UPD] Goal/Order/Trigger string substitutions now use GG strings for GGs 0-15 [JB]
+ * [UPD] colorized cbos now work with "not FG" [JB]
+ * [UPD] tweaked how colorized cbos draw [JB]
+ * [FIX] SafeSetCbos added to more places [JB]
+ * [FIX] refreshSkipIndicators maintains selection [JB]
  * v1.7, 200816
  * [FIX] regions in Parameter cbos drawing black-on-black
  * [FIX] crash when leaving the GG name without a selection
@@ -1647,6 +1653,7 @@ namespace Idmr.Yogeme
 			{
 				if (fg == null)
 					break;
+				// TODO: newFG to be bool, add that to break check
 				newFG();
 				_mission.FlightGroups[_activeFG] = fg;
 				updateFGList();
@@ -2512,6 +2519,7 @@ namespace Idmr.Yogeme
 			_noRefresh = false;
 			if (_fMap != null) _fMap.UpdateFlightGroup(_activeFG, _mission.FlightGroups[_activeFG]);  //[JB] If the display name needs to be updated, the map most likely does too.
 		}
+		// TODO: change newFG to bool
 		void newFG()
 		{
 			if (_mission.FlightGroups.Count == Mission.FlightGroupLimit)

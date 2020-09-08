@@ -7,7 +7,7 @@
  */
 
 /* CHANGELOG
- * v1.7.1, xxxxxx
+ * v1.8, xxxxxx
  * [UPD] Added detection for SBD v3.1
  * v1.7, 200816
  * [NEW] Map options for Wireframe implementation [JB]
