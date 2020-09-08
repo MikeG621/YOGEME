@@ -61,7 +61,7 @@ namespace Idmr.Yogeme
 				cmdCancel_Click("NewMission", new EventArgs());
 				return;
 			}
-			_fileName = mission.MissionPath.Replace(".tie", ".ini");
+			_fileName = mission.MissionPath.ToLower().Replace(".tie", ".ini");
 
 			#region initialize
 			cboIff.Items.AddRange(Strings.IFF);
@@ -91,6 +91,8 @@ namespace Idmr.Yogeme
 				cboFamMapIndex.Items.Add(i);
 			}
 			cboShuttleModel.SelectedIndex = 50;
+			numHangarRoofCranePositionY.Value = 786;
+			numHangarRoofCranePositionZ.Value = -282;
 			cboMapIndex.SelectedIndex = 0;
 			cboFamMapIndex.SelectedIndex = 0;
 			for (int i = 4; i >= 0; i--)
@@ -205,6 +207,9 @@ namespace Idmr.Yogeme
 							try { cboShuAnimation.SelectedIndex = (int)Enum.Parse(typeof(ShuttleAnimation), parts[1], true); }
 							catch { MessageBox.Show("Error reading ShuttleAnimation, using default.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); }
 						else if (parts[0] == "shuttleanimiationstraightline") numShuDistance.Value = int.Parse(parts[1]);
+						else if (parts[0] == "hangarroofcranepositiony") numHangarRoofCranePositionY.Value = int.Parse(parts[1]);
+						else if (parts[0] == "hangarroofcranepositionz") numHangarRoofCranePositionZ.Value = int.Parse(parts[1]);
+						else if (parts[0] == "playeranimationelevation") numPlayerAnimationElevation.Value = int.Parse(parts[1]);
 						else lstHangarObjects.Items.Add(line);
 					}
 				}
@@ -341,6 +346,9 @@ namespace Idmr.Yogeme
 								try { cboShuAnimation.SelectedIndex = (int)Enum.Parse(typeof(ShuttleAnimation), parts[1], true); }
 								catch { MessageBox.Show("Error reading ShuttleAnimation, using default.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); }
 							else if (parts[0] == "shuttleanimationstraightline") numShuDistance.Value = int.Parse(parts[1]);
+							else if (parts[0] == "hangarroofcranepositiony") numHangarRoofCranePositionY.Value = int.Parse(parts[1]);
+							else if (parts[0] == "hangarroofcranepositionz") numHangarRoofCranePositionZ.Value = int.Parse(parts[1]);
+							else if (parts[0] == "playeranimationelevation") numPlayerAnimationElevation.Value = int.Parse(parts[1]);
 							else lstHangarObjects.Items.Add(line);
 						}
 					}
@@ -405,6 +413,8 @@ namespace Idmr.Yogeme
 
 			chkBackdrops.Checked = (lstBackdrops.Items.Count > 0);
 			chkMission.Checked = (lstMission.Items.Count > 0);
+			chkSounds.Checked = (lstSounds.Items.Count > 0);
+			chkObjects.Checked = (lstObjects.Items.Count > 0);
 			chkHangars.Checked = useHangarObjects | useHangarCamera | useFamilyHangarCamera | useHangarMap;
 		}
 
@@ -785,6 +795,7 @@ namespace Idmr.Yogeme
 			if (!chkMission.Checked && _missionTxtFile != "") File.Delete(_missionTxtFile);
 
 			if (!chkSounds.Checked && _soundFile != "") File.Delete(_soundFile);
+			if (!chkObjects.Checked && _objFile != "") File.Delete(_objFile);
 
 			if (!useHangarObjects && _hangarObjectsFile != "") File.Delete(_hangarObjectsFile);
 			if (!useHangarCamera && _hangarCameraFile != "") File.Delete(_hangarCameraFile);
@@ -792,7 +803,7 @@ namespace Idmr.Yogeme
 			if (!useHangarMap && _hangarMapFile != "") File.Delete(_hangarMapFile);
 			if (!useFamilyHangarMap && _famHangarMapFile != "") File.Delete(_famHangarMapFile);
 
-			if (!chkBackdrops.Checked && !chkMission.Checked && !chkSounds.Checked && !useHangarObjects && !useHangarCamera && !useFamilyHangarCamera && !useHangarMap && !useFamilyHangarMap)
+			if (!chkBackdrops.Checked && !chkMission.Checked && !chkSounds.Checked && !chkObjects.Checked && !useHangarObjects && !useHangarCamera && !useFamilyHangarCamera && !useHangarMap && !useFamilyHangarMap)
 			{
 				File.Delete(_fileName);
 				Close();
@@ -855,6 +866,12 @@ namespace Idmr.Yogeme
 					for (int i = 0; i < lstSounds.Items.Count; i++) sw.WriteLine(lstSounds.Items[i]);
 					sw.WriteLine("");
 				}
+				if (chkObjects.Checked && lstObjects.Items.Count > 0)
+				{
+					sw.WriteLine("[Objects]");
+					for (int i = 0; i < lstObjects.Items.Count; i++) sw.WriteLine(lstObjects.Items[i]);
+					sw.WriteLine("");
+				}
 				if (chkHangars.Checked)
 				{
 					if (useHangarObjects)
@@ -867,6 +884,9 @@ namespace Idmr.Yogeme
 						if (chkFloor.Checked) sw.WriteLine("IsHangarFloorInverted = 1");
 						if (cboShuAnimation.SelectedIndex != 0) sw.WriteLine("ShuttleAnimation = " + cboShuAnimation.Text);
 						if (numShuDistance.Value != 0) sw.WriteLine("ShuttleAnimationStraightLine = " + (int)numShuDistance.Value);
+						if (numHangarRoofCranePositionY.Value != 786) sw.WriteLine("HangarRoofCranePositionY = " + (int)numHangarRoofCranePositionY.Value);
+						if (numHangarRoofCranePositionZ.Value != -282) sw.WriteLine("HangarRoofCranePositionZ = " + (int)numHangarRoofCranePositionZ.Value);
+						if (numPlayerAnimationElevation.Value != 0) sw.WriteLine("PlayerAnimationElevation = " + (int)numPlayerAnimationElevation.Value);
 						for (int i = 0; i < lstHangarObjects.Items.Count; i++) sw.WriteLine(lstHangarObjects.Items[i]);
 						sw.WriteLine("");
 					}
@@ -926,6 +946,7 @@ namespace Idmr.Yogeme
 				if (_bdFile != "") File.Delete(_bdFile);
 				if (_missionTxtFile != "") File.Delete(_missionTxtFile);
 				if (_soundFile != "") File.Delete(_soundFile);
+				if (_objFile != "") File.Delete(_objFile);
 				if (_hangarObjectsFile != "") File.Delete(_hangarObjectsFile);
 				if (_hangarCameraFile != "") File.Delete(_hangarCameraFile);
 				if (_famHangarCameraFile != "") File.Delete(_famHangarCameraFile);
@@ -974,17 +995,30 @@ namespace Idmr.Yogeme
 				if (parts.Length == 7) offset = 1;
 				else if (parts.Length != 6) return false;
 
-				ModelIndex = Convert.ToInt32(parts[0], 16);
-				if (offset != 0) Markings = Convert.ToByte(parts[1], 16);
+				ModelIndex = parseInt32(parts[0]);
+				if (offset != 0) Markings = Convert.ToByte(parseInt32(parts[1]) & 0xFF);
 				else Markings = 0;
-				PositionX = Convert.ToInt32(parts[1 + offset], 16);
-				PositionY = Convert.ToInt32(parts[2 + offset], 16);
+				PositionX = parseInt32(parts[1 + offset]);
+				PositionY = parseInt32(parts[2 + offset]);
 				IsGrounded = (parts[3 + offset].ToLower() == "0x7fffffff");
-				if (!IsGrounded) PositionZ = Convert.ToInt32(parts[3 + offset], 16);
-				HeadingXY = Convert.ToInt32(parts[4 + offset], 16);
-				HeadingZ = Convert.ToInt32(parts[5 + offset], 16);
+				if (!IsGrounded) PositionZ = parseInt32(parts[3 + offset]);
+				HeadingXY = parseInt32(parts[4 + offset]);
+				HeadingZ = parseInt32(parts[5 + offset]);
 
 				return true;
+			}
+
+			private int parseInt32(string token)
+			{
+				// Using this because Convert.ToInt32 was throwing an exception on signed integers.
+				token = token.Trim();
+				int result = 0;
+				if (token.StartsWith("0x") && Int32.TryParse(token.Substring(2), System.Globalization.NumberStyles.HexNumber, null, out result))
+					return result;
+				if (Int32.TryParse(token, System.Globalization.NumberStyles.Integer, null, out result))
+					return result;
+				Int32.TryParse(token, System.Globalization.NumberStyles.HexNumber, null, out result);
+				return result;
 			}
 		}
 	}

@@ -125,6 +125,7 @@ namespace Idmr.Yogeme
 		readonly DataTable _tableRaw = new DataTable("Waypoints_Raw");
 		MapForm _fMap;
 		BriefingForm _fBrief;
+		FlightGroupLibraryForm _fLibrary;
 		BattleForm _fBattle;
 		OfficerPreviewForm _fOfficers;
 		byte _activeGlobalGoal;
@@ -183,6 +184,8 @@ namespace Idmr.Yogeme
 			try { _fBattle.Close(); }
 			catch { /* do nothing */ }
 			try { _fOfficers.Close(); }
+			catch { /* do nothing */ }
+			try { _fLibrary.Close(); }
 			catch { /* do nothing */ }
 		}
 		void comboVarRefresh(int index, ComboBox cbo)
@@ -1143,6 +1146,25 @@ namespace Idmr.Yogeme
 		void menuGoalSummary_Click(object sender, EventArgs e)
 		{
 			new GoalSummaryDialog("(global goals not included)\r\n\r\n" + generateGoalSummary()).Show();
+		}
+		void menuLibrary_Click(object sender, EventArgs e)
+		{
+			if (_fLibrary != null)
+				_fLibrary.Close();
+			_fLibrary = new FlightGroupLibraryForm(Settings.Platform.TIE, _mission.FlightGroups, flightGroupLibraryCallback);
+		}
+		void flightGroupLibraryCallback(object sender, EventArgs e)
+		{
+			foreach (FlightGroup fg in (object[])sender)
+			{
+				if (fg == null || !newFG())
+					break;
+				_mission.FlightGroups[_activeFG] = fg;
+				updateFGList();
+				listRefresh();
+				_startingShips--;
+				craftStart(fg, true);
+			}
 		}
 		void menuHelpInfo_Click(object sender, EventArgs e)
 		{

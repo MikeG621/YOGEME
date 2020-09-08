@@ -70,6 +70,7 @@ namespace Idmr.Yogeme
 		
 		MapForm _fMap;
 		BriefingFormXwing _fBrief;
+		FlightGroupLibraryForm _fLibrary;
 		#endregion
 		#region Control Arrays
 #pragma warning disable IDE1006 // Naming Styles
@@ -109,6 +110,8 @@ namespace Idmr.Yogeme
 			try { _fMap.Close(); }
 			catch { /* do nothing */ }
 			try { _fBrief.Close(); }
+			catch { /* do nothing */ }
+			try { _fLibrary.Close(); }
 			catch { /* do nothing */ }
 		}
 		void comboLoadIndex(ComboBox cbo, int index, bool nullable)
@@ -846,6 +849,26 @@ namespace Idmr.Yogeme
 				if (dsGoal.Length > 0) dsGoal += "\r\n\r\n";
 			}
 			new GoalSummaryDialog(dsGoal + generateGoalSummary()).Show();
+		}
+		void menuLibrary_Click(object sender, EventArgs e)
+		{
+			if (_fLibrary != null)
+				_fLibrary.Close();
+			_fLibrary = new FlightGroupLibraryForm(Settings.Platform.XWING, _mission.FlightGroups, flightGroupLibraryCallback);
+		}
+		void flightGroupLibraryCallback(object sender, EventArgs e)
+		{
+			foreach (FlightGroup fg in (object[])sender)
+			{
+				if (fg == null)
+					break;
+				newFG(fg.IsFlightGroup());
+				_mission.FlightGroups[_activeFG] = fg;
+				updateFGList();
+				listRefresh();
+				_startingShips--;
+				craftStart(fg, true);
+			}
 		}
 		void menuHelpInfo_Click(object sender, EventArgs e)
 		{

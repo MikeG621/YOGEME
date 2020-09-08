@@ -129,6 +129,7 @@ namespace Idmr.Yogeme
 		MapForm _fMap;
 		BriefingForm _fBrief;
 		LstForm _fLST;
+		FlightGroupLibraryForm _fLibrary;
 		byte _activeMessageTrigger = 0;
 		byte _activeGlobalTrigger = 0;
 		byte _activeTeam = 0;
@@ -191,6 +192,7 @@ namespace Idmr.Yogeme
 			if (_fMap != null) _fMap.Close();
 			if (_fBrief != null) _fBrief.Close();
 			if (_fLST != null) _fLST.Close();
+			if (_fLibrary != null) _fLibrary.Close();
 		}
 		void comboVarRefresh(int index, ComboBox cbo)
 		{   //index is usually cboTrigType.SelectedIndex, cbo = cboTrigVar
@@ -641,7 +643,7 @@ namespace Idmr.Yogeme
 			#region FlightGroups
 			#region Craft
 			cboCraft.SelectedIndex = _mission.FlightGroups[0].CraftType; // already loaded in loadCraftData
-			cboIFF.Items.AddRange(Strings.IFF); cboIFF.SelectedIndex = _mission.FlightGroups[0].IFF;
+			cboIFF.SelectedIndex = _mission.FlightGroups[0].IFF; // already loaded in this function
 			cboTeam.Items.AddRange(_mission.Teams.GetList()); cboTeam.SelectedIndex = _mission.FlightGroups[0].Team;
 			cboAI.Items.AddRange(Strings.Rating); cboAI.SelectedIndex = _mission.FlightGroups[0].AI;
 			cboMarkings.Items.AddRange(Strings.Color); cboMarkings.SelectedIndex = _mission.FlightGroups[0].Markings;
@@ -693,6 +695,7 @@ namespace Idmr.Yogeme
 				optADAndOr[i].CheckedChanged += new EventHandler(optADAndOrArr_CheckedChanged);
 				optADAndOr[i].Tag = i;
 			}
+			cboStopArrivingWhen.Items.AddRange(Strings.StopArrivingWhen);
 			#endregion
 			#region Orders
 			cboOrders.Items.AddRange(Strings.Orders);
@@ -781,6 +784,7 @@ namespace Idmr.Yogeme
 				lblGoal[i].MouseUp += new MouseEventHandler(lblGoalArr_MouseUp);
 				lblGoal[i].Tag = i;
 			}
+			lstGoalTeams.Items.AddRange(_mission.Teams.GetList());
 			lblGoalArr_Click(0, new EventArgs());
 			#endregion
 			#region Options
@@ -1032,8 +1036,6 @@ namespace Idmr.Yogeme
 			registerInstantUpdate(optOT1T2OR, optOT1T2OR_CheckedChanged);
 			registerInstantUpdate(optOT3T4OR, optOT3T4OR_CheckedChanged);
 
-			registerInstantUpdate(numGoalTeam, numGoalTeam_Leave);
-
 			registerColorizedFGList(cboADTrigVar, cboADTrigType);
 			registerColorizedFGList(cboSkipVar, cboSkipType);
 			registerColorizedFGList(cboMessVar, cboMessType);
@@ -1061,6 +1063,7 @@ namespace Idmr.Yogeme
 			}
 			cboMissType.SelectedIndex = (int)_mission.MissionType;
 			chkPreventOutcome.Checked = _mission.PreventMissionOutcome;
+			numRndSeed.Value = _mission.RndSeed;
 			numMissTimeMin.Value = _mission.TimeLimitMin;
 			numMissTimeSec.Value = _mission.TimeLimitSec;
 			txtMissDesc.Text = _mission.MissionDescription;
@@ -1093,8 +1096,8 @@ namespace Idmr.Yogeme
 			ComboBox variableType;
 			ColorizedFGList.TryGetValue(variable, out variableType);
 			bool colorize = true;
-			if (variableType != null)        //If a VariableType selection control is attached, check that Flight Group is selected.
-				colorize = (variableType.SelectedIndex == 1);
+			if (variableType != null)        //If a VariableType selection control is attached, check that a Flight Group type is selected.
+				colorize = (variableType.SelectedIndex == 1 || variableType.SelectedIndex == 0xF);
 
 			if (e.Index == -1 || e.Index >= _mission.FlightGroups.Count) colorize = false;
 
@@ -1407,6 +1410,25 @@ namespace Idmr.Yogeme
 		{
 			string output = "(global goals not included):\r\n----------\r\n" + generateGoalSummary();
 			new GoalSummaryDialog(output).Show();
+		}
+		void menuLibrary_Click(object sender, EventArgs e)
+		{
+			if (_fLibrary != null)
+				_fLibrary.Close();
+			_fLibrary = new FlightGroupLibraryForm(Settings.Platform.XvT, _mission.FlightGroups, flightGroupLibraryCallback);
+		}
+		void flightGroupLibraryCallback(object sender, EventArgs e)
+		{
+			foreach (FlightGroup fg in (object[])sender)
+			{
+				if (fg == null || newFG() == false)
+					break;
+				_mission.FlightGroups[_activeFG] = fg;
+				updateFGList();
+				listRefresh();
+				_startingShips--;
+				craftStart(fg, true);
+			}
 		}
 		void menuHelpInfo_Click(object sender, EventArgs e)
 		{
@@ -2008,12 +2030,18 @@ namespace Idmr.Yogeme
 				FlightGroup fg = _mission.FlightGroups[i];
 				foreach (FlightGroup.Goal goal in fg.Goals)
 				{
-					if (goal.Condition == 0 || goal.Condition == 10 || goal.Team > 9)  //Avoid True, False conditions and make sure team is valid.
+					if (goal.Condition == 0 || goal.Condition == 10)  //Avoid True, False conditions.
 						continue;
-					string c = Strings.CraftAbbrv[fg.CraftType] + " " + fg.Name;
-					string n = goal.ToString().Replace("Flight Group", c);
-					int category = (goal.Argument <= 1) ? 0 : 2;  //0 = primary, 1 = prevent, 2 = bonus
-					goalList[(goal.Team * 3) + category].Add(n);
+					for (int j = 0; j < 10; j++)
+					{
+						if(goal.GetEnabledForTeam(j))
+						{
+							string c = Strings.CraftAbbrv[fg.CraftType] + " " + fg.Name;
+							string n = goal.ToString().Replace("Flight Group", c);
+							int category = ((goal.Argument <= 1) ? 0 : 2);  //0 = primary, 1 = prevent, 2 = bonus
+							goalList[(j * 3) + category].Add(n);
+						}
+					}
 				}
 			}
 
@@ -2422,6 +2450,9 @@ namespace Idmr.Yogeme
 			chkArrHuman.Checked = _mission.FlightGroups[_activeFG].ArriveOnlyIfHuman;
 			for (int i = 0; i < 6; i++) labelRefresh(_mission.FlightGroups[_activeFG].ArrDepTriggers[i], lblADTrig[i]);
 			lblADTrigArr_Click(lblADTrig[0], new EventArgs());  //[JB] Added sender.  Fixes massive slowdown from exception handling a null control.  Also fixed the remaining _Click() calls with the relevant senders.
+			Common.SafeSetCBO(cboStopArrivingWhen, _mission.FlightGroups[_activeFG].StopArrivingWhen, true);
+			numRandomArrivalDelayMinutes.Value = _mission.FlightGroups[_activeFG].RandomArrivalDelayMinutes;
+			numRandomArrivalDelaySeconds.Value = _mission.FlightGroups[_activeFG].RandomArrivalDelaySeconds;
 			#endregion
 			for (_activeFGGoal = 0; _activeFGGoal < 8; _activeFGGoal++) goalLabelRefresh();
 			lblGoalArr_Click(lblGoal[0], new EventArgs());
@@ -2449,14 +2480,9 @@ namespace Idmr.Yogeme
 			#endregion
 			#region Unknowns
 			numUnk1.Value = _mission.FlightGroups[_activeFG].Unknowns.Unknown1;
-			chkUnk2.Checked = _mission.FlightGroups[_activeFG].Unknowns.Unknown2;
-			numUnk3.Value = _mission.FlightGroups[_activeFG].Unknowns.Unknown3;
-			numUnk4.Value = _mission.FlightGroups[_activeFG].Unknowns.Unknown4;
 			numUnk5.Value = _mission.FlightGroups[_activeFG].Unknowns.Unknown5;
 			numUnkOrder.Value = 1;
 			numUnkOrder_ValueChanged(0, new EventArgs()); //[JB] Force refresh of associated checkboxes
-			numUnkGoal.Value = 1;
-			numUnkGoal_ValueChanged(0, new EventArgs());
 			chkUnk17.Checked = _mission.FlightGroups[_activeFG].Unknowns.Unknown17;
 			chkUnk18.Checked = _mission.FlightGroups[_activeFG].Unknowns.Unknown18;
 			chkPreventNumbering.Checked = _mission.FlightGroups[_activeFG].PreventCraftNumbering;
@@ -2836,6 +2862,13 @@ namespace Idmr.Yogeme
 			cboDepMSAlt.Enabled = optDepMSAlt.Checked;
 			if (!_loading) _mission.FlightGroups[_activeFG].DepartureMethod2 = Common.Update(this, _mission.FlightGroups[_activeFG].DepartureMethod2, optDepMSAlt.Checked);
 		}
+
+		private void grpMoreArrival_Leave(object sender, EventArgs e)
+		{
+			_mission.FlightGroups[_activeFG].StopArrivingWhen = Common.Update(this, _mission.FlightGroups[_activeFG].StopArrivingWhen, Convert.ToByte(cboStopArrivingWhen.SelectedIndex));
+			_mission.FlightGroups[_activeFG].RandomArrivalDelayMinutes = Common.Update(this, _mission.FlightGroups[_activeFG].RandomArrivalDelayMinutes, Convert.ToByte(numRandomArrivalDelayMinutes.Value));
+			_mission.FlightGroups[_activeFG].RandomArrivalDelaySeconds = Common.Update(this, _mission.FlightGroups[_activeFG].RandomArrivalDelaySeconds, Convert.ToByte(numRandomArrivalDelaySeconds.Value));
+		}
 		#endregion
 		#region Orders
 		void orderLabelRefresh()
@@ -3129,12 +3162,12 @@ namespace Idmr.Yogeme
 			cboGoalTrigger.SelectedIndex = _mission.FlightGroups[_activeFG].Goals[_activeFGGoal].Condition;
 			cboGoalAmount.SelectedIndex = _mission.FlightGroups[_activeFG].Goals[_activeFGGoal].Amount;
 			numGoalPoints.Value = _mission.FlightGroups[_activeFG].Goals[_activeFGGoal].Points;
-			chkGoalEnable.Checked = _mission.FlightGroups[_activeFG].Goals[_activeFGGoal].Enabled;
-			numGoalTeam.Value = _mission.FlightGroups[_activeFG].Goals[_activeFGGoal].Team + 1;
 			txtGoalInc.Text = _mission.FlightGroups[_activeFG].Goals[_activeFGGoal].IncompleteText;
 			txtGoalComp.Text = _mission.FlightGroups[_activeFG].Goals[_activeFGGoal].CompleteText;
 			txtGoalFail.Text = _mission.FlightGroups[_activeFG].Goals[_activeFGGoal].FailedText;
 			numGoalTimeLimit.Value = _mission.FlightGroups[_activeFG].Goals[_activeFGGoal].TimeLimit;
+			for (int i = 0; i < 10; i++)
+				lstGoalTeams.SetSelected(i, _mission.FlightGroups[_activeFG].Goals[_activeFGGoal].GetEnabledForTeam(i));
 			_loading = btemp;
 		}
 		void lblGoalArr_DoubleClick(object sender, EventArgs e)
@@ -3146,25 +3179,11 @@ namespace Idmr.Yogeme
 			if (e.Button == MouseButtons.Right) menuCopy_Click("Goal", new EventArgs());
 		}
 
-		void chkGoalEnable_CheckedChanged(object sender, EventArgs e)
-		{
-			if (_loading) return;
-			_mission.FlightGroups[_activeFG].Goals[_activeFGGoal].Enabled = Common.Update(this, _mission.FlightGroups[_activeFG].Goals[_activeFGGoal].Enabled, chkGoalEnable.Checked);
-			goalLabelRefresh();
-		}
-
 		void grpGoal_Leave(object sender, EventArgs e)
 		{
 			_mission.FlightGroups[_activeFG].Goals[_activeFGGoal].Argument = Common.Update(this, _mission.FlightGroups[_activeFG].Goals[_activeFGGoal].Argument, Convert.ToByte(cboGoalArgument.SelectedIndex));
 			_mission.FlightGroups[_activeFG].Goals[_activeFGGoal].Condition = Common.Update(this, _mission.FlightGroups[_activeFG].Goals[_activeFGGoal].Condition, Convert.ToByte(cboGoalTrigger.SelectedIndex));
 			_mission.FlightGroups[_activeFG].Goals[_activeFGGoal].Amount = Common.Update(this, _mission.FlightGroups[_activeFG].Goals[_activeFGGoal].Amount, Convert.ToByte(cboGoalAmount.SelectedIndex));
-			if (ActiveControl == cboGoalTrigger)  //[JB] Auto update the Enabled checkbox only if the condition was manually changed
-			{
-				int cond = _mission.FlightGroups[_activeFG].Goals[_activeFGGoal].Condition;  //Always (TRUE) or None (FALSE) shouldn't Enable
-				bool status = (cond != 0 && cond != 10 && numGoalTeam.Value == 1);
-				_mission.FlightGroups[_activeFG].Goals[_activeFGGoal].Enabled = Common.Update(this, _mission.FlightGroups[_activeFG].Goals[_activeFGGoal].Enabled, status);
-				chkGoalEnable.Checked = status;
-			}
 			goalLabelRefresh();
 		}
 
@@ -3173,17 +3192,15 @@ namespace Idmr.Yogeme
 			_mission.FlightGroups[_activeFG].Goals[_activeFGGoal].Points = Common.Update(this, _mission.FlightGroups[_activeFG].Goals[_activeFGGoal].Points, (short)numGoalPoints.Value);
 			goalLabelRefresh();
 		}
-		void numGoalTeam_Leave(object sender, EventArgs e)
+
+		void lstGoalTeams_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			_mission.FlightGroups[_activeFG].Goals[_activeFGGoal].Team = Common.Update(this, _mission.FlightGroups[_activeFG].Goals[_activeFGGoal].Team, Convert.ToByte(numGoalTeam.Value - 1));
-			if (ActiveControl == numGoalTeam)  //[JB] This control is also triggered via InstantUpdate, so only update the checkbox if manually changed.
-			{
-				int cond = _mission.FlightGroups[_activeFG].Goals[_activeFGGoal].Condition;  //Always (TRUE) or None (FALSE) shouldn't Enable
-				bool status = (cond != 0 && cond != 10 && numGoalTeam.Value == 1);
-				_mission.FlightGroups[_activeFG].Goals[_activeFGGoal].Enabled = Common.Update(this, _mission.FlightGroups[_activeFG].Goals[_activeFGGoal].Enabled, status);  //[JB] Automatically adjust the Enabled check
-				chkGoalEnable.Checked = status;
-			}
+			if(ActiveControl != lstGoalTeams || _loading) return;
+			for (int i = 0; i < lstGoalTeams.Items.Count; i++)
+				_mission.FlightGroups[_activeFG].Goals[_activeFGGoal].SetEnabledForTeam(i, lstGoalTeams.GetSelected(i));
+			Common.Title(this, true);
 		}
+
 		void numGoalTimeLimit_ValueChanged(object sender, EventArgs e)
 		{
 			if (ActiveControl == numGoalTimeLimit)
@@ -3601,18 +3618,11 @@ namespace Idmr.Yogeme
 		#region Unknowns
 		void grpUnkAD_Leave(object sender, EventArgs e)
 		{
-			_mission.FlightGroups[_activeFG].Unknowns.Unknown3 = Common.Update(this, _mission.FlightGroups[_activeFG].Unknowns.Unknown3, Convert.ToByte(numUnk3.Value));
-			_mission.FlightGroups[_activeFG].Unknowns.Unknown4 = Common.Update(this, _mission.FlightGroups[_activeFG].Unknowns.Unknown4, Convert.ToByte(numUnk4.Value));
 			_mission.FlightGroups[_activeFG].Unknowns.Unknown5 = Common.Update(this, _mission.FlightGroups[_activeFG].Unknowns.Unknown5, Convert.ToByte(numUnk5.Value));
 		}
 		void grpUnkCraft_Leave(object sender, EventArgs e)
 		{
 			_mission.FlightGroups[_activeFG].Unknowns.Unknown1 = Common.Update(this, _mission.FlightGroups[_activeFG].Unknowns.Unknown1, Convert.ToByte(numUnk1.Value));
-			_mission.FlightGroups[_activeFG].Unknowns.Unknown2 = Common.Update(this, _mission.FlightGroups[_activeFG].Unknowns.Unknown2, chkUnk2.Checked);
-		}
-		void grpUnkGoal_Leave(object sender, EventArgs e)
-		{
-			numUnkGoal_Enter("grpUnkGoal_Leave", new EventArgs());
 		}
 		void grpUnkOrder_Leave(object sender, EventArgs e)
 		{
@@ -3632,24 +3642,6 @@ namespace Idmr.Yogeme
 			_mission.FlightGroups[_activeFG].Unknowns.Unknown29 = Common.Update(this, _mission.FlightGroups[_activeFG].Unknowns.Unknown29, chkUnk29.Checked);
 		}
 
-		void numUnkGoal_Enter(object sender, EventArgs e)
-		{
-			int i = (int)numUnkGoal.Value - 1;
-			_mission.FlightGroups[_activeFG].Goals[i].Unknown10 = Common.Update(this, _mission.FlightGroups[_activeFG].Goals[i].Unknown10, chkUnk10.Checked);
-			_mission.FlightGroups[_activeFG].Goals[i].Unknown11 = Common.Update(this, _mission.FlightGroups[_activeFG].Goals[i].Unknown11, chkUnk11.Checked);
-			_mission.FlightGroups[_activeFG].Goals[i].Unknown12 = Common.Update(this, _mission.FlightGroups[_activeFG].Goals[i].Unknown12, chkUnk12.Checked);
-			_mission.FlightGroups[_activeFG].Goals[i].Unknown13 = Common.Update(this, _mission.FlightGroups[_activeFG].Goals[i].Unknown13, Convert.ToByte(numUnk13.Value));
-			_mission.FlightGroups[_activeFG].Goals[i].Unknown14 = Common.Update(this, _mission.FlightGroups[_activeFG].Goals[i].Unknown14, chkUnk14.Checked);
-		}
-		void numUnkGoal_ValueChanged(object sender, EventArgs e)
-		{
-			int i = (int)numUnkGoal.Value - 1;
-			chkUnk10.Checked = _mission.FlightGroups[_activeFG].Goals[i].Unknown10;
-			chkUnk11.Checked = _mission.FlightGroups[_activeFG].Goals[i].Unknown11;
-			chkUnk12.Checked = _mission.FlightGroups[_activeFG].Goals[i].Unknown12;
-			numUnk13.Value = _mission.FlightGroups[_activeFG].Goals[i].Unknown13;
-			chkUnk14.Checked = _mission.FlightGroups[_activeFG].Goals[i].Unknown14;
-		}
 		void numUnkOrder_Enter(object sender, EventArgs e)
 		{
 			int i = (int)numUnkOrder.Value - 1;
@@ -4040,6 +4032,8 @@ namespace Idmr.Yogeme
 
 			if (_activeTeam >= 0 && _activeTeam < 8)   //8 teams in the Radio list beginning at index[1]
 				cboRadio.Items[1 + _activeTeam] = team;
+
+			lstGoalTeams.Items[_activeTeam] = team;            //FG goal team selector.
 		}
 
 		void cboEoMColorArr_SelectedIndexChanged(object sender, EventArgs e)
@@ -4121,7 +4115,10 @@ namespace Idmr.Yogeme
 		{
 			_mission.PreventMissionOutcome = Common.Update(this, _mission.PreventMissionOutcome, chkPreventOutcome.Checked);
 		}
-
+		private void numRndSeed_ValueChanged(object sender, EventArgs e)
+		{
+			_mission.RndSeed = Common.Update(this, _mission.RndSeed, Convert.ToByte(numRndSeed.Value));
+		}
 		void numMissTimeMin_Leave(object sender, EventArgs e)
 		{
 			_mission.TimeLimitMin = Common.Update(this, _mission.TimeLimitMin, Convert.ToByte(numMissTimeMin.Value));

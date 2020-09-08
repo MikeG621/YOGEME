@@ -226,6 +226,7 @@ namespace Idmr.Yogeme
 			this.savXW = new System.Windows.Forms.SaveFileDialog();
 			this.dataWaypoints = new System.Data.DataView();
 			this.dataWaypointsRaw = new System.Data.DataView();
+			this.menuLibrary = new System.Windows.Forms.MenuItem();
 			this.tabMain.SuspendLayout();
 			this.tabFG.SuspendLayout();
 			this.tabFGMinor.SuspendLayout();
@@ -2148,7 +2149,8 @@ namespace Idmr.Yogeme
             this.menuMap,
             this.menuBriefing,
             this.menuOptions,
-            this.menuGoalSummary});
+            this.menuGoalSummary,
+            this.menuLibrary});
 			this.menuTools.Text = "&Tools";
 			// 
 			// menuVerify
@@ -2245,6 +2247,12 @@ namespace Idmr.Yogeme
 			// 
 			this.dataWaypointsRaw.AllowDelete = false;
 			this.dataWaypointsRaw.AllowNew = false;
+			// 
+			// menuLibrary
+			// 
+			this.menuLibrary.Index = 5;
+			this.menuLibrary.Text = "FG Librar&y";
+			this.menuLibrary.Click += new System.EventHandler(this.menuLibrary_Click);
 			// 
 			// XwingForm
 			// 
@@ -2525,5 +2533,6 @@ namespace Idmr.Yogeme
 		private MenuItem menuSaveAsXwing;
 		System.Data.DataView dataWaypoints;
 		System.Data.DataView dataWaypointsRaw;
+		private MenuItem menuLibrary;
 	}
 }

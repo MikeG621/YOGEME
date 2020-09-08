@@ -141,6 +141,7 @@ namespace Idmr.Yogeme
 		MapForm _fMap;
 		BriefingForm _fBrief;
 		LstForm _fLST;
+		FlightGroupLibraryForm _fLibrary;
 		Mission _mission;
 		bool _applicationExit;
 		int _activeFG = 0;
@@ -227,6 +228,8 @@ namespace Idmr.Yogeme
 			catch { /* do nothing */ }
 			try { _fLST.Close(); }
 			catch { /* do nothing */ }
+			try { _fLibrary.Close(); }
+			catch { /* do nothing */ }
 		}
 		void comboVarRefresh(int index, ComboBox cbo)
 		{
@@ -260,8 +263,13 @@ namespace Idmr.Yogeme
 				case 7: // Craft when
 					cbo.Items.AddRange(Strings.CraftWhen);
 					break;
-				//case 8: Global Group
-				//since it's just numbers, same as default, left out for specifics
+				case 8:  //Global Group
+				case 20: //All Global Groups except
+					temp = new string[256];
+					for(int i = 0; i < 256; i++)
+						temp[i] = ((i < 16 && _mission.GlobalGroups[i] != "") ? i.ToString() + ": " + _mission.GlobalGroups[i] : i.ToString());
+					cbo.Items.AddRange(temp);
+					break;
 				case 9: // Rating
 					cbo.Items.AddRange(Strings.Rating);
 					break;
@@ -297,7 +305,7 @@ namespace Idmr.Yogeme
 				case 19: // All IFFs except
 					cbo.Items.AddRange(getIffStrings());
 					break;
-				//case 20: // All Global Groups except
+				//case 20: // All Global Groups except (handled above with Global Group)
 				case 21: // All Teams except
 					temp = _mission.Teams.GetList();
 					for (int i = 0; i < temp.Length; i++)
@@ -765,6 +773,11 @@ namespace Idmr.Yogeme
 			{
 				int team = Common.ParseIntAfter(text, "TM:");
 				text = text.Replace("TM:" + team, ((team >= 0 && team < 10 && _mission.Teams[team].Name != "") ? _mission.Teams[team].Name : "Team " + (team + 1).ToString()));
+			}
+			while (text.Contains("GG:"))
+			{
+				int gg = Common.ParseIntAfter(text, "GG:");
+				text = text.Replace("GG:" + gg, ((gg >= 0 && gg < 16 && _mission.GlobalGroups[gg] != "") ? "GG " + gg + ": " + _mission.GlobalGroups[gg] : "Global Group " + gg));
 			}
 			return text;
 		}
@@ -1283,11 +1296,11 @@ namespace Idmr.Yogeme
 			ComboBox variableType;
 			colorizedFGList.TryGetValue(variable, out variableType);
 			bool colorize = true;
-			if (variableType != null)        //If a VariableType selection control is attached, check that Flight Group is selected.
-				colorize = (variableType.SelectedIndex == 1);
+			if (variableType != null)        //If a VariableType selection control is attached, check that a Flight Group type is selected.
+				colorize = (variableType.SelectedIndex == 1 || variableType.SelectedIndex == 0xF);
 
 			int paramOffset = 0;
-			if (variableType == null && variable.Items.Count == _mission.FlightGroups.Count + 5 && _mission.FlightGroups.Count >= 1)  //Detect if it's a parameter dropdown, which have 5 entries (for region #) before the FG list starts.  Parameter dropdowns are not attached to VariableType dropdowns, either.
+			if (variableType == null && variable.Items.Count >= _mission.FlightGroups.Count + 5 && _mission.FlightGroups.Count >= 1)  //Detect if it's a parameter dropdown, which have 5 entries (for region #) before the FG list starts.  Parameter dropdowns are not attached to VariableType dropdowns, either.
 			{
 				if (variable.Items[5].ToString() == _mission.FlightGroups[0].ToString(false))  //Check to make sure it really does contain FGs by checking the first one.
 					paramOffset = 5;
@@ -1297,10 +1310,9 @@ namespace Idmr.Yogeme
 
 			if (e.Index == -1 || e.Index - paramOffset >= _mission.FlightGroups.Count) colorize = false;
 
-			if (variable.BackColor == Color.Black || variable.BackColor == SystemColors.Window)
-				variable.BackColor = (colorize ? Color.Black : SystemColors.Window);
-
 			e.DrawBackground();
+			// Setting the control BackColor will interrupt the drawing, so draw each item manually.
+			if (colorize && !e.State.HasFlag(DrawItemState.Selected)) e.Graphics.FillRectangle(Brushes.Black, e.Bounds);
 			Brush brText = SystemBrushes.ControlText;
 			if (colorize) brText = getFlightGroupDrawColor(e.Index - paramOffset);
 			if (brText == SystemBrushes.ControlText && variable.BackColor == Color.Black) brText = Brushes.LightGray;
@@ -1622,6 +1634,26 @@ namespace Idmr.Yogeme
 		{
 			string output = "(global goals not included):\r\n----------\r\n" + generateGoalSummary();
 			new GoalSummaryDialog(output).Show();
+		}
+		void menuLibrary_Click(object sender, EventArgs e)
+		{
+			if (_fLibrary != null)
+				_fLibrary.Close();
+			_fLibrary = new FlightGroupLibraryForm(Settings.Platform.XWA, _mission.FlightGroups, flightGroupLibraryCallback);
+		}
+		void flightGroupLibraryCallback(object sender, EventArgs e)
+		{
+			foreach (FlightGroup fg in (object[])sender)
+			{
+				if (fg == null)
+					break;
+				newFG();
+				_mission.FlightGroups[_activeFG] = fg;
+				updateFGList();
+				listRefresh();
+				_startingShips--;
+				craftStart(fg, true);
+			}
 		}
 		void menuHelpInfo_Click(object sender, EventArgs e)
 		{
@@ -3144,10 +3176,7 @@ namespace Idmr.Yogeme
 			cboADTrigType.SelectedIndex = _mission.FlightGroups[_activeFG].ArrDepTriggers[_activeArrDepTrigger].VariableType;
 			cboADTrigAmount.SelectedIndex = _mission.FlightGroups[_activeFG].ArrDepTriggers[_activeArrDepTrigger].Amount;
 			//[JB] Fixes exceptions for backdrop FGs in B4M2B.TIE, B4M3FB.TIE, B4M4B.TIE which use have Parameter1 values around 78 to 80
-			int v = _mission.FlightGroups[_activeFG].ArrDepTriggers[_activeArrDepTrigger].Parameter1;
-			if (v >= cboADPara.Items.Count)
-				v = cboADPara.Items.Count - 1;
-			cboADPara.SelectedIndex = v; //_mission.FlightGroups[_activeFG].ArrDepTriggers[_activeArrDepTrigger].Parameter1;
+			Common.SafeSetCBO(cboADPara, _mission.FlightGroups[_activeFG].ArrDepTriggers[_activeArrDepTrigger].Parameter1, true);
 			numADPara.Value = _mission.FlightGroups[_activeFG].ArrDepTriggers[_activeArrDepTrigger].Parameter2;
 			_loading = btemp;
 		}
@@ -3992,6 +4021,7 @@ namespace Idmr.Yogeme
 		}
 		void refreshSkipIndicators()  //[JB] Maintain order indicators when a Skip Trigger is modified.
 		{
+			byte restore = _activeOrder;
 			//Scan through all of the orders in each region.  Determine if the Skip Trigger is potentially used.  If so update the dropdown list with an indicator, and also force a refresh on the corresponding item in the Orders tab.
 			for (int o = 0; o < 4; o++)
 			{
@@ -4025,6 +4055,7 @@ namespace Idmr.Yogeme
 					}
 				}
 			}
+			lblOrderArr_Click(lblOrder[restore], new EventArgs());  //Refreshing any of the labels will have changed the order selection, so restore it.
 		}
 
 		void chkOptArr_CheckedChanged(object sender, EventArgs e)
@@ -4123,7 +4154,7 @@ namespace Idmr.Yogeme
 			cboSkipType.SelectedIndex = -1;
 			cboSkipType.SelectedIndex = trigger.VariableType;
 			cboSkipAmount.SelectedIndex = trigger.Amount;
-			cboSkipPara.SelectedIndex = trigger.Parameter1;
+			Common.SafeSetCBO(cboSkipPara, trigger.Parameter1, true);
 			numSkipPara.Value = trigger.Parameter2;
 			_loading = btemp;
 		}
@@ -5026,7 +5057,7 @@ namespace Idmr.Yogeme
 		{
 			for (int i = 0; i < 16; i++)
 				if (_mission.GlobalGroups[i] != "") lblGG[i].Text = _mission.GlobalGroups[i];
-				else lblGG[i].Text = "Global Group " + (i + 1).ToString();
+				else lblGG[i].Text = "Global Group " + i.ToString();
 		}
 
 		void numGlobCargo_ValueChanged(object sender, EventArgs e)
@@ -5109,6 +5140,7 @@ namespace Idmr.Yogeme
 			for (i = 0; i < 16; i++) if (lblGG[i].ForeColor == getHighlightColor()) break;
 			_mission.GlobalGroups[i] = Common.Update(this, _mission.GlobalGroups[i], txtGlobGroup.Text);
 			ggRefresh();
+			updateFGList(); //Force refresh of any trigger labels that might contain the GG text.
 		}
 		void txtNotes_Leave(object sender, EventArgs e)
 		{
