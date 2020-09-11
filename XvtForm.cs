@@ -8,6 +8,7 @@
 
 /* CHANGELOG
  * v1.8, xxxxxx
+ * [FIX] Test launching if you cancel the intial Save
  * [UPD] saveMission now won't save/rewrite file if unmodifed
  * [NEW] FlightGroupLibrary [JB]
  * [FIX] double listing of IFFs [JB]
@@ -1784,6 +1785,8 @@ namespace Idmr.Yogeme
 			}
 			// prep stuff
 			menuSave_Click("menuTest_Click", new EventArgs());
+			if (_mission.MissionPath == "\\NewMission.tie") return;
+
 			if (_config.VerifyTest && !_config.Verify) Common.RunVerify(_mission.MissionPath, _config.VerifyLocation);
 			/*Version os = Environment.OSVersion.Version;
 			bool isWin7 = (os.Major == 6 && os.Minor == 1);

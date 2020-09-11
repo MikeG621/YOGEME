@@ -4,13 +4,15 @@
  * This file authored by "JB" (Random Starfighter) (randomstarfighter@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.7
+ * VERSION: 1.7+
  */
 
 /* CHANGELOG
-* v1.7, 200816
-* [NEW] created [JB]
-*/
+ * v1.8, xxxxxx
+ * [FIX] _finalizedCraftData wasn't set on first run if _detectedInstallPath was blank, causing exceptions on platform load [#37]
+ * v1.7, 200816
+ * [NEW] created [JB]
+ */
 
 using System;
 using System.Collections.Generic;
@@ -158,7 +160,7 @@ namespace Idmr.Yogeme
 
 			string previousDetectedInstall = _detectedInstallPath;
 			detectInstallationPaths();
-			if (previousDetectedInstall != _detectedInstallPath || configChanged)
+			if (previousDetectedInstall != _detectedInstallPath || configChanged || _detectedInstallPath == "")
 			{
 				if (_detectedInstallPath != "")
 				{

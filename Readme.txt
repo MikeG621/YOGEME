@@ -15,6 +15,8 @@ original mainstream editors were created.
 Version History
 
 v1.8, xx xxx xxxx
+ - (All) Fixed an exception due to incomplete CraftDataManager creation that would occur when platform not detected [Issue #37]
+ - (TIE-XWA) Fixed Test function trying to launch if you cancel a new save
  - (XWA) Added detection for DTM Super Backdrops v3.1
  - (TIE) Fixed SaveAs XvT and XWA
  - (TIE) SaveAs BoP implemented (required Converter update)

@@ -8,6 +8,8 @@
 
 /* CHANGELOG
  * v1.8, xxxxxx
+ * [FIX] menuTest was really named menuText...
+ * [FIX] Test launching if you cancel the intial Save
  * [UPD] saveMission now won't save/rewrite file if unmodifed
  * [NEW] FlightGroupLibrary [JB]
  * [UPD] Goal/Order/Trigger string substitutions now use GG strings for GGs 0-15 [JB]
@@ -814,7 +816,7 @@ namespace Idmr.Yogeme
 			opnXWA.InitialDirectory = _config.GetWorkingPath(); //[JB] Updated for MRU access.  Defaults to installation and mission folder if not enabled.
 			savXWA.InitialDirectory = _config.GetWorkingPath();
 			#region Menu
-			menuText.Enabled = _config.XwaInstalled;
+			menuTest.Enabled = _config.XwaInstalled;
 			if (_config.RestrictPlatforms)
 			{
 				if (!_config.XwingInstalled) { menuNewXwing.Enabled = false; }
@@ -2092,7 +2094,7 @@ namespace Idmr.Yogeme
 			}
 			catch { /* do nothing */ }
 		}
-		void menuText_Click(object sender, EventArgs e)
+		void menuTest_Click(object sender, EventArgs e)
 		{
 			if (_config.ConfirmTest)
 			{
@@ -2101,6 +2103,8 @@ namespace Idmr.Yogeme
 			}
 			// prep stuff
 			menuSave_Click("menuTest_Click", new EventArgs());
+			if (_mission.MissionPath == "\\NewMission.tie") return;
+
 			if (_config.VerifyTest && !_config.Verify) Common.RunVerify(_mission.MissionPath, _config.VerifyLocation);
 			int index = 0;
 			while (File.Exists(_config.XwaPath + "\\test" + index + "0.plt")) index++;

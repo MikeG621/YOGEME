@@ -249,7 +249,7 @@ namespace Idmr.Yogeme
 
 				fs.Close();
 				#endregion
-				CheckPlatforms();
+				//CheckPlatforms();
 			}
 			else
 			{

@@ -33,28 +33,28 @@ namespace Idmr.Yogeme
 	public partial class XwaHookDialog : Form
 	{
 		// this is going to be setup to read from the individual TXT files, but always write to Mission.ini
-		string _mission;
-		string _fileName = "";
-		string _bdFile = "";
-		string _soundFile = "";
-		string _objFile = "";
-		string _missionTxtFile = "";
-		string _hangarObjectsFile = "";
-		string _hangarCameraFile = "";
-		string _famHangarCameraFile = "";
-		string _hangarMapFile = "";
-		string _famHangarMapFile = "";
-		string _installDirectory = "";
-		string _mis = "\\Missions\\";
-		string _res = "\\Resdata\\";
-		string _wave = "\\Wave\\";
-		string _fm = "\\FlightModels\\";
+		readonly string _mission;
+		readonly string _fileName = "";
+		readonly string _bdFile = "";
+		readonly string _soundFile = "";
+		readonly string _objFile = "";
+		readonly string _missionTxtFile = "";
+		readonly string _hangarObjectsFile = "";
+		readonly string _hangarCameraFile = "";
+		readonly string _famHangarCameraFile = "";
+		readonly string _hangarMapFile = "";
+		readonly string _famHangarMapFile = "";
+		readonly string _installDirectory = "";
+		readonly string _mis = "\\Missions\\";
+		readonly string _res = "\\Resdata\\";
+		readonly string _wave = "\\Wave\\";
+		readonly string _fm = "\\FlightModels\\";
 		enum ReadMode { None = -1, Backdrop, Mission, Sounds, Objects, HangarObjects, HangarCamera, FamilyHangarCamera, HangarMap, FamilyHangarMap }
 		bool _loading = false;
-		int[,] _cameras = new int[5, 3];
-		int[,] _defaultCameras = new int[5, 3];
-		int[,] _familyCameras = new int[7, 3];
-		int[,] _defaultFamilyCameras = new int[7, 3];
+		readonly int[,] _cameras = new int[5, 3];
+		readonly int[,] _defaultCameras = new int[5, 3];
+		readonly int[,] _familyCameras = new int[7, 3];
+		readonly int[,] _defaultFamilyCameras = new int[7, 3];
 		enum ShuttleAnimation { Right, Top, Bottom }
 
 		public XwaHookDialog(Mission mission)
@@ -140,8 +140,8 @@ namespace Idmr.Yogeme
 				_famHangarMapFile = checkFile("_FamHangarMap.txt");
 			}
 			StreamReader srMission = null;
-			string line = "";
-			string lineLower = "";
+			string line;
+			string lineLower;
 			if (File.Exists(_fileName)) srMission = new StreamReader(_fileName);
 			ReadMode readMode = ReadMode.None;
 
@@ -586,15 +586,17 @@ namespace Idmr.Yogeme
 
 		private void cmdAddFamMap_Click(object sender, EventArgs e)
 		{
-			MapEntry entry = new MapEntry();
-			entry.ModelIndex = cboFamMapIndex.SelectedIndex;
-			entry.Markings = (byte)cboFamMapMarkings.SelectedIndex;
-			entry.PositionX = (int)numFamPosX.Value;
-			entry.PositionY = (int)numFamPosY.Value;
-			entry.PositionZ = (int)numFamPosZ.Value;
-			entry.IsGrounded = chkFamGrounded.Checked;
-			entry.HeadingXY = (int)numFamHeadingXY.Value;
-			entry.HeadingZ = (int)numFamHeadingZ.Value;
+			MapEntry entry = new MapEntry
+			{
+				ModelIndex = cboFamMapIndex.SelectedIndex,
+				Markings = (byte)cboFamMapMarkings.SelectedIndex,
+				PositionX = (int)numFamPosX.Value,
+				PositionY = (int)numFamPosY.Value,
+				PositionZ = (int)numFamPosZ.Value,
+				IsGrounded = chkFamGrounded.Checked,
+				HeadingXY = (int)numFamHeadingXY.Value,
+				HeadingZ = (int)numFamHeadingZ.Value
+			};
 			lstFamilyMap.Items.Add(entry.ToString());
 		}
 		private void cmdAddHangar_Click(object sender, EventArgs e)
@@ -613,15 +615,17 @@ namespace Idmr.Yogeme
 		}
 		private void cmdAddMap_Click(object sender, EventArgs e)
 		{
-			MapEntry entry = new MapEntry();
-			entry.ModelIndex = cboMapIndex.SelectedIndex;
-			entry.Markings = (byte)cboMapMarkings.SelectedIndex;
-			entry.PositionX = (int)numPosX.Value;
-			entry.PositionY = (int)numPosY.Value;
-			entry.PositionZ = (int)numPosZ.Value;
-			entry.IsGrounded = chkGrounded.Checked;
-			entry.HeadingXY = (int)numHeadingXY.Value;
-			entry.HeadingZ = (int)numHeadingZ.Value;
+			MapEntry entry = new MapEntry
+			{
+				ModelIndex = cboMapIndex.SelectedIndex,
+				Markings = (byte)cboMapMarkings.SelectedIndex,
+				PositionX = (int)numPosX.Value,
+				PositionY = (int)numPosY.Value,
+				PositionZ = (int)numPosZ.Value,
+				IsGrounded = chkGrounded.Checked,
+				HeadingXY = (int)numHeadingXY.Value,
+				HeadingZ = (int)numHeadingZ.Value
+			};
 			lstMap.Items.Add(entry.ToString());
 		}
 		private void cmdDefaultCamera_Click(object sender, EventArgs e)
@@ -1018,12 +1022,12 @@ namespace Idmr.Yogeme
 			{
 				// Using this because Convert.ToInt32 was throwing an exception on signed integers.
 				token = token.Trim();
-				int result = 0;
-				if (token.StartsWith("0x") && Int32.TryParse(token.Substring(2), System.Globalization.NumberStyles.HexNumber, null, out result))
+				int result;
+				if (token.StartsWith("0x") && int.TryParse(token.Substring(2), System.Globalization.NumberStyles.HexNumber, null, out result))
 					return result;
-				if (Int32.TryParse(token, System.Globalization.NumberStyles.Integer, null, out result))
+				if (int.TryParse(token, System.Globalization.NumberStyles.Integer, null, out result))
 					return result;
-				Int32.TryParse(token, System.Globalization.NumberStyles.HexNumber, null, out result);
+				int.TryParse(token, System.Globalization.NumberStyles.HexNumber, null, out result);
 				return result;
 			}
 		}

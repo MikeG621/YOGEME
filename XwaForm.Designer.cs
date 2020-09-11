@@ -57,10 +57,11 @@ namespace Idmr.Yogeme
 			this.menuLST = new System.Windows.Forms.MenuItem();
 			this.menuOptions = new System.Windows.Forms.MenuItem();
 			this.menuGoalSummary = new System.Windows.Forms.MenuItem();
+			this.menuLibrary = new System.Windows.Forms.MenuItem();
 			this.menuHyperbuoy = new System.Windows.Forms.MenuItem();
 			this.menuSuperBackdrops = new System.Windows.Forms.MenuItem();
 			this.menuHooks = new System.Windows.Forms.MenuItem();
-			this.menuText = new System.Windows.Forms.MenuItem();
+			this.menuTest = new System.Windows.Forms.MenuItem();
 			this.menuHelp = new System.Windows.Forms.MenuItem();
 			this.menuHelpInfo = new System.Windows.Forms.MenuItem();
 			this.menuAbout = new System.Windows.Forms.MenuItem();
@@ -784,7 +785,6 @@ namespace Idmr.Yogeme
 			this.txtNotes = new System.Windows.Forms.TextBox();
 			this.dataOrders = new System.Data.DataView();
 			this.dataOrders_Raw = new System.Data.DataView();
-			this.menuLibrary = new System.Windows.Forms.MenuItem();
 			((System.ComponentModel.ISupportInitialize)(this.dataWaypoints)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.dataWaypoints_Raw)).BeginInit();
 			this.tabMain.SuspendLayout();
@@ -964,7 +964,7 @@ namespace Idmr.Yogeme
             this.menuFile,
             this.menuEdit,
             this.menuTools,
-            this.menuText,
+            this.menuTest,
             this.menuHelp});
 			// 
 			// menuFile
@@ -1226,6 +1226,12 @@ namespace Idmr.Yogeme
 			this.menuGoalSummary.Text = "FG &Goal Summary";
 			this.menuGoalSummary.Click += new System.EventHandler(this.menuGoalSummary_Click);
 			// 
+			// menuLibrary
+			// 
+			this.menuLibrary.Index = 6;
+			this.menuLibrary.Text = "FG Librar&y";
+			this.menuLibrary.Click += new System.EventHandler(this.menuLibrary_Click);
+			// 
 			// menuHyperbuoy
 			// 
 			this.menuHyperbuoy.Index = 7;
@@ -1245,11 +1251,11 @@ namespace Idmr.Yogeme
 			this.menuHooks.Text = "Hoo&k Assignment";
 			this.menuHooks.Click += new System.EventHandler(this.menuHooks_Click);
 			// 
-			// menuText
+			// menuTest
 			// 
-			this.menuText.Index = 3;
-			this.menuText.Text = "Te&st";
-			this.menuText.Click += new System.EventHandler(this.menuText_Click);
+			this.menuTest.Index = 3;
+			this.menuTest.Text = "Te&st";
+			this.menuTest.Click += new System.EventHandler(this.menuTest_Click);
 			// 
 			// menuHelp
 			// 
@@ -9241,12 +9247,6 @@ namespace Idmr.Yogeme
 			this.dataOrders_Raw.AllowDelete = false;
 			this.dataOrders_Raw.AllowNew = false;
 			// 
-			// menuLibrary
-			// 
-			this.menuLibrary.Index = 6;
-			this.menuLibrary.Text = "FG Librar&y";
-			this.menuLibrary.Click += new System.EventHandler(this.menuLibrary_Click);
-			// 
 			// XwaForm
 			// 
 			this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
@@ -10217,7 +10217,7 @@ namespace Idmr.Yogeme
 		private MenuItem menuRec3;
 		private MenuItem menuRec4;
 		private MenuItem menuRec5;
-		private MenuItem menuText;
+		private MenuItem menuTest;
         private CheckBox chkOptWIonPulse;
         private MenuItem menuGoalSummary;
         private ComboBox cboRole2Teams;

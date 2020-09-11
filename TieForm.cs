@@ -8,6 +8,7 @@
 
 /* CHANGELOG
  * v1.8, xxxxxx
+ * [FIX] Test launching if you cancel the intial Save
  * [FIX] SaveAs for XvT and XWA fixed
  * [NEW] SaveAs BoP
  * [UPD] saveMission now won't save/rewrite file if unmodifed
@@ -330,12 +331,12 @@ namespace Idmr.Yogeme
 		void loadCraftData(string fileMission)
 		{
 			Strings.OverrideShipList(null, null); //Restore defaults.
-			try
-			{
+			//try
+			//{
 				CraftDataManager.GetInstance().LoadPlatform(Settings.Platform.TIE, _config, Strings.CraftType, Strings.CraftAbbrv, fileMission);
 				Strings.OverrideShipList(CraftDataManager.GetInstance().GetLongNames(), CraftDataManager.GetInstance().GetShortNames());
-			}
-			catch (Exception x) { MessageBox.Show("Error processing custom TIE ship list, using defaults.\n\n" + x.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); }
+			//}
+			//catch (Exception x) { MessageBox.Show("Error processing custom TIE ship list, using defaults.\n\n" + x.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); }
 			cboCraft.Items.Clear();
 			cboCraft.Items.AddRange(Strings.CraftType);
 		}
@@ -1458,6 +1459,8 @@ namespace Idmr.Yogeme
 			}
 			// prep stuff
 			menuSave_Click("menuTest_Click", new EventArgs());
+			if (_mission.MissionPath == "\\NewMission.tie") return;
+
 			if (_config.VerifyTest && !_config.Verify) Common.RunVerify(_mission.MissionPath, _config.VerifyLocation);
 			Version os = Environment.OSVersion.Version;
 			bool isWin7 = (os.Major == 6 && os.Minor == 1);
