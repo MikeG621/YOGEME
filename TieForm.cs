@@ -1816,7 +1816,7 @@ namespace Idmr.Yogeme
 				if (fg.EditorCraftNumber != count)
 				{
 					fg.EditorCraftNumber = count;
-					fg.EditorCraftExplicit = false;  //X-wing does not have Flight Group numbering beyond single waves.
+					fg.EditorCraftExplicit = false;  //TIE does not have Flight Group numbering beyond single waves.
 					lstFG.Items[i] = fg.ToString(true);
 				}
 			}

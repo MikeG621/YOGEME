@@ -9,6 +9,7 @@
 
 /* CHANGELOG:
  * v1.8, xxxxxx
+ * [UPD] newFG now returns bool
  * [NEW] FlightGroupLibrary [JB]
  * v1.7, 200816
  * [UPD #14] Nothing specific, but closing that issue
@@ -862,10 +863,8 @@ namespace Idmr.Yogeme
 		{
 			foreach (FlightGroup fg in (object[])sender)
 			{
-				if (fg == null)
+				if (fg == null || !newFG(fg.IsFlightGroup()))
 					break;
-				// TODO: newFG to be bool, add to break check
-				newFG(fg.IsFlightGroup());
 				_mission.FlightGroups[_activeFG] = fg;
 				updateFGList();
 				listRefresh();
@@ -1363,13 +1362,12 @@ namespace Idmr.Yogeme
 				lstFG.Items[i] = ((_mode == EditorMode.XWI) ? "" : "[BRF] ") + _mission.FlightGroups[i].ToString(true);
 			_loading = btemp;
 		}
-		// TODO: change this to return bool
-		void newFG(bool isCraft)  //[JB] We have to explicitly determine whether the new FG should be created in the craft section or object section.
+		bool newFG(bool isCraft)  //[JB] We have to explicitly determine whether the new FG should be created in the craft section or object section.
 		{
 			if (_mission.FlightGroups.Count == Mission.FlightGroupLimit)
 			{
 				MessageBox.Show("Mission contains maximum number of Flight Groups", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				return;
+				return false;
 			}
 			int slot = isCraft ? _mission.FlightGroups.GetLastOfFlightGroup() + 1 : _mission.FlightGroups.Count;
 			_activeFG = _mission.FlightGroups.Insert(slot);
@@ -1390,6 +1388,7 @@ namespace Idmr.Yogeme
 				_fBrief.MapPaint();
 			}
 			catch { /* do nothing */ }
+			return true;
 		}
 		/// <summary>Scans all Flight Groups to detect duplicate names, to provide helpful craft numbering within the editor so that the user can easily tell duplicates apart in triggers.</summary>
 		void recalculateEditorCraftNumbering()

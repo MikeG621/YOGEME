@@ -8,6 +8,7 @@
 
 /* CHANGELOG
  * v1.8, xxxxxx
+ * [UPD] newFG now returns bool
  * [FIX] Special Cargo text box not showing when switching craft
  * [FIX] menuTest was really named menuText...
  * [FIX] Test launching if you cancel the intial Save
@@ -1654,10 +1655,8 @@ namespace Idmr.Yogeme
 		{
 			foreach (FlightGroup fg in (object[])sender)
 			{
-				if (fg == null)
+				if (fg == null || !newFG())
 					break;
-				// TODO: newFG to be bool, add that to break check
-				newFG();
 				_mission.FlightGroups[_activeFG] = fg;
 				updateFGList();
 				listRefresh();
@@ -2524,13 +2523,12 @@ namespace Idmr.Yogeme
 			_noRefresh = false;
 			if (_fMap != null) _fMap.UpdateFlightGroup(_activeFG, _mission.FlightGroups[_activeFG]);  //[JB] If the display name needs to be updated, the map most likely does too.
 		}
-		// TODO: change newFG to bool
-		void newFG()
+		bool newFG()
 		{
 			if (_mission.FlightGroups.Count == Mission.FlightGroupLimit)
 			{
 				MessageBox.Show("Mission contains maximum number of Flight Groups.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				return;
+				return false;
 			}
 			_activeFG = _mission.FlightGroups.Add();
 			_mission.FlightGroups[_activeFG].CraftType = _config.XwaCraft;
@@ -2543,6 +2541,7 @@ namespace Idmr.Yogeme
 			_loading = false;
 			Common.Title(this, _loading);
 			refreshMap(-1);
+			return true;
 		}
 		/// <summary>Scans all Flight Groups to detect duplicate names, to provide helpful craft numbering within the editor so that the user can easily tell duplicates apart in triggers.</summary>
 		void recalculateEditorCraftNumber()
@@ -2774,7 +2773,7 @@ namespace Idmr.Yogeme
 		void lstFG_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (lstFG.SelectedIndex == -1) return;
-			if (_noRefresh == true) return;   //[JB] Altered for performance, see note in listRefresh().
+			if (_noRefresh) return;   //[JB] Altered for performance, see note in listRefresh().
 			_activeFG = lstFG.SelectedIndex;
 			lblFG.Text = "Flight Group #" + (_activeFG + 1).ToString() + " of " + _mission.FlightGroups.Count.ToString();
 			bool btemp = _loading;
@@ -2912,7 +2911,7 @@ namespace Idmr.Yogeme
 			chkUnk41.Checked = _mission.FlightGroups[_activeFG].Unknowns.Unknown41;
 			#endregion
 			_loading = btemp;
-			enableBackdrop((_mission.FlightGroups[_activeFG].CraftType == 0xB7));
+			enableBackdrop(_mission.FlightGroups[_activeFG].CraftType == 0xB7);
 
 			if (!lstFG.Focused) lstFG.Focus();  //[JB] Return control back to the list (helpful to maintain navigation using the arrow keys when certain tabs are open)
 		}

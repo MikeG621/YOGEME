@@ -9,6 +9,8 @@
 
 /* CHANGELOG
  * v1.8, xxxxxx
+ * [UPD] Added a blank ctor for fixed null loads
+ * [UPD] XML stuff
  * [FIX] _finalizedCraftData wasn't set on first run if _detectedInstallPath was blank, causing exceptions on platform load [#37]
  * v1.7, 200816
  * [NEW] created [JB]
@@ -53,7 +55,7 @@ namespace Idmr.Yogeme
 		private static readonly CraftDataManager _instance = new CraftDataManager();
 
 		/// <summary>Will be true if custom craft data was exported into XWA's game folder and is being used from that location instead of YOGEME's operating path.</summary>
-		public bool XwaInstallSpecificExternalDataLoaded = false;
+		public bool XwaInstallSpecificExternalDataLoaded { get; set; } = false;
 
 		private string _currentInstallPath = "";                              // The current installation path as provided from Settings.
 		private string _currentMissionPath = "";                              // The full path+filename of the current mission.
@@ -248,7 +250,7 @@ namespace Idmr.Yogeme
 			_defaultCraftData = new List<CraftData>();
 			for (int i = 0; i < longNames.Length; i++)
 			{
-				CraftData entry = new CraftData(null)
+				CraftData entry = new CraftData()
 				{
 					Name = longNames[i]
 				};
@@ -527,7 +529,7 @@ namespace Idmr.Yogeme
 			Dictionary<int, int> mappingTable = new Dictionary<int, int>();
 			result = new List<CraftData>();
 			for (int i = 0; i < 255; i++)   // I'm not sure exactly how long this array is.
-				result.Add(new CraftData(null));
+				result.Add(new CraftData());
 
 			// Open the EXE and load all the necessary data from it.
 			try
@@ -662,12 +664,14 @@ namespace Idmr.Yogeme
 							}
 						}
 						string[] line = s.Split(',');
-						CraftData data = new CraftData(null)
+						CraftData data = new CraftData()
 						{
 							Name = Common.SafeString(line, 0, false),
 							Abbrev = Common.SafeString(line, 1, false)
 						};
-						int.TryParse(Common.SafeString(line, 2, false), out data.SpeedMglt);
+						int speed;
+						int.TryParse(Common.SafeString(line, 2, false), out speed);
+						data.SpeedMglt = speed;
 						data.ResourceNames = Common.SafeString(line, 3, false);
 						if (editorSection)
 							editor.Add(data);
@@ -724,16 +728,17 @@ namespace Idmr.Yogeme
 	/// <summary>Information and resources for a single craft type.</summary>
 	public class CraftData
 	{
-		public string Name = "";
-		public string Abbrev = "";
-		public int SpeedMglt = 0;
-		public string ResourceNames = "";
-		/// <summary>Creates a new instance. If a source item is specified, the data will be initialized to a copy of the source.</summary>
+		/// <summary>Initializes a new instance</summary>
+		public CraftData() 	{ /* do nothing */ }
+		/// <summary>Initializes a new instance.</summary>
+		/// <param name="source">Data optionally used to initialize the instance</param>
+		/// <remarks>If <paramref name="source"/> is <b>null</b>, no additional actions are taken</remarks>
 		public CraftData(CraftData source)
 		{
 			if (source != null)
 				CopyFrom(source);
 		}
+
 		/// <summary>Directly copies all data elements from the source object.</summary>
 		public void CopyFrom(CraftData source)
 		{
@@ -757,5 +762,15 @@ namespace Idmr.Yogeme
 			SpeedMglt = source.SpeedMglt;
 			ResourceNames = source.ResourceNames;
 		}
+
+		/// <summary>Gets or sets the Craft type name</summary>
+		public string Name { get; set; } = "";
+		/// <summary>Gets or sets the Craft type abbreviation</summary>
+		public string Abbrev { get; set; } = "";
+		/// <summary>Gets or sets the Craft type speed</summary>
+		public int SpeedMglt { get; set; } = 0;
+		/// <summary>Gets or sets the resources (OPT/SHIP) used for the Craft</summary>
+		/// <remarks>Multiple resources are separated by "|", old DOS resources can be scaled using "*" (e.g., "*2")</remarks>
+		public string ResourceNames { get; set; } = "";
 	}
 }
