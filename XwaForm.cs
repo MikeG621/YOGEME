@@ -8,6 +8,7 @@
 
 /* CHANGELOG
  * v1.8, xxxxxx
+ * [FIX] Special Cargo text box not showing when switching craft
  * [FIX] menuTest was really named menuText...
  * [FIX] Test launching if you cancel the intial Save
  * [UPD] saveMission now won't save/rewrite file if unmodifed
@@ -3000,8 +3001,8 @@ namespace Idmr.Yogeme
 
 		void chkRandSC_CheckedChanged(object sender, EventArgs e)
 		{
-			if (_loading) return;
-			_mission.FlightGroups[_activeFG].RandSpecCargo = Common.Update(this, _mission.FlightGroups[_activeFG].RandSpecCargo, chkRandSC.Checked);
+			if (!_loading)
+				_mission.FlightGroups[_activeFG].RandSpecCargo = Common.Update(this, _mission.FlightGroups[_activeFG].RandSpecCargo, chkRandSC.Checked);
 			if (chkRandSC.Checked)
 			{
 				numSC.Value = 0;
