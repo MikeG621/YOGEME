@@ -22,18 +22,18 @@ namespace Idmr.Yogeme
 {
 	public partial class FlightGroupLibraryForm : Form
 	{
-		const int LibraryHeaderId = 0x4C474659;      // "YFGL" header signature.
-		const int LibraryVersion = 1;
+		const int _libraryHeaderId = 0x4C474659;      // "YFGL" header signature.
+		const int _libraryVersion = 1;
 		
 		Settings.Platform _platform = Settings.Platform.None;
-		object _flightGroupCollection = null;
-		EventHandler _onAddEvent;
+		readonly object _flightGroupCollection = null;
+		readonly EventHandler _onAddEvent;
 
 		List<List<object>> _groupList = null;        // A list of library groups, each group containing a list of craft objects. Each craft object may be casted to a platform-specific FlightGroup.
 		List<string> _groupNames = null;             // User-defined names for each library.
 		List<List<string>> _craftProblems = null;    // A list of logic issues of all items in the current library group. Each FlightGroup contains a list of strings describing any problems. Logic issues are direct FG references that may cause unintended behavior if added to a mission without scrubbing them.
 
-		bool _loading = false;
+		//bool _loading = false;	//~MG: this was never actually reassigned, it was always false
 		bool _isDirty = false;
 
 		/// <summary>Initializes and prepares the FG Library for the specified platform.</summary>
@@ -69,7 +69,7 @@ namespace Idmr.Yogeme
 			refreshGroupList();
 			refreshMissionCraft();
 			refreshLibraryCraft();
-			this.Show();
+			Show();
 		}
 
 		/// <summary>Returns the filename where the platform-specific library data is stored.</summary>
@@ -138,7 +138,7 @@ namespace Idmr.Yogeme
 				int fileId = br.ReadInt32();
 				int fileVersion = br.ReadInt32();
 				int filePlatform = br.ReadInt32();
-				if (fileId != LibraryHeaderId || fileVersion != LibraryVersion || filePlatform != (int)_platform)
+				if (fileId != _libraryHeaderId || fileVersion != _libraryVersion || filePlatform != (int)_platform)
 					return;
 
 				List<object> group = _groupList[0];
@@ -176,8 +176,8 @@ namespace Idmr.Yogeme
 				{
 					using (BinaryWriter br = new BinaryWriter(fs))
 					{
-						br.Write(LibraryHeaderId);
-						br.Write(LibraryVersion);
+						br.Write(_libraryHeaderId);
+						br.Write(_libraryVersion);
 						br.Write((int)_platform);
 						br.Write(_groupList.Count);
 						for (int i = 0; i < _groupList.Count; i++)
@@ -203,11 +203,15 @@ namespace Idmr.Yogeme
 		/// <summary>Initializes and resets a library to its default empty state.</summary>
 		private void resetDefaultLibrary()
 		{
-			_groupList = new List<List<object>>();
-			_groupList.Add(new List<object>());
+			_groupList = new List<List<object>>
+			{
+				new List<object>()
+			};
 
-			_groupNames = new List<string>();
-			_groupNames.Add("Default");
+			_groupNames = new List<string>
+			{
+				"Default"
+			};
 
 			_craftProblems = new List<List<string>>();
 		}
@@ -331,7 +335,7 @@ namespace Idmr.Yogeme
 			Brush[] tieColors = { Brushes.Lime, Brushes.Red, Brushes.DodgerBlue, Brushes.MediumOrchid, Brushes.OrangeRed, Brushes.DarkOrchid };
 			Brush[] xvtxwaColors = { Brushes.Lime, Brushes.Red, Brushes.DodgerBlue, Brushes.Yellow, Brushes.OrangeRed, Brushes.MediumOrchid };
 
-			int iff = 0;
+			int iff;
 			switch (_platform)
 			{
 				case Settings.Platform.XWING:
@@ -446,7 +450,7 @@ namespace Idmr.Yogeme
 		/// <param name="fg">FlightGroup object to check.</param>
 		/// <param name="scrubProblems">If true, if any FlightGroup references are detected or used in triggers, they will be replaced with null values.</param>
 		/// <param name="compileProblems">If true, specifies that a list strings will be returned, detailing all FlightGroup references used by this FlightGroup.</param>
-		/// <returns>Returns null if <b>compileProblems</b> is false. Otherwise returns a list of strings.</returns>
+		/// <returns>Returns null if <paramref name="compileProblems"/> is false. Otherwise returns a list of strings.</returns>
 		private List<string> scanProblems(object fg, bool scrubProblems, bool compileProblems)
 		{
 			List<string> errors = (compileProblems ? new List<string>() : null);
@@ -667,8 +671,8 @@ namespace Idmr.Yogeme
 
 		private void lstLibraryGroup_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			if (!_loading)
-				refreshLibraryCraft();
+			//if (!_loading)
+			refreshLibraryCraft();
 		}
 
 		/// <summary>Adds all selected mission craft into the current library group.</summary>
@@ -732,7 +736,7 @@ namespace Idmr.Yogeme
 
 		private void lstGroupCraft_DrawItem(object sender, DrawItemEventArgs e)
 		{
-			Brush brText = SystemBrushes.ControlText;
+			Brush brText;
 			int group = lstLibraryGroup.SelectedIndex;
 			if (group >= 0 && group < _groupList.Count && e.Index >= 0 && e.Index < _groupList[group].Count)
 			{
@@ -822,7 +826,7 @@ namespace Idmr.Yogeme
 			_isDirty = true;
 		}
 
-		private void FlightGroupLibraryForm_Activated(object sender, EventArgs e)
+		private void form_Activated(object sender, EventArgs e)
 		{
 			// The main editor form doesn't synchronize its changes with the FG Library.
 			// This automatically performs a refresh whenever the user switches focus to the library form.
@@ -830,16 +834,16 @@ namespace Idmr.Yogeme
 			refreshProblems();
 		}
 
-		private void FlightGroupLibraryForm_SizeChanged(object sender, EventArgs e)
+		private void form_SizeChanged(object sender, EventArgs e)
 		{
 			int height = grpCraftManager.Bottom - lstMissionCraft.Top;
-			if (this.ClientRectangle.Bottom > lstMissionCraft.Top + height)
-				height += this.ClientRectangle.Bottom - (lstMissionCraft.Top + height);
+			if (ClientRectangle.Bottom > lstMissionCraft.Top + height)
+				height += ClientRectangle.Bottom - (lstMissionCraft.Top + height);
 			lstMissionCraft.Size = new Size(lstMissionCraft.Width, height);
 			lstLibraryCraft.Size = new Size(lstLibraryCraft.Width, height);
 		}
 
-		private void FlightGroupLibraryForm_FormClosing(object sender, FormClosingEventArgs e)
+		private void form_FormClosing(object sender, FormClosingEventArgs e)
 		{
 			if (_isDirty)
 			{

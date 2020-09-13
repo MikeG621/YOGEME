@@ -1426,7 +1426,7 @@ namespace Idmr.Yogeme
 		{
 			foreach (FlightGroup fg in (object[])sender)
 			{
-				if (fg == null || !newFG()m)
+				if (fg == null || !newFG())
 					break;
 				_mission.FlightGroups[_activeFG] = fg;
 				updateFGList();

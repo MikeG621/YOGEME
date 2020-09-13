@@ -351,9 +351,9 @@
 			this.Name = "FlightGroupLibraryForm";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "FlightGroup Library";
-			this.Activated += new System.EventHandler(this.FlightGroupLibraryForm_Activated);
-			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FlightGroupLibraryForm_FormClosing);
-			this.SizeChanged += new System.EventHandler(this.FlightGroupLibraryForm_SizeChanged);
+			this.Activated += new System.EventHandler(this.form_Activated);
+			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.form_FormClosing);
+			this.SizeChanged += new System.EventHandler(this.form_SizeChanged);
 			this.grpGroup.ResumeLayout(false);
 			this.grpGroup.PerformLayout();
 			this.grpCraftManager.ResumeLayout(false);

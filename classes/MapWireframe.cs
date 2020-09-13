@@ -42,9 +42,6 @@ namespace Idmr.Yogeme
 {
 	public class Vector3
 	{
-		public float X;
-		public float Y;
-		public float Z;
 		public Vector3()
 		{
 			X = 0.0f;
@@ -69,6 +66,7 @@ namespace Idmr.Yogeme
 			Y = other.Y;
 			Z = other.Z;
 		}
+
 		public void MultTranspose(Matrix3 mat)
 		{
 			float vx = X;
@@ -78,19 +76,13 @@ namespace Idmr.Yogeme
 			Y = (float)(mat.V12 * vx + mat.V22 * vy + mat.V32 * vz);
 			Z = (float)(mat.V13 * vx + mat.V23 * vy + mat.V33 * vz);
 		}
+
+		public float X { get; set; }
+		public float Y { get; set; }
+		public float Z { get; set; }
 	}
 	public class Matrix3
 	{
-		public double V11;
-		public double V12;
-		public double V13;
-		public double V21;
-		public double V22;
-		public double V23;
-		public double V31;
-		public double V32;
-		public double V33;
-
 		/// <summary>Initializes a matrix ready for the needed rotational transform.</summary>
 		/// <remarks>This is the matrix multiplication for the equations Roll * Yaw, in that order. When applying "Roll" to the vertices,<br/>
 		/// the visible effect is pitch relative to the body. Yaw works as expected. Perhaps this is because the Z axis in-game is<br/>
@@ -107,6 +99,16 @@ namespace Idmr.Yogeme
 			V32 = (Math.Sin(pitch) * Math.Cos(yaw));
 			V33 = Math.Cos(pitch);
 		}
+
+		public double V11 { get; private set; }
+		public double V12 { get; private set; }
+		public double V13 { get; private set; }
+		public double V21 { get; private set; }
+		public double V22 { get; private set; }
+		public double V23 { get; private set; }
+		public double V31 { get; private set; }
+		public double V32 { get; private set; }
+		public double V33 { get; private set; }
 	}
 
 	/// <summary>All nodes within the tree structure have a type that determines its data format.</summary>
@@ -120,7 +122,7 @@ namespace Idmr.Yogeme
 		VertexNormals = 11,
 		TextureCoordinates = 13,
 		Texture = 20,
-		FaceGrouping = 21,	// aka Mesh Data
+		FaceGrouping = 21,  // aka Mesh Data
 		Hardpoint = 22,
 		RotationScale = 23,
 		NodeSwitch = 24,
@@ -171,11 +173,11 @@ namespace Idmr.Yogeme
 	public static class MeshTypeHelper
 	{
 		// These predefined arrays help initialize the user's configuration as well as offering quick toggles to include or exclude a selection of visible mesh types.
-		public static MeshType[] DefaultMeshes = new MeshType[] { MeshType.Default, MeshType.MainHull, MeshType.Wing, MeshType.Fuselage, MeshType.Bridge, MeshType.DockingPlatform, MeshType.LandingPlatform, MeshType.Hangar, MeshType.CargoPod, MeshType.MiscHull, MeshType.Engine, MeshType.RotaryWing, MeshType.Launcher };
-		public static MeshType[] HullMeshes = new MeshType[] { MeshType.Default, MeshType.MainHull, MeshType.Wing, MeshType.Fuselage, MeshType.Engine, MeshType.Bridge, MeshType.Launcher, MeshType.MiscHull, MeshType.RotaryWing };
-		public static MeshType[] MiscMeshes = new MeshType[] { MeshType.ShieldGenerator, MeshType.EnergyGenerator, MeshType.CommunicationSystem, MeshType.BeamSystem, MeshType.CommandSystem, MeshType.CargoPod, MeshType.Antenna, MeshType.RotaryCommunicationSystem, MeshType.RotaryBeamSystem, MeshType.RotaryCommandSystem, MeshType.Hatch, MeshType.Custom, MeshType.PowerRegenerator, MeshType.Reactor };
-		public static MeshType[] WeaponMeshes = new MeshType[] { MeshType.GunTurret, MeshType.SmallGun, MeshType.RotaryGunTurret, MeshType.RotaryLauncher, MeshType.WeaponSystem1, MeshType.WeaponSystem2 };
-		public static MeshType[] HangarMeshes = new MeshType[] { MeshType.DockingPlatform, MeshType.LandingPlatform, MeshType.Hangar };
+		public static MeshType[] DefaultMeshes { get; } = new MeshType[] { MeshType.Default, MeshType.MainHull, MeshType.Wing, MeshType.Fuselage, MeshType.Bridge, MeshType.DockingPlatform, MeshType.LandingPlatform, MeshType.Hangar, MeshType.CargoPod, MeshType.MiscHull, MeshType.Engine, MeshType.RotaryWing, MeshType.Launcher };
+		public static MeshType[] HullMeshes { get; } = new MeshType[] { MeshType.Default, MeshType.MainHull, MeshType.Wing, MeshType.Fuselage, MeshType.Engine, MeshType.Bridge, MeshType.Launcher, MeshType.MiscHull, MeshType.RotaryWing };
+		public static MeshType[] MiscMeshes { get; } = new MeshType[] { MeshType.ShieldGenerator, MeshType.EnergyGenerator, MeshType.CommunicationSystem, MeshType.BeamSystem, MeshType.CommandSystem, MeshType.CargoPod, MeshType.Antenna, MeshType.RotaryCommunicationSystem, MeshType.RotaryBeamSystem, MeshType.RotaryCommandSystem, MeshType.Hatch, MeshType.Custom, MeshType.PowerRegenerator, MeshType.Reactor };
+		public static MeshType[] WeaponMeshes { get; } = new MeshType[] { MeshType.GunTurret, MeshType.SmallGun, MeshType.RotaryGunTurret, MeshType.RotaryLauncher, MeshType.WeaponSystem1, MeshType.WeaponSystem2 };
+		public static MeshType[] HangarMeshes { get; } = new MeshType[] { MeshType.DockingPlatform, MeshType.LandingPlatform, MeshType.Hangar };
 
 		/// <summary>Returns the default MeshTypes combined into a single value.</summary>
 		public static long GetDefaultFlags()
@@ -205,8 +207,6 @@ namespace Idmr.Yogeme
 	/// <summary>Container to store the vertices of a single polygon face, which may have 3 or 4 vertices.</summary>
 	public struct OptFace
 	{
-		public int[] VertexIndex;
-
 		public OptFace(int v1, int v2, int v3, int v4)
 		{
 			VertexIndex = new int[4];
@@ -215,15 +215,14 @@ namespace Idmr.Yogeme
 			VertexIndex[2] = v3;
 			VertexIndex[3] = v4;
 		}
+
+		public int[] VertexIndex { get; private set; }
 	}
 
 	/// <summary>Container to store all mesh faces of a single LOD.</summary>
 	/// <remarks>Discarded prototyping code attempted to select a lower detail mesh to improve drawing performance, but it wasn't very helpful for normal models.</remarks>
 	public class OptLod
 	{
-		public float Distance;
-		public List<OptFace> Faces = new List<OptFace>();
-
 		public OptLod()
 		{
 			Distance = float.MaxValue;
@@ -232,16 +231,19 @@ namespace Idmr.Yogeme
 		{
 			Distance = dist;
 		}
+
+		public float Distance { get; private set; }	//~MG: never actually used anywhere?
+		public List<OptFace> Faces { get; } = new List<OptFace>();
 	}
 
 	/// <summary>Holds all loaded information for a single component, which is a top-level node in the OPT tree.</summary>
 	public class OptComponent
 	{
-		public OptNodeType NodeType = 0;
-		public MeshType MeshType = MeshType.Default;
-		public int LoadingLodIndex = 0;
-		public List<Vector3> Vertices = new List<Vector3>();
-		public List<OptLod> Lods = new List<OptLod>();
+		public OptNodeType NodeType { get; set; } = 0;
+		public MeshType MeshType { get; set; } = MeshType.Default;
+		public int LoadingLodIndex { get; set; } = 0;
+		public List<Vector3> Vertices { get; } = new List<Vector3>();
+		public List<OptLod> Lods { get; } = new List<OptLod>();
 	}
 
 	/// <summary>The OPT format was introduced with XvT/BoP, continued in XWA, and retrofitted into XWING and TIE for the Windows versions.</summary>
@@ -250,10 +252,9 @@ namespace Idmr.Yogeme
 	{
 		private int _basePosition;  // The file contents begin with some meta data that isn't part of the actual model data. This will be the stream position where the real data begins.
 		private int _globalOffset;  // The first piece of real data in the file is a pointer to itself. Since the entire file would be contiguous in memory, subtracting from any other pointer address gives us a relative offset into the file.
-		public List<OptComponent> Components = new List<OptComponent>();
 
 		/// <summary>Initializes and attempts to load the contents from file.</summary>
-		/// <returns>Returns true if the file is loaded.</returns>
+		/// <returns>Returns <b>true</b> if the file is loaded.</returns>
 		public bool LoadFromFile(string filename)
 		{
 			try
@@ -404,62 +405,66 @@ namespace Idmr.Yogeme
 				}
 			}
 		}
+
+		public List<OptComponent> Components { get; private set; } = new List<OptComponent>();
 	}
 
 	/// <summary>This Vector3 is needed for the DOS craft formats.</summary>
 	/// <remarks>Presented as an array to make it easier to access its members.</remarks>
 	public class Vector3_Int16
 	{
-		public short[] Data = new short[3];
-
 		public Vector3_Int16()
 		{
 			Data[0] = 0;
 			Data[1] = 0;
 			Data[2] = 0;
 		}
+
+		public short[] Data { get; } = new short[3];
 	}
 
 	/// <summary>Two vertex indices that define a line.</summary>
+	/// <remarks>The indices point to a <see cref="Vector3"/> within a parent <see cref="MeshLayerDefinition"/></remarks>
 	public class Line
 	{
-		public int V1;
-		public int V2;
-
 		public Line(int v1, int v2)
 		{
 			V1 = v1;
 			V2 = v2;
 		}
+
+		/// <summary>Gets the index of the start vertex</summary>
+		public int V1 { get; private set; }
+		/// <summary>Gets the index of the end vertex</summary>
+		public int V2 { get; private set; }
 	}
 
 	/// <summary>Container to store all mesh faces of a single LOD.</summary>
 	public class CraftLod
 	{
-		public int Distance;
-		public short FileOffset;
-		public List<Vector3_Int16> Vertices = new List<Vector3_Int16>();
-		public List<Line> Lines = new List<Line>();
-
 		public CraftLod(int distance, short fileOffset)
 		{
 			Distance = distance;
 			FileOffset = fileOffset;
 		}
+
+		public int Distance { get; private set; }   //~MG: Not actually used anywhere?
+		public short FileOffset { get; private set; }
+		public List<Vector3_Int16> Vertices { get; } = new List<Vector3_Int16>();
+		public List<Line> Lines { get; } = new List<Line>();
 	}
 
 	/// <summary>Holds all loaded information for a single component.</summary>
 	public class CraftComponent
 	{
-		public MeshType MeshType = MeshType.Default;
-		public List<CraftLod> Lods = new List<CraftLod>();
+		public MeshType MeshType { get; set; } = MeshType.Default;
+		public List<CraftLod> Lods { get; } = new List<CraftLod>();
 	}
 
 	/// <summary>This facilitates loading of all DOS craft formats (CRFT, CPLX, and SHIP).</summary>
 	/// <remarks>The format is similar to OPT in the sense that it contains a list of components, along with various pieces of data. These resources are typically packed into uncompressed LFD archives, which are automatically handled by the loading functions.</remarks>
 	public class CraftFile
 	{
-		public List<CraftComponent> Components = new List<CraftComponent>();
 		// TODO: duplication of Lfd processing vs LfdReader, replace in the long run
 		private LfdCraftFormat _lfdCraftFormat = LfdCraftFormat.None;
 
@@ -614,10 +619,10 @@ namespace Idmr.Yogeme
 				short lodOffset = br.ReadInt16();
 
 				fs.Position = recStart + lodOffset;
-#pragma warning disable IDE0017 // Simplify object initialization
-				CraftComponent comp = new CraftComponent();
-#pragma warning restore IDE0017 // Simplify object initialization
-				comp.MeshType = (MeshType)meshType;
+				CraftComponent comp = new CraftComponent
+				{
+					MeshType = (MeshType)meshType
+				};
 				parseNode(fs, br, comp);
 				Components.Add(comp);
 				fs.Position = recStart + 64;
@@ -707,39 +712,33 @@ namespace Idmr.Yogeme
 				}
 			}
 		}
+
+		public List<CraftComponent> Components { get; } = new List<CraftComponent>();
 	}
 
 	/// <summary>Stores a compiled list of vertices and lines derived from the mesh and its faces.</summary>
 	/// <remarks>Multiple components of the same MeshType will added into the same layer.</remarks>
 	public class MeshLayerDefinition
 	{
-		public MeshType MeshType;
-		public List<Vector3> Vertices;
-		public List<Line> Lines;
-
 		public MeshLayerDefinition(MeshType createMeshType)
 		{
 			MeshType = createMeshType;
-			Vertices = new List<Vector3>();
-			Lines = new List<Line>();
 		}
+
+		public MeshType MeshType { get; private set; }
+		public List<Vector3> Vertices { get; } = new List<Vector3>();
+		public List<Line> Lines { get; } = new List<Line>();
 	}
 
 	/// <summary>A finalized wireframe definition that is ready for use in the map.</summary>
 	/// <remarks>It can be generated from an OptFile or CraftFile.</remarks>
 	public class WireframeDefinition
 	{
-		/// <summary>Span of the widest dimension, derived from bounding box, expressed in raw units (40960 units = 1 km)</summary>
-		public int LongestSpanRaw = 0;
-		/// <summary>Span of the widest dimension, derived from bounding box, expressed in meters.</summary>
-		public int LongestSpanMeters = 0;
-		public List<MeshLayerDefinition> MeshLayerDefinitions = new List<MeshLayerDefinition>();
-
 		/// <summary>Creates a definition from a loaded OPT.</summary>
 		/// <remarks>Performs some basic optimization to prevent shared edges, so that lines don't have to be drawn twice.</remarks>
 		public WireframeDefinition(OptFile opt)
 		{
-#pragma warning disable IDE0059 // Unnecessary assignment of a value
+#pragma warning disable IDE0059 // Unnecessary assignment of a value: assignment function performs other necessary actions
 			MeshLayerDefinition layer = getOrCreateMeshLayerDefinition(MeshType.MainHull);  // Create a default entry so that it's first in the list, for drawing purposes.
 #pragma warning restore IDE0059 // Unnecessary assignment of a value
 
@@ -823,7 +822,7 @@ namespace Idmr.Yogeme
 		public WireframeDefinition(CraftFile craft)
 		{
 			// This function is conceptually similar to creating from OPT, except we already have our lines and don't need to examine the faces.
-#pragma warning disable IDE0059 // Unnecessary assignment of a value
+#pragma warning disable IDE0059 // Unnecessary assignment of a value: assignment function performs other necessary actions
 			MeshLayerDefinition layer = getOrCreateMeshLayerDefinition(MeshType.MainHull);
 #pragma warning restore IDE0059 // Unnecessary assignment of a value
 			for (int i = 0; i < craft.Components.Count; i++)
@@ -951,18 +950,20 @@ namespace Idmr.Yogeme
 			MeshLayerDefinitions.Add(entry);
 			return entry;
 		}
+
+		/// <summary>Span of the widest dimension, derived from bounding box, expressed in raw units (40960 units = 1 km)</summary>
+		public int LongestSpanRaw { get; set; } = 0;
+		/// <summary>Span of the widest dimension, derived from bounding box, expressed in meters.</summary>
+		public int LongestSpanMeters { get; set; } = 0;
+		public List<MeshLayerDefinition> MeshLayerDefinitions { get; } = new List<MeshLayerDefinition>();
 	}
 
 	/// <summary>Built from a layer definition, this stores a cloned copy of the vertices that can be transformed without altering the definition.</summary>
 	public class MeshLayerInstance
 	{
-		public MeshLayerDefinition MeshLayerDefinition = null;
-		public List<Vector3> Vertices = null;
-
 		public MeshLayerInstance(MeshLayerDefinition def)
 		{
 			MeshLayerDefinition = def;
-			Vertices = new List<Vector3>();
 			if (def != null)
 			{
 				Vertices.Capacity = def.Vertices.Count;
@@ -970,10 +971,14 @@ namespace Idmr.Yogeme
 					Vertices.Add(new Vector3(def.Vertices[i]));
 			}
 		}
+
 		public bool MatchMeshFilter(long meshVisibilityFilter)
 		{
-			return (MeshLayerDefinition != null && (meshVisibilityFilter & (1 << (int)MeshLayerDefinition.MeshType)) != 0);
+			return MeshLayerDefinition != null && (meshVisibilityFilter & (1 << (int)MeshLayerDefinition.MeshType)) != 0;
 		}
+
+		public MeshLayerDefinition MeshLayerDefinition { get; private set; }
+		public List<Vector3> Vertices { get; } = new List<Vector3>();
 	}
 
 	/// <summary>Stores a local instance of a wireframe for a single craft/flightgroup.</summary>

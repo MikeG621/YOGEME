@@ -277,10 +277,10 @@ namespace Idmr.Yogeme
 					{
 						foreach (Line line in layer.MeshLayerDefinition.Lines)
 						{
-							x1 = x + (int)(layer.Vertices[line.V1].X);
-							x2 = x + (int)(layer.Vertices[line.V2].X);
-							y1 = y + (int)(layer.Vertices[line.V1].Y);
-							y2 = y + (int)(layer.Vertices[line.V2].Y);
+							x1 = x + (int)layer.Vertices[line.V1].X;
+							x2 = x + (int)layer.Vertices[line.V2].X;
+							y1 = y + (int)layer.Vertices[line.V1].Y;
+							y2 = y + (int)layer.Vertices[line.V2].Y;
 							g.DrawLine(p, x1, y1, x2, y2);
 						}
 					}
@@ -288,20 +288,22 @@ namespace Idmr.Yogeme
 					{
 						foreach (Line line in layer.MeshLayerDefinition.Lines)
 						{
-							x1 = x + (int)(layer.Vertices[line.V1].X);
-							x2 = x + (int)(layer.Vertices[line.V2].X);
-							y1 = y + (int)(layer.Vertices[line.V1].Z);
-							y2 = y + (int)(layer.Vertices[line.V2].Z); g.DrawLine(p, x1, y1, x2, y2);
+							x1 = x + (int)layer.Vertices[line.V1].X;
+							x2 = x + (int)layer.Vertices[line.V2].X;
+							y1 = y + (int)layer.Vertices[line.V1].Z;
+							y2 = y + (int)layer.Vertices[line.V2].Z;
+							g.DrawLine(p, x1, y1, x2, y2);
 						}
 					}
 					else if (_displayMode == Orientation.YZ)
 					{
 						foreach (Line line in layer.MeshLayerDefinition.Lines)
 						{
-							x1 = x + (int)(-layer.Vertices[line.V1].Y);  // Hmm, they were the wrong direction.
-							x2 = x + (int)(-layer.Vertices[line.V2].Y);
-							y1 = y + (int)(layer.Vertices[line.V1].Z);
-							y2 = y + (int)(layer.Vertices[line.V2].Z); g.DrawLine(p, x1, y1, x2, y2);
+							x1 = x + (int)-layer.Vertices[line.V1].Y;  // Hmm, they were the wrong direction.
+							x2 = x + (int)-layer.Vertices[line.V2].Y;
+							y1 = y + (int)layer.Vertices[line.V1].Z;
+							y2 = y + (int)layer.Vertices[line.V2].Z;
+							g.DrawLine(p, x1, y1, x2, y2);
 						}
 					}
 				}
