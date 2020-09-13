@@ -19,6 +19,10 @@ v1.8, xx xxx xxxx
  - (TIE-XWA) Fixed Test function trying to launch if you cancel a new save
  - (XWA) Added detection for DTM Super Backdrops v3.1
  - (XWA) Fixed Special Cargo text box not showing when switching craft
+ - (XWA) Added [HangarObjects] HangarRoofCranePositionX, HangarRoofCraneAxis, HangarRoofCraneLowOffset, HangarRoofCraneHighOffset, HangarIff hook support
+ - (XWA) Added [HangarObjects] ShuttlePositionX/Y/Z, ShuttleOrientation, IsShuttleFloorInverted hook support
+ - (XWA) Added [HangarObjects] DroidsPositionZ, IsDroidsFloorInverted hook support
+ - (XWA) Added [HangarObjects] PlayerOffsetX/Y/Z, IsPlayerFloorInverted hook support
  - (TIE) Fixed SaveAs XvT and XWA
  - (TIE) SaveAs BoP implemented (required Converter update)
  - (All) Save no longer rewrites the file if not modified
@@ -33,6 +37,7 @@ v1.8, xx xxx xxxx
  -- (XWA) Tweaked how the colorized cbos draw
  -- (XWA) SafeSetCbos added to more places to prevent exceptions
  -- (XWA) Skip Indicators update now retains selection
+ -- (XWA) Added HangarRoofCranePositionY, HangarRoofCranePositionZ, PlayerAnimationElevation hook support
 
 v1.7, 16 Aug 2020
  - (TIE) Fixed an issue where current FG's IFF would reset when updating IFF names
