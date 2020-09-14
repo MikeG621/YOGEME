@@ -395,7 +395,6 @@ namespace Idmr.Yogeme
 							else if (parts[0] == "shuttlepositionz") numShuttlePositionZ.Value = int.Parse(parts[1]);
 							else if (parts[0] == "shuttleorientation") numShuttleOrientation.Value = int.Parse(parts[1]);
 							else if (parts[0] == "isshuttlefloorinverted") chkShuttleFloor.Checked = (parts[1] != "0");
-							// TODO: isplayerfloorinverted
 							else if (parts[0] == "shuttleanimation")
 								try { cboShuAnimation.SelectedIndex = (int)Enum.Parse(typeof(ShuttleAnimation), parts[1], true); }
 								catch { MessageBox.Show("Error reading ShuttleAnimation, using default.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); }

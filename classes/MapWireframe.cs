@@ -4,13 +4,16 @@
  * This file authored by "JB" (Random Starfighter) (randomstarfighter@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.7
+ * VERSION: 1.7+
  */
 
 /* CHANGELOG
-* v1.7, 200816
-* [NEW] created [JB]
-*/
+ * v1.8, xxxxxx
+ * [UPD] XML, cleanup
+ * [UPD] Vector3 renamed to Vertex, since that what it is
+ * v1.7, 200816
+ * [NEW] created [JB]
+ */
 
 using System;
 using System.IO;
@@ -40,77 +43,15 @@ using System.Collections.Generic;
 //TODO: overall, should add XML to just about everything, change fields to auto-properties, etc. Also, clear up Vertex/Vector, since it looks like they're not named properly
 namespace Idmr.Yogeme
 {
-	public class Vector3
+
+	/// <summary>Provides context to anything that needs to load a DOS model.</summary>
+	public enum LfdCraftFormat
 	{
-		public Vector3()
-		{
-			X = 0.0f;
-			Y = 0.0f;
-			Z = 0.0f;
-		}
-		public Vector3(int x, int y, int z)
-		{
-			X = x;
-			Y = y;
-			Z = z;
-		}
-		public Vector3(float x, float y, float z)
-		{
-			X = x;
-			Y = y;
-			Z = z;
-		}
-		public Vector3(Vector3 other)
-		{
-			X = other.X;
-			Y = other.Y;
-			Z = other.Z;
-		}
-
-		public void MultTranspose(Matrix3 mat)
-		{
-			float vx = X;
-			float vy = Y;
-			float vz = Z;
-			X = (float)(mat.V11 * vx + mat.V21 * vy + mat.V31 * vz);
-			Y = (float)(mat.V12 * vx + mat.V22 * vy + mat.V32 * vz);
-			Z = (float)(mat.V13 * vx + mat.V23 * vy + mat.V33 * vz);
-		}
-
-		public float X { get; set; }
-		public float Y { get; set; }
-		public float Z { get; set; }
+		None = 0,
+		CRFT = 1,
+		CPLX = 2,
+		SHIP = 3,
 	}
-	public class Matrix3
-	{
-		/// <summary>Initializes a matrix ready for the needed rotational transform.</summary>
-		/// <remarks>This is the matrix multiplication for the equations Roll * Yaw, in that order. When applying "Roll" to the vertices,<br/>
-		/// the visible effect is pitch relative to the body. Yaw works as expected. Perhaps this is because the Z axis in-game is<br/>
-		/// elevation, not depth?</remarks>
-		public Matrix3(double yaw, double pitch)
-		{
-			V11 = Math.Cos(yaw);
-			V12 = -Math.Sin(yaw);
-			V13 = 0;
-			V21 = (Math.Cos(pitch) * Math.Sin(yaw));
-			V22 = (Math.Cos(pitch) * Math.Cos(yaw));
-			V23 = -Math.Sin(pitch);
-			V31 = (Math.Sin(pitch) * Math.Sin(yaw));
-			V32 = (Math.Sin(pitch) * Math.Cos(yaw));
-			V33 = Math.Cos(pitch);
-		}
-
-		public double V11 { get; private set; }
-		public double V12 { get; private set; }
-		public double V13 { get; private set; }
-		public double V21 { get; private set; }
-		public double V22 { get; private set; }
-		public double V23 { get; private set; }
-		public double V31 { get; private set; }
-		public double V32 { get; private set; }
-		public double V33 { get; private set; }
-	}
-
 	/// <summary>All nodes within the tree structure have a type that determines its data format.</summary>
 	public enum OptNodeType
 	{
@@ -167,6 +108,85 @@ namespace Idmr.Yogeme
 		WeaponSystem2,
 		PowerRegenerator,
 		Reactor
+	}
+
+	/// <summary>Represents a single point within a mesh</summary>
+	public class Vertex
+	{
+		/// <summary>Initialize a point at the origin</summary>
+		public Vertex()
+		{
+			X = 0.0f;
+			Y = 0.0f;
+			Z = 0.0f;
+		}
+		/// <summary>Initialize a point at the given coordinates</summary>
+		public Vertex(int x, int y, int z)
+		{
+			X = x;
+			Y = y;
+			Z = z;
+		}
+		/// <summary>Initialize a point at the given coordinates</summary>
+		public Vertex(float x, float y, float z)
+		{
+			X = x;
+			Y = y;
+			Z = z;
+		}
+		/// <summary>Initialize a duplicate point</summary>
+		public Vertex(Vertex other)
+		{
+			X = other.X;
+			Y = other.Y;
+			Z = other.Z;
+		}
+
+		public void MultTranspose(Matrix3 mat)
+		{
+			float vx = X;
+			float vy = Y;
+			float vz = Z;
+			X = (float)(mat.V11 * vx + mat.V21 * vy + mat.V31 * vz);
+			Y = (float)(mat.V12 * vx + mat.V22 * vy + mat.V32 * vz);
+			Z = (float)(mat.V13 * vx + mat.V23 * vy + mat.V33 * vz);
+		}
+
+		/// <summary>Gets the X value</summary>
+		public float X { get; internal set; }
+		/// <summary>Gets the Y value</summary>
+		public float Y { get; internal set; }
+		/// <summary>Gets the Z value</summary>
+		public float Z { get; internal set; }
+	}
+	public class Matrix3
+	{
+		/// <summary>Initializes a matrix ready for the needed rotational transform.</summary>
+		/// <remarks>This is the matrix multiplication for the equations Roll * Yaw, in that order. When applying "Roll" to the vertices,<br/>
+		/// the visible effect is pitch relative to the body. Yaw works as expected. Perhaps this is because the Z axis in-game is<br/>
+		/// elevation, not depth?</remarks>
+		public Matrix3(double yaw, double pitch)
+		{
+			V11 = Math.Cos(yaw);
+			V12 = -Math.Sin(yaw);
+			V13 = 0;
+			V21 = (Math.Cos(pitch) * Math.Sin(yaw));
+			V22 = (Math.Cos(pitch) * Math.Cos(yaw));
+			V23 = -Math.Sin(pitch);
+			V31 = (Math.Sin(pitch) * Math.Sin(yaw));
+			V32 = (Math.Sin(pitch) * Math.Cos(yaw));
+			V33 = Math.Cos(pitch);
+		}
+
+		public double V11 { get; private set; }
+		public double V12 { get; private set; }
+		public double V13 { get; private set; }
+		public double V21 { get; private set; }
+		public double V22 { get; private set; }
+		public double V23 { get; private set; }
+		public double V31 { get; private set; }
+		public double V32 { get; private set; }
+		public double V33 { get; private set; }
 	}
 
 	/// <summary>Exposes some useful defaults and functions to assist program configuration for <see cref="MeshType"/> visibility.</summary>
@@ -242,7 +262,7 @@ namespace Idmr.Yogeme
 		public OptNodeType NodeType { get; set; } = 0;
 		public MeshType MeshType { get; set; } = MeshType.Default;
 		public int LoadingLodIndex { get; set; } = 0;
-		public List<Vector3> Vertices { get; } = new List<Vector3>();
+		public List<Vertex> Vertices { get; } = new List<Vertex>();
 		public List<OptLod> Lods { get; } = new List<OptLod>();
 	}
 
@@ -337,7 +357,7 @@ namespace Idmr.Yogeme
 						float x = br.ReadSingle();
 						float y = br.ReadSingle();
 						float z = br.ReadSingle();
-						node.Vertices.Add(new Vector3(x, y, z));
+						node.Vertices.Add(new Vertex(x, y, z));
 					}
 					break;
 				case OptNodeType.FaceData:
@@ -409,22 +429,24 @@ namespace Idmr.Yogeme
 		public List<OptComponent> Components { get; private set; } = new List<OptComponent>();
 	}
 
-	/// <summary>This Vector3 is needed for the DOS craft formats.</summary>
+	/// <summary>Represents a single point within a DOS mesh</summary>
 	/// <remarks>Presented as an array to make it easier to access its members.</remarks>
-	public class Vector3_Int16
+	public class Vertex3_Int16
 	{
-		public Vector3_Int16()
+		/// <summary>Initializes a point at the origin</summary>
+		public Vertex3_Int16()
 		{
 			Data[0] = 0;
 			Data[1] = 0;
 			Data[2] = 0;
 		}
 
+		/// <summary>Gets the [X, Y, Z] values</summary>
 		public short[] Data { get; } = new short[3];
 	}
 
 	/// <summary>Two vertex indices that define a line.</summary>
-	/// <remarks>The indices point to a <see cref="Vector3"/> within a parent <see cref="MeshLayerDefinition"/></remarks>
+	/// <remarks>The indices point to a <see cref="Vertex"/> within a parent <see cref="MeshLayerDefinition"/></remarks>
 	public class Line
 	{
 		public Line(int v1, int v2)
@@ -450,7 +472,7 @@ namespace Idmr.Yogeme
 
 		public int Distance { get; private set; }   //~MG: Not actually used anywhere?
 		public short FileOffset { get; private set; }
-		public List<Vector3_Int16> Vertices { get; } = new List<Vector3_Int16>();
+		public List<Vertex3_Int16> Vertices { get; } = new List<Vertex3_Int16>();
 		public List<Line> Lines { get; } = new List<Line>();
 	}
 
@@ -659,7 +681,7 @@ namespace Idmr.Yogeme
 				for (int j = 0; j < vertexCount; j++)
 				{
 					short test;
-					Vector3_Int16 v = new Vector3_Int16();
+					Vertex3_Int16 v = new Vertex3_Int16();
 					for (int k = 0; k < 3; k++)
 					{
 						v.Data[k] = br.ReadInt16();
@@ -716,25 +738,31 @@ namespace Idmr.Yogeme
 		public List<CraftComponent> Components { get; } = new List<CraftComponent>();
 	}
 
-	/// <summary>Stores a compiled list of vertices and lines derived from the mesh and its faces.</summary>
+	/// <summary>Represents a compiled list of vertices and lines derived from the mesh and its faces.</summary>
 	/// <remarks>Multiple components of the same MeshType will added into the same layer.</remarks>
 	public class MeshLayerDefinition
 	{
+		/// <summary>Initialize an empty definition of the assigned type</summary>
+		/// <param name="createMeshType">The type to assign</param>
 		public MeshLayerDefinition(MeshType createMeshType)
 		{
 			MeshType = createMeshType;
 		}
 
+		/// <summary>Gets the definition's type</summary>
 		public MeshType MeshType { get; private set; }
-		public List<Vector3> Vertices { get; } = new List<Vector3>();
+		/// <summary>Gets the vertices of the mesh in raw model coordinates</summary>
+		public List<Vertex> Vertices { get; } = new List<Vertex>();
+		/// <summary>Gets the lines that make up the form of the mesh</summary>
 		public List<Line> Lines { get; } = new List<Line>();
 	}
 
-	/// <summary>A finalized wireframe definition that is ready for use in the map.</summary>
+	/// <summary>Represents a finalized wireframe definition that is ready for use in the map.</summary>
 	/// <remarks>It can be generated from an OptFile or CraftFile.</remarks>
 	public class WireframeDefinition
 	{
 		/// <summary>Creates a definition from a loaded OPT.</summary>
+		/// <param name="opt">The source OPT object</param>
 		/// <remarks>Performs some basic optimization to prevent shared edges, so that lines don't have to be drawn twice.</remarks>
 		public WireframeDefinition(OptFile opt)
 		{
@@ -818,6 +846,7 @@ namespace Idmr.Yogeme
 		}
 
 		/// <summary>Creates a definition from a loaded DOS craft format (CRFT, CPLX, SHIP).</summary>
+		/// <param name="craft">The source DOS craft object</param>
 		/// <remarks>Performs some basic optimization to prevent shared edges, so that lines don't have to be drawn twice.</remarks>
 		public WireframeDefinition(CraftFile craft)
 		{
@@ -846,7 +875,7 @@ namespace Idmr.Yogeme
 						int x = lod.Vertices[v1].Data[0];
 						int y = lod.Vertices[v1].Data[1];
 						int z = lod.Vertices[v1].Data[2];
-						layer.Vertices.Add(new Vector3(x, y, z));
+						layer.Vertices.Add(new Vertex(x, y, z));
 						vertUsed[v1] = layer.Vertices.Count; // One-based.
 					}
 					if (vertUsed[v2] == 0)
@@ -854,7 +883,7 @@ namespace Idmr.Yogeme
 						int x = lod.Vertices[v2].Data[0];
 						int y = lod.Vertices[v2].Data[1];
 						int z = lod.Vertices[v2].Data[2];
-						layer.Vertices.Add(new Vector3(x, y, z));
+						layer.Vertices.Add(new Vertex(x, y, z));
 						vertUsed[v2] = layer.Vertices.Count;
 					}
 
@@ -879,16 +908,16 @@ namespace Idmr.Yogeme
 		}
 
 		/// <summary>Applies a scale to all vertices.</summary>
+		/// <param name="scale">The positive scale value</param>
 		/// <remarks>Needed for DOS models. Most craft must be scaled by 0.5 to get their proper size. The largest ships need to be scaled by 2.0</remarks>
 		public void Scale(float scale)
 		{
 			if (scale <= 0)
 				return;
 			LongestSpanRaw = (int)(LongestSpanRaw * scale);
-			LongestSpanMeters = (int)(LongestSpanMeters * scale);
 			foreach (MeshLayerDefinition layer in MeshLayerDefinitions)
 			{
-				foreach (Vector3 vert in layer.Vertices)
+				foreach (Vertex vert in layer.Vertices)
 				{
 					vert.X *= scale;
 					vert.Y *= scale;
@@ -908,7 +937,6 @@ namespace Idmr.Yogeme
 			if (vcount == 0) // The model wasn't loaded.
 			{
 				LongestSpanRaw = 0;
-				LongestSpanMeters = 0;
 				return;
 			}
 			float minX = float.MaxValue;
@@ -919,7 +947,7 @@ namespace Idmr.Yogeme
 			float maxZ = float.MinValue;
 			foreach (MeshLayerDefinition layer in MeshLayerDefinitions)
 			{
-				foreach (Vector3 v in layer.Vertices)
+				foreach (Vertex v in layer.Vertices)
 				{
 					if (v.X < minX) minX = v.X;
 					if (v.X > maxX) maxX = v.X;
@@ -935,7 +963,6 @@ namespace Idmr.Yogeme
 			LongestSpanRaw = spanX;
 			if (spanY > LongestSpanRaw) LongestSpanRaw = spanY;
 			if (spanZ > LongestSpanRaw) LongestSpanRaw = spanZ;
-			LongestSpanMeters = (int)(LongestSpanRaw / 40.96);
 		}
 
 		/// <summary>Retrieves a layer for a particular MeshType. Creates an empty layer if it doesn't exist.</summary>
@@ -951,16 +978,18 @@ namespace Idmr.Yogeme
 			return entry;
 		}
 
-		/// <summary>Span of the widest dimension, derived from bounding box, expressed in raw units (40960 units = 1 km)</summary>
-		public int LongestSpanRaw { get; set; } = 0;
-		/// <summary>Span of the widest dimension, derived from bounding box, expressed in meters.</summary>
-		public int LongestSpanMeters { get; set; } = 0;
+		/// <summary>Gets the span of the widest dimension, derived from bounding box, expressed in raw units (40960 units = 1 km)</summary>
+		public int LongestSpanRaw { get; private set; }
+		/// <summary>Gets the span of the widest dimension, derived from bounding box, expressed in meters.</summary>
+		public int LongestSpanMeters { get { return (int)(LongestSpanRaw / 40.96); } }
 		public List<MeshLayerDefinition> MeshLayerDefinitions { get; } = new List<MeshLayerDefinition>();
 	}
 
-	/// <summary>Built from a layer definition, this stores a cloned copy of the vertices that can be transformed without altering the definition.</summary>
+	/// <summary>Represents a local instance of a <see cref="MeshLayerDefinition"/> that can be transformed without altering the definition.</summary>
 	public class MeshLayerInstance
 	{
+		/// <summary>Creates a new instance from the specified definition</summary>
+		/// <param name="def">The original mesh source</param>
 		public MeshLayerInstance(MeshLayerDefinition def)
 		{
 			MeshLayerDefinition = def;
@@ -968,29 +997,28 @@ namespace Idmr.Yogeme
 			{
 				Vertices.Capacity = def.Vertices.Count;
 				for (int i = 0; i < def.Vertices.Count; i++)
-					Vertices.Add(new Vector3(def.Vertices[i]));
+					Vertices.Add(new Vertex(def.Vertices[i]));
 			}
 		}
 
+		/// <summary>Returns if the instance is included in the visibility flags</summary>
+		/// <param name="meshVisibilityFilter">The flags determining which mesh types to display</param>
+		/// <returns><b>true</b> if the <see cref="MeshLayerDefinition.MeshType"/> is included</returns>
 		public bool MatchMeshFilter(long meshVisibilityFilter)
 		{
 			return MeshLayerDefinition != null && (meshVisibilityFilter & (1 << (int)MeshLayerDefinition.MeshType)) != 0;
 		}
 
+		/// <summary>Gets the mesh source</summary>
 		public MeshLayerDefinition MeshLayerDefinition { get; private set; }
-		public List<Vector3> Vertices { get; } = new List<Vector3>();
+		/// <summary>Gets the vertices of the mesh in pixels</summary>
+		/// <remarks>Vertices are originally loaded in raw units, but are converted to px within <see cref="WireframeInstance"/></remarks>
+		public List<Vertex> Vertices { get; } = new List<Vertex>();
 	}
 
-	/// <summary>Stores a local instance of a wireframe for a single craft/flightgroup.</summary>
+	/// <summary>Represents a local instance of a <see cref="WireframeDefinition"/> for a single craft/flightgroup.</summary>
 	public class WireframeInstance
 	{
-		public List<MeshLayerInstance> LayerInstances = new List<MeshLayerInstance>();
-		public WireframeDefinition ModelDef = null;
-
-		// These two variables are used for cache purposes to determine if the model needs to be reloaded.
-		public int AssignedCraftType;
-		public int AssignedFGIndex;
-
 		private bool _rebuildRequired = true;
 		private int _curX = 0;
 		private int _curY = 0;
@@ -1004,7 +1032,10 @@ namespace Idmr.Yogeme
 		private double _scaleMult;
 
 		/// <summary>Creates a new instance from the specified definition.</summary>
-		/// <remarks>The craftType and fgIndex parameters are used to identify this instance so that the underlying manager can change the model when necessary.</remarks>
+		/// <param name="def">The original wireframe source</param>
+		/// <param name="craftType">The craft type index</param>
+		/// <param name="fgIndex">The FlightGroup index within the mission</param>
+		/// <remarks>The <paramref name="craftType"/> and <paramref name="fgIndex"/> parameters are used to identify this instance so that the underlying manager can change the model when necessary.</remarks>
 		public WireframeInstance(WireframeDefinition def, int craftType, int fgIndex)
 		{
 			AssignedCraftType = craftType;
@@ -1013,16 +1044,15 @@ namespace Idmr.Yogeme
 			if (def == null)
 				return;
 
-			LayerInstances = new List<MeshLayerInstance>();
 			foreach (MeshLayerDefinition layer in ModelDef.MeshLayerDefinitions)
 			{
 				LayerInstances.Add(new MeshLayerInstance(layer));
 			}
-			// Trigger a refresh the next time it's updated.
-			_rebuildRequired = true;
 		}
 
-		/// <summary>Determine whether the core instance has changed, and rebuild if needed.</summary>
+		/// <summary>Determine whether the core instance has changed, and flags for rebuild if needed.</summary>
+		/// <param name="craftType">The craft type index to compare against</param>
+		/// <param name="fgIndex">The FlightGroup index within the mission to compare against</param>
 		public void CheckAssignment(int craftType, int fgIndex)
 		{
 			if (craftType != AssignedCraftType || AssignedFGIndex != fgIndex)
@@ -1033,7 +1063,12 @@ namespace Idmr.Yogeme
 			}
 		}
 
-		/// <summary>Updates the transformed vertices as it should appear on screen, according to several parameters.</summary>
+		/// <summary>Updates the transformed vertices as it should appear on screen</summary>
+		/// <param name="cur">The craft origin</param>
+		/// <param name="dest">A point that the craft is facing</param>
+		/// <param name="zoom">The map zoom level, in px/km</param>
+		/// <param name="orientation">The viewing direction of the map</param>
+		/// <param name="meshTypeVisibilityFlags">The flags determining which Mesh types to display</param>
 		/// <remarks>If no change is detected, the wireframe remains as is. Resulting vertex positions are relative to the model origin.</remarks>
 		public void UpdateParams(Platform.BaseFlightGroup.BaseWaypoint cur, Platform.BaseFlightGroup.BaseWaypoint dest, int zoom, MapForm.Orientation orientation, long meshTypeVisibilityFlags)
 		{
@@ -1053,7 +1088,7 @@ namespace Idmr.Yogeme
 			_curVisibilityFlags = meshTypeVisibilityFlags;
 
 			// Zoom is in pixels per KM. Model units are at a scale of 40960 units per KM.
-			_scaleMult = (double)_curZoom / 40960.0;
+			_scaleMult = _curZoom / 40960.0;
 			int diffX = _dstX - _curX;
 			int diffY = _dstY - _curY;
 			int diffZ = _dstZ - _curZ;
@@ -1104,7 +1139,7 @@ namespace Idmr.Yogeme
 					continue;
 				for (int i = 0; i < cinst.Vertices.Count; i++)
 				{
-					Vector3 v = cinst.Vertices[i];
+					Vertex v = cinst.Vertices[i];
 					v.X = (float)(cinst.MeshLayerDefinition.Vertices[i].X * scaleMult);
 					v.Y = (float)(cinst.MeshLayerDefinition.Vertices[i].Y * scaleMult);
 					v.Z = (float)(-cinst.MeshLayerDefinition.Vertices[i].Z * scaleMult);  // Inverted so they appear properly. Maybe this could be handled during the load?
@@ -1112,15 +1147,16 @@ namespace Idmr.Yogeme
 				}
 			}
 		}
-	}
 
-	/// <summary>Provides context to anything that needs to load a DOS model.</summary>
-	public enum LfdCraftFormat
-	{
-		None = 0,
-		CRFT = 1,
-		CPLX = 2,
-		SHIP = 3,
+		/// <summary>Gets the mesh instances that make up the wireframe</summary>
+		public List<MeshLayerInstance> LayerInstances { get; } = new List<MeshLayerInstance>();
+		/// <summary>Gets the wireframe source</summary>
+		public WireframeDefinition ModelDef { get; private set; }
+
+		/// <summary>Gets the craft type index associated to the instance</summary>
+		public int AssignedCraftType { get; private set; }
+		/// <summary>Gets the FlightGroup index within the mission associated to the instance</summary>
+		public int AssignedFGIndex { get; private set; }
 	}
 
 	/// <summary>Stores the header information of a single resource entry within an LFD archive.</summary>

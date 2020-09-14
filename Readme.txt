@@ -37,7 +37,7 @@ v1.8, xx xxx xxxx
  -- (XWA) Tweaked how the colorized cbos draw
  -- (XWA) SafeSetCbos added to more places to prevent exceptions
  -- (XWA) Skip Indicators update now retains selection
- -- (XWA) Added HangarRoofCranePositionY, HangarRoofCranePositionZ, PlayerAnimationElevation hook support
+ -- (XWA) Added [HangarObjects] HangarRoofCranePositionY, HangarRoofCranePositionZ, PlayerAnimationElevation hook support
 
 v1.7, 16 Aug 2020
  - (TIE) Fixed an issue where current FG's IFF would reset when updating IFF names
