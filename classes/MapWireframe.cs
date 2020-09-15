@@ -10,7 +10,8 @@
 /* CHANGELOG
  * v1.8, xxxxxx
  * [UPD] XML, cleanup
- * [UPD] Vector3 renamed to Vertex, since that what it is
+ * [UPD] Vector3 and Vector3_Int16 renamed to Vertex*, since that what it is
+ * [FIX] XZ yaw calculation
  * v1.7, 200816
  * [NEW] created [JB]
  */
@@ -18,6 +19,7 @@
 using System;
 using System.IO;
 using System.Collections.Generic;
+using System.Drawing;
 
 /* Special thanks to:
  * Jérémy Ansel for documentation of the OPT format https://github.com/JeremyAnsel/XwaOptEditor
@@ -1105,23 +1107,16 @@ namespace Idmr.Yogeme
 			}
 			else if (dest.Enabled)
 			{
-				if (_curOrientation == MapForm.Orientation.XY)
+				if (_curOrientation == MapForm.Orientation.YZ)
 				{
-					yaw = Math.Atan2(_curY - _dstY, _curX - _dstX);
+					yaw = Math.Atan2(diffX, diffY);
+				}
+				else
+				{
+					yaw = Math.Atan2(-diffY, -diffX);
 					yaw += (Math.PI / 2);
-					pitch = -Math.Atan2(diffZ, Math.Sqrt(diffX * diffX + diffY * diffY));
 				}
-				else if (_curOrientation == MapForm.Orientation.XZ)
-				{
-					yaw = Math.Atan2(_dstZ - _curZ, _curX - _dstX);
-					yaw += (Math.PI / 2);
-					pitch = -Math.Atan2(diffZ, Math.Sqrt(diffX * diffX + diffY * diffY));
-				}
-				else if (_curOrientation == MapForm.Orientation.YZ)
-				{
-					yaw = Math.Atan2(_dstX - _curX, -_curY - -_dstY);
-					pitch = -Math.Atan2(diffZ, Math.Sqrt(diffX * diffX + diffY * diffY));
-				}
+				pitch = -Math.Atan2(diffZ, Math.Sqrt(diffX * diffX + diffY * diffY));
 				if (yaw > Math.PI)
 					yaw -= Math.PI * 2;
 			}
@@ -1192,7 +1187,7 @@ namespace Idmr.Yogeme
 		}
 	}
 
-	/// <summary>The central class exposed to MapForm for accessing and managing wireframe models.</summary>
+	/// <summary>Represents the central manager exposed to MapForm for accessing and managing wireframe models.</summary>
 	/// <remarks>Most of the heavy-lifting is managed internally, abstracting as much work as possible away from the MapForm.</remarks>
 	public class WireframeManager
 	{
@@ -1209,6 +1204,7 @@ namespace Idmr.Yogeme
 		Dictionary<string, string> _dosSpeciesMap = null;          // Maps a list of all available species (as scanned from the SPECIES*.LFD archives) to the full path+filename of the archive it can be loaded from. (Ex: DREAD -> *path*\SPECIES2.LFD)
 		LfdCraftFormat _dosCraftFormat = LfdCraftFormat.None;      // Required for X-wing, specifically one file (BWING.CRF). It exists as a standalone file, not archived in SPECIES.LFD. Since the format cannot be derived from the file extension (XW93 and XW94 have the same file name), the context must be determined from the assets within SPECIES.LFD.
 
+		/// <summary>Initializes a blank manager</summary>
 		public WireframeManager()
 		{
 			_wireframeDefinitions = new Dictionary<int, WireframeDefinition>();
@@ -1216,7 +1212,11 @@ namespace Idmr.Yogeme
 		}
 
 		/// <summary>Creates a WireframeInstance, or retrieves an existing one.</summary>
+		/// <param name="craftType">The craft type index</param>
+		/// <param name="fgIndex">The FlightGroup index within the mission</param>
 		/// <remarks>Automatically replaces the instance if the craftType or fgIndex has changed.</remarks>
+		/// <returns>If <paramref name="fgIndex"/> is negative or the <see cref="WireframeDefinition"/> for the specified <paramref name="craftType"/> does not exist, returns <b>null</b>.<br/>
+		/// If the instance for the specifed <paramref name="fgIndex"/> does not exist it is created and returned. If it does exist, updates the <paramref name="craftType"/> if necessary and returns it.</returns>
 		public WireframeInstance GetOrCreateWireframeInstance(int craftType, int fgIndex)
 		{
 			if (fgIndex < 0)
@@ -1312,7 +1312,7 @@ namespace Idmr.Yogeme
 
 		/// <summary>Loads a model definition into the cache, or retrieves an already existing cache entry.</summary>
 		/// <remarks>If not already loaded, searches through the possible resource names to find a matching OPT or DOS species entry. If found, the mesh is loaded and converted to a ready format that the wireframe system can use.</remarks>
-		/// <returns>Returns a model definition. If the model failed to load, the definition will be empty, but valid. Returns null if out of range.</returns>
+		/// <returns>Returns a model definition. If the model failed to load, the definition will be empty, but valid. Returns <b>null</b> if out of range.</returns>
 		private WireframeDefinition getWireframeDefinition(int craftType)
 		{
 			// Check if already loaded.

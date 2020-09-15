@@ -26,6 +26,7 @@ v1.8, xx xxx xxxx
  - (TIE) Fixed SaveAs XvT and XWA
  - (TIE) SaveAs BoP implemented (required Converter update)
  - (All) Save no longer rewrites the file if not modified
+ - (All) Fixed XZ map orientation wireframes
  - Fixed Converter.exe call
  - Converter.exe updated to v1.6
  - More updates and fixes by Random Starfighter (JB)
