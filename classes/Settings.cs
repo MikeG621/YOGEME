@@ -49,10 +49,11 @@
  * - Release
  */
 
-using System;
-using System.IO;
+using Idmr.Yogeme.MapWireframe;
 using Microsoft.Win32;
+using System;
 using System.Drawing;
+using System.IO;
 
 namespace Idmr.Yogeme
 {

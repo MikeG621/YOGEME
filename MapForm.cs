@@ -47,6 +47,7 @@
  */
 
 using Idmr.Common;
+using Idmr.Yogeme.MapWireframe;
 using System;
 using System.Collections.Generic;
 using System.Drawing;

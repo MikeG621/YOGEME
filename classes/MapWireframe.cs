@@ -12,14 +12,14 @@
  * [UPD] XML, cleanup
  * [UPD] Vector3 and Vector3_Int16 renamed to Vertex*, since that what it is
  * [FIX] XZ yaw calculation
+ * [UPD] Changed namespace to reduce visibility
  * v1.7, 200816
  * [NEW] created [JB]
  */
 
 using System;
-using System.IO;
 using System.Collections.Generic;
-using System.Drawing;
+using System.IO;
 
 /* Special thanks to:
  * Jérémy Ansel for documentation of the OPT format https://github.com/JeremyAnsel/XwaOptEditor
@@ -42,8 +42,8 @@ using System.Drawing;
  *     MeshLayerInstance: vertices are transformed into screen coordinates relative to the mesh origin.
  */
 
-//TODO: overall, should add XML to just about everything, change fields to auto-properties, etc. Also, clear up Vertex/Vector, since it looks like they're not named properly
-namespace Idmr.Yogeme
+//TODO: overall, should add XML to just about everything, change fields to auto-properties, etc.
+namespace Idmr.Yogeme.MapWireframe
 {
 
 	/// <summary>Provides context to anything that needs to load a DOS model.</summary>
@@ -144,6 +144,8 @@ namespace Idmr.Yogeme
 			Z = other.Z;
 		}
 
+		/// <summary>Apply a rotation matrix and transpose the Vertex about the origin</summary>
+		/// <param name="mat">The 3d rotation matrix</param>
 		public void MultTranspose(Matrix3 mat)
 		{
 			float vx = X;
@@ -161,6 +163,7 @@ namespace Idmr.Yogeme
 		/// <summary>Gets the Z value</summary>
 		public float Z { get; internal set; }
 	}
+	/// <summary>Represents a 3x3 matrix for rotational transformations</summary>
 	public class Matrix3
 	{
 		/// <summary>Initializes a matrix ready for the needed rotational transform.</summary>
@@ -229,6 +232,11 @@ namespace Idmr.Yogeme
 	/// <summary>Container to store the vertices of a single polygon face, which may have 3 or 4 vertices.</summary>
 	public struct OptFace
 	{
+		/// <summary>Initialize the face with the designated vertices</summary>
+		/// <param name="v1">Index of first vertex</param>
+		/// <param name="v2">Index of second vertex</param>
+		/// <param name="v3">Index of third vertex</param>
+		/// <param name="v4">Index of fourth vertex</param>
 		public OptFace(int v1, int v2, int v3, int v4)
 		{
 			VertexIndex = new int[4];
@@ -238,38 +246,52 @@ namespace Idmr.Yogeme
 			VertexIndex[3] = v4;
 		}
 
+		/// <summary>Gets the Vertex array</summary>
+		/// <remarks>Length is <b>4</b></remarks>
 		public int[] VertexIndex { get; private set; }
 	}
 
-	/// <summary>Container to store all mesh faces of a single LOD.</summary>
+	/// <summary>Represents the mesh faces of a single LOD.</summary>
 	/// <remarks>Discarded prototyping code attempted to select a lower detail mesh to improve drawing performance, but it wasn't very helpful for normal models.</remarks>
 	public class OptLod
 	{
+		/// <summary>Initializes the LOD at the maximum value</summary>
 		public OptLod()
 		{
 			Distance = float.MaxValue;
 		}
+		/// <summary>Initializes the LOD with the specified distance</summary>
+		/// <param name="dist">The distance assigned to the LOD</param>
 		public OptLod(float dist)
 		{
 			Distance = dist;
 		}
 
-		public float Distance { get; private set; }	//~MG: never actually used anywhere?
+		/// <summary>Gets the LOD distance</summary>
+		/// <remarks>This isn't referenced or used anywhere</remarks>
+		public float Distance { get; private set; }
+		/// <summary>Gets the faces of the LOD</summary>
 		public List<OptFace> Faces { get; } = new List<OptFace>();
 	}
 
-	/// <summary>Holds all loaded information for a single component, which is a top-level node in the OPT tree.</summary>
+	/// <summary>Represents the loaded information for a single component, which is a top-level node in the OPT tree.</summary>
 	public class OptComponent
 	{
+		/// <summary>Gets or sets the OPT node type</summary>
 		public OptNodeType NodeType { get; set; } = 0;
+		/// <summary>Gets or sets the mesh type</summary>
 		public MeshType MeshType { get; set; } = MeshType.Default;
+		/// <summary>Gets or sets the LOD index</summary>
 		public int LoadingLodIndex { get; set; } = 0;
+		/// <summary>Gets the Vertices of the mesh</summary>
 		public List<Vertex> Vertices { get; } = new List<Vertex>();
+		/// <summary>Gets the LODs</summary>
 		public List<OptLod> Lods { get; } = new List<OptLod>();
 	}
 
-	/// <summary>The OPT format was introduced with XvT/BoP, continued in XWA, and retrofitted into XWING and TIE for the Windows versions.</summary>
-	/// <remarks>The format is a tree of nodes, utilizing C-style pointers to navigate each node in the tree and access their data elements.</remarks>
+	/// <summary>Represents an OPT model file.</summary>
+	/// <remarks>The OPT format was introduced with XvT/BoP, continued in XWA, and retrofitted into XWING and TIE for the Windows versions.<br/>
+	/// The format is a tree of nodes, utilizing C-style pointers to navigate each node in the tree and access their data elements.</remarks>
 	public class OptFile
 	{
 		private int _basePosition;  // The file contents begin with some meta data that isn't part of the actual model data. This will be the stream position where the real data begins.
@@ -428,6 +450,7 @@ namespace Idmr.Yogeme
 			}
 		}
 
+		/// <summary>Gets the list of top-level nodes</summary>
 		public List<OptComponent> Components { get; private set; } = new List<OptComponent>();
 	}
 
@@ -447,10 +470,13 @@ namespace Idmr.Yogeme
 		public short[] Data { get; } = new short[3];
 	}
 
-	/// <summary>Two vertex indices that define a line.</summary>
+	/// <summary>Represents a single line within a mesh</summary>
 	/// <remarks>The indices point to a <see cref="Vertex"/> within a parent <see cref="MeshLayerDefinition"/></remarks>
 	public class Line
 	{
+		/// <summary>Initialize with the indicated vertices</summary>
+		/// <param name="v1">The index of the start vertex</param>
+		/// <param name="v2">The index of the end vertex</param>
 		public Line(int v1, int v2)
 		{
 			V1 = v1;
@@ -463,29 +489,39 @@ namespace Idmr.Yogeme
 		public int V2 { get; private set; }
 	}
 
-	/// <summary>Container to store all mesh faces of a single LOD.</summary>
+	/// <summary>Represents the mesh faces of a single LOD.</summary>
 	public class CraftLod
 	{
+		/// <summary>Initializes the LOD with the specified distance and offset</summary>
+		/// <param name="distance">The distance assigned to the LOD</param>
+		/// <param name="fileOffset">The offset at which the LOD data resides</param>
 		public CraftLod(int distance, short fileOffset)
 		{
 			Distance = distance;
 			FileOffset = fileOffset;
 		}
 
-		public int Distance { get; private set; }   //~MG: Not actually used anywhere?
+		/// <summary>Gets the LOD distance</summary>
+		/// <remarks>This isn't referenced or used anywhere</remarks>
+		public int Distance { get; private set; }
+		/// <summary>Gets the offset within the OPT file</summary>
 		public short FileOffset { get; private set; }
+		/// <summary>Gets the vertices of the LOD</summary>
 		public List<Vertex3_Int16> Vertices { get; } = new List<Vertex3_Int16>();
+		/// <summary>Gets the lines of the LOD</summary>
 		public List<Line> Lines { get; } = new List<Line>();
 	}
 
-	/// <summary>Holds all loaded information for a single component.</summary>
+	/// <summary>Represents the loaded information for a single component.</summary>
 	public class CraftComponent
 	{
+		/// <summary>Gets or sets the mesh type</summary>
 		public MeshType MeshType { get; set; } = MeshType.Default;
+		/// <summary>Gets the LODs</summary>
 		public List<CraftLod> Lods { get; } = new List<CraftLod>();
 	}
 
-	/// <summary>This facilitates loading of all DOS craft formats (CRFT, CPLX, and SHIP).</summary>
+	/// <summary>Represents a DOS craft format (CRFT, CPLX, and SHIP).</summary>
 	/// <remarks>The format is similar to OPT in the sense that it contains a list of components, along with various pieces of data. These resources are typically packed into uncompressed LFD archives, which are automatically handled by the loading functions.</remarks>
 	public class CraftFile
 	{
@@ -678,7 +714,7 @@ namespace Idmr.Yogeme
 				fs.Position++;
 				byte shapeCount = br.ReadByte();
 				fs.Position += shapeCount; // Skip over the shape colors.
-				fs.Position += 12;         // Skip boundMin and boundMax (each are 6 bytes, Vector3_16bit).
+				fs.Position += 12;         // Skip boundMin and boundMax (each are 6 bytes, Vertex3_16bit).
 
 				for (int j = 0; j < vertexCount; j++)
 				{
