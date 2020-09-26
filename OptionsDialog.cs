@@ -164,6 +164,9 @@ namespace Idmr.Yogeme
 			bool exportInUse = _config.XwaOverrideExternal && CraftDataManager.GetInstance().XwaInstallSpecificExternalDataLoaded;
 			lblExportWarning.Visible = exportInUse;
 
+			cboMiddleClickActionSelected.SelectedIndex = (int)_config.MapMiddleClickActionSelected;
+			cboMiddleClickAction.SelectedIndex = (int)_config.MapMiddleClickActionNoneSelected;
+
 			_closeCallback = callback;
 		}
 
@@ -303,7 +306,8 @@ namespace Idmr.Yogeme
 			int temp = 0;
 			for (int i = 0; i < 22; i++) temp += (chkWP[i].Checked ? 1 << i : 0);
 			_config.Waypoints = temp;
-			_config.MapOptions = (chkFG.Checked ? Settings.MapOpts.FGTags : Settings.MapOpts.None) | (chkTrace.Checked ? Settings.MapOpts.Traces : Settings.MapOpts.None);
+			_config.MapOptions = (_config.MapOptions ^ (_config.MapOptions & Settings.MapOpts.FGTags)) | (chkFG.Checked ? Settings.MapOpts.FGTags : Settings.MapOpts.None);
+			_config.MapOptions = (_config.MapOptions ^ (_config.MapOptions & Settings.MapOpts.Traces)) | (chkTrace.Checked ? Settings.MapOpts.Traces : Settings.MapOpts.None);
 			_config.XwingCraft = (byte)cboXWCraft.SelectedIndex;
 			_config.XwingIff = (byte)cboXWIFF.SelectedIndex;
 			_config.TieCraft = (byte)cboTIECraft.SelectedIndex;
@@ -354,6 +358,9 @@ namespace Idmr.Yogeme
 			_config.XwaOverrideExternal = chkXwaOverrideExternal.Checked;
 			_config.XwaOverrideScan = chkXwaOverrideScan.Checked;
 			_config.XwaFlagRemappedCraft = chkXwaFlagRemappedCraft.Checked;
+
+			_config.MapMiddleClickActionSelected = (MapForm.MiddleClickAction)cboMiddleClickActionSelected.SelectedIndex;
+			_config.MapMiddleClickActionNoneSelected = (MapForm.MiddleClickAction)cboMiddleClickAction.SelectedIndex;
 
 			_closeCallback?.Invoke(0, new EventArgs());
 			Close();
