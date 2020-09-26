@@ -1258,7 +1258,8 @@ namespace Idmr.Yogeme
 							{
 								resource.ReadFromStream(br);
 
-								_dosSpeciesMap.Add(resource.Name.ToLower(), filename);
+								if(!_dosSpeciesMap.ContainsKey(resource.Name.ToLower()))
+									_dosSpeciesMap.Add(resource.Name.ToLower(), filename);
 								if (_dosCraftFormat == LfdCraftFormat.None)
 									_dosCraftFormat = resource.GetCraftFormat();
 							}
