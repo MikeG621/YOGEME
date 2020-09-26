@@ -1333,6 +1333,11 @@ namespace Idmr.Yogeme
 				lstFG.SelectedIndex = _activeFG;
 			}
 		}
+		void form_Deactivate(object sender, EventArgs e)
+		{
+			// Exit focus from any form controls. This submits changes to the map (if it's open), and can prevent issues if coming back in.
+			lstFG.Focus();
+		}
 		void form_Closing(object sender, FormClosingEventArgs e)
 		{
 			if (e.CloseReason == CloseReason.ApplicationExitCall) return;
