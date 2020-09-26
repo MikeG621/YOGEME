@@ -203,6 +203,15 @@ namespace Idmr.Yogeme
 			return result;
 		}
 
+		/// <summary>Retrieves the speed (in MGLT) of a craft.</summary>
+		public int GetCraftSpeed(int craftType)
+		{
+
+			if (craftType < 0 || craftType >= _finalizedCraftData.Count)
+				return 0;
+			return _finalizedCraftData[craftType].SpeedMglt;
+		}
+
 		/// <summary>Retrieves the detected install path.</summary>
 		public string GetInstallPath()
 		{
