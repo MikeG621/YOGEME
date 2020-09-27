@@ -6770,6 +6770,7 @@ namespace Idmr.Yogeme
 			this.Text = "Ye Olde Galactic Empire Mission Editor - XvT";
 			this.Activated += new System.EventHandler(this.form_Activated);
 			this.Closing += new System.ComponentModel.CancelEventHandler(this.form_Closing);
+			this.Deactivate += new System.EventHandler(this.form_Deactivate);
 			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.form_KeyDown);
 			this.tabMain.ResumeLayout(false);
 			this.tabFG.ResumeLayout(false);

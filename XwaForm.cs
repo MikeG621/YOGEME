@@ -1337,6 +1337,11 @@ namespace Idmr.Yogeme
 				lstFG.SelectedIndex = _activeFG;
 			}
 		}
+		void form_Deactivate(object sender, EventArgs e)
+		{
+			// Exit focus from any form controls. This submits changes to the map (if it's open), and can prevent issues if coming back in.
+			lstFG.Focus();
+		}
 		void form_Closing(object sender, FormClosingEventArgs e)
 		{
 			if (e.CloseReason == CloseReason.ApplicationExitCall) return;
@@ -3853,8 +3858,11 @@ namespace Idmr.Yogeme
 		{
 			bool btemp = _loading;
 			_loading = true;
+			int oldSelection = cboWP.SelectedIndex;
+			if (oldSelection < 0)
+				oldSelection = 0;
 			cboWP.SelectedIndex = -1;   // force change
-			cboWP.SelectedIndex = 0;
+			cboWP.SelectedIndex = oldSelection;
 			for (int i = 0; i < 4; i++)
 			{
 				for (int j = 0; j < 3; j++)

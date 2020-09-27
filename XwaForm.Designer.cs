@@ -9263,6 +9263,7 @@ namespace Idmr.Yogeme
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "Ye Olde Galactic Empire Mission Editor - XWA";
 			this.Activated += new System.EventHandler(this.form_Activated);
+			this.Deactivate += new System.EventHandler(this.form_Deactivate);
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.form_Closing);
 			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.form_KeyDown);
 			((System.ComponentModel.ISupportInitialize)(this.dataWaypoints)).EndInit();

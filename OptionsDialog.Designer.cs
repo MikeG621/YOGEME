@@ -42,6 +42,10 @@ namespace Idmr.Yogeme
 			this.chkVerify = new System.Windows.Forms.CheckBox();
 			this.chkSave = new System.Windows.Forms.CheckBox();
 			this.tabMap = new System.Windows.Forms.TabPage();
+			this.cboMiddleClickAction = new System.Windows.Forms.ComboBox();
+			this.cboMiddleClickActionSelected = new System.Windows.Forms.ComboBox();
+			this.label17 = new System.Windows.Forms.Label();
+			this.label16 = new System.Windows.Forms.Label();
 			this.lblMouseWheelZoom = new System.Windows.Forms.Label();
 			this.numMousewheelZoom = new System.Windows.Forms.NumericUpDown();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
@@ -375,6 +379,10 @@ namespace Idmr.Yogeme
 			// 
 			// tabMap
 			// 
+			this.tabMap.Controls.Add(this.cboMiddleClickAction);
+			this.tabMap.Controls.Add(this.cboMiddleClickActionSelected);
+			this.tabMap.Controls.Add(this.label17);
+			this.tabMap.Controls.Add(this.label16);
 			this.tabMap.Controls.Add(this.lblMouseWheelZoom);
 			this.tabMap.Controls.Add(this.numMousewheelZoom);
 			this.tabMap.Controls.Add(this.groupBox2);
@@ -385,6 +393,52 @@ namespace Idmr.Yogeme
 			this.tabMap.Size = new System.Drawing.Size(397, 238);
 			this.tabMap.TabIndex = 4;
 			this.tabMap.Text = "Map";
+			// 
+			// cboMiddleClickAction
+			// 
+			this.cboMiddleClickAction.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboMiddleClickAction.FormattingEnabled = true;
+			this.cboMiddleClickAction.Items.AddRange(new object[] {
+            "Do nothing",
+            "Reset view to center",
+            "Fit to world"});
+			this.cboMiddleClickAction.Location = new System.Drawing.Point(6, 193);
+			this.cboMiddleClickAction.Name = "cboMiddleClickAction";
+			this.cboMiddleClickAction.Size = new System.Drawing.Size(132, 21);
+			this.cboMiddleClickAction.TabIndex = 7;
+			// 
+			// cboMiddleClickActionSelected
+			// 
+			this.cboMiddleClickActionSelected.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboMiddleClickActionSelected.FormattingEnabled = true;
+			this.cboMiddleClickActionSelected.Items.AddRange(new object[] {
+            "Do nothing",
+            "Reset view to center",
+            "Fit to world",
+            "Fit to selection",
+            "Center over selection"});
+			this.cboMiddleClickActionSelected.Location = new System.Drawing.Point(6, 147);
+			this.cboMiddleClickActionSelected.Name = "cboMiddleClickActionSelected";
+			this.cboMiddleClickActionSelected.Size = new System.Drawing.Size(132, 21);
+			this.cboMiddleClickActionSelected.TabIndex = 6;
+			// 
+			// label17
+			// 
+			this.label17.AutoSize = true;
+			this.label17.Location = new System.Drawing.Point(3, 177);
+			this.label17.Name = "label17";
+			this.label17.Size = new System.Drawing.Size(136, 13);
+			this.label17.TabIndex = 5;
+			this.label17.Text = "Middle click: none selected";
+			// 
+			// label16
+			// 
+			this.label16.AutoSize = true;
+			this.label16.Location = new System.Drawing.Point(3, 131);
+			this.label16.Name = "label16";
+			this.label16.Size = new System.Drawing.Size(109, 13);
+			this.label16.TabIndex = 5;
+			this.label16.Text = "Middle click: selected";
 			// 
 			// lblMouseWheelZoom
 			// 
@@ -1793,5 +1847,9 @@ namespace Idmr.Yogeme
 		private CheckBox chkXvtDetectMission;
 		private CheckBox chkXwaDetectMission;
 		private Label lblExportWarning;
+		private ComboBox cboMiddleClickActionSelected;
+		private Label label16;
+		private ComboBox cboMiddleClickAction;
+		private Label label17;
 	}
 }

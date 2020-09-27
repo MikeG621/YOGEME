@@ -78,7 +78,7 @@ namespace Idmr.Yogeme
 		public enum Platform { None, TIE, XvT, BoP, XWA, XWING }
 		public enum StartupMode { Normal, LastPlatform, LastMission }
 		[Flags]
-		public enum MapOpts { None, FGTags, Traces }
+		public enum MapOpts { None = 0, FGTags = 1, Traces = 2, TraceDistance = 4, TraceTime = 8, TraceHideFade = 16, TraceSelected = 32 }
 
 		/// <summary>Creates a new Settings object and loads saved settings</summary>
 		public Settings()
@@ -131,6 +131,12 @@ namespace Idmr.Yogeme
 
 			XwaOverrideScan = true;
 			XwaFlagRemappedCraft = true;
+
+			MapMiddleClickActionSelected = MapForm.MiddleClickAction.FitToWorld;
+			MapMiddleClickActionNoneSelected = MapForm.MiddleClickAction.FitToWorld;
+			MapSnapTo = 0;
+			MapSnapAmount = 0.10f;
+			MapSnapUnit = 0;
 		}
 
 		/// <summary>Loads saved settings</summary>
@@ -245,6 +251,12 @@ namespace Idmr.Yogeme
 					XwaOverrideExternal = br.ReadBoolean();
 					XwaOverrideScan = br.ReadBoolean();
 					XwaFlagRemappedCraft = br.ReadBoolean();
+
+					MapMiddleClickActionSelected = (MapForm.MiddleClickAction)br.ReadInt32();
+					MapMiddleClickActionNoneSelected = (MapForm.MiddleClickAction)br.ReadInt32();
+					MapSnapTo = br.ReadByte();
+					MapSnapAmount = br.ReadSingle();
+					MapSnapUnit = br.ReadByte();
 				}
 				catch { System.Diagnostics.Debug.WriteLine("old settings file"); /*do nothing*/ }
 
@@ -584,6 +596,12 @@ namespace Idmr.Yogeme
 			bw.Write(XwaOverrideScan);
 			bw.Write(XwaFlagRemappedCraft);
 
+			bw.Write((int)MapMiddleClickActionSelected);
+			bw.Write((int)MapMiddleClickActionNoneSelected);
+			bw.Write(MapSnapTo);
+			bw.Write(MapSnapAmount);
+			bw.Write(MapSnapUnit);
+
 			fs.SetLength(fs.Position);
 			fs.Close();
 			#endregion
@@ -807,6 +825,17 @@ namespace Idmr.Yogeme
 		public bool XwaOverrideScan { get; set; }
 		/// <summary>Gets or sets whether a suffix should be added to craft names, indicating a craft type that has been remapped. Only applies when <see cref="XwaOverrideScan"/> is used.</summary>
 		public bool XwaFlagRemappedCraft { get; set; }
+
+		/// <summary>Gets or sets the action to perform when middle-clicking the map with something selected.</summary>
+		public MapForm.MiddleClickAction MapMiddleClickActionSelected { get; set; }
+		/// <summary>Gets or sets the action to perform when middle-clicking the map with nothing selected.</summary>
+		public MapForm.MiddleClickAction MapMiddleClickActionNoneSelected { get; set; }
+		/// <summary>Gets or sets whether map movement snapping is enabled, and to what.</summary>
+		public byte MapSnapTo { get; set; }
+		/// <summary>Gets or sets the distance if map movement snapping is enabled.</summary>
+		public float MapSnapAmount { get; set; }
+		/// <summary>Gets or sets the unit of measurement for map movement snapping.</summary>
+		public byte MapSnapUnit { get; set; }
 		#endregion
 	}
 	/* Settings and values
