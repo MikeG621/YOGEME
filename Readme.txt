@@ -30,7 +30,23 @@ v1.8, xx xxx xxxx
  - Fixed Converter.exe call
  - Converter.exe updated to v1.6
  - More updates and fixes by Random Starfighter (JB)
- -- (All) New FlightGroup Library function 
+ -- (All) New FlightGroup Library function
+ -- (All) Focus forcing fixes
+ -- (Briefing) Fixed a possible crash due to timers
+ -- Lots of Map stuff
+ --- Traces can now show ETA, speed, throttle
+ --- New options to control what's shown for traces
+ --- Middle-click action can be customized
+ --- Ability to expand selection to Craft type, IFF, approximate size, and to invert selection
+ --- Wireframes can be faded or hidden
+ --- Purple IFF now consistently MediumOrchid
+ --- Snap ability when moving items
+ --- Keyboard commands for WP movement, selection
+ --- (XWA) Ability to change WP's region
+ --- Ability to show/hide WPs based on Difficulty or IFF
+ --- Ability to zoom map to fit selected or fit all
+ --- Map Options save from the Map itself, don't need the Optionals dialog to change the defaults
+ --- Lots of rewriting and tweaking on the backend and the GUI to get everything working
  -- (XvT/XWA) Colorized cbos now work with "Not FG"
  -- (XvT) Fixed double listing of IFFs on the Craft tab
  -- (XvT) Implementation of uncovered Unknowns; StopArrivingWhen, RndSeed, FG Goal TeamEnabled array, RandomArrDep Min/Sec
@@ -39,6 +55,7 @@ v1.8, xx xxx xxxx
  -- (XWA) SafeSetCbos added to more places to prevent exceptions
  -- (XWA) Skip Indicators update now retains selection
  -- (XWA) Added [HangarObjects] HangarRoofCranePositionY, HangarRoofCranePositionZ, PlayerAnimationElevation hook support
+ -- (XWA) Waypoint refresh maintains selection
 
 v1.7, 16 Aug 2020
  - (TIE) Fixed an issue where current FG's IFF would reset when updating IFF names

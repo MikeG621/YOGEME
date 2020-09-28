@@ -167,6 +167,8 @@ namespace Idmr.Yogeme
 			this.lstPages = new System.Windows.Forms.ListBox();
 			this.dataTags = new System.Data.DataView();
 			this.dataStrings = new System.Data.DataView();
+			this.tmrPopup = new System.Windows.Forms.Timer(this.components);
+			this.tmrMapRedraw = new System.Windows.Forms.Timer(this.components);
 			((System.ComponentModel.ISupportInitialize)(this.pctBrief)).BeginInit();
 			this.tabBrief.SuspendLayout();
 			this.tabDisplay.SuspendLayout();
@@ -1874,6 +1876,16 @@ namespace Idmr.Yogeme
 			this.lstPages.TabIndex = 0;
 			this.lstPages.SelectedIndexChanged += new System.EventHandler(this.lstPages_SelectedIndexChanged);
 			// 
+			// tmrPopup
+			// 
+			this.tmrPopup.Interval = 500;
+			this.tmrPopup.Tick += new System.EventHandler(this.tmrPopup_Tick);
+			// 
+			// tmrMapRedraw
+			// 
+			this.tmrMapRedraw.Interval = 17;
+			this.tmrMapRedraw.Tick += new System.EventHandler(this.tmrMapRedraw_Tick);
+			// 
 			// BriefingFormXwing
 			// 
 			this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
@@ -2092,5 +2104,7 @@ namespace Idmr.Yogeme
         private ListBox lstString;
         private TextBox txtStringEdit;
         private Label label10;
+		private Timer tmrPopup;
+		private Timer tmrMapRedraw;
 	}
 }

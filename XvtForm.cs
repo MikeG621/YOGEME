@@ -8,6 +8,7 @@
 
 /* CHANGELOG
  * v1.8, xxxxxx
+ * [FIX] Deactivate added to force focus fix [JB]
  * [FIX] Test launching if you cancel the intial Save
  * [UPD] saveMission now won't save/rewrite file if unmodifed
  * [NEW] FlightGroupLibrary [JB]

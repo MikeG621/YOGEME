@@ -9,6 +9,7 @@
 
 /* CHANGELOG:
  * v1.8, xxxxxx
+ * [FIX] Deactivate added to force focus fix [JB]
  * [UPD] newFG now returns bool
  * [NEW] FlightGroupLibrary [JB]
  * v1.7, 200816

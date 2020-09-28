@@ -8,6 +8,7 @@
 
 /* CHANGELOG
  * v1.8, xxxxxx
+ * [FIX] Deactivate added to force focus fix [JB]
  * [FIX] Test launching if you cancel the intial Save
  * [FIX] SaveAs for XvT and XWA fixed
  * [NEW] SaveAs BoP

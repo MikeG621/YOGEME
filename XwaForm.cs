@@ -8,6 +8,8 @@
 
 /* CHANGELOG
  * v1.8, xxxxxx
+ * [FIX] Deactivate added to force focus fix [JB]
+ * [FIX] Waypoint refresh maintains selection [JB]
  * [UPD] newFG now returns bool
  * [FIX] Special Cargo text box not showing when switching craft
  * [FIX] menuTest was really named menuText...

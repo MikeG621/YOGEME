@@ -3,10 +3,23 @@
  * Copyright (C) 2007-2020 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.7
+ * VERSION: 1.7+
  */
 
 /* CHANGELOG
+ * v1.8, xxxxxx
+ * Lots of stuff here, may not list it all...
+ * [NEW] Selection expansion [JB]
+ * [NEW] New M-click actions [JB]
+ * [NEW] Traces can show ETA, speed, throttle. Also, options to control what's shown [JB]
+ * [NEW] Wireframes can be faded and hidden [JB]
+ * [UPD] Purple IFF now consistently MediumOrchid [JB]
+ * [NEW] Snap ability when moving [JB]
+ * [NEW] Keyboard commands for WP movement, selection [JB]
+ * [NEW] Ability to change WP's region for XWA [JB]
+ * [NEW] Ability to show/hide WPs based on Difficulty or IFF [JB]
+ * [NEW] Ability to zoom map to fit selected or fit all [JB]
+ * [UPD] Map Options save, don't need the Options dialog to change defaults [JB]
  * v1.7, 200816
  * [UPD] MapPaint now always persistent
  * [NEW #12] Wireframe implementation [JB]
@@ -476,9 +489,7 @@ namespace Idmr.Yogeme
 					else return Color.Yellow;   // FFFFFF00
 				case 4: return Color.OrangeRed;         // FFFF4500 (was Red)
 				case 5:
-					/*if (_platform == Settings.Platform.TIE) return Color.DarkOrchid;			// FF9932CC (was Fuchsia)
-                    else*/
-					return Color.MediumOrchid;    // FF9932CC
+					return Color.MediumOrchid;    // FFBA55D3
 			}
 
 			return Color.White; //Nothing should return this color.
@@ -535,7 +546,7 @@ namespace Idmr.Yogeme
 		/// <summary>Retrieves the snap distance amount, in raw map units, as specified in the form control.</summary>
 		int getRawSnapAmount()
 		{
-			int snapAmount = 1;
+			int snapAmount;
 			if (cboSnapUnit.SelectedIndex == 0)
 				snapAmount = (int)(numSnapAmount.Value * 160);  // KM to Raw
 			else
@@ -635,7 +646,7 @@ namespace Idmr.Yogeme
 			if(_dragMoveState || _selectionList.Count == 0)
 				return;
 
-			int amount = 0;
+			int amount;
 			if (cboSnapTo.SelectedIndex > 0)
 			{
 				amount = getRawSnapAmount();
@@ -872,7 +883,7 @@ namespace Idmr.Yogeme
 
 			foreach (SelectionData dat in objects)
 			{
-				setSelectionState(dat.MapDataIndex, (objects.Count == 1 && ModifierKeys.HasFlag(Keys.Control) ? !getSelectionState(dat.MapDataIndex, dat.WpOrder, dat.WpIndex) : true), dat.WpOrder, dat.WpIndex);
+				setSelectionState(dat.MapDataIndex, (objects.Count != 1 || !ModifierKeys.HasFlag(Keys.Control) || !getSelectionState(dat.MapDataIndex, dat.WpOrder, dat.WpIndex)), dat.WpOrder, dat.WpIndex);
 				if (isClick)
 					break;
 			}
@@ -1008,13 +1019,14 @@ namespace Idmr.Yogeme
 			if (wire == null || wire.ModelDef == null)
 				return 0;
 			int size = wire.ModelDef.LongestSpanMeters;
-			if (size > 1 && size < 40)
+			int limit1 = 40, limit2 = 100, limit3 = 450;
+			if (size > 1 && size < limit1)
 				return 1;
-			else if (size >= 40 && size < 100)
+			else if (size >= limit1 && size < limit2)
 				return 2;
-			else if (size >= 100 && size < 450)
+			else if (size >= limit2 && size < limit3)
 				return 3;
-			else if (size >= 400)
+			else if (size >= limit3)
 				return 4;
 			return 0;
 		}
@@ -1480,7 +1492,7 @@ namespace Idmr.Yogeme
 
 			// Calculate how wide the sidebar list should be, based on the strings it holds.
 			int span = lstCraft.Width;
-			int padding = System.Windows.Forms.SystemInformation.VerticalScrollBarWidth + 10;
+			int padding = SystemInformation.VerticalScrollBarWidth + 10;
 			for (int i = 0; i < _mapData.Length; i++)
 			{
 				Size size = TextRenderer.MeasureText(_mapData[i].FullName, lstCraft.Font);
@@ -1664,9 +1676,9 @@ namespace Idmr.Yogeme
 		void getAverageSelectionCoords(out int x, out int y, out int z)
 		{
 			int sumX = 0, sumY = 0, sumZ = 0;
-			int ord = 0;
+			/*int ord; // Not used
 			if (_platform == Settings.Platform.XWA)
-				ord = (int)((numRegion.Value - 1) * 4 + numOrder.Value - 1);
+				ord = (int)((numRegion.Value - 1) * 4 + numOrder.Value - 1);*/
 
 			foreach (SelectionData dat in _selectionList)
 			{
@@ -2589,7 +2601,6 @@ namespace Idmr.Yogeme
 		{
 			if (_ignoreSelectionEvents) return;
 			_ignoreSelectionEvents = true;
-			bool found = false;
 
 			// Remove any filtered items from the selection.
 			int startCount = lstCraft.SelectedIndices.Count;
@@ -2612,6 +2623,7 @@ namespace Idmr.Yogeme
 			if(lstCraft.SelectedIndices.Count > 0)
 				_repeatSelectCount = 0;
 
+			bool found;
 			// Since the list is multi-select, add or remove selections based on changes from its last known state.
 			foreach (int i in lstCraft.SelectedIndices)
 			{
@@ -2902,20 +2914,20 @@ namespace Idmr.Yogeme
 					return 1;
 				if (left.MapDataIndex < right.MapDataIndex)  // Equal visibility, sort by index in craft list.
 					return -1;
-				else if (left.MapDataIndex < right.MapDataIndex)
+				else if (left.MapDataIndex > right.MapDataIndex)
 					return 1;
 				return 0;
 			}
 
-			public int MapDataIndex;
-			public MapData MapDataRef;
-			public Platform.BaseFlightGroup.BaseWaypoint WPRef;
-			public int WpOrder;
-			public int WpIndex;
-			public bool Active;          // This operates as a quick toggle in the selection list.
-			public short WpDragStartX;   // Origin for drag-move purposes, so that snapping can work.
-			public short WpDragStartY;
-			public short WpDragStartZ;
+			public int MapDataIndex { get; private set; }
+			public MapData MapDataRef { get; private set; }
+			public Platform.BaseFlightGroup.BaseWaypoint WPRef { get; private set; }
+			public int WpOrder { get; private set; }
+			public int WpIndex { get; private set; }
+			public bool Active { get; set; }          // This operates as a quick toggle in the selection list.
+			public short WpDragStartX { get; set; }   // Origin for drag-move purposes, so that snapping can work.
+			public short WpDragStartY { get; set; }
+			public short WpDragStartZ { get; set; }
 		}
 
 		

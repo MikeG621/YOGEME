@@ -8,6 +8,8 @@
 
 /* CHANGELOG
  * v1.8, xxxxxx
+ * [UPD] More flags for MapOpts [JB]
+ * [NEW] MapMiddleClick settings, MapSnap settings [JB]
  * [UPD] Added detection for SBD v3.1
  * v1.7, 200816
  * [NEW] Map options for Wireframe implementation [JB]
@@ -232,7 +234,7 @@ namespace Idmr.Yogeme
 					ColorInteractNonSelected = Color.FromArgb(br.ReadInt32());
 					ColorInteractBackground = Color.FromArgb(br.ReadInt32());
 
-					MapMouseWheelZoomPercentage = br.ReadDouble(); // added in 1.7 (settings v8) [JB]
+					MapMouseWheelZoomPercentage = br.ReadDouble(); // added in 1.7 [JB]
 					WireframeEnabled = br.ReadBoolean();
 					WireframeIconThresholdEnabled = br.ReadBoolean();
 					WireframeIconThresholdSize = br.ReadInt32();
@@ -252,7 +254,7 @@ namespace Idmr.Yogeme
 					XwaOverrideScan = br.ReadBoolean();
 					XwaFlagRemappedCraft = br.ReadBoolean();
 
-					MapMiddleClickActionSelected = (MapForm.MiddleClickAction)br.ReadInt32();
+					MapMiddleClickActionSelected = (MapForm.MiddleClickAction)br.ReadInt32(); // added in 1.8 [JB]
 					MapMiddleClickActionNoneSelected = (MapForm.MiddleClickAction)br.ReadInt32();
 					MapSnapTo = br.ReadByte();
 					MapSnapAmount = br.ReadSingle();
@@ -262,7 +264,7 @@ namespace Idmr.Yogeme
 
 				fs.Close();
 				#endregion
-				//CheckPlatforms();
+				CheckPlatforms();
 			}
 			else
 			{
@@ -895,22 +897,28 @@ namespace Idmr.Yogeme
 	 * (v7+) ColorInteractSelected INT: ARGB value
 	 * (v7+) ColorInteractNonSelected INT: ARGB value
 	 * (v7+) ColorInteractBackground INT: ARGB value
-	 * (v8+) MapMouseWheelZoomPercentage DOUBLE:
-	 * (v8+) WireframeEnabled BOOL:
-	 * (v8+) WireframeIconThresholdEnabled BOOL:
-	 * (v8+) WireframeIconThresholdSize INT:
-	 * (v8+) WireframeMeshIconEnabled BOOL:
-	 * (v8+) WireframeMeshIconSize INT:
-	 * (v8+) WireframeMeshTypeVisiblity LONG [Flags]: See MeshType enum (MapWireframe.cs) for values
-	 * (v8+) XwingDetectMission BOOL:
-	 * (v8+) TieDetectMission BOOL:
-	 * (v8+) XvtDetectMission BOOL:
-	 * (v8+) XwaDetectMission BOOL:
-	 * (v8+) XwingOverrideExternal BOOL:
-	 * (v8+) TieOverrideExternal BOOL:
-	 * (v8+) XvtOverrideExternal BOOL:
-	 * (v8+) XwaOverrideExternal BOOL:
-	 * (v8+) XwaOverrideScan BOOL:
-	 * (v8+) XwaFlagRemappedCraft BOOL:
+	 * Said I'd inc the version for here down, but forgot. Doesn't make a difference when things are only added.
+	 * (v7+) MapMouseWheelZoomPercentage DOUBLE:
+	 * (v7+) WireframeEnabled BOOL:
+	 * (v7+) WireframeIconThresholdEnabled BOOL:
+	 * (v7+) WireframeIconThresholdSize INT:
+	 * (v7+) WireframeMeshIconEnabled BOOL:
+	 * (v7+) WireframeMeshIconSize INT:
+	 * (v7+) WireframeMeshTypeVisiblity LONG [Flags]: See MeshType enum (MapWireframe.cs) for values
+	 * (v7+) XwingDetectMission BOOL:
+	 * (v7+) TieDetectMission BOOL:
+	 * (v7+) XvtDetectMission BOOL:
+	 * (v7+) XwaDetectMission BOOL:
+	 * (v7+) XwingOverrideExternal BOOL:
+	 * (v7+) TieOverrideExternal BOOL:
+	 * (v7+) XvtOverrideExternal BOOL:
+	 * (v7+) XwaOverrideExternal BOOL:
+	 * (v7+) XwaOverrideScan BOOL:
+	 * (v7+) XwaFlagRemappedCraft BOOL:
+	 * (v7+) MapMiddleClickActionSelected INT: enum MapForm.MiddleClickAction
+	 * (v7+) MapMiddleClickActionNoneSelected INT: enum MapForm.MiddleClickAction
+	 * (v7+) MapSnapTo BYTE: 0 = None, 1 = Self, 2 = Grid
+	 * (v7+) MapSnapAmount FLOAT:
+	 * (v7+) MapSnapUnit BYTE: 0 = km, 1 = Raw
 	 */
 }

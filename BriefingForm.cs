@@ -3,10 +3,12 @@
  * Copyright (C) 2007-2020 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.7
+ * VERSION: 1.7+
  */
 
 /* CHANGELOG
+ * v1.8, xxxxxx
+ * [FIX] Timers unregister Tick to prevent calls after Dispose [JB]
  * v1.7, 200816
  * [FIX] XWA MoveIcon selecting wrong icon
  * [FIX] XvT craft icons [JB]
@@ -53,14 +55,13 @@
  * - Release
  */
 
+using Idmr.Common;
+using Idmr.Platform;
 using System;
 using System.Data;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.IO;
 using System.Windows.Forms;
-using Idmr.Common;
-using Idmr.Platform;
 
 namespace Idmr.Yogeme
 {

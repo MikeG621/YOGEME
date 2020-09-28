@@ -9,6 +9,7 @@
 
 /* CHANGELOG
  * v1.8, xxxxxx
+ * [NEW] GetCraftSpeed [JB]
  * [UPD] Added a blank ctor for fixed null loads
  * [UPD] XML stuff
  * [FIX] _finalizedCraftData wasn't set on first run if _detectedInstallPath was blank, causing exceptions on platform load [#37]

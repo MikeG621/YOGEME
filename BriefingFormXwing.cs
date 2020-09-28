@@ -8,6 +8,8 @@
  */
 
 /* CHANGELOG
+ * v1.8, xxxxxx
+ * [UPD] renamed the redraw and popup timers, added to front-end instead of back-end
  * v1.7, 200816
  * [UPD #14] Nothing specific, but closing that issue
  * [UPD] Icons now use BMPs instead of the DATs, importDats() renamed to importIcons() [JB]
@@ -66,6 +68,7 @@ namespace Idmr.Yogeme
 		short _zoomY;
 #pragma warning disable IDE1006 // Naming Styles
 		int w, h;
+		EventHandler onModified = null;
 #pragma warning restore IDE1006 // Naming Styles
 		short _mapX, _mapY; // mapX and mapY will be different, namely the grid coordinates of the center, like how TIE handles it
 		Bitmap _map;
@@ -84,7 +87,6 @@ namespace Idmr.Yogeme
 		int _page = 1;
 		short _icon = 0;
 		bool _popupPreviewActive = false; //[JB] New feature
-		readonly Timer _popupTimer = new Timer();
 		short _popupPreviewZoomX;
 		short _popupPreviewZoomY;
 		short _popupPreviewMapX;
@@ -92,12 +94,8 @@ namespace Idmr.Yogeme
 		bool _popupIsDragging = false;
 		int _popupMiddleX;
 		int _popupMiddleY;
-		readonly Timer _mapPaintRedrawTimer = new Timer();  //[JB] Added a timer to control map painting in an attempt to smooth re-drawing performance.
 		bool _mapPaintScheduled = false;      //True if a paint is scheduled, that is a paint request is called while a paint is already in progress.
 		int _previousTimeIndex = 0;           //Tracks the previous time index of the briefing so we can detect when the user is manually scrolling through arbitrary times.
-#pragma warning disable IDE1006 // Naming Styles
-		EventHandler onModified = null;
-#pragma warning restore IDE1006 // Naming Styles
 		#endregion
 
 		public BriefingFormXwing(FlightGroupCollection fg, Briefing briefing, EventHandler onModifiedCallback)
@@ -196,10 +194,6 @@ namespace Idmr.Yogeme
 
 		void postLoadInit()
 		{
-			_popupTimer.Tick += popupTimer_Tick;
-			_mapPaintRedrawTimer.Tick += mapPaintRedrawTimer_Tick;
-			//_paintRedrawTimer.Elapsed += PaintRedrawTimerEvent; //new EventHandler(PaintRedrawTimerEvent);
-
 			//[JB] Now that we're done loading, force refresh of the cmdUp and cmdDown buttons.
 			if (lstEvents.Items.Count > 0)
 			{
@@ -390,8 +384,8 @@ namespace Idmr.Yogeme
 		void frmBrief_FormClosed(object sender, FormClosedEventArgs e)
 		{
 			tabBrief.Focus();       //[JB] Leave any focused controls so that events don't refresh the disposed map.
-			_popupTimer.Dispose();
-			_mapPaintRedrawTimer.Dispose();
+			tmrPopup.Dispose();
+			tmrMapRedraw.Dispose();
 			_map.Dispose();
 		}
 		void frmBrief_FormClosing(object sender, FormClosingEventArgs e)
@@ -399,10 +393,10 @@ namespace Idmr.Yogeme
 			Save();
 			//[JB] Stop and deactivate the timers.
 			//Important! There's an issue where the event can trigger after the map is disposed, even after calling Stop(). The event must be unregistered.
-			_popupTimer.Stop();
-			_popupTimer.Tick -= popupTimer_Tick;
-			_mapPaintRedrawTimer.Stop();
-			_mapPaintRedrawTimer.Tick -= mapPaintRedrawTimer_Tick;
+			tmrPopup.Stop();
+			tmrPopup.Tick -= tmrPopup_Tick;
+			tmrMapRedraw.Stop();
+			tmrMapRedraw.Tick -= tmrMapRedraw_Tick;
 			onModified = null;
 		}
 		void frmBrief_Load(object sender, EventArgs e)
@@ -553,14 +547,14 @@ namespace Idmr.Yogeme
 			}
 			else _regionDelay--;
 		}
-		void popupTimer_Tick(object sender, EventArgs e)
+		void tmrPopup_Tick(object sender, EventArgs e)
 		{
 			if (_popupPreviewActive == true) return;
-			_popupTimer.Stop();
+			tmrPopup.Stop();
 			lblPopupInfo.Visible = false;
 			lblPopupInfo.Text = "";
 		}
-		void mapPaintRedrawTimer_Tick(object sender, EventArgs e)
+		void tmrMapRedraw_Tick(object sender, EventArgs e)
 		{
 			//private void PaintRedrawTimerEvent(object sender, System.Timers.ElapsedEventArgs e)
 			//[JB] Wrapper that handles the calling of the actual map rendering.
@@ -568,11 +562,11 @@ namespace Idmr.Yogeme
 			{
 				if (_platform == Settings.Platform.XWING) xwingPaint();  //X-wing imports the briefing in TIE format so that this editor can process it with minimal changes
 				_mapPaintScheduled = false;
-				_mapPaintRedrawTimer.Stop();
+				tmrMapRedraw.Stop();
 			}
 			else  //This shouldn't trigger, but just in case nothing is scheduled, stop the timer.
 			{
-				_mapPaintRedrawTimer.Stop();
+				tmrMapRedraw.Stop();
 			}
 		}
 		#endregion	Timer related
@@ -582,10 +576,10 @@ namespace Idmr.Yogeme
 			//[JB] I modified this function to instead serve as a wrapper that handles the map rendering.  It seems to reduce immediate performance for the sake of consistency and not clogging CPU cycles during rapid re-draw attempts. 
 			if (_mapPaintScheduled == false)
 			{
-				if (!_mapPaintRedrawTimer.Enabled)         //The timer is stopped, start it up.
+				if (!tmrMapRedraw.Enabled)         //The timer is stopped, start it up.
 				{
-					_mapPaintRedrawTimer.Start();
-					_mapPaintRedrawTimer.Interval = 17;    //Was trying to aim for ~60 FPS, but according to MSDN, the minimum accuracy is 55 ms.
+					tmrMapRedraw.Start();
+					tmrMapRedraw.Interval = 17;    //Was trying to aim for ~60 FPS, but according to MSDN, the minimum accuracy is 55 ms.
 				}
 				_mapPaintScheduled = true;
 			}
@@ -1620,7 +1614,7 @@ namespace Idmr.Yogeme
 				s += "\nMap Coords: " + xu + " , " + yu;
 				if (_platform != Settings.Platform.XWA)
 					s += "\nWaypoint Coords (km): " + xkm.ToString() + " , " + ykm.ToString();
-				popupUpdate(s, 0);
+				popupUpdate(s);
 				if (e.Delta > 0)
 				{
 					_zoomX += 2;
@@ -1702,12 +1696,11 @@ namespace Idmr.Yogeme
 			}
 		}
 
-		void popupUpdate(string s, int timeExtention)
+		void popupUpdate(string s)
 		{
 			lblPopupInfo.Visible = true;
 			lblPopupInfo.Text = s;
-			_popupTimer.Interval = 500 + timeExtention;
-			_popupTimer.Start();
+			tmrPopup.Start();
 		}
 		void popupPreviewStop()
 		{

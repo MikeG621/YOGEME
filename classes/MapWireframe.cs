@@ -9,6 +9,7 @@
 
 /* CHANGELOG
  * v1.8, xxxxxx
+ * [FIX] _dosSpeciesMap now checks for existing resource before adding [JB]
  * [UPD] XML, cleanup
  * [UPD] Vector3 and Vector3_Int16 renamed to Vertex*, since that what it is
  * [FIX] XZ yaw calculation
