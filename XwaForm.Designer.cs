@@ -1283,7 +1283,7 @@ namespace Idmr.Yogeme
 			// menuIDMR
 			// 
 			this.menuIDMR.Index = 2;
-			this.menuIDMR.Text = "&IDMR.ER.net";
+			this.menuIDMR.Text = "&Github Page";
 			this.menuIDMR.Click += new System.EventHandler(this.menuIDMR_Click);
 			// 
 			// menuER

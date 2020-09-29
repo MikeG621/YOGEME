@@ -27,7 +27,9 @@ v1.8, xx xxx xxxx
  - (TIE) SaveAs BoP implemented (required Converter update)
  - (All) Save no longer rewrites the file if not modified
  - (All) Fixed XZ map orientation wireframes
- - Fixed Converter.exe call
+ - (All) Fixed Converter.exe call
+ - (All) Fixed Help file call
+ - (All) Replaced IDMR link with Github
  - Converter.exe updated to v1.6
  - More updates and fixes by Random Starfighter (JB)
  -- (All) New FlightGroup Library function

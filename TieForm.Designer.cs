@@ -398,6 +398,7 @@ namespace Idmr.Yogeme
 			this.menuBattle = new System.Windows.Forms.MenuItem();
 			this.menuOptions = new System.Windows.Forms.MenuItem();
 			this.menuGoalSummary = new System.Windows.Forms.MenuItem();
+			this.menuLibrary = new System.Windows.Forms.MenuItem();
 			this.menuTest = new System.Windows.Forms.MenuItem();
 			this.menuHelp = new System.Windows.Forms.MenuItem();
 			this.menuHelpInfo = new System.Windows.Forms.MenuItem();
@@ -408,7 +409,6 @@ namespace Idmr.Yogeme
 			this.savTIE = new System.Windows.Forms.SaveFileDialog();
 			this.dataWaypoints = new System.Data.DataView();
 			this.dataWaypointsRaw = new System.Data.DataView();
-			this.menuLibrary = new System.Windows.Forms.MenuItem();
 			this.tabMain.SuspendLayout();
 			this.tabFG.SuspendLayout();
 			this.tabFGMinor.SuspendLayout();
@@ -4349,6 +4349,12 @@ namespace Idmr.Yogeme
 			this.menuGoalSummary.Text = "FG &Goal Summary";
 			this.menuGoalSummary.Click += new System.EventHandler(this.menuGoalSummary_Click);
 			// 
+			// menuLibrary
+			// 
+			this.menuLibrary.Index = 6;
+			this.menuLibrary.Text = "FG Librar&y";
+			this.menuLibrary.Click += new System.EventHandler(this.menuLibrary_Click);
+			// 
 			// menuTest
 			// 
 			this.menuTest.Index = 3;
@@ -4381,7 +4387,7 @@ namespace Idmr.Yogeme
 			// menuIDMR
 			// 
 			this.menuIDMR.Index = 2;
-			this.menuIDMR.Text = "&IDMR.ER.net";
+			this.menuIDMR.Text = "&Github Page";
 			this.menuIDMR.Click += new System.EventHandler(this.menuIDMR_Click);
 			// 
 			// menuER
@@ -4411,12 +4417,6 @@ namespace Idmr.Yogeme
 			// 
 			this.dataWaypointsRaw.AllowDelete = false;
 			this.dataWaypointsRaw.AllowNew = false;
-			// 
-			// menuLibrary
-			// 
-			this.menuLibrary.Index = 6;
-			this.menuLibrary.Text = "FG Librar&y";
-			this.menuLibrary.Click += new System.EventHandler(this.menuLibrary_Click);
 			// 
 			// TieForm
 			// 

@@ -10,6 +10,8 @@
  * v1.8, xxxxxx
  * [FIX] Converter call didn't have new path
  * [NEW] Added BoP Converter support
+ * [FIX] added the missing backslash in help path
+ * [UPD] Replaced IDMR with Github site
  * v1.7, 200816
  * [NEW] SafeString(), ParseAfterInt() [JB]
  * v1.6.5, 200704
@@ -46,9 +48,9 @@ namespace Idmr.Yogeme
 		public static void LaunchER() { Process.Start("http://empirereborn.net"); }
 
 		/// <summary>Launch a browser at the IDMR site</summary>
-		public static void LaunchIdmr() { Process.Start("http://idmr.empirereborn.net"); }
+		public static void LaunchIdmr() { Process.Start("https://github.com/MikeG621/YOGEME/releases"); }
 
-		public static void LaunchHelp() { Process.Start(Application.StartupPath + "yogeme.chm"); }
+		public static void LaunchHelp() { Process.Start(Application.StartupPath + "\\yogeme.chm"); }
 		public static void EmailJagged() { Process.Start("mailto:mjgaisser@gmail.com?subject=YOGEME"); }
 
 		/// <summary>Processes properly formatted custom craft list files to be used in YOGEME.</summary>

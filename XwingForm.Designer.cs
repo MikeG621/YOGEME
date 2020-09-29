@@ -216,6 +216,7 @@ namespace Idmr.Yogeme
 			this.menuBriefing = new System.Windows.Forms.MenuItem();
 			this.menuOptions = new System.Windows.Forms.MenuItem();
 			this.menuGoalSummary = new System.Windows.Forms.MenuItem();
+			this.menuLibrary = new System.Windows.Forms.MenuItem();
 			this.menuTest = new System.Windows.Forms.MenuItem();
 			this.menuHelp = new System.Windows.Forms.MenuItem();
 			this.menuHelpInfo = new System.Windows.Forms.MenuItem();
@@ -226,7 +227,6 @@ namespace Idmr.Yogeme
 			this.savXW = new System.Windows.Forms.SaveFileDialog();
 			this.dataWaypoints = new System.Data.DataView();
 			this.dataWaypointsRaw = new System.Data.DataView();
-			this.menuLibrary = new System.Windows.Forms.MenuItem();
 			this.tabMain.SuspendLayout();
 			this.tabFG.SuspendLayout();
 			this.tabFGMinor.SuspendLayout();
@@ -1718,7 +1718,7 @@ namespace Idmr.Yogeme
 			this.lblRndSeed.AutoSize = true;
 			this.lblRndSeed.Location = new System.Drawing.Point(11, 62);
 			this.lblRndSeed.Name = "lblRndSeed";
-			this.lblRndSeed.Size = new System.Drawing.Size(105, 13);
+			this.lblRndSeed.Size = new System.Drawing.Size(110, 13);
 			this.lblRndSeed.TabIndex = 21;
 			this.lblRndSeed.Text = "Randomizer (unused):";
 			// 
@@ -2184,6 +2184,12 @@ namespace Idmr.Yogeme
 			this.menuGoalSummary.Text = "FG &Goal Summary";
 			this.menuGoalSummary.Click += new System.EventHandler(this.menuGoalSummary_Click);
 			// 
+			// menuLibrary
+			// 
+			this.menuLibrary.Index = 5;
+			this.menuLibrary.Text = "FG Librar&y";
+			this.menuLibrary.Click += new System.EventHandler(this.menuLibrary_Click);
+			// 
 			// menuTest
 			// 
 			this.menuTest.Enabled = false;
@@ -2217,7 +2223,7 @@ namespace Idmr.Yogeme
 			// menuIDMR
 			// 
 			this.menuIDMR.Index = 2;
-			this.menuIDMR.Text = "&IDMR.ER.net";
+			this.menuIDMR.Text = "&Github Page";
 			this.menuIDMR.Click += new System.EventHandler(this.menuIDMR_Click);
 			// 
 			// menuER
@@ -2238,21 +2244,15 @@ namespace Idmr.Yogeme
 			this.savXW.Filter = "X-wing Missions|*.xwi|Mission Files|*.tie";
 			this.savXW.FileOk += new System.ComponentModel.CancelEventHandler(this.savXW_FileOk);
 			// 
-			// _dataWaypoints
+			// dataWaypoints
 			// 
 			this.dataWaypoints.AllowDelete = false;
 			this.dataWaypoints.AllowNew = false;
 			// 
-			// _dataWaypointsRaw
+			// dataWaypointsRaw
 			// 
 			this.dataWaypointsRaw.AllowDelete = false;
 			this.dataWaypointsRaw.AllowNew = false;
-			// 
-			// menuLibrary
-			// 
-			this.menuLibrary.Index = 5;
-			this.menuLibrary.Text = "FG Librar&y";
-			this.menuLibrary.Click += new System.EventHandler(this.menuLibrary_Click);
 			// 
 			// XwingForm
 			// 

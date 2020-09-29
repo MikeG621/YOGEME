@@ -915,8 +915,8 @@ namespace Idmr.Yogeme
 	 * (v7+) XwaOverrideExternal BOOL:
 	 * (v7+) XwaOverrideScan BOOL:
 	 * (v7+) XwaFlagRemappedCraft BOOL:
-	 * (v7+) MapMiddleClickActionSelected INT: enum MapForm.MiddleClickAction
-	 * (v7+) MapMiddleClickActionNoneSelected INT: enum MapForm.MiddleClickAction
+	 * (v7+) MapMiddleClickActionSelected INT: enum MapForm.MiddleClickAction, only needed to be a BYTE
+	 * (v7+) MapMiddleClickActionNoneSelected INT: enum MapForm.MiddleClickAction, only needed to be a BYTE
 	 * (v7+) MapSnapTo BYTE: 0 = None, 1 = Self, 2 = Grid
 	 * (v7+) MapSnapAmount FLOAT:
 	 * (v7+) MapSnapUnit BYTE: 0 = km, 1 = Raw
