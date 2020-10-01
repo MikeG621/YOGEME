@@ -134,7 +134,7 @@ namespace Idmr.Yogeme
 			XwaOverrideScan = true;
 			XwaFlagRemappedCraft = true;
 
-			MapMiddleClickActionSelected = MapForm.MiddleClickAction.FitToWorld;
+			MapMiddleClickActionSelected = MapForm.MiddleClickAction.FitToSelection;
 			MapMiddleClickActionNoneSelected = MapForm.MiddleClickAction.FitToWorld;
 			MapSnapTo = 0;
 			MapSnapAmount = 0.10f;
