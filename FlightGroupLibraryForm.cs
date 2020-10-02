@@ -613,6 +613,7 @@ namespace Idmr.Yogeme
 
 		private void cmdNewGroup_Click(object sender, EventArgs e)
 		{
+			// BUG: something weird happens depending on if txtName has content or not
 			_groupList.Add(new List<object>());
 			string name = txtName.Text.Trim();
 			txtName.Text = "";
@@ -626,6 +627,7 @@ namespace Idmr.Yogeme
 
 		private void cmdDeleteGroup_Click(object sender, EventArgs e)
 		{
+			// BUG: lst doesn't delete entries, leaving blank selectable items
 			int group = lstLibraryGroup.SelectedIndex;
 			if (group < 1)
 			{
@@ -745,6 +747,7 @@ namespace Idmr.Yogeme
 				e.DrawBackground();
 				if (e.Index < _craftProblems.Count && _craftProblems[e.Index].Count > 0)
 				{
+					// BUG: expand r so double-digit errors show the "!"
 					int height = e.Bounds.Bottom - e.Bounds.Top;
 					Rectangle r = new Rectangle(e.Bounds.Right - height - 5, e.Bounds.Top, height + 5, height);
 					e.Graphics.DrawString((_craftProblems[e.Index].Count - 1).ToString() + " !", e.Font, Brushes.Red, r, StringFormat.GenericDefault);

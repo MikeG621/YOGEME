@@ -31,6 +31,24 @@
 			<param name="Local" value="pages\main\map.html">
 			</OBJECT>
 		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Flightgroup Library Dialog">
+			<param name="Local" value="pages\main\fglib.html">
+			</OBJECT>
+		<UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Overview">
+				<param name="Local" value="pages\main\fglib.html#overview">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Groups">
+				<param name="Local" value="pages\main\fglib.html#groups">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Library Craft">
+				<param name="Local" value="pages\main\fglib.html#library">
+				</OBJECT>
+		</UL>
+		<LI> <OBJECT type="text/sitemap">
 			<param name="Name" value="Options Dialog">
 			<param name="Local" value="pages\main\opt.html">
 			</OBJECT>
