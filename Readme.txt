@@ -2,8 +2,8 @@
 ======================================
 
 Author: Michael Gaisser (mjgaisser@gmail.com)
-Version: 1.7
-Date: 2020.08.16
+Version: 1.8
+Date: 2020.10.04
 
 Thank you for downloading YOGEME, the all-in-one mission editor for the X-Wing
 series, Xwing95 through X-wing Alliance.  This program allows easy mission
@@ -11,17 +11,19 @@ creation for all of your favorite Star Wars flight sims in a single platform,
 and has abilities and mission parameters that have been discovered since the
 original mainstream editors were created.
 
+For program usage and help (with images), see "yogeme.chm".
+
 ==========
 Version History
 
-v1.8, xx xxx xxxx
+v1.8, 04 Oct 2020
  - (All) Fixed an exception due to incomplete CraftDataManager creation that would occur when platform not detected [Issue #37]
  - (TIE-XWA) Fixed Test function trying to launch if you cancel a new save
  - (XWA) Added detection for DTM Super Backdrops v3.1
  - (XWA) Fixed Special Cargo text box not showing when switching craft
  - (XWA) Added [HangarObjects] HangarRoofCranePositionX, HangarRoofCraneAxis, HangarRoofCraneLowOffset, HangarRoofCraneHighOffset, HangarIff hook support
  - (XWA) Added [HangarObjects] ShuttlePositionX/Y/Z, ShuttleOrientation, IsShuttleFloorInverted hook support
- - (XWA) Added [HangarObjects] DroidsPositionZ, IsDroidsFloorInverted hook support
+ - (XWA) Added [HangarObjects] Droids/Droids1/Droids2PositionZ, IsDroidsFloorInverted hook support
  - (XWA) Added [HangarObjects] PlayerOffsetX/Y/Z, IsPlayerFloorInverted hook support
  - (TIE) Fixed SaveAs XvT and XWA
  - (TIE) SaveAs BoP implemented (required Converter update)

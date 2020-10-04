@@ -4,11 +4,11 @@
  * This file authored by "JB" (Random Starfighter) (randomstarfighter@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.7
+ * VERSION: 1.8
  */
 
 /* CHANGELOG
- * v1.8, xxxxxx
+ * v1.8, 201004
  * [UPD] renamed the redraw and popup timers, added to front-end instead of back-end
  * v1.7, 200816
  * [UPD #14] Nothing specific, but closing that issue

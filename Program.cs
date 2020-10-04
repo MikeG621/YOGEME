@@ -8,7 +8,7 @@
 
 /* CHANGELOG
  * v1.5, 180910
- * [NEW} added X-wing [JB]
+ * [NEW] added X-wing [JB]
  * v1.3, 170107
  * [FIX] Recent mission fixes [JB]
  * v1.2.3, 141214

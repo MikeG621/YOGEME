@@ -8,7 +8,7 @@
  */
 
 /* CHANGELOG:
- * v1.8, xxxxxx
+ * v1.8, 201004
  * [NEW] Release [JB]
  */
 

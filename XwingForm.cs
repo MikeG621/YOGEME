@@ -4,11 +4,11 @@
  * This file authored by "JB" (Random Starfighter) (randomstarfighter@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.7+
+ * VERSION: 1.8
  */
 
 /* CHANGELOG:
- * v1.8, xxxxxx
+ * v1.8, 201004
  * [FIX] Deactivate added to force focus fix [JB]
  * [UPD] newFG now returns bool
  * [NEW] FlightGroupLibrary [JB]

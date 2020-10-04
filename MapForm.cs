@@ -3,11 +3,11 @@
  * Copyright (C) 2007-2020 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.7+
+ * VERSION: 1.8
  */
 
 /* CHANGELOG
- * v1.8, xxxxxx
+ * v1.8, 201004
  * Lots of stuff here, may not list it all...
  * [NEW] Selection expansion [JB]
  * [NEW] New M-click actions [JB]

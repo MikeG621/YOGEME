@@ -3,11 +3,11 @@
  * Copyright (C) 2007-2020 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.7+
+ * VERSION: 1.8
  */
 
 /* CHANGELOG
- * v1.8, xxxxxx
+ * v1.8, 201004
  * [FIX] Timers unregister Tick to prevent calls after Dispose [JB]
  * v1.7, 200816
  * [FIX] XWA MoveIcon selecting wrong icon
