@@ -244,8 +244,8 @@ namespace Idmr.Yogeme
 							}
 						}
 						else if (parts[0] == "droidspositionz") numDroidsZ.Value = int.Parse(parts[1]);
-						else if (parts[0] == "droid1positionz") numDroid1Z.Value = int.Parse(parts[1]);
-						else if (parts[0] == "droid2positionz") numDroid2Z.Value = int.Parse(parts[1]);
+						else if (parts[0] == "droid1positionz") { chkDroid1.Checked = true; numDroid1Z.Value = int.Parse(parts[1]); }
+						else if (parts[0] == "droid2positionz") { chkDroid2.Checked = true; numDroid2Z.Value = int.Parse(parts[1]); }
 						else if (parts[0] == "hangarroofcranepositionx") numRoofCranePositionX.Value = int.Parse(parts[1]);
 						else if (parts[0] == "hangarroofcranepositiony") numRoofCranePositionY.Value = int.Parse(parts[1]);
 						else if (parts[0] == "hangarroofcranepositionz") numRoofCranePositionZ.Value = int.Parse(parts[1]);
@@ -638,6 +638,14 @@ namespace Idmr.Yogeme
 			_loading = false;
 		}
 
+		private void chkDroid1_CheckedChanged(object sender, EventArgs e)
+		{
+			numDroid1Z.Enabled = chkDroid1.Checked;
+		}
+		private void chkDroid2_CheckedChanged(object sender, EventArgs e)
+		{
+			numDroid2Z.Enabled = chkDroid2.Checked;
+		}
 		private void chkFamGrounded_CheckedChanged(object sender, EventArgs e)
 		{
 			numFamPosZ.Enabled = !chkFamGrounded.Checked;
@@ -887,7 +895,7 @@ namespace Idmr.Yogeme
 					!chkShuttle.Checked || (cboShuttleModel.SelectedIndex != 50) || (cboShuttleMarks.SelectedIndex != 0) || (cboShuAnimation.SelectedIndex != 0) || (numShuDistance.Value != 0) ||
 					(numShuttlePositionX.Value != _defaultShuttlePosition[0]) || (numShuttlePositionY.Value != _defaultShuttlePosition[1]) || (numShuttlePositionZ.Value != _defaultShuttlePosition[2]) ||
 					(numShuttleOrientation.Value != _defaultShuttlePosition[3]) || chkShuttleFloor.Checked ||
-					!chkDroids.Checked || chkDroidsFloor.Checked || (numDroidsZ.Value != 0) || (numDroid1Z.Value != numDroidsZ.Value) || (numDroid2Z.Value != numDroidsZ.Value) ||
+					!chkDroids.Checked || chkDroidsFloor.Checked || (numDroidsZ.Value != 0) || (chkDroid1.Checked && numDroid1Z.Value != numDroidsZ.Value) || (chkDroid2.Checked && numDroid2Z.Value != numDroidsZ.Value) ||
 					chkFloor.Checked || chkHangarIff.Checked || (numRoofCranePositionX.Value != _defaultRoofCranePosition[0]) || (numRoofCranePositionY.Value != _defaultRoofCranePosition[1]) ||
 					(numRoofCranePositionZ.Value != _defaultRoofCranePosition[2]) || !optRoofCraneAxisX.Checked || (numRoofCraneLowOffset.Value != 0) || (numRoofCraneHighOffset.Value != 0) ||
 					(numPlayerX.Value != 0) || (numPlayerY.Value != 0) || (numPlayerZ.Value != 0) || (numPlayerAnimationElevation.Value != 0) || chkPlayerFloor.Checked;
@@ -1014,8 +1022,8 @@ namespace Idmr.Yogeme
 						if (!chkDroids.Checked) sw.WriteLine("LoadDroids = 0");
 						if (chkDroidsFloor.Checked) sw.WriteLine("IsDroidsFloorInverted = 1");
 						if (numDroidsZ.Value != 0) sw.WriteLine("DroidsPositionZ = " + (int)numDroidsZ.Value);
-						if (numDroid1Z.Value != numDroidsZ.Value) sw.WriteLine("Droid1PositionZ = " + (int)numDroid1Z.Value);
-						if (numDroid2Z.Value != numDroidsZ.Value) sw.WriteLine("Droid2PositionZ = " + (int)numDroid2Z.Value);
+						if (chkDroid1.Checked && numDroid1Z.Value != numDroidsZ.Value) sw.WriteLine("Droid1PositionZ = " + (int)numDroid1Z.Value);
+						if (chkDroid2.Checked && numDroid2Z.Value != numDroidsZ.Value) sw.WriteLine("Droid2PositionZ = " + (int)numDroid2Z.Value);
 						if (chkFloor.Checked) sw.WriteLine("IsHangarFloorInverted = 1");
 						if (chkHangarIff.Checked) sw.WriteLine("HangarIff = " + cboHangarIff.SelectedIndex);
 						if (numRoofCranePositionX.Value != _defaultRoofCranePosition[0]) sw.WriteLine("HangarRoofCranePositionX = " + (int)numRoofCranePositionX.Value);
