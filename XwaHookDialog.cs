@@ -102,6 +102,7 @@ namespace Idmr.Yogeme
 			cboMapMarkings.SelectedIndex = 0;
 			cboFamMapMarkings.SelectedIndex = 0;
 			cboFG.Items.AddRange(mission.FlightGroups.GetList());
+			cboMeshFG.Items.AddRange(mission.FlightGroups.GetList());
 			for (int i = 0; i < 400; i++)
 			{
 				cboShuttleModel.Items.Add(i);
@@ -553,7 +554,6 @@ namespace Idmr.Yogeme
 			if (optMarkings.Checked) lstMission.Items.Add(cboFG.Text + ",marks," + cboMarkings.Text);
 			else if (optIff.Checked) lstMission.Items.Add(cboFG.Text + ",iff," + cboIff.Text);
 			else if (optPilot.Checked) lstMission.Items.Add(cboFG.Text + ",pilot," + txtPilot.Text);
-
 		}
 		private void cmdRemoveMiss_Click(object sender, EventArgs e)
 		{
@@ -596,20 +596,32 @@ namespace Idmr.Yogeme
 			lstObjects.Enabled = chkObjects.Checked;
 			cmdAddObjects.Enabled = chkObjects.Checked;
 			cmdRemoveObjects.Enabled = chkObjects.Checked;
+			optCraft.Enabled = chkObjects.Checked;
+			optMesh.Enabled = chkObjects.Checked;
+			cboMeshFG.Enabled = chkObjects.Checked;
+			txtMesh.Enabled = chkObjects.Checked;
 		}
 
 		private void cmdAddObjects_Click(object sender, EventArgs e)
 		{
-			if (_installDirectory != "") opnObjects.InitialDirectory = _installDirectory + _fm;
-			opnObjects.Title = "Select original object...";
-			DialogResult res = opnObjects.ShowDialog();
-			if (res == DialogResult.OK)
+			if (optCraft.Checked)
 			{
-				string line = opnObjects.FileName.Substring(opnObjects.FileName.IndexOf(_fm) + 1) + " = ";
-				opnObjects.Title = "Select new object...";
-				res = opnObjects.ShowDialog();
+				if (_installDirectory != "") opnObjects.InitialDirectory = _installDirectory + _fm;
+				opnObjects.Title = "Select original object...";
+				DialogResult res = opnObjects.ShowDialog();
 				if (res == DialogResult.OK)
-					lstObjects.Items.Add(line + opnObjects.FileName.Substring(opnObjects.FileName.IndexOf(_fm) + 1));
+				{
+					string line = opnObjects.FileName.Substring(opnObjects.FileName.IndexOf(_fm) + 1) + " = ";
+					opnObjects.Title = "Select new object...";
+					res = opnObjects.ShowDialog();
+					if (res == DialogResult.OK)
+						lstObjects.Items.Add(line + opnObjects.FileName.Substring(opnObjects.FileName.IndexOf(_fm) + 1));
+				}
+			}
+			else if (optMesh.Checked && txtMesh.Text != "" && txtMesh.Text.ToLower() != "full")
+			{
+				string line = "ObjectProfile_fg_" + cboMeshFG.SelectedIndex + "=" + txtMesh.Text;
+				lstObjects.Items.Add(line);
 			}
 		}
 		private void cmdRemoveObjects_Click(object sender, EventArgs e)

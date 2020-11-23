@@ -123,6 +123,8 @@
 			this.numCameraX = new System.Windows.Forms.NumericUpDown();
 			this.cboCamera = new System.Windows.Forms.ComboBox();
 			this.grpHangarObjects = new System.Windows.Forms.GroupBox();
+			this.chkDroid2 = new System.Windows.Forms.CheckBox();
+			this.chkDroid1 = new System.Windows.Forms.CheckBox();
 			this.cboHangarIff = new System.Windows.Forms.ComboBox();
 			this.cmdPlayerReset = new System.Windows.Forms.Button();
 			this.cmdCraneReset = new System.Windows.Forms.Button();
@@ -150,6 +152,8 @@
 			this.label36 = new System.Windows.Forms.Label();
 			this.label42 = new System.Windows.Forms.Label();
 			this.label28 = new System.Windows.Forms.Label();
+			this.numDroid2Z = new System.Windows.Forms.NumericUpDown();
+			this.numDroid1Z = new System.Windows.Forms.NumericUpDown();
 			this.numDroidsZ = new System.Windows.Forms.NumericUpDown();
 			this.numShuttleOrientation = new System.Windows.Forms.NumericUpDown();
 			this.numShuttlePositionX = new System.Windows.Forms.NumericUpDown();
@@ -182,10 +186,10 @@
 			this.cmdRemoveHangar = new System.Windows.Forms.Button();
 			this.lstHangarObjects = new System.Windows.Forms.ListBox();
 			this.chkHangars = new System.Windows.Forms.CheckBox();
-			this.numDroid1Z = new System.Windows.Forms.NumericUpDown();
-			this.numDroid2Z = new System.Windows.Forms.NumericUpDown();
-			this.chkDroid1 = new System.Windows.Forms.CheckBox();
-			this.chkDroid2 = new System.Windows.Forms.CheckBox();
+			this.txtMesh = new System.Windows.Forms.TextBox();
+			this.optCraft = new System.Windows.Forms.RadioButton();
+			this.optMesh = new System.Windows.Forms.RadioButton();
+			this.cboMeshFG = new System.Windows.Forms.ComboBox();
 			this.grpBackdrops.SuspendLayout();
 			this.grpMission.SuspendLayout();
 			this.grpSounds.SuspendLayout();
@@ -219,6 +223,8 @@
 			((System.ComponentModel.ISupportInitialize)(this.numShuttlePositionZ)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numPlayerZ)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numRoofCranePositionZ)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.numDroid2Z)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.numDroid1Z)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numDroidsZ)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numShuttleOrientation)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numShuttlePositionX)).BeginInit();
@@ -228,14 +234,12 @@
 			((System.ComponentModel.ISupportInitialize)(this.numPlayerY)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numRoofCranePositionY)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numShuDistance)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.numDroid1Z)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.numDroid2Z)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// cmdOK
 			// 
 			this.cmdOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.cmdOK.Location = new System.Drawing.Point(44, 507);
+			this.cmdOK.Location = new System.Drawing.Point(44, 569);
 			this.cmdOK.Name = "cmdOK";
 			this.cmdOK.Size = new System.Drawing.Size(75, 23);
 			this.cmdOK.TabIndex = 0;
@@ -246,7 +250,7 @@
 			// cmdCancel
 			// 
 			this.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.cmdCancel.Location = new System.Drawing.Point(195, 507);
+			this.cmdCancel.Location = new System.Drawing.Point(195, 569);
 			this.cmdCancel.Name = "cmdCancel";
 			this.cmdCancel.Size = new System.Drawing.Size(75, 23);
 			this.cmdCancel.TabIndex = 0;
@@ -328,7 +332,7 @@
 			this.grpMission.Controls.Add(this.chkMission);
 			this.grpMission.Location = new System.Drawing.Point(12, 114);
 			this.grpMission.Name = "grpMission";
-			this.grpMission.Size = new System.Drawing.Size(332, 183);
+			this.grpMission.Size = new System.Drawing.Size(332, 182);
 			this.grpMission.TabIndex = 3;
 			this.grpMission.TabStop = false;
 			this.grpMission.Text = "Mission Tie";
@@ -452,7 +456,7 @@
 			this.grpSounds.Controls.Add(this.cmdAddSounds);
 			this.grpSounds.Controls.Add(this.lstSounds);
 			this.grpSounds.Controls.Add(this.chkSounds);
-			this.grpSounds.Location = new System.Drawing.Point(12, 303);
+			this.grpSounds.Location = new System.Drawing.Point(12, 302);
 			this.grpSounds.Name = "grpSounds";
 			this.grpSounds.Size = new System.Drawing.Size(332, 96);
 			this.grpSounds.TabIndex = 4;
@@ -507,13 +511,17 @@
 			// 
 			// grpObjects
 			// 
+			this.grpObjects.Controls.Add(this.cboMeshFG);
+			this.grpObjects.Controls.Add(this.optMesh);
+			this.grpObjects.Controls.Add(this.optCraft);
+			this.grpObjects.Controls.Add(this.txtMesh);
 			this.grpObjects.Controls.Add(this.cmdRemoveObjects);
 			this.grpObjects.Controls.Add(this.cmdAddObjects);
 			this.grpObjects.Controls.Add(this.lstObjects);
 			this.grpObjects.Controls.Add(this.chkObjects);
-			this.grpObjects.Location = new System.Drawing.Point(12, 405);
+			this.grpObjects.Location = new System.Drawing.Point(12, 404);
 			this.grpObjects.Name = "grpObjects";
-			this.grpObjects.Size = new System.Drawing.Size(332, 96);
+			this.grpObjects.Size = new System.Drawing.Size(332, 131);
 			this.grpObjects.TabIndex = 5;
 			this.grpObjects.TabStop = false;
 			this.grpObjects.Text = "Objects";
@@ -1416,6 +1424,28 @@
 			this.grpHangarObjects.TabStop = false;
 			this.grpHangarObjects.Text = "Objects";
 			// 
+			// chkDroid2
+			// 
+			this.chkDroid2.AutoSize = true;
+			this.chkDroid2.Location = new System.Drawing.Point(170, 223);
+			this.chkDroid2.Name = "chkDroid2";
+			this.chkDroid2.Size = new System.Drawing.Size(89, 17);
+			this.chkDroid2.TabIndex = 27;
+			this.chkDroid2.Text = "Use Droid2 Z";
+			this.chkDroid2.UseVisualStyleBackColor = true;
+			this.chkDroid2.CheckedChanged += new System.EventHandler(this.chkDroid2_CheckedChanged);
+			// 
+			// chkDroid1
+			// 
+			this.chkDroid1.AutoSize = true;
+			this.chkDroid1.Location = new System.Drawing.Point(6, 223);
+			this.chkDroid1.Name = "chkDroid1";
+			this.chkDroid1.Size = new System.Drawing.Size(89, 17);
+			this.chkDroid1.TabIndex = 27;
+			this.chkDroid1.Text = "Use Droid1 Z";
+			this.chkDroid1.UseVisualStyleBackColor = true;
+			this.chkDroid1.CheckedChanged += new System.EventHandler(this.chkDroid1_CheckedChanged);
+			// 
 			// cboHangarIff
 			// 
 			this.cboHangarIff.Enabled = false;
@@ -1720,6 +1750,42 @@
 			this.label28.Size = new System.Drawing.Size(14, 13);
 			this.label28.TabIndex = 17;
 			this.label28.Text = "Z";
+			// 
+			// numDroid2Z
+			// 
+			this.numDroid2Z.Enabled = false;
+			this.numDroid2Z.Location = new System.Drawing.Point(265, 222);
+			this.numDroid2Z.Maximum = new decimal(new int[] {
+            65535,
+            0,
+            0,
+            0});
+			this.numDroid2Z.Minimum = new decimal(new int[] {
+            65536,
+            0,
+            0,
+            -2147483648});
+			this.numDroid2Z.Name = "numDroid2Z";
+			this.numDroid2Z.Size = new System.Drawing.Size(60, 20);
+			this.numDroid2Z.TabIndex = 16;
+			// 
+			// numDroid1Z
+			// 
+			this.numDroid1Z.Enabled = false;
+			this.numDroid1Z.Location = new System.Drawing.Point(101, 222);
+			this.numDroid1Z.Maximum = new decimal(new int[] {
+            65535,
+            0,
+            0,
+            0});
+			this.numDroid1Z.Minimum = new decimal(new int[] {
+            65536,
+            0,
+            0,
+            -2147483648});
+			this.numDroid1Z.Name = "numDroid1Z";
+			this.numDroid1Z.Size = new System.Drawing.Size(60, 20);
+			this.numDroid1Z.TabIndex = 16;
 			// 
 			// numDroidsZ
 			// 
@@ -2123,63 +2189,46 @@
 			this.chkHangars.UseVisualStyleBackColor = true;
 			this.chkHangars.CheckedChanged += new System.EventHandler(this.chkHangars_CheckedChanged);
 			// 
-			// numDroid1Z
+			// txtMesh
 			// 
-			this.numDroid1Z.Enabled = false;
-			this.numDroid1Z.Location = new System.Drawing.Point(101, 222);
-			this.numDroid1Z.Maximum = new decimal(new int[] {
-            65535,
-            0,
-            0,
-            0});
-			this.numDroid1Z.Minimum = new decimal(new int[] {
-            65536,
-            0,
-            0,
-            -2147483648});
-			this.numDroid1Z.Name = "numDroid1Z";
-			this.numDroid1Z.Size = new System.Drawing.Size(60, 20);
-			this.numDroid1Z.TabIndex = 16;
+			this.txtMesh.Enabled = false;
+			this.txtMesh.Location = new System.Drawing.Point(198, 96);
+			this.txtMesh.Name = "txtMesh";
+			this.txtMesh.Size = new System.Drawing.Size(126, 20);
+			this.txtMesh.TabIndex = 3;
 			// 
-			// numDroid2Z
+			// optCraft
 			// 
-			this.numDroid2Z.Enabled = false;
-			this.numDroid2Z.Location = new System.Drawing.Point(265, 222);
-			this.numDroid2Z.Maximum = new decimal(new int[] {
-            65535,
-            0,
-            0,
-            0});
-			this.numDroid2Z.Minimum = new decimal(new int[] {
-            65536,
-            0,
-            0,
-            -2147483648});
-			this.numDroid2Z.Name = "numDroid2Z";
-			this.numDroid2Z.Size = new System.Drawing.Size(60, 20);
-			this.numDroid2Z.TabIndex = 16;
+			this.optCraft.AutoSize = true;
+			this.optCraft.Checked = true;
+			this.optCraft.Enabled = false;
+			this.optCraft.Location = new System.Drawing.Point(198, 68);
+			this.optCraft.Name = "optCraft";
+			this.optCraft.Size = new System.Drawing.Size(47, 17);
+			this.optCraft.TabIndex = 4;
+			this.optCraft.TabStop = true;
+			this.optCraft.Text = "Craft";
+			this.optCraft.UseVisualStyleBackColor = true;
 			// 
-			// chkDroid1
+			// optMesh
 			// 
-			this.chkDroid1.AutoSize = true;
-			this.chkDroid1.Location = new System.Drawing.Point(6, 223);
-			this.chkDroid1.Name = "chkDroid1";
-			this.chkDroid1.Size = new System.Drawing.Size(89, 17);
-			this.chkDroid1.TabIndex = 27;
-			this.chkDroid1.Text = "Use Droid1 Z";
-			this.chkDroid1.UseVisualStyleBackColor = true;
-			this.chkDroid1.CheckedChanged += new System.EventHandler(this.chkDroid1_CheckedChanged);
+			this.optMesh.AutoSize = true;
+			this.optMesh.Enabled = false;
+			this.optMesh.Location = new System.Drawing.Point(251, 68);
+			this.optMesh.Name = "optMesh";
+			this.optMesh.Size = new System.Drawing.Size(51, 17);
+			this.optMesh.TabIndex = 4;
+			this.optMesh.Text = "Mesh";
+			this.optMesh.UseVisualStyleBackColor = true;
 			// 
-			// chkDroid2
+			// cboMeshFG
 			// 
-			this.chkDroid2.AutoSize = true;
-			this.chkDroid2.Location = new System.Drawing.Point(170, 223);
-			this.chkDroid2.Name = "chkDroid2";
-			this.chkDroid2.Size = new System.Drawing.Size(89, 17);
-			this.chkDroid2.TabIndex = 27;
-			this.chkDroid2.Text = "Use Droid2 Z";
-			this.chkDroid2.UseVisualStyleBackColor = true;
-			this.chkDroid2.CheckedChanged += new System.EventHandler(this.chkDroid2_CheckedChanged);
+			this.cboMeshFG.Enabled = false;
+			this.cboMeshFG.FormattingEnabled = true;
+			this.cboMeshFG.Location = new System.Drawing.Point(6, 95);
+			this.cboMeshFG.Name = "cboMeshFG";
+			this.cboMeshFG.Size = new System.Drawing.Size(186, 21);
+			this.cboMeshFG.TabIndex = 7;
 			// 
 			// XwaHookDialog
 			// 
@@ -2244,6 +2293,8 @@
 			((System.ComponentModel.ISupportInitialize)(this.numShuttlePositionZ)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.numPlayerZ)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.numRoofCranePositionZ)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.numDroid2Z)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.numDroid1Z)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.numDroidsZ)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.numShuttleOrientation)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.numShuttlePositionX)).EndInit();
@@ -2253,8 +2304,6 @@
 			((System.ComponentModel.ISupportInitialize)(this.numPlayerY)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.numRoofCranePositionY)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.numShuDistance)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.numDroid1Z)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.numDroid2Z)).EndInit();
 			this.ResumeLayout(false);
 
 		}
@@ -2418,5 +2467,9 @@
 		private System.Windows.Forms.NumericUpDown numDroid1Z;
 		private System.Windows.Forms.CheckBox chkDroid2;
 		private System.Windows.Forms.CheckBox chkDroid1;
+		private System.Windows.Forms.RadioButton optMesh;
+		private System.Windows.Forms.RadioButton optCraft;
+		private System.Windows.Forms.TextBox txtMesh;
+		private System.Windows.Forms.ComboBox cboMeshFG;
 	}
 }
