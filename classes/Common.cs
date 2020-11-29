@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2020 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.8
+ * VERSION: 1.8+
  */
 
 /* CHANGELOG
+ * [FIX] Verify falls back to default if invalid, then saves default if present
  * v1.8, 201004
  * [FIX] Converter call didn't have new path
  * [NEW] Added BoP Converter support
@@ -97,7 +98,18 @@ namespace Idmr.Yogeme
 		{
 			try
 			{
-				if (!File.Exists(verifyPath)) throw new ArgumentException("Verify executable path is not valid.");
+				if (!File.Exists(verifyPath))
+				{
+					string path = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location), "MissionVerify.exe");
+					if (!File.Exists(path)) throw new ArgumentException("Verify executable path is not valid.");
+					else
+					{
+						var config = new Settings();
+						config.VerifyLocation = path;
+						config.SaveSettings();
+						verifyPath = path;
+					}
+				}
 				Process MV = new Process();
 				MV.StartInfo.FileName = verifyPath;
 				MV.StartInfo.Arguments = "\"" + missionPath + "\"";

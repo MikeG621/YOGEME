@@ -16,6 +16,9 @@ For program usage and help (with images), see "yogeme.chm".
 ==========
 Version History
 
+ - (All) The MissionVerify path setting will now revert to default if it's missing
+ - (XWA) Added [Objects] ObjectProfile_fg_# hook support
+
 v1.8, 04 Oct 2020
  - (All) Fixed an exception due to incomplete CraftDataManager creation that would occur when platform not detected [Issue #37]
  - (TIE-XWA) Fixed Test function trying to launch if you cancel a new save
