@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2020 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.8
+ * VERSION: 1.8+
  */
 
 /* CHANGELOG
+ * [UPD] menuTest moved under Tools, changed to &Test
  * v1.8, 201004
  * [FIX] Deactivate added to force focus fix [JB]
  * [FIX] Test launching if you cancel the intial Save
@@ -1793,6 +1794,8 @@ namespace Idmr.Yogeme
 			menuSave_Click("menuTest_Click", new EventArgs());
 			if (_mission.MissionPath == "\\NewMission.tie") return;
 
+			// TODO: sort out detection and the XvT/BoP split per #20
+
 			if (_config.VerifyTest && !_config.Verify) Common.RunVerify(_mission.MissionPath, _config.VerifyLocation);
 			/*Version os = Environment.OSVersion.Version;
 			bool isWin7 = (os.Major == 6 && os.Minor == 1);
@@ -1863,7 +1866,7 @@ namespace Idmr.Yogeme
 			string[] expanded = contents.Replace("\r\n", "\0").Split('\0');
 			expanded[4] = _mission.MissionFileName;
 			expanded[5] = "YOGEME: " + expanded[4];
-			modified = String.Join("\r\n", expanded);
+			modified = string.Join("\r\n", expanded);
 			sw = new FileInfo(path + lst).CreateText();
 			sw.Write(modified);
 			sw.Close();
@@ -1902,6 +1905,7 @@ namespace Idmr.Yogeme
 			}
 			File.Copy(path + backup, path + lst, true);
 			File.Delete(path + backup);
+			System.Diagnostics.Debug.WriteLine("Testing complete");
 		}
 		void menuVerify_Click(object sender, EventArgs e)
 		{

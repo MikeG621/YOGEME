@@ -964,7 +964,6 @@ namespace Idmr.Yogeme
             this.menuFile,
             this.menuEdit,
             this.menuTools,
-            this.menuTest,
             this.menuHelp});
 			// 
 			// menuFile
@@ -1185,6 +1184,7 @@ namespace Idmr.Yogeme
             this.menuOptions,
             this.menuGoalSummary,
             this.menuLibrary,
+            this.menuTest,
             this.menuHyperbuoy,
             this.menuSuperBackdrops,
             this.menuHooks});
@@ -1234,32 +1234,32 @@ namespace Idmr.Yogeme
 			// 
 			// menuHyperbuoy
 			// 
-			this.menuHyperbuoy.Index = 7;
+			this.menuHyperbuoy.Index = 8;
 			this.menuHyperbuoy.Text = "&Hyperbouy Wizard";
 			this.menuHyperbuoy.Click += new System.EventHandler(this.menuHyperbuoy_Click);
 			// 
 			// menuSuperBackdrops
 			// 
-			this.menuSuperBackdrops.Index = 8;
+			this.menuSuperBackdrops.Index = 9;
 			this.menuSuperBackdrops.Text = "Apply &Super Backdrops";
 			this.menuSuperBackdrops.Click += new System.EventHandler(this.menuSuperBackdrops_Click);
 			// 
 			// menuHooks
 			// 
 			this.menuHooks.Enabled = false;
-			this.menuHooks.Index = 9;
+			this.menuHooks.Index = 10;
 			this.menuHooks.Text = "Hoo&k Assignment";
 			this.menuHooks.Click += new System.EventHandler(this.menuHooks_Click);
 			// 
 			// menuTest
 			// 
-			this.menuTest.Index = 3;
-			this.menuTest.Text = "Te&st";
+			this.menuTest.Index = 7;
+			this.menuTest.Text = "&Test";
 			this.menuTest.Click += new System.EventHandler(this.menuTest_Click);
 			// 
 			// menuHelp
 			// 
-			this.menuHelp.Index = 4;
+			this.menuHelp.Index = 3;
 			this.menuHelp.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
             this.menuHelpInfo,
             this.menuAbout,

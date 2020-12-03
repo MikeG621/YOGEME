@@ -660,7 +660,7 @@ namespace Idmr.Yogeme
 		public bool ConfirmExit { get; set; }
 		/// <summary>Gets or sets if a confirmation dialog is shown when deleting a Flight Group, if other FGs, goals, mission, or briefing triggers depend on it.</summary>
 		public bool ConfirmFGDelete { get; set; }  //[JB] Added
-												   /// <summary>Gets or sets if a confirmation dialog is shown when closing an unsaved mission</summary>
+		/// <summary>Gets or sets if a confirmation dialog is shown when closing an unsaved mission</summary>
 		public bool ConfirmSave { get; set; }
 		/// <summary>Gets or sets if the Test dialog is shown</summary>
 		public bool ConfirmTest { get; set; }
@@ -717,7 +717,7 @@ namespace Idmr.Yogeme
 		public Platform[] RecentPlatforms { get { return (Platform[])_recentPlatforms.Clone(); } }
 		/// <summary>Gets or sets if the most recently used folder is remembered when Saving/Loading missions of a particular platform.</summary>
 		public bool RememberPlatformFolder { get; set; }  //[JB] Added
-														  /// <summary>Gets or sets if the user can only platform that have been installed</summary>
+		/// <summary>Gets or sets if the user can only platform that have been installed</summary>
 		public bool RestrictPlatforms { get; set; }
 		/// <summary>Gets or sets the initial mode of YOGEME</summary>
 		public StartupMode Startup { get; set; }
@@ -747,7 +747,7 @@ namespace Idmr.Yogeme
 			set { if (File.Exists(value)) _verifyLocation = value; }
 		}
 		/// <summary>Gets or sets if the mission will be verified before testing</summary>
-		/// <remarks>If <see "Verify"/> is <b>true</b>, this value is ignored such that the verification only occurs once</remarks>
+		/// <remarks>If <see cref="Verify"/> is <b>true</b>, this value is ignored such that the verification only occurs once</remarks>
 		public bool VerifyTest { get; set; }
 		/// <summary>Gets or sets the default enabled waypoints in the Map interface</summary>
 		public int Waypoints { get; set; }

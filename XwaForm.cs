@@ -3,10 +3,12 @@
  * Copyright (C) 2007-2020 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.8
+ * VERSION: 1.8+
  */
 
 /* CHANGELOG
+ * [UPD] Test function now attempts to detect platform from MissionPath
+ * [UPD] menuTest moved under Tools, changed to &Test
  * v1.8, 201004
  * [FIX] Deactivate added to force focus fix [JB]
  * [FIX] Waypoint refresh maintains selection [JB]
@@ -2112,16 +2114,23 @@ namespace Idmr.Yogeme
 			menuSave_Click("menuTest_Click", new EventArgs());
 			if (_mission.MissionPath == "\\NewMission.tie") return;
 
+			string path = Directory.GetParent(_mission.MissionPath).Parent.FullName + "\\";
+			if (!File.Exists(path + "XWINGALLIANCE.exe"))
+			{
+				System.Diagnostics.Debug.WriteLine("XWA not detected at MissionPath, default used");
+				path = _config.XwaPath + "\\";
+			}
+
 			if (_config.VerifyTest && !_config.Verify) Common.RunVerify(_mission.MissionPath, _config.VerifyLocation);
 			int index = 0;
-			while (File.Exists(_config.XwaPath + "\\test" + index + "0.plt")) index++;
-			string pilot = "\\test" + index + "0.plt";
-			string lst = "\\MISSIONS\\MISSION.LST";
-			string backup = "\\MISSIONS\\MISSION_" + index + ".bak";
+			while (File.Exists(path + "test" + index + "0.plt")) index++;
+			string pilot = "test" + index + "0.plt";
+			string lst = "MISSIONS\\MISSION.LST";
+			string backup = "MISSIONS\\MISSION_" + index + ".bak";
 
 			// pilot file edit
-			File.Copy(Application.StartupPath + "\\xwatest0.plt", _config.XwaPath + pilot);
-			FileStream pilotFile = File.OpenWrite(_config.XwaPath + pilot);
+			File.Copy(Application.StartupPath + "\\xwatest0.plt", path + pilot);
+			FileStream pilotFile = File.OpenWrite(path + pilot);
 			pilotFile.Position = 4;
 			char[] indexBytes = index.ToString().ToCharArray();
 			BinaryWriter bw = new BinaryWriter(pilotFile);
@@ -2134,29 +2143,29 @@ namespace Idmr.Yogeme
 
 			// configure XWA
 			System.Diagnostics.Process xwa = new System.Diagnostics.Process();
-			xwa.StartInfo.FileName = _config.XwaPath + "\\XWINGALLIANCE.exe";
+			xwa.StartInfo.FileName = path + "XWINGALLIANCE.exe";
 			xwa.StartInfo.Arguments = "/skipintro";
 			xwa.StartInfo.UseShellExecute = false;
-			xwa.StartInfo.WorkingDirectory = _config.XwaPath;
-			File.Copy(_config.XwaPath + lst, _config.XwaPath + backup, true);
-			StreamReader sr = File.OpenText(_config.XwaPath + "\\CONFIG.CFG");
+			xwa.StartInfo.WorkingDirectory = path;
+			File.Copy(path + lst, path + backup, true);
+			StreamReader sr = File.OpenText(path + "CONFIG.CFG");
 			string contents = sr.ReadToEnd();
 			sr.Close();
 			int lastpilot = contents.IndexOf("lastpilot ") + 10;
 			int nextline = contents.IndexOf("\r\n", lastpilot);
 			string modified = contents.Substring(0, lastpilot) + "test" + index + contents.Substring(nextline);
-			StreamWriter sw = new FileInfo(_config.XwaPath + "\\CONFIG.CFG").CreateText();
+			StreamWriter sw = new FileInfo(path + "CONFIG.CFG").CreateText();
 			sw.Write(modified);
 			sw.Close();
-			sr = File.OpenText(_config.XwaPath + lst);
+			sr = File.OpenText(path + lst);
 			contents = sr.ReadToEnd();
 			sr.Close();
 			string[] expanded = contents.Replace("\r\n", "\0").Split('\0');
 			expanded[3] = "7";
 			expanded[4] = _mission.MissionFileName;
 			expanded[5] = "!MISSION_7_DESC!YOGEME: " + expanded[4];
-			modified = String.Join("\r\n", expanded);
-			sw = new FileInfo(_config.XwaPath + lst).CreateText();
+			modified = string.Join("\r\n", expanded);
+			sw = new FileInfo(path + lst).CreateText();
 			sw.Write(modified);
 			sw.Close();
 
@@ -2171,9 +2180,10 @@ namespace Idmr.Yogeme
 				runningXwas = System.Diagnostics.Process.GetProcessesByName("XWINGALLIANCE");
 			}
 
-			if (_config.DeleteTestPilots) File.Delete(_config.XwaPath + pilot);
-			File.Copy(_config.XwaPath + backup, _config.XwaPath + lst, true);
-			File.Delete(_config.XwaPath + backup);
+			if (_config.DeleteTestPilots) File.Delete(path + pilot);
+			File.Copy(path + backup, path + lst, true);
+			File.Delete(path + backup);
+			System.Diagnostics.Debug.WriteLine("Testing complete");
 		}
 		void menuVerify_Click(object sender, EventArgs e)
 		{

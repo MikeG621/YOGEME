@@ -4089,7 +4089,6 @@ namespace Idmr.Yogeme
             this.menuFile,
             this.menuEdit,
             this.menuTools,
-            this.menuTest,
             this.menuHelp});
 			// 
 			// menuFile
@@ -4310,7 +4309,8 @@ namespace Idmr.Yogeme
             this.menuBattle,
             this.menuOptions,
             this.menuGoalSummary,
-            this.menuLibrary});
+            this.menuLibrary,
+            this.menuTest});
 			this.menuTools.Text = "&Tools";
 			// 
 			// menuVerify
@@ -4357,13 +4357,13 @@ namespace Idmr.Yogeme
 			// 
 			// menuTest
 			// 
-			this.menuTest.Index = 3;
-			this.menuTest.Text = "Te&st";
+			this.menuTest.Index = 7;
+			this.menuTest.Text = "&Test";
 			this.menuTest.Click += new System.EventHandler(this.menuTest_Click);
 			// 
 			// menuHelp
 			// 
-			this.menuHelp.Index = 4;
+			this.menuHelp.Index = 3;
 			this.menuHelp.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
             this.menuHelpInfo,
             this.menuAbout,

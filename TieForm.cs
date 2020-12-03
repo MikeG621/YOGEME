@@ -3,10 +3,12 @@
  * Copyright (C) 2007-2020 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.8
+ * VERSION: 1.8+
  */
 
 /* CHANGELOG
+ * [UPD] Test function now attempts to detect platform from MissionPath
+ * [UPD] menuTest moved under Tools, changed to &Test
  * v1.8, 201004
  * [FIX] Deactivate added to force focus fix [JB]
  * [FIX] Test launching if you cancel the intial Save
@@ -1467,6 +1469,13 @@ namespace Idmr.Yogeme
 			menuSave_Click("menuTest_Click", new EventArgs());
 			if (_mission.MissionPath == "\\NewMission.tie") return;
 
+			string path = Directory.GetParent(_mission.MissionPath).Parent.FullName + "\\";
+			if (!File.Exists(path + "TIE95.exe"))
+			{
+				System.Diagnostics.Debug.WriteLine("TIE not detected at MissionPath, default used");
+				path = _config.TiePath + "\\";
+			}
+
 			if (_config.VerifyTest && !_config.Verify) Common.RunVerify(_mission.MissionPath, _config.VerifyLocation);
 			Version os = Environment.OSVersion.Version;
 			bool isWin7 = (os.Major == 6 && os.Minor == 1);
@@ -1476,25 +1485,25 @@ namespace Idmr.Yogeme
 
 			// configure TIE
 			int index = 0;
-			while (File.Exists(_config.TiePath + "\\TEST" + index + ".tfr")) index++;
+			while (File.Exists(path + "TEST" + index + ".tfr")) index++;
 			System.Diagnostics.Debug.WriteLine("pilot index: " + index);
-			string pilot = "\\TEST" + index + ".tfr";
-			string battle = "\\RESOURCE\\BATTLE1.LFD";
-			string backup = "\\RESOURCE\\BATTLE1_" + index + ".bak";
-			File.Copy(Application.StartupPath + "\\TEST.tfr", _config.TiePath + pilot);
+			string pilot = "TEST" + index + ".tfr";
+			string battle = "RESOURCE\\BATTLE1.LFD";
+			string backup = "RESOURCE\\BATTLE1_" + index + ".bak";
+			File.Copy(Application.StartupPath + "\\TEST.tfr", path + pilot);
 			System.Diagnostics.Process tie = new System.Diagnostics.Process();
-			tie.StartInfo.FileName = _config.TiePath + "\\TIE95.exe";
+			tie.StartInfo.FileName = path + "TIE95.exe";
 			tie.StartInfo.UseShellExecute = false;
-			tie.StartInfo.WorkingDirectory = _config.TiePath;
-			File.Copy(_config.TiePath + battle, _config.TiePath + backup, true);
-			LfdFile battleLfd = new LfdFile(_config.TiePath + battle);
+			tie.StartInfo.WorkingDirectory = path;
+			File.Copy(path + battle, path + backup, true);
+			LfdFile battleLfd = new LfdFile(path + battle);
 			Text txt = (Text)battleLfd.Resources[0];
 			string[] missions = txt.Strings[3].Split('\0');
 			missions[0] = _mission.MissionFileName.Replace(".tie", "");
 			txt.Strings[3] = string.Join("\0", missions);
 			battleLfd.Write();
 
-			if (isWin7 && !_config.TiePath.ToUpper().Contains("STEAM")) // explorer kill so colors work right
+			if (isWin7 && !path.ToUpper().Contains("STEAM")) // explorer kill so colors work right
 			{
 				key = Microsoft.Win32.Registry.LocalMachine.OpenSubKey("SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon", true);
 				restart = (int)key.GetValue("AutoRestartShell", 1);
@@ -1515,16 +1524,17 @@ namespace Idmr.Yogeme
 				runningTies = System.Diagnostics.Process.GetProcessesByName("tie95");
 			}
 
-			if (isWin7 && !_config.TiePath.ToUpper().Contains("STEAM")) // restart
+			if (isWin7 && !path.ToUpper().Contains("STEAM")) // restart
 			{
 				key.SetValue("AutoRestartShell", restart, Microsoft.Win32.RegistryValueKind.DWord);
 				explorer.StartInfo.UseShellExecute = false;
 				explorer.StartInfo.FileName = "explorer.exe";
 				explorer.Start();
 			}
-			if (_config.DeleteTestPilots) File.Delete(_config.TiePath + pilot);
-			File.Copy(_config.TiePath + backup, _config.TiePath + battle, true);
-			File.Delete(_config.TiePath + backup);
+			if (_config.DeleteTestPilots) File.Delete(path + pilot);
+			File.Copy(path + backup, path + battle, true);
+			File.Delete(path + backup);
+			System.Diagnostics.Debug.WriteLine("Testing complete");
 		}
 		#endregion
 		#region FlightGroups
