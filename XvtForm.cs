@@ -7,6 +7,7 @@
  */
 
 /* CHANGELOG
+ * [UPD #20] Test function now attempts to detect platform from MissionPath
  * [UPD] menuTest moved under Tools, changed to &Test
  * v1.8, 201004
  * [FIX] Deactivate added to force focus fix [JB]
@@ -1794,7 +1795,29 @@ namespace Idmr.Yogeme
 			menuSave_Click("menuTest_Click", new EventArgs());
 			if (_mission.MissionPath == "\\NewMission.tie") return;
 
-			// TODO: sort out detection and the XvT/BoP split per #20
+			string path = Directory.GetParent(_mission.MissionPath).Parent.FullName + "\\";
+			string xvtPath;
+			string bopPath;
+			if (!File.Exists(path + "Z_XVT__.exe"))
+			{
+				System.Diagnostics.Debug.WriteLine("XvT/BoP not detected at MissionPath, default used");
+				path = (_mission.IsBop ? _config.BopPath : _config.XvtPath) + "\\";
+				xvtPath = _config.XvtPath + "\\";
+				bopPath = _config.BopPath + "\\";
+			}
+			else
+			{
+				if (path.ToLower().Contains("balanceofpower"))
+				{
+					bopPath = path;
+					xvtPath = Directory.GetParent(path).Parent.FullName + "\\";
+				}
+				else
+				{
+					xvtPath = path;
+					bopPath = path + "BalanceOfPower\\";
+				}
+			}
 
 			if (_config.VerifyTest && !_config.Verify) Common.RunVerify(_mission.MissionPath, _config.VerifyLocation);
 			/*Version os = Environment.OSVersion.Version;
@@ -1805,17 +1828,16 @@ namespace Idmr.Yogeme
 
 			// configure XvT/BoP
 			int index = 0;
-			string path = (_mission.IsBop ? _config.BopPath : _config.XvtPath);
-			while (File.Exists(path + "\\test" + index + "0.plt")) index++;
-			string pilot = "\\test" + index + "0.plt";
-			string bopPilot = "\\test" + index + "0.pl2";
-			string lst = "\\Train\\IMPERIAL.LST";
-			string backup = "\\Train\\IMPERIAL_" + index + ".bak";
+			while (File.Exists(xvtPath + "test" + index + "0.plt")) index++;
+			string pilot = "test" + index + "0.plt";
+			string bopPilot = "test" + index + "0.pl2";
+			string lst = "Train\\IMPERIAL.LST";
+			string backup = "Train\\IMPERIAL_" + index + ".bak";
 
-			File.Copy(Application.StartupPath + "\\xvttest0.plt", _config.XvtPath + pilot);
-			if (_config.BopInstalled) File.Copy(Application.StartupPath + "\\xvttest0.pl2", _config.BopPath + bopPilot, true);
+			File.Copy(Application.StartupPath + "\\xvttest0.plt", xvtPath + pilot);
+			if (_config.BopInstalled) File.Copy(Application.StartupPath + "\\xvttest0.pl2", bopPath + bopPilot, true);
 			// XvT pilot edit
-			FileStream pilotFile = File.OpenWrite(_config.XvtPath + pilot);
+			FileStream pilotFile = File.OpenWrite(xvtPath + pilot);
 			pilotFile.Position = 4;
 			char[] indexBytes = index.ToString().ToCharArray();
 			new BinaryWriter(pilotFile).Write(indexBytes);
@@ -1824,7 +1846,7 @@ namespace Idmr.Yogeme
 			// BoP pilot edit
 			if (_config.BopInstalled)
 			{
-				pilotFile = File.OpenWrite(_config.BopPath + bopPilot);
+				pilotFile = File.OpenWrite(bopPath + bopPilot);
 				pilotFile.Position = 4;
 				indexBytes = index.ToString().ToCharArray();
 				new BinaryWriter(pilotFile).Write(indexBytes);
@@ -1834,29 +1856,29 @@ namespace Idmr.Yogeme
 
 			// configure XvT
 			System.Diagnostics.Process xvt = new System.Diagnostics.Process();
-			xvt.StartInfo.FileName = path + "\\Z_XVT__.exe";
+			xvt.StartInfo.FileName = path + "Z_XVT__.exe";
 			xvt.StartInfo.Arguments = "/skipintro";
 			xvt.StartInfo.UseShellExecute = false;
 			xvt.StartInfo.WorkingDirectory = path;
 			File.Copy(path + lst, path + backup, true);
-			StreamReader sr = File.OpenText(_config.XvtPath + "\\Config.cfg");
+			StreamReader sr = File.OpenText(xvtPath + "Config.cfg");
 			string contents = sr.ReadToEnd();
 			sr.Close();
 			int lastpilot = contents.IndexOf("lastpilot ") + 10;
 			int nextline = contents.IndexOf("\r\n", lastpilot);
 			string modified = contents.Substring(0, lastpilot) + "test" + index + contents.Substring(nextline);
-			StreamWriter sw = new FileInfo(_config.XvtPath + "\\Config.cfg").CreateText();
+			StreamWriter sw = new FileInfo(xvtPath + "Config.cfg").CreateText();
 			sw.Write(modified);
 			sw.Close();
 			if (_config.BopInstalled)
 			{
-				sr = File.OpenText(_config.BopPath + "\\config2.cfg");
+				sr = File.OpenText(bopPath + "config2.cfg");
 				contents = sr.ReadToEnd();
 				sr.Close();
 				lastpilot = contents.IndexOf("lastpilot ") + 10;
 				nextline = contents.IndexOf("\r\n", lastpilot);
 				modified = contents.Substring(0, lastpilot) + "test" + index + contents.Substring(nextline);
-				sw = new FileInfo(_config.BopPath + "\\config2.cfg").CreateText();
+				sw = new FileInfo(bopPath + "config2.cfg").CreateText();
 				sw.Write(modified);
 				sw.Close();
 			}
@@ -1900,8 +1922,8 @@ namespace Idmr.Yogeme
 			}*/
 			if (_config.DeleteTestPilots)
 			{
-				File.Delete(_config.XvtPath + pilot);
-				File.Delete(_config.BopPath + bopPilot);
+				File.Delete(xvtPath + pilot);
+				File.Delete(bopPath + bopPilot);
 			}
 			File.Copy(path + backup, path + lst, true);
 			File.Delete(path + backup);
