@@ -1,12 +1,13 @@
 ﻿/*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
- * Copyright (C) 2007-2018 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2020 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.5
+ * VERSION: 1.5+
  */
 
 /* CHANGELOG
+ * [UPD] Settings passed in instead of re-init
  * v1.5, 180910
  * [UPD] ctor now inits on a question, display code broken out [JB]
  * [NEW] r-click reverse navigation [JB]
@@ -41,22 +42,22 @@ namespace Idmr.Yogeme
 		string[] _answerLines;
 		int _page = 1;
 		int _selectedIndex = 0;
-		Questions _questions;
-		RadioButton[] _opts = new RadioButton[4];
-		Color _normalText = Color.FromArgb(84, 84, 252);
-		Color _highlight = Color.FromArgb(0, 168, 0);
+		readonly Questions _questions;
+		readonly RadioButton[] _opts = new RadioButton[4];
+		readonly Color _normalText = Color.FromArgb(84, 84, 252);
+		readonly Color _highlight = Color.FromArgb(0, 168, 0);
 		Color _activeColor;
-		LfdFile _empire;
-		LfdFile _talk;
-		Bitmap _preview = new Bitmap(320, 200);
-		byte[] _indexes = new byte[5];
-		string _fontID = "FONTfont8";
+		readonly LfdFile _empire;
+		readonly LfdFile _talk;
+		readonly Bitmap _preview = new Bitmap(320, 200);
+		readonly byte[] _indexes = new byte[5];
+		readonly string _fontID = "FONTfont8";
 
-		public OfficerPreviewForm(Questions questions, int officer, int question)
+		public OfficerPreviewForm(Questions questions, int officer, int question, Settings config)
 		{
 			try
 			{
-				string path = new Settings().TiePath + "\\RESOURCE\\";
+				string path = config.TiePath + "\\RESOURCE\\";
 				_empire = new LfdFile(path + "EMPIRE.LFD");
 				_talk = new LfdFile(path + "TALK.LFD");
 			}

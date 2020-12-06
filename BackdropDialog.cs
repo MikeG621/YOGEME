@@ -7,6 +7,7 @@
  */
 
 /* CHANGELOG
+ * [UPD] Settings passed in instead of re-init
  * [UPD] _planets to static so it only inits once
  * [UPD] Replaced StringFunctions.GetFilename() with Path
  * v1.7, 200816
@@ -71,12 +72,12 @@ namespace Idmr.Yogeme
 		/// <param name="index">Backdrop index, set to 0 if out of range</param>
 		/// <exception cref="ArgumentException">Invalid value for <paramref name="platform"/>.</exception>
 		/// <exception cref="ApplicationException">The designated <paramref name="platform"/> installation is not detected.</exception>
-		public BackdropDialog(MissionFile.Platform platform, int index)
+		public BackdropDialog(MissionFile.Platform platform, int index, Settings config)
 		{
 			_platform = platform;
 			if (_platform == MissionFile.Platform.Invalid || _platform == MissionFile.Platform.XWA)
 				throw new ArgumentException("Invalid platform, must be TIE, XvT or BoP");
-			if (!platformInstalled()) throw new ApplicationException("Platform installation not found, feature unavailable.");
+			if (!platformInstalled(config)) throw new ApplicationException("Platform installation not found, feature unavailable.");
 			_index = index;
 			if ((_platform == MissionFile.Platform.TIE || _platform == MissionFile.Platform.XvT) && (_index < 0 || _index > 7)) _index = 0;
 			if (_platform == MissionFile.Platform.BoP && (_index < 0 || _index > 16)) _index = 0;
@@ -97,7 +98,7 @@ namespace Idmr.Yogeme
 		/// <param name="index">Backdrop index, set to 0 if out of range</param>
 		/// <param name="shadow">Shadow or backdrop variant, set to 0 if out of range</param>
 		/// <exception cref="ApplicationException">Platform installation not found.</exception>
-		public BackdropDialog(int index, int shadow)
+		public BackdropDialog(int index, int shadow, Settings config)
 		{
 			_platform = MissionFile.Platform.XWA;
 			_index = index;
@@ -105,7 +106,7 @@ namespace Idmr.Yogeme
 			_shadow = shadow;
 			if (_shadow < 0 || _shadow > 6) _shadow = 0;
 			InitializeComponent();
-			if (!platformInstalled()) throw new ApplicationException("Platform installation not found, feature unavailable.");
+			if (!platformInstalled(config)) throw new ApplicationException("Platform installation not found, feature unavailable.");
 			createThumbnails();
 			vsbThumbs.Enabled = true;
 			numBackdrop.Maximum = _numBackdrops - 1;
@@ -119,7 +120,7 @@ namespace Idmr.Yogeme
 		/// <param name="shadow">Shadow or backdrop variant, set to 0 if out of range</param>
 		/// <param name="fileName">Name of mission for hook implementation</param>
 		/// <exception cref="ApplicationException">Platform installation not found.</exception>
-		public BackdropDialog(int index, int shadow, string fileName)
+		public BackdropDialog(int index, int shadow, string fileName, Settings config)
 		{
 			_platform = MissionFile.Platform.XWA;
 			_hookInstalled = true;
@@ -128,7 +129,7 @@ namespace Idmr.Yogeme
 			_shadow = shadow;
 			if (_shadow < 0 || _shadow > 6) _shadow = 0;
 			InitializeComponent();
-			if (!platformInstalled()) throw new ApplicationException("Platform installation not found, feature unavailable.");
+			if (!platformInstalled(config)) throw new ApplicationException("Platform installation not found, feature unavailable.");
 			_fileName = Path.GetFileNameWithoutExtension(fileName);
 			if (File.Exists(_installDirectory + "\\Missions\\" + _fileName + "_Resdata.txt")) _fileName = _installDirectory + "\\Missions\\" + _fileName + "_Resdata.txt";
 			else _fileName = _installDirectory + "\\Missions\\" + _fileName + ".ini";
@@ -398,36 +399,35 @@ namespace Idmr.Yogeme
                 throw new ArgumentException("Cannot open resource file:\n" + _backdropDirectory + file + "\n\nCheck your platform installation path.");
             }
 		}
-		bool platformInstalled()
+		bool platformInstalled(Settings config)
 		{
-			Settings s = new Settings();
 			string dir = "\\IVFILES\\";
 			//string file = "SPEC640.LST";
 			// TODO: guide install off of mission path?
 			switch (_platform)
 			{
 				case MissionFile.Platform.BoP:
-					if (!s.BopInstalled) return false;
-					_installDirectory = s.BopPath;
+					if (!config.BopInstalled) return false;
+					_installDirectory = config.BopPath;
 					_backdropDirectory = _installDirectory + dir;
 					_numBackdrops = 17;	// 8, then 38 lines, then 9
 					break;
 				case MissionFile.Platform.TIE:
-					if (!s.TieInstalled) return false;
-					_installDirectory = s.TiePath;
+					if (!config.TieInstalled) return false;
+					_installDirectory = config.TiePath;
 					_backdropDirectory = _installDirectory + dir;
 					_numBackdrops = 8;
 					break;
 				case MissionFile.Platform.XvT:
-					if (!s.XvtInstalled) return false;
-					_installDirectory = s.XvtPath;
+					if (!config.XvtInstalled) return false;
+					_installDirectory = config.XvtPath;
 					_backdropDirectory = _installDirectory + dir;
 					_numBackdrops = 8;
 					break;
 				case MissionFile.Platform.XWA:
-					if (!s.XwaInstalled) return false;
-					_installDirectory = s.XwaPath;
-					_backdropDirectory = s.XwaPath + "\\RESDATA\\";
+					if (!config.XwaInstalled) return false;
+					_installDirectory = config.XwaPath;
+					_backdropDirectory = config.XwaPath + "\\RESDATA\\";
 					_numBackdrops = 103;
 					// permanently increasing this to 512. Note however that SBD starfield is 2812px, so it'll be cut off
 					int size = 256;

@@ -1,12 +1,13 @@
 ﻿/*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, TIE through XWA
- * Copyright (C) 2007-2017 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2020 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.4
+ * VERSION: 1.4+
  */
 
 /* CHANGELOG
+ * [UPD] Settings passed in instead of re-init
  * v1.4, 171016
  * [ADD #11] made form resizable, although Height only
  * v1.2.3, 141214
@@ -27,16 +28,13 @@ namespace Idmr.Yogeme
 	/// <summary>One of the simplest forms, allows for LST editing</summary>
 	public partial class LstForm : Form
 	{
-		Settings.Platform _platform;	// 1=XvT, 2=BoP, 3=XWA
-		string _installPath;
+		readonly string _installPath;
 
 		/// <summary>Initialize the form, gather file listings from all categories</summary>
 		/// <param name="plat">Platform identifier</param>
-		public LstForm(Settings.Platform platform)
+		public LstForm(Settings.Platform platform, Settings config)
 		{
 			InitializeComponent();
-			_platform = platform;
-			Settings config = new Settings();
 			if (platform==Settings.Platform.XvT) _installPath = config.XvtPath;
 			else if (platform==Settings.Platform.BoP) _installPath = config.BopPath;
 			else if (platform==Settings.Platform.XWA) _installPath = config.XwaPath;
@@ -93,7 +91,7 @@ namespace Idmr.Yogeme
 			if (cboFile.SelectedIndex == -1) return;
 			txtLST.Text = "";
 			StreamReader sr = File.OpenText(_installPath+"\\"+cboFile.Text);
-			string s = null;
+			string s;
 			while ((s = sr.ReadLine()) != null) txtLST.Text += s + "\r\n";
 			sr.Close();
 		}
@@ -105,7 +103,7 @@ namespace Idmr.Yogeme
 			sw.Close();
 		}
 
-		private void LstForm_Resize(object sender, EventArgs e)
+		private void form_Resize(object sender, EventArgs e)
 		{
 			txtLST.Height = Height - 117;
 		}

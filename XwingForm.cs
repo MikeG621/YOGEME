@@ -8,6 +8,7 @@
  */
 
 /* CHANGELOG:
+ * [FIX] Removed RunVerify() call
  * [UPD] menuTest moved under Tools, changed to &Test
  * v1.8, 201004
  * [FIX] Deactivate added to force focus fix [JB]
@@ -396,8 +397,8 @@ namespace Idmr.Yogeme
 			Text = "Ye Olde Galactic Empire Mission Editor - X-wing - " + _mission.MissionFileName;
 			_config.LastMission = fileMission;
 			refreshRecent();  //[JB] Setting _config.LastMission modifies the Recent list.  Need to refresh the menu to match.
-							  //Verify the mission after it's been saved
-			if (_config.Verify) Common.RunVerify(_mission.MissionPath, _config.VerifyLocation);
+			//Verify the mission after it's been saved
+			//if (_config.Verify) Common.RunVerify(_mission.MissionPath, _config);
 		}
 		void startup()
 		{

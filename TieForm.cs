@@ -7,6 +7,8 @@
  */
 
 /* CHANGELOG
+ * [FIX] Double Verify
+ * [UPD] _config passed to Officer form, Backdrops, RunVerify()
  * [UPD #20] Test function now attempts to detect platform from MissionPath
  * [UPD] menuTest moved under Tools, changed to &Test
  * v1.8, 201004
@@ -504,7 +506,7 @@ namespace Idmr.Yogeme
 			_config.LastMission = fileMission;
 			refreshRecent();  //[JB] Setting _config.LastMission modifies the Recent list.  Need to refresh the menu to match.
 							  //Verify the mission after it's been saved
-			if (_config.Verify) Common.RunVerify(_mission.MissionPath, _config.VerifyLocation);
+			if (_config.Verify) Common.RunVerify(_mission.MissionPath, _config);
 		}
 		void setInteractiveLabelColor(Label control, bool highlight)
 		{
@@ -1456,7 +1458,7 @@ namespace Idmr.Yogeme
 		void menuVerify_Click(object sender, EventArgs e)
 		{
 			menuSave_Click("Verify", new EventArgs());
-			Common.RunVerify(_mission.MissionPath, _config.VerifyLocation);
+			if (!_config.Verify) Common.RunVerify(_mission.MissionPath, _config);
 		}
 		void menuTest_Click(object sender, EventArgs e)
 		{
@@ -1476,7 +1478,7 @@ namespace Idmr.Yogeme
 				path = _config.TiePath + "\\";
 			}
 
-			if (_config.VerifyTest && !_config.Verify) Common.RunVerify(_mission.MissionPath, _config.VerifyLocation);
+			if (_config.VerifyTest && !_config.Verify) Common.RunVerify(_mission.MissionPath, _config);
 			Version os = Environment.OSVersion.Version;
 			bool isWin7 = (os.Major == 6 && os.Minor == 1);
 			System.Diagnostics.Process explorer = null;
@@ -2135,7 +2137,7 @@ namespace Idmr.Yogeme
 		{
 			try
 			{
-				BackdropDialog dlg = new BackdropDialog(Platform.MissionFile.Platform.TIE, _mission.FlightGroups[_activeFG].Status1);
+				BackdropDialog dlg = new BackdropDialog(Platform.MissionFile.Platform.TIE, _mission.FlightGroups[_activeFG].Status1, _config);
 				if (dlg.ShowDialog() == DialogResult.OK)
 				{
 					numBackdrop.Value = dlg.BackdropIndex;  // simply GUI
@@ -3196,7 +3198,7 @@ namespace Idmr.Yogeme
 			if (_fOfficers != null)  //[JB] Prevent opening multiple dialogs.
 				_fOfficers.Close();
 
-			_fOfficers = new OfficerPreviewForm(_mission.BriefingQuestions, cboOfficer.SelectedIndex, cboQuestion.SelectedIndex);
+			_fOfficers = new OfficerPreviewForm(_mission.BriefingQuestions, cboOfficer.SelectedIndex, cboQuestion.SelectedIndex, _config);
 			_fOfficers.Show();
 		}
 

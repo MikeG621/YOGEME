@@ -3,7 +3,7 @@
  * Copyright (C) 2007-2020 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.6.4
+ * VERSION: 1.6.4+
  */
 
 /* CHANGELOG
@@ -33,16 +33,16 @@ namespace Idmr.Yogeme
 	/// <summary> Loads Battle#.LFD for editing</summary>
 	public partial class BattleForm : Form
 	{
-		string _battlePath;	// path to selected Battle#.lfd
-		string _installPath;	// TIE95 install directory
+		string _battlePath; // path to selected Battle#.lfd
+		readonly string _installPath;	// TIE95 install directory
 		int _battleIndex = 1;
 		int _numMiss;
 		string[] _missionFiles = new string[8];
 		string[] _missionDescriptions = new string[8];
 		string _deltName;
 		Bitmap _systemImage;
-		Bitmap _galaxyImage;
-		ColorPalette _systemPalette;
+		readonly Bitmap _galaxyImage;
+		readonly ColorPalette _systemPalette;
 		bool _loading = false;
 		bool _dragging = false;
 		LfdFile _battle;
@@ -54,7 +54,7 @@ namespace Idmr.Yogeme
 			if (!config.TieInstalled)
 			{
 				MessageBox.Show("TIE95 installation not found, Battle function not available", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				this.Close();
+				Close();
 				return;
 			}
 			else
@@ -305,8 +305,10 @@ namespace Idmr.Yogeme
 
 		void opnSystem_FileOk(object sender, System.ComponentModel.CancelEventArgs e)
 		{
-			_systemImage = new Bitmap(opnSystem.FileName);
-			_systemImage.Palette = _systemPalette;
+			_systemImage = new Bitmap(opnSystem.FileName)
+			{
+				Palette = _systemPalette
+			};
 			picSystem.Width = _systemImage.Width;
 			picSystem.Height = _systemImage.Height;
 			picSystem.Image = _systemImage;

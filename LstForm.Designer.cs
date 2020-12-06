@@ -88,7 +88,7 @@
 			this.MinimumSize = new System.Drawing.Size(412, 400);
 			this.Name = "LstForm";
 			this.Text = "YOGEME LST Editor";
-			this.Resize += new System.EventHandler(this.LstForm_Resize);
+			this.Resize += new System.EventHandler(this.form_Resize);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 

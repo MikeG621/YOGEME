@@ -7,6 +7,9 @@
  */
 
 /* CHANGELOG
+ * [UPD] Settings passed in instead of re-init
+ * [UPD] replaced StringFunctions.GetFileName with Path
+ * [UPD] added a \\ into _installDirectory so it could be pulled out of everything else
  * [ADD] ObjectProfile_fg_#
  * v1.8, 201004
  * [UPD] improved use* bool efficiency
@@ -51,10 +54,10 @@ namespace Idmr.Yogeme
 		readonly string _hangarMapFile = "";
 		readonly string _famHangarMapFile = "";
 		readonly string _installDirectory = "";
-		readonly string _mis = "\\Missions\\";
-		readonly string _res = "\\Resdata\\";
-		readonly string _wave = "\\Wave\\";
-		readonly string _fm = "\\FlightModels\\";
+		readonly string _mis = "Missions\\";
+		readonly string _res = "Resdata\\";
+		readonly string _wave = "Wave\\";
+		readonly string _fm = "FlightModels\\";
 		enum ReadMode { None = -1, Backdrop, Mission, Sounds, Objects, HangarObjects, HangarCamera, FamilyHangarCamera, HangarMap, FamilyHangarMap }
 		bool _loading = false;
 		readonly int[,] _cameras = new int[5, 3];
@@ -65,10 +68,10 @@ namespace Idmr.Yogeme
 		readonly int[] _defaultShuttlePosition = new int[4] { 1127, 959, 0, 43136 };
 		readonly int[] _defaultRoofCranePosition = new int[3] { -1400, 786, -282 };
 
-		public XwaHookDialog(Mission mission)
+		public XwaHookDialog(Mission mission, Settings config)
 		{
 			InitializeComponent();
-			_mission = Idmr.Common.StringFunctions.GetFileName(mission.MissionPath, false);
+			_mission = Path.GetFileNameWithoutExtension(mission.MissionPath);
 			if (_mission == "NewMission")
 			{
 				MessageBox.Show("Please perform initial save prior to hook assignment.", "New Mission detected", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -131,15 +134,14 @@ namespace Idmr.Yogeme
 					_defaultFamilyCameras[i, j] = _familyCameras[i, j];
 			#endregion
 
-			Settings s = new Settings();
-			if (s.XwaInstalled)
+			if (config.XwaInstalled)
 			{
-				_installDirectory = s.XwaPath;
-				grpBackdrops.Enabled = File.Exists(_installDirectory + "\\Hook_Backdrops.dll");
-				grpMission.Enabled = File.Exists(_installDirectory + "\\Hook_Mission_Tie.dll");
-				grpSounds.Enabled = File.Exists(_installDirectory + "\\Hook_Engine_Sound.dll");
-				grpObjects.Enabled = File.Exists(_installDirectory + "\\Hook_Mission_Objects.dll");
-				grpHangars.Enabled = File.Exists(_installDirectory + "\\Hook_Hangars.dll");
+				_installDirectory = config.XwaPath + "\\";
+				grpBackdrops.Enabled = File.Exists(_installDirectory + "Hook_Backdrops.dll");
+				grpMission.Enabled = File.Exists(_installDirectory + "Hook_Mission_Tie.dll");
+				grpSounds.Enabled = File.Exists(_installDirectory + "Hook_Engine_Sound.dll");
+				grpObjects.Enabled = File.Exists(_installDirectory + "Hook_Mission_Objects.dll");
+				grpHangars.Enabled = File.Exists(_installDirectory + "Hook_Hangars.dll");
 
 				_bdFile = checkFile("_Resdata.txt");
 				_soundFile = checkFile("_Sounds.txt");

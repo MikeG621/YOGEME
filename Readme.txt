@@ -16,6 +16,8 @@ For program usage and help (with images), see "yogeme.chm".
 ==========
 Version History
 
+ - Various code cleanups
+ - (TIE) Fixed a double Verify condition
  - (TIE-XWA) Test function will now detect the platform per the mission location and launch there instead of default [Issue #20]
  - (All) Test menu item moved under Tools, changed to &Test (suggestion per Issue #20)
  - (All) The MissionVerify path setting will now revert to default if it's missing

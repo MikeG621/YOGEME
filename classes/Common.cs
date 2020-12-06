@@ -8,6 +8,7 @@
 
 /* CHANGELOG
  * [FIX] Verify falls back to default if invalid, then saves default if present
+ * [UPD] Verify now takes in entire Settings instead of just the path
  * v1.8, 201004
  * [FIX] Converter call didn't have new path
  * [NEW] Added BoP Converter support
@@ -94,8 +95,9 @@ namespace Idmr.Yogeme
 		/// <summary>Run MissionVerify.exe on open mission</summary>
 		/// <remarks>MissionVerify part is take from <see cref="Settings.VerifyLocation"/></remarks>
 		/// <param name="path">Path to mission file</param>
-		public static void RunVerify(string missionPath, string verifyPath)
+		public static void RunVerify(string missionPath, Settings config)
 		{
+			string verifyPath = config.VerifyLocation;
 			try
 			{
 				if (!File.Exists(verifyPath))
@@ -104,7 +106,6 @@ namespace Idmr.Yogeme
 					if (!File.Exists(path)) throw new ArgumentException("Verify executable path is not valid.");
 					else
 					{
-						var config = new Settings();
 						config.VerifyLocation = path;
 						config.SaveSettings();
 						verifyPath = path;

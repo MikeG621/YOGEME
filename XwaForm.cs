@@ -7,6 +7,7 @@
  */
 
 /* CHANGELOG
+ * [UPD] _config passed to Hook dialog, LST form, Backdrops. RunVerify()
  * [UPD #20] Test function now attempts to detect platform from MissionPath
  * [UPD] menuTest moved under Tools, changed to &Test
  * v1.8, 201004
@@ -806,7 +807,7 @@ namespace Idmr.Yogeme
 			_config.LastMission = fileMission;
 			refreshRecent();  //[JB] Setting _config.LastMission modifies the Recent list.  Need to refresh the menu to match.
 							  //Verify the mission after it's been saved
-			if (_config.Verify) Common.RunVerify(_mission.MissionPath, _config.VerifyLocation);
+			if (_config.Verify) Common.RunVerify(_mission.MissionPath, _config);
 		}
 		void setInteractiveLabelColor(Label control, bool highlight)
 		{
@@ -1679,7 +1680,7 @@ namespace Idmr.Yogeme
 		}
 		void menuHooks_Click(object sender, EventArgs e)
 		{
-			try { new XwaHookDialog(_mission).ShowDialog(); }
+			try { new XwaHookDialog(_mission, _config).ShowDialog(); }
 			catch (ObjectDisposedException) { /* do nothing */ }
 		}
 		void menuHyperbuoy_Click(object sender, EventArgs e)
@@ -1704,7 +1705,7 @@ namespace Idmr.Yogeme
 		}
 		void menuLST_Click(object sender, EventArgs e)
 		{
-			_fLST = new LstForm(Settings.Platform.XWA);
+			_fLST = new LstForm(Settings.Platform.XWA, _config);
 			_fLST.Show();
 		}
 		void menuMap_Click(object sender, EventArgs e)
@@ -2121,7 +2122,7 @@ namespace Idmr.Yogeme
 				path = _config.XwaPath + "\\";
 			}
 
-			if (_config.VerifyTest && !_config.Verify) Common.RunVerify(_mission.MissionPath, _config.VerifyLocation);
+			if (_config.VerifyTest && !_config.Verify) Common.RunVerify(_mission.MissionPath, _config);
 			int index = 0;
 			while (File.Exists(path + "test" + index + "0.plt")) index++;
 			string pilot = "test" + index + "0.plt";
@@ -2188,7 +2189,7 @@ namespace Idmr.Yogeme
 		void menuVerify_Click(object sender, EventArgs e)
 		{
 			menuSave_Click("Verify", new System.EventArgs());
-			if (!_config.Verify) Common.RunVerify(_mission.MissionPath, _config.VerifyLocation);    //prevents from doing this twice due to Save
+			if (!_config.Verify) Common.RunVerify(_mission.MissionPath, _config);    //prevents from doing this twice due to Save
 		}
 		#endregion
 		#region FlightGroups
@@ -3040,8 +3041,8 @@ namespace Idmr.Yogeme
 			try
 			{
 				BackdropDialog dlg = null;
-				if (_hookBackdropInstalled) dlg = new BackdropDialog(_mission.FlightGroups[_activeFG].Backdrop, _mission.FlightGroups[_activeFG].GlobalCargo, _mission.MissionFileName);
-				else dlg = new BackdropDialog(_mission.FlightGroups[_activeFG].Backdrop, _mission.FlightGroups[_activeFG].GlobalCargo);
+				if (_hookBackdropInstalled) dlg = new BackdropDialog(_mission.FlightGroups[_activeFG].Backdrop, _mission.FlightGroups[_activeFG].GlobalCargo, _mission.MissionFileName, _config);
+				else dlg = new BackdropDialog(_mission.FlightGroups[_activeFG].Backdrop, _mission.FlightGroups[_activeFG].GlobalCargo, _config);
 				if (dlg.ShowDialog() == DialogResult.OK)
 				{
 					cboGlobCargo.SelectedIndex = dlg.Shadow;

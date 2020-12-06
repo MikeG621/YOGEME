@@ -24,11 +24,13 @@
 
 /* A note on compilation: be sure to add the following assembly references to the project.
  * - System
+ * - System.Core
  * - System.Data
  * - System.Drawing
  * - System.Windows.Forms
  * - System.XML
- * - Idmr.Platform (plus other Idmr DLLs)
+ * - Idmr.LfdReader (and required Idmr DLLs)
+ * - Idmr.Platform (and required Idmr DLLs)
  * 
  * If including Idmr.Platform (or others) within the YOGEME project solution,
  * set their application output type to Class Library and adjust the assembly
