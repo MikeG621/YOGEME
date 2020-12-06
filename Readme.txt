@@ -20,6 +20,7 @@ Version History
  - (All) Test menu item moved under Tools, changed to &Test (suggestion per Issue #20)
  - (All) The MissionVerify path setting will now revert to default if it's missing
  - (XWA) Added [Objects] ObjectProfile_fg_# hook support
+ - (XWA) Backdrop dialog now saves the images in memory to make opening the dialog repeatedly much faster
 
 v1.8, 04 Oct 2020
  - (All) Fixed an exception due to incomplete CraftDataManager creation that would occur when platform not detected [Issue #37]
@@ -368,8 +369,8 @@ Copyright Information
 
 Copyright © 2007- Michael Gaisser
 This program and related files are licensed under the Mozilla Public License.
-See MPL.txt for the full text. If for some reason MPL.txt was not distributed
-with this program, you can obtain the full text of the license at
+See License.txt for the full text. If for some reason License.txt was not
+distributed with this program, you can obtain the full text of the license at
 http://mozilla.org/MPL/2.0/.
 
 The Galactic Empire: Empire Reborn is Copyright © 2004- Tiberius Fel
@@ -377,7 +378,6 @@ The Galactic Empire: Empire Reborn is Copyright © 2004- Tiberius Fel
 "Star Wars" and related items are trademarks of LucasFilm Ltd and
 LucasArts Entertainment Co.
 
-THESE FILES HAVE BEEN TESTED AND DECLARED FUNCTIONAL BY THE IDMR, AS SUCH THE
-IDMR AND THE GALACTIC EMPIRE: EMPIRE REBORN CANNOT BE HELD RESPONSIBLE OR
-LIABLE FOR UNWANTED EFFECTS DUE ITS USE OR MISUSE. THIS SOFTWARE IS OFFERED AS
-IS WITHOUT WARRANTY OF ANY KIND.
+This software is provided "as is" without warranty of any kind; including that
+the software is free of defects, merchantable, fit for a particular purpose or
+non-infringing. See the full license text for more details.

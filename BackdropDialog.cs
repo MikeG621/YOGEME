@@ -3,10 +3,12 @@
  * Copyright (C) 2007-2020 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.7
+ * VERSION: 1.7+
  */
 
 /* CHANGELOG
+ * [UPD] _planets to static so it only inits once
+ * [UPD] Replaced StringFunctions.GetFilename() with Path
  * v1.7, 200816
  * [UPD] images now use foreground instead of background [JB]
  * [FIX] possible IndexOutOfRange when clicking thumbnails [JB]
@@ -45,14 +47,13 @@ namespace Idmr.Yogeme
 	/// <summary>Dialog to visually choose backdrop images</summary>
 	public partial class BackdropDialog : Form
 	{
-		// TODO: look into making _planets static, so it only has to initialize the first time each session
 		readonly MissionFile.Platform _platform;
 		int _index;
 		int _shadow = 0;
 		string _backdropDirectory = "";
 		string _installDirectory = "";
 		int _numBackdrops = 0;
-		DatFile _planets;
+		static DatFile _planets;
 #pragma warning disable IDE1006 // Naming Styles
 		readonly PictureBox[] thumbs = new PictureBox[103];
 #pragma warning restore IDE1006 // Naming Styles
@@ -61,7 +62,7 @@ namespace Idmr.Yogeme
 
 		/// <summary>The selected Shadow setting</summary>
 		/// <remarks>XWA only</remarks>
-		public byte Shadow { get { return Convert.ToByte((_shadow != -1 ? _shadow : 255)); } }
+		public byte Shadow { get { return Convert.ToByte(_shadow != -1 ? _shadow : 255); } }
 		/// <summary>The selected Backdrop value</summary>
 		public byte BackdropIndex { get { return Convert.ToByte(_index); } }
 
@@ -128,7 +129,7 @@ namespace Idmr.Yogeme
 			if (_shadow < 0 || _shadow > 6) _shadow = 0;
 			InitializeComponent();
 			if (!platformInstalled()) throw new ApplicationException("Platform installation not found, feature unavailable.");
-			_fileName = Idmr.Common.StringFunctions.GetFileName(fileName, false);
+			_fileName = Path.GetFileNameWithoutExtension(fileName);
 			if (File.Exists(_installDirectory + "\\Missions\\" + _fileName + "_Resdata.txt")) _fileName = _installDirectory + "\\Missions\\" + _fileName + "_Resdata.txt";
 			else _fileName = _installDirectory + "\\Missions\\" + _fileName + ".ini";
 			createThumbnails();
@@ -268,18 +269,21 @@ namespace Idmr.Yogeme
 			else
 			{
 				thumbs[24].Enabled = false;
-				_planets = new DatFile();
-				_planets.Groups.AutoSort = false;
-				setThumbnail("planet.dat", 0, 24);
-				_planets.Groups.Add(-1);
-				setThumbnail("planet.dat", 25, 35);
-				setThumbnail("wrapback.dat", 60, 2);
-				setThumbnail("dsfire.dat", 62, 1);
-				setThumbnail("nebula.dat", 63, 10);
-				setThumbnail("galaxy.dat", 73, 10);
-				setThumbnail("backdrop.dat", 83, 11);
-				setThumbnail("wrapback.dat", 94, 4);
-				setThumbnail("nebula.dat", 98, 5);
+				if (_planets == null)
+				{
+					_planets = new DatFile();
+					_planets.Groups.AutoSort = false;
+					setThumbnail("planet.dat", 0, 24);
+					_planets.Groups.Add(-1);
+					setThumbnail("planet.dat", 25, 35);
+					setThumbnail("wrapback.dat", 60, 2);
+					setThumbnail("dsfire.dat", 62, 1);
+					setThumbnail("nebula.dat", 63, 10);
+					setThumbnail("galaxy.dat", 73, 10);
+					setThumbnail("backdrop.dat", 83, 11);
+					setThumbnail("wrapback.dat", 94, 4);
+					setThumbnail("nebula.dat", 98, 5);
+				}
 				for (int i = 0; i < _planets.NumberOfGroups; i++)
 				{
 					if (i == 24) continue;
@@ -399,6 +403,7 @@ namespace Idmr.Yogeme
 			Settings s = new Settings();
 			string dir = "\\IVFILES\\";
 			//string file = "SPEC640.LST";
+			// TODO: guide install off of mission path?
 			switch (_platform)
 			{
 				case MissionFile.Platform.BoP:
@@ -485,13 +490,11 @@ namespace Idmr.Yogeme
 			{
 				try
 				{
-					//pctBackdrop.Image = thumbs[(int)numBackdrop.Value].BackgroundImage;
 					pctBackdrop.Image = thumbs[(int)numBackdrop.Value].Image;
 					_index = (int)numBackdrop.Value;
 				}
 				catch
 				{
-					//pctBackdrop.Image = thumbs[_index].BackgroundImage;
 					pctBackdrop.Image = thumbs[_index].Image;
 					numBackdrop.Value = _index;
 				}

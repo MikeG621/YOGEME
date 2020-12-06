@@ -43,7 +43,6 @@ using System.IO;
  *     MeshLayerInstance: vertices are transformed into screen coordinates relative to the mesh origin.
  */
 
-//TODO: overall, should add XML to just about everything, change fields to auto-properties, etc.
 namespace Idmr.Yogeme.MapWireframe
 {
 
@@ -253,7 +252,6 @@ namespace Idmr.Yogeme.MapWireframe
 	}
 
 	/// <summary>Represents the mesh faces of a single LOD.</summary>
-	/// <remarks>Discarded prototyping code attempted to select a lower detail mesh to improve drawing performance, but it wasn't very helpful for normal models.</remarks>
 	public class OptLod
 	{
 		/// <summary>Initializes the LOD at the maximum value</summary>
@@ -1021,6 +1019,7 @@ namespace Idmr.Yogeme.MapWireframe
 		public int LongestSpanRaw { get; private set; }
 		/// <summary>Gets the span of the widest dimension, derived from bounding box, expressed in meters.</summary>
 		public int LongestSpanMeters { get { return (int)(LongestSpanRaw / 40.96); } }
+		/// <summary>Gets the mesh source</summary>
 		public List<MeshLayerDefinition> MeshLayerDefinitions { get; } = new List<MeshLayerDefinition>();
 	}
 
