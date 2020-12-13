@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2020 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.8+
+ * VERSION: 1.8.1
  */
 
 /* CHANGELOG
+ * v1.8.1, 201213
  * [UPD] _config passed to LST form, Backdrops, RunVerify()
  * [UPD #20] Test function now attempts to detect platform from MissionPath
  * [UPD] menuTest moved under Tools, changed to &Test

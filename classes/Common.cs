@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2020 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.8+
+ * VERSION: 1.8.1
  */
 
 /* CHANGELOG
+ * v1.8.1, 201213
  * [FIX] Verify falls back to default if invalid, then saves default if present
  * [UPD] Verify now takes in entire Settings instead of just the path
  * v1.8, 201004

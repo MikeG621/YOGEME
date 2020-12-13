@@ -2,8 +2,8 @@
 ======================================
 
 Author: Michael Gaisser (mjgaisser@gmail.com)
-Version: 1.8
-Date: 2020.10.04
+Version: 1.8.1
+Date: 2020.12.13
 
 Thank you for downloading YOGEME, the all-in-one mission editor for the X-Wing
 series, Xwing95 through X-wing Alliance.  This program allows easy mission
@@ -16,6 +16,7 @@ For program usage and help (with images), see "yogeme.chm".
 ==========
 Version History
 
+v1.8.1, 13 Dec 2020
  - Various code cleanups
  - (TIE) Fixed a double Verify condition
  - (TIE-XWA) Test function will now detect the platform per the mission location and launch there instead of default [Issue #20]
@@ -23,6 +24,8 @@ Version History
  - (All) The MissionVerify path setting will now revert to default if it's missing
  - (XWA) Added [Objects] ObjectProfile_fg_# hook support
  - (XWA) Backdrop dialog now saves the images in memory to make opening the dialog repeatedly much faster
+ - (XWA) Added SuperBackdrop detection for the XWAUP Mega Patch
+ - (XWA) GlobalCargo dropdown now lists Shadow when Backdrops are selected
 
 v1.8, 04 Oct 2020
  - (All) Fixed an exception due to incomplete CraftDataManager creation that would occur when platform not detected [Issue #37]

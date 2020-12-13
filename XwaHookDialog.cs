@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2020 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.8+
+ * VERSION: 1.8.1
  */
 
 /* CHANGELOG
+ * v1.8.1, 201213
  * [UPD] Settings passed in instead of re-init
  * [UPD] replaced StringFunctions.GetFileName with Path
  * [UPD] added a \\ into _installDirectory so it could be pulled out of everything else

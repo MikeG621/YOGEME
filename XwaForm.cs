@@ -3,10 +3,12 @@
  * Copyright (C) 2007-2020 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.8+
+ * VERSION: 1.8.1
  */
 
 /* CHANGELOG
+ * v1.8.1, 201213
+ * [UPD] GlobalCargo cbo now says Shadow with the correct quantity
  * [UPD] _config passed to Hook dialog, LST form, Backdrops. RunVerify()
  * [UPD #20] Test function now attempts to detect platform from MissionPath
  * [UPD] menuTest moved under Tools, changed to &Test
@@ -2928,8 +2930,8 @@ namespace Idmr.Yogeme
 			chkUnk40.Checked = _mission.FlightGroups[_activeFG].Unknowns.Unknown40;
 			chkUnk41.Checked = _mission.FlightGroups[_activeFG].Unknowns.Unknown41;
 			#endregion
-			_loading = btemp;
 			enableBackdrop(_mission.FlightGroups[_activeFG].CraftType == 0xB7);
+			_loading = btemp;
 
 			if (!lstFG.Focused) lstFG.Focus();  //[JB] Return control back to the list (helpful to maintain navigation using the arrow keys when certain tabs are open)
 		}
@@ -2946,6 +2948,7 @@ namespace Idmr.Yogeme
 		#region Craft
 		void enableBackdrop(bool state)
 		{
+			bool btemp = _loading;
 			numBackdrop.Enabled = state;
 			cmdBackdrop.Enabled = state;
 			cboAI.Enabled = !state;
@@ -2969,8 +2972,15 @@ namespace Idmr.Yogeme
 			numSC.Enabled = !state;
 			chkRandSC.Enabled = !state;
 			numExplode.Enabled = !state;
+			_loading = true;
 			if (state)
 			{
+				int shadow = _mission.FlightGroups[_activeFG].Shadow;
+				cboGlobCargo.Items.Clear();
+				cboGlobCargo.Items.Add("None (0)");
+				for (int i = 1; i <= 6; i++) cboGlobCargo.Items.Add("Shadow " + i);
+				try { cboGlobCargo.SelectedIndex = shadow; }
+				catch { cboGlobCargo.SelectedIndex = 0; }
 				lblGC.Text = "Shadow";
 				lblCargo.Text = "Brightness";
 				lblSC.Text = "Size";
@@ -2980,12 +2990,19 @@ namespace Idmr.Yogeme
 			}
 			else
 			{
+				int cargo = _mission.FlightGroups[_activeFG].GlobalCargo;
+				cboGlobCargo.Items.Clear();
+				cboGlobCargo.Items.Add("None");
+				for (int i = 1; i <= 16; i++) cboGlobCargo.Items.Add("Global Cargo " + i);
+				try { cboGlobCargo.SelectedIndex = cargo; }
+				catch { cboGlobCargo.SelectedIndex = 0; }
 				lblGC.Text = "Global Cargo";
 				lblCargo.Text = "Cargo";
 				lblSC.Text = "Special Cargo";      //[JB] Fixed typo
 				lblName.Text = "Name";
 				numSC_ValueChanged("EnableBackdrop", new EventArgs());
 			}
+			_loading = btemp;
 		}
 		void refreshStatus()
 		{
@@ -2999,7 +3016,7 @@ namespace Idmr.Yogeme
 
 		void cboCraft_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			enableBackdrop((cboCraft.SelectedIndex == 0xB7));
+			enableBackdrop(cboCraft.SelectedIndex == 0xB7);
 			if (_loading) return;
 			_mission.FlightGroups[_activeFG].CraftType = Common.Update(this, _mission.FlightGroups[_activeFG].CraftType, Convert.ToByte(cboCraft.SelectedIndex));
 			updateFGList();

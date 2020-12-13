@@ -4,10 +4,11 @@
  * This file authored by "JB" (Random Starfighter) (randomstarfighter@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.8+
+ * VERSION: 1.8.1
  */
 
 /* CHANGELOG:
+ * v1.8.1, 201213
  * [FIX] Removed RunVerify() call
  * [UPD] menuTest moved under Tools, changed to &Test
  * v1.8, 201004
