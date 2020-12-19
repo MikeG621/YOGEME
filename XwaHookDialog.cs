@@ -3,10 +3,13 @@
  * Copyright (C) 2007-2020 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.8.1
+ * VERSION: 1.8.2
  */
 
 /* CHANGELOG
+ * v1.8.2, 201219
+ * [FIX] Add BD/Sound/Object/Hangar was cutting off first letter due to removal of "\\"
+ * [UPD] Default ObjectsProfile updated to "default"
  * v1.8.1, 201213
  * [UPD] Settings passed in instead of re-init
  * [UPD] replaced StringFunctions.GetFileName with Path
@@ -527,7 +530,7 @@ namespace Idmr.Yogeme
 			if (_installDirectory != "") opnBackdrop.InitialDirectory = _installDirectory + _res;
 			DialogResult res = opnBackdrop.ShowDialog();
 			if (res == DialogResult.OK)
-				lstBackdrops.Items.Add(opnBackdrop.FileName.Substring(opnBackdrop.FileName.IndexOf(_res) + 1));
+				lstBackdrops.Items.Add(opnBackdrop.FileName.Substring(opnBackdrop.FileName.IndexOf(_res)));
 		}
 		private void cmdRemoveBD_Click(object sender, EventArgs e)
 		{
@@ -581,7 +584,7 @@ namespace Idmr.Yogeme
 			DialogResult res = opnSounds.ShowDialog();
 			if (res == DialogResult.OK)
 			{
-				string line = opnSounds.FileName.Substring(opnSounds.FileName.IndexOf(_wave) + 1) + " = ";
+				string line = opnSounds.FileName.Substring(opnSounds.FileName.IndexOf(_wave)) + " = ";
 				opnSounds.Title = "Select new sound...";
 				res = opnSounds.ShowDialog();
 				if (res == DialogResult.OK)
@@ -615,14 +618,14 @@ namespace Idmr.Yogeme
 				DialogResult res = opnObjects.ShowDialog();
 				if (res == DialogResult.OK)
 				{
-					string line = opnObjects.FileName.Substring(opnObjects.FileName.IndexOf(_fm) + 1) + " = ";
+					string line = opnObjects.FileName.Substring(opnObjects.FileName.IndexOf(_fm)) + " = ";
 					opnObjects.Title = "Select new object...";
 					res = opnObjects.ShowDialog();
 					if (res == DialogResult.OK)
-						lstObjects.Items.Add(line + opnObjects.FileName.Substring(opnObjects.FileName.IndexOf(_fm) + 1));
+						lstObjects.Items.Add(line + opnObjects.FileName.Substring(opnObjects.FileName.IndexOf(_fm)));
 				}
 			}
-			else if (optMesh.Checked && txtMesh.Text != "" && txtMesh.Text.ToLower() != "full")
+			else if (optMesh.Checked && txtMesh.Text != "" && txtMesh.Text.ToLower() != "default")
 			{
 				string line = "ObjectProfile_fg_" + cboMeshFG.SelectedIndex + "=" + txtMesh.Text;
 				lstObjects.Items.Add(line);
@@ -714,11 +717,11 @@ namespace Idmr.Yogeme
 			DialogResult res = opnObjects.ShowDialog();
 			if (res == DialogResult.OK)
 			{
-				string line = opnObjects.FileName.Substring(opnObjects.FileName.IndexOf(_fm) + 1) + " = ";
+				string line = opnObjects.FileName.Substring(opnObjects.FileName.IndexOf(_fm)) + " = ";
 				opnObjects.Title = "Select new object...";
 				res = opnObjects.ShowDialog();
 				if (res == DialogResult.OK)
-					lstHangarObjects.Items.Add(line + opnObjects.FileName.Substring(opnObjects.FileName.IndexOf(_fm) + 1));
+					lstHangarObjects.Items.Add(line + opnObjects.FileName.Substring(opnObjects.FileName.IndexOf(_fm)));
 			}
 		}
 		private void cmdAddMap_Click(object sender, EventArgs e)

@@ -37,6 +37,7 @@
 			this.thmb5 = new System.Windows.Forms.PictureBox();
 			this.vsbThumbs = new System.Windows.Forms.VScrollBar();
 			this.pnlThumbs = new System.Windows.Forms.Panel();
+			this.thmb103 = new System.Windows.Forms.PictureBox();
 			this.thmb102 = new System.Windows.Forms.PictureBox();
 			this.thmb96 = new System.Windows.Forms.PictureBox();
 			this.thmb48 = new System.Windows.Forms.PictureBox();
@@ -134,6 +135,10 @@
 			this.thmb31 = new System.Windows.Forms.PictureBox();
 			this.thmb55 = new System.Windows.Forms.PictureBox();
 			this.thmb7 = new System.Windows.Forms.PictureBox();
+			this.label3 = new System.Windows.Forms.Label();
+			this.label4 = new System.Windows.Forms.Label();
+			this.lblWindow = new System.Windows.Forms.Label();
+			this.lblImage = new System.Windows.Forms.Label();
 			((System.ComponentModel.ISupportInitialize)(this.pctBackdrop)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numShadow)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numBackdrop)).BeginInit();
@@ -144,6 +149,7 @@
 			((System.ComponentModel.ISupportInitialize)(this.thmb4)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.thmb5)).BeginInit();
 			this.pnlThumbs.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.thmb103)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.thmb102)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.thmb96)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.thmb48)).BeginInit();
@@ -388,6 +394,7 @@
 			// 
 			// pnlThumbs
 			// 
+			this.pnlThumbs.Controls.Add(this.thmb103);
 			this.pnlThumbs.Controls.Add(this.thmb102);
 			this.pnlThumbs.Controls.Add(this.thmb96);
 			this.pnlThumbs.Controls.Add(this.thmb48);
@@ -495,6 +502,16 @@
 			this.pnlThumbs.Name = "pnlThumbs";
 			this.pnlThumbs.Size = new System.Drawing.Size(288, 240);
 			this.pnlThumbs.TabIndex = 14;
+			// 
+			// thmb103
+			// 
+			this.thmb103.Location = new System.Drawing.Point(48, 816);
+			this.thmb103.Name = "thmb103";
+			this.thmb103.Size = new System.Drawing.Size(48, 48);
+			this.thmb103.TabIndex = 12;
+			this.thmb103.TabStop = false;
+			this.thmb103.Tag = "103";
+			this.thmb103.Click += new System.EventHandler(this.thmbArr_Click);
 			// 
 			// thmb102
 			// 
@@ -1466,13 +1483,53 @@
 			this.thmb7.Tag = "7";
 			this.thmb7.Click += new System.EventHandler(this.thmbArr_Click);
 			// 
-			// dlgBackdrop
+			// label3
+			// 
+			this.label3.AutoSize = true;
+			this.label3.Location = new System.Drawing.Point(584, 69);
+			this.label3.Name = "label3";
+			this.label3.Size = new System.Drawing.Size(70, 13);
+			this.label3.TabIndex = 15;
+			this.label3.Text = "Window size:";
+			// 
+			// label4
+			// 
+			this.label4.AutoSize = true;
+			this.label4.Location = new System.Drawing.Point(584, 95);
+			this.label4.Name = "label4";
+			this.label4.Size = new System.Drawing.Size(60, 13);
+			this.label4.TabIndex = 15;
+			this.label4.Text = "Image size:";
+			// 
+			// lblWindow
+			// 
+			this.lblWindow.AutoSize = true;
+			this.lblWindow.Location = new System.Drawing.Point(656, 69);
+			this.lblWindow.Name = "lblWindow";
+			this.lblWindow.Size = new System.Drawing.Size(48, 13);
+			this.lblWindow.TabIndex = 15;
+			this.lblWindow.Text = "256x256";
+			// 
+			// lblImage
+			// 
+			this.lblImage.AutoSize = true;
+			this.lblImage.Location = new System.Drawing.Point(656, 95);
+			this.lblImage.Name = "lblImage";
+			this.lblImage.Size = new System.Drawing.Size(60, 13);
+			this.lblImage.TabIndex = 15;
+			this.lblImage.Text = "1024x1024";
+			// 
+			// BackdropDialog
 			// 
 			this.AcceptButton = this.cmdOK;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.cmdCancel;
-			this.ClientSize = new System.Drawing.Size(728, 276);
+			this.ClientSize = new System.Drawing.Size(728, 275);
+			this.Controls.Add(this.lblImage);
+			this.Controls.Add(this.lblWindow);
+			this.Controls.Add(this.label4);
+			this.Controls.Add(this.label3);
 			this.Controls.Add(this.pnlThumbs);
 			this.Controls.Add(this.vsbThumbs);
 			this.Controls.Add(this.numBackdrop);
@@ -1486,7 +1543,7 @@
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
-			this.Name = "dlgBackdrop";
+			this.Name = "BackdropDialog";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Backdrop Dialog";
 			((System.ComponentModel.ISupportInitialize)(this.pctBackdrop)).EndInit();
@@ -1499,6 +1556,7 @@
 			((System.ComponentModel.ISupportInitialize)(this.thmb4)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.thmb5)).EndInit();
 			this.pnlThumbs.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.thmb103)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.thmb102)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.thmb96)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.thmb48)).EndInit();
@@ -1715,5 +1773,10 @@
 		private System.Windows.Forms.PictureBox thmb31;
 		private System.Windows.Forms.PictureBox thmb55;
 		private System.Windows.Forms.PictureBox thmb102;
+		private System.Windows.Forms.PictureBox thmb103;
+		private System.Windows.Forms.Label label3;
+		private System.Windows.Forms.Label label4;
+		private System.Windows.Forms.Label lblWindow;
+		private System.Windows.Forms.Label lblImage;
 	}
 }

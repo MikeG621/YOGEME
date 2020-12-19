@@ -3,10 +3,12 @@
  * Copyright (C) 2007-2020 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.8.1
+ * VERSION: 1.8.2
  */
 
 /* CHANGELOG
+ * v1.8.2, 201219
+ * [FIX] SBD default backdrop value
  * v1.8.1, 201213
  * [UPD] GlobalCargo cbo now says Shadow with the correct quantity
  * [UPD] _config passed to Hook dialog, LST form, Backdrops. RunVerify()
@@ -2064,7 +2066,7 @@ namespace Idmr.Yogeme
 			{
 				int index = _mission.FlightGroups.Add();
 				_mission.FlightGroups[index].CraftType = 0xB7;
-				_mission.FlightGroups[index].Backdrop = 54;
+				_mission.FlightGroups[index].Backdrop = 55;
 				_mission.FlightGroups[index].LightRGB = "0.0 0.0 0.0";
 				_mission.FlightGroups[index].Brightness = "0.0";
 				if (i < 2)

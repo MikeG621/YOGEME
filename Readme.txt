@@ -2,8 +2,8 @@
 ======================================
 
 Author: Michael Gaisser (mjgaisser@gmail.com)
-Version: 1.8.1
-Date: 2020.12.13
+Version: 1.8.2
+Date: 2020.12.19
 
 Thank you for downloading YOGEME, the all-in-one mission editor for the X-Wing
 series, Xwing95 through X-wing Alliance.  This program allows easy mission
@@ -15,6 +15,14 @@ For program usage and help (with images), see "yogeme.chm".
 
 ==========
 Version History
+
+v1.8.2, 19 Dec 2020
+ - (XWA) Fixed the default SBD indexes
+ - (XWA) Default hook ObjectProfile renamed to "default"
+ - (XWA) Backdrops index-shifted so selection is correct and lines up with AlliED
+ - (XWA) Bypassed loading Planet2.dat if already loaded, resulting in faster loading
+ - (XWA) Added backdrops zoom out abililty for oversized XWA images, with labels to show the sizes
+ - (XWA) Fixed the Add Backdrop/Sound/Object/Hangar buttons that I broke in 1.8.1 by cutting off the first letter...
 
 v1.8.1, 13 Dec 2020
  - Various code cleanups

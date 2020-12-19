@@ -3,10 +3,14 @@
  * Copyright (C) 2007-2020 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.8.1
+ * VERSION: 1.8.2
  */
 
 /* CHANGELOG
+ * v1.8.2, 201219
+ * [NEW] Added zoom out abililty for oversized XWA images, with labels to show the sizes
+ * [FIX] XWA values are really 1-indexed, so added an empty Group to shift properly
+ * [FIX] Added a hook bypass if Planet2 has previously been loaded
  * v1.8.1, 201213
  * [UPD] Settings passed in instead of re-init
  * [UPD] _planets to static so it only inits once
@@ -57,10 +61,11 @@ namespace Idmr.Yogeme
 		int _numBackdrops = 0;
 		static DatFile _planets;
 #pragma warning disable IDE1006 // Naming Styles
-		readonly PictureBox[] thumbs = new PictureBox[103];
+		readonly PictureBox[] thumbs = new PictureBox[104];
 #pragma warning restore IDE1006 // Naming Styles
 		readonly bool _hookInstalled;
 		readonly string _fileName;
+		static bool _planet2Loaded;
 
 		/// <summary>The selected Shadow setting</summary>
 		/// <remarks>XWA only</remarks>
@@ -83,6 +88,7 @@ namespace Idmr.Yogeme
 			if ((_platform == MissionFile.Platform.TIE || _platform == MissionFile.Platform.XvT) && (_index < 0 || _index > 7)) _index = 0;
 			if (_platform == MissionFile.Platform.BoP && (_index < 0 || _index > 16)) _index = 0;
 			InitializeComponent();
+			if (_planets != null) _planets = null;	// allow GC if you've changed platforms, although that'll only work if you open this again
             try  //[JB] Added catch block
             {
 				createThumbnails();
@@ -103,7 +109,7 @@ namespace Idmr.Yogeme
 		{
 			_platform = MissionFile.Platform.XWA;
 			_index = index;
-			if (_index < 0 || _index > 103) _index = 0;
+			if (_index <= 0 || _index > 103 || _index == 25) _index = 1;
 			_shadow = shadow;
 			if (_shadow < 0 || _shadow > 6) _shadow = 0;
 			InitializeComponent();
@@ -126,7 +132,7 @@ namespace Idmr.Yogeme
 			_platform = MissionFile.Platform.XWA;
 			_hookInstalled = true;
 			_index = index;
-			if (_index < 0 || _index > 103) _index = 0;
+			if (_index <= 0 || _index > 103 || _index == 25) _index = 1;
 			_shadow = shadow;
 			if (_shadow < 0 || _shadow > 6) _shadow = 0;
 			InitializeComponent();
@@ -249,8 +255,9 @@ namespace Idmr.Yogeme
 			thumbs[100] = thmb100;
 			thumbs[101] = thmb101;
 			thumbs[102] = thmb102;
+			thumbs[103] = thmb103;
 			#endregion
-			for (int i = 0; i < 103; i++)
+			for (int i = 0; i < 104; i++)
 			{
 				thumbs[i].Tag = i;
 				thumbs[i].SizeMode = PictureBoxSizeMode.Zoom;
@@ -270,13 +277,14 @@ namespace Idmr.Yogeme
 			}
 			else
 			{
-				thumbs[24].Enabled = false;
+				thumbs[25].Enabled = false;
 				if (_planets == null)
 				{
 					_planets = new DatFile();
 					_planets.Groups.AutoSort = false;
-					setThumbnail("planet.dat", 0, 24);
 					_planets.Groups.Add(-1);
+					setThumbnail("planet.dat", 0, 24);
+					_planets.Groups.Add(-2);
 					setThumbnail("planet.dat", 25, 35);
 					setThumbnail("wrapback.dat", 60, 2);
 					setThumbnail("dsfire.dat", 62, 1);
@@ -286,9 +294,9 @@ namespace Idmr.Yogeme
 					setThumbnail("wrapback.dat", 94, 4);
 					setThumbnail("nebula.dat", 98, 5);
 				}
-				for (int i = 0; i < _planets.NumberOfGroups; i++)
+				for (int i = 1; i < _planets.NumberOfGroups; i++)
 				{
-					if (i == 24) continue;
+					if (i == 25) continue;
 					thumbs[i].Image = _planets.Groups[i].Subs[0].Image;
 					thumbs[i].BackColor = System.Drawing.Color.Black;
 				}
@@ -311,12 +319,14 @@ namespace Idmr.Yogeme
 					try
 					{
 						temp = new DatFile(_installDirectory + "\\" + resdata[i]);
+						System.Diagnostics.Debug.WriteLine("Loading " + temp.FileName);
 						int index = 0;
 						for (int g = 0; g < temp.NumberOfGroups; g++)
 						{
 							index = _planets.Groups.GetIndex(temp.Groups[g].ID);
 							if (index != -1)
 							{
+								System.Diagnostics.Debug.WriteLine("Overriding Group #" + index);
 								_planets.Groups[index] = temp.Groups[g];
 								thumbs[index].Image = temp.Groups[g].Subs[0].Image;
 							}
@@ -349,19 +359,27 @@ namespace Idmr.Yogeme
 					}
 					for (int i = 0; i < resdata.Count; i++)
 					{
+						if (resdata.Count == 1 && resdata[0].ToLower() == "resdata\\planet2.dat" && _planet2Loaded)
+						{
+							System.Diagnostics.Debug.WriteLine("SBD loaded, skipping");
+							continue;
+						}
 						try
 						{
 							temp = new DatFile(_installDirectory + "\\" + resdata[i]);
+							System.Diagnostics.Debug.WriteLine("Loading " + temp.FileName);
 							int index = 0;
 							for (int g = 0; g < temp.NumberOfGroups; g++)
 							{
 								index = _planets.Groups.GetIndex(temp.Groups[g].ID);
 								if (index != -1)
 								{
+									System.Diagnostics.Debug.WriteLine("Overriding Group #" + index);
 									_planets.Groups[index] = temp.Groups[g];
 									thumbs[index].Image = temp.Groups[g].Subs[0].Image;
 								}
 							}
+							if (temp.FileName.ToLower() == "planet2.dat") _planet2Loaded = true;
 						}
 						catch
 						{
@@ -429,7 +447,7 @@ namespace Idmr.Yogeme
 					if (!config.XwaInstalled) return false;
 					_installDirectory = config.XwaPath;
 					_backdropDirectory = config.XwaPath + "\\RESDATA\\";
-					_numBackdrops = 103;
+					_numBackdrops = 104;
 					// permanently increasing this to 512. Note however that SBD starfield is 2812px, so it'll be cut off
 					int size = 256;
 					Height += size;
@@ -438,12 +456,17 @@ namespace Idmr.Yogeme
 					pctBackdrop.Width += size;
 					label1.Left += size;
 					label2.Left += size;
+					label3.Left += size;
+					label4.Left += size;
 					numBackdrop.Left += size;
 					numShadow.Left += size;
 					cmdOK.Left += size;
 					cmdOK.Top += size;
 					cmdCancel.Left += size;
 					cmdCancel.Top += size;
+					lblWindow.Text = "512x512";
+					lblWindow.Left += size;
+					lblImage.Left += size;
 					break;
 				default:
 					return false;
@@ -464,6 +487,9 @@ namespace Idmr.Yogeme
 		{
 			pctBackdrop.Image = _planets.Groups[_index].Subs[(int)numShadow.Value].Image;
 			_shadow = (int)numShadow.Value;
+			lblImage.Text = pctBackdrop.Image.Width + "x" + pctBackdrop.Image.Height;
+			if (pctBackdrop.Image.Width > 512 || pctBackdrop.Image.Height > 512) pctBackdrop.SizeMode = PictureBoxSizeMode.Zoom;
+			else pctBackdrop.SizeMode = PictureBoxSizeMode.Normal;
 		}
 
 		private void numBackdrop_ValueChanged(object sender, EventArgs e)
@@ -486,6 +512,9 @@ namespace Idmr.Yogeme
 					pctBackdrop.Image = _planets.Groups[_index].Subs[_shadow].Image;
 					numBackdrop.Value = _index;
 				}
+				lblImage.Text = pctBackdrop.Image.Width + "x" + pctBackdrop.Image.Height;
+				if (pctBackdrop.Image.Width > 512 || pctBackdrop.Image.Height > 512) pctBackdrop.SizeMode = PictureBoxSizeMode.Zoom;
+				else pctBackdrop.SizeMode = PictureBoxSizeMode.Normal;
 			}
 			else
 			{
@@ -499,6 +528,7 @@ namespace Idmr.Yogeme
 					pctBackdrop.Image = thumbs[_index].Image;
 					numBackdrop.Value = _index;
 				}
+				lblImage.Text = thumbs[_index].Image.Width + "x" + thumbs[_index].Image.Height;
 			}
 		}
 
@@ -512,30 +542,30 @@ namespace Idmr.Yogeme
 
 		private void vsbThumbs_ValueChanged(object sender, EventArgs e)
 		{
-			for (int i = 0; i < 103; i++) thumbs[i].Top = (i / 6 - vsbThumbs.Value) * 48;
+			for (int i = 0; i < 104; i++) thumbs[i].Top = (i / 6 - vsbThumbs.Value) * 48;
 		}
 
 		/* according to Allied:
-		 * 0: planet - 6010 (158, 9822370, 39961)
-		 * 24:
-		 * 25: planet - 6060 (241, 8142085, 61129)
-		 * 60: wrapback - 18000 (40, 122346, 4538)
-		 * 62: dsfire - 6250 (1, 48436, 256)
-		 * 63: nebula - 7001 (10, 371287, 2552)
-		 * 73: galaxy - 8001 (10, 232962, 2555)
-		 * 83: backdrop - 9001 (11, 303385, 2775)
-		 * 94: wrapback - 19100 (36, 351737, 5713)
-		 * 98: nebula - 7011 (5, 226285, 1276)
-		 * 103:
+		 * 1: planet - 6010 (158, 9822370, 39961)
+		 * 25:
+		 * 26: planet - 6060 (241, 8142085, 61129)
+		 * 61: wrapback - 18000 (40, 122346, 4538)
+		 * 63: dsfire - 6250 (1, 48436, 256)
+		 * 64: nebula - 7001 (10, 371287, 2552)
+		 * 74: galaxy - 8001 (10, 232962, 2555)
+		 * 84: backdrop - 9001 (11, 303385, 2775)
+		 * 95: wrapback - 19100 (36, 351737, 5713)
+		 * 99: nebula - 7011 (5, 226285, 1276)
+		 * 104:
 		 */
 
 		/* according to XWA:
-		 * 0: planet 6010, MonCal planet is planet
-		 * 5: planet 6020, MonCal planet is #-5 no shadow
-		 * 24:
-		 * 25: planet 6060, MonCal planet is blank
-		 * 54: (ISDs, planet 6104, shad0 is blank)
-		 * 60: wrapback 18000...
+		 * 1: planet 6010, MonCal planet is planet
+		 * 6: planet 6020, MonCal planet is #-5 no shadow
+		 * 25:
+		 * 26: planet 6060, MonCal planet is blank
+		 * 55: (ISDs, planet 6104, shad0 is blank)
+		 * 61: wrapback 18000...
 		 */
 	}
 }
