@@ -58,10 +58,11 @@ namespace Idmr.Yogeme
 			this.menuOptions = new System.Windows.Forms.MenuItem();
 			this.menuGoalSummary = new System.Windows.Forms.MenuItem();
 			this.menuLibrary = new System.Windows.Forms.MenuItem();
+			this.menuTest = new System.Windows.Forms.MenuItem();
 			this.menuHyperbuoy = new System.Windows.Forms.MenuItem();
 			this.menuSuperBackdrops = new System.Windows.Forms.MenuItem();
 			this.menuHooks = new System.Windows.Forms.MenuItem();
-			this.menuTest = new System.Windows.Forms.MenuItem();
+			this.menuWav = new System.Windows.Forms.MenuItem();
 			this.menuHelp = new System.Windows.Forms.MenuItem();
 			this.menuHelpInfo = new System.Windows.Forms.MenuItem();
 			this.menuAbout = new System.Windows.Forms.MenuItem();
@@ -85,6 +86,7 @@ namespace Idmr.Yogeme
 			this.toolSep3 = new System.Windows.Forms.ToolBarButton();
 			this.toolOptions = new System.Windows.Forms.ToolBarButton();
 			this.toolLst = new System.Windows.Forms.ToolBarButton();
+			this.toolWav = new System.Windows.Forms.ToolBarButton();
 			this.toolHelp = new System.Windows.Forms.ToolBarButton();
 			this.opnXWA = new System.Windows.Forms.OpenFileDialog();
 			this.savXWA = new System.Windows.Forms.SaveFileDialog();
@@ -1187,7 +1189,8 @@ namespace Idmr.Yogeme
             this.menuTest,
             this.menuHyperbuoy,
             this.menuSuperBackdrops,
-            this.menuHooks});
+            this.menuHooks,
+            this.menuWav});
 			this.menuTools.Text = "&Tools";
 			// 
 			// menuVerify
@@ -1232,6 +1235,12 @@ namespace Idmr.Yogeme
 			this.menuLibrary.Text = "FG Librar&y";
 			this.menuLibrary.Click += new System.EventHandler(this.menuLibrary_Click);
 			// 
+			// menuTest
+			// 
+			this.menuTest.Index = 7;
+			this.menuTest.Text = "&Test";
+			this.menuTest.Click += new System.EventHandler(this.menuTest_Click);
+			// 
 			// menuHyperbuoy
 			// 
 			this.menuHyperbuoy.Index = 8;
@@ -1251,11 +1260,11 @@ namespace Idmr.Yogeme
 			this.menuHooks.Text = "Hoo&k Assignment";
 			this.menuHooks.Click += new System.EventHandler(this.menuHooks_Click);
 			// 
-			// menuTest
+			// menuWav
 			// 
-			this.menuTest.Index = 7;
-			this.menuTest.Text = "&Test";
-			this.menuTest.Click += new System.EventHandler(this.menuTest_Click);
+			this.menuWav.Index = 11;
+			this.menuWav.Text = "&Wave Manager";
+			this.menuWav.Click += new System.EventHandler(this.menuWav_Click);
 			// 
 			// menuHelp
 			// 
@@ -1310,6 +1319,7 @@ namespace Idmr.Yogeme
 			this.imgToolbar.Images.SetKeyName(11, "");
 			this.imgToolbar.Images.SetKeyName(12, "");
 			this.imgToolbar.Images.SetKeyName(13, "");
+			this.imgToolbar.Images.SetKeyName(14, "speaker.png");
 			// 
 			// toolXWA
 			// 
@@ -1331,6 +1341,7 @@ namespace Idmr.Yogeme
             this.toolSep3,
             this.toolOptions,
             this.toolLst,
+            this.toolWav,
             this.toolHelp});
 			this.toolXWA.DropDownArrows = true;
 			this.toolXWA.ImageList = this.imgToolbar;
@@ -1433,6 +1444,12 @@ namespace Idmr.Yogeme
 			this.toolLst.ImageIndex = 12;
 			this.toolLst.Name = "toolLst";
 			this.toolLst.ToolTipText = "Edit .lst";
+			// 
+			// toolWav
+			// 
+			this.toolWav.ImageIndex = 14;
+			this.toolWav.Name = "toolWav";
+			this.toolWav.ToolTipText = "Wave Manager";
 			// 
 			// toolHelp
 			// 
@@ -10248,5 +10265,7 @@ namespace Idmr.Yogeme
 		private Label label152;
 		private MenuItem menuHooks;
 		private MenuItem menuLibrary;
+		private ToolBarButton toolWav;
+		private MenuItem menuWav;
 	}
 }

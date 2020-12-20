@@ -16,6 +16,8 @@ For program usage and help (with images), see "yogeme.chm".
 ==========
 Version History
 
+ - (XWA) WAV Manager
+
 v1.8.2, 19 Dec 2020
  - (XWA) Fixed the default SBD indexes
  - (XWA) Default hook ObjectProfile renamed to "default"

@@ -112,6 +112,7 @@
       <HintPath>..\..\Libraries\Idmr.Platform.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="PresentationCore" />
     <Reference Include="System">
       <Name>System</Name>
     </Reference>
@@ -128,6 +129,7 @@
       <Name>System.Windows.Forms</Name>
     </Reference>
     <Reference Include="System.XML" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="App.ico" />
@@ -324,6 +326,12 @@
     <Compile Include="XwaHookDialog.Designer.cs">
       <DependentUpon>XwaHookDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="XwaWavForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="XwaWavForm.Designer.cs">
+      <DependentUpon>XwaWavForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="XwingForm.Designer.cs">
       <DependentUpon>XwingForm.cs</DependentUpon>
     </Compile>
@@ -428,6 +436,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="XwaHookDialog.resx">
       <DependentUpon>XwaHookDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="XwaWavForm.resx">
+      <DependentUpon>XwaWavForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="XwingForm.resx">
       <DependentUpon>XwingForm.cs</DependentUpon>

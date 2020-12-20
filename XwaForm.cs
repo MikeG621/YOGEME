@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2020 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.8.2
+ * VERSION: 1.8.2+
  */
 
 /* CHANGELOG
+ * [NEW] Wave Dialog menu and toolbar item
  * v1.8.2, 201219
  * [FIX] SBD default backdrop value
  * v1.8.1, 201213
@@ -162,6 +163,7 @@ namespace Idmr.Yogeme
 		LstForm _fLST;
 		FlightGroupLibraryForm _fLibrary;
 		Mission _mission;
+		XwaWavForm _fWav;
 		bool _applicationExit;
 		int _activeFG = 0;
 		int _startingShips = 1;
@@ -248,6 +250,8 @@ namespace Idmr.Yogeme
 			try { _fLST.Close(); }
 			catch { /* do nothing */ }
 			try { _fLibrary.Close(); }
+			catch { /* do nothing */ }
+			try { _fWav.Close();  }
 			catch { /* do nothing */ }
 		}
 		void comboVarRefresh(int index, ComboBox cbo)
@@ -1522,7 +1526,10 @@ namespace Idmr.Yogeme
 				case 15:    //LST
 					menuLST_Click("toolbar", new EventArgs());
 					break;
-				case 16:    //Help
+				case 16:    // Wav
+					menuWav_Click("toolbar", new EventArgs());
+					break;
+				case 17:    //Help
 					menuHelpInfo_Click("toolbar", new EventArgs());
 					break;
 			}
@@ -2194,6 +2201,30 @@ namespace Idmr.Yogeme
 		{
 			menuSave_Click("Verify", new System.EventArgs());
 			if (!_config.Verify) Common.RunVerify(_mission.MissionPath, _config);    //prevents from doing this twice due to Save
+		}
+		void menuWav_Click(object sender, EventArgs e)
+		{
+			if (_mission.MissionPath == "\\NewMission.tie")
+			{
+				MessageBox.Show("Mission must be saved prior to WAV definition.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return;
+			}
+			if (!_config.XwaInstalled)
+			{
+				MessageBox.Show("XWA must be installed to use the WAV Manager.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return;
+			}
+
+			if (_fWav != null && !_fWav.IsDisposed)
+			{
+				_fWav.Reload();
+				_fWav.Focus();
+			}
+			else
+			{
+				_fWav = new XwaWavForm(_config, _mission);
+				_fWav.Show();
+			}
 		}
 		#endregion
 		#region FlightGroups
@@ -4456,6 +4487,14 @@ namespace Idmr.Yogeme
 		#endregion
 		#endregion
 		#region Messages
+		// Mission WAVs are located in /Wave/MISSIONVOICE. There's a <mission>.LST with 64 message WAVs and 6 EOM WAVs.
+		// Not all are necessarily present, but they need to be listed properly so there's 70 lines, path is from /Wave/
+		// The EOM WAVs are PMC1, PMC2, PMF1, PMF2, OMC1, OMC2
+
+		// Over in /Wave/Frontend there's the other mission WAVs. Everything is auto, no LST, based on filename prefix (B0M1, etc).
+		// Briefing strings are B's, the pre-briefing is N, S is mission description, W is mission complete
+		// Looks like there's usually an "S" or "W" per paragraph, B's start with 2 (since string#1 is the title)
+		// naming convention is [prefix][battle##][mission##][message##].WAV
 		void deleteMess()
 		{
 			if (_activeMessage < 0 || _activeMessage >= _mission.Messages.Count)  //[JB] Added check
