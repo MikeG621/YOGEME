@@ -32,24 +32,21 @@ namespace Idmr.Yogeme
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(XwaWavForm));
 			this.tabsWav = new System.Windows.Forms.TabControl();
 			this.tabMessages = new System.Windows.Forms.TabPage();
-			this.tabEom = new System.Windows.Forms.TabPage();
-			this.tabBriefing = new System.Windows.Forms.TabPage();
-			this.tabPrePost = new System.Windows.Forms.TabPage();
-			this.lstMessages = new System.Windows.Forms.ListBox();
-			this.label1 = new System.Windows.Forms.Label();
-			this.label2 = new System.Windows.Forms.Label();
-			this.label3 = new System.Windows.Forms.Label();
-			this.label4 = new System.Windows.Forms.Label();
-			this.label5 = new System.Windows.Forms.Label();
-			this.lblMessage = new System.Windows.Forms.Label();
-			this.label6 = new System.Windows.Forms.Label();
-			this.lblNotes = new System.Windows.Forms.Label();
-			this.txtMessage = new System.Windows.Forms.TextBox();
-			this.label7 = new System.Windows.Forms.Label();
-			this.cmdMessage = new System.Windows.Forms.Button();
-			this.label8 = new System.Windows.Forms.Label();
-			this.lblFG = new System.Windows.Forms.Label();
+			this.cmdSaveMessage = new System.Windows.Forms.Button();
 			this.cmdPlayMessage = new System.Windows.Forms.Button();
+			this.lblFG = new System.Windows.Forms.Label();
+			this.label8 = new System.Windows.Forms.Label();
+			this.cmdMessage = new System.Windows.Forms.Button();
+			this.label7 = new System.Windows.Forms.Label();
+			this.txtMessage = new System.Windows.Forms.TextBox();
+			this.lblNotes = new System.Windows.Forms.Label();
+			this.label6 = new System.Windows.Forms.Label();
+			this.lblMessage = new System.Windows.Forms.Label();
+			this.label5 = new System.Windows.Forms.Label();
+			this.label1 = new System.Windows.Forms.Label();
+			this.lstMessages = new System.Windows.Forms.ListBox();
+			this.tabEom = new System.Windows.Forms.TabPage();
+			this.cmdSaveEom = new System.Windows.Forms.Button();
 			this.cmdPlayEom = new System.Windows.Forms.Button();
 			this.cmdEom = new System.Windows.Forms.Button();
 			this.label11 = new System.Windows.Forms.Label();
@@ -59,7 +56,8 @@ namespace Idmr.Yogeme
 			this.lblEom = new System.Windows.Forms.Label();
 			this.label15 = new System.Windows.Forms.Label();
 			this.lstEom = new System.Windows.Forms.ListBox();
-			this.opnWav = new System.Windows.Forms.OpenFileDialog();
+			this.label2 = new System.Windows.Forms.Label();
+			this.tabBriefing = new System.Windows.Forms.TabPage();
 			this.cmdPlayBriefing = new System.Windows.Forms.Button();
 			this.cmdBriefing = new System.Windows.Forms.Button();
 			this.label9 = new System.Windows.Forms.Label();
@@ -69,17 +67,27 @@ namespace Idmr.Yogeme
 			this.lblBriefing = new System.Windows.Forms.Label();
 			this.label16 = new System.Windows.Forms.Label();
 			this.lstBriefing = new System.Windows.Forms.ListBox();
+			this.label3 = new System.Windows.Forms.Label();
+			this.tabPrePost = new System.Windows.Forms.TabPage();
+			this.txtPrePost = new System.Windows.Forms.TextBox();
 			this.cmdPlayPrePost = new System.Windows.Forms.Button();
 			this.cmdPrePost = new System.Windows.Forms.Button();
 			this.label10 = new System.Windows.Forms.Label();
 			this.txtPrePostWav = new System.Windows.Forms.TextBox();
 			this.lblPrePostNote = new System.Windows.Forms.Label();
 			this.label17 = new System.Windows.Forms.Label();
-			this.label19 = new System.Windows.Forms.Label();
-			this.lstPrePostCategories = new System.Windows.Forms.ListBox();
-			this.txtPrePost = new System.Windows.Forms.TextBox();
-			this.lstPrePost = new System.Windows.Forms.ListBox();
 			this.label14 = new System.Windows.Forms.Label();
+			this.label19 = new System.Windows.Forms.Label();
+			this.lstPrePost = new System.Windows.Forms.ListBox();
+			this.lstPrePostCategories = new System.Windows.Forms.ListBox();
+			this.label4 = new System.Windows.Forms.Label();
+			this.opnWav = new System.Windows.Forms.OpenFileDialog();
+			this.cmdRemove = new System.Windows.Forms.Button();
+			this.label18 = new System.Windows.Forms.Label();
+			this.cmdClose = new System.Windows.Forms.Button();
+			this.cmdAdd = new System.Windows.Forms.Button();
+			this.cmdDown = new System.Windows.Forms.Button();
+			this.cmdUp = new System.Windows.Forms.Button();
 			this.tabsWav.SuspendLayout();
 			this.tabMessages.SuspendLayout();
 			this.tabEom.SuspendLayout();
@@ -102,6 +110,7 @@ namespace Idmr.Yogeme
 			// tabMessages
 			// 
 			this.tabMessages.BackColor = System.Drawing.SystemColors.Control;
+			this.tabMessages.Controls.Add(this.cmdSaveMessage);
 			this.tabMessages.Controls.Add(this.cmdPlayMessage);
 			this.tabMessages.Controls.Add(this.lblFG);
 			this.tabMessages.Controls.Add(this.label8);
@@ -121,9 +130,132 @@ namespace Idmr.Yogeme
 			this.tabMessages.TabIndex = 0;
 			this.tabMessages.Text = "In-Flight Messages";
 			// 
+			// cmdSaveMessage
+			// 
+			this.cmdSaveMessage.Enabled = false;
+			this.cmdSaveMessage.Location = new System.Drawing.Point(135, 158);
+			this.cmdSaveMessage.Name = "cmdSaveMessage";
+			this.cmdSaveMessage.Size = new System.Drawing.Size(75, 23);
+			this.cmdSaveMessage.TabIndex = 24;
+			this.cmdSaveMessage.Text = "&Save";
+			this.cmdSaveMessage.UseVisualStyleBackColor = true;
+			this.cmdSaveMessage.Click += new System.EventHandler(this.cmdSave_Click);
+			// 
+			// cmdPlayMessage
+			// 
+			this.cmdPlayMessage.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("cmdPlayMessage.BackgroundImage")));
+			this.cmdPlayMessage.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+			this.cmdPlayMessage.Location = new System.Drawing.Point(434, 130);
+			this.cmdPlayMessage.Name = "cmdPlayMessage";
+			this.cmdPlayMessage.Size = new System.Drawing.Size(25, 23);
+			this.cmdPlayMessage.TabIndex = 11;
+			this.cmdPlayMessage.UseVisualStyleBackColor = true;
+			this.cmdPlayMessage.Click += new System.EventHandler(this.cmdPlay_Click);
+			// 
+			// lblFG
+			// 
+			this.lblFG.AutoSize = true;
+			this.lblFG.Location = new System.Drawing.Point(200, 109);
+			this.lblFG.Name = "lblFG";
+			this.lblFG.Size = new System.Drawing.Size(62, 13);
+			this.lblFG.TabIndex = 10;
+			this.lblFG.Text = "(flightgroup)";
+			// 
+			// label8
+			// 
+			this.label8.AutoSize = true;
+			this.label8.Location = new System.Drawing.Point(132, 109);
+			this.label8.Name = "label8";
+			this.label8.Size = new System.Drawing.Size(62, 13);
+			this.label8.TabIndex = 9;
+			this.label8.Text = "Flightgroup:";
+			// 
+			// cmdMessage
+			// 
+			this.cmdMessage.Location = new System.Drawing.Point(403, 130);
+			this.cmdMessage.Name = "cmdMessage";
+			this.cmdMessage.Size = new System.Drawing.Size(25, 23);
+			this.cmdMessage.TabIndex = 8;
+			this.cmdMessage.Text = "...";
+			this.cmdMessage.UseVisualStyleBackColor = true;
+			this.cmdMessage.Click += new System.EventHandler(this.cmdMessage_Click);
+			// 
+			// label7
+			// 
+			this.label7.AutoSize = true;
+			this.label7.Location = new System.Drawing.Point(132, 135);
+			this.label7.Name = "label7";
+			this.label7.Size = new System.Drawing.Size(55, 13);
+			this.label7.TabIndex = 7;
+			this.label7.Text = "Wave file:";
+			// 
+			// txtMessage
+			// 
+			this.txtMessage.Location = new System.Drawing.Point(193, 132);
+			this.txtMessage.Name = "txtMessage";
+			this.txtMessage.Size = new System.Drawing.Size(204, 20);
+			this.txtMessage.TabIndex = 6;
+			// 
+			// lblNotes
+			// 
+			this.lblNotes.AutoSize = true;
+			this.lblNotes.Location = new System.Drawing.Point(176, 87);
+			this.lblNotes.Name = "lblNotes";
+			this.lblNotes.Size = new System.Drawing.Size(39, 13);
+			this.lblNotes.TabIndex = 5;
+			this.lblNotes.Text = "(notes)";
+			// 
+			// label6
+			// 
+			this.label6.AutoSize = true;
+			this.label6.Location = new System.Drawing.Point(132, 87);
+			this.label6.Name = "label6";
+			this.label6.Size = new System.Drawing.Size(38, 13);
+			this.label6.TabIndex = 4;
+			this.label6.Text = "Notes:";
+			// 
+			// lblMessage
+			// 
+			this.lblMessage.AutoSize = true;
+			this.lblMessage.Location = new System.Drawing.Point(132, 56);
+			this.lblMessage.Name = "lblMessage";
+			this.lblMessage.Size = new System.Drawing.Size(75, 13);
+			this.lblMessage.TabIndex = 3;
+			this.lblMessage.Text = "(message text)";
+			// 
+			// label5
+			// 
+			this.label5.AutoSize = true;
+			this.label5.Location = new System.Drawing.Point(6, 40);
+			this.label5.Name = "label5";
+			this.label5.Size = new System.Drawing.Size(55, 13);
+			this.label5.TabIndex = 2;
+			this.label5.Text = "Messages";
+			// 
+			// label1
+			// 
+			this.label1.AutoSize = true;
+			this.label1.Location = new System.Drawing.Point(6, 3);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(572, 13);
+			this.label1.TabIndex = 1;
+			this.label1.Text = "These .WAV files must reside in the \\Wave\\ subdirectory, custom child directories" +
+    " are allowed. Must use \"Save\" button.";
+			// 
+			// lstMessages
+			// 
+			this.lstMessages.FormattingEnabled = true;
+			this.lstMessages.Location = new System.Drawing.Point(6, 58);
+			this.lstMessages.Name = "lstMessages";
+			this.lstMessages.ScrollAlwaysVisible = true;
+			this.lstMessages.Size = new System.Drawing.Size(120, 173);
+			this.lstMessages.TabIndex = 0;
+			this.lstMessages.SelectedIndexChanged += new System.EventHandler(this.lstMessages_SelectedIndexChanged);
+			// 
 			// tabEom
 			// 
 			this.tabEom.BackColor = System.Drawing.SystemColors.Control;
+			this.tabEom.Controls.Add(this.cmdSaveEom);
 			this.tabEom.Controls.Add(this.cmdPlayEom);
 			this.tabEom.Controls.Add(this.cmdEom);
 			this.tabEom.Controls.Add(this.label11);
@@ -141,193 +273,22 @@ namespace Idmr.Yogeme
 			this.tabEom.TabIndex = 1;
 			this.tabEom.Text = "EOM Messages";
 			// 
-			// tabBriefing
+			// cmdSaveEom
 			// 
-			this.tabBriefing.BackColor = System.Drawing.SystemColors.Control;
-			this.tabBriefing.Controls.Add(this.cmdPlayBriefing);
-			this.tabBriefing.Controls.Add(this.cmdBriefing);
-			this.tabBriefing.Controls.Add(this.label9);
-			this.tabBriefing.Controls.Add(this.txtBriefing);
-			this.tabBriefing.Controls.Add(this.lblBriefingNote);
-			this.tabBriefing.Controls.Add(this.label12);
-			this.tabBriefing.Controls.Add(this.lblBriefing);
-			this.tabBriefing.Controls.Add(this.label16);
-			this.tabBriefing.Controls.Add(this.lstBriefing);
-			this.tabBriefing.Controls.Add(this.label3);
-			this.tabBriefing.Location = new System.Drawing.Point(4, 22);
-			this.tabBriefing.Name = "tabBriefing";
-			this.tabBriefing.Size = new System.Drawing.Size(618, 321);
-			this.tabBriefing.TabIndex = 2;
-			this.tabBriefing.Text = "Briefing Strings";
-			// 
-			// tabPrePost
-			// 
-			this.tabPrePost.BackColor = System.Drawing.SystemColors.Control;
-			this.tabPrePost.Controls.Add(this.txtPrePost);
-			this.tabPrePost.Controls.Add(this.cmdPlayPrePost);
-			this.tabPrePost.Controls.Add(this.cmdPrePost);
-			this.tabPrePost.Controls.Add(this.label10);
-			this.tabPrePost.Controls.Add(this.txtPrePostWav);
-			this.tabPrePost.Controls.Add(this.lblPrePostNote);
-			this.tabPrePost.Controls.Add(this.label17);
-			this.tabPrePost.Controls.Add(this.label14);
-			this.tabPrePost.Controls.Add(this.label19);
-			this.tabPrePost.Controls.Add(this.lstPrePost);
-			this.tabPrePost.Controls.Add(this.lstPrePostCategories);
-			this.tabPrePost.Controls.Add(this.label4);
-			this.tabPrePost.Location = new System.Drawing.Point(4, 22);
-			this.tabPrePost.Name = "tabPrePost";
-			this.tabPrePost.Size = new System.Drawing.Size(618, 321);
-			this.tabPrePost.TabIndex = 3;
-			this.tabPrePost.Text = "Pre/Post Briefing";
-			// 
-			// lstMessages
-			// 
-			this.lstMessages.FormattingEnabled = true;
-			this.lstMessages.Location = new System.Drawing.Point(6, 56);
-			this.lstMessages.Name = "lstMessages";
-			this.lstMessages.ScrollAlwaysVisible = true;
-			this.lstMessages.Size = new System.Drawing.Size(120, 173);
-			this.lstMessages.TabIndex = 0;
-			this.lstMessages.SelectedIndexChanged += new System.EventHandler(this.lstMessages_SelectedIndexChanged);
-			// 
-			// label1
-			// 
-			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(6, 3);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(452, 13);
-			this.label1.TabIndex = 1;
-			this.label1.Text = "These .WAV files must reside in the \\Wave\\ subdirectory, custom child directories" +
-    " are allowed.";
-			// 
-			// label2
-			// 
-			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(6, 3);
-			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(452, 13);
-			this.label2.TabIndex = 2;
-			this.label2.Text = "These .WAV files must reside in the \\Wave\\ subdirectory, custom child directories" +
-    " are allowed.";
-			// 
-			// label3
-			// 
-			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(6, 3);
-			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(559, 26);
-			this.label3.TabIndex = 2;
-			this.label3.Text = "These .WAV files follow a specific location and naming convention. Files chosen w" +
-    "ill be copied/renamed accordingly.\r\nThese are for Strings only and fire during t" +
-    "he matching Caption event.";
-			// 
-			// label4
-			// 
-			this.label4.AutoSize = true;
-			this.label4.Location = new System.Drawing.Point(6, 3);
-			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(559, 26);
-			this.label4.TabIndex = 3;
-			this.label4.Text = "These .WAV files follow a specific location and naming convention. Files chosen w" +
-    "ill be copied/renamed accordingly.\r\nIt\'s suggested that each paragraph be its ow" +
-    "n WAV.";
-			// 
-			// label5
-			// 
-			this.label5.AutoSize = true;
-			this.label5.Location = new System.Drawing.Point(6, 40);
-			this.label5.Name = "label5";
-			this.label5.Size = new System.Drawing.Size(55, 13);
-			this.label5.TabIndex = 2;
-			this.label5.Text = "Messages";
-			// 
-			// lblMessage
-			// 
-			this.lblMessage.AutoSize = true;
-			this.lblMessage.Location = new System.Drawing.Point(132, 56);
-			this.lblMessage.Name = "lblMessage";
-			this.lblMessage.Size = new System.Drawing.Size(75, 13);
-			this.lblMessage.TabIndex = 3;
-			this.lblMessage.Text = "(message text)";
-			// 
-			// label6
-			// 
-			this.label6.AutoSize = true;
-			this.label6.Location = new System.Drawing.Point(132, 87);
-			this.label6.Name = "label6";
-			this.label6.Size = new System.Drawing.Size(38, 13);
-			this.label6.TabIndex = 4;
-			this.label6.Text = "Notes:";
-			// 
-			// lblNotes
-			// 
-			this.lblNotes.AutoSize = true;
-			this.lblNotes.Location = new System.Drawing.Point(176, 87);
-			this.lblNotes.Name = "lblNotes";
-			this.lblNotes.Size = new System.Drawing.Size(39, 13);
-			this.lblNotes.TabIndex = 5;
-			this.lblNotes.Text = "(notes)";
-			// 
-			// txtMessage
-			// 
-			this.txtMessage.Location = new System.Drawing.Point(193, 132);
-			this.txtMessage.Name = "txtMessage";
-			this.txtMessage.Size = new System.Drawing.Size(184, 20);
-			this.txtMessage.TabIndex = 6;
-			// 
-			// label7
-			// 
-			this.label7.AutoSize = true;
-			this.label7.Location = new System.Drawing.Point(132, 135);
-			this.label7.Name = "label7";
-			this.label7.Size = new System.Drawing.Size(55, 13);
-			this.label7.TabIndex = 7;
-			this.label7.Text = "Wave file:";
-			// 
-			// cmdMessage
-			// 
-			this.cmdMessage.Location = new System.Drawing.Point(383, 130);
-			this.cmdMessage.Name = "cmdMessage";
-			this.cmdMessage.Size = new System.Drawing.Size(25, 23);
-			this.cmdMessage.TabIndex = 8;
-			this.cmdMessage.Text = "...";
-			this.cmdMessage.UseVisualStyleBackColor = true;
-			// 
-			// label8
-			// 
-			this.label8.AutoSize = true;
-			this.label8.Location = new System.Drawing.Point(132, 109);
-			this.label8.Name = "label8";
-			this.label8.Size = new System.Drawing.Size(62, 13);
-			this.label8.TabIndex = 9;
-			this.label8.Text = "Flightgroup:";
-			// 
-			// lblFG
-			// 
-			this.lblFG.AutoSize = true;
-			this.lblFG.Location = new System.Drawing.Point(200, 109);
-			this.lblFG.Name = "lblFG";
-			this.lblFG.Size = new System.Drawing.Size(62, 13);
-			this.lblFG.TabIndex = 10;
-			this.lblFG.Text = "(flightgroup)";
-			// 
-			// cmdPlayMessage
-			// 
-			this.cmdPlayMessage.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("cmdPlayMessage.BackgroundImage")));
-			this.cmdPlayMessage.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-			this.cmdPlayMessage.Location = new System.Drawing.Point(414, 130);
-			this.cmdPlayMessage.Name = "cmdPlayMessage";
-			this.cmdPlayMessage.Size = new System.Drawing.Size(25, 23);
-			this.cmdPlayMessage.TabIndex = 11;
-			this.cmdPlayMessage.UseVisualStyleBackColor = true;
-			this.cmdPlayMessage.Click += new System.EventHandler(this.cmdPlay_Click);
+			this.cmdSaveEom.Enabled = false;
+			this.cmdSaveEom.Location = new System.Drawing.Point(135, 158);
+			this.cmdSaveEom.Name = "cmdSaveEom";
+			this.cmdSaveEom.Size = new System.Drawing.Size(75, 23);
+			this.cmdSaveEom.TabIndex = 23;
+			this.cmdSaveEom.Text = "&Save";
+			this.cmdSaveEom.UseVisualStyleBackColor = true;
+			this.cmdSaveEom.Click += new System.EventHandler(this.cmdSave_Click);
 			// 
 			// cmdPlayEom
 			// 
 			this.cmdPlayEom.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("cmdPlayEom.BackgroundImage")));
 			this.cmdPlayEom.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-			this.cmdPlayEom.Location = new System.Drawing.Point(414, 130);
+			this.cmdPlayEom.Location = new System.Drawing.Point(434, 130);
 			this.cmdPlayEom.Name = "cmdPlayEom";
 			this.cmdPlayEom.Size = new System.Drawing.Size(25, 23);
 			this.cmdPlayEom.TabIndex = 22;
@@ -336,12 +297,13 @@ namespace Idmr.Yogeme
 			// 
 			// cmdEom
 			// 
-			this.cmdEom.Location = new System.Drawing.Point(383, 130);
+			this.cmdEom.Location = new System.Drawing.Point(403, 130);
 			this.cmdEom.Name = "cmdEom";
 			this.cmdEom.Size = new System.Drawing.Size(25, 23);
 			this.cmdEom.TabIndex = 19;
 			this.cmdEom.Text = "...";
 			this.cmdEom.UseVisualStyleBackColor = true;
+			this.cmdEom.Click += new System.EventHandler(this.cmdMessage_Click);
 			// 
 			// label11
 			// 
@@ -356,7 +318,7 @@ namespace Idmr.Yogeme
 			// 
 			this.txtEom.Location = new System.Drawing.Point(193, 132);
 			this.txtEom.Name = "txtEom";
-			this.txtEom.Size = new System.Drawing.Size(184, 20);
+			this.txtEom.Size = new System.Drawing.Size(204, 20);
 			this.txtEom.TabIndex = 17;
 			// 
 			// lblEomNote
@@ -405,15 +367,40 @@ namespace Idmr.Yogeme
             "Primary Failed 2",
             "Outstanding Comp 1",
             "Outstanding Comp 2"});
-			this.lstEom.Location = new System.Drawing.Point(6, 56);
+			this.lstEom.Location = new System.Drawing.Point(6, 58);
 			this.lstEom.Name = "lstEom";
 			this.lstEom.Size = new System.Drawing.Size(120, 82);
 			this.lstEom.TabIndex = 12;
 			this.lstEom.SelectedIndexChanged += new System.EventHandler(this.lstEom_SelectedIndexChanged);
 			// 
-			// opnWav
+			// label2
 			// 
-			this.opnWav.Filter = "Wave files|*.wav";
+			this.label2.AutoSize = true;
+			this.label2.Location = new System.Drawing.Point(6, 3);
+			this.label2.Name = "label2";
+			this.label2.Size = new System.Drawing.Size(572, 13);
+			this.label2.TabIndex = 2;
+			this.label2.Text = "These .WAV files must reside in the \\Wave\\ subdirectory, custom child directories" +
+    " are allowed. Must use \"Save\" button.";
+			// 
+			// tabBriefing
+			// 
+			this.tabBriefing.BackColor = System.Drawing.SystemColors.Control;
+			this.tabBriefing.Controls.Add(this.cmdPlayBriefing);
+			this.tabBriefing.Controls.Add(this.cmdBriefing);
+			this.tabBriefing.Controls.Add(this.label9);
+			this.tabBriefing.Controls.Add(this.txtBriefing);
+			this.tabBriefing.Controls.Add(this.lblBriefingNote);
+			this.tabBriefing.Controls.Add(this.label12);
+			this.tabBriefing.Controls.Add(this.lblBriefing);
+			this.tabBriefing.Controls.Add(this.label16);
+			this.tabBriefing.Controls.Add(this.lstBriefing);
+			this.tabBriefing.Controls.Add(this.label3);
+			this.tabBriefing.Location = new System.Drawing.Point(4, 22);
+			this.tabBriefing.Name = "tabBriefing";
+			this.tabBriefing.Size = new System.Drawing.Size(618, 321);
+			this.tabBriefing.TabIndex = 2;
+			this.tabBriefing.Text = "Briefing Strings";
 			// 
 			// cmdPlayBriefing
 			// 
@@ -434,6 +421,7 @@ namespace Idmr.Yogeme
 			this.cmdBriefing.TabIndex = 30;
 			this.cmdBriefing.Text = "...";
 			this.cmdBriefing.UseVisualStyleBackColor = true;
+			this.cmdBriefing.Click += new System.EventHandler(this.cmdPrePost_Click);
 			// 
 			// label9
 			// 
@@ -490,12 +478,56 @@ namespace Idmr.Yogeme
 			// lstBriefing
 			// 
 			this.lstBriefing.FormattingEnabled = true;
-			this.lstBriefing.Location = new System.Drawing.Point(6, 56);
+			this.lstBriefing.Location = new System.Drawing.Point(6, 58);
 			this.lstBriefing.Name = "lstBriefing";
 			this.lstBriefing.ScrollAlwaysVisible = true;
 			this.lstBriefing.Size = new System.Drawing.Size(120, 173);
 			this.lstBriefing.TabIndex = 23;
 			this.lstBriefing.SelectedIndexChanged += new System.EventHandler(this.lstBriefing_SelectedIndexChanged);
+			// 
+			// label3
+			// 
+			this.label3.AutoSize = true;
+			this.label3.Location = new System.Drawing.Point(6, 3);
+			this.label3.Name = "label3";
+			this.label3.Size = new System.Drawing.Size(559, 26);
+			this.label3.TabIndex = 2;
+			this.label3.Text = resources.GetString("label3.Text");
+			// 
+			// tabPrePost
+			// 
+			this.tabPrePost.BackColor = System.Drawing.SystemColors.Control;
+			this.tabPrePost.Controls.Add(this.cmdUp);
+			this.tabPrePost.Controls.Add(this.cmdDown);
+			this.tabPrePost.Controls.Add(this.cmdAdd);
+			this.tabPrePost.Controls.Add(this.cmdRemove);
+			this.tabPrePost.Controls.Add(this.txtPrePost);
+			this.tabPrePost.Controls.Add(this.cmdPlayPrePost);
+			this.tabPrePost.Controls.Add(this.cmdPrePost);
+			this.tabPrePost.Controls.Add(this.label10);
+			this.tabPrePost.Controls.Add(this.txtPrePostWav);
+			this.tabPrePost.Controls.Add(this.lblPrePostNote);
+			this.tabPrePost.Controls.Add(this.label17);
+			this.tabPrePost.Controls.Add(this.label14);
+			this.tabPrePost.Controls.Add(this.label19);
+			this.tabPrePost.Controls.Add(this.lstPrePost);
+			this.tabPrePost.Controls.Add(this.lstPrePostCategories);
+			this.tabPrePost.Controls.Add(this.label4);
+			this.tabPrePost.Location = new System.Drawing.Point(4, 22);
+			this.tabPrePost.Name = "tabPrePost";
+			this.tabPrePost.Size = new System.Drawing.Size(618, 321);
+			this.tabPrePost.TabIndex = 3;
+			this.tabPrePost.Text = "Pre/Post Briefing";
+			// 
+			// txtPrePost
+			// 
+			this.txtPrePost.Location = new System.Drawing.Point(135, 79);
+			this.txtPrePost.Multiline = true;
+			this.txtPrePost.Name = "txtPrePost";
+			this.txtPrePost.ReadOnly = true;
+			this.txtPrePost.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+			this.txtPrePost.Size = new System.Drawing.Size(480, 203);
+			this.txtPrePost.TabIndex = 32;
 			// 
 			// cmdPlayPrePost
 			// 
@@ -516,6 +548,7 @@ namespace Idmr.Yogeme
 			this.cmdPrePost.TabIndex = 30;
 			this.cmdPrePost.Text = "...";
 			this.cmdPrePost.UseVisualStyleBackColor = true;
+			this.cmdPrePost.Click += new System.EventHandler(this.cmdPrePost_Click);
 			// 
 			// label10
 			// 
@@ -552,6 +585,15 @@ namespace Idmr.Yogeme
 			this.label17.TabIndex = 26;
 			this.label17.Text = "Notes:";
 			// 
+			// label14
+			// 
+			this.label14.AutoSize = true;
+			this.label14.Location = new System.Drawing.Point(6, 122);
+			this.label14.Name = "label14";
+			this.label14.Size = new System.Drawing.Size(55, 13);
+			this.label14.TabIndex = 24;
+			this.label14.Text = "Messages";
+			// 
 			// label19
 			// 
 			this.label19.AutoSize = true;
@@ -561,6 +603,15 @@ namespace Idmr.Yogeme
 			this.label19.TabIndex = 24;
 			this.label19.Text = "Categories";
 			// 
+			// lstPrePost
+			// 
+			this.lstPrePost.FormattingEnabled = true;
+			this.lstPrePost.Location = new System.Drawing.Point(6, 140);
+			this.lstPrePost.Name = "lstPrePost";
+			this.lstPrePost.Size = new System.Drawing.Size(120, 108);
+			this.lstPrePost.TabIndex = 23;
+			this.lstPrePost.SelectedIndexChanged += new System.EventHandler(this.lstPrePost_SelectedIndexChanged);
+			// 
 			// lstPrePostCategories
 			// 
 			this.lstPrePostCategories.FormattingEnabled = true;
@@ -568,45 +619,98 @@ namespace Idmr.Yogeme
             "Pre-mission Banter",
             "Mission Description",
             "Successful Debrief"});
-			this.lstPrePostCategories.Location = new System.Drawing.Point(6, 56);
+			this.lstPrePostCategories.Location = new System.Drawing.Point(6, 58);
 			this.lstPrePostCategories.Name = "lstPrePostCategories";
 			this.lstPrePostCategories.Size = new System.Drawing.Size(120, 43);
 			this.lstPrePostCategories.TabIndex = 23;
 			this.lstPrePostCategories.SelectedIndexChanged += new System.EventHandler(this.lstPrePostCategories_SelectedIndexChanged);
 			// 
-			// txtPrePost
+			// label4
 			// 
-			this.txtPrePost.Location = new System.Drawing.Point(135, 79);
-			this.txtPrePost.Multiline = true;
-			this.txtPrePost.Name = "txtPrePost";
-			this.txtPrePost.ReadOnly = true;
-			this.txtPrePost.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-			this.txtPrePost.Size = new System.Drawing.Size(480, 203);
-			this.txtPrePost.TabIndex = 32;
+			this.label4.AutoSize = true;
+			this.label4.Location = new System.Drawing.Point(6, 3);
+			this.label4.Name = "label4";
+			this.label4.Size = new System.Drawing.Size(559, 26);
+			this.label4.TabIndex = 3;
+			this.label4.Text = "These .WAV files follow a specific location and naming convention. Files chosen w" +
+    "ill be copied/renamed accordingly.\r\nIt\'s suggested that each paragraph be its ow" +
+    "n WAV. *Changes are immediate*";
 			// 
-			// lstPrePost
+			// opnWav
 			// 
-			this.lstPrePost.FormattingEnabled = true;
-			this.lstPrePost.Location = new System.Drawing.Point(6, 174);
-			this.lstPrePost.Name = "lstPrePost";
-			this.lstPrePost.Size = new System.Drawing.Size(120, 108);
-			this.lstPrePost.TabIndex = 23;
-			this.lstPrePost.SelectedIndexChanged += new System.EventHandler(this.lstPrePost_SelectedIndexChanged);
+			this.opnWav.Filter = "Wave files|*.wav";
 			// 
-			// label14
+			// cmdRemove
 			// 
-			this.label14.AutoSize = true;
-			this.label14.Location = new System.Drawing.Point(6, 158);
-			this.label14.Name = "label14";
-			this.label14.Size = new System.Drawing.Size(55, 13);
-			this.label14.TabIndex = 24;
-			this.label14.Text = "Messages";
+			this.cmdRemove.Enabled = false;
+			this.cmdRemove.Location = new System.Drawing.Point(6, 283);
+			this.cmdRemove.Name = "cmdRemove";
+			this.cmdRemove.Size = new System.Drawing.Size(58, 23);
+			this.cmdRemove.TabIndex = 33;
+			this.cmdRemove.Text = "&Remove";
+			this.cmdRemove.UseVisualStyleBackColor = true;
+			this.cmdRemove.Click += new System.EventHandler(this.cmdRemove_Click);
+			// 
+			// label18
+			// 
+			this.label18.AutoSize = true;
+			this.label18.Location = new System.Drawing.Point(13, 362);
+			this.label18.Name = "label18";
+			this.label18.Size = new System.Drawing.Size(443, 13);
+			this.label18.TabIndex = 1;
+			this.label18.Text = "Backups are created for everything modified here, although restoring must be done" +
+    " manually.";
+			// 
+			// cmdClose
+			// 
+			this.cmdClose.Location = new System.Drawing.Point(563, 365);
+			this.cmdClose.Name = "cmdClose";
+			this.cmdClose.Size = new System.Drawing.Size(75, 23);
+			this.cmdClose.TabIndex = 2;
+			this.cmdClose.Text = "&Close";
+			this.cmdClose.UseVisualStyleBackColor = true;
+			this.cmdClose.Click += new System.EventHandler(this.cmdClose_Click);
+			// 
+			// cmdAdd
+			// 
+			this.cmdAdd.Enabled = false;
+			this.cmdAdd.Location = new System.Drawing.Point(6, 254);
+			this.cmdAdd.Name = "cmdAdd";
+			this.cmdAdd.Size = new System.Drawing.Size(58, 23);
+			this.cmdAdd.TabIndex = 33;
+			this.cmdAdd.Text = "&Add";
+			this.cmdAdd.UseVisualStyleBackColor = true;
+			this.cmdAdd.Click += new System.EventHandler(this.cmdAdd_Click);
+			// 
+			// cmdDown
+			// 
+			this.cmdDown.Enabled = false;
+			this.cmdDown.Location = new System.Drawing.Point(68, 283);
+			this.cmdDown.Name = "cmdDown";
+			this.cmdDown.Size = new System.Drawing.Size(58, 23);
+			this.cmdDown.TabIndex = 33;
+			this.cmdDown.Text = "Mv &Dn";
+			this.cmdDown.UseVisualStyleBackColor = true;
+			this.cmdDown.Click += new System.EventHandler(this.cmdDown_Click);
+			// 
+			// cmdUp
+			// 
+			this.cmdUp.Enabled = false;
+			this.cmdUp.Location = new System.Drawing.Point(68, 254);
+			this.cmdUp.Name = "cmdUp";
+			this.cmdUp.Size = new System.Drawing.Size(58, 23);
+			this.cmdUp.TabIndex = 33;
+			this.cmdUp.Text = "Mv &Up";
+			this.cmdUp.UseVisualStyleBackColor = true;
+			this.cmdUp.Click += new System.EventHandler(this.cmdUp_Click);
 			// 
 			// XwaWavForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(645, 418);
+			this.ClientSize = new System.Drawing.Size(645, 396);
+			this.Controls.Add(this.cmdClose);
+			this.Controls.Add(this.label18);
 			this.Controls.Add(this.tabsWav);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MaximizeBox = false;
@@ -622,6 +726,7 @@ namespace Idmr.Yogeme
 			this.tabPrePost.ResumeLayout(false);
 			this.tabPrePost.PerformLayout();
 			this.ResumeLayout(false);
+			this.PerformLayout();
 
 		}
 
@@ -677,5 +782,13 @@ namespace Idmr.Yogeme
 		private System.Windows.Forms.Label label19;
 		private System.Windows.Forms.ListBox lstPrePost;
 		private System.Windows.Forms.ListBox lstPrePostCategories;
+		private System.Windows.Forms.Button cmdSaveMessage;
+		private System.Windows.Forms.Button cmdSaveEom;
+		private System.Windows.Forms.Button cmdRemove;
+		private System.Windows.Forms.Label label18;
+		private System.Windows.Forms.Button cmdClose;
+		private System.Windows.Forms.Button cmdAdd;
+		private System.Windows.Forms.Button cmdUp;
+		private System.Windows.Forms.Button cmdDown;
 	}
 }
