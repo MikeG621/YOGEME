@@ -69,6 +69,10 @@ namespace Idmr.Yogeme
 			this.lstBriefing = new System.Windows.Forms.ListBox();
 			this.label3 = new System.Windows.Forms.Label();
 			this.tabPrePost = new System.Windows.Forms.TabPage();
+			this.cmdUp = new System.Windows.Forms.Button();
+			this.cmdDown = new System.Windows.Forms.Button();
+			this.cmdAdd = new System.Windows.Forms.Button();
+			this.cmdRemove = new System.Windows.Forms.Button();
 			this.txtPrePost = new System.Windows.Forms.TextBox();
 			this.cmdPlayPrePost = new System.Windows.Forms.Button();
 			this.cmdPrePost = new System.Windows.Forms.Button();
@@ -82,12 +86,8 @@ namespace Idmr.Yogeme
 			this.lstPrePostCategories = new System.Windows.Forms.ListBox();
 			this.label4 = new System.Windows.Forms.Label();
 			this.opnWav = new System.Windows.Forms.OpenFileDialog();
-			this.cmdRemove = new System.Windows.Forms.Button();
 			this.label18 = new System.Windows.Forms.Label();
 			this.cmdClose = new System.Windows.Forms.Button();
-			this.cmdAdd = new System.Windows.Forms.Button();
-			this.cmdDown = new System.Windows.Forms.Button();
-			this.cmdUp = new System.Windows.Forms.Button();
 			this.tabsWav.SuspendLayout();
 			this.tabMessages.SuspendLayout();
 			this.tabEom.SuspendLayout();
@@ -136,7 +136,7 @@ namespace Idmr.Yogeme
 			this.cmdSaveMessage.Location = new System.Drawing.Point(135, 158);
 			this.cmdSaveMessage.Name = "cmdSaveMessage";
 			this.cmdSaveMessage.Size = new System.Drawing.Size(75, 23);
-			this.cmdSaveMessage.TabIndex = 24;
+			this.cmdSaveMessage.TabIndex = 5;
 			this.cmdSaveMessage.Text = "&Save";
 			this.cmdSaveMessage.UseVisualStyleBackColor = true;
 			this.cmdSaveMessage.Click += new System.EventHandler(this.cmdSave_Click);
@@ -148,7 +148,7 @@ namespace Idmr.Yogeme
 			this.cmdPlayMessage.Location = new System.Drawing.Point(434, 130);
 			this.cmdPlayMessage.Name = "cmdPlayMessage";
 			this.cmdPlayMessage.Size = new System.Drawing.Size(25, 23);
-			this.cmdPlayMessage.TabIndex = 11;
+			this.cmdPlayMessage.TabIndex = 4;
 			this.cmdPlayMessage.UseVisualStyleBackColor = true;
 			this.cmdPlayMessage.Click += new System.EventHandler(this.cmdPlay_Click);
 			// 
@@ -175,7 +175,7 @@ namespace Idmr.Yogeme
 			this.cmdMessage.Location = new System.Drawing.Point(403, 130);
 			this.cmdMessage.Name = "cmdMessage";
 			this.cmdMessage.Size = new System.Drawing.Size(25, 23);
-			this.cmdMessage.TabIndex = 8;
+			this.cmdMessage.TabIndex = 3;
 			this.cmdMessage.Text = "...";
 			this.cmdMessage.UseVisualStyleBackColor = true;
 			this.cmdMessage.Click += new System.EventHandler(this.cmdMessage_Click);
@@ -194,7 +194,7 @@ namespace Idmr.Yogeme
 			this.txtMessage.Location = new System.Drawing.Point(193, 132);
 			this.txtMessage.Name = "txtMessage";
 			this.txtMessage.Size = new System.Drawing.Size(204, 20);
-			this.txtMessage.TabIndex = 6;
+			this.txtMessage.TabIndex = 2;
 			// 
 			// lblNotes
 			// 
@@ -249,7 +249,7 @@ namespace Idmr.Yogeme
 			this.lstMessages.Name = "lstMessages";
 			this.lstMessages.ScrollAlwaysVisible = true;
 			this.lstMessages.Size = new System.Drawing.Size(120, 173);
-			this.lstMessages.TabIndex = 0;
+			this.lstMessages.TabIndex = 1;
 			this.lstMessages.SelectedIndexChanged += new System.EventHandler(this.lstMessages_SelectedIndexChanged);
 			// 
 			// tabEom
@@ -279,7 +279,7 @@ namespace Idmr.Yogeme
 			this.cmdSaveEom.Location = new System.Drawing.Point(135, 158);
 			this.cmdSaveEom.Name = "cmdSaveEom";
 			this.cmdSaveEom.Size = new System.Drawing.Size(75, 23);
-			this.cmdSaveEom.TabIndex = 23;
+			this.cmdSaveEom.TabIndex = 5;
 			this.cmdSaveEom.Text = "&Save";
 			this.cmdSaveEom.UseVisualStyleBackColor = true;
 			this.cmdSaveEom.Click += new System.EventHandler(this.cmdSave_Click);
@@ -291,7 +291,7 @@ namespace Idmr.Yogeme
 			this.cmdPlayEom.Location = new System.Drawing.Point(434, 130);
 			this.cmdPlayEom.Name = "cmdPlayEom";
 			this.cmdPlayEom.Size = new System.Drawing.Size(25, 23);
-			this.cmdPlayEom.TabIndex = 22;
+			this.cmdPlayEom.TabIndex = 4;
 			this.cmdPlayEom.UseVisualStyleBackColor = true;
 			this.cmdPlayEom.Click += new System.EventHandler(this.cmdPlay_Click);
 			// 
@@ -300,7 +300,7 @@ namespace Idmr.Yogeme
 			this.cmdEom.Location = new System.Drawing.Point(403, 130);
 			this.cmdEom.Name = "cmdEom";
 			this.cmdEom.Size = new System.Drawing.Size(25, 23);
-			this.cmdEom.TabIndex = 19;
+			this.cmdEom.TabIndex = 3;
 			this.cmdEom.Text = "...";
 			this.cmdEom.UseVisualStyleBackColor = true;
 			this.cmdEom.Click += new System.EventHandler(this.cmdMessage_Click);
@@ -319,7 +319,7 @@ namespace Idmr.Yogeme
 			this.txtEom.Location = new System.Drawing.Point(193, 132);
 			this.txtEom.Name = "txtEom";
 			this.txtEom.Size = new System.Drawing.Size(204, 20);
-			this.txtEom.TabIndex = 17;
+			this.txtEom.TabIndex = 2;
 			// 
 			// lblEomNote
 			// 
@@ -370,7 +370,7 @@ namespace Idmr.Yogeme
 			this.lstEom.Location = new System.Drawing.Point(6, 58);
 			this.lstEom.Name = "lstEom";
 			this.lstEom.Size = new System.Drawing.Size(120, 82);
-			this.lstEom.TabIndex = 12;
+			this.lstEom.TabIndex = 1;
 			this.lstEom.SelectedIndexChanged += new System.EventHandler(this.lstEom_SelectedIndexChanged);
 			// 
 			// label2
@@ -409,7 +409,7 @@ namespace Idmr.Yogeme
 			this.cmdPlayBriefing.Location = new System.Drawing.Point(414, 130);
 			this.cmdPlayBriefing.Name = "cmdPlayBriefing";
 			this.cmdPlayBriefing.Size = new System.Drawing.Size(25, 23);
-			this.cmdPlayBriefing.TabIndex = 31;
+			this.cmdPlayBriefing.TabIndex = 3;
 			this.cmdPlayBriefing.UseVisualStyleBackColor = true;
 			this.cmdPlayBriefing.Click += new System.EventHandler(this.cmdPlay_Click);
 			// 
@@ -418,7 +418,7 @@ namespace Idmr.Yogeme
 			this.cmdBriefing.Location = new System.Drawing.Point(383, 130);
 			this.cmdBriefing.Name = "cmdBriefing";
 			this.cmdBriefing.Size = new System.Drawing.Size(25, 23);
-			this.cmdBriefing.TabIndex = 30;
+			this.cmdBriefing.TabIndex = 2;
 			this.cmdBriefing.Text = "...";
 			this.cmdBriefing.UseVisualStyleBackColor = true;
 			this.cmdBriefing.Click += new System.EventHandler(this.cmdPrePost_Click);
@@ -438,7 +438,8 @@ namespace Idmr.Yogeme
 			this.txtBriefing.Name = "txtBriefing";
 			this.txtBriefing.ReadOnly = true;
 			this.txtBriefing.Size = new System.Drawing.Size(184, 20);
-			this.txtBriefing.TabIndex = 28;
+			this.txtBriefing.TabIndex = 0;
+			this.txtBriefing.TabStop = false;
 			// 
 			// lblBriefingNote
 			// 
@@ -482,7 +483,7 @@ namespace Idmr.Yogeme
 			this.lstBriefing.Name = "lstBriefing";
 			this.lstBriefing.ScrollAlwaysVisible = true;
 			this.lstBriefing.Size = new System.Drawing.Size(120, 173);
-			this.lstBriefing.TabIndex = 23;
+			this.lstBriefing.TabIndex = 1;
 			this.lstBriefing.SelectedIndexChanged += new System.EventHandler(this.lstBriefing_SelectedIndexChanged);
 			// 
 			// label3
@@ -519,6 +520,50 @@ namespace Idmr.Yogeme
 			this.tabPrePost.TabIndex = 3;
 			this.tabPrePost.Text = "Pre/Post Briefing";
 			// 
+			// cmdUp
+			// 
+			this.cmdUp.Enabled = false;
+			this.cmdUp.Location = new System.Drawing.Point(68, 254);
+			this.cmdUp.Name = "cmdUp";
+			this.cmdUp.Size = new System.Drawing.Size(58, 23);
+			this.cmdUp.TabIndex = 7;
+			this.cmdUp.Text = "Mv &Up";
+			this.cmdUp.UseVisualStyleBackColor = true;
+			this.cmdUp.Click += new System.EventHandler(this.cmdUp_Click);
+			// 
+			// cmdDown
+			// 
+			this.cmdDown.Enabled = false;
+			this.cmdDown.Location = new System.Drawing.Point(68, 283);
+			this.cmdDown.Name = "cmdDown";
+			this.cmdDown.Size = new System.Drawing.Size(58, 23);
+			this.cmdDown.TabIndex = 8;
+			this.cmdDown.Text = "Mv &Dn";
+			this.cmdDown.UseVisualStyleBackColor = true;
+			this.cmdDown.Click += new System.EventHandler(this.cmdDown_Click);
+			// 
+			// cmdAdd
+			// 
+			this.cmdAdd.Enabled = false;
+			this.cmdAdd.Location = new System.Drawing.Point(6, 254);
+			this.cmdAdd.Name = "cmdAdd";
+			this.cmdAdd.Size = new System.Drawing.Size(58, 23);
+			this.cmdAdd.TabIndex = 5;
+			this.cmdAdd.Text = "&Add";
+			this.cmdAdd.UseVisualStyleBackColor = true;
+			this.cmdAdd.Click += new System.EventHandler(this.cmdAdd_Click);
+			// 
+			// cmdRemove
+			// 
+			this.cmdRemove.Enabled = false;
+			this.cmdRemove.Location = new System.Drawing.Point(6, 283);
+			this.cmdRemove.Name = "cmdRemove";
+			this.cmdRemove.Size = new System.Drawing.Size(58, 23);
+			this.cmdRemove.TabIndex = 6;
+			this.cmdRemove.Text = "&Remove";
+			this.cmdRemove.UseVisualStyleBackColor = true;
+			this.cmdRemove.Click += new System.EventHandler(this.cmdRemove_Click);
+			// 
 			// txtPrePost
 			// 
 			this.txtPrePost.Location = new System.Drawing.Point(135, 79);
@@ -527,7 +572,8 @@ namespace Idmr.Yogeme
 			this.txtPrePost.ReadOnly = true;
 			this.txtPrePost.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
 			this.txtPrePost.Size = new System.Drawing.Size(480, 203);
-			this.txtPrePost.TabIndex = 32;
+			this.txtPrePost.TabIndex = 0;
+			this.txtPrePost.TabStop = false;
 			// 
 			// cmdPlayPrePost
 			// 
@@ -536,7 +582,7 @@ namespace Idmr.Yogeme
 			this.cmdPlayPrePost.Location = new System.Drawing.Point(411, 288);
 			this.cmdPlayPrePost.Name = "cmdPlayPrePost";
 			this.cmdPlayPrePost.Size = new System.Drawing.Size(25, 23);
-			this.cmdPlayPrePost.TabIndex = 31;
+			this.cmdPlayPrePost.TabIndex = 4;
 			this.cmdPlayPrePost.UseVisualStyleBackColor = true;
 			this.cmdPlayPrePost.Click += new System.EventHandler(this.cmdPlay_Click);
 			// 
@@ -545,7 +591,7 @@ namespace Idmr.Yogeme
 			this.cmdPrePost.Location = new System.Drawing.Point(380, 288);
 			this.cmdPrePost.Name = "cmdPrePost";
 			this.cmdPrePost.Size = new System.Drawing.Size(25, 23);
-			this.cmdPrePost.TabIndex = 30;
+			this.cmdPrePost.TabIndex = 3;
 			this.cmdPrePost.Text = "...";
 			this.cmdPrePost.UseVisualStyleBackColor = true;
 			this.cmdPrePost.Click += new System.EventHandler(this.cmdPrePost_Click);
@@ -565,7 +611,8 @@ namespace Idmr.Yogeme
 			this.txtPrePostWav.Name = "txtPrePostWav";
 			this.txtPrePostWav.ReadOnly = true;
 			this.txtPrePostWav.Size = new System.Drawing.Size(184, 20);
-			this.txtPrePostWav.TabIndex = 28;
+			this.txtPrePostWav.TabIndex = 0;
+			this.txtPrePostWav.TabStop = false;
 			// 
 			// lblPrePostNote
 			// 
@@ -609,7 +656,7 @@ namespace Idmr.Yogeme
 			this.lstPrePost.Location = new System.Drawing.Point(6, 140);
 			this.lstPrePost.Name = "lstPrePost";
 			this.lstPrePost.Size = new System.Drawing.Size(120, 108);
-			this.lstPrePost.TabIndex = 23;
+			this.lstPrePost.TabIndex = 2;
 			this.lstPrePost.SelectedIndexChanged += new System.EventHandler(this.lstPrePost_SelectedIndexChanged);
 			// 
 			// lstPrePostCategories
@@ -622,7 +669,7 @@ namespace Idmr.Yogeme
 			this.lstPrePostCategories.Location = new System.Drawing.Point(6, 58);
 			this.lstPrePostCategories.Name = "lstPrePostCategories";
 			this.lstPrePostCategories.Size = new System.Drawing.Size(120, 43);
-			this.lstPrePostCategories.TabIndex = 23;
+			this.lstPrePostCategories.TabIndex = 1;
 			this.lstPrePostCategories.SelectedIndexChanged += new System.EventHandler(this.lstPrePostCategories_SelectedIndexChanged);
 			// 
 			// label4
@@ -640,17 +687,6 @@ namespace Idmr.Yogeme
 			// 
 			this.opnWav.Filter = "Wave files|*.wav";
 			// 
-			// cmdRemove
-			// 
-			this.cmdRemove.Enabled = false;
-			this.cmdRemove.Location = new System.Drawing.Point(6, 283);
-			this.cmdRemove.Name = "cmdRemove";
-			this.cmdRemove.Size = new System.Drawing.Size(58, 23);
-			this.cmdRemove.TabIndex = 33;
-			this.cmdRemove.Text = "&Remove";
-			this.cmdRemove.UseVisualStyleBackColor = true;
-			this.cmdRemove.Click += new System.EventHandler(this.cmdRemove_Click);
-			// 
 			// label18
 			// 
 			this.label18.AutoSize = true;
@@ -666,43 +702,10 @@ namespace Idmr.Yogeme
 			this.cmdClose.Location = new System.Drawing.Point(563, 365);
 			this.cmdClose.Name = "cmdClose";
 			this.cmdClose.Size = new System.Drawing.Size(75, 23);
-			this.cmdClose.TabIndex = 2;
+			this.cmdClose.TabIndex = 20;
 			this.cmdClose.Text = "&Close";
 			this.cmdClose.UseVisualStyleBackColor = true;
 			this.cmdClose.Click += new System.EventHandler(this.cmdClose_Click);
-			// 
-			// cmdAdd
-			// 
-			this.cmdAdd.Enabled = false;
-			this.cmdAdd.Location = new System.Drawing.Point(6, 254);
-			this.cmdAdd.Name = "cmdAdd";
-			this.cmdAdd.Size = new System.Drawing.Size(58, 23);
-			this.cmdAdd.TabIndex = 33;
-			this.cmdAdd.Text = "&Add";
-			this.cmdAdd.UseVisualStyleBackColor = true;
-			this.cmdAdd.Click += new System.EventHandler(this.cmdAdd_Click);
-			// 
-			// cmdDown
-			// 
-			this.cmdDown.Enabled = false;
-			this.cmdDown.Location = new System.Drawing.Point(68, 283);
-			this.cmdDown.Name = "cmdDown";
-			this.cmdDown.Size = new System.Drawing.Size(58, 23);
-			this.cmdDown.TabIndex = 33;
-			this.cmdDown.Text = "Mv &Dn";
-			this.cmdDown.UseVisualStyleBackColor = true;
-			this.cmdDown.Click += new System.EventHandler(this.cmdDown_Click);
-			// 
-			// cmdUp
-			// 
-			this.cmdUp.Enabled = false;
-			this.cmdUp.Location = new System.Drawing.Point(68, 254);
-			this.cmdUp.Name = "cmdUp";
-			this.cmdUp.Size = new System.Drawing.Size(58, 23);
-			this.cmdUp.TabIndex = 33;
-			this.cmdUp.Text = "Mv &Up";
-			this.cmdUp.UseVisualStyleBackColor = true;
-			this.cmdUp.Click += new System.EventHandler(this.cmdUp_Click);
 			// 
 			// XwaWavForm
 			// 

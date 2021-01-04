@@ -17,6 +17,7 @@ For program usage and help (with images), see "yogeme.chm".
 Version History
 
  - (XWA) WAV Manager
+ - (XWA) Added SuperBackdrop detection for the XWAUP Mega Patch v1.1, as well as general Planet2 detection
 
 v1.8.2, 19 Dec 2020
  - (XWA) Fixed the default SBD indexes

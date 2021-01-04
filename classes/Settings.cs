@@ -3,10 +3,12 @@
  * Copyright (C) 2007-2020 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.8.1
+ * VERSION: 1.8.1+
  */
 
 /* CHANGELOG
+ * [UPD] Added detection for SBD via XWAUP Mega Patch 1.1
+ * [UPD] Added generic detection of planet2.dat for SBD
  * v1.8.1, 201213
  * [UPD] Added detection for SBD via XWAUP Mega Patch
  * v1.8, 201004
@@ -486,7 +488,7 @@ namespace Idmr.Yogeme
 				}
 			}
 			#endregion
-			if (XwaInstalled) SuperBackdropsInstalled = (File.Exists(_xwaPath + "\\DTMSBReadme.rtf") || File.Exists(_xwaPath + "\\Backup\\SBPReadme_v3.1.rtf") || Directory.Exists(_xwaPath + "\\Readme\\SuperBackdropPatch"));
+			if (XwaInstalled) SuperBackdropsInstalled = (File.Exists(_xwaPath + "\\DTMSBReadme.rtf") || File.Exists(_xwaPath + "\\Backup\\SBPReadme_v3.1.rtf") || Directory.Exists(_xwaPath + "\\Readme\\SuperBackdropPatch") || Directory.GetFiles(_xwaPath + "\\Readme\\Upgrades", "SuperBackdrop*").Length != 0 || File.Exists(_xwaPath + "\\Resdata\\Planet2.dat"));
 		}
 		/// <summary>Saves current settings to user's settings file</summary>
 		/// <remarks>Registry use has been deprecated</remarks>

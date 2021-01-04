@@ -448,7 +448,7 @@ namespace Idmr.Yogeme
 					_installDirectory = config.XwaPath;
 					_backdropDirectory = config.XwaPath + "\\RESDATA\\";
 					_numBackdrops = 104;
-					// permanently increasing this to 512. Note however that SBD starfield is 2812px, so it'll be cut off
+					// permanently increasing this to 512. Oversized SBD images now scaled to fit
 					int size = 256;
 					Height += size;
 					Width += size;

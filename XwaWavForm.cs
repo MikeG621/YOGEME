@@ -25,7 +25,7 @@ namespace Idmr.Yogeme
 		readonly Mission _mission;
 		readonly string _lstFile;
 		string[] _messages;
-		readonly List<System.Windows.Media.MediaPlayer> _activeSounds = new List<System.Windows.Media.MediaPlayer>();
+		readonly List<System.Windows.Media.MediaPlayer> _activeSounds = new List<System.Windows.Media.MediaPlayer>();	// prevents early GC
 		readonly string _frontend;
 		readonly string _wave;
 		readonly int _battleNumber;
@@ -77,7 +77,20 @@ namespace Idmr.Yogeme
 			}
 		}
 
+		void stopPlayback()
+		{
+			// this should really only have 1 entry at any time
+			for (int i = 0; i < _activeSounds.Count; i++)
+			{
+				_activeSounds[i].Stop();
+			}
+		}
+
 		#region controls
+		private void cmdClose_Click(object sender, EventArgs e)
+		{
+			Close();
+		}
 		void cmdPlay_Click(object sender, EventArgs e)
 		{
 			Button cmd = (Button)sender;
@@ -100,26 +113,6 @@ namespace Idmr.Yogeme
 			var plr = (System.Windows.Media.MediaPlayer)sender;
 			_activeSounds.Remove(plr);
 			plr.Close();
-		}
-
-		private void lstEom_SelectedIndexChanged(object sender, EventArgs e)
-		{
-			if (lstEom.SelectedIndex == -1) return;
-
-			lblEom.Text = _mission.Teams[0].EndOfMissionMessages[lstEom.SelectedIndex];
-			lblEomNote.Text = _mission.Teams[0].EomNotes[lstEom.SelectedIndex / 2];
-
-			if (_messages != null) txtEom.Text = _messages[lstEom.SelectedIndex + 64];
-		}
-		private void lstMessages_SelectedIndexChanged(object sender, EventArgs e)
-		{
-			if (lstMessages.SelectedIndex == -1) return;
-
-			lblMessage.Text = _mission.Messages[lstMessages.SelectedIndex].MessageString;
-			lblNotes.Text = _mission.Messages[lstMessages.SelectedIndex].Note;
-			lblFG.Text = _mission.FlightGroups[_mission.Messages[lstMessages.SelectedIndex].OriginatingFG].ToString();
-
-			if (_messages != null) txtMessage.Text = _messages[lstMessages.SelectedIndex];
 		}
 
 		private void cmdMessage_Click(object sender, EventArgs e)
@@ -161,68 +154,57 @@ namespace Idmr.Yogeme
 			cmdSaveMessage.Enabled = false;
 			cmdSaveEom.Enabled = false;
 		}
-
-		private void lstBriefing_SelectedIndexChanged(object sender, EventArgs e)
+		private void lstEom_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			if (lstBriefing.SelectedIndex == -1) return;
+			if (lstEom.SelectedIndex == -1) return;
 
-			lblBriefing.Text = _mission.Briefings[0].BriefingString[lstBriefing.SelectedIndex];
-			lblBriefingNote.Text = _mission.Briefings[0].BriefingStringsNotes[lstBriefing.SelectedIndex];
+			stopPlayback();
+			lblEom.Text = _mission.Teams[0].EndOfMissionMessages[lstEom.SelectedIndex];
+			lblEomNote.Text = _mission.Teams[0].EomNotes[lstEom.SelectedIndex / 2];
 
-			txtBriefing.Text = _frontend.Substring(_wave.Length) + "B" + _battleNumber.ToString("D2") + _missionNumber.ToString("D2") + (lstBriefing.SelectedIndex + 1).ToString("D2") + _wavExt;
-			cmdPlayBriefing.Visible = File.Exists(_wave + txtBriefing.Text);
+			if (_messages != null) txtEom.Text = _messages[lstEom.SelectedIndex + 64];
+		}
+		private void lstMessages_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			if (lstMessages.SelectedIndex == -1) return;
+
+			stopPlayback();
+			lblMessage.Text = _mission.Messages[lstMessages.SelectedIndex].MessageString;
+			lblNotes.Text = _mission.Messages[lstMessages.SelectedIndex].Note;
+			lblFG.Text = _mission.FlightGroups[_mission.Messages[lstMessages.SelectedIndex].OriginatingFG].ToString();
+
+			if (_messages != null) txtMessage.Text = _messages[lstMessages.SelectedIndex];
 		}
 
-		private void lstPrePostCategories_SelectedIndexChanged(object sender, EventArgs e)
+		private void cmdAdd_Click(object sender, EventArgs e)
 		{
-			cmdUp.Enabled = false;
-			cmdDown.Enabled = false;
-			cmdRemove.Enabled = false;
-
 			if (lstPrePostCategories.SelectedIndex == -1) return;
 
-			lstPrePost.Items.Clear();
+			stopPlayback();
+			DialogResult res = opnWav.ShowDialog();
+			if (res != DialogResult.OK) return;
 
-			int index = 1;
-			while (File.Exists(_frontend + _prefix + _battleNumber.ToString("D2") + _missionNumber.ToString("D2") + index.ToString("D2") + _wavExt))
-			{
-				lstPrePost.Items.Add("Message #" + index++);
-			}
-			cmdAdd.Enabled = true;
+			backupPrePost();
+
+			lstPrePost.Items.Add("Message #" + (lstPrePost.Items.Count + 1));
+			lstPrePost.SelectedIndex = lstPrePost.Items.Count - 1;
+			File.Copy(opnWav.FileName, _wave + txtPrePostWav.Text, true);
 		}
-
-		private void lstPrePost_SelectedIndexChanged(object sender, EventArgs e)
+		private void cmdDown_Click(object sender, EventArgs e)
 		{
-			cmdRemove.Enabled = lstPrePost.SelectedIndex != -1;
-			if (lstPrePost.SelectedIndex == -1 || lstPrePostCategories.SelectedIndex == -1)
-			{
-				cmdUp.Enabled = false;
-				cmdDown.Enabled = false;
-				return;
-			}
+			backupPrePost();
 
-			txtPrePostWav.Text = _frontend.Substring(_wave.Length) + _prefix + _battleNumber.ToString("D2") + _missionNumber.ToString("D2") + (lstPrePost.SelectedIndex + 1).ToString("D2") + _wavExt;
+			int index = lstPrePost.SelectedIndex + 1;
+			if (index == lstPrePost.Items.Count) return; // shouldn't be possible
 
-			cmdUp.Enabled = lstPrePost.SelectedIndex != 0;
-			cmdDown.Enabled = lstPrePost.SelectedIndex != lstPrePost.Items.Count - 1;
+			string wave = _frontend + _prefix + _battleNumber.ToString("D2") + _missionNumber.ToString("D2");
+			File.Copy(wave + index.ToString("D2") + _wavExt, wave + _tmpExt);
+			File.Copy(wave + (index + 1).ToString("D2") + _wavExt, wave + index.ToString("D2") + _wavExt, true);
+			File.Copy(wave + _tmpExt, wave + (index + 1).ToString("D2") + ".WAVE", true);
+			File.Delete(wave + _tmpExt);
 
-			if (_prefix == "N")
-			{
-				lblPrePostNote.Text = "N/A";
-				txtPrePost.Text = "N/A";
-			}
-			else if (_prefix == "S")
-			{
-				lblPrePostNote.Text = _mission.DescriptionNotes;
-				txtPrePost.Text = _mission.MissionDescription;
-			}
-			else
-			{
-				lblPrePostNote.Text = _mission.SuccessfulNotes;
-				txtPrePost.Text = _mission.MissionSuccessful;
-			}
+			lstPrePost.SelectedIndex++;
 		}
-
 		private void cmdPrePost_Click(object sender, EventArgs e)
 		{
 			bool isBriefing = ((Button)sender).Name == "cmdBriefing";
@@ -238,23 +220,11 @@ namespace Idmr.Yogeme
 
 			File.Copy(opnWav.FileName, wave, true);
 		}
-		private void cmdAdd_Click(object sender, EventArgs e)
-		{
-			if (lstPrePostCategories.SelectedIndex == -1) return;
-
-			DialogResult res = opnWav.ShowDialog();
-			if (res != DialogResult.OK) return;
-
-			backupPrePost();
-
-			lstPrePost.Items.Add("Message #" + (lstPrePost.Items.Count + 1));
-			lstPrePost.SelectedIndex = lstPrePost.Items.Count - 1;
-			File.Copy(opnWav.FileName, _wave + txtPrePostWav.Text, true);
-		}
 		private void cmdRemove_Click(object sender, EventArgs e)
 		{
 			if (lstPrePostCategories.SelectedIndex == -1 || lstPrePost.SelectedIndex == -1) return;
 
+			stopPlayback();
 			backupPrePost();
 
 			int index = lstPrePost.SelectedIndex + 1;
@@ -280,26 +250,66 @@ namespace Idmr.Yogeme
 
 			lstPrePost.SelectedIndex--;
 		}
-
-		private void cmdDown_Click(object sender, EventArgs e)
+		private void lstBriefing_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			backupPrePost();
+			if (lstBriefing.SelectedIndex == -1) return;
 
-			int index = lstPrePost.SelectedIndex + 1;
-			if (index == lstPrePost.Items.Count) return; // shouldn't be possible
+			stopPlayback();
+			lblBriefing.Text = _mission.Briefings[0].BriefingString[lstBriefing.SelectedIndex];
+			lblBriefingNote.Text = _mission.Briefings[0].BriefingStringsNotes[lstBriefing.SelectedIndex];
 
-			string wave = _frontend + _prefix + _battleNumber.ToString("D2") + _missionNumber.ToString("D2");
-			File.Copy(wave + index.ToString("D2") + _wavExt, wave + _tmpExt);
-			File.Copy(wave + (index + 1).ToString("D2") + _wavExt, wave + index.ToString("D2") + _wavExt, true);
-			File.Copy(wave + _tmpExt, wave + (index + 1).ToString("D2") + ".WAVE", true);
-			File.Delete(wave + _tmpExt);
-
-			lstPrePost.SelectedIndex++;
+			txtBriefing.Text = _frontend.Substring(_wave.Length) + "B" + _battleNumber.ToString("D2") + _missionNumber.ToString("D2") + (lstBriefing.SelectedIndex + 1).ToString("D2") + _wavExt;
+			cmdPlayBriefing.Visible = File.Exists(_wave + txtBriefing.Text);
 		}
-
-		private void cmdClose_Click(object sender, EventArgs e)
+		private void lstPrePost_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			Close();
+			cmdRemove.Enabled = lstPrePost.SelectedIndex != -1;
+			if (lstPrePost.SelectedIndex == -1 || lstPrePostCategories.SelectedIndex == -1)
+			{
+				cmdUp.Enabled = false;
+				cmdDown.Enabled = false;
+				return;
+			}
+
+			stopPlayback();
+			txtPrePostWav.Text = _frontend.Substring(_wave.Length) + _prefix + _battleNumber.ToString("D2") + _missionNumber.ToString("D2") + (lstPrePost.SelectedIndex + 1).ToString("D2") + _wavExt;
+
+			cmdUp.Enabled = lstPrePost.SelectedIndex != 0;
+			cmdDown.Enabled = lstPrePost.SelectedIndex != lstPrePost.Items.Count - 1;
+
+			if (_prefix == "N")
+			{
+				lblPrePostNote.Text = "N/A";
+				txtPrePost.Text = "N/A";
+			}
+			else if (_prefix == "S")
+			{
+				lblPrePostNote.Text = _mission.DescriptionNotes;
+				txtPrePost.Text = _mission.MissionDescription;
+			}
+			else
+			{
+				lblPrePostNote.Text = _mission.SuccessfulNotes;
+				txtPrePost.Text = _mission.MissionSuccessful;
+			}
+		}
+		private void lstPrePostCategories_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			cmdUp.Enabled = false;
+			cmdDown.Enabled = false;
+			cmdRemove.Enabled = false;
+
+			if (lstPrePostCategories.SelectedIndex == -1) return;
+
+			stopPlayback();
+			lstPrePost.Items.Clear();
+
+			int index = 1;
+			while (File.Exists(_frontend + _prefix + _battleNumber.ToString("D2") + _missionNumber.ToString("D2") + index.ToString("D2") + _wavExt))
+			{
+				lstPrePost.Items.Add("Message #" + index++);
+			}
+			cmdAdd.Enabled = true;
 		}
 		#endregion controls
 
