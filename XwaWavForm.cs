@@ -118,8 +118,10 @@ namespace Idmr.Yogeme
 		private void cmdMessage_Click(object sender, EventArgs e)
 		{
 			bool isEom = ((Button)sender).Name == "cmdEom";
+			var lst = (isEom ? lstEom : lstMessages);
 
-			if ((!isEom && lstMessages.SelectedIndex == -1) || (isEom && lstEom.SelectedIndex == -1)) return;
+			if (lst.SelectedIndex == -1) return;
+			var txt = (isEom ? txtEom : txtMessage);
 
 			DialogResult res = opnWav.ShowDialog();
 			if (res != DialogResult.OK) return;
@@ -129,15 +131,15 @@ namespace Idmr.Yogeme
 				return;
 			}
 
-			if (isEom) txtEom.Text = opnWav.FileName.Substring(opnWav.InitialDirectory.Length);
-			else txtMessage.Text = opnWav.FileName.Substring(opnWav.InitialDirectory.Length);
+			txt.Text = opnWav.FileName.Substring(opnWav.InitialDirectory.Length);
 
 			if (_messages == null)
 			{
 				_messages = new string[70];
 				for (int i = 0; i < _messages.Length; i++) _messages[i] = "none.wav";
 			}
-			_messages[isEom ? lstEom.SelectedIndex + 64 : lstMessages.SelectedIndex] = (isEom ? txtEom.Text : txtMessage.Text);
+			_messages[isEom ? lst.SelectedIndex + 64 : lst.SelectedIndex] = txt.Text;
+			(isEom ? cmdPlayEom : cmdPlayMessage).Visible = File.Exists(_wave + txt.Text);
 
 			cmdSaveEom.Enabled = true;
 			cmdSaveMessage.Enabled = true;
@@ -163,6 +165,7 @@ namespace Idmr.Yogeme
 			lblEomNote.Text = _mission.Teams[0].EomNotes[lstEom.SelectedIndex / 2];
 
 			if (_messages != null) txtEom.Text = _messages[lstEom.SelectedIndex + 64];
+			cmdEom.Visible = File.Exists(_wave + txtEom.Text);
 		}
 		private void lstMessages_SelectedIndexChanged(object sender, EventArgs e)
 		{
@@ -174,6 +177,7 @@ namespace Idmr.Yogeme
 			lblFG.Text = _mission.FlightGroups[_mission.Messages[lstMessages.SelectedIndex].OriginatingFG].ToString();
 
 			if (_messages != null) txtMessage.Text = _messages[lstMessages.SelectedIndex];
+			cmdPlayMessage.Visible = File.Exists(_wave + txtMessage.Text);
 		}
 
 		private void cmdAdd_Click(object sender, EventArgs e)
