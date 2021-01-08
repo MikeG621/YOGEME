@@ -376,6 +376,10 @@
 			<param name="Name" value="Hook Dialog">
 			<param name="Local" value="pages\XWA\hooks.html">
 			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Wave Manager">
+			<param name="Local" value="pages\XWA\wave.html">
+			</OBJECT>
 	</UL>
 </UL>
 </BODY></HTML>

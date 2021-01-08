@@ -2,8 +2,8 @@
 ======================================
 
 Author: Michael Gaisser (mjgaisser@gmail.com)
-Version: 1.8.2
-Date: 2020.12.19
+Version: 1.9
+Date: 2021.01.08
 
 Thank you for downloading YOGEME, the all-in-one mission editor for the X-Wing
 series, Xwing95 through X-wing Alliance.  This program allows easy mission
@@ -16,6 +16,8 @@ For program usage and help (with images), see "yogeme.chm".
 ==========
 Version History
 
+v1.9, 08 Jan 2021
+ - (All) Fixed the path to the clipboard BIN file, was wrong in some cases
  - (XWA) WAV Manager
  - (XWA) Added SuperBackdrop detection for the XWAUP Mega Patch v1.1, as well as general Planet2 detection
 
