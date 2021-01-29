@@ -5222,6 +5222,14 @@ namespace Idmr.Yogeme
 			_mission.GlobalCargo[gc].Unknown5 = Common.Update(this, _mission.GlobalCargo[gc].Unknown5, Convert.ToByte(numGCUnk5.Value));
 		}
 
+		void grpRegions_Leave(object sender, EventArgs e)
+		{
+			parameterRefresh(cboSkipPara);
+			parameterRefresh(cboGoalPara);
+			parameterRefresh(cboADPara);
+			parameterRefresh(cboMessPara);
+			parameterRefresh(cboGlobalPara);
+		}
 		void txtGlobCargo_Leave(object sender, EventArgs e)
 		{
 			int gc = (int)numGlobCargo.Value - 1;
