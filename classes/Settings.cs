@@ -489,7 +489,7 @@ namespace Idmr.Yogeme
 				}
 			}
 			#endregion
-			if (XwaInstalled) SuperBackdropsInstalled = (File.Exists(_xwaPath + "\\DTMSBReadme.rtf") || File.Exists(_xwaPath + "\\Backup\\SBPReadme_v3.1.rtf") || Directory.Exists(_xwaPath + "\\Readme\\SuperBackdropPatch") || Directory.GetFiles(_xwaPath + "\\Readme\\Upgrades", "SuperBackdrop*").Length != 0 || File.Exists(_xwaPath + "\\Resdata\\Planet2.dat"));
+			if (XwaInstalled) SuperBackdropsInstalled = (File.Exists(_xwaPath + "\\DTMSBReadme.rtf") || File.Exists(_xwaPath + "\\Backup\\SBPReadme_v3.1.rtf") || Directory.Exists(_xwaPath + "\\Readme\\SuperBackdropPatch") || (Directory.Exists(_xwaPath + "\\Readme\\Upgrades") && Directory.GetFiles(_xwaPath + "\\Readme\\Upgrades", "SuperBackdrop*").Length != 0) || File.Exists(_xwaPath + "\\Resdata\\Planet2.dat"));
 		}
 		/// <summary>Saves current settings to user's settings file</summary>
 		/// <remarks>Registry use has been deprecated</remarks>
