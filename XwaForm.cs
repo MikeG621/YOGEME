@@ -1340,7 +1340,7 @@ namespace Idmr.Yogeme
 			if (colorize && !e.State.HasFlag(DrawItemState.Selected)) e.Graphics.FillRectangle(Brushes.Black, e.Bounds);
 			Brush brText = SystemBrushes.ControlText;
 			if (colorize) brText = getFlightGroupDrawColor(e.Index - paramOffset);
-			if (brText == SystemBrushes.ControlText && variable.BackColor == Color.Black) brText = Brushes.LightGray;
+			if (colorize && brText == SystemBrushes.ControlText) brText = Brushes.LightGray;
 			e.Graphics.DrawString(e.Index >= 0 ? variable.Items[e.Index].ToString() : "", e.Font, brText, e.Bounds, StringFormat.GenericDefault);
 		}
 
