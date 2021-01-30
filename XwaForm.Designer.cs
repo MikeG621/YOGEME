@@ -765,7 +765,7 @@ namespace Idmr.Yogeme
 			this.lblGG9 = new System.Windows.Forms.Label();
 			this.lblGG1 = new System.Windows.Forms.Label();
 			this.txtGlobGroup = new System.Windows.Forms.TextBox();
-			this.groupBox38 = new System.Windows.Forms.GroupBox();
+			this.grpRegions = new System.Windows.Forms.GroupBox();
 			this.label137 = new System.Windows.Forms.Label();
 			this.label136 = new System.Windows.Forms.Label();
 			this.label135 = new System.Windows.Forms.Label();
@@ -954,7 +954,7 @@ namespace Idmr.Yogeme
 			((System.ComponentModel.ISupportInitialize)(this.numGCUnk2)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numGlobCargo)).BeginInit();
 			this.groupBox39.SuspendLayout();
-			this.groupBox38.SuspendLayout();
+			this.grpRegions.SuspendLayout();
 			this.groupBox37.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.dataOrders)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.dataOrders_Raw)).BeginInit();
@@ -8685,7 +8685,7 @@ namespace Idmr.Yogeme
 			// 
 			this.tabMission2.Controls.Add(this.groupBox40);
 			this.tabMission2.Controls.Add(this.groupBox39);
-			this.tabMission2.Controls.Add(this.groupBox38);
+			this.tabMission2.Controls.Add(this.grpRegions);
 			this.tabMission2.Controls.Add(this.groupBox37);
 			this.tabMission2.Controls.Add(this.label101);
 			this.tabMission2.Controls.Add(this.txtNotes);
@@ -9065,22 +9065,23 @@ namespace Idmr.Yogeme
 			this.txtGlobGroup.TabIndex = 0;
 			this.txtGlobGroup.Leave += new System.EventHandler(this.txtGlobGroup_Leave);
 			// 
-			// groupBox38
+			// grpRegions
 			// 
-			this.groupBox38.Controls.Add(this.label137);
-			this.groupBox38.Controls.Add(this.label136);
-			this.groupBox38.Controls.Add(this.label135);
-			this.groupBox38.Controls.Add(this.label134);
-			this.groupBox38.Controls.Add(this.txtRegion4);
-			this.groupBox38.Controls.Add(this.txtRegion3);
-			this.groupBox38.Controls.Add(this.txtRegion2);
-			this.groupBox38.Controls.Add(this.txtRegion1);
-			this.groupBox38.Location = new System.Drawing.Point(8, 157);
-			this.groupBox38.Name = "groupBox38";
-			this.groupBox38.Size = new System.Drawing.Size(191, 128);
-			this.groupBox38.TabIndex = 3;
-			this.groupBox38.TabStop = false;
-			this.groupBox38.Text = "Regions";
+			this.grpRegions.Controls.Add(this.label137);
+			this.grpRegions.Controls.Add(this.label136);
+			this.grpRegions.Controls.Add(this.label135);
+			this.grpRegions.Controls.Add(this.label134);
+			this.grpRegions.Controls.Add(this.txtRegion4);
+			this.grpRegions.Controls.Add(this.txtRegion3);
+			this.grpRegions.Controls.Add(this.txtRegion2);
+			this.grpRegions.Controls.Add(this.txtRegion1);
+			this.grpRegions.Location = new System.Drawing.Point(8, 157);
+			this.grpRegions.Name = "grpRegions";
+			this.grpRegions.Size = new System.Drawing.Size(191, 128);
+			this.grpRegions.TabIndex = 3;
+			this.grpRegions.TabStop = false;
+			this.grpRegions.Text = "Regions";
+			this.grpRegions.Leave += new System.EventHandler(this.grpRegions_Leave);
 			// 
 			// label137
 			// 
@@ -9489,8 +9490,8 @@ namespace Idmr.Yogeme
 			((System.ComponentModel.ISupportInitialize)(this.numGlobCargo)).EndInit();
 			this.groupBox39.ResumeLayout(false);
 			this.groupBox39.PerformLayout();
-			this.groupBox38.ResumeLayout(false);
-			this.groupBox38.PerformLayout();
+			this.grpRegions.ResumeLayout(false);
+			this.grpRegions.PerformLayout();
 			this.groupBox37.ResumeLayout(false);
 			this.groupBox37.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.dataOrders)).EndInit();
@@ -10093,7 +10094,7 @@ namespace Idmr.Yogeme
 		private TabPage tabMission2;
 		private GroupBox groupBox39;
 		private Label lblGG1;
-		private GroupBox groupBox38;
+		private GroupBox grpRegions;
 		private Label label137;
 		private Label label136;
 		private Label label135;
