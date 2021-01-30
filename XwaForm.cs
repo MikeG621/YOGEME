@@ -3,10 +3,13 @@
  * Copyright (C) 2007-2021 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.9
+ * VERSION: 1.9.1
  */
 
 /* CHANGELOG
+ * v1.9.1, 210130
+ * [FIX] Region name refresh [JB]
+ * [FIX] Region colors in paremter list [JB]
  * v1.9, 210108
  * [NEW] Wave Dialog menu and toolbar item
  * [FIX] Clipboard path

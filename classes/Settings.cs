@@ -3,10 +3,12 @@
  * Copyright (C) 2007-2021 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.9
+ * VERSION: 1.9.1
  */
 
 /* CHANGELOG
+ * v1.9.1, 210130
+ * [FIX] Crash in SBD detection if GetFiles() dir doesn't exist [JB]
  * v1.9, 210108
  * [UPD] Added detection for SBD via XWAUP Mega Patch 1.1
  * [UPD] Added generic detection of planet2.dat for SBD
