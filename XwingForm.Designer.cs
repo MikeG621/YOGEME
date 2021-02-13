@@ -595,6 +595,7 @@ namespace Idmr.Yogeme
 			// 
 			this.cboObject.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cboObject.Location = new System.Drawing.Point(88, 44);
+			this.cboObject.MaxDropDownItems = 20;
 			this.cboObject.Name = "cboObject";
 			this.cboObject.Size = new System.Drawing.Size(136, 21);
 			this.cboObject.TabIndex = 11;
@@ -604,6 +605,7 @@ namespace Idmr.Yogeme
 			// 
 			this.cboCraft.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cboCraft.Location = new System.Drawing.Point(88, 16);
+			this.cboCraft.MaxDropDownItems = 20;
 			this.cboCraft.Name = "cboCraft";
 			this.cboCraft.Size = new System.Drawing.Size(136, 21);
 			this.cboCraft.TabIndex = 10;
