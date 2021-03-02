@@ -16,6 +16,8 @@ For program usage and help (with images), see "yogeme.chm".
 ==========
 Version History
 
+ - (All) Craft Type dropdown now lists 20 items instead of the default 8 [Issue #45]
+
 v1.9.1, 30 Jan 21
  - Couple fixes from Random Starfighter (JB)
    - (Settings) Crash during SuperBackdrops detection if the Mega Patch isn't installed

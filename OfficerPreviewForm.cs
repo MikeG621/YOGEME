@@ -1,12 +1,13 @@
 ﻿/*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
- * Copyright (C) 2007-2020 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2021 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.8.1
+ * VERSION: 1.8.1+
  */
 
 /* CHANGELOG
+ * [UPD] Updated the FONT.TotalChars to FONT.NumberOfGlyphs rename
  * v1.8.1, 201213
  * [UPD] Settings passed in instead of re-init
  * v1.5, 180910
@@ -234,7 +235,7 @@ namespace Idmr.Yogeme
 					continue;
 				}
 				glyph = Convert.ToByte(chars[i] - font8.StartingChar);
-				if (glyph >= font8.TotalChars)
+				if (glyph >= font8.NumberOfGlyphs)
 				{
 					glyph = Convert.ToByte('X' - font8.StartingChar);
 					badChar = true;
