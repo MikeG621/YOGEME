@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2021 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.9
+ * VERSION: 1.9+
  */
 
 /* CHANGELOG
+ * [FIX] Test load failure if mission isn't in platform directory
  * v1.9, 210108
  * [FIX] Clipboard path in some locations
  * v1.8.1, 201213
@@ -1518,6 +1519,10 @@ namespace Idmr.Yogeme
 				explorer.WaitForExit();
 			}
 
+			bool localMission = _mission.MissionPath.ToLower().Contains(path.ToLower());
+			if (!localMission)
+				File.Copy(_mission.MissionPath, path + "MISSION\\" + _mission.MissionFileName);
+
 			tie.Start();
 			System.Threading.Thread.Sleep(1000);
 			System.Diagnostics.Process[] runningTies = System.Diagnostics.Process.GetProcessesByName("tie95");
@@ -1539,6 +1544,7 @@ namespace Idmr.Yogeme
 			if (_config.DeleteTestPilots) File.Delete(path + pilot);
 			File.Copy(path + backup, path + battle, true);
 			File.Delete(path + backup);
+			if (!localMission) File.Delete(path + "MISSION\\" + _mission.MissionFileName);
 			System.Diagnostics.Debug.WriteLine("Testing complete");
 		}
 		#endregion

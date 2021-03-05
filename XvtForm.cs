@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2021 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.9
+ * VERSION: 1.9+
  */
 
 /* CHANGELOG
+ * [FIX] Test load failure if mission isn't in platform directory
  * v1.9, 210108
  * [FIX] Clipboard path in some locations
  * v1.8.1, 201213
@@ -1906,6 +1907,10 @@ namespace Idmr.Yogeme
 				explorer.WaitForExit();
 			}*/
 
+			bool localMission = _mission.MissionPath.ToLower().Contains(path.ToLower());
+			if (!localMission)
+				File.Copy(_mission.MissionPath, path + "Train\\" + _mission.MissionFileName);
+
 			xvt.Start();
 			System.Threading.Thread.Sleep(1000);
 			System.Diagnostics.Process[] runningXvts = System.Diagnostics.Process.GetProcessesByName("Z_XVT__");
@@ -1931,6 +1936,7 @@ namespace Idmr.Yogeme
 			}
 			File.Copy(path + backup, path + lst, true);
 			File.Delete(path + backup);
+			if (!localMission) File.Delete(path + "Train\\" + _mission.MissionFileName);
 			System.Diagnostics.Debug.WriteLine("Testing complete");
 		}
 		void menuVerify_Click(object sender, EventArgs e)

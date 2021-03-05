@@ -274,6 +274,7 @@ namespace Idmr.Yogeme
 			InitializeComponent();
 			Text = "YOGEME Briefing Editor - XWA";
 			#region XWA layout change
+			// BUG: layout seems borked, or maybe it's the camera movement. figure it out
 			label7.Text = "Icon:";
 			Height = 484;
 			Width = 760;

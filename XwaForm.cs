@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2021 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.9.1
+ * VERSION: 1.9.1+
  */
 
 /* CHANGELOG
+ * [FIX] Test load failure if mission isn't in platform directory
  * v1.9.1, 210130
  * [FIX] Region name refresh [JB]
  * [FIX] Region colors in paremter list [JB]
@@ -2185,6 +2186,9 @@ namespace Idmr.Yogeme
 			sw = new FileInfo(path + lst).CreateText();
 			sw.Write(modified);
 			sw.Close();
+			bool localMission = _mission.MissionPath.ToLower().Contains(path.ToLower());
+			if (!localMission)
+				File.Copy(_mission.MissionPath, path + "Missions\\" + _mission.MissionFileName);
 
 			xwa.Start();
 			System.Threading.Thread.Sleep(1000);
@@ -2200,6 +2204,7 @@ namespace Idmr.Yogeme
 			if (_config.DeleteTestPilots) File.Delete(path + pilot);
 			File.Copy(path + backup, path + lst, true);
 			File.Delete(path + backup);
+			if (!localMission) File.Delete(path + "Missions\\" + _mission.MissionFileName);
 			System.Diagnostics.Debug.WriteLine("Testing complete");
 		}
 		void menuVerify_Click(object sender, EventArgs e)

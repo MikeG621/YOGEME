@@ -17,6 +17,7 @@ For program usage and help (with images), see "yogeme.chm".
 Version History
 
  - (All) Craft Type dropdown now lists 20 items instead of the default 8 [Issue #45]
+ - (Test) Fixed a load failure when testing a mission that isn't located in a platform directory
 
 v1.9.1, 30 Jan 21
  - Couple fixes from Random Starfighter (JB)
