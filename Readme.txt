@@ -18,6 +18,11 @@ Version History
 
  - (All) Craft Type dropdown now lists 20 items instead of the default 8 [Issue #45]
  - (Test) Fixed a load failure when testing a mission that isn't located in a platform directory
+ - Number of things in the XWA Wav dialog:
+   - Fixed the wrong EoM button being hidden when WAV file doesn't exist
+   - Fixed a crash when using multi-digit battle or mission numbers [Issue #49]
+   - PrePost text fields now clear when changing categories
+   - PrePost text fields now provide a comment about random Pre-briefing WAVS when none are defined
 
 v1.9.1, 30 Jan 21
  - Couple fixes from Random Starfighter (JB)

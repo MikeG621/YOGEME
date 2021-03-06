@@ -2188,7 +2188,7 @@ namespace Idmr.Yogeme
 			sw.Close();
 			bool localMission = _mission.MissionPath.ToLower().Contains(path.ToLower());
 			if (!localMission)
-				File.Copy(_mission.MissionPath, path + "Missions\\" + _mission.MissionFileName);
+				File.Copy(_mission.MissionPath, path + "Missions\\" + _mission.MissionFileName);// BUG: fix override issue
 
 			xwa.Start();
 			System.Threading.Thread.Sleep(1000);
@@ -2233,7 +2233,7 @@ namespace Idmr.Yogeme
 			else
 			{
 				_fWav = new XwaWavForm(_config, _mission);
-				_fWav.Show();
+				if (!_fWav.IsDisposed) _fWav.Show();
 			}
 		}
 		#endregion

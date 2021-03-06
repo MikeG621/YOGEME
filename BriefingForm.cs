@@ -1014,7 +1014,7 @@ namespace Idmr.Yogeme
 			{
 				_mapX = _events[i, 2];
 				_mapY = _events[i, 3];
-				if (_platform == Settings.Platform.XvT || _platform == Settings.Platform.BoP)
+				if (_platform == Settings.Platform.XvT || _platform == Settings.Platform.BoP || _platform == Settings.Platform.XWA)	// HACK: added XWA, still off some
 				{
 					_mapX /= 2;
 					_mapY /= 2;

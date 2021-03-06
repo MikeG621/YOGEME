@@ -3,10 +3,13 @@
  * Copyright (C) 2007-2021 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.9
+ * VERSION: 1.9+
  */
 
 /* CHANGELOG
+ * [FIX] Crash due to multi-digit battle or mission numbers [#49]
+ * [FIX] Wrong EoM button hiding if message doesn't exist
+ * [UPD] Notes about random pre-briefing messages
  * v1.9, 210108
  * [NEW] Created
  */
@@ -15,6 +18,7 @@ using Idmr.Platform.Xwa;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 namespace Idmr.Yogeme
@@ -45,10 +49,17 @@ namespace Idmr.Yogeme
 			_mission = mission;
 			_wave = _config.XwaPath + "\\Wave\\";
 			_lstFile = _wave + "MissionVoice\\" + Path.GetFileNameWithoutExtension(_mission.MissionFileName) + ".LST";
-			// need to confirm if double-digits are allowed in B or M numbers, and if triple is allowed in message indexes
-			_frontend = _wave + "FrontEnd\\" + Path.GetFileNameWithoutExtension(_mission.MissionFileName).Substring(1).Remove(4) + "\\";
-			_battleNumber = int.Parse(Directory.GetParent(_frontend).Name.Substring(1, 1));
-			_missionNumber = int.Parse(Directory.GetParent(_frontend).Name.Substring(3, 1));
+			Regex rx = new Regex(@"1B(\d+)M(\d+)\D\w*", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+			Match match = rx.Match(Path.GetFileNameWithoutExtension(_mission.MissionFileName));
+			if (!match.Success)
+			{
+				MessageBox.Show("Mission is not named correctly. Must start with \"1B#M#\".");
+				Close();
+				return;
+			}
+			_battleNumber = int.Parse(match.Groups[1].Value);
+			_missionNumber = int.Parse(match.Groups[2].Value);
+			_frontend = _wave + "FrontEnd\\B" + _battleNumber + "M" + _missionNumber + "\\";
 			opnWav.InitialDirectory = _wave;
 			Reload();
 		}
@@ -166,7 +177,7 @@ namespace Idmr.Yogeme
 			lblEomNote.Text = _mission.Teams[0].EomNotes[lstEom.SelectedIndex / 2];
 
 			if (_messages != null) txtEom.Text = _messages[lstEom.SelectedIndex + 64];
-			cmdEom.Visible = File.Exists(_wave + txtEom.Text);
+			cmdPlayEom.Visible = File.Exists(_wave + txtEom.Text);
 		}
 		private void lstMessages_SelectedIndexChanged(object sender, EventArgs e)
 		{
@@ -309,12 +320,32 @@ namespace Idmr.Yogeme
 			stopPlayback();
 			lstPrePost.Items.Clear();
 
+
 			int index = 1;
 			while (File.Exists(_frontend + _prefix + _battleNumber.ToString("D2") + _missionNumber.ToString("D2") + index.ToString("D2") + _wavExt))
 			{
 				lstPrePost.Items.Add("Message #" + index++);
 			}
 			cmdAdd.Enabled = true;
+
+			if (lstPrePostCategories.SelectedIndex == 0 && lstPrePost.Items.Count == 0)
+			{
+				string off = "??", officer = "Unknown";
+				switch (_mission.Officer)
+				{
+					case 0: off = "DE"; officer = "Devers"; break;
+					case 1: off = "KU"; officer = "Kupalo"; break;
+					case 2: off = "ZL"; officer = "Zaletta"; break;
+					case 8: off = "MC"; officer = "Emkay";  break;
+				}
+				txtPrePost.Text = "(None defined, randomly selected based on Briefing Officer, " + officer + ")";
+				txtPrePostWav.Text = "FrontEnd\\N01" + off + "##.WAV";
+			}
+			else
+			{
+				txtPrePost.Text = "";
+				txtPrePostWav.Text = "";
+			}
 		}
 		#endregion controls
 
