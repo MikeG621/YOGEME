@@ -1824,6 +1824,19 @@ namespace Idmr.Yogeme
 				}
 			}
 
+			bool localMission = _mission.MissionPath.ToLower().Contains(path.ToLower());
+			string fileName = (localMission ? path + "Train\\" + _mission.MissionFileName : _mission.MissionPath);
+			if (!localMission)
+			{
+				if (File.Exists(fileName))
+				{
+					DialogResult res = MessageBox.Show("You are not working in the platform directory and a mission with that filename exists. Continue?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+					if (res == DialogResult.No) return;
+					File.Copy(fileName, fileName + ".bak");
+				}
+				File.Copy(_mission.MissionPath, fileName, true);
+			}
+
 			if (_config.VerifyTest && !_config.Verify) Common.RunVerify(_mission.MissionPath, _config);
 			/*Version os = Environment.OSVersion.Version;
 			bool isWin7 = (os.Major == 6 && os.Minor == 1);
@@ -1907,10 +1920,6 @@ namespace Idmr.Yogeme
 				explorer.WaitForExit();
 			}*/
 
-			bool localMission = _mission.MissionPath.ToLower().Contains(path.ToLower());
-			if (!localMission)
-				File.Copy(_mission.MissionPath, path + "Train\\" + _mission.MissionFileName);
-
 			xvt.Start();
 			System.Threading.Thread.Sleep(1000);
 			System.Diagnostics.Process[] runningXvts = System.Diagnostics.Process.GetProcessesByName("Z_XVT__");
@@ -1936,7 +1945,16 @@ namespace Idmr.Yogeme
 			}
 			File.Copy(path + backup, path + lst, true);
 			File.Delete(path + backup);
-			if (!localMission) File.Delete(path + "Train\\" + _mission.MissionFileName);
+			if (!localMission)
+			{
+				if (File.Exists(fileName + ".bak"))
+				{
+					File.Copy(fileName + ".bak", fileName, true);
+					File.Delete(fileName + ".bak");
+				}
+				else
+					File.Delete(fileName);
+			}
 			System.Diagnostics.Debug.WriteLine("Testing complete");
 		}
 		void menuVerify_Click(object sender, EventArgs e)

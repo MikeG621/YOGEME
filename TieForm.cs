@@ -1482,6 +1482,19 @@ namespace Idmr.Yogeme
 				path = _config.TiePath + "\\";
 			}
 
+			bool localMission = _mission.MissionPath.ToLower().Contains(path.ToLower());
+			string fileName = (localMission ? path + "MISSION\\" + _mission.MissionFileName : _mission.MissionPath);
+			if (!localMission)
+			{
+				if (File.Exists(fileName))
+				{
+					DialogResult res = MessageBox.Show("You are not working in the platform directory and a mission with that filename exists. Continue?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+					if (res == DialogResult.No) return;
+					File.Copy(fileName, fileName + ".bak");
+				}
+				File.Copy(_mission.MissionPath, fileName, true);
+			}
+
 			if (_config.VerifyTest && !_config.Verify) Common.RunVerify(_mission.MissionPath, _config);
 			Version os = Environment.OSVersion.Version;
 			bool isWin7 = (os.Major == 6 && os.Minor == 1);
@@ -1519,10 +1532,6 @@ namespace Idmr.Yogeme
 				explorer.WaitForExit();
 			}
 
-			bool localMission = _mission.MissionPath.ToLower().Contains(path.ToLower());
-			if (!localMission)
-				File.Copy(_mission.MissionPath, path + "MISSION\\" + _mission.MissionFileName);
-
 			tie.Start();
 			System.Threading.Thread.Sleep(1000);
 			System.Diagnostics.Process[] runningTies = System.Diagnostics.Process.GetProcessesByName("tie95");
@@ -1544,7 +1553,16 @@ namespace Idmr.Yogeme
 			if (_config.DeleteTestPilots) File.Delete(path + pilot);
 			File.Copy(path + backup, path + battle, true);
 			File.Delete(path + backup);
-			if (!localMission) File.Delete(path + "MISSION\\" + _mission.MissionFileName);
+			if (!localMission)
+			{
+				if (File.Exists(fileName + ".bak"))
+				{
+					File.Copy(fileName + ".bak", fileName, true);
+					File.Delete(fileName + ".bak");
+				}
+				else
+					File.Delete(fileName);
+			}
 			System.Diagnostics.Debug.WriteLine("Testing complete");
 		}
 		#endregion

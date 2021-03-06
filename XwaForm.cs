@@ -2139,6 +2139,19 @@ namespace Idmr.Yogeme
 				path = _config.XwaPath + "\\";
 			}
 
+			bool localMission = _mission.MissionPath.ToLower().Contains(path.ToLower());
+			string fileName = (localMission ? path + "Missions\\" + _mission.MissionFileName : _mission.MissionPath);
+			if (!localMission)
+			{
+				if (File.Exists(fileName))
+				{
+					DialogResult res = MessageBox.Show("You are not working in the platform directory and a mission with that filename exists. Continue?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+					if (res == DialogResult.No) return;
+					File.Copy(fileName, fileName + ".bak");
+				}
+				File.Copy(_mission.MissionPath, fileName, true);
+			}
+
 			if (_config.VerifyTest && !_config.Verify) Common.RunVerify(_mission.MissionPath, _config);
 			int index = 0;
 			while (File.Exists(path + "test" + index + "0.plt")) index++;
@@ -2186,9 +2199,6 @@ namespace Idmr.Yogeme
 			sw = new FileInfo(path + lst).CreateText();
 			sw.Write(modified);
 			sw.Close();
-			bool localMission = _mission.MissionPath.ToLower().Contains(path.ToLower());
-			if (!localMission)
-				File.Copy(_mission.MissionPath, path + "Missions\\" + _mission.MissionFileName);// BUG: fix override issue
 
 			xwa.Start();
 			System.Threading.Thread.Sleep(1000);
@@ -2204,7 +2214,16 @@ namespace Idmr.Yogeme
 			if (_config.DeleteTestPilots) File.Delete(path + pilot);
 			File.Copy(path + backup, path + lst, true);
 			File.Delete(path + backup);
-			if (!localMission) File.Delete(path + "Missions\\" + _mission.MissionFileName);
+			if (!localMission)
+			{
+				if (File.Exists(fileName + ".bak"))
+				{
+					File.Copy(fileName + ".bak", fileName, true);
+					File.Delete(fileName + ".bak");
+				}
+				else
+					File.Delete(fileName);
+			}
 			System.Diagnostics.Debug.WriteLine("Testing complete");
 		}
 		void menuVerify_Click(object sender, EventArgs e)
