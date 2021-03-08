@@ -1,12 +1,14 @@
 /*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
- * Copyright (C) 2007-2020 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2021 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.8
+ * VERSION: 1.8+
  */
 
 /* CHANGELOG
+ * [FIX] Missing LST note in the title
+ * [FIX] Move map for XWA
  * v1.8, 201004
  * [FIX] Timers unregister Tick to prevent calls after Dispose [JB]
  * v1.7, 200816
@@ -194,11 +196,11 @@ namespace Idmr.Yogeme
 			pctBrief.Size = new Size(360, 208); //[JB] //Was 214.  The actual size in game appears to be 320x210, but I trimmed it down to 208 because it seemed to be rendering some extra pixels.
 			pctBrief.Left = 150;
 			lblCaption.BackColor = Color.FromArgb(0, 0, 0x78);
-			lblCaption.Font = new Font("Times New Roman", 8F, FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((System.Byte)(0)));
+			lblCaption.Font = new Font("Times New Roman", 8F, FontStyle.Regular, GraphicsUnit.Point, 0);
 			lblCaption.Size = new Size(360, 28);
 			lblCaption.Location = new Point(150, 254);
 			lblTitle.BackColor = Color.FromArgb(0x10, 0x10, 0x20);
-			lblTitle.Font = new Font("Times New Roman", 8F, FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((System.Byte)(0)));
+			lblTitle.Font = new Font("Times New Roman", 8F, FontStyle.Regular, GraphicsUnit.Point, 0);
 			lblTitle.Size = new Size(360, 16);
 			lblTitle.TextAlign = ContentAlignment.TopCenter;
 			lblTitle.ForeColor = _titleColor;
@@ -225,7 +227,7 @@ namespace Idmr.Yogeme
 			_strings = _xvtBriefing.BriefingString;
 			importStrings();
 			_timerInterval = Platform.Xvt.Briefing.TicksPerSecond;
-			txtLength.Text = Convert.ToString(Math.Round(((decimal)_xvtBriefing.Length / _timerInterval), 2));
+			txtLength.Text = Convert.ToString(Math.Round((decimal)_xvtBriefing.Length / _timerInterval, 2));
 			hsbTimer.Maximum = _xvtBriefing.Length + 11;
 			_mapX = 0;
 			_mapY = 0;
@@ -274,7 +276,7 @@ namespace Idmr.Yogeme
 			InitializeComponent();
 			Text = "YOGEME Briefing Editor - XWA";
 			#region XWA layout change
-			// BUG: layout seems borked, or maybe it's the camera movement. figure it out
+			// TODO: view is off by a little bit, couple pixels
 			label7.Text = "Icon:";
 			Height = 484;
 			Width = 760;
@@ -301,10 +303,10 @@ namespace Idmr.Yogeme
 			lblTitle.TextAlign = ContentAlignment.TopCenter;
 			lblTitle.ForeColor = _titleColor;
 			lblTitle.Text = "*Defined in .LST file*";
-			lblTitle.Font = new Font("Arial", 10F, FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((System.Byte)(0)));
+			lblTitle.Font = new Font("Arial", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
 			cmdTitle.Enabled = false;
 			lblCaption.BackColor = Color.FromArgb(0x20, 0x30, 0x88);
-			lblCaption.Font = new Font("Arial", 8F, FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((System.Byte)(0)));
+			lblCaption.Font = new Font("Arial", 8F, FontStyle.Regular, GraphicsUnit.Point, 0);
 			lblCaption.Size = new Size(510, 40);
 			lblCaption.Top += 68;
 			lblCaption.Left += 36;
@@ -347,7 +349,7 @@ namespace Idmr.Yogeme
 			_strings = _xwaBriefing.BriefingString;
 			importStrings();
 			_timerInterval = Platform.Xwa.Briefing.TicksPerSecond;
-			txtLength.Text = Convert.ToString(Math.Round(((decimal)_xwaBriefing.Length / _timerInterval), 2));
+			txtLength.Text = Convert.ToString(Math.Round((decimal)_xwaBriefing.Length / _timerInterval, 2));
 			hsbTimer.Maximum = _xwaBriefing.Length + 11;
 			_mapX = 0;
 			_mapY = 0;
@@ -1014,7 +1016,7 @@ namespace Idmr.Yogeme
 			{
 				_mapX = _events[i, 2];
 				_mapY = _events[i, 3];
-				if (_platform == Settings.Platform.XvT || _platform == Settings.Platform.BoP || _platform == Settings.Platform.XWA)	// HACK: added XWA, still off some
+				if (_platform == Settings.Platform.XvT || _platform == Settings.Platform.BoP || _platform == Settings.Platform.XWA)
 				{
 					_mapX /= 2;
 					_mapY /= 2;
@@ -1162,7 +1164,7 @@ namespace Idmr.Yogeme
 			_message = "";
 			lblTitle.Visible = true;
 			lblCaption.Visible = true;
-			lblTitle.Text = "";  //[JB] Clear these to force refresh, otherwise it holds old strings, even if the event list is wiped clean.
+			if (_platform == Settings.Platform.TIE) lblTitle.Text = "";  //[JB] Clear these to force refresh, otherwise it holds old strings, even if the event list is wiped clean.
 			lblCaption.Text = "";
 		}
 		void tieMask(Bitmap craftImage, byte iff)
@@ -1355,7 +1357,7 @@ namespace Idmr.Yogeme
 				sb = new SolidBrush(Color.FromArgb(0xAC, 0, 0));    // default to red
 				int clr = _textTags[i, 3];
 				if (clr == 0) sb.Color = Color.FromArgb(0, 0xAC, 0);    // green
-																		// else if (clr == 1) sb.Color = Color.FramArgb(0xAC,0,0);	// red
+				// else if (clr == 1) sb.Color = Color.FramArgb(0xAC,0,0);	// red
 				else if (clr == 2) sb.Color = Color.FromArgb(0xAC, 0, 0xAC);    // purple
 				else if (clr == 3) sb.Color = Color.FromArgb(0, 0x2C, 0xAC);    // blue
 				else if (clr == 4) sb.Color = Color.FromArgb(0xA8, 0, 0);   // red2
@@ -1647,11 +1649,11 @@ namespace Idmr.Yogeme
 				sb = new SolidBrush(Color.FromArgb(0xA8, 0, 0));    // default to red
 				int clr = _textTags[i, 3];
 				if (clr == 0) sb.Color = Color.FromArgb(0, 0xAC, 0);    // green
-																		//else if (clr == 1) sb.Color = Color.FromArgb(0xA8, 0, 0);	// red
+				//else if (clr == 1) sb.Color = Color.FromArgb(0xA8, 0, 0);	// red
 				else if (clr == 2) sb.Color = Color.FromArgb(0xA8, 0xAC, 0);    // yellow
 				else if (clr == 3) sb.Color = Color.FromArgb(0, 0x2C, 0xA8);    // blue
 				else if (clr == 4) sb.Color = Color.FromArgb(0xA8, 0, 0xA8);    // purple
-				else if (clr == 5) sb.Color = Color.Black;  // black, although this is just retarded against a near-black BG
+				else if (clr == 5) sb.Color = Color.Black;  // black, although this is just dumb against a near-black BG
 				g3.DrawString(_tags[_textTags[i, 0]], new Font("MS Reference Sans Serif", 6), sb, (int)Math.Round((double)_zoomX * _textTags[i, 1] / 256, 0) + X, (int)Math.Round((double)_zoomY * _textTags[i, 2] / 256, 0) + Y);
 			}
 			#endregion // text tags
@@ -1827,6 +1829,7 @@ namespace Idmr.Yogeme
 						if (b == 0xE0) b = 0x90;
 						else if (b == 0x60) b = 0x30;
 						sb.Color = Color.FromArgb(r, g, b);
+						// TODO: these aren't fixed sizes
 						g3.FillRectangle(sb, wpX - 13, wpY - 12, 27, 24);
 						g3.FillRectangle(sb2, wpX - 12, wpY - 11, 25, 22);
 						imageQuad(wpX - 28, wpY - 28, 4, bmptemp, g3);
@@ -1850,7 +1853,7 @@ namespace Idmr.Yogeme
 						if (b == 0xE0) b = 0xC8;
 						else if (b == 0x60) b = 0x50;
 						sb.Color = Color.FromArgb(r, g, b);
-						g3.FillRectangle(sb, wpX - 15, wpY - 16, 31, 28);
+						g3.FillRectangle(sb, wpX - 15, wpY - 14, 31, 28);
 						g3.FillRectangle(sb2, wpX - 14, wpY - 13, 29, 26);
 						break;
 					default:
@@ -1868,7 +1871,7 @@ namespace Idmr.Yogeme
 				sb = new SolidBrush(Color.FromArgb(0xE7, 0, 0));    // default to red
 				int clr = _textTags[i, 3];
 				if (clr == 0) sb.Color = Color.FromArgb(0, 0xE3, 0);    // green
-																		//else if (clr == 1) sb.Color = Color.FromArgb(0xE7, 0, 0);	// red
+				//else if (clr == 1) sb.Color = Color.FromArgb(0xE7, 0, 0);	// red
 				else if (clr == 2) sb.Color = Color.FromArgb(0xE7, 0xE3, 0);    // yellow
 				else if (clr == 3) sb.Color = Color.FromArgb(0x63, 0x61, 0xE7); // purple
 				else if (clr == 4) sb.Color = Color.FromArgb(0xDE, 0, 0xDE);    // pink
@@ -2846,10 +2849,10 @@ namespace Idmr.Yogeme
 						_tieBriefing.Length = t_Length;
 						onModified?.Invoke("LengthChange", new EventArgs());
 						hsbTimer.Maximum = _tieBriefing.Length + 11;
-						if (Math.Round(((decimal)_tieBriefing.Length / _timerInterval), 2) != Convert.ToDecimal(txtLength.Text))    // so things like .51 become .5, without
-							txtLength.Text = Convert.ToString(Math.Round(((decimal)_tieBriefing.Length / _timerInterval), 2));  // wiping out just a decimal
+						if (Math.Round((decimal)_tieBriefing.Length / _timerInterval, 2) != Convert.ToDecimal(txtLength.Text))    // so things like .51 become .5, without
+							txtLength.Text = Convert.ToString(Math.Round((decimal)_tieBriefing.Length / _timerInterval, 2));  // wiping out just a decimal
 					}
-					catch { txtLength.Text = Convert.ToString(Math.Round(((decimal)_tieBriefing.Length / _timerInterval), 2)); }
+					catch { txtLength.Text = Convert.ToString(Math.Round((decimal)_tieBriefing.Length / _timerInterval, 2)); }
 					break;
 				case Settings.Platform.XvT:
 					try
@@ -2858,10 +2861,10 @@ namespace Idmr.Yogeme
 						_xvtBriefing.Length = t_Length;
 						onModified?.Invoke("LengthChange", new EventArgs());
 						hsbTimer.Maximum = _xvtBriefing.Length + 11;
-						if (Math.Round(((decimal)_xvtBriefing.Length / _timerInterval), 2) != Convert.ToDecimal(txtLength.Text))    // so things like .51 become .5, without
-							txtLength.Text = Convert.ToString(Math.Round(((decimal)_xvtBriefing.Length / _timerInterval), 2));  // wiping out just a decimal
+						if (Math.Round((decimal)_xvtBriefing.Length / _timerInterval, 2) != Convert.ToDecimal(txtLength.Text))    // so things like .51 become .5, without
+							txtLength.Text = Convert.ToString(Math.Round((decimal)_xvtBriefing.Length / _timerInterval, 2));  // wiping out just a decimal
 					}
-					catch { txtLength.Text = Convert.ToString(Math.Round(((decimal)_xvtBriefing.Length / _timerInterval), 2)); }
+					catch { txtLength.Text = Convert.ToString(Math.Round((decimal)_xvtBriefing.Length / _timerInterval, 2)); }
 					break;
 				case Settings.Platform.XWA:
 					try
@@ -2870,10 +2873,10 @@ namespace Idmr.Yogeme
 						_xwaBriefing.Length = t_Length;
 						onModified?.Invoke("LengthChange", new EventArgs());
 						hsbTimer.Maximum = _xwaBriefing.Length + 11;
-						if (Math.Round(((decimal)_xwaBriefing.Length / _timerInterval), 2) != Convert.ToDecimal(txtLength.Text))    // so things like .51 become .5, without
-							txtLength.Text = Convert.ToString(Math.Round(((decimal)_xwaBriefing.Length / _timerInterval), 2));  // wiping out just a decimal
+						if (Math.Round((decimal)_xwaBriefing.Length / _timerInterval, 2) != Convert.ToDecimal(txtLength.Text))    // so things like .51 become .5, without
+							txtLength.Text = Convert.ToString(Math.Round((decimal)_xwaBriefing.Length / _timerInterval, 2));  // wiping out just a decimal
 					}
-					catch { txtLength.Text = Convert.ToString(Math.Round(((decimal)_xwaBriefing.Length / _timerInterval), 2)); }
+					catch { txtLength.Text = Convert.ToString(Math.Round((decimal)_xwaBriefing.Length / _timerInterval, 2)); }
 					break;
 			}
 		}
@@ -2954,7 +2957,7 @@ namespace Idmr.Yogeme
 		/// <summary>Tally briefing events and make sure there's enough space in the raw briefing array.</summary>
 		bool hasAvailableEventSpace(int requestedParams)
 		{
-			BaseBriefing brief = (_platform == Settings.Platform.TIE ? (BaseBriefing)_tieBriefing : (_platform == Settings.Platform.XvT ? (BaseBriefing)_xvtBriefing : (BaseBriefing)_xwaBriefing));
+			BaseBriefing brief = (_platform == Settings.Platform.TIE ? _tieBriefing : (_platform == Settings.Platform.XvT ? _xvtBriefing : (BaseBriefing)_xwaBriefing));
 			int paramCount = 2;  //Reserve space for the ending command
 			for (int j = 0; j < lstEvents.Items.Count; j++)
 			{

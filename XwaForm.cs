@@ -2140,17 +2140,8 @@ namespace Idmr.Yogeme
 			}
 
 			bool localMission = _mission.MissionPath.ToLower().Contains(path.ToLower());
-			string fileName = (localMission ? path + "Missions\\" + _mission.MissionFileName : _mission.MissionPath);
-			if (!localMission)
-			{
-				if (File.Exists(fileName))
-				{
-					DialogResult res = MessageBox.Show("You are not working in the platform directory and a mission with that filename exists. Continue?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-					if (res == DialogResult.No) return;
-					File.Copy(fileName, fileName + ".bak");
-				}
-				File.Copy(_mission.MissionPath, fileName, true);
-			}
+			string fileName = (!localMission ? path + "Missions\\" + _mission.MissionFileName : _mission.MissionPath);
+			
 
 			if (_config.VerifyTest && !_config.Verify) Common.RunVerify(_mission.MissionPath, _config);
 			int index = 0;
@@ -2158,6 +2149,17 @@ namespace Idmr.Yogeme
 			string pilot = "test" + index + "0.plt";
 			string lst = "MISSIONS\\MISSION.LST";
 			string backup = "MISSIONS\\MISSION_" + index + ".bak";
+
+			if (!localMission)
+			{
+				if (File.Exists(fileName))
+				{
+					DialogResult res = MessageBox.Show("You are not working in the platform directory and a mission with that filename exists. Continue?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+					if (res == DialogResult.No) return;
+					File.Copy(fileName, fileName + ".bak", true);
+				}
+				File.Copy(_mission.MissionPath, fileName, true);
+			}
 
 			// pilot file edit
 			File.Copy(Application.StartupPath + "\\xwatest0.plt", path + pilot);

@@ -1825,7 +1825,7 @@ namespace Idmr.Yogeme
 			}
 
 			bool localMission = _mission.MissionPath.ToLower().Contains(path.ToLower());
-			string fileName = (localMission ? path + "Train\\" + _mission.MissionFileName : _mission.MissionPath);
+			string fileName = (!localMission ? path + "Train\\" + _mission.MissionFileName : _mission.MissionPath);
 			if (!localMission)
 			{
 				if (File.Exists(fileName))
