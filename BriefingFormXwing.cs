@@ -825,25 +825,27 @@ namespace Idmr.Yogeme
 				return;
 			int X = 2 * (-_zoomX * _mapX / 256) + w / 2;    // values are written out like this to force even numbers
 			int Y = 2 * (-_zoomY * _mapY / 256) + h / 2;
-			Pen pn = new Pen(Color.FromArgb(0, 0x48, 0));
-			if (_xwingBriefing.MissionLocation == 0)
-				pn.Color = Color.FromArgb(0, 0x38, 0);         //Space
-			else
-				pn.Color = Color.FromArgb(0x48, 0x48, 0x48);   //Death Star
-			pn.Width = 1;
+			
+			
 			Graphics g3;
 			g3 = Graphics.FromImage(_map);      //graphics obj, load from the memory bitmap
 			g3.Clear(SystemColors.Control);     //clear it
-			SolidBrush sb = new SolidBrush(Color.Black);
-			g3.FillRectangle(sb, 0, 0, w, h);
-			if (_platform == Settings.Platform.XWING)
+			SolidBrush sb;
+			Pen pn = new Pen(Color.FromArgb(0, 0x48, 0))
 			{
-				if (_xwingBriefing.MissionLocation == 1) //Death Star Surface
-				{
-					sb = new SolidBrush(Color.FromArgb(0x2C, 0x30, 0x50));
-					g3.FillRectangle(sb, 0, 0, w, h);
-				}
+				Width = 1
+			};
+			if (_xwingBriefing.MissionLocation == 0) //Space
+			{
+				pn.Color = Color.FromArgb(0, 0x38, 0);
+				sb = new SolidBrush(Color.Black);
 			}
+			else //Death Star
+			{
+				pn.Color = Color.FromArgb(0x48, 0x48, 0x48);
+				sb = new SolidBrush(Color.FromArgb(0x2C, 0x30, 0x50));
+			}
+			g3.FillRectangle(sb, 0, 0, w, h);
 			g3.DrawLine(pn, 0, 1, w, 1);
 			g3.DrawLine(pn, 0, h - 3, w, h - 3);
 			g3.DrawLine(pn, 1, 0, 1, h);

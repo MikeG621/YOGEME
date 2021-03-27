@@ -16,8 +16,12 @@ For program usage and help (with images), see "yogeme.chm".
 ==========
 Version History
 
+ - MissionVerify updated with "OR true" and "AND false" trigger detection for 1AO2 and 3AO4s [Issue #48]
  - (All) Craft Type dropdown now lists 20 items instead of the default 8 [Issue #45]
  - (Test) Fixed a load failure when testing a mission that isn't located in a platform directory
+ - (XW) Converting from XW will sort the Failed message more reliably (via Platform.dll)
+ - (XWA) And/Or values now match XWA's even/odd behavior when opening (via Platform.dll) [Issue #48]
+ - (XWA) Briefing MoveMap command's accuracy has been fixed [Issue #53]
  - Number of things in the XWA Wav dialog:
    - Fixed the wrong EoM button being hidden when WAV file doesn't exist
    - Fixed a crash when using multi-digit battle or mission numbers [Issue #49]

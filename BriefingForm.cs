@@ -8,7 +8,7 @@
 
 /* CHANGELOG
  * [FIX] Missing LST note in the title
- * [FIX] Move map for XWA
+ * [FIX #53] Move map for XWA
  * v1.8, 201004
  * [FIX] Timers unregister Tick to prevent calls after Dispose [JB]
  * v1.7, 200816
