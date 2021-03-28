@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2021 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.9.1+
+ * VERSION: 1.9.2
  */
 
 /* CHANGELOG
+ * v1.9.2, 210328
  * [FIX] Test load failure if mission isn't in platform directory
  * v1.9.1, 210130
  * [FIX] Region name refresh [JB]

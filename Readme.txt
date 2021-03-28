@@ -2,8 +2,8 @@
 ======================================
 
 Author: Michael Gaisser (mjgaisser@gmail.com)
-Version: 1.9.1
-Date: 2021.01.30
+Version: 1.9.2
+Date: 2021.03.28
 
 Thank you for downloading YOGEME, the all-in-one mission editor for the X-Wing
 series, Xwing95 through X-wing Alliance.  This program allows easy mission
@@ -16,10 +16,12 @@ For program usage and help (with images), see "yogeme.chm".
 ==========
 Version History
 
+v1.9.2, 28 Mar 2021
  - MissionVerify updated with "OR true" and "AND false" trigger detection for 1AO2 and 3AO4s [Issue #48]
  - (All) Craft Type dropdown now lists 20 items instead of the default 8 [Issue #45]
  - (Test) Fixed a load failure when testing a mission that isn't located in a platform directory
  - (XW) Converting from XW will sort the Failed message more reliably (via Platform.dll)
+ - (XW) Briefing conversion accuracy improved in general (via Platform.dll) [Issues #51 and #53]
  - (XWA) And/Or values now match XWA's even/odd behavior when opening (via Platform.dll) [Issue #48]
  - (XWA) Briefing MoveMap command's accuracy has been fixed [Issue #53]
  - Number of things in the XWA Wav dialog:
@@ -28,7 +30,7 @@ Version History
    - PrePost text fields now clear when changing categories
    - PrePost text fields now provide a comment about random Pre-briefing WAVS when none are defined
 
-v1.9.1, 30 Jan 21
+v1.9.1, 30 Jan 2021
  - Couple fixes from Random Starfighter (JB)
    - (Settings) Crash during SuperBackdrops detection if the Mega Patch isn't installed
    - (XWA) Fixed Region colors in the parameter lists

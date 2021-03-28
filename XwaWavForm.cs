@@ -3,11 +3,12 @@
  * Copyright (C) 2007-2021 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.9+
+ * VERSION: 1.9.2
  */
 
 /* CHANGELOG
- * [FIX] Crash due to multi-digit battle or mission numbers [#49]
+ * v1.9.2, 210328
+ * [FIX #49] Crash due to multi-digit battle or mission numbers
  * [FIX] Wrong EoM button hiding if message doesn't exist
  * [UPD] Notes about random pre-briefing messages
  * v1.9, 210108
