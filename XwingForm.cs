@@ -2247,7 +2247,10 @@ namespace Idmr.Yogeme
 				int wpIndex = _waypointMapping[j];
 				for (i = 0; i < 3; i++)
 				{
-					short raw = (short)(Convert.ToDouble(_table.Rows[j][i]) * 160);
+					double cell = 0;
+					if (!double.TryParse(_table.Rows[j][i].ToString(), out cell))
+						_table.Rows[j][i] = 0;
+					short raw = (short)(cell * 160);
 					_mission.FlightGroups[_activeFG].Waypoints[wpIndex][i] = Common.Update(this, _mission.FlightGroups[_activeFG].Waypoints[wpIndex][i], raw);
 					_tableRaw.Rows[j][i] = raw;
 				}
@@ -2267,7 +2270,9 @@ namespace Idmr.Yogeme
 				int wpIndex = _waypointMapping[j];
 				for (i = 0; i < 3; i++)
 				{
-					short raw = Convert.ToInt16(_tableRaw.Rows[j][i]);
+					short raw = 0;
+					if (!short.TryParse(_tableRaw.Rows[j][i].ToString(), out raw))
+						_tableRaw.Rows[j][i] = 0;
 					_mission.FlightGroups[_activeFG].Waypoints[wpIndex][i] = Common.Update(this, _mission.FlightGroups[_activeFG].Waypoints[wpIndex][i], raw);
 					_table.Rows[j][i] = Math.Round((double)raw / 160, 2);
 				}

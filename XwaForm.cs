@@ -4048,7 +4048,10 @@ namespace Idmr.Yogeme
 			{
 				for (i = 0; i < 3; i++)
 				{
-					short raw = (short)Math.Round(Convert.ToDouble(_tableWP.Rows[j][i]) * 160);
+					double cell = 0;
+					if (!double.TryParse(_tableWP.Rows[j][i].ToString(), out cell))
+						_tableWP.Rows[j][i] = 0;
+					short raw = (short)Math.Round(cell * 160);
 					_mission.FlightGroups[_activeFG].Waypoints[j][i] = Common.Update(this, _mission.FlightGroups[_activeFG].Waypoints[j][i], raw);
 					_tableWPRaw.Rows[j][i] = raw;
 				}
@@ -4067,7 +4070,9 @@ namespace Idmr.Yogeme
 			{
 				for (i = 0; i < 3; i++)
 				{
-					short raw = Convert.ToInt16(_tableWPRaw.Rows[j][i]);
+					short raw = 0;
+					if (!short.TryParse(_tableWPRaw.Rows[j][i].ToString(), out raw))
+						_tableWPRaw.Rows[j][i] = 0;
 					_mission.FlightGroups[_activeFG].Waypoints[j][i] = Common.Update(this, _mission.FlightGroups[_activeFG].Waypoints[j][i], raw);
 					_tableWP.Rows[j][i] = Math.Round((double)raw / 160, 2);
 				}
@@ -4088,7 +4093,10 @@ namespace Idmr.Yogeme
 			{
 				for (i = 0; i < 3; i++)
 				{
-					short raw = (short)Math.Round(Convert.ToDouble(_tableOrder.Rows[j][i]) * 160);
+					double cell = 0;
+					if (!double.TryParse(_tableOrder.Rows[j][i].ToString(), out cell))
+						_tableOrder.Rows[j][i] = 0;
+					short raw = (short)Math.Round(cell * 160);
 					_mission.FlightGroups[_activeFG].Orders[region, order].Waypoints[j][i] = Common.Update(this, _mission.FlightGroups[_activeFG].Orders[region, order].Waypoints[j][i], raw);
 					_tableOrderRaw.Rows[j][i] = raw;
 				}
@@ -4109,7 +4117,9 @@ namespace Idmr.Yogeme
 			{
 				for (i = 0; i < 3; i++)
 				{
-					short raw = Convert.ToInt16(_tableOrderRaw.Rows[j][i]);
+					short raw = 0;
+					if (!short.TryParse(_tableOrderRaw.Rows[j][i].ToString(), out raw))
+						_tableOrderRaw.Rows[j][i] = 0;
 					_mission.FlightGroups[_activeFG].Orders[region, order].Waypoints[j][i] = Common.Update(this, _mission.FlightGroups[_activeFG].Orders[region, order].Waypoints[j][i], raw);
 					_tableOrder.Rows[j][i] = Math.Round((double)raw / 160, 2);
 				}
