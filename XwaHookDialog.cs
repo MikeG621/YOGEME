@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2020 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.8.2
+ * VERSION: 1.8.2+
  */
 
 /* CHANGELOG
+ * [UPD] Layout redesigned
  * v1.8.2, 201219
  * [FIX] Add BD/Sound/Object/Hangar was cutting off first letter due to removal of "\\"
  * [UPD] Default ObjectsProfile updated to "default"
@@ -141,11 +142,11 @@ namespace Idmr.Yogeme
 			if (config.XwaInstalled)
 			{
 				_installDirectory = config.XwaPath + "\\";
-				grpBackdrops.Enabled = File.Exists(_installDirectory + "Hook_Backdrops.dll");
-				grpMission.Enabled = File.Exists(_installDirectory + "Hook_Mission_Tie.dll");
-				grpSounds.Enabled = File.Exists(_installDirectory + "Hook_Engine_Sound.dll");
-				grpObjects.Enabled = File.Exists(_installDirectory + "Hook_Mission_Objects.dll");
-				grpHangars.Enabled = File.Exists(_installDirectory + "Hook_Hangars.dll");
+				tabBackdrops.Enabled = File.Exists(_installDirectory + "Hook_Backdrops.dll");
+				tabMission.Enabled = File.Exists(_installDirectory + "Hook_Mission_Tie.dll");
+				tabSounds.Enabled = File.Exists(_installDirectory + "Hook_Engine_Sound.dll");
+				tabObjects.Enabled = File.Exists(_installDirectory + "Hook_Mission_Objects.dll");
+				tabHangar.Enabled = File.Exists(_installDirectory + "Hook_Hangars.dll");
 
 				_bdFile = checkFile("_Resdata.txt");
 				_soundFile = checkFile("_Sounds.txt");
@@ -679,11 +680,7 @@ namespace Idmr.Yogeme
 		}
 		private void chkHangars_CheckedChanged(object sender, EventArgs e)
 		{
-			grpHangarObjects.Enabled = chkHangars.Checked;
-			grpCamera.Enabled = chkHangars.Checked;
-			grpFamilyCamera.Enabled = chkHangars.Checked;
-			grpMap.Enabled = chkHangars.Checked;
-			grpFamilyMap.Enabled = chkHangars.Checked;
+			tcHangar.Enabled = chkHangars.Checked;
 		}
 		private void chkHangarIff_CheckedChanged(object sender, EventArgs e)
 		{
