@@ -4,10 +4,11 @@
  * This file authored by "JB" (Random Starfighter) (randomstarfighter@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.9
+ * VERSION: 1.9+
  */
 
 /* CHANGELOG:
+ * [UPD #56] Replaced try/catch with TyrParse [JB]
  * v1.9, 210108
  * [FIX] Clipboard path in some locations
  * v1.8.1, 201213
@@ -2242,20 +2243,16 @@ namespace Idmr.Yogeme
 			if (_loading) return;
 			_loading = true;
 			for (j = 0; j < 10; j++) if (_table.Rows[j].Equals(e.Row)) break;   //find the row index that you're changing
-			try
+			int wpIndex = _waypointMapping[j];
+			for (i = 0; i < 3; i++)
 			{
-				int wpIndex = _waypointMapping[j];
-				for (i = 0; i < 3; i++)
-				{
-					double cell = 0;
-					if (!double.TryParse(_table.Rows[j][i].ToString(), out cell))
-						_table.Rows[j][i] = 0;
-					short raw = (short)(cell * 160);
-					_mission.FlightGroups[_activeFG].Waypoints[wpIndex][i] = Common.Update(this, _mission.FlightGroups[_activeFG].Waypoints[wpIndex][i], raw);
-					_tableRaw.Rows[j][i] = raw;
-				}
+				double cell;
+				if (!double.TryParse(_table.Rows[j][i].ToString(), out cell))
+					_table.Rows[j][i] = 0;
+				short raw = (short)(cell * 160);
+				_mission.FlightGroups[_activeFG].Waypoints[wpIndex][i] = Common.Update(this, _mission.FlightGroups[_activeFG].Waypoints[wpIndex][i], raw);
+				_tableRaw.Rows[j][i] = raw;
 			}
-			catch { for (i = 0; i < 3; i++) _table.Rows[j][i] = Math.Round((double)_mission.FlightGroups[_activeFG].Waypoints[j][i] / 160, 2); }
 			_loading = false;
 			refreshMap(_activeFG);
 		}
@@ -2265,19 +2262,15 @@ namespace Idmr.Yogeme
 			if (_loading) return;
 			_loading = true;
 			for (j = 0; j < 10; j++) if (_tableRaw.Rows[j].Equals(e.Row)) break;    //find the row index that you're changing
-			try
+			int wpIndex = _waypointMapping[j];
+			for (i = 0; i < 3; i++)
 			{
-				int wpIndex = _waypointMapping[j];
-				for (i = 0; i < 3; i++)
-				{
-					short raw = 0;
-					if (!short.TryParse(_tableRaw.Rows[j][i].ToString(), out raw))
-						_tableRaw.Rows[j][i] = 0;
-					_mission.FlightGroups[_activeFG].Waypoints[wpIndex][i] = Common.Update(this, _mission.FlightGroups[_activeFG].Waypoints[wpIndex][i], raw);
-					_table.Rows[j][i] = Math.Round((double)raw / 160, 2);
-				}
+				short raw;
+				if (!short.TryParse(_tableRaw.Rows[j][i].ToString(), out raw))
+					_tableRaw.Rows[j][i] = 0;
+				_mission.FlightGroups[_activeFG].Waypoints[wpIndex][i] = Common.Update(this, _mission.FlightGroups[_activeFG].Waypoints[wpIndex][i], raw);
+				_table.Rows[j][i] = Math.Round((double)raw / 160, 2);
 			}
-			catch { for (i = 0; i < 3; i++) _tableRaw.Rows[j][i] = Convert.ToInt16(_mission.FlightGroups[_activeFG].Waypoints[j][i]); }
 			_loading = false;
 			refreshMap(_activeFG);
 		}

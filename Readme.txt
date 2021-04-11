@@ -16,6 +16,8 @@ For program usage and help (with images), see "yogeme.chm".
 ==========
 Version History
 
+- (All) Redid handling bad waypoint values [Issue #56] (JB)
+
 v1.9.2, 28 Mar 2021
  - MissionVerify updated with "OR true" and "AND false" trigger detection for 1AO2 and 3AO4s [Issue #48]
  - (All) Craft Type dropdown now lists 20 items instead of the default 8 [Issue #45]

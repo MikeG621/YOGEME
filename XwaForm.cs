@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2021 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.9.2
+ * VERSION: 1.9.2+
  */
 
 /* CHANGELOG
+ * [UPD #56] Replaced try/catch with TryParse [JB]
  * v1.9.2, 210328
  * [FIX] Test load failure if mission isn't in platform directory
  * v1.9.1, 210130
@@ -4044,19 +4045,15 @@ namespace Idmr.Yogeme
 			int i, j;
 			_loading = true;
 			for (j = 0; j < 4; j++) if (_tableWP.Rows[j].Equals(e.Row)) break;  //find the row index that you're changing
-			try
+			for (i = 0; i < 3; i++)
 			{
-				for (i = 0; i < 3; i++)
-				{
-					double cell = 0;
-					if (!double.TryParse(_tableWP.Rows[j][i].ToString(), out cell))
-						_tableWP.Rows[j][i] = 0;
-					short raw = (short)Math.Round(cell * 160);
-					_mission.FlightGroups[_activeFG].Waypoints[j][i] = Common.Update(this, _mission.FlightGroups[_activeFG].Waypoints[j][i], raw);
-					_tableWPRaw.Rows[j][i] = raw;
-				}
+				double cell;
+				if (!double.TryParse(_tableWP.Rows[j][i].ToString(), out cell))
+					_tableWP.Rows[j][i] = 0;
+				short raw = (short)Math.Round(cell * 160);
+				_mission.FlightGroups[_activeFG].Waypoints[j][i] = Common.Update(this, _mission.FlightGroups[_activeFG].Waypoints[j][i], raw);
+				_tableWPRaw.Rows[j][i] = raw;
 			}
-			catch { for (i = 0; i < 3; i++) _tableWP.Rows[j][i] = Math.Round((double)(_mission.FlightGroups[_activeFG].Waypoints[j][i]) / 160, 2); }    // reset
 			_loading = false;
 			refreshMap(_activeFG);
 		}
@@ -4066,18 +4063,14 @@ namespace Idmr.Yogeme
 			int i, j;
 			_loading = true;
 			for (j = 0; j < 4; j++) if (_tableWPRaw.Rows[j].Equals(e.Row)) break;   //find the row index that you're changing
-			try
+			for (i = 0; i < 3; i++)
 			{
-				for (i = 0; i < 3; i++)
-				{
-					short raw = 0;
-					if (!short.TryParse(_tableWPRaw.Rows[j][i].ToString(), out raw))
-						_tableWPRaw.Rows[j][i] = 0;
-					_mission.FlightGroups[_activeFG].Waypoints[j][i] = Common.Update(this, _mission.FlightGroups[_activeFG].Waypoints[j][i], raw);
-					_tableWP.Rows[j][i] = Math.Round((double)raw / 160, 2);
-				}
+				short raw;
+				if (!short.TryParse(_tableWPRaw.Rows[j][i].ToString(), out raw))
+					_tableWPRaw.Rows[j][i] = 0;
+				_mission.FlightGroups[_activeFG].Waypoints[j][i] = Common.Update(this, _mission.FlightGroups[_activeFG].Waypoints[j][i], raw);
+				_tableWP.Rows[j][i] = Math.Round((double)raw / 160, 2);
 			}
-			catch { for (i = 0; i < 3; i++) _tableWPRaw.Rows[j][i] = _mission.FlightGroups[_activeFG].Waypoints[j][i]; }
 			_loading = false;
 			refreshMap(_activeFG);
 		}
@@ -4089,19 +4082,15 @@ namespace Idmr.Yogeme
 			for (j = 0; j < 8; j++) if (_tableOrder.Rows[j].Equals(e.Row)) break;   //find the row index that you're changing
 			int order = cboWP.SelectedIndex % 4;
 			int region = cboWP.SelectedIndex / 4;
-			try
+			for (i = 0; i < 3; i++)
 			{
-				for (i = 0; i < 3; i++)
-				{
-					double cell = 0;
-					if (!double.TryParse(_tableOrder.Rows[j][i].ToString(), out cell))
-						_tableOrder.Rows[j][i] = 0;
-					short raw = (short)Math.Round(cell * 160);
-					_mission.FlightGroups[_activeFG].Orders[region, order].Waypoints[j][i] = Common.Update(this, _mission.FlightGroups[_activeFG].Orders[region, order].Waypoints[j][i], raw);
-					_tableOrderRaw.Rows[j][i] = raw;
-				}
+				double cell;
+				if (!double.TryParse(_tableOrder.Rows[j][i].ToString(), out cell))
+					_tableOrder.Rows[j][i] = 0;
+				short raw = (short)Math.Round(cell * 160);
+				_mission.FlightGroups[_activeFG].Orders[region, order].Waypoints[j][i] = Common.Update(this, _mission.FlightGroups[_activeFG].Orders[region, order].Waypoints[j][i], raw);
+				_tableOrderRaw.Rows[j][i] = raw;
 			}
-			catch { for (i = 0; i < 3; i++) _tableOrder.Rows[j][i] = Math.Round((double)(_mission.FlightGroups[_activeFG].Orders[region, order].Waypoints[j][i]) / 160, 2); }   // reset
 			_loading = false;
 			refreshMap(_activeFG);
 		}
@@ -4113,18 +4102,14 @@ namespace Idmr.Yogeme
 			for (j = 0; j < 8; j++) if (_tableOrderRaw.Rows[j].Equals(e.Row)) break;    //find the row index that you're changing
 			int order = cboWP.SelectedIndex % 4;
 			int region = cboWP.SelectedIndex / 4;
-			try
+			for (i = 0; i < 3; i++)
 			{
-				for (i = 0; i < 3; i++)
-				{
-					short raw = 0;
-					if (!short.TryParse(_tableOrderRaw.Rows[j][i].ToString(), out raw))
-						_tableOrderRaw.Rows[j][i] = 0;
-					_mission.FlightGroups[_activeFG].Orders[region, order].Waypoints[j][i] = Common.Update(this, _mission.FlightGroups[_activeFG].Orders[region, order].Waypoints[j][i], raw);
-					_tableOrder.Rows[j][i] = Math.Round((double)raw / 160, 2);
-				}
+				short raw;
+				if (!short.TryParse(_tableOrderRaw.Rows[j][i].ToString(), out raw))
+					_tableOrderRaw.Rows[j][i] = 0;
+				_mission.FlightGroups[_activeFG].Orders[region, order].Waypoints[j][i] = Common.Update(this, _mission.FlightGroups[_activeFG].Orders[region, order].Waypoints[j][i], raw);
+				_tableOrder.Rows[j][i] = Math.Round((double)raw / 160, 2);
 			}
-			catch { for (i = 0; i < 3; i++) _tableOrderRaw.Rows[j][i] = _mission.FlightGroups[_activeFG].Orders[region, order].Waypoints[j][i]; }
 			_loading = false;
 			refreshMap(_activeFG);
 		}

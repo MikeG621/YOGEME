@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2021 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.9.2
+ * VERSION: 1.9.2+
  */
 
 /* CHANGELOG
+ * [UPD #56] Replaced try/catch with TryParse [JB]
  * v1.9.2, 210328
  * [FIX] Test load failure if mission isn't in platform directory
  * v1.9, 210108
@@ -3347,19 +3348,15 @@ namespace Idmr.Yogeme
 			if (_loading) return;
 			_loading = true;
 			for (j = 0; j < 22; j++) if (_table.Rows[j].Equals(e.Row)) break;   //find the row index that you're changing
-			try
+			for (i = 0; i < 3; i++)
 			{
-				for (i = 0; i < 3; i++)
-				{
-					double cell = 0;
-					if (!double.TryParse(_table.Rows[j][i].ToString(), out cell))
-						_table.Rows[j][i] = 0;
-					short raw = (short)(cell * 160);
-					_mission.FlightGroups[_activeFG].Waypoints[j][i] = Common.Update(this, _mission.FlightGroups[_activeFG].Waypoints[j][i], raw);
-					_tableRaw.Rows[j][i] = raw;
-				}
+				double cell;
+				if (!double.TryParse(_table.Rows[j][i].ToString(), out cell))
+					_table.Rows[j][i] = 0;
+				short raw = (short)(cell * 160);
+				_mission.FlightGroups[_activeFG].Waypoints[j][i] = Common.Update(this, _mission.FlightGroups[_activeFG].Waypoints[j][i], raw);
+				_tableRaw.Rows[j][i] = raw;
 			}
-			catch { for (i = 0; i < 3; i++) _table.Rows[j][i] = Math.Round((double)(_mission.FlightGroups[_activeFG].Waypoints[j][i]) / 160, 2); }  // reset
 			_loading = false;
 			refreshMap(_activeFG);
 		}
@@ -3369,18 +3366,14 @@ namespace Idmr.Yogeme
 			if (_loading) return;
 			_loading = true;
 			for (j = 0; j < 22; j++) if (_tableRaw.Rows[j].Equals(e.Row)) break;    //find the row index that you're changing
-			try
+			for (i = 0; i < 3; i++)
 			{
-				for (i = 0; i < 3; i++)
-				{
-					short raw = 0;
-					if (!short.TryParse(_tableRaw.Rows[j][i].ToString(), out raw))
-						_tableRaw.Rows[j][i] = 0;
-					_mission.FlightGroups[_activeFG].Waypoints[j][i] = Common.Update(this, _mission.FlightGroups[_activeFG].Waypoints[j][i], raw);
-					_table.Rows[j][i] = Math.Round((double)raw / 160, 2);
-				}
+				short raw;
+				if (!short.TryParse(_tableRaw.Rows[j][i].ToString(), out raw))
+					_tableRaw.Rows[j][i] = 0;
+				_mission.FlightGroups[_activeFG].Waypoints[j][i] = Common.Update(this, _mission.FlightGroups[_activeFG].Waypoints[j][i], raw);
+				_table.Rows[j][i] = Math.Round((double)raw / 160, 2);
 			}
-			catch { for (i = 0; i < 3; i++) _tableRaw.Rows[j][i] = _mission.FlightGroups[_activeFG].Waypoints[j][i]; }
 			_loading = false;
 			refreshMap(_activeFG);
 		}
