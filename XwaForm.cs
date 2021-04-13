@@ -4029,14 +4029,17 @@ namespace Idmr.Yogeme
 		void numPitch_Leave(object sender, EventArgs e)
 		{
 			_mission.FlightGroups[_activeFG].Pitch = Common.Update(this, _mission.FlightGroups[_activeFG].Pitch, (short)numPitch.Value);
+			refreshMap(_activeFG);
 		}
 		void numRoll_Leave(object sender, EventArgs e)
 		{
 			_mission.FlightGroups[_activeFG].Roll = Common.Update(this, _mission.FlightGroups[_activeFG].Roll, (short)numRoll.Value);
+			refreshMap(_activeFG);
 		}
 		void numYaw_Leave(object sender, EventArgs e)
 		{
 			_mission.FlightGroups[_activeFG].Yaw = Common.Update(this, _mission.FlightGroups[_activeFG].Yaw, (short)numYaw.Value);
+			refreshMap(_activeFG);
 		}
 
 		void tableWP_RowChanged(object sender, DataRowChangeEventArgs e)
