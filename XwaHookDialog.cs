@@ -58,12 +58,14 @@ namespace Idmr.Yogeme
 		readonly string _famHangarCameraFile = "";
 		readonly string _hangarMapFile = "";
 		readonly string _famHangarMapFile = "";
+		readonly string _32bppFile = "";
+		readonly string _shieldFile = "";
 		readonly string _installDirectory = "";
 		readonly string _mis = "Missions\\";
 		readonly string _res = "Resdata\\";
 		readonly string _wave = "Wave\\";
 		readonly string _fm = "FlightModels\\";
-		enum ReadMode { None = -1, Backdrop, Mission, Sounds, Objects, HangarObjects, HangarCamera, FamilyHangarCamera, HangarMap, FamilyHangarMap }
+		enum ReadMode { None = -1, Backdrop, Mission, Sounds, Objects, HangarObjects, HangarCamera, FamilyHangarCamera, HangarMap, FamilyHangarMap, Skins, Shield }
 		bool _loading = false;
 		readonly int[,] _cameras = new int[5, 3];
 		readonly int[,] _defaultCameras = new int[5, 3];
@@ -111,13 +113,14 @@ namespace Idmr.Yogeme
 			cboMapMarkings.SelectedIndex = 0;
 			cboFamMapMarkings.SelectedIndex = 0;
 			cboFG.Items.AddRange(mission.FlightGroups.GetList());
-			cboMeshFG.Items.AddRange(mission.FlightGroups.GetList());
+			cboProfileFG.Items.AddRange(mission.FlightGroups.GetList());
 			for (int i = 0; i < 400; i++)
 			{
 				cboShuttleModel.Items.Add(i);
 				cboMapIndex.Items.Add(i);
 				cboFamMapIndex.Items.Add(i);
 			}
+			// TODO: ShuttleModel really should be using the craft list
 			cboShuttleModel.SelectedIndex = 50;
 			cboMapIndex.SelectedIndex = 0;
 			cboFamMapIndex.SelectedIndex = 0;
@@ -142,11 +145,13 @@ namespace Idmr.Yogeme
 			if (config.XwaInstalled)
 			{
 				_installDirectory = config.XwaPath + "\\";
-				tabBackdrops.Enabled = File.Exists(_installDirectory + "Hook_Backdrops.dll");
-				tabMission.Enabled = File.Exists(_installDirectory + "Hook_Mission_Tie.dll");
-				tabSounds.Enabled = File.Exists(_installDirectory + "Hook_Engine_Sound.dll");
-				tabObjects.Enabled = File.Exists(_installDirectory + "Hook_Mission_Objects.dll");
-				tabHangar.Enabled = File.Exists(_installDirectory + "Hook_Hangars.dll");
+				chkBackdrops.Enabled = File.Exists(_installDirectory + "Hook_Backdrops.dll");
+				chkMission.Enabled = File.Exists(_installDirectory + "Hook_Mission_Tie.dll");
+				chkSounds.Enabled = File.Exists(_installDirectory + "Hook_Engine_Sound.dll");
+				chkObjects.Enabled = File.Exists(_installDirectory + "Hook_Mission_Objects.dll");
+				chkHangars.Enabled = File.Exists(_installDirectory + "Hook_Hangars.dll");
+				chkSkins.Enabled = File.Exists(_installDirectory + "Hook_32bpp.dll");
+				chkShield.Enabled = File.Exists(_installDirectory + "Hook_Shield.dll");
 
 				_bdFile = checkFile("_Resdata.txt");
 				_soundFile = checkFile("_Sounds.txt");
@@ -157,6 +162,8 @@ namespace Idmr.Yogeme
 				_famHangarCameraFile = checkFile("_FamHangarCamera.txt");
 				_hangarMapFile = checkFile("_HangarMap.txt");
 				_famHangarMapFile = checkFile("_FamHangarMap.txt");
+				_32bppFile = checkFile("_Skins.txt");
+				_shieldFile = checkFile("_Shield.txt");
 			}
 			StreamReader srMission = null;
 			string line;
@@ -352,6 +359,26 @@ namespace Idmr.Yogeme
 				}
 				srFamMap.Close();
 			}
+			if(_32bppFile != "")
+			{
+				StreamReader sr32bpp = new StreamReader(_32bppFile);
+				while ((line = sr32bpp.ReadLine()) != null)
+				{
+					if (isComment(line)) continue;
+					//TODO: fill out
+				}
+				sr32bpp.Close();
+			}
+			if (_shieldFile != "")
+			{
+				StreamReader srShield = new StreamReader(_shieldFile);
+				while ((line = srShield.ReadLine()) != null)
+				{
+					if (isComment(line)) continue;
+					//TODO: fill out
+				}
+				srShield.Close();
+			}
 			#endregion
 
 			if (srMission != null)
@@ -374,6 +401,8 @@ namespace Idmr.Yogeme
 						else if (lineLower == "[famhangarcamera]") readMode = ReadMode.FamilyHangarCamera;
 						else if (lineLower == "[hangarmap]") readMode = ReadMode.HangarMap;
 						else if (lineLower == "[famhangarmap]") readMode = ReadMode.FamilyHangarMap;
+						else if (lineLower == "[skins]") readMode = ReadMode.Skins;
+						else if (lineLower == "[shield]") readMode = ReadMode.Shield;
 					}
 					else if (readMode == ReadMode.Backdrop) lstBackdrops.Items.Add(line);
 					else if (readMode == ReadMode.Mission)
@@ -500,6 +529,14 @@ namespace Idmr.Yogeme
 						if (entry.Parse(line))
 							lstFamilyMap.Items.Add(entry.ToString());
 					}
+					else if (readMode == ReadMode.Skins)
+					{
+						//TODO: do stuff
+					}
+					else if (readMode == ReadMode.Shield)
+					{
+						//TODO: do stuff
+					}
 				}
 				#endregion
 				srMission.Close();
@@ -540,6 +577,8 @@ namespace Idmr.Yogeme
 		#endregion Backdrops
 
 		#region MissionTie
+		// TODO: add Wingman Markings
+		// TODO: add S-foils hook. Different hook, but still under mission_tie
 		private void chkMission_CheckedChanged(object sender, EventArgs e)
 		{
 			lstMission.Enabled = chkMission.Checked;
@@ -605,9 +644,9 @@ namespace Idmr.Yogeme
 			cmdAddObjects.Enabled = chkObjects.Checked;
 			cmdRemoveObjects.Enabled = chkObjects.Checked;
 			optCraft.Enabled = chkObjects.Checked;
-			optMesh.Enabled = chkObjects.Checked;
-			cboMeshFG.Enabled = chkObjects.Checked;
-			txtMesh.Enabled = chkObjects.Checked;
+			optProfile.Enabled = chkObjects.Checked;
+			cboProfileFG.Enabled = optProfile.Checked;
+			txtProfile.Enabled = optProfile.Checked;
 		}
 
 		private void cmdAddObjects_Click(object sender, EventArgs e)
@@ -626,9 +665,9 @@ namespace Idmr.Yogeme
 						lstObjects.Items.Add(line + opnObjects.FileName.Substring(opnObjects.FileName.IndexOf(_fm)));
 				}
 			}
-			else if (optMesh.Checked && txtMesh.Text != "" && txtMesh.Text.ToLower() != "default")
+			else if (optProfile.Checked && txtProfile.Text != "" && txtProfile.Text.ToLower() != "default")
 			{
-				string line = "ObjectProfile_fg_" + cboMeshFG.SelectedIndex + "=" + txtMesh.Text;
+				string line = "ObjectProfile_fg_" + cboProfileFG.SelectedIndex + "=" + txtProfile.Text;
 				lstObjects.Items.Add(line);
 			}
 		}
@@ -636,9 +675,18 @@ namespace Idmr.Yogeme
 		{
 			if (lstObjects.SelectedIndex != -1) lstObjects.Items.RemoveAt(lstObjects.SelectedIndex);
 		}
+
+		private void optProfile_CheckedChanged(object sender, EventArgs e)
+		{
+			cboProfileFG.Enabled = optProfile.Checked;
+			txtProfile.Enabled = optProfile.Checked;
+		}
 		#endregion
 
 		#region Hangars
+		// TODO: need a top-level IFF selector, and clone all Hangar values X times, including read/write all of the IFF-specific hangar files
+		// TODO: need to add chk's for droid1/2 updates. Default checked and omitted, "Droid1Update = 0" (or 2) otherwise
+		// TODO: add s-foils option; "FoldOutside = 1", default is 0
 		private void cboCamera_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (cboCamera.SelectedIndex == -1) return;
@@ -951,6 +999,8 @@ namespace Idmr.Yogeme
 			if (!useHangarMap && _hangarMapFile != "") File.Delete(_hangarMapFile);
 			if (!useFamilyHangarMap && _famHangarMapFile != "") File.Delete(_famHangarMapFile);
 
+			// TODO: use checks for Skins and Shield
+
 			if (!chkBackdrops.Checked && !chkMission.Checked && !chkSounds.Checked && !chkObjects.Checked && !useHangarObjects && !useHangarCamera && !useFamilyHangarCamera && !useHangarMap && !useFamilyHangarMap)
 			{
 				File.Delete(_fileName);
@@ -1119,6 +1169,8 @@ namespace Idmr.Yogeme
 				if (_famHangarCameraFile != "") File.Delete(_famHangarCameraFile);
 				if (_hangarMapFile != "") File.Delete(_hangarMapFile);
 				if (_famHangarMapFile != "") File.Delete(_famHangarMapFile);
+				if (_32bppFile != "") File.Delete(_32bppFile);
+				if (_shieldFile != "") File.Delete(_shieldFile);
 			}
 			catch
 			{
