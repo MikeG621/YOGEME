@@ -166,10 +166,9 @@ namespace Idmr.Yogeme.MapWireframe
 	/// <summary>Represents a 3x3 matrix for rotational transformations</summary>
 	public class Matrix3
 	{
-		/// <summary>Initializes a matrix ready for the needed rotational transform.</summary>
-		/// <remarks>This is the matrix multiplication for the equations Roll * Yaw, in that order. When applying "Roll" to the vertices,<br/>
-		/// the visible effect is pitch relative to the body. Yaw works as expected. Perhaps this is because the Z axis in-game is<br/>
-		/// elevation, not depth?</remarks>
+		/// <summary>Initializes a matrix for a rotational transform, combining pitch and yaw (without roll).</summary>
+		/// <remarks>In a normal coordinate system, this would be matrix multiplication for (Roll * Yaw) in that order.</br>
+		/// But X-Wing uses a different system, so we use (CraftPitch * CraftYaw) to get the desired results on screen.</remarks>/// 
 		public Matrix3(double yaw, double pitch)
 		{
 			V11 = Math.Cos(yaw);
@@ -181,6 +180,38 @@ namespace Idmr.Yogeme.MapWireframe
 			V31 = (Math.Sin(pitch) * Math.Sin(yaw));
 			V32 = (Math.Sin(pitch) * Math.Cos(yaw));
 			V33 = Math.Cos(pitch);
+		}
+
+		/// <summary>Initializes a matrix for a rotational transform, combining pitch, yaw, and roll.</summary>
+		/// <remarks>In a normal coordinate system, this would be matrix multiplication for (Roll * Yaw * Pitch) in that order.</br>
+		/// But X-Wing uses a different system, so we use (CraftPitch * CraftYaw * CraftRoll).</br>
+		/// TODO: Although roll works on its own, combining roll with pitch or yaw will produce incorrect rotations.</br>
+		/// Roll needs to be performed relative to the craft, rather than the world.</remarks>
+		public Matrix3(double yaw, double pitch, double roll)
+		{
+			V11 = Math.Cos(yaw) * Math.Cos(roll);
+			V12 = -Math.Sin(yaw);
+			V13 = Math.Cos(yaw) * Math.Sin(roll);
+			V21 = Math.Cos(pitch) * Math.Sin(yaw) * Math.Cos(roll) - Math.Sin(pitch) * -Math.Sin(roll);
+			V22 = Math.Cos(pitch) * Math.Cos(yaw);
+			V23 = Math.Cos(pitch) * Math.Sin(yaw) * Math.Sin(roll) - Math.Sin(pitch) * Math.Cos(roll);
+			V31 = Math.Sin(pitch) * Math.Sin(yaw) * Math.Cos(roll) + Math.Cos(pitch) * -Math.Sin(roll);
+			V32 = Math.Sin(pitch) * Math.Cos(yaw);
+			V33 = Math.Sin(pitch) * Math.Sin(yaw) * Math.Sin(roll) + Math.Cos(pitch) * Math.Cos(roll);
+		}
+	
+		/// <summary>Applies a zoom transformation, multiplying by a scalar.</summary>
+		public void Scale(double mult)
+		{
+			V11 *= mult;
+			V12 *= mult;
+			V13 *= mult;
+			V21 *= mult;
+			V22 *= mult;
+			V23 *= mult;
+			V31 *= mult;
+			V32 *= mult;
+			V33 *= mult;
 		}
 
 		public double V11 { get; private set; }
@@ -1157,13 +1188,46 @@ namespace Idmr.Yogeme.MapWireframe
 					yaw -= Math.PI * 2;
 			}
 
-			updatePoints(_scaleMult, yaw, pitch);
+			updatePoints(_scaleMult, new Matrix3(yaw, pitch));
 		}
 
-		/// <summary>Recalculates the positions of all vertices according to zoom and rotation.</summary>
-		private void updatePoints(double scaleMult, double yaw, double pitch)
+		/// <summary>Updates the transformed vertices as it should appear on screen. This applies direct rotations without needing to calculate waypoint angles.</summary>
+		/// <param name="zoom">The map zoom level, in px/km</param>
+		/// <param name="meshTypeVisibilityFlags">The flags determining which Mesh types to display</param>
+		/// <param name="degYaw">Yaw rotation, in degrees.</param>
+		/// <param name="degPitch">Pitch rotation, in degrees.</param>
+		/// <param name="degRoll">Roll rotation, in degrees.</param>
+		/// <remarks>If no change is detected, the wireframe remains as is. Resulting vertex positions are relative to the model origin.</remarks>
+		public void UpdateSimple(int zoom, long meshTypeVisibilityFlags, int degYaw, int degPitch, int degRoll)
 		{
-			Matrix3 mat = new Matrix3(yaw, pitch);
+			if (ModelDef == null)
+				return;
+			if (!_rebuildRequired && _curX == degYaw && _curY == degPitch && _curZ == degRoll &&_curZoom == zoom && _curVisibilityFlags == meshTypeVisibilityFlags)
+				return;
+			_rebuildRequired = false;
+
+			// Since we're not calculating between two points, position doesn't matter. Store the rotation instead.
+			_curX = degYaw;
+			_curY = degPitch;
+			_curZ = degRoll;
+			_curZoom = zoom;
+			_curVisibilityFlags = meshTypeVisibilityFlags;
+
+			_scaleMult = _curZoom / 40960.0;
+			double yaw = -degYaw * (Math.PI / 180.0f);
+			// Any craft pitch outside this range seems to be rejected by XWA.
+			if (degPitch >= 90 || degPitch <= -92)
+				degPitch = 0;
+			double pitch = degPitch * (Math.PI / 180.0f);
+			double roll = -degRoll * (Math.PI / 180.0f);
+			updatePoints(_scaleMult, new Matrix3(yaw, pitch, roll));
+		}
+
+		/// <param name="scaleMult">Scale multiplier.</param>
+		/// <param name="rotation">A matrix with the necessary rotation transform.</param>
+		private void updatePoints(double scaleMult, Matrix3 rotation)
+		{
+			rotation.Scale(scaleMult);
 			foreach (MeshLayerInstance cinst in LayerInstances)
 			{
 				if (!cinst.MatchMeshFilter(_curVisibilityFlags))
@@ -1171,10 +1235,10 @@ namespace Idmr.Yogeme.MapWireframe
 				for (int i = 0; i < cinst.Vertices.Count; i++)
 				{
 					Vertex v = cinst.Vertices[i];
-					v.X = (float)(cinst.MeshLayerDefinition.Vertices[i].X * scaleMult);
-					v.Y = (float)(cinst.MeshLayerDefinition.Vertices[i].Y * scaleMult);
-					v.Z = (float)(-cinst.MeshLayerDefinition.Vertices[i].Z * scaleMult);  // Inverted so they appear properly. Maybe this could be handled during the load?
-					v.MultTranspose(mat);
+					v.X = cinst.MeshLayerDefinition.Vertices[i].X;
+					v.Y = cinst.MeshLayerDefinition.Vertices[i].Y;
+					v.Z = -cinst.MeshLayerDefinition.Vertices[i].Z;  // Inverted so they appear properly. Maybe this could be handled during the load?
+					v.MultTranspose(rotation);
 				}
 			}
 		}

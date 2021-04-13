@@ -268,7 +268,10 @@ namespace Idmr.Yogeme
 				meshZoom = (int)(_zoom * scale);
 			}
 
-			model.UpdateParams(dat.WPs[0][0], dst, meshZoom, _displayMode, _settings.WireframeMeshTypeVisibility);
+			if (_platform == Settings.Platform.XWA && !dst.Enabled)
+				model.UpdateSimple(meshZoom, _settings.WireframeMeshTypeVisibility, dat.Yaw, dat.Pitch, dat.Roll);
+			else
+				model.UpdateParams(dat.WPs[0][0], dst, meshZoom, _displayMode, _settings.WireframeMeshTypeVisibility);
 
 			Pen body = new Pen((dat.View == Visibility.Fade ? _fadeColor : getIFFColor(dat.IFF)));
 			Pen hangar = new Pen((dat.View == Visibility.Fade ? _fadeColor : Color.White));
@@ -2111,7 +2114,10 @@ namespace Idmr.Yogeme
 					Name = fg[i].Name,
 					FlightGroup = fg[i],
 					Difficulty = getDifficultyFlags(fg[i].Difficulty),
-					Region = fg[i].Waypoints[0].Region
+					Region = fg[i].Waypoints[0].Region,
+					Pitch = fg[i].Pitch,
+					Yaw = fg[i].Yaw,
+					Roll = fg[i].Roll,
 				};
 				_mapData[i].WPs[0] = fg[i].Waypoints;
 				for (int j = 0; j < 16; j++)
@@ -2162,6 +2168,9 @@ namespace Idmr.Yogeme
 				case Settings.Platform.XWA:
 					abbrev = Platform.Xwa.Strings.CraftAbbrv;
 					_mapData[index].Region = ((Platform.Xwa.FlightGroup)fg).Waypoints[0].Region;
+					_mapData[index].Yaw = ((Platform.Xwa.FlightGroup)fg).Yaw;
+					_mapData[index].Pitch = ((Platform.Xwa.FlightGroup)fg).Pitch;
+					_mapData[index].Roll = ((Platform.Xwa.FlightGroup)fg).Roll;
 					break;
 			}
 			if (abbrev != null)
@@ -2854,6 +2863,9 @@ namespace Idmr.Yogeme
 				Difficulty = 0;
 				FlightGroup = null;
 				Region = 0;
+				Yaw = 0;
+				Pitch = 0;
+				Roll = 0;
 				
 				switch (platform)
 				{
@@ -2889,7 +2901,9 @@ namespace Idmr.Yogeme
 			public int Difficulty;
 			public object FlightGroup;
 			public int Region;
-
+			public short Yaw;
+			public short Pitch;
+			public short Roll;
 			public Platform.BaseFlightGroup.BaseWaypoint[][] WPs;
 		}
 
