@@ -7,6 +7,7 @@
  */
 
 /* CHANGELOG
+ * [UPD #58] Map refreshes after adjusting craft orientation [JB]
  * [UPD #56] Replaced try/catch with TryParse [JB]
  * v1.9.2, 210328
  * [FIX] Test load failure if mission isn't in platform directory
