@@ -19,6 +19,8 @@ Version History
 - (All) Redid handling bad waypoint values [Issue #56] (JB)
 - (XW) Converting FG Goals from XW corrected [Issue #55] (JB, via Platform.dll)
 - (XWA) Hook Dialog redesigned
+  - Mission : Wingman markings, HangarObjects : Droid1/2Update added
+  - Fixed missing Droid1/2PositionZ read
 - (XWA) Map wireframes correctly take into account craft rotations when not using Waypoints. Adjusting rotation refreshes map. [Issue #58, #59] (JB))
 
 v1.9.2, 28 Mar 2021

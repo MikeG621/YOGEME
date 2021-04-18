@@ -153,21 +153,17 @@
 			this.tabBackdrops = new System.Windows.Forms.TabPage();
 			this.label45 = new System.Windows.Forms.Label();
 			this.tabMission = new System.Windows.Forms.TabPage();
+			this.label48 = new System.Windows.Forms.Label();
 			this.tabSounds = new System.Windows.Forms.TabPage();
+			this.label46 = new System.Windows.Forms.Label();
 			this.tabObjects = new System.Windows.Forms.TabPage();
+			this.label47 = new System.Windows.Forms.Label();
 			this.tabHangar = new System.Windows.Forms.TabPage();
 			this.tcHangar = new System.Windows.Forms.TabControl();
 			this.tabHangarObjects = new System.Windows.Forms.TabPage();
-			this.tabHangarMap = new System.Windows.Forms.TabPage();
-			this.tabHangarFamilyMap = new System.Windows.Forms.TabPage();
-			this.tabHangarCamera = new System.Windows.Forms.TabPage();
-			this.tabHangarFamilyCamera = new System.Windows.Forms.TabPage();
-			this.tabSkins = new System.Windows.Forms.TabPage();
-			this.chkSkins = new System.Windows.Forms.CheckBox();
-			this.tabShield = new System.Windows.Forms.TabPage();
-			this.chkShield = new System.Windows.Forms.CheckBox();
-			this.label46 = new System.Windows.Forms.Label();
 			this.tabObjects2 = new System.Windows.Forms.TabPage();
+			this.cmdPlayerReset = new System.Windows.Forms.Button();
+			this.cmdCraneReset = new System.Windows.Forms.Button();
 			this.numPlayerX = new System.Windows.Forms.NumericUpDown();
 			this.numRoofCranePositionX = new System.Windows.Forms.NumericUpDown();
 			this.cboHangarIff = new System.Windows.Forms.ComboBox();
@@ -197,10 +193,21 @@
 			this.chkHangarIff = new System.Windows.Forms.CheckBox();
 			this.label44 = new System.Windows.Forms.Label();
 			this.label31 = new System.Windows.Forms.Label();
-			this.cmdPlayerReset = new System.Windows.Forms.Button();
-			this.cmdCraneReset = new System.Windows.Forms.Button();
-			this.label47 = new System.Windows.Forms.Label();
-			this.label48 = new System.Windows.Forms.Label();
+			this.tabHangarMap = new System.Windows.Forms.TabPage();
+			this.tabHangarFamilyMap = new System.Windows.Forms.TabPage();
+			this.tabHangarCamera = new System.Windows.Forms.TabPage();
+			this.tabHangarFamilyCamera = new System.Windows.Forms.TabPage();
+			this.tabSkins = new System.Windows.Forms.TabPage();
+			this.chkSkins = new System.Windows.Forms.CheckBox();
+			this.tabShield = new System.Windows.Forms.TabPage();
+			this.chkShield = new System.Windows.Forms.CheckBox();
+			this.optWingman = new System.Windows.Forms.RadioButton();
+			this.numWingman = new System.Windows.Forms.NumericUpDown();
+			this.tabSFoils = new System.Windows.Forms.TabPage();
+			this.chkSFoils = new System.Windows.Forms.CheckBox();
+			this.chkDroid1Update = new System.Windows.Forms.CheckBox();
+			this.chkDroid2Update = new System.Windows.Forms.CheckBox();
+			this.chkHangarFold = new System.Windows.Forms.CheckBox();
 			((System.ComponentModel.ISupportInitialize)(this.numFamHeadingZ)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numFamPosZ)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numFamHeadingXY)).BeginInit();
@@ -233,12 +240,6 @@
 			this.tabHangar.SuspendLayout();
 			this.tcHangar.SuspendLayout();
 			this.tabHangarObjects.SuspendLayout();
-			this.tabHangarMap.SuspendLayout();
-			this.tabHangarFamilyMap.SuspendLayout();
-			this.tabHangarCamera.SuspendLayout();
-			this.tabHangarFamilyCamera.SuspendLayout();
-			this.tabSkins.SuspendLayout();
-			this.tabShield.SuspendLayout();
 			this.tabObjects2.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numPlayerX)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numRoofCranePositionX)).BeginInit();
@@ -250,6 +251,14 @@
 			((System.ComponentModel.ISupportInitialize)(this.numPlayerZ)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numRoofCraneLowOffset)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numPlayerAnimationElevation)).BeginInit();
+			this.tabHangarMap.SuspendLayout();
+			this.tabHangarFamilyMap.SuspendLayout();
+			this.tabHangarCamera.SuspendLayout();
+			this.tabHangarFamilyCamera.SuspendLayout();
+			this.tabSkins.SuspendLayout();
+			this.tabShield.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.numWingman)).BeginInit();
+			this.tabSFoils.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// cmdOK
@@ -258,7 +267,7 @@
 			this.cmdOK.Location = new System.Drawing.Point(69, 341);
 			this.cmdOK.Name = "cmdOK";
 			this.cmdOK.Size = new System.Drawing.Size(75, 23);
-			this.cmdOK.TabIndex = 0;
+			this.cmdOK.TabIndex = 50;
 			this.cmdOK.Text = "&OK";
 			this.cmdOK.UseVisualStyleBackColor = true;
 			this.cmdOK.Click += new System.EventHandler(this.cmdOK_Click);
@@ -269,7 +278,7 @@
 			this.cmdCancel.Location = new System.Drawing.Point(257, 341);
 			this.cmdCancel.Name = "cmdCancel";
 			this.cmdCancel.Size = new System.Drawing.Size(75, 23);
-			this.cmdCancel.TabIndex = 0;
+			this.cmdCancel.TabIndex = 51;
 			this.cmdCancel.Text = "&Cancel";
 			this.cmdCancel.UseVisualStyleBackColor = true;
 			this.cmdCancel.Click += new System.EventHandler(this.cmdCancel_Click);
@@ -280,7 +289,7 @@
 			this.cmdRemoveBD.Location = new System.Drawing.Point(264, 29);
 			this.cmdRemoveBD.Name = "cmdRemoveBD";
 			this.cmdRemoveBD.Size = new System.Drawing.Size(60, 23);
-			this.cmdRemoveBD.TabIndex = 2;
+			this.cmdRemoveBD.TabIndex = 3;
 			this.cmdRemoveBD.Text = "&Remove";
 			this.cmdRemoveBD.UseVisualStyleBackColor = true;
 			this.cmdRemoveBD.Click += new System.EventHandler(this.cmdRemoveBD_Click);
@@ -303,7 +312,7 @@
 			this.lstBackdrops.Location = new System.Drawing.Point(6, 29);
 			this.lstBackdrops.Name = "lstBackdrops";
 			this.lstBackdrops.Size = new System.Drawing.Size(186, 108);
-			this.lstBackdrops.TabIndex = 1;
+			this.lstBackdrops.TabIndex = 4;
 			// 
 			// chkBackdrops
 			// 
@@ -311,7 +320,7 @@
 			this.chkBackdrops.Location = new System.Drawing.Point(6, 6);
 			this.chkBackdrops.Name = "chkBackdrops";
 			this.chkBackdrops.Size = new System.Drawing.Size(99, 17);
-			this.chkBackdrops.TabIndex = 0;
+			this.chkBackdrops.TabIndex = 1;
 			this.chkBackdrops.Text = "Use Backdrops";
 			this.chkBackdrops.UseVisualStyleBackColor = true;
 			this.chkBackdrops.CheckedChanged += new System.EventHandler(this.chkBackdrops_CheckedChanged);
@@ -323,11 +332,11 @@
 			// txtPilot
 			// 
 			this.txtPilot.Enabled = false;
-			this.txtPilot.Location = new System.Drawing.Point(227, 138);
+			this.txtPilot.Location = new System.Drawing.Point(227, 165);
 			this.txtPilot.MaxLength = 15;
 			this.txtPilot.Name = "txtPilot";
 			this.txtPilot.Size = new System.Drawing.Size(97, 20);
-			this.txtPilot.TabIndex = 11;
+			this.txtPilot.TabIndex = 10;
 			// 
 			// lstMission
 			// 
@@ -336,29 +345,31 @@
 			this.lstMission.Location = new System.Drawing.Point(6, 29);
 			this.lstMission.Name = "lstMission";
 			this.lstMission.Size = new System.Drawing.Size(155, 134);
-			this.lstMission.TabIndex = 10;
+			this.lstMission.TabIndex = 42;
 			// 
 			// optPilot
 			// 
 			this.optPilot.AutoSize = true;
 			this.optPilot.Enabled = false;
-			this.optPilot.Location = new System.Drawing.Point(167, 139);
+			this.optPilot.Location = new System.Drawing.Point(167, 166);
 			this.optPilot.Name = "optPilot";
 			this.optPilot.Size = new System.Drawing.Size(45, 17);
-			this.optPilot.TabIndex = 9;
+			this.optPilot.TabIndex = 5;
 			this.optPilot.Text = "Pilot";
 			this.optPilot.UseVisualStyleBackColor = true;
+			this.optPilot.CheckedChanged += new System.EventHandler(this.cboMission_CheckedChanged);
 			// 
 			// optIff
 			// 
 			this.optIff.AutoSize = true;
 			this.optIff.Enabled = false;
-			this.optIff.Location = new System.Drawing.Point(167, 112);
+			this.optIff.Location = new System.Drawing.Point(167, 139);
 			this.optIff.Name = "optIff";
 			this.optIff.Size = new System.Drawing.Size(40, 17);
-			this.optIff.TabIndex = 9;
+			this.optIff.TabIndex = 4;
 			this.optIff.Text = "IFF";
 			this.optIff.UseVisualStyleBackColor = true;
+			this.optIff.CheckedChanged += new System.EventHandler(this.cboMission_CheckedChanged);
 			// 
 			// optMarkings
 			// 
@@ -368,10 +379,10 @@
 			this.optMarkings.Location = new System.Drawing.Point(167, 85);
 			this.optMarkings.Name = "optMarkings";
 			this.optMarkings.Size = new System.Drawing.Size(54, 17);
-			this.optMarkings.TabIndex = 9;
-			this.optMarkings.TabStop = true;
+			this.optMarkings.TabIndex = 2;
 			this.optMarkings.Text = "Marks";
 			this.optMarkings.UseVisualStyleBackColor = true;
+			this.optMarkings.CheckedChanged += new System.EventHandler(this.cboMission_CheckedChanged);
 			// 
 			// cmdRemoveMiss
 			// 
@@ -379,7 +390,7 @@
 			this.cmdRemoveMiss.Location = new System.Drawing.Point(264, 56);
 			this.cmdRemoveMiss.Name = "cmdRemoveMiss";
 			this.cmdRemoveMiss.Size = new System.Drawing.Size(60, 23);
-			this.cmdRemoveMiss.TabIndex = 7;
+			this.cmdRemoveMiss.TabIndex = 41;
 			this.cmdRemoveMiss.Text = "&Remove";
 			this.cmdRemoveMiss.UseVisualStyleBackColor = true;
 			this.cmdRemoveMiss.Click += new System.EventHandler(this.cmdRemoveMiss_Click);
@@ -390,7 +401,7 @@
 			this.cmdAddMiss.Location = new System.Drawing.Point(167, 56);
 			this.cmdAddMiss.Name = "cmdAddMiss";
 			this.cmdAddMiss.Size = new System.Drawing.Size(60, 23);
-			this.cmdAddMiss.TabIndex = 8;
+			this.cmdAddMiss.TabIndex = 40;
 			this.cmdAddMiss.Text = "&Add";
 			this.cmdAddMiss.UseVisualStyleBackColor = true;
 			this.cmdAddMiss.Click += new System.EventHandler(this.cmdAddMiss_Click);
@@ -399,10 +410,10 @@
 			// 
 			this.cboIff.Enabled = false;
 			this.cboIff.FormattingEnabled = true;
-			this.cboIff.Location = new System.Drawing.Point(227, 111);
+			this.cboIff.Location = new System.Drawing.Point(227, 138);
 			this.cboIff.Name = "cboIff";
 			this.cboIff.Size = new System.Drawing.Size(97, 21);
-			this.cboIff.TabIndex = 6;
+			this.cboIff.TabIndex = 9;
 			// 
 			// cboMarkings
 			// 
@@ -411,7 +422,7 @@
 			this.cboMarkings.Location = new System.Drawing.Point(227, 84);
 			this.cboMarkings.Name = "cboMarkings";
 			this.cboMarkings.Size = new System.Drawing.Size(97, 21);
-			this.cboMarkings.TabIndex = 6;
+			this.cboMarkings.TabIndex = 7;
 			// 
 			// cboFG
 			// 
@@ -428,7 +439,7 @@
 			this.chkMission.Location = new System.Drawing.Point(6, 6);
 			this.chkMission.Name = "chkMission";
 			this.chkMission.Size = new System.Drawing.Size(101, 17);
-			this.chkMission.TabIndex = 4;
+			this.chkMission.TabIndex = 1;
 			this.chkMission.Text = "Use Mission Tie";
 			this.chkMission.UseVisualStyleBackColor = true;
 			this.chkMission.CheckedChanged += new System.EventHandler(this.chkMission_CheckedChanged);
@@ -439,7 +450,7 @@
 			this.cmdRemoveSounds.Location = new System.Drawing.Point(264, 29);
 			this.cmdRemoveSounds.Name = "cmdRemoveSounds";
 			this.cmdRemoveSounds.Size = new System.Drawing.Size(60, 23);
-			this.cmdRemoveSounds.TabIndex = 2;
+			this.cmdRemoveSounds.TabIndex = 3;
 			this.cmdRemoveSounds.Text = "&Remove";
 			this.cmdRemoveSounds.UseVisualStyleBackColor = true;
 			this.cmdRemoveSounds.Click += new System.EventHandler(this.cmdRemoveSounds_Click);
@@ -462,7 +473,7 @@
 			this.lstSounds.Location = new System.Drawing.Point(6, 29);
 			this.lstSounds.Name = "lstSounds";
 			this.lstSounds.Size = new System.Drawing.Size(186, 108);
-			this.lstSounds.TabIndex = 1;
+			this.lstSounds.TabIndex = 4;
 			// 
 			// chkSounds
 			// 
@@ -470,7 +481,7 @@
 			this.chkSounds.Location = new System.Drawing.Point(6, 6);
 			this.chkSounds.Name = "chkSounds";
 			this.chkSounds.Size = new System.Drawing.Size(84, 17);
-			this.chkSounds.TabIndex = 0;
+			this.chkSounds.TabIndex = 1;
 			this.chkSounds.Text = "Use Sounds";
 			this.chkSounds.UseVisualStyleBackColor = true;
 			this.chkSounds.CheckedChanged += new System.EventHandler(this.chkSounds_CheckedChanged);
@@ -483,19 +494,19 @@
 			// 
 			this.cboProfileFG.Enabled = false;
 			this.cboProfileFG.FormattingEnabled = true;
-			this.cboProfileFG.Location = new System.Drawing.Point(6, 82);
+			this.cboProfileFG.Location = new System.Drawing.Point(6, 143);
 			this.cboProfileFG.Name = "cboProfileFG";
 			this.cboProfileFG.Size = new System.Drawing.Size(186, 21);
-			this.cboProfileFG.TabIndex = 7;
+			this.cboProfileFG.TabIndex = 4;
 			// 
 			// optProfile
 			// 
 			this.optProfile.AutoSize = true;
 			this.optProfile.Enabled = false;
-			this.optProfile.Location = new System.Drawing.Point(251, 55);
+			this.optProfile.Location = new System.Drawing.Point(198, 78);
 			this.optProfile.Name = "optProfile";
 			this.optProfile.Size = new System.Drawing.Size(54, 17);
-			this.optProfile.TabIndex = 4;
+			this.optProfile.TabIndex = 3;
 			this.optProfile.Text = "Profile";
 			this.optProfile.UseVisualStyleBackColor = true;
 			this.optProfile.CheckedChanged += new System.EventHandler(this.optProfile_CheckedChanged);
@@ -507,19 +518,19 @@
 			this.optCraft.Enabled = false;
 			this.optCraft.Location = new System.Drawing.Point(198, 55);
 			this.optCraft.Name = "optCraft";
-			this.optCraft.Size = new System.Drawing.Size(47, 17);
-			this.optCraft.TabIndex = 4;
+			this.optCraft.Size = new System.Drawing.Size(72, 17);
+			this.optCraft.TabIndex = 2;
 			this.optCraft.TabStop = true;
-			this.optCraft.Text = "Craft";
+			this.optCraft.Text = "Craft OPT";
 			this.optCraft.UseVisualStyleBackColor = true;
 			// 
 			// txtProfile
 			// 
 			this.txtProfile.Enabled = false;
-			this.txtProfile.Location = new System.Drawing.Point(198, 83);
+			this.txtProfile.Location = new System.Drawing.Point(198, 144);
 			this.txtProfile.Name = "txtProfile";
 			this.txtProfile.Size = new System.Drawing.Size(126, 20);
-			this.txtProfile.TabIndex = 3;
+			this.txtProfile.TabIndex = 5;
 			this.txtProfile.Text = "Default";
 			// 
 			// cmdRemoveObjects
@@ -528,7 +539,7 @@
 			this.cmdRemoveObjects.Location = new System.Drawing.Point(264, 29);
 			this.cmdRemoveObjects.Name = "cmdRemoveObjects";
 			this.cmdRemoveObjects.Size = new System.Drawing.Size(60, 23);
-			this.cmdRemoveObjects.TabIndex = 2;
+			this.cmdRemoveObjects.TabIndex = 7;
 			this.cmdRemoveObjects.Text = "&Remove";
 			this.cmdRemoveObjects.UseVisualStyleBackColor = true;
 			this.cmdRemoveObjects.Click += new System.EventHandler(this.cmdRemoveObjects_Click);
@@ -539,7 +550,7 @@
 			this.cmdAddObjects.Location = new System.Drawing.Point(198, 29);
 			this.cmdAddObjects.Name = "cmdAddObjects";
 			this.cmdAddObjects.Size = new System.Drawing.Size(60, 23);
-			this.cmdAddObjects.TabIndex = 2;
+			this.cmdAddObjects.TabIndex = 6;
 			this.cmdAddObjects.Text = "&Add";
 			this.cmdAddObjects.UseVisualStyleBackColor = true;
 			this.cmdAddObjects.Click += new System.EventHandler(this.cmdAddObjects_Click);
@@ -550,8 +561,8 @@
 			this.lstObjects.FormattingEnabled = true;
 			this.lstObjects.Location = new System.Drawing.Point(6, 29);
 			this.lstObjects.Name = "lstObjects";
-			this.lstObjects.Size = new System.Drawing.Size(186, 43);
-			this.lstObjects.TabIndex = 1;
+			this.lstObjects.Size = new System.Drawing.Size(186, 108);
+			this.lstObjects.TabIndex = 8;
 			// 
 			// chkObjects
 			// 
@@ -559,7 +570,7 @@
 			this.chkObjects.Location = new System.Drawing.Point(6, 6);
 			this.chkObjects.Name = "chkObjects";
 			this.chkObjects.Size = new System.Drawing.Size(84, 17);
-			this.chkObjects.TabIndex = 0;
+			this.chkObjects.TabIndex = 1;
 			this.chkObjects.Text = "Use Objects";
 			this.chkObjects.UseVisualStyleBackColor = true;
 			this.chkObjects.CheckedChanged += new System.EventHandler(this.chkObjects_CheckedChanged);
@@ -575,7 +586,7 @@
 			this.chkFamMarks.Name = "chkFamMarks";
 			this.chkFamMarks.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
 			this.chkFamMarks.Size = new System.Drawing.Size(55, 17);
-			this.chkFamMarks.TabIndex = 20;
+			this.chkFamMarks.TabIndex = 10;
 			this.chkFamMarks.Text = "Marks";
 			this.chkFamMarks.UseVisualStyleBackColor = true;
 			this.chkFamMarks.CheckedChanged += new System.EventHandler(this.chkFamMarks_CheckedChanged);
@@ -587,7 +598,7 @@
 			this.cboFamMapMarkings.Location = new System.Drawing.Point(184, 129);
 			this.cboFamMapMarkings.Name = "cboFamMapMarkings";
 			this.cboFamMapMarkings.Size = new System.Drawing.Size(126, 21);
-			this.cboFamMapMarkings.TabIndex = 18;
+			this.cboFamMapMarkings.TabIndex = 11;
 			// 
 			// label17
 			// 
@@ -604,7 +615,7 @@
 			this.cboFamMapIndex.Location = new System.Drawing.Point(72, 129);
 			this.cboFamMapIndex.Name = "cboFamMapIndex";
 			this.cboFamMapIndex.Size = new System.Drawing.Size(44, 21);
-			this.cboFamMapIndex.TabIndex = 16;
+			this.cboFamMapIndex.TabIndex = 9;
 			// 
 			// chkFamGrounded
 			// 
@@ -614,7 +625,7 @@
 			this.chkFamGrounded.Location = new System.Drawing.Point(238, 58);
 			this.chkFamGrounded.Name = "chkFamGrounded";
 			this.chkFamGrounded.Size = new System.Drawing.Size(73, 17);
-			this.chkFamGrounded.TabIndex = 15;
+			this.chkFamGrounded.TabIndex = 3;
 			this.chkFamGrounded.Text = "Grounded";
 			this.chkFamGrounded.UseVisualStyleBackColor = true;
 			this.chkFamGrounded.CheckedChanged += new System.EventHandler(this.chkFamGrounded_CheckedChanged);
@@ -670,7 +681,7 @@
             -2147483648});
 			this.numFamHeadingZ.Name = "numFamHeadingZ";
 			this.numFamHeadingZ.Size = new System.Drawing.Size(57, 20);
-			this.numFamHeadingZ.TabIndex = 12;
+			this.numFamHeadingZ.TabIndex = 8;
 			// 
 			// numFamPosZ
 			// 
@@ -688,7 +699,7 @@
             -2147483648});
 			this.numFamPosZ.Name = "numFamPosZ";
 			this.numFamPosZ.Size = new System.Drawing.Size(57, 20);
-			this.numFamPosZ.TabIndex = 12;
+			this.numFamPosZ.TabIndex = 6;
 			// 
 			// label23
 			// 
@@ -723,7 +734,7 @@
             -2147483648});
 			this.numFamHeadingXY.Name = "numFamHeadingXY";
 			this.numFamHeadingXY.Size = new System.Drawing.Size(57, 20);
-			this.numFamHeadingXY.TabIndex = 10;
+			this.numFamHeadingXY.TabIndex = 7;
 			// 
 			// numFamPosY
 			// 
@@ -740,7 +751,7 @@
             -2147483648});
 			this.numFamPosY.Name = "numFamPosY";
 			this.numFamPosY.Size = new System.Drawing.Size(57, 20);
-			this.numFamPosY.TabIndex = 10;
+			this.numFamPosY.TabIndex = 5;
 			// 
 			// label25
 			// 
@@ -766,7 +777,7 @@
             -2147483648});
 			this.numFamPosX.Name = "numFamPosX";
 			this.numFamPosX.Size = new System.Drawing.Size(57, 20);
-			this.numFamPosX.TabIndex = 8;
+			this.numFamPosX.TabIndex = 4;
 			// 
 			// lstFamilyMap
 			// 
@@ -774,14 +785,14 @@
 			this.lstFamilyMap.Location = new System.Drawing.Point(6, 6);
 			this.lstFamilyMap.Name = "lstFamilyMap";
 			this.lstFamilyMap.Size = new System.Drawing.Size(223, 69);
-			this.lstFamilyMap.TabIndex = 7;
+			this.lstFamilyMap.TabIndex = 22;
 			// 
 			// cmdAddFamMap
 			// 
 			this.cmdAddFamMap.Location = new System.Drawing.Point(251, 7);
 			this.cmdAddFamMap.Name = "cmdAddFamMap";
 			this.cmdAddFamMap.Size = new System.Drawing.Size(60, 23);
-			this.cmdAddFamMap.TabIndex = 6;
+			this.cmdAddFamMap.TabIndex = 20;
 			this.cmdAddFamMap.Text = "&Add";
 			this.cmdAddFamMap.UseVisualStyleBackColor = true;
 			this.cmdAddFamMap.Click += new System.EventHandler(this.cmdAddFamMap_Click);
@@ -791,7 +802,7 @@
 			this.cmdRemoveFamMap.Location = new System.Drawing.Point(251, 32);
 			this.cmdRemoveFamMap.Name = "cmdRemoveFamMap";
 			this.cmdRemoveFamMap.Size = new System.Drawing.Size(60, 23);
-			this.cmdRemoveFamMap.TabIndex = 5;
+			this.cmdRemoveFamMap.TabIndex = 21;
 			this.cmdRemoveFamMap.Text = "&Remove";
 			this.cmdRemoveFamMap.UseVisualStyleBackColor = true;
 			this.cmdRemoveFamMap.Click += new System.EventHandler(this.cmdRemoveFamMap_Click);
@@ -803,7 +814,7 @@
 			this.chkMarks.Name = "chkMarks";
 			this.chkMarks.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
 			this.chkMarks.Size = new System.Drawing.Size(55, 17);
-			this.chkMarks.TabIndex = 20;
+			this.chkMarks.TabIndex = 10;
 			this.chkMarks.Text = "Marks";
 			this.chkMarks.UseVisualStyleBackColor = true;
 			this.chkMarks.CheckedChanged += new System.EventHandler(this.chkMarks_CheckedChanged);
@@ -815,7 +826,7 @@
 			this.cboMapMarkings.Location = new System.Drawing.Point(184, 129);
 			this.cboMapMarkings.Name = "cboMapMarkings";
 			this.cboMapMarkings.Size = new System.Drawing.Size(126, 21);
-			this.cboMapMarkings.TabIndex = 18;
+			this.cboMapMarkings.TabIndex = 11;
 			// 
 			// label18
 			// 
@@ -832,7 +843,7 @@
 			this.cboMapIndex.Location = new System.Drawing.Point(72, 129);
 			this.cboMapIndex.Name = "cboMapIndex";
 			this.cboMapIndex.Size = new System.Drawing.Size(44, 21);
-			this.cboMapIndex.TabIndex = 16;
+			this.cboMapIndex.TabIndex = 9;
 			// 
 			// chkGrounded
 			// 
@@ -842,7 +853,7 @@
 			this.chkGrounded.Location = new System.Drawing.Point(238, 58);
 			this.chkGrounded.Name = "chkGrounded";
 			this.chkGrounded.Size = new System.Drawing.Size(73, 17);
-			this.chkGrounded.TabIndex = 15;
+			this.chkGrounded.TabIndex = 3;
 			this.chkGrounded.Text = "Grounded";
 			this.chkGrounded.UseVisualStyleBackColor = true;
 			this.chkGrounded.CheckedChanged += new System.EventHandler(this.chkGrounded_CheckedChanged);
@@ -898,7 +909,7 @@
             -2147483648});
 			this.numHeadingZ.Name = "numHeadingZ";
 			this.numHeadingZ.Size = new System.Drawing.Size(57, 20);
-			this.numHeadingZ.TabIndex = 12;
+			this.numHeadingZ.TabIndex = 8;
 			// 
 			// numPosZ
 			// 
@@ -916,7 +927,7 @@
             -2147483648});
 			this.numPosZ.Name = "numPosZ";
 			this.numPosZ.Size = new System.Drawing.Size(57, 20);
-			this.numPosZ.TabIndex = 12;
+			this.numPosZ.TabIndex = 6;
 			// 
 			// label13
 			// 
@@ -951,7 +962,7 @@
             -2147483648});
 			this.numHeadingXY.Name = "numHeadingXY";
 			this.numHeadingXY.Size = new System.Drawing.Size(57, 20);
-			this.numHeadingXY.TabIndex = 10;
+			this.numHeadingXY.TabIndex = 7;
 			// 
 			// numPosY
 			// 
@@ -968,7 +979,7 @@
             -2147483648});
 			this.numPosY.Name = "numPosY";
 			this.numPosY.Size = new System.Drawing.Size(57, 20);
-			this.numPosY.TabIndex = 10;
+			this.numPosY.TabIndex = 5;
 			// 
 			// label12
 			// 
@@ -994,7 +1005,7 @@
             -2147483648});
 			this.numPosX.Name = "numPosX";
 			this.numPosX.Size = new System.Drawing.Size(57, 20);
-			this.numPosX.TabIndex = 8;
+			this.numPosX.TabIndex = 4;
 			// 
 			// lstMap
 			// 
@@ -1002,14 +1013,14 @@
 			this.lstMap.Location = new System.Drawing.Point(6, 6);
 			this.lstMap.Name = "lstMap";
 			this.lstMap.Size = new System.Drawing.Size(223, 69);
-			this.lstMap.TabIndex = 7;
+			this.lstMap.TabIndex = 22;
 			// 
 			// cmdAddMap
 			// 
 			this.cmdAddMap.Location = new System.Drawing.Point(251, 7);
 			this.cmdAddMap.Name = "cmdAddMap";
 			this.cmdAddMap.Size = new System.Drawing.Size(60, 23);
-			this.cmdAddMap.TabIndex = 6;
+			this.cmdAddMap.TabIndex = 20;
 			this.cmdAddMap.Text = "&Add";
 			this.cmdAddMap.UseVisualStyleBackColor = true;
 			this.cmdAddMap.Click += new System.EventHandler(this.cmdAddMap_Click);
@@ -1019,7 +1030,7 @@
 			this.cmdRemoveMap.Location = new System.Drawing.Point(251, 32);
 			this.cmdRemoveMap.Name = "cmdRemoveMap";
 			this.cmdRemoveMap.Size = new System.Drawing.Size(60, 23);
-			this.cmdRemoveMap.TabIndex = 5;
+			this.cmdRemoveMap.TabIndex = 21;
 			this.cmdRemoveMap.Text = "&Remove";
 			this.cmdRemoveMap.UseVisualStyleBackColor = true;
 			this.cmdRemoveMap.Click += new System.EventHandler(this.cmdRemoveMap_Click);
@@ -1058,7 +1069,7 @@
             -2147483648});
 			this.numFamilyCameraZ.Name = "numFamilyCameraZ";
 			this.numFamilyCameraZ.Size = new System.Drawing.Size(57, 20);
-			this.numFamilyCameraZ.TabIndex = 5;
+			this.numFamilyCameraZ.TabIndex = 6;
 			this.numFamilyCameraZ.ValueChanged += new System.EventHandler(this.numFamilyCameraZ_ValueChanged);
 			// 
 			// label8
@@ -1085,7 +1096,7 @@
             -2147483648});
 			this.numFamilyCameraY.Name = "numFamilyCameraY";
 			this.numFamilyCameraY.Size = new System.Drawing.Size(57, 20);
-			this.numFamilyCameraY.TabIndex = 3;
+			this.numFamilyCameraY.TabIndex = 5;
 			this.numFamilyCameraY.ValueChanged += new System.EventHandler(this.numFamilyCameraY_ValueChanged);
 			// 
 			// label9
@@ -1112,7 +1123,7 @@
             -2147483648});
 			this.numFamilyCameraX.Name = "numFamilyCameraX";
 			this.numFamilyCameraX.Size = new System.Drawing.Size(57, 20);
-			this.numFamilyCameraX.TabIndex = 1;
+			this.numFamilyCameraX.TabIndex = 4;
 			this.numFamilyCameraX.ValueChanged += new System.EventHandler(this.numFamilyCameraX_ValueChanged);
 			// 
 			// cboFamilyCamera
@@ -1129,7 +1140,7 @@
 			this.cboFamilyCamera.Location = new System.Drawing.Point(6, 6);
 			this.cboFamilyCamera.Name = "cboFamilyCamera";
 			this.cboFamilyCamera.Size = new System.Drawing.Size(62, 21);
-			this.cboFamilyCamera.TabIndex = 0;
+			this.cboFamilyCamera.TabIndex = 3;
 			this.cboFamilyCamera.Text = "View 1";
 			this.cboFamilyCamera.SelectedIndexChanged += new System.EventHandler(this.cboFamilyCamera_SelectedIndexChanged);
 			// 
@@ -1167,7 +1178,7 @@
             -2147483648});
 			this.numCameraZ.Name = "numCameraZ";
 			this.numCameraZ.Size = new System.Drawing.Size(57, 20);
-			this.numCameraZ.TabIndex = 5;
+			this.numCameraZ.TabIndex = 6;
 			this.numCameraZ.ValueChanged += new System.EventHandler(this.numCameraZ_ValueChanged);
 			// 
 			// label5
@@ -1194,7 +1205,7 @@
             -2147483648});
 			this.numCameraY.Name = "numCameraY";
 			this.numCameraY.Size = new System.Drawing.Size(57, 20);
-			this.numCameraY.TabIndex = 3;
+			this.numCameraY.TabIndex = 5;
 			this.numCameraY.ValueChanged += new System.EventHandler(this.numCameraY_ValueChanged);
 			// 
 			// label4
@@ -1221,7 +1232,7 @@
             -2147483648});
 			this.numCameraX.Name = "numCameraX";
 			this.numCameraX.Size = new System.Drawing.Size(57, 20);
-			this.numCameraX.TabIndex = 1;
+			this.numCameraX.TabIndex = 4;
 			this.numCameraX.ValueChanged += new System.EventHandler(this.numCameraX_ValueChanged);
 			// 
 			// cboCamera
@@ -1236,17 +1247,17 @@
 			this.cboCamera.Location = new System.Drawing.Point(6, 6);
 			this.cboCamera.Name = "cboCamera";
 			this.cboCamera.Size = new System.Drawing.Size(62, 21);
-			this.cboCamera.TabIndex = 0;
+			this.cboCamera.TabIndex = 3;
 			this.cboCamera.Text = "View 1";
 			this.cboCamera.SelectedIndexChanged += new System.EventHandler(this.cboCamera_SelectedIndexChanged);
 			// 
 			// chkDroid2
 			// 
 			this.chkDroid2.AutoSize = true;
-			this.chkDroid2.Location = new System.Drawing.Point(170, 210);
+			this.chkDroid2.Location = new System.Drawing.Point(173, 187);
 			this.chkDroid2.Name = "chkDroid2";
 			this.chkDroid2.Size = new System.Drawing.Size(89, 17);
-			this.chkDroid2.TabIndex = 27;
+			this.chkDroid2.TabIndex = 19;
 			this.chkDroid2.Text = "Use Droid2 Z";
 			this.chkDroid2.UseVisualStyleBackColor = true;
 			this.chkDroid2.CheckedChanged += new System.EventHandler(this.chkDroid2_CheckedChanged);
@@ -1254,20 +1265,20 @@
 			// chkDroid1
 			// 
 			this.chkDroid1.AutoSize = true;
-			this.chkDroid1.Location = new System.Drawing.Point(6, 210);
+			this.chkDroid1.Location = new System.Drawing.Point(9, 187);
 			this.chkDroid1.Name = "chkDroid1";
 			this.chkDroid1.Size = new System.Drawing.Size(89, 17);
-			this.chkDroid1.TabIndex = 27;
+			this.chkDroid1.TabIndex = 17;
 			this.chkDroid1.Text = "Use Droid1 Z";
 			this.chkDroid1.UseVisualStyleBackColor = true;
 			this.chkDroid1.CheckedChanged += new System.EventHandler(this.chkDroid1_CheckedChanged);
 			// 
 			// cmdShuttleReset
 			// 
-			this.cmdShuttleReset.Location = new System.Drawing.Point(186, 155);
+			this.cmdShuttleReset.Location = new System.Drawing.Point(189, 132);
 			this.cmdShuttleReset.Name = "cmdShuttleReset";
 			this.cmdShuttleReset.Size = new System.Drawing.Size(104, 23);
-			this.cmdShuttleReset.TabIndex = 25;
+			this.cmdShuttleReset.TabIndex = 13;
 			this.cmdShuttleReset.Text = "Reset SHU Pos";
 			this.cmdShuttleReset.UseVisualStyleBackColor = true;
 			this.cmdShuttleReset.Click += new System.EventHandler(this.cmdShuttleReset_Click);
@@ -1275,7 +1286,7 @@
 			// label38
 			// 
 			this.label38.AutoSize = true;
-			this.label38.Location = new System.Drawing.Point(74, 134);
+			this.label38.Location = new System.Drawing.Point(77, 111);
 			this.label38.Name = "label38";
 			this.label38.Size = new System.Drawing.Size(14, 13);
 			this.label38.TabIndex = 19;
@@ -1284,7 +1295,7 @@
 			// label37
 			// 
 			this.label37.AutoSize = true;
-			this.label37.Location = new System.Drawing.Point(160, 134);
+			this.label37.Location = new System.Drawing.Point(163, 111);
 			this.label37.Name = "label37";
 			this.label37.Size = new System.Drawing.Size(14, 13);
 			this.label37.TabIndex = 19;
@@ -1292,7 +1303,7 @@
 			// 
 			// numShuttlePositionZ
 			// 
-			this.numShuttlePositionZ.Location = new System.Drawing.Point(266, 132);
+			this.numShuttlePositionZ.Location = new System.Drawing.Point(269, 109);
 			this.numShuttlePositionZ.Maximum = new decimal(new int[] {
             65535,
             0,
@@ -1305,12 +1316,12 @@
             -2147483648});
 			this.numShuttlePositionZ.Name = "numShuttlePositionZ";
 			this.numShuttlePositionZ.Size = new System.Drawing.Size(60, 20);
-			this.numShuttlePositionZ.TabIndex = 18;
+			this.numShuttlePositionZ.TabIndex = 11;
 			// 
 			// label36
 			// 
 			this.label36.AutoSize = true;
-			this.label36.Location = new System.Drawing.Point(246, 134);
+			this.label36.Location = new System.Drawing.Point(249, 111);
 			this.label36.Name = "label36";
 			this.label36.Size = new System.Drawing.Size(14, 13);
 			this.label36.TabIndex = 17;
@@ -1319,7 +1330,7 @@
 			// numDroid2Z
 			// 
 			this.numDroid2Z.Enabled = false;
-			this.numDroid2Z.Location = new System.Drawing.Point(265, 209);
+			this.numDroid2Z.Location = new System.Drawing.Point(268, 186);
 			this.numDroid2Z.Maximum = new decimal(new int[] {
             65535,
             0,
@@ -1332,12 +1343,12 @@
             -2147483648});
 			this.numDroid2Z.Name = "numDroid2Z";
 			this.numDroid2Z.Size = new System.Drawing.Size(60, 20);
-			this.numDroid2Z.TabIndex = 16;
+			this.numDroid2Z.TabIndex = 20;
 			// 
 			// numDroid1Z
 			// 
 			this.numDroid1Z.Enabled = false;
-			this.numDroid1Z.Location = new System.Drawing.Point(101, 209);
+			this.numDroid1Z.Location = new System.Drawing.Point(104, 186);
 			this.numDroid1Z.Maximum = new decimal(new int[] {
             65535,
             0,
@@ -1350,11 +1361,11 @@
             -2147483648});
 			this.numDroid1Z.Name = "numDroid1Z";
 			this.numDroid1Z.Size = new System.Drawing.Size(60, 20);
-			this.numDroid1Z.TabIndex = 16;
+			this.numDroid1Z.TabIndex = 18;
 			// 
 			// numDroidsZ
 			// 
-			this.numDroidsZ.Location = new System.Drawing.Point(265, 183);
+			this.numDroidsZ.Location = new System.Drawing.Point(268, 160);
 			this.numDroidsZ.Maximum = new decimal(new int[] {
             65535,
             0,
@@ -1371,7 +1382,7 @@
 			// 
 			// numShuttleOrientation
 			// 
-			this.numShuttleOrientation.Location = new System.Drawing.Point(94, 158);
+			this.numShuttleOrientation.Location = new System.Drawing.Point(97, 135);
 			this.numShuttleOrientation.Maximum = new decimal(new int[] {
             65535,
             0,
@@ -1384,7 +1395,7 @@
             -2147483648});
 			this.numShuttleOrientation.Name = "numShuttleOrientation";
 			this.numShuttleOrientation.Size = new System.Drawing.Size(60, 20);
-			this.numShuttleOrientation.TabIndex = 16;
+			this.numShuttleOrientation.TabIndex = 12;
 			this.numShuttleOrientation.Value = new decimal(new int[] {
             43136,
             0,
@@ -1393,7 +1404,7 @@
 			// 
 			// numShuttlePositionX
 			// 
-			this.numShuttlePositionX.Location = new System.Drawing.Point(94, 132);
+			this.numShuttlePositionX.Location = new System.Drawing.Point(97, 109);
 			this.numShuttlePositionX.Maximum = new decimal(new int[] {
             65535,
             0,
@@ -1406,7 +1417,7 @@
             -2147483648});
 			this.numShuttlePositionX.Name = "numShuttlePositionX";
 			this.numShuttlePositionX.Size = new System.Drawing.Size(60, 20);
-			this.numShuttlePositionX.TabIndex = 16;
+			this.numShuttlePositionX.TabIndex = 9;
 			this.numShuttlePositionX.Value = new decimal(new int[] {
             1127,
             0,
@@ -1415,7 +1426,7 @@
 			// 
 			// numShuttlePositionY
 			// 
-			this.numShuttlePositionY.Location = new System.Drawing.Point(180, 132);
+			this.numShuttlePositionY.Location = new System.Drawing.Point(183, 109);
 			this.numShuttlePositionY.Maximum = new decimal(new int[] {
             65535,
             0,
@@ -1428,7 +1439,7 @@
             -2147483648});
 			this.numShuttlePositionY.Name = "numShuttlePositionY";
 			this.numShuttlePositionY.Size = new System.Drawing.Size(60, 20);
-			this.numShuttlePositionY.TabIndex = 16;
+			this.numShuttlePositionY.TabIndex = 10;
 			this.numShuttlePositionY.Value = new decimal(new int[] {
             959,
             0,
@@ -1438,7 +1449,7 @@
 			// label40
 			// 
 			this.label40.AutoSize = true;
-			this.label40.Location = new System.Drawing.Point(213, 185);
+			this.label40.Location = new System.Drawing.Point(216, 162);
 			this.label40.Name = "label40";
 			this.label40.Size = new System.Drawing.Size(47, 13);
 			this.label40.TabIndex = 15;
@@ -1447,7 +1458,7 @@
 			// label39
 			// 
 			this.label39.AutoSize = true;
-			this.label39.Location = new System.Drawing.Point(3, 160);
+			this.label39.Location = new System.Drawing.Point(6, 137);
 			this.label39.Name = "label39";
 			this.label39.Size = new System.Drawing.Size(84, 13);
 			this.label39.TabIndex = 15;
@@ -1456,7 +1467,7 @@
 			// label35
 			// 
 			this.label35.AutoSize = true;
-			this.label35.Location = new System.Drawing.Point(4, 134);
+			this.label35.Location = new System.Drawing.Point(7, 111);
 			this.label35.Name = "label35";
 			this.label35.Size = new System.Drawing.Size(70, 13);
 			this.label35.TabIndex = 15;
@@ -1464,7 +1475,7 @@
 			// 
 			// numShuDistance
 			// 
-			this.numShuDistance.Location = new System.Drawing.Point(266, 106);
+			this.numShuDistance.Location = new System.Drawing.Point(269, 83);
 			this.numShuDistance.Maximum = new decimal(new int[] {
             65535,
             0,
@@ -1477,7 +1488,7 @@
             -2147483648});
 			this.numShuDistance.Name = "numShuDistance";
 			this.numShuDistance.Size = new System.Drawing.Size(60, 20);
-			this.numShuDistance.TabIndex = 14;
+			this.numShuDistance.TabIndex = 8;
 			// 
 			// cboShuAnimation
 			// 
@@ -1487,15 +1498,15 @@
             "Right",
             "Top",
             "Bottom"});
-			this.cboShuAnimation.Location = new System.Drawing.Point(101, 105);
+			this.cboShuAnimation.Location = new System.Drawing.Point(104, 82);
 			this.cboShuAnimation.Name = "cboShuAnimation";
 			this.cboShuAnimation.Size = new System.Drawing.Size(62, 21);
-			this.cboShuAnimation.TabIndex = 13;
+			this.cboShuAnimation.TabIndex = 7;
 			// 
 			// label26
 			// 
 			this.label26.AutoSize = true;
-			this.label26.Location = new System.Drawing.Point(183, 108);
+			this.label26.Location = new System.Drawing.Point(186, 85);
 			this.label26.Name = "label26";
 			this.label26.Size = new System.Drawing.Size(77, 13);
 			this.label26.TabIndex = 12;
@@ -1504,7 +1515,7 @@
 			// label3
 			// 
 			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(3, 108);
+			this.label3.Location = new System.Drawing.Point(6, 85);
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(79, 13);
 			this.label3.TabIndex = 12;
@@ -1525,25 +1536,25 @@
 			this.cboShuttleMarks.Location = new System.Drawing.Point(186, 55);
 			this.cboShuttleMarks.Name = "cboShuttleMarks";
 			this.cboShuttleMarks.Size = new System.Drawing.Size(126, 21);
-			this.cboShuttleMarks.TabIndex = 10;
+			this.cboShuttleMarks.TabIndex = 4;
 			// 
 			// chkShuttleFloor
 			// 
 			this.chkShuttleFloor.AutoSize = true;
-			this.chkShuttleFloor.Location = new System.Drawing.Point(103, 82);
+			this.chkShuttleFloor.Location = new System.Drawing.Point(265, 32);
 			this.chkShuttleFloor.Name = "chkShuttleFloor";
-			this.chkShuttleFloor.Size = new System.Drawing.Size(115, 17);
-			this.chkShuttleFloor.TabIndex = 9;
-			this.chkShuttleFloor.Text = "Invert Shuttle Floor";
+			this.chkShuttleFloor.Size = new System.Drawing.Size(79, 17);
+			this.chkShuttleFloor.TabIndex = 6;
+			this.chkShuttleFloor.Text = "Invert SHU";
 			this.chkShuttleFloor.UseVisualStyleBackColor = true;
 			// 
 			// chkDroidsFloor
 			// 
 			this.chkDroidsFloor.AutoSize = true;
-			this.chkDroidsFloor.Location = new System.Drawing.Point(93, 184);
+			this.chkDroidsFloor.Location = new System.Drawing.Point(96, 161);
 			this.chkDroidsFloor.Name = "chkDroidsFloor";
 			this.chkDroidsFloor.Size = new System.Drawing.Size(112, 17);
-			this.chkDroidsFloor.TabIndex = 9;
+			this.chkDroidsFloor.TabIndex = 15;
 			this.chkDroidsFloor.Text = "Invert Droids Floor";
 			this.chkDroidsFloor.UseVisualStyleBackColor = true;
 			// 
@@ -1552,10 +1563,10 @@
 			this.chkDroids.AutoSize = true;
 			this.chkDroids.Checked = true;
 			this.chkDroids.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.chkDroids.Location = new System.Drawing.Point(6, 184);
+			this.chkDroids.Location = new System.Drawing.Point(9, 161);
 			this.chkDroids.Name = "chkDroids";
 			this.chkDroids.Size = new System.Drawing.Size(83, 17);
-			this.chkDroids.TabIndex = 9;
+			this.chkDroids.TabIndex = 14;
 			this.chkDroids.Text = "Load Droids";
 			this.chkDroids.UseVisualStyleBackColor = true;
 			// 
@@ -1564,11 +1575,11 @@
 			this.chkShuttle.AutoSize = true;
 			this.chkShuttle.Checked = true;
 			this.chkShuttle.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.chkShuttle.Location = new System.Drawing.Point(9, 82);
+			this.chkShuttle.Location = new System.Drawing.Point(186, 32);
 			this.chkShuttle.Name = "chkShuttle";
-			this.chkShuttle.Size = new System.Drawing.Size(86, 17);
-			this.chkShuttle.TabIndex = 9;
-			this.chkShuttle.Text = "Load Shuttle";
+			this.chkShuttle.Size = new System.Drawing.Size(76, 17);
+			this.chkShuttle.TabIndex = 5;
+			this.chkShuttle.Text = "Load SHU";
 			this.chkShuttle.UseVisualStyleBackColor = true;
 			// 
 			// label1
@@ -1586,14 +1597,14 @@
 			this.cboShuttleModel.Location = new System.Drawing.Point(74, 55);
 			this.cboShuttleModel.Name = "cboShuttleModel";
 			this.cboShuttleModel.Size = new System.Drawing.Size(44, 21);
-			this.cboShuttleModel.TabIndex = 7;
+			this.cboShuttleModel.TabIndex = 3;
 			// 
 			// cmdAddHangar
 			// 
 			this.cmdAddHangar.Location = new System.Drawing.Point(186, 6);
 			this.cmdAddHangar.Name = "cmdAddHangar";
 			this.cmdAddHangar.Size = new System.Drawing.Size(60, 23);
-			this.cmdAddHangar.TabIndex = 4;
+			this.cmdAddHangar.TabIndex = 40;
 			this.cmdAddHangar.Text = "&Add";
 			this.cmdAddHangar.UseVisualStyleBackColor = true;
 			this.cmdAddHangar.Click += new System.EventHandler(this.cmdAddHangar_Click);
@@ -1603,7 +1614,7 @@
 			this.cmdRemoveHangar.Location = new System.Drawing.Point(252, 6);
 			this.cmdRemoveHangar.Name = "cmdRemoveHangar";
 			this.cmdRemoveHangar.Size = new System.Drawing.Size(60, 23);
-			this.cmdRemoveHangar.TabIndex = 3;
+			this.cmdRemoveHangar.TabIndex = 41;
 			this.cmdRemoveHangar.Text = "&Remove";
 			this.cmdRemoveHangar.UseVisualStyleBackColor = true;
 			this.cmdRemoveHangar.Click += new System.EventHandler(this.cmdRemoveHangar_Click);
@@ -1614,7 +1625,7 @@
 			this.lstHangarObjects.Location = new System.Drawing.Point(6, 6);
 			this.lstHangarObjects.Name = "lstHangarObjects";
 			this.lstHangarObjects.Size = new System.Drawing.Size(174, 43);
-			this.lstHangarObjects.TabIndex = 2;
+			this.lstHangarObjects.TabIndex = 42;
 			// 
 			// chkHangars
 			// 
@@ -1634,13 +1645,14 @@
 			this.tcHooks.Controls.Add(this.tabSounds);
 			this.tcHooks.Controls.Add(this.tabObjects);
 			this.tcHooks.Controls.Add(this.tabHangar);
+			this.tcHooks.Controls.Add(this.tabSFoils);
 			this.tcHooks.Controls.Add(this.tabSkins);
 			this.tcHooks.Controls.Add(this.tabShield);
-			this.tcHooks.Location = new System.Drawing.Point(12, 12);
+			this.tcHooks.Location = new System.Drawing.Point(6, 12);
 			this.tcHooks.Name = "tcHooks";
 			this.tcHooks.SelectedIndex = 0;
-			this.tcHooks.Size = new System.Drawing.Size(380, 323);
-			this.tcHooks.TabIndex = 7;
+			this.tcHooks.Size = new System.Drawing.Size(396, 323);
+			this.tcHooks.TabIndex = 0;
 			// 
 			// tabBackdrops
 			// 
@@ -1652,7 +1664,7 @@
 			this.tabBackdrops.Location = new System.Drawing.Point(4, 22);
 			this.tabBackdrops.Name = "tabBackdrops";
 			this.tabBackdrops.Padding = new System.Windows.Forms.Padding(3);
-			this.tabBackdrops.Size = new System.Drawing.Size(372, 297);
+			this.tabBackdrops.Size = new System.Drawing.Size(388, 297);
 			this.tabBackdrops.TabIndex = 0;
 			this.tabBackdrops.Text = "Backdrops";
 			this.tabBackdrops.UseVisualStyleBackColor = true;
@@ -1668,6 +1680,7 @@
 			// 
 			// tabMission
 			// 
+			this.tabMission.Controls.Add(this.numWingman);
 			this.tabMission.Controls.Add(this.label48);
 			this.tabMission.Controls.Add(this.txtPilot);
 			this.tabMission.Controls.Add(this.lstMission);
@@ -1675,6 +1688,7 @@
 			this.tabMission.Controls.Add(this.chkMission);
 			this.tabMission.Controls.Add(this.optIff);
 			this.tabMission.Controls.Add(this.cboFG);
+			this.tabMission.Controls.Add(this.optWingman);
 			this.tabMission.Controls.Add(this.optMarkings);
 			this.tabMission.Controls.Add(this.cboMarkings);
 			this.tabMission.Controls.Add(this.cmdRemoveMiss);
@@ -1685,8 +1699,17 @@
 			this.tabMission.Padding = new System.Windows.Forms.Padding(3);
 			this.tabMission.Size = new System.Drawing.Size(372, 297);
 			this.tabMission.TabIndex = 1;
-			this.tabMission.Text = "Mission Tie";
+			this.tabMission.Text = "Mission";
 			this.tabMission.UseVisualStyleBackColor = true;
+			// 
+			// label48
+			// 
+			this.label48.Location = new System.Drawing.Point(6, 166);
+			this.label48.Name = "label48";
+			this.label48.Size = new System.Drawing.Size(155, 69);
+			this.label48.TabIndex = 12;
+			this.label48.Text = "Choose a FlightGroup, then select Markings, Wingman Markings, IFF, or Pilot voice" +
+    ". Enter your selection and then hit \"Add\".";
 			// 
 			// tabSounds
 			// 
@@ -1701,6 +1724,15 @@
 			this.tabSounds.TabIndex = 2;
 			this.tabSounds.Text = "Sounds";
 			this.tabSounds.UseVisualStyleBackColor = true;
+			// 
+			// label46
+			// 
+			this.label46.Location = new System.Drawing.Point(195, 70);
+			this.label46.Name = "label46";
+			this.label46.Size = new System.Drawing.Size(148, 67);
+			this.label46.TabIndex = 4;
+			this.label46.Text = "This replaces individual WAV sounds used in the mission. Select the original soun" +
+    "d to be replaced, then the new one.";
 			// 
 			// tabObjects
 			// 
@@ -1720,13 +1752,21 @@
 			this.tabObjects.Text = "Objects";
 			this.tabObjects.UseVisualStyleBackColor = true;
 			// 
+			// label47
+			// 
+			this.label47.Location = new System.Drawing.Point(3, 167);
+			this.label47.Name = "label47";
+			this.label47.Size = new System.Drawing.Size(321, 68);
+			this.label47.TabIndex = 8;
+			this.label47.Text = resources.GetString("label47.Text");
+			// 
 			// tabHangar
 			// 
 			this.tabHangar.Controls.Add(this.chkHangars);
 			this.tabHangar.Controls.Add(this.tcHangar);
 			this.tabHangar.Location = new System.Drawing.Point(4, 22);
 			this.tabHangar.Name = "tabHangar";
-			this.tabHangar.Size = new System.Drawing.Size(372, 297);
+			this.tabHangar.Size = new System.Drawing.Size(388, 297);
 			this.tabHangar.TabIndex = 4;
 			this.tabHangar.Text = "Hangar";
 			this.tabHangar.UseVisualStyleBackColor = true;
@@ -1744,10 +1784,12 @@
 			this.tcHangar.Name = "tcHangar";
 			this.tcHangar.SelectedIndex = 0;
 			this.tcHangar.Size = new System.Drawing.Size(360, 264);
-			this.tcHangar.TabIndex = 7;
+			this.tcHangar.TabIndex = 2;
 			// 
 			// tabHangarObjects
 			// 
+			this.tabHangarObjects.Controls.Add(this.chkDroid2Update);
+			this.tabHangarObjects.Controls.Add(this.chkDroid1Update);
 			this.tabHangarObjects.Controls.Add(this.chkDroid2);
 			this.tabHangarObjects.Controls.Add(this.lstHangarObjects);
 			this.tabHangarObjects.Controls.Add(this.chkDroid1);
@@ -1787,150 +1829,9 @@
 			this.tabHangarObjects.Text = "Objects";
 			this.tabHangarObjects.UseVisualStyleBackColor = true;
 			// 
-			// tabHangarMap
-			// 
-			this.tabHangarMap.Controls.Add(this.chkMarks);
-			this.tabHangarMap.Controls.Add(this.cboMapMarkings);
-			this.tabHangarMap.Controls.Add(this.lstMap);
-			this.tabHangarMap.Controls.Add(this.label18);
-			this.tabHangarMap.Controls.Add(this.cmdRemoveMap);
-			this.tabHangarMap.Controls.Add(this.cboMapIndex);
-			this.tabHangarMap.Controls.Add(this.cmdAddMap);
-			this.tabHangarMap.Controls.Add(this.chkGrounded);
-			this.tabHangarMap.Controls.Add(this.numPosX);
-			this.tabHangarMap.Controls.Add(this.label16);
-			this.tabHangarMap.Controls.Add(this.label12);
-			this.tabHangarMap.Controls.Add(this.label15);
-			this.tabHangarMap.Controls.Add(this.numPosY);
-			this.tabHangarMap.Controls.Add(this.label14);
-			this.tabHangarMap.Controls.Add(this.numHeadingXY);
-			this.tabHangarMap.Controls.Add(this.label10);
-			this.tabHangarMap.Controls.Add(this.label11);
-			this.tabHangarMap.Controls.Add(this.numHeadingZ);
-			this.tabHangarMap.Controls.Add(this.label13);
-			this.tabHangarMap.Controls.Add(this.numPosZ);
-			this.tabHangarMap.Location = new System.Drawing.Point(4, 22);
-			this.tabHangarMap.Name = "tabHangarMap";
-			this.tabHangarMap.Padding = new System.Windows.Forms.Padding(3);
-			this.tabHangarMap.Size = new System.Drawing.Size(352, 238);
-			this.tabHangarMap.TabIndex = 1;
-			this.tabHangarMap.Text = "Map";
-			this.tabHangarMap.UseVisualStyleBackColor = true;
-			// 
-			// tabHangarFamilyMap
-			// 
-			this.tabHangarFamilyMap.Controls.Add(this.chkFamMarks);
-			this.tabHangarFamilyMap.Controls.Add(this.cboFamMapMarkings);
-			this.tabHangarFamilyMap.Controls.Add(this.lstFamilyMap);
-			this.tabHangarFamilyMap.Controls.Add(this.label17);
-			this.tabHangarFamilyMap.Controls.Add(this.cmdRemoveFamMap);
-			this.tabHangarFamilyMap.Controls.Add(this.cboFamMapIndex);
-			this.tabHangarFamilyMap.Controls.Add(this.cmdAddFamMap);
-			this.tabHangarFamilyMap.Controls.Add(this.chkFamGrounded);
-			this.tabHangarFamilyMap.Controls.Add(this.numFamPosX);
-			this.tabHangarFamilyMap.Controls.Add(this.label19);
-			this.tabHangarFamilyMap.Controls.Add(this.label25);
-			this.tabHangarFamilyMap.Controls.Add(this.label20);
-			this.tabHangarFamilyMap.Controls.Add(this.numFamPosY);
-			this.tabHangarFamilyMap.Controls.Add(this.label21);
-			this.tabHangarFamilyMap.Controls.Add(this.numFamHeadingXY);
-			this.tabHangarFamilyMap.Controls.Add(this.label22);
-			this.tabHangarFamilyMap.Controls.Add(this.label24);
-			this.tabHangarFamilyMap.Controls.Add(this.numFamHeadingZ);
-			this.tabHangarFamilyMap.Controls.Add(this.label23);
-			this.tabHangarFamilyMap.Controls.Add(this.numFamPosZ);
-			this.tabHangarFamilyMap.Location = new System.Drawing.Point(4, 22);
-			this.tabHangarFamilyMap.Name = "tabHangarFamilyMap";
-			this.tabHangarFamilyMap.Size = new System.Drawing.Size(352, 280);
-			this.tabHangarFamilyMap.TabIndex = 2;
-			this.tabHangarFamilyMap.Text = "Family Map";
-			this.tabHangarFamilyMap.UseVisualStyleBackColor = true;
-			// 
-			// tabHangarCamera
-			// 
-			this.tabHangarCamera.Controls.Add(this.cmdDefaultCamera);
-			this.tabHangarCamera.Controls.Add(this.label6);
-			this.tabHangarCamera.Controls.Add(this.cboCamera);
-			this.tabHangarCamera.Controls.Add(this.numCameraZ);
-			this.tabHangarCamera.Controls.Add(this.numCameraX);
-			this.tabHangarCamera.Controls.Add(this.label5);
-			this.tabHangarCamera.Controls.Add(this.label4);
-			this.tabHangarCamera.Controls.Add(this.numCameraY);
-			this.tabHangarCamera.Location = new System.Drawing.Point(4, 22);
-			this.tabHangarCamera.Name = "tabHangarCamera";
-			this.tabHangarCamera.Size = new System.Drawing.Size(352, 238);
-			this.tabHangarCamera.TabIndex = 3;
-			this.tabHangarCamera.Text = "Camera";
-			this.tabHangarCamera.UseVisualStyleBackColor = true;
-			// 
-			// tabHangarFamilyCamera
-			// 
-			this.tabHangarFamilyCamera.Controls.Add(this.cmdDefaultFamilyCamera);
-			this.tabHangarFamilyCamera.Controls.Add(this.label7);
-			this.tabHangarFamilyCamera.Controls.Add(this.cboFamilyCamera);
-			this.tabHangarFamilyCamera.Controls.Add(this.numFamilyCameraZ);
-			this.tabHangarFamilyCamera.Controls.Add(this.numFamilyCameraX);
-			this.tabHangarFamilyCamera.Controls.Add(this.label8);
-			this.tabHangarFamilyCamera.Controls.Add(this.label9);
-			this.tabHangarFamilyCamera.Controls.Add(this.numFamilyCameraY);
-			this.tabHangarFamilyCamera.Location = new System.Drawing.Point(4, 22);
-			this.tabHangarFamilyCamera.Name = "tabHangarFamilyCamera";
-			this.tabHangarFamilyCamera.Size = new System.Drawing.Size(352, 238);
-			this.tabHangarFamilyCamera.TabIndex = 4;
-			this.tabHangarFamilyCamera.Text = "Family Camera";
-			this.tabHangarFamilyCamera.UseVisualStyleBackColor = true;
-			// 
-			// tabSkins
-			// 
-			this.tabSkins.Controls.Add(this.chkSkins);
-			this.tabSkins.Location = new System.Drawing.Point(4, 22);
-			this.tabSkins.Name = "tabSkins";
-			this.tabSkins.Size = new System.Drawing.Size(372, 534);
-			this.tabSkins.TabIndex = 5;
-			this.tabSkins.Text = "Skins";
-			this.tabSkins.UseVisualStyleBackColor = true;
-			// 
-			// chkSkins
-			// 
-			this.chkSkins.AutoSize = true;
-			this.chkSkins.Location = new System.Drawing.Point(6, 6);
-			this.chkSkins.Name = "chkSkins";
-			this.chkSkins.Size = new System.Drawing.Size(74, 17);
-			this.chkSkins.TabIndex = 0;
-			this.chkSkins.Text = "Use Skins";
-			this.chkSkins.UseVisualStyleBackColor = true;
-			// 
-			// tabShield
-			// 
-			this.tabShield.Controls.Add(this.chkShield);
-			this.tabShield.Location = new System.Drawing.Point(4, 22);
-			this.tabShield.Name = "tabShield";
-			this.tabShield.Size = new System.Drawing.Size(372, 534);
-			this.tabShield.TabIndex = 6;
-			this.tabShield.Text = "Shield";
-			this.tabShield.UseVisualStyleBackColor = true;
-			// 
-			// chkShield
-			// 
-			this.chkShield.AutoSize = true;
-			this.chkShield.Location = new System.Drawing.Point(6, 6);
-			this.chkShield.Name = "chkShield";
-			this.chkShield.Size = new System.Drawing.Size(77, 17);
-			this.chkShield.TabIndex = 1;
-			this.chkShield.Text = "Use Shield";
-			this.chkShield.UseVisualStyleBackColor = true;
-			// 
-			// label46
-			// 
-			this.label46.Location = new System.Drawing.Point(195, 70);
-			this.label46.Name = "label46";
-			this.label46.Size = new System.Drawing.Size(148, 67);
-			this.label46.TabIndex = 4;
-			this.label46.Text = "This replaces individual WAV sounds used in the mission. Select the original soun" +
-    "d to be replaced, then the new one.";
-			// 
 			// tabObjects2
 			// 
+			this.tabObjects2.Controls.Add(this.chkHangarFold);
 			this.tabObjects2.Controls.Add(this.cmdPlayerReset);
 			this.tabObjects2.Controls.Add(this.cmdCraneReset);
 			this.tabObjects2.Controls.Add(this.numPlayerX);
@@ -1966,6 +1867,24 @@
 			this.tabObjects2.Text = "Objects2";
 			this.tabObjects2.UseVisualStyleBackColor = true;
 			// 
+			// cmdPlayerReset
+			// 
+			this.cmdPlayerReset.Location = new System.Drawing.Point(168, 191);
+			this.cmdPlayerReset.Name = "cmdPlayerReset";
+			this.cmdPlayerReset.Size = new System.Drawing.Size(104, 23);
+			this.cmdPlayerReset.TabIndex = 20;
+			this.cmdPlayerReset.Text = "Reset Player Pos";
+			this.cmdPlayerReset.UseVisualStyleBackColor = true;
+			// 
+			// cmdCraneReset
+			// 
+			this.cmdCraneReset.Location = new System.Drawing.Point(58, 191);
+			this.cmdCraneReset.Name = "cmdCraneReset";
+			this.cmdCraneReset.Size = new System.Drawing.Size(104, 23);
+			this.cmdCraneReset.TabIndex = 19;
+			this.cmdCraneReset.Text = "Reset Crane Pos";
+			this.cmdCraneReset.UseVisualStyleBackColor = true;
+			// 
 			// numPlayerX
 			// 
 			this.numPlayerX.Location = new System.Drawing.Point(93, 138);
@@ -1981,7 +1900,7 @@
             -2147483648});
 			this.numPlayerX.Name = "numPlayerX";
 			this.numPlayerX.Size = new System.Drawing.Size(60, 20);
-			this.numPlayerX.TabIndex = 32;
+			this.numPlayerX.TabIndex = 14;
 			// 
 			// numRoofCranePositionX
 			// 
@@ -1998,7 +1917,7 @@
             -2147483648});
 			this.numRoofCranePositionX.Name = "numRoofCranePositionX";
 			this.numRoofCranePositionX.Size = new System.Drawing.Size(60, 20);
-			this.numRoofCranePositionX.TabIndex = 33;
+			this.numRoofCranePositionX.TabIndex = 6;
 			this.numRoofCranePositionX.Value = new decimal(new int[] {
             1400,
             0,
@@ -2012,7 +1931,7 @@
 			this.cboHangarIff.Location = new System.Drawing.Point(204, 4);
 			this.cboHangarIff.Name = "cboHangarIff";
 			this.cboHangarIff.Size = new System.Drawing.Size(121, 21);
-			this.cboHangarIff.TabIndex = 52;
+			this.cboHangarIff.TabIndex = 5;
 			// 
 			// numPlayerY
 			// 
@@ -2029,7 +1948,7 @@
             -2147483648});
 			this.numPlayerY.Name = "numPlayerY";
 			this.numPlayerY.Size = new System.Drawing.Size(60, 20);
-			this.numPlayerY.TabIndex = 34;
+			this.numPlayerY.TabIndex = 15;
 			// 
 			// numRoofCranePositionY
 			// 
@@ -2046,7 +1965,7 @@
             -2147483648});
 			this.numRoofCranePositionY.Name = "numRoofCranePositionY";
 			this.numRoofCranePositionY.Size = new System.Drawing.Size(60, 20);
-			this.numRoofCranePositionY.TabIndex = 35;
+			this.numRoofCranePositionY.TabIndex = 7;
 			this.numRoofCranePositionY.Value = new decimal(new int[] {
             786,
             0,
@@ -2123,7 +2042,7 @@
 			this.optRoofCraneAxisZ.Location = new System.Drawing.Point(79, 3);
 			this.optRoofCraneAxisZ.Name = "optRoofCraneAxisZ";
 			this.optRoofCraneAxisZ.Size = new System.Drawing.Size(32, 17);
-			this.optRoofCraneAxisZ.TabIndex = 0;
+			this.optRoofCraneAxisZ.TabIndex = 11;
 			this.optRoofCraneAxisZ.Text = "Z";
 			this.optRoofCraneAxisZ.UseVisualStyleBackColor = true;
 			// 
@@ -2133,7 +2052,7 @@
 			this.optRoofCraneAxisY.Location = new System.Drawing.Point(41, 3);
 			this.optRoofCraneAxisY.Name = "optRoofCraneAxisY";
 			this.optRoofCraneAxisY.Size = new System.Drawing.Size(32, 17);
-			this.optRoofCraneAxisY.TabIndex = 0;
+			this.optRoofCraneAxisY.TabIndex = 10;
 			this.optRoofCraneAxisY.Text = "Y";
 			this.optRoofCraneAxisY.UseVisualStyleBackColor = true;
 			// 
@@ -2144,7 +2063,7 @@
 			this.optRoofCraneAxisX.Location = new System.Drawing.Point(3, 3);
 			this.optRoofCraneAxisX.Name = "optRoofCraneAxisX";
 			this.optRoofCraneAxisX.Size = new System.Drawing.Size(32, 17);
-			this.optRoofCraneAxisX.TabIndex = 0;
+			this.optRoofCraneAxisX.TabIndex = 9;
 			this.optRoofCraneAxisX.TabStop = true;
 			this.optRoofCraneAxisX.Text = "X";
 			this.optRoofCraneAxisX.UseVisualStyleBackColor = true;
@@ -2164,7 +2083,7 @@
             -2147483648});
 			this.numRoofCranePositionZ.Name = "numRoofCranePositionZ";
 			this.numRoofCranePositionZ.Size = new System.Drawing.Size(60, 20);
-			this.numRoofCranePositionZ.TabIndex = 39;
+			this.numRoofCranePositionZ.TabIndex = 8;
 			this.numRoofCranePositionZ.Value = new decimal(new int[] {
             282,
             0,
@@ -2195,7 +2114,7 @@
             -2147483648});
 			this.numRoofCraneHighOffset.Name = "numRoofCraneHighOffset";
 			this.numRoofCraneHighOffset.Size = new System.Drawing.Size(60, 20);
-			this.numRoofCraneHighOffset.TabIndex = 45;
+			this.numRoofCraneHighOffset.TabIndex = 13;
 			// 
 			// numPlayerZ
 			// 
@@ -2212,7 +2131,7 @@
             -2147483648});
 			this.numPlayerZ.Name = "numPlayerZ";
 			this.numPlayerZ.Size = new System.Drawing.Size(60, 20);
-			this.numPlayerZ.TabIndex = 38;
+			this.numPlayerZ.TabIndex = 16;
 			// 
 			// chkFloor
 			// 
@@ -2220,7 +2139,7 @@
 			this.chkFloor.Location = new System.Drawing.Point(6, 6);
 			this.chkFloor.Name = "chkFloor";
 			this.chkFloor.Size = new System.Drawing.Size(117, 17);
-			this.chkFloor.TabIndex = 29;
+			this.chkFloor.TabIndex = 3;
 			this.chkFloor.Text = "Invert Hangar Floor";
 			this.chkFloor.UseVisualStyleBackColor = true;
 			// 
@@ -2239,7 +2158,7 @@
             -2147483648});
 			this.numRoofCraneLowOffset.Name = "numRoofCraneLowOffset";
 			this.numRoofCraneLowOffset.Size = new System.Drawing.Size(60, 20);
-			this.numRoofCraneLowOffset.TabIndex = 46;
+			this.numRoofCraneLowOffset.TabIndex = 12;
 			// 
 			// numPlayerAnimationElevation
 			// 
@@ -2256,7 +2175,7 @@
             -2147483648});
 			this.numPlayerAnimationElevation.Name = "numPlayerAnimationElevation";
 			this.numPlayerAnimationElevation.Size = new System.Drawing.Size(60, 20);
-			this.numPlayerAnimationElevation.TabIndex = 47;
+			this.numPlayerAnimationElevation.TabIndex = 17;
 			// 
 			// label29
 			// 
@@ -2273,7 +2192,7 @@
 			this.chkPlayerFloor.Location = new System.Drawing.Point(184, 166);
 			this.chkPlayerFloor.Name = "chkPlayerFloor";
 			this.chkPlayerFloor.Size = new System.Drawing.Size(111, 17);
-			this.chkPlayerFloor.TabIndex = 28;
+			this.chkPlayerFloor.TabIndex = 18;
 			this.chkPlayerFloor.Text = "Invert Player Floor";
 			this.chkPlayerFloor.UseVisualStyleBackColor = true;
 			// 
@@ -2301,7 +2220,7 @@
 			this.chkHangarIff.Location = new System.Drawing.Point(135, 6);
 			this.chkHangarIff.Name = "chkHangarIff";
 			this.chkHangarIff.Size = new System.Drawing.Size(63, 17);
-			this.chkHangarIff.TabIndex = 27;
+			this.chkHangarIff.TabIndex = 4;
 			this.chkHangarIff.Text = "Use IFF";
 			this.chkHangarIff.UseVisualStyleBackColor = true;
 			// 
@@ -2323,40 +2242,225 @@
 			this.label31.TabIndex = 43;
 			this.label31.Text = "X";
 			// 
-			// cmdPlayerReset
+			// tabHangarMap
 			// 
-			this.cmdPlayerReset.Location = new System.Drawing.Point(168, 191);
-			this.cmdPlayerReset.Name = "cmdPlayerReset";
-			this.cmdPlayerReset.Size = new System.Drawing.Size(104, 23);
-			this.cmdPlayerReset.TabIndex = 53;
-			this.cmdPlayerReset.Text = "Reset Player Pos";
-			this.cmdPlayerReset.UseVisualStyleBackColor = true;
+			this.tabHangarMap.Controls.Add(this.chkMarks);
+			this.tabHangarMap.Controls.Add(this.cboMapMarkings);
+			this.tabHangarMap.Controls.Add(this.lstMap);
+			this.tabHangarMap.Controls.Add(this.label18);
+			this.tabHangarMap.Controls.Add(this.cmdRemoveMap);
+			this.tabHangarMap.Controls.Add(this.cboMapIndex);
+			this.tabHangarMap.Controls.Add(this.cmdAddMap);
+			this.tabHangarMap.Controls.Add(this.chkGrounded);
+			this.tabHangarMap.Controls.Add(this.numPosX);
+			this.tabHangarMap.Controls.Add(this.label16);
+			this.tabHangarMap.Controls.Add(this.label12);
+			this.tabHangarMap.Controls.Add(this.label15);
+			this.tabHangarMap.Controls.Add(this.numPosY);
+			this.tabHangarMap.Controls.Add(this.label14);
+			this.tabHangarMap.Controls.Add(this.numHeadingXY);
+			this.tabHangarMap.Controls.Add(this.label10);
+			this.tabHangarMap.Controls.Add(this.label11);
+			this.tabHangarMap.Controls.Add(this.numHeadingZ);
+			this.tabHangarMap.Controls.Add(this.label13);
+			this.tabHangarMap.Controls.Add(this.numPosZ);
+			this.tabHangarMap.Location = new System.Drawing.Point(4, 22);
+			this.tabHangarMap.Name = "tabHangarMap";
+			this.tabHangarMap.Padding = new System.Windows.Forms.Padding(3);
+			this.tabHangarMap.Size = new System.Drawing.Size(352, 238);
+			this.tabHangarMap.TabIndex = 1;
+			this.tabHangarMap.Text = "Map";
+			this.tabHangarMap.UseVisualStyleBackColor = true;
 			// 
-			// cmdCraneReset
+			// tabHangarFamilyMap
 			// 
-			this.cmdCraneReset.Location = new System.Drawing.Point(58, 191);
-			this.cmdCraneReset.Name = "cmdCraneReset";
-			this.cmdCraneReset.Size = new System.Drawing.Size(104, 23);
-			this.cmdCraneReset.TabIndex = 54;
-			this.cmdCraneReset.Text = "Reset Crane Pos";
-			this.cmdCraneReset.UseVisualStyleBackColor = true;
+			this.tabHangarFamilyMap.Controls.Add(this.chkFamMarks);
+			this.tabHangarFamilyMap.Controls.Add(this.cboFamMapMarkings);
+			this.tabHangarFamilyMap.Controls.Add(this.lstFamilyMap);
+			this.tabHangarFamilyMap.Controls.Add(this.label17);
+			this.tabHangarFamilyMap.Controls.Add(this.cmdRemoveFamMap);
+			this.tabHangarFamilyMap.Controls.Add(this.cboFamMapIndex);
+			this.tabHangarFamilyMap.Controls.Add(this.cmdAddFamMap);
+			this.tabHangarFamilyMap.Controls.Add(this.chkFamGrounded);
+			this.tabHangarFamilyMap.Controls.Add(this.numFamPosX);
+			this.tabHangarFamilyMap.Controls.Add(this.label19);
+			this.tabHangarFamilyMap.Controls.Add(this.label25);
+			this.tabHangarFamilyMap.Controls.Add(this.label20);
+			this.tabHangarFamilyMap.Controls.Add(this.numFamPosY);
+			this.tabHangarFamilyMap.Controls.Add(this.label21);
+			this.tabHangarFamilyMap.Controls.Add(this.numFamHeadingXY);
+			this.tabHangarFamilyMap.Controls.Add(this.label22);
+			this.tabHangarFamilyMap.Controls.Add(this.label24);
+			this.tabHangarFamilyMap.Controls.Add(this.numFamHeadingZ);
+			this.tabHangarFamilyMap.Controls.Add(this.label23);
+			this.tabHangarFamilyMap.Controls.Add(this.numFamPosZ);
+			this.tabHangarFamilyMap.Location = new System.Drawing.Point(4, 22);
+			this.tabHangarFamilyMap.Name = "tabHangarFamilyMap";
+			this.tabHangarFamilyMap.Size = new System.Drawing.Size(352, 238);
+			this.tabHangarFamilyMap.TabIndex = 2;
+			this.tabHangarFamilyMap.Text = "Family Map";
+			this.tabHangarFamilyMap.UseVisualStyleBackColor = true;
 			// 
-			// label47
+			// tabHangarCamera
 			// 
-			this.label47.Location = new System.Drawing.Point(3, 106);
-			this.label47.Name = "label47";
-			this.label47.Size = new System.Drawing.Size(321, 68);
-			this.label47.TabIndex = 8;
-			this.label47.Text = resources.GetString("label47.Text");
+			this.tabHangarCamera.Controls.Add(this.cmdDefaultCamera);
+			this.tabHangarCamera.Controls.Add(this.label6);
+			this.tabHangarCamera.Controls.Add(this.cboCamera);
+			this.tabHangarCamera.Controls.Add(this.numCameraZ);
+			this.tabHangarCamera.Controls.Add(this.numCameraX);
+			this.tabHangarCamera.Controls.Add(this.label5);
+			this.tabHangarCamera.Controls.Add(this.label4);
+			this.tabHangarCamera.Controls.Add(this.numCameraY);
+			this.tabHangarCamera.Location = new System.Drawing.Point(4, 22);
+			this.tabHangarCamera.Name = "tabHangarCamera";
+			this.tabHangarCamera.Size = new System.Drawing.Size(352, 238);
+			this.tabHangarCamera.TabIndex = 3;
+			this.tabHangarCamera.Text = "Camera";
+			this.tabHangarCamera.UseVisualStyleBackColor = true;
 			// 
-			// label48
+			// tabHangarFamilyCamera
 			// 
-			this.label48.Location = new System.Drawing.Point(6, 166);
-			this.label48.Name = "label48";
-			this.label48.Size = new System.Drawing.Size(155, 69);
-			this.label48.TabIndex = 12;
-			this.label48.Text = "Choose a FlightGroup, then select Markings, Wingman Makings, IFF, or Pilot voice." +
-    " Enter your selection and then hit \"Add\".";
+			this.tabHangarFamilyCamera.Controls.Add(this.cmdDefaultFamilyCamera);
+			this.tabHangarFamilyCamera.Controls.Add(this.label7);
+			this.tabHangarFamilyCamera.Controls.Add(this.cboFamilyCamera);
+			this.tabHangarFamilyCamera.Controls.Add(this.numFamilyCameraZ);
+			this.tabHangarFamilyCamera.Controls.Add(this.numFamilyCameraX);
+			this.tabHangarFamilyCamera.Controls.Add(this.label8);
+			this.tabHangarFamilyCamera.Controls.Add(this.label9);
+			this.tabHangarFamilyCamera.Controls.Add(this.numFamilyCameraY);
+			this.tabHangarFamilyCamera.Location = new System.Drawing.Point(4, 22);
+			this.tabHangarFamilyCamera.Name = "tabHangarFamilyCamera";
+			this.tabHangarFamilyCamera.Size = new System.Drawing.Size(352, 238);
+			this.tabHangarFamilyCamera.TabIndex = 4;
+			this.tabHangarFamilyCamera.Text = "Family Camera";
+			this.tabHangarFamilyCamera.UseVisualStyleBackColor = true;
+			// 
+			// tabSkins
+			// 
+			this.tabSkins.Controls.Add(this.chkSkins);
+			this.tabSkins.Location = new System.Drawing.Point(4, 22);
+			this.tabSkins.Name = "tabSkins";
+			this.tabSkins.Size = new System.Drawing.Size(388, 297);
+			this.tabSkins.TabIndex = 5;
+			this.tabSkins.Text = "Skins";
+			this.tabSkins.UseVisualStyleBackColor = true;
+			// 
+			// chkSkins
+			// 
+			this.chkSkins.AutoSize = true;
+			this.chkSkins.Location = new System.Drawing.Point(6, 6);
+			this.chkSkins.Name = "chkSkins";
+			this.chkSkins.Size = new System.Drawing.Size(74, 17);
+			this.chkSkins.TabIndex = 1;
+			this.chkSkins.Text = "Use Skins";
+			this.chkSkins.UseVisualStyleBackColor = true;
+			// 
+			// tabShield
+			// 
+			this.tabShield.Controls.Add(this.chkShield);
+			this.tabShield.Location = new System.Drawing.Point(4, 22);
+			this.tabShield.Name = "tabShield";
+			this.tabShield.Size = new System.Drawing.Size(372, 297);
+			this.tabShield.TabIndex = 6;
+			this.tabShield.Text = "Shield";
+			this.tabShield.UseVisualStyleBackColor = true;
+			// 
+			// chkShield
+			// 
+			this.chkShield.AutoSize = true;
+			this.chkShield.Location = new System.Drawing.Point(6, 6);
+			this.chkShield.Name = "chkShield";
+			this.chkShield.Size = new System.Drawing.Size(77, 17);
+			this.chkShield.TabIndex = 1;
+			this.chkShield.Text = "Use Shield";
+			this.chkShield.UseVisualStyleBackColor = true;
+			// 
+			// optWingman
+			// 
+			this.optWingman.AutoSize = true;
+			this.optWingman.Enabled = false;
+			this.optWingman.Location = new System.Drawing.Point(167, 112);
+			this.optWingman.Name = "optWingman";
+			this.optWingman.Size = new System.Drawing.Size(70, 17);
+			this.optWingman.TabIndex = 3;
+			this.optWingman.Text = "Wingman";
+			this.optWingman.UseVisualStyleBackColor = true;
+			this.optWingman.CheckedChanged += new System.EventHandler(this.cboMission_CheckedChanged);
+			// 
+			// numWingman
+			// 
+			this.numWingman.Enabled = false;
+			this.numWingman.Location = new System.Drawing.Point(264, 112);
+			this.numWingman.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+			this.numWingman.Name = "numWingman";
+			this.numWingman.Size = new System.Drawing.Size(60, 20);
+			this.numWingman.TabIndex = 8;
+			this.numWingman.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+			// 
+			// tabSFoils
+			// 
+			this.tabSFoils.Controls.Add(this.chkSFoils);
+			this.tabSFoils.Location = new System.Drawing.Point(4, 22);
+			this.tabSFoils.Name = "tabSFoils";
+			this.tabSFoils.Size = new System.Drawing.Size(388, 297);
+			this.tabSFoils.TabIndex = 7;
+			this.tabSFoils.Text = "S-Foils";
+			this.tabSFoils.UseVisualStyleBackColor = true;
+			// 
+			// chkSFoils
+			// 
+			this.chkSFoils.AutoSize = true;
+			this.chkSFoils.Location = new System.Drawing.Point(6, 6);
+			this.chkSFoils.Name = "chkSFoils";
+			this.chkSFoils.Size = new System.Drawing.Size(79, 17);
+			this.chkSFoils.TabIndex = 2;
+			this.chkSFoils.Text = "Use S-Foils";
+			this.chkSFoils.UseVisualStyleBackColor = true;
+			// 
+			// chkDroid1Update
+			// 
+			this.chkDroid1Update.AutoSize = true;
+			this.chkDroid1Update.Checked = true;
+			this.chkDroid1Update.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.chkDroid1Update.Enabled = false;
+			this.chkDroid1Update.Location = new System.Drawing.Point(9, 210);
+			this.chkDroid1Update.Name = "chkDroid1Update";
+			this.chkDroid1Update.Size = new System.Drawing.Size(98, 17);
+			this.chkDroid1Update.TabIndex = 21;
+			this.chkDroid1Update.Text = "Update Droid 1";
+			this.chkDroid1Update.UseVisualStyleBackColor = true;
+			// 
+			// chkDroid2Update
+			// 
+			this.chkDroid2Update.AutoSize = true;
+			this.chkDroid2Update.Checked = true;
+			this.chkDroid2Update.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.chkDroid2Update.Enabled = false;
+			this.chkDroid2Update.Location = new System.Drawing.Point(113, 210);
+			this.chkDroid2Update.Name = "chkDroid2Update";
+			this.chkDroid2Update.Size = new System.Drawing.Size(98, 17);
+			this.chkDroid2Update.TabIndex = 22;
+			this.chkDroid2Update.Text = "Update Droid 2";
+			this.chkDroid2Update.UseVisualStyleBackColor = true;
+			// 
+			// chkHangarFold
+			// 
+			this.chkHangarFold.AutoSize = true;
+			this.chkHangarFold.Enabled = false;
+			this.chkHangarFold.Location = new System.Drawing.Point(93, 218);
+			this.chkHangarFold.Name = "chkHangarFold";
+			this.chkHangarFold.Size = new System.Drawing.Size(153, 17);
+			this.chkHangarFold.TabIndex = 21;
+			this.chkHangarFold.Text = "Fold S-Foils outside hangar";
+			this.chkHangarFold.UseVisualStyleBackColor = true;
 			// 
 			// XwaHookDialog
 			// 
@@ -2364,7 +2468,7 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.cmdCancel;
-			this.ClientSize = new System.Drawing.Size(404, 376);
+			this.ClientSize = new System.Drawing.Size(409, 376);
 			this.Controls.Add(this.tcHooks);
 			this.Controls.Add(this.cmdCancel);
 			this.Controls.Add(this.cmdOK);
@@ -2411,18 +2515,6 @@
 			this.tcHangar.ResumeLayout(false);
 			this.tabHangarObjects.ResumeLayout(false);
 			this.tabHangarObjects.PerformLayout();
-			this.tabHangarMap.ResumeLayout(false);
-			this.tabHangarMap.PerformLayout();
-			this.tabHangarFamilyMap.ResumeLayout(false);
-			this.tabHangarFamilyMap.PerformLayout();
-			this.tabHangarCamera.ResumeLayout(false);
-			this.tabHangarCamera.PerformLayout();
-			this.tabHangarFamilyCamera.ResumeLayout(false);
-			this.tabHangarFamilyCamera.PerformLayout();
-			this.tabSkins.ResumeLayout(false);
-			this.tabSkins.PerformLayout();
-			this.tabShield.ResumeLayout(false);
-			this.tabShield.PerformLayout();
 			this.tabObjects2.ResumeLayout(false);
 			this.tabObjects2.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numPlayerX)).EndInit();
@@ -2436,6 +2528,21 @@
 			((System.ComponentModel.ISupportInitialize)(this.numPlayerZ)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.numRoofCraneLowOffset)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.numPlayerAnimationElevation)).EndInit();
+			this.tabHangarMap.ResumeLayout(false);
+			this.tabHangarMap.PerformLayout();
+			this.tabHangarFamilyMap.ResumeLayout(false);
+			this.tabHangarFamilyMap.PerformLayout();
+			this.tabHangarCamera.ResumeLayout(false);
+			this.tabHangarCamera.PerformLayout();
+			this.tabHangarFamilyCamera.ResumeLayout(false);
+			this.tabHangarFamilyCamera.PerformLayout();
+			this.tabSkins.ResumeLayout(false);
+			this.tabSkins.PerformLayout();
+			this.tabShield.ResumeLayout(false);
+			this.tabShield.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.numWingman)).EndInit();
+			this.tabSFoils.ResumeLayout(false);
+			this.tabSFoils.PerformLayout();
 			this.ResumeLayout(false);
 
 		}
@@ -2614,5 +2721,12 @@
 		private System.Windows.Forms.Label label31;
 		private System.Windows.Forms.Label label47;
 		private System.Windows.Forms.Label label48;
+		private System.Windows.Forms.RadioButton optWingman;
+		private System.Windows.Forms.NumericUpDown numWingman;
+		private System.Windows.Forms.TabPage tabSFoils;
+		private System.Windows.Forms.CheckBox chkSFoils;
+		private System.Windows.Forms.CheckBox chkDroid2Update;
+		private System.Windows.Forms.CheckBox chkDroid1Update;
+		private System.Windows.Forms.CheckBox chkHangarFold;
 	}
 }
