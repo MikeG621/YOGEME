@@ -8,7 +8,7 @@
  */
 
 /* CHANGELOG
- * [FIX #58] XWA wireframes when using rotations instead of Waypoints [JB]
+ * [FIX #58, #59] XWA wireframes when using rotations instead of Waypoints [JB]
  * v1.8, 201004
  * [FIX] _dosSpeciesMap now checks for existing resource before adding [JB]
  * [UPD] XML, cleanup
