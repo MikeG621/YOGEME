@@ -19,6 +19,7 @@ Version History
 - (All) Redid handling bad waypoint values [Issue #56] (JB)
 - (XW) Converting FG Goals from XW corrected [Issue #55] (JB, via Platform.dll)
 - (XWA) Hook Dialog redesigned
+- (XWA) Map wireframes correctly take into account craft rotations when not using Waypoints. Adjusting rotation refreshes map. [Issue #58] (JB))
 
 v1.9.2, 28 Mar 2021
  - MissionVerify updated with "OR true" and "AND false" trigger detection for 1AO2 and 3AO4s [Issue #48]
