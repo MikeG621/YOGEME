@@ -168,7 +168,7 @@ namespace Idmr.Yogeme.MapWireframe
 	{
 		/// <summary>Initializes a matrix for a rotational transform, combining pitch and yaw (without roll).</summary>
 		/// <remarks>In a normal coordinate system, this would be matrix multiplication for (Roll * Yaw) in that order.</br>
-		/// But X-Wing uses a different system, so we use (CraftPitch * CraftYaw) to get the desired results on screen.</remarks>/// 
+		/// But X-Wing uses a different system, so we use (CraftPitch * CraftYaw) to get the desired results on screen.</remarks>
 		public Matrix3(double yaw, double pitch)
 		{
 			V11 = Math.Cos(yaw);
@@ -183,21 +183,19 @@ namespace Idmr.Yogeme.MapWireframe
 		}
 
 		/// <summary>Initializes a matrix for a rotational transform, combining pitch, yaw, and roll.</summary>
-		/// <remarks>In a normal coordinate system, this would be matrix multiplication for (Roll * Yaw * Pitch) in that order.</br>
-		/// But X-Wing uses a different system, so we use (CraftPitch * CraftYaw * CraftRoll).</br>
-		/// TODO: Although roll works on its own, combining roll with pitch or yaw will produce incorrect rotations.</br>
-		/// Roll needs to be performed relative to the craft, rather than the world.</remarks>
+		/// <remarks>In a normal coordinate system, this would be matrix multiplication for (Pitch * Roll * Yaw) in that order.</br>
+		/// But X-Wing uses a different system, so we use (CraftRoll * CraftPitch * CraftYaw) to get the desired results on screen.</remarks>
 		public Matrix3(double yaw, double pitch, double roll)
 		{
-			V11 = Math.Cos(yaw) * Math.Cos(roll);
-			V12 = -Math.Sin(yaw);
-			V13 = Math.Cos(yaw) * Math.Sin(roll);
-			V21 = Math.Cos(pitch) * Math.Sin(yaw) * Math.Cos(roll) - Math.Sin(pitch) * -Math.Sin(roll);
+			V11 = Math.Cos(roll) * Math.Cos(yaw) + Math.Sin(roll) * Math.Sin(pitch) * Math.Sin(yaw);
+			V12 = Math.Cos(roll) * -Math.Sin(yaw) + Math.Sin(roll) * Math.Sin(pitch) * Math.Cos(yaw);
+			V13 = Math.Sin(roll) * Math.Cos(pitch);
+			V21 = Math.Cos(pitch) * Math.Sin(yaw);
 			V22 = Math.Cos(pitch) * Math.Cos(yaw);
-			V23 = Math.Cos(pitch) * Math.Sin(yaw) * Math.Sin(roll) - Math.Sin(pitch) * Math.Cos(roll);
-			V31 = Math.Sin(pitch) * Math.Sin(yaw) * Math.Cos(roll) + Math.Cos(pitch) * -Math.Sin(roll);
-			V32 = Math.Sin(pitch) * Math.Cos(yaw);
-			V33 = Math.Sin(pitch) * Math.Sin(yaw) * Math.Sin(roll) + Math.Cos(pitch) * Math.Cos(roll);
+			V23 = -Math.Sin(pitch);
+			V31 = -Math.Sin(roll) * Math.Cos(yaw) + Math.Cos(roll) * Math.Sin(pitch) * Math.Sin(yaw);
+			V32 = -Math.Sin(roll) * -Math.Sin(yaw) + Math.Cos(roll) * Math.Sin(pitch) * Math.Cos(yaw);
+			V33 = Math.Cos(roll) * Math.Cos(pitch);
 		}
 	
 		/// <summary>Applies a zoom transformation, multiplying by a scalar.</summary>
