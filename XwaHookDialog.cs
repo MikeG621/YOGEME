@@ -8,6 +8,7 @@
 
 /* CHANGELOG
  * [ADD] Wingman markings, Droid1/2Update
+ * [ADD] S-Foils hook support
  * [FIX] Missing Droid1/2PositionZ read
  * [UPD] Layout redesigned
  * v1.8.2, 201219
@@ -116,6 +117,7 @@ namespace Idmr.Yogeme
 			cboFamMapMarkings.SelectedIndex = 0;
 			cboFG.Items.AddRange(mission.FlightGroups.GetList());
 			cboProfileFG.Items.AddRange(mission.FlightGroups.GetList());
+			cboSFoilFG.Items.AddRange(mission.FlightGroups.GetList());
 			for (int i = 0; i < 400; i++)
 			{
 				cboShuttleModel.Items.Add(i);
@@ -377,7 +379,7 @@ namespace Idmr.Yogeme
 		#endregion Backdrops
 
 		#region MissionTie
-		// TODO: add S-foils hook. Different hook, but still under mission_tie
+		/// <remarks>This also parses S-Foils</remarks>
 		void parseMission(string line)
 		{
 			string[] parts = line.ToLower().Replace(" ", "").Split(',');
@@ -392,9 +394,33 @@ namespace Idmr.Yogeme
 					lstMission.Items.Add(cboFG.Items[fg].ToString() + ",iff," + cboIff.Items[int.Parse(parts[3])].ToString());
 				else if (parts[2] == "pilotvoice")
 					lstMission.Items.Add(cboFG.Items[fg].ToString() + ",pilot," + parts[3]);
-				//TODO: else if Sfoils detected, load and check
+				else if (parts[2] == "close_sfoils")
+				{
+					chkSFoils.Checked = true;
+					lstSFoils.Items.Add(cboSFoilFG.Items[fg].ToString() + ",closed");
+				}
+				else if (parts[2] == "open_landinggears")
+				{
+					chkSFoils.Checked = true;
+					lstSFoils.Items.Add(cboSFoilFG.Items[fg].ToString() + ",open");
+				}
 			}
-			// TODO: else check Sfoils options
+			parts = parts[0].Split('=');
+			if (parts[0] == "closesfoilsandopenlandinggearsbeforeenterhangar" && parts[1] == "1")
+			{
+				chkSFoils.Checked = true;
+				chkForceHangarSF.Checked = true;
+			}
+			else if (parts[0] == "closelandinggearsbeforeenterhyperspace" && parts[1] == "1")
+			{
+				chkSFoils.Checked = true;
+				chkForceHyperLG.Checked = true;
+			}
+			else if (parts[0] == "autoclosesfoils" && parts[1] == "0")
+			{
+				chkSFoils.Checked = true;
+				chkManualSF.Checked = true;
+			}
 		}
 
 		void cboMission_CheckedChanged(object sender, EventArgs e)
@@ -915,6 +941,43 @@ namespace Idmr.Yogeme
 		bool useFamilyHangarMap { get { return lstFamilyMap.Items.Count >= 4; } }
 		#endregion
 
+		#region S-Foils
+		private void chkSFoils_CheckedChanged(object sender, EventArgs e)
+		{
+			lstSFoils.Enabled = chkSFoils.Checked;
+			cboSFoilFG.Enabled = chkSFoils.Checked;
+			cmdAddSFoils.Enabled = chkSFoils.Checked;
+			cmdRemoveSFoils.Enabled = chkSFoils.Checked;
+			chkCloseSF.Enabled = chkSFoils.Checked;
+			chkOpenLG.Enabled = chkSFoils.Checked;
+			chkForceHangarSF.Enabled = chkSFoils.Checked;
+			chkForceHyperLG.Enabled = chkSFoils.Checked;
+			chkManualSF.Enabled = chkSFoils.Checked;
+		}
+
+		private void cmdAddSFoils_Click(object sender, EventArgs e)
+		{
+			if (cboSFoilFG.SelectedIndex == -1) return;
+
+			if (chkCloseSF.Checked) lstSFoils.Items.Add(cboSFoilFG.Text + ",closed");
+			if (chkOpenLG.Checked) lstSFoils.Items.Add(cboSFoilFG.Text + ",open");
+		}
+
+		private void cmdRemoveSFoils_Click(object sender, EventArgs e)
+		{
+			if (lstSFoils.SelectedIndex == -1) return;
+			lstSFoils.Items.RemoveAt(lstSFoils.SelectedIndex);
+		}
+
+		bool useSFoils
+		{
+			get
+			{
+				return (lstSFoils.Items.Count > 0 || chkForceHangarSF.Checked || chkForceHyperLG.Checked || chkManualSF.Checked);
+			}
+		}
+		#endregion
+
 		private void cmdCancel_Click(object sender, EventArgs e)
 		{
 			Close();
@@ -934,7 +997,7 @@ namespace Idmr.Yogeme
 
 			if (!chkBackdrops.Checked && _bdFile != "") File.Delete(_bdFile);
 
-			if (!chkMission.Checked && _missionTxtFile != "") File.Delete(_missionTxtFile);
+			if (!chkMission.Checked && !chkSFoils.Checked && _missionTxtFile != "") File.Delete(_missionTxtFile);
 
 			if (!chkSounds.Checked && _soundFile != "") File.Delete(_soundFile);
 			if (!chkObjects.Checked && _objFile != "") File.Delete(_objFile);
@@ -945,9 +1008,9 @@ namespace Idmr.Yogeme
 			if (!useHangarMap && _hangarMapFile != "") File.Delete(_hangarMapFile);
 			if (!useFamilyHangarMap && _famHangarMapFile != "") File.Delete(_famHangarMapFile);
 
-			// TODO: use checks for S-Foils, Skins and Shield
+			// TODO: use checks for Skins and Shield
 
-			if (!chkBackdrops.Checked && !chkMission.Checked && !chkSounds.Checked && !chkObjects.Checked && !useHangarObjects && !useHangarCamera && !useFamilyHangarCamera && !useHangarMap && !useFamilyHangarMap)
+			if (!chkBackdrops.Checked && !chkMission.Checked && !chkSounds.Checked && !chkObjects.Checked && !useHangarObjects && !useHangarCamera && !useFamilyHangarCamera && !useHangarMap && !useFamilyHangarMap && !chkSFoils.Checked)
 			{
 				File.Delete(_fileName);
 				Close();
@@ -973,43 +1036,65 @@ namespace Idmr.Yogeme
 					for (int i = 0; i < lstBackdrops.Items.Count; i++) sw.WriteLine(lstBackdrops.Items[i]);
 					sw.WriteLine("");
 				}
-				if (chkMission.Checked && lstMission.Items.Count > 0)
+				if ((chkMission.Checked && lstMission.Items.Count > 0) || (chkSFoils.Checked && useSFoils))
 				{
 					sw.WriteLine("[Mission_Tie]");
-					for(int i = 0; i < lstMission.Items.Count; i++)
+					if (chkMission.Checked)
 					{
-						string[] parts = lstMission.Items[i].ToString().Split(',');
-						int fg;
-						for (fg = 0; fg < cboFG.Items.Count; fg++) if (cboFG.Items[fg].ToString() == parts[0]) break;
-						if (parts[1] == "marks")
+						for (int i = 0; i < lstMission.Items.Count; i++)
 						{
-							for (int m = 0; m < cboMarkings.Items.Count; m++)
-								if (cboMarkings.Items[m].ToString() == parts[2])
-								{
-									sw.WriteLine("fg, " + fg + ", markings, " + m);
-									break;
-								}
+							string[] parts = lstMission.Items[i].ToString().Split(',');
+							int fg;
+							for (fg = 0; fg < cboFG.Items.Count; fg++) if (cboFG.Items[fg].ToString() == parts[0]) break;
+							if (parts[1] == "marks")
+							{
+								for (int m = 0; m < cboMarkings.Items.Count; m++)
+									if (cboMarkings.Items[m].ToString() == parts[2])
+									{
+										sw.WriteLine("fg, " + fg + ", markings, " + m);
+										break;
+									}
+							}
+							else if (parts[1] == "wing")
+							{
+								for (int m = 0; m < cboMarkings.Items.Count; m++)
+									if (cboMarkings.Items[m].ToString() == parts[3])
+									{
+										sw.WriteLine("fg, " + fg + ", index, " + parts[2] + ", markings, " + m);
+										break;
+									}
+							}
+							else if (parts[1] == "iff")
+							{
+								for (int iff = 0; iff < cboIff.Items.Count; iff++)
+									if (cboIff.Items[iff].ToString() == parts[2])
+									{
+										sw.WriteLine("fg, " + fg + ", iff, " + iff);
+										break;
+									}
+							}
+							else if (parts[1] == "pilot")
+								sw.WriteLine("fg, " + fg + ", pilotvoice, " + parts[2]);
 						}
-						else if (parts[1] == "wing")
+					}
+					if (chkSFoils.Checked)
+					{
+						for (int i = 0; i < lstSFoils.Items.Count; i++)
 						{
-							for (int m = 0; m < cboMarkings.Items.Count; m++)
-								if (cboMarkings.Items[m].ToString() == parts[3])
-								{
-									sw.WriteLine("fg, " + fg + ", index, " + parts[2] + ", markings, " + m);
-									break;
-								}
+							string[] parts = lstSFoils.Items[i].ToString().Split(',');
+							int fg;
+							for (fg = 0; fg < cboSFoilFG.Items.Count; fg++) if (cboSFoilFG.Items[fg].ToString() == parts[0]) break;
+							if (parts[1] == "closed")
+								sw.WriteLine("fg, " + fg + ", close_SFoils, 1");
+							else if (parts[1] == "open")
+								sw.WriteLine("fg, " + fg + ", open_LandingGears, 1");
 						}
-						else if (parts[1] == "iff")
-						{
-							for (int iff = 0; iff < cboIff.Items.Count; iff++)
-								if (cboIff.Items[iff].ToString() == parts[2])
-								{
-									sw.WriteLine("fg, " + fg + ", iff, " + iff);
-									break;
-								}
-						}
-						else if (parts[1] == "pilot")
-							sw.WriteLine("fg, " + fg + ", pilotvoice, " + parts[2]);
+						if (chkForceHangarSF.Checked)
+							sw.WriteLine("CloseSFoilsAndOpenLandingGearsBeforeEnterHangar = 1");
+						if (chkForceHyperLG.Checked)
+							sw.WriteLine("CloseLandingGearsBeforeEnterHyperspace = 1");
+						if (chkManualSF.Checked)
+							sw.WriteLine("AutoCloseSFoils = 0");
 					}
 					sw.WriteLine("");
 				}

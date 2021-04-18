@@ -208,6 +208,17 @@
 			this.chkDroid1Update = new System.Windows.Forms.CheckBox();
 			this.chkDroid2Update = new System.Windows.Forms.CheckBox();
 			this.chkHangarFold = new System.Windows.Forms.CheckBox();
+			this.lstSFoils = new System.Windows.Forms.ListBox();
+			this.cboSFoilFG = new System.Windows.Forms.ComboBox();
+			this.cmdRemoveSFoils = new System.Windows.Forms.Button();
+			this.cmdAddSFoils = new System.Windows.Forms.Button();
+			this.chkCloseSF = new System.Windows.Forms.CheckBox();
+			this.chkOpenLG = new System.Windows.Forms.CheckBox();
+			this.chkForceHangarSF = new System.Windows.Forms.CheckBox();
+			this.chkForceHyperLG = new System.Windows.Forms.CheckBox();
+			this.chkManualSF = new System.Windows.Forms.CheckBox();
+			this.label49 = new System.Windows.Forms.Label();
+			this.grpSFoils = new System.Windows.Forms.GroupBox();
 			((System.ComponentModel.ISupportInitialize)(this.numFamHeadingZ)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numFamPosZ)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numFamHeadingXY)).BeginInit();
@@ -259,6 +270,7 @@
 			this.tabShield.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numWingman)).BeginInit();
 			this.tabSFoils.SuspendLayout();
+			this.grpSFoils.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// cmdOK
@@ -1697,7 +1709,7 @@
 			this.tabMission.Location = new System.Drawing.Point(4, 22);
 			this.tabMission.Name = "tabMission";
 			this.tabMission.Padding = new System.Windows.Forms.Padding(3);
-			this.tabMission.Size = new System.Drawing.Size(372, 297);
+			this.tabMission.Size = new System.Drawing.Size(388, 297);
 			this.tabMission.TabIndex = 1;
 			this.tabMission.Text = "Mission";
 			this.tabMission.UseVisualStyleBackColor = true;
@@ -1720,7 +1732,7 @@
 			this.tabSounds.Controls.Add(this.lstSounds);
 			this.tabSounds.Location = new System.Drawing.Point(4, 22);
 			this.tabSounds.Name = "tabSounds";
-			this.tabSounds.Size = new System.Drawing.Size(372, 297);
+			this.tabSounds.Size = new System.Drawing.Size(388, 297);
 			this.tabSounds.TabIndex = 2;
 			this.tabSounds.Text = "Sounds";
 			this.tabSounds.UseVisualStyleBackColor = true;
@@ -1747,7 +1759,7 @@
 			this.tabObjects.Controls.Add(this.cmdRemoveObjects);
 			this.tabObjects.Location = new System.Drawing.Point(4, 22);
 			this.tabObjects.Name = "tabObjects";
-			this.tabObjects.Size = new System.Drawing.Size(372, 297);
+			this.tabObjects.Size = new System.Drawing.Size(388, 297);
 			this.tabObjects.TabIndex = 3;
 			this.tabObjects.Text = "Objects";
 			this.tabObjects.UseVisualStyleBackColor = true;
@@ -2407,6 +2419,15 @@
 			// 
 			// tabSFoils
 			// 
+			this.tabSFoils.Controls.Add(this.grpSFoils);
+			this.tabSFoils.Controls.Add(this.label49);
+			this.tabSFoils.Controls.Add(this.chkManualSF);
+			this.tabSFoils.Controls.Add(this.chkForceHyperLG);
+			this.tabSFoils.Controls.Add(this.chkForceHangarSF);
+			this.tabSFoils.Controls.Add(this.lstSFoils);
+			this.tabSFoils.Controls.Add(this.cboSFoilFG);
+			this.tabSFoils.Controls.Add(this.cmdRemoveSFoils);
+			this.tabSFoils.Controls.Add(this.cmdAddSFoils);
 			this.tabSFoils.Controls.Add(this.chkSFoils);
 			this.tabSFoils.Location = new System.Drawing.Point(4, 22);
 			this.tabSFoils.Name = "tabSFoils";
@@ -2424,6 +2445,7 @@
 			this.chkSFoils.TabIndex = 2;
 			this.chkSFoils.Text = "Use S-Foils";
 			this.chkSFoils.UseVisualStyleBackColor = true;
+			this.chkSFoils.CheckedChanged += new System.EventHandler(this.chkSFoils_CheckedChanged);
 			// 
 			// chkDroid1Update
 			// 
@@ -2461,6 +2483,121 @@
 			this.chkHangarFold.TabIndex = 21;
 			this.chkHangarFold.Text = "Fold S-Foils outside hangar";
 			this.chkHangarFold.UseVisualStyleBackColor = true;
+			// 
+			// lstSFoils
+			// 
+			this.lstSFoils.Enabled = false;
+			this.lstSFoils.FormattingEnabled = true;
+			this.lstSFoils.Location = new System.Drawing.Point(6, 29);
+			this.lstSFoils.Name = "lstSFoils";
+			this.lstSFoils.Size = new System.Drawing.Size(155, 134);
+			this.lstSFoils.TabIndex = 22;
+			// 
+			// cboSFoilFG
+			// 
+			this.cboSFoilFG.Enabled = false;
+			this.cboSFoilFG.FormattingEnabled = true;
+			this.cboSFoilFG.Location = new System.Drawing.Point(167, 29);
+			this.cboSFoilFG.Name = "cboSFoilFG";
+			this.cboSFoilFG.Size = new System.Drawing.Size(157, 21);
+			this.cboSFoilFG.TabIndex = 3;
+			// 
+			// cmdRemoveSFoils
+			// 
+			this.cmdRemoveSFoils.Enabled = false;
+			this.cmdRemoveSFoils.Location = new System.Drawing.Point(264, 56);
+			this.cmdRemoveSFoils.Name = "cmdRemoveSFoils";
+			this.cmdRemoveSFoils.Size = new System.Drawing.Size(60, 23);
+			this.cmdRemoveSFoils.TabIndex = 21;
+			this.cmdRemoveSFoils.Text = "&Remove";
+			this.cmdRemoveSFoils.UseVisualStyleBackColor = true;
+			this.cmdRemoveSFoils.Click += new System.EventHandler(this.cmdRemoveSFoils_Click);
+			// 
+			// cmdAddSFoils
+			// 
+			this.cmdAddSFoils.Enabled = false;
+			this.cmdAddSFoils.Location = new System.Drawing.Point(167, 56);
+			this.cmdAddSFoils.Name = "cmdAddSFoils";
+			this.cmdAddSFoils.Size = new System.Drawing.Size(60, 23);
+			this.cmdAddSFoils.TabIndex = 20;
+			this.cmdAddSFoils.Text = "&Add";
+			this.cmdAddSFoils.UseVisualStyleBackColor = true;
+			this.cmdAddSFoils.Click += new System.EventHandler(this.cmdAddSFoils_Click);
+			// 
+			// chkCloseSF
+			// 
+			this.chkCloseSF.AutoSize = true;
+			this.chkCloseSF.Enabled = false;
+			this.chkCloseSF.Location = new System.Drawing.Point(13, 19);
+			this.chkCloseSF.Name = "chkCloseSF";
+			this.chkCloseSF.Size = new System.Drawing.Size(122, 17);
+			this.chkCloseSF.TabIndex = 23;
+			this.chkCloseSF.Text = "Force S-Foils Closed";
+			this.chkCloseSF.UseVisualStyleBackColor = true;
+			// 
+			// chkOpenLG
+			// 
+			this.chkOpenLG.AutoSize = true;
+			this.chkOpenLG.Enabled = false;
+			this.chkOpenLG.Location = new System.Drawing.Point(13, 42);
+			this.chkOpenLG.Name = "chkOpenLG";
+			this.chkOpenLG.Size = new System.Drawing.Size(149, 17);
+			this.chkOpenLG.TabIndex = 23;
+			this.chkOpenLG.Text = "Force Landing Gear Open";
+			this.chkOpenLG.UseVisualStyleBackColor = true;
+			// 
+			// chkForceHangarSF
+			// 
+			this.chkForceHangarSF.AutoSize = true;
+			this.chkForceHangarSF.Enabled = false;
+			this.chkForceHangarSF.Location = new System.Drawing.Point(180, 166);
+			this.chkForceHangarSF.Name = "chkForceHangarSF";
+			this.chkForceHangarSF.Size = new System.Drawing.Size(199, 17);
+			this.chkForceHangarSF.TabIndex = 23;
+			this.chkForceHangarSF.Text = "Force SF closed, LG open in Hangar";
+			this.chkForceHangarSF.UseVisualStyleBackColor = true;
+			// 
+			// chkForceHyperLG
+			// 
+			this.chkForceHyperLG.AutoSize = true;
+			this.chkForceHyperLG.Enabled = false;
+			this.chkForceHyperLG.Location = new System.Drawing.Point(180, 189);
+			this.chkForceHyperLG.Name = "chkForceHyperLG";
+			this.chkForceHyperLG.Size = new System.Drawing.Size(175, 17);
+			this.chkForceHyperLG.TabIndex = 23;
+			this.chkForceHyperLG.Text = "Force LG closed in Hyperspace";
+			this.chkForceHyperLG.UseVisualStyleBackColor = true;
+			// 
+			// chkManualSF
+			// 
+			this.chkManualSF.AutoSize = true;
+			this.chkManualSF.Enabled = false;
+			this.chkManualSF.Location = new System.Drawing.Point(180, 212);
+			this.chkManualSF.Name = "chkManualSF";
+			this.chkManualSF.Size = new System.Drawing.Size(162, 17);
+			this.chkManualSF.TabIndex = 23;
+			this.chkManualSF.Text = "Manual control of SF and LG";
+			this.chkManualSF.UseVisualStyleBackColor = true;
+			// 
+			// label49
+			// 
+			this.label49.Location = new System.Drawing.Point(6, 166);
+			this.label49.Name = "label49";
+			this.label49.Size = new System.Drawing.Size(155, 84);
+			this.label49.TabIndex = 24;
+			this.label49.Text = "Choose a FlightGroup, then enable the desired options from the grouped pair and h" +
+    "it \"Add\". The ungrouped options are global. Default for each is unchecked.";
+			// 
+			// grpSFoils
+			// 
+			this.grpSFoils.Controls.Add(this.chkCloseSF);
+			this.grpSFoils.Controls.Add(this.chkOpenLG);
+			this.grpSFoils.Location = new System.Drawing.Point(167, 85);
+			this.grpSFoils.Name = "grpSFoils";
+			this.grpSFoils.Size = new System.Drawing.Size(168, 65);
+			this.grpSFoils.TabIndex = 25;
+			this.grpSFoils.TabStop = false;
+			this.grpSFoils.Text = "Per FlightGroup";
 			// 
 			// XwaHookDialog
 			// 
@@ -2543,6 +2680,8 @@
 			((System.ComponentModel.ISupportInitialize)(this.numWingman)).EndInit();
 			this.tabSFoils.ResumeLayout(false);
 			this.tabSFoils.PerformLayout();
+			this.grpSFoils.ResumeLayout(false);
+			this.grpSFoils.PerformLayout();
 			this.ResumeLayout(false);
 
 		}
@@ -2728,5 +2867,16 @@
 		private System.Windows.Forms.CheckBox chkDroid2Update;
 		private System.Windows.Forms.CheckBox chkDroid1Update;
 		private System.Windows.Forms.CheckBox chkHangarFold;
+		private System.Windows.Forms.Label label49;
+		private System.Windows.Forms.CheckBox chkManualSF;
+		private System.Windows.Forms.CheckBox chkForceHyperLG;
+		private System.Windows.Forms.CheckBox chkForceHangarSF;
+		private System.Windows.Forms.CheckBox chkOpenLG;
+		private System.Windows.Forms.CheckBox chkCloseSF;
+		private System.Windows.Forms.ListBox lstSFoils;
+		private System.Windows.Forms.ComboBox cboSFoilFG;
+		private System.Windows.Forms.Button cmdRemoveSFoils;
+		private System.Windows.Forms.Button cmdAddSFoils;
+		private System.Windows.Forms.GroupBox grpSFoils;
 	}
 }
