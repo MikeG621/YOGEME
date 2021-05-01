@@ -22,6 +22,7 @@ Version History
   - Mission : Wingman markings, HangarObjects : Droid1/2Update added
   - Fixed missing Droid1/2PositionZ read
   - S-Foils hook support added
+  - Skins (32bpp) hook support added
 - (XWA) Map wireframes correctly take into account craft rotations when not using Waypoints. Adjusting rotation refreshes map. [Issue #58, #59] (JB))
 
 v1.9.2, 28 Mar 2021

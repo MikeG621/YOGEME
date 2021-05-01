@@ -8,7 +8,7 @@
 
 /* CHANGELOG
  * [ADD] Wingman markings, Droid1/2Update
- * [ADD] S-Foils hook support
+ * [ADD] S-Foils, Skins (32bpp) hook support
  * [FIX] Missing Droid1/2PositionZ read
  * [UPD] Layout redesigned
  * v1.8.2, 201219
@@ -103,18 +103,21 @@ namespace Idmr.Yogeme
 			cboShuttleMarks.Items.AddRange(Strings.Color);
 			cboMapMarkings.Items.AddRange(Strings.Color);
 			cboFamMapMarkings.Items.AddRange(Strings.Color);
+			cboSkinMarks.Items.AddRange(Strings.Color);
 			for (int i = cboMarkings.Items.Count; i < 256; i++)
 			{
 				cboMarkings.Items.Add("Clr #" + (i + 1));
 				cboShuttleMarks.Items.Add("Clr #" + (i + 1));
 				cboMapMarkings.Items.Add("Clr #" + (i + 1));
 				cboFamMapMarkings.Items.Add("Clr #" + (i + 1));
+				cboSkinMarks.Items.Add("Clr #" + (i + 1));
 			}
 			cboMarkings.SelectedIndex = 0;
 			cboShuttleMarks.SelectedIndex = 0;
 			cboShuAnimation.SelectedIndex = 0;
 			cboMapMarkings.SelectedIndex = 0;
 			cboFamMapMarkings.SelectedIndex = 0;
+			cboSkinMarks.SelectedIndex = 0;
 			cboFG.Items.AddRange(mission.FlightGroups.GetList());
 			cboProfileFG.Items.AddRange(mission.FlightGroups.GetList());
 			cboSFoilFG.Items.AddRange(mission.FlightGroups.GetList());
@@ -192,7 +195,8 @@ namespace Idmr.Yogeme
 				StreamReader srMiss = new StreamReader(_missionTxtFile);
 				while((line = srMiss.ReadLine()) != null)
 				{
-					parseMission(line);
+					if (!isComment(line))
+						parseMission(line);
 				}
 				srMiss.Close();
 			}
@@ -221,7 +225,8 @@ namespace Idmr.Yogeme
 				StreamReader srHangarObjects = new StreamReader(_hangarObjectsFile);
 				while ((line = srHangarObjects.ReadLine()) != null)
 				{
-					parseHangarObjects(line);
+					if (!isComment(line))
+						parseHangarObjects(line);
 				}
 				srHangarObjects.Close();
 			}
@@ -230,7 +235,8 @@ namespace Idmr.Yogeme
 				StreamReader srHangarCamera = new StreamReader(_hangarCameraFile);
 				while((line = srHangarCamera.ReadLine()) != null)
 				{
-					parseHangarCamera(line);
+					if (!isComment(line))
+						parseHangarCamera(line);
 				}
 				srHangarCamera.Close();
 			}
@@ -239,7 +245,8 @@ namespace Idmr.Yogeme
 				StreamReader srFamilyHangarCamera = new StreamReader(_famHangarCameraFile);
 				while ((line = srFamilyHangarCamera.ReadLine()) != null)
 				{
-					parseFamilyHangarCamera(line);
+					if (!isComment(line))
+						parseFamilyHangarCamera(line);
 				}
 				srFamilyHangarCamera.Close();
 			}
@@ -267,13 +274,13 @@ namespace Idmr.Yogeme
 				}
 				srFamMap.Close();
 			}
-			if(_32bppFile != "")
+			if (_32bppFile != "")
 			{
 				StreamReader sr32bpp = new StreamReader(_32bppFile);
 				while ((line = sr32bpp.ReadLine()) != null)
 				{
-					if (isComment(line)) continue;
-					//TODO: 32bpp
+					if (!isComment(line))
+						lstSkins.Items.Add(line);
 				}
 				sr32bpp.Close();
 			}
@@ -331,10 +338,7 @@ namespace Idmr.Yogeme
 						if (entry.Parse(line))
 							lstFamilyMap.Items.Add(entry.ToString());
 					}
-					else if (readMode == ReadMode.Skins)
-					{
-						//TODO: skins
-					}
+					else if (readMode == ReadMode.Skins) lstSkins.Items.Add(line);
 					else if (readMode == ReadMode.Shield)
 					{
 						//TODO: shield
@@ -349,6 +353,7 @@ namespace Idmr.Yogeme
 			chkSounds.Checked = (lstSounds.Items.Count > 0);
 			chkObjects.Checked = (lstObjects.Items.Count > 0);
 			chkHangars.Checked = useHangarObjects | useHangarCamera | useFamilyHangarCamera | useHangarMap;
+			chkSkins.Checked = (lstSkins.Items.Count > 0);
 		}
 
 		string checkFile(string extension)
@@ -962,7 +967,6 @@ namespace Idmr.Yogeme
 			if (chkCloseSF.Checked) lstSFoils.Items.Add(cboSFoilFG.Text + ",closed");
 			if (chkOpenLG.Checked) lstSFoils.Items.Add(cboSFoilFG.Text + ",open");
 		}
-
 		private void cmdRemoveSFoils_Click(object sender, EventArgs e)
 		{
 			if (lstSFoils.SelectedIndex == -1) return;
@@ -977,6 +981,58 @@ namespace Idmr.Yogeme
 			}
 		}
 		#endregion
+
+		#region Skins
+		// okay, so the key is either OPT or OPT_fgc_#, and the value is a CSV list
+		// Not going to ignore "Default", since it might be possible to override other skin profiles
+		// CraftOptName = SkinNameA, SkinNameB...
+		// CraftOptName_fgc_# = SkinName1, SkinName2, SkinName3...
+		// I'll need to deliniate "Add new" versus "Append"
+		private void chkDefaultSkin_CheckedChanged(object sender, EventArgs e)
+		{
+			txtSkin.Enabled = (!chkDefaultSkin.Checked && chkSkins.Checked);
+		}
+		private void chkSkins_CheckedChanged(object sender, EventArgs e)
+		{
+			lstSkins.Enabled = chkSkins.Checked;
+			cmdAddSkin.Enabled = chkSkins.Checked;
+			cmdAppendSkin.Enabled = chkSkins.Checked;
+			cmdRemoveSkin.Enabled = chkSkins.Checked;
+			chkSkinMarks.Enabled = chkSkins.Checked;
+			chkDefaultSkin.Enabled = chkSkins.Checked;
+			chkSkinMarks_CheckedChanged("chkSkins", new EventArgs());
+			chkDefaultSkin_CheckedChanged("chkSkins", new EventArgs());
+		}
+		private void chkSkinMarks_CheckedChanged(object sender, EventArgs e)
+		{
+			cboSkinMarks.Enabled = (chkSkinMarks.Checked && chkSkins.Checked);
+		}
+
+		private void cmdAddSkin_Click(object sender, EventArgs e)
+		{
+			if (_installDirectory != "") opnObjects.InitialDirectory = _installDirectory + _fm;
+			opnObjects.Title = "Select affected OPT...";
+			DialogResult res = opnObjects.ShowDialog();
+			if (res == DialogResult.OK)
+			{
+				string line = Path.GetFileNameWithoutExtension(opnObjects.FileName) + (chkSkinMarks.Checked ? "_fgc_" + cboSkinMarks.SelectedIndex : "") + " = "
+					+ (chkDefaultSkin.Checked ? "Default" : txtSkin.Text);
+				lstSkins.Items.Add(line);
+			}
+		}
+		private void cmdAppendSkin_Click(object sender, EventArgs e)
+		{
+			if (lstSkins.SelectedIndex == -1) return;
+			string line = lstSkins.SelectedItem.ToString();
+			line += ", " + (chkDefaultSkin.Checked ? "Default" : txtSkin.Text);
+			lstSkins.Items[lstSkins.SelectedIndex] = line;
+		}
+		private void cmdRemoveSkin_Click(object sender, EventArgs e)
+		{
+			if (lstSkins.SelectedIndex == -1) return;
+			lstSkins.Items.RemoveAt(lstSkins.SelectedIndex);
+		}
+		#endregion Skins
 
 		private void cmdCancel_Click(object sender, EventArgs e)
 		{
@@ -1008,9 +1064,10 @@ namespace Idmr.Yogeme
 			if (!useHangarMap && _hangarMapFile != "") File.Delete(_hangarMapFile);
 			if (!useFamilyHangarMap && _famHangarMapFile != "") File.Delete(_famHangarMapFile);
 
-			// TODO: use checks for Skins and Shield
+			if (!chkSkins.Checked && _32bppFile != "") File.Delete(_32bppFile);
+			if (!chkShield.Checked && _shieldFile != "") File.Delete(_shieldFile);
 
-			if (!chkBackdrops.Checked && !chkMission.Checked && !chkSounds.Checked && !chkObjects.Checked && !useHangarObjects && !useHangarCamera && !useFamilyHangarCamera && !useHangarMap && !useFamilyHangarMap && !chkSFoils.Checked)
+			if (!chkBackdrops.Checked && !chkMission.Checked && !chkSounds.Checked && !chkObjects.Checked && !useHangarObjects && !useHangarCamera && !useFamilyHangarCamera && !useHangarMap && !useFamilyHangarMap && !chkSFoils.Checked && !chkShield.Checked)
 			{
 				File.Delete(_fileName);
 				Close();
@@ -1200,6 +1257,16 @@ namespace Idmr.Yogeme
 						for (int i = 0; i < lstFamilyMap.Items.Count; i++) sw.WriteLine(lstFamilyMap.Items[i].ToString());
 						sw.WriteLine("");
 					}
+				}
+				if (chkSkins.Checked && lstSkins.Items.Count > 0)
+				{
+					sw.WriteLine("[Skins]");
+					for (int i = 0; i < lstSkins.Items.Count; i++) sw.WriteLine(lstSkins.Items[i]);
+					sw.WriteLine("");
+				}
+				if (chkShield.Checked /* && lstShield.Items.Count > 0*/)
+				{
+					// TODO: write shields
 				}
 				sw.Flush();
 				sw.Close();

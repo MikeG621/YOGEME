@@ -153,7 +153,9 @@
 			this.tabBackdrops = new System.Windows.Forms.TabPage();
 			this.label45 = new System.Windows.Forms.Label();
 			this.tabMission = new System.Windows.Forms.TabPage();
+			this.numWingman = new System.Windows.Forms.NumericUpDown();
 			this.label48 = new System.Windows.Forms.Label();
+			this.optWingman = new System.Windows.Forms.RadioButton();
 			this.tabSounds = new System.Windows.Forms.TabPage();
 			this.label46 = new System.Windows.Forms.Label();
 			this.tabObjects = new System.Windows.Forms.TabPage();
@@ -161,7 +163,10 @@
 			this.tabHangar = new System.Windows.Forms.TabPage();
 			this.tcHangar = new System.Windows.Forms.TabControl();
 			this.tabHangarObjects = new System.Windows.Forms.TabPage();
+			this.chkDroid2Update = new System.Windows.Forms.CheckBox();
+			this.chkDroid1Update = new System.Windows.Forms.CheckBox();
 			this.tabObjects2 = new System.Windows.Forms.TabPage();
+			this.chkHangarFold = new System.Windows.Forms.CheckBox();
 			this.cmdPlayerReset = new System.Windows.Forms.Button();
 			this.cmdCraneReset = new System.Windows.Forms.Button();
 			this.numPlayerX = new System.Windows.Forms.NumericUpDown();
@@ -197,28 +202,31 @@
 			this.tabHangarFamilyMap = new System.Windows.Forms.TabPage();
 			this.tabHangarCamera = new System.Windows.Forms.TabPage();
 			this.tabHangarFamilyCamera = new System.Windows.Forms.TabPage();
-			this.tabSkins = new System.Windows.Forms.TabPage();
-			this.chkSkins = new System.Windows.Forms.CheckBox();
-			this.tabShield = new System.Windows.Forms.TabPage();
-			this.chkShield = new System.Windows.Forms.CheckBox();
-			this.optWingman = new System.Windows.Forms.RadioButton();
-			this.numWingman = new System.Windows.Forms.NumericUpDown();
 			this.tabSFoils = new System.Windows.Forms.TabPage();
-			this.chkSFoils = new System.Windows.Forms.CheckBox();
-			this.chkDroid1Update = new System.Windows.Forms.CheckBox();
-			this.chkDroid2Update = new System.Windows.Forms.CheckBox();
-			this.chkHangarFold = new System.Windows.Forms.CheckBox();
+			this.grpSFoils = new System.Windows.Forms.GroupBox();
+			this.chkCloseSF = new System.Windows.Forms.CheckBox();
+			this.chkOpenLG = new System.Windows.Forms.CheckBox();
+			this.label49 = new System.Windows.Forms.Label();
+			this.chkManualSF = new System.Windows.Forms.CheckBox();
+			this.chkForceHyperLG = new System.Windows.Forms.CheckBox();
+			this.chkForceHangarSF = new System.Windows.Forms.CheckBox();
 			this.lstSFoils = new System.Windows.Forms.ListBox();
 			this.cboSFoilFG = new System.Windows.Forms.ComboBox();
 			this.cmdRemoveSFoils = new System.Windows.Forms.Button();
 			this.cmdAddSFoils = new System.Windows.Forms.Button();
-			this.chkCloseSF = new System.Windows.Forms.CheckBox();
-			this.chkOpenLG = new System.Windows.Forms.CheckBox();
-			this.chkForceHangarSF = new System.Windows.Forms.CheckBox();
-			this.chkForceHyperLG = new System.Windows.Forms.CheckBox();
-			this.chkManualSF = new System.Windows.Forms.CheckBox();
-			this.label49 = new System.Windows.Forms.Label();
-			this.grpSFoils = new System.Windows.Forms.GroupBox();
+			this.chkSFoils = new System.Windows.Forms.CheckBox();
+			this.tabSkins = new System.Windows.Forms.TabPage();
+			this.lstSkins = new System.Windows.Forms.ListBox();
+			this.chkSkins = new System.Windows.Forms.CheckBox();
+			this.tabShield = new System.Windows.Forms.TabPage();
+			this.chkShield = new System.Windows.Forms.CheckBox();
+			this.cmdRemoveSkin = new System.Windows.Forms.Button();
+			this.cmdAddSkin = new System.Windows.Forms.Button();
+			this.cmdAppendSkin = new System.Windows.Forms.Button();
+			this.chkSkinMarks = new System.Windows.Forms.CheckBox();
+			this.cboSkinMarks = new System.Windows.Forms.ComboBox();
+			this.chkDefaultSkin = new System.Windows.Forms.CheckBox();
+			this.txtSkin = new System.Windows.Forms.TextBox();
 			((System.ComponentModel.ISupportInitialize)(this.numFamHeadingZ)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numFamPosZ)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numFamHeadingXY)).BeginInit();
@@ -246,6 +254,7 @@
 			this.tcHooks.SuspendLayout();
 			this.tabBackdrops.SuspendLayout();
 			this.tabMission.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.numWingman)).BeginInit();
 			this.tabSounds.SuspendLayout();
 			this.tabObjects.SuspendLayout();
 			this.tabHangar.SuspendLayout();
@@ -266,11 +275,10 @@
 			this.tabHangarFamilyMap.SuspendLayout();
 			this.tabHangarCamera.SuspendLayout();
 			this.tabHangarFamilyCamera.SuspendLayout();
-			this.tabSkins.SuspendLayout();
-			this.tabShield.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.numWingman)).BeginInit();
 			this.tabSFoils.SuspendLayout();
 			this.grpSFoils.SuspendLayout();
+			this.tabSkins.SuspendLayout();
+			this.tabShield.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// cmdOK
@@ -392,6 +400,7 @@
 			this.optMarkings.Name = "optMarkings";
 			this.optMarkings.Size = new System.Drawing.Size(54, 17);
 			this.optMarkings.TabIndex = 2;
+			this.optMarkings.TabStop = true;
 			this.optMarkings.Text = "Marks";
 			this.optMarkings.UseVisualStyleBackColor = true;
 			this.optMarkings.CheckedChanged += new System.EventHandler(this.cboMission_CheckedChanged);
@@ -1714,6 +1723,24 @@
 			this.tabMission.Text = "Mission";
 			this.tabMission.UseVisualStyleBackColor = true;
 			// 
+			// numWingman
+			// 
+			this.numWingman.Enabled = false;
+			this.numWingman.Location = new System.Drawing.Point(264, 112);
+			this.numWingman.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+			this.numWingman.Name = "numWingman";
+			this.numWingman.Size = new System.Drawing.Size(60, 20);
+			this.numWingman.TabIndex = 8;
+			this.numWingman.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+			// 
 			// label48
 			// 
 			this.label48.Location = new System.Drawing.Point(6, 166);
@@ -1722,6 +1749,18 @@
 			this.label48.TabIndex = 12;
 			this.label48.Text = "Choose a FlightGroup, then select Markings, Wingman Markings, IFF, or Pilot voice" +
     ". Enter your selection and then hit \"Add\".";
+			// 
+			// optWingman
+			// 
+			this.optWingman.AutoSize = true;
+			this.optWingman.Enabled = false;
+			this.optWingman.Location = new System.Drawing.Point(167, 112);
+			this.optWingman.Name = "optWingman";
+			this.optWingman.Size = new System.Drawing.Size(70, 17);
+			this.optWingman.TabIndex = 3;
+			this.optWingman.Text = "Wingman";
+			this.optWingman.UseVisualStyleBackColor = true;
+			this.optWingman.CheckedChanged += new System.EventHandler(this.cboMission_CheckedChanged);
 			// 
 			// tabSounds
 			// 
@@ -1841,6 +1880,32 @@
 			this.tabHangarObjects.Text = "Objects";
 			this.tabHangarObjects.UseVisualStyleBackColor = true;
 			// 
+			// chkDroid2Update
+			// 
+			this.chkDroid2Update.AutoSize = true;
+			this.chkDroid2Update.Checked = true;
+			this.chkDroid2Update.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.chkDroid2Update.Enabled = false;
+			this.chkDroid2Update.Location = new System.Drawing.Point(113, 210);
+			this.chkDroid2Update.Name = "chkDroid2Update";
+			this.chkDroid2Update.Size = new System.Drawing.Size(98, 17);
+			this.chkDroid2Update.TabIndex = 22;
+			this.chkDroid2Update.Text = "Update Droid 2";
+			this.chkDroid2Update.UseVisualStyleBackColor = true;
+			// 
+			// chkDroid1Update
+			// 
+			this.chkDroid1Update.AutoSize = true;
+			this.chkDroid1Update.Checked = true;
+			this.chkDroid1Update.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.chkDroid1Update.Enabled = false;
+			this.chkDroid1Update.Location = new System.Drawing.Point(9, 210);
+			this.chkDroid1Update.Name = "chkDroid1Update";
+			this.chkDroid1Update.Size = new System.Drawing.Size(98, 17);
+			this.chkDroid1Update.TabIndex = 21;
+			this.chkDroid1Update.Text = "Update Droid 1";
+			this.chkDroid1Update.UseVisualStyleBackColor = true;
+			// 
 			// tabObjects2
 			// 
 			this.tabObjects2.Controls.Add(this.chkHangarFold);
@@ -1878,6 +1943,17 @@
 			this.tabObjects2.TabIndex = 5;
 			this.tabObjects2.Text = "Objects2";
 			this.tabObjects2.UseVisualStyleBackColor = true;
+			// 
+			// chkHangarFold
+			// 
+			this.chkHangarFold.AutoSize = true;
+			this.chkHangarFold.Enabled = false;
+			this.chkHangarFold.Location = new System.Drawing.Point(93, 218);
+			this.chkHangarFold.Name = "chkHangarFold";
+			this.chkHangarFold.Size = new System.Drawing.Size(153, 17);
+			this.chkHangarFold.TabIndex = 21;
+			this.chkHangarFold.Text = "Fold S-Foils outside hangar";
+			this.chkHangarFold.UseVisualStyleBackColor = true;
 			// 
 			// cmdPlayerReset
 			// 
@@ -2347,76 +2423,6 @@
 			this.tabHangarFamilyCamera.Text = "Family Camera";
 			this.tabHangarFamilyCamera.UseVisualStyleBackColor = true;
 			// 
-			// tabSkins
-			// 
-			this.tabSkins.Controls.Add(this.chkSkins);
-			this.tabSkins.Location = new System.Drawing.Point(4, 22);
-			this.tabSkins.Name = "tabSkins";
-			this.tabSkins.Size = new System.Drawing.Size(388, 297);
-			this.tabSkins.TabIndex = 5;
-			this.tabSkins.Text = "Skins";
-			this.tabSkins.UseVisualStyleBackColor = true;
-			// 
-			// chkSkins
-			// 
-			this.chkSkins.AutoSize = true;
-			this.chkSkins.Location = new System.Drawing.Point(6, 6);
-			this.chkSkins.Name = "chkSkins";
-			this.chkSkins.Size = new System.Drawing.Size(74, 17);
-			this.chkSkins.TabIndex = 1;
-			this.chkSkins.Text = "Use Skins";
-			this.chkSkins.UseVisualStyleBackColor = true;
-			// 
-			// tabShield
-			// 
-			this.tabShield.Controls.Add(this.chkShield);
-			this.tabShield.Location = new System.Drawing.Point(4, 22);
-			this.tabShield.Name = "tabShield";
-			this.tabShield.Size = new System.Drawing.Size(372, 297);
-			this.tabShield.TabIndex = 6;
-			this.tabShield.Text = "Shield";
-			this.tabShield.UseVisualStyleBackColor = true;
-			// 
-			// chkShield
-			// 
-			this.chkShield.AutoSize = true;
-			this.chkShield.Location = new System.Drawing.Point(6, 6);
-			this.chkShield.Name = "chkShield";
-			this.chkShield.Size = new System.Drawing.Size(77, 17);
-			this.chkShield.TabIndex = 1;
-			this.chkShield.Text = "Use Shield";
-			this.chkShield.UseVisualStyleBackColor = true;
-			// 
-			// optWingman
-			// 
-			this.optWingman.AutoSize = true;
-			this.optWingman.Enabled = false;
-			this.optWingman.Location = new System.Drawing.Point(167, 112);
-			this.optWingman.Name = "optWingman";
-			this.optWingman.Size = new System.Drawing.Size(70, 17);
-			this.optWingman.TabIndex = 3;
-			this.optWingman.Text = "Wingman";
-			this.optWingman.UseVisualStyleBackColor = true;
-			this.optWingman.CheckedChanged += new System.EventHandler(this.cboMission_CheckedChanged);
-			// 
-			// numWingman
-			// 
-			this.numWingman.Enabled = false;
-			this.numWingman.Location = new System.Drawing.Point(264, 112);
-			this.numWingman.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
-			this.numWingman.Name = "numWingman";
-			this.numWingman.Size = new System.Drawing.Size(60, 20);
-			this.numWingman.TabIndex = 8;
-			this.numWingman.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-			// 
 			// tabSFoils
 			// 
 			this.tabSFoils.Controls.Add(this.grpSFoils);
@@ -2436,53 +2442,80 @@
 			this.tabSFoils.Text = "S-Foils";
 			this.tabSFoils.UseVisualStyleBackColor = true;
 			// 
-			// chkSFoils
+			// grpSFoils
 			// 
-			this.chkSFoils.AutoSize = true;
-			this.chkSFoils.Location = new System.Drawing.Point(6, 6);
-			this.chkSFoils.Name = "chkSFoils";
-			this.chkSFoils.Size = new System.Drawing.Size(79, 17);
-			this.chkSFoils.TabIndex = 2;
-			this.chkSFoils.Text = "Use S-Foils";
-			this.chkSFoils.UseVisualStyleBackColor = true;
-			this.chkSFoils.CheckedChanged += new System.EventHandler(this.chkSFoils_CheckedChanged);
+			this.grpSFoils.Controls.Add(this.chkCloseSF);
+			this.grpSFoils.Controls.Add(this.chkOpenLG);
+			this.grpSFoils.Location = new System.Drawing.Point(167, 85);
+			this.grpSFoils.Name = "grpSFoils";
+			this.grpSFoils.Size = new System.Drawing.Size(168, 65);
+			this.grpSFoils.TabIndex = 25;
+			this.grpSFoils.TabStop = false;
+			this.grpSFoils.Text = "Per FlightGroup";
 			// 
-			// chkDroid1Update
+			// chkCloseSF
 			// 
-			this.chkDroid1Update.AutoSize = true;
-			this.chkDroid1Update.Checked = true;
-			this.chkDroid1Update.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.chkDroid1Update.Enabled = false;
-			this.chkDroid1Update.Location = new System.Drawing.Point(9, 210);
-			this.chkDroid1Update.Name = "chkDroid1Update";
-			this.chkDroid1Update.Size = new System.Drawing.Size(98, 17);
-			this.chkDroid1Update.TabIndex = 21;
-			this.chkDroid1Update.Text = "Update Droid 1";
-			this.chkDroid1Update.UseVisualStyleBackColor = true;
+			this.chkCloseSF.AutoSize = true;
+			this.chkCloseSF.Enabled = false;
+			this.chkCloseSF.Location = new System.Drawing.Point(13, 19);
+			this.chkCloseSF.Name = "chkCloseSF";
+			this.chkCloseSF.Size = new System.Drawing.Size(122, 17);
+			this.chkCloseSF.TabIndex = 23;
+			this.chkCloseSF.Text = "Force S-Foils Closed";
+			this.chkCloseSF.UseVisualStyleBackColor = true;
 			// 
-			// chkDroid2Update
+			// chkOpenLG
 			// 
-			this.chkDroid2Update.AutoSize = true;
-			this.chkDroid2Update.Checked = true;
-			this.chkDroid2Update.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.chkDroid2Update.Enabled = false;
-			this.chkDroid2Update.Location = new System.Drawing.Point(113, 210);
-			this.chkDroid2Update.Name = "chkDroid2Update";
-			this.chkDroid2Update.Size = new System.Drawing.Size(98, 17);
-			this.chkDroid2Update.TabIndex = 22;
-			this.chkDroid2Update.Text = "Update Droid 2";
-			this.chkDroid2Update.UseVisualStyleBackColor = true;
+			this.chkOpenLG.AutoSize = true;
+			this.chkOpenLG.Enabled = false;
+			this.chkOpenLG.Location = new System.Drawing.Point(13, 42);
+			this.chkOpenLG.Name = "chkOpenLG";
+			this.chkOpenLG.Size = new System.Drawing.Size(149, 17);
+			this.chkOpenLG.TabIndex = 23;
+			this.chkOpenLG.Text = "Force Landing Gear Open";
+			this.chkOpenLG.UseVisualStyleBackColor = true;
 			// 
-			// chkHangarFold
+			// label49
 			// 
-			this.chkHangarFold.AutoSize = true;
-			this.chkHangarFold.Enabled = false;
-			this.chkHangarFold.Location = new System.Drawing.Point(93, 218);
-			this.chkHangarFold.Name = "chkHangarFold";
-			this.chkHangarFold.Size = new System.Drawing.Size(153, 17);
-			this.chkHangarFold.TabIndex = 21;
-			this.chkHangarFold.Text = "Fold S-Foils outside hangar";
-			this.chkHangarFold.UseVisualStyleBackColor = true;
+			this.label49.Location = new System.Drawing.Point(6, 166);
+			this.label49.Name = "label49";
+			this.label49.Size = new System.Drawing.Size(155, 84);
+			this.label49.TabIndex = 24;
+			this.label49.Text = "Choose a FlightGroup, then enable the desired options from the grouped pair and h" +
+    "it \"Add\". The ungrouped options are global. Default for each is unchecked.";
+			// 
+			// chkManualSF
+			// 
+			this.chkManualSF.AutoSize = true;
+			this.chkManualSF.Enabled = false;
+			this.chkManualSF.Location = new System.Drawing.Point(180, 212);
+			this.chkManualSF.Name = "chkManualSF";
+			this.chkManualSF.Size = new System.Drawing.Size(162, 17);
+			this.chkManualSF.TabIndex = 23;
+			this.chkManualSF.Text = "Manual control of SF and LG";
+			this.chkManualSF.UseVisualStyleBackColor = true;
+			// 
+			// chkForceHyperLG
+			// 
+			this.chkForceHyperLG.AutoSize = true;
+			this.chkForceHyperLG.Enabled = false;
+			this.chkForceHyperLG.Location = new System.Drawing.Point(180, 189);
+			this.chkForceHyperLG.Name = "chkForceHyperLG";
+			this.chkForceHyperLG.Size = new System.Drawing.Size(175, 17);
+			this.chkForceHyperLG.TabIndex = 23;
+			this.chkForceHyperLG.Text = "Force LG closed in Hyperspace";
+			this.chkForceHyperLG.UseVisualStyleBackColor = true;
+			// 
+			// chkForceHangarSF
+			// 
+			this.chkForceHangarSF.AutoSize = true;
+			this.chkForceHangarSF.Enabled = false;
+			this.chkForceHangarSF.Location = new System.Drawing.Point(180, 166);
+			this.chkForceHangarSF.Name = "chkForceHangarSF";
+			this.chkForceHangarSF.Size = new System.Drawing.Size(199, 17);
+			this.chkForceHangarSF.TabIndex = 23;
+			this.chkForceHangarSF.Text = "Force SF closed, LG open in Hangar";
+			this.chkForceHangarSF.UseVisualStyleBackColor = true;
 			// 
 			// lstSFoils
 			// 
@@ -2524,80 +2557,149 @@
 			this.cmdAddSFoils.UseVisualStyleBackColor = true;
 			this.cmdAddSFoils.Click += new System.EventHandler(this.cmdAddSFoils_Click);
 			// 
-			// chkCloseSF
+			// chkSFoils
 			// 
-			this.chkCloseSF.AutoSize = true;
-			this.chkCloseSF.Enabled = false;
-			this.chkCloseSF.Location = new System.Drawing.Point(13, 19);
-			this.chkCloseSF.Name = "chkCloseSF";
-			this.chkCloseSF.Size = new System.Drawing.Size(122, 17);
-			this.chkCloseSF.TabIndex = 23;
-			this.chkCloseSF.Text = "Force S-Foils Closed";
-			this.chkCloseSF.UseVisualStyleBackColor = true;
+			this.chkSFoils.AutoSize = true;
+			this.chkSFoils.Location = new System.Drawing.Point(6, 6);
+			this.chkSFoils.Name = "chkSFoils";
+			this.chkSFoils.Size = new System.Drawing.Size(79, 17);
+			this.chkSFoils.TabIndex = 2;
+			this.chkSFoils.Text = "Use S-Foils";
+			this.chkSFoils.UseVisualStyleBackColor = true;
+			this.chkSFoils.CheckedChanged += new System.EventHandler(this.chkSFoils_CheckedChanged);
 			// 
-			// chkOpenLG
+			// tabSkins
 			// 
-			this.chkOpenLG.AutoSize = true;
-			this.chkOpenLG.Enabled = false;
-			this.chkOpenLG.Location = new System.Drawing.Point(13, 42);
-			this.chkOpenLG.Name = "chkOpenLG";
-			this.chkOpenLG.Size = new System.Drawing.Size(149, 17);
-			this.chkOpenLG.TabIndex = 23;
-			this.chkOpenLG.Text = "Force Landing Gear Open";
-			this.chkOpenLG.UseVisualStyleBackColor = true;
+			this.tabSkins.Controls.Add(this.txtSkin);
+			this.tabSkins.Controls.Add(this.chkDefaultSkin);
+			this.tabSkins.Controls.Add(this.cboSkinMarks);
+			this.tabSkins.Controls.Add(this.chkSkinMarks);
+			this.tabSkins.Controls.Add(this.cmdRemoveSkin);
+			this.tabSkins.Controls.Add(this.cmdAppendSkin);
+			this.tabSkins.Controls.Add(this.cmdAddSkin);
+			this.tabSkins.Controls.Add(this.lstSkins);
+			this.tabSkins.Controls.Add(this.chkSkins);
+			this.tabSkins.Location = new System.Drawing.Point(4, 22);
+			this.tabSkins.Name = "tabSkins";
+			this.tabSkins.Size = new System.Drawing.Size(388, 297);
+			this.tabSkins.TabIndex = 5;
+			this.tabSkins.Text = "Skins";
+			this.tabSkins.UseVisualStyleBackColor = true;
 			// 
-			// chkForceHangarSF
+			// lstSkins
 			// 
-			this.chkForceHangarSF.AutoSize = true;
-			this.chkForceHangarSF.Enabled = false;
-			this.chkForceHangarSF.Location = new System.Drawing.Point(180, 166);
-			this.chkForceHangarSF.Name = "chkForceHangarSF";
-			this.chkForceHangarSF.Size = new System.Drawing.Size(199, 17);
-			this.chkForceHangarSF.TabIndex = 23;
-			this.chkForceHangarSF.Text = "Force SF closed, LG open in Hangar";
-			this.chkForceHangarSF.UseVisualStyleBackColor = true;
+			this.lstSkins.Enabled = false;
+			this.lstSkins.FormattingEnabled = true;
+			this.lstSkins.Location = new System.Drawing.Point(6, 29);
+			this.lstSkins.Name = "lstSkins";
+			this.lstSkins.Size = new System.Drawing.Size(347, 95);
+			this.lstSkins.TabIndex = 23;
 			// 
-			// chkForceHyperLG
+			// chkSkins
 			// 
-			this.chkForceHyperLG.AutoSize = true;
-			this.chkForceHyperLG.Enabled = false;
-			this.chkForceHyperLG.Location = new System.Drawing.Point(180, 189);
-			this.chkForceHyperLG.Name = "chkForceHyperLG";
-			this.chkForceHyperLG.Size = new System.Drawing.Size(175, 17);
-			this.chkForceHyperLG.TabIndex = 23;
-			this.chkForceHyperLG.Text = "Force LG closed in Hyperspace";
-			this.chkForceHyperLG.UseVisualStyleBackColor = true;
+			this.chkSkins.AutoSize = true;
+			this.chkSkins.Location = new System.Drawing.Point(6, 6);
+			this.chkSkins.Name = "chkSkins";
+			this.chkSkins.Size = new System.Drawing.Size(74, 17);
+			this.chkSkins.TabIndex = 1;
+			this.chkSkins.Text = "Use Skins";
+			this.chkSkins.UseVisualStyleBackColor = true;
+			this.chkSkins.CheckedChanged += new System.EventHandler(this.chkSkins_CheckedChanged);
 			// 
-			// chkManualSF
+			// tabShield
 			// 
-			this.chkManualSF.AutoSize = true;
-			this.chkManualSF.Enabled = false;
-			this.chkManualSF.Location = new System.Drawing.Point(180, 212);
-			this.chkManualSF.Name = "chkManualSF";
-			this.chkManualSF.Size = new System.Drawing.Size(162, 17);
-			this.chkManualSF.TabIndex = 23;
-			this.chkManualSF.Text = "Manual control of SF and LG";
-			this.chkManualSF.UseVisualStyleBackColor = true;
+			this.tabShield.Controls.Add(this.chkShield);
+			this.tabShield.Location = new System.Drawing.Point(4, 22);
+			this.tabShield.Name = "tabShield";
+			this.tabShield.Size = new System.Drawing.Size(388, 297);
+			this.tabShield.TabIndex = 6;
+			this.tabShield.Text = "Shield";
+			this.tabShield.UseVisualStyleBackColor = true;
 			// 
-			// label49
+			// chkShield
 			// 
-			this.label49.Location = new System.Drawing.Point(6, 166);
-			this.label49.Name = "label49";
-			this.label49.Size = new System.Drawing.Size(155, 84);
-			this.label49.TabIndex = 24;
-			this.label49.Text = "Choose a FlightGroup, then enable the desired options from the grouped pair and h" +
-    "it \"Add\". The ungrouped options are global. Default for each is unchecked.";
+			this.chkShield.AutoSize = true;
+			this.chkShield.Location = new System.Drawing.Point(6, 6);
+			this.chkShield.Name = "chkShield";
+			this.chkShield.Size = new System.Drawing.Size(77, 17);
+			this.chkShield.TabIndex = 1;
+			this.chkShield.Text = "Use Shield";
+			this.chkShield.UseVisualStyleBackColor = true;
 			// 
-			// grpSFoils
+			// cmdRemoveSkin
 			// 
-			this.grpSFoils.Controls.Add(this.chkCloseSF);
-			this.grpSFoils.Controls.Add(this.chkOpenLG);
-			this.grpSFoils.Location = new System.Drawing.Point(167, 85);
-			this.grpSFoils.Name = "grpSFoils";
-			this.grpSFoils.Size = new System.Drawing.Size(168, 65);
-			this.grpSFoils.TabIndex = 25;
-			this.grpSFoils.TabStop = false;
-			this.grpSFoils.Text = "Per FlightGroup";
+			this.cmdRemoveSkin.Enabled = false;
+			this.cmdRemoveSkin.Location = new System.Drawing.Point(140, 130);
+			this.cmdRemoveSkin.Name = "cmdRemoveSkin";
+			this.cmdRemoveSkin.Size = new System.Drawing.Size(60, 23);
+			this.cmdRemoveSkin.TabIndex = 22;
+			this.cmdRemoveSkin.Text = "&Remove";
+			this.cmdRemoveSkin.UseVisualStyleBackColor = true;
+			this.cmdRemoveSkin.Click += new System.EventHandler(this.cmdRemoveSkin_Click);
+			// 
+			// cmdAddSkin
+			// 
+			this.cmdAddSkin.Enabled = false;
+			this.cmdAddSkin.Location = new System.Drawing.Point(6, 130);
+			this.cmdAddSkin.Name = "cmdAddSkin";
+			this.cmdAddSkin.Size = new System.Drawing.Size(60, 23);
+			this.cmdAddSkin.TabIndex = 20;
+			this.cmdAddSkin.Text = "&Add";
+			this.cmdAddSkin.UseVisualStyleBackColor = true;
+			this.cmdAddSkin.Click += new System.EventHandler(this.cmdAddSkin_Click);
+			// 
+			// cmdAppendSkin
+			// 
+			this.cmdAppendSkin.Enabled = false;
+			this.cmdAppendSkin.Location = new System.Drawing.Point(74, 130);
+			this.cmdAppendSkin.Name = "cmdAppendSkin";
+			this.cmdAppendSkin.Size = new System.Drawing.Size(60, 23);
+			this.cmdAppendSkin.TabIndex = 21;
+			this.cmdAppendSkin.Text = "A&ppend";
+			this.cmdAppendSkin.UseVisualStyleBackColor = true;
+			this.cmdAppendSkin.Click += new System.EventHandler(this.cmdAppendSkin_Click);
+			// 
+			// chkSkinMarks
+			// 
+			this.chkSkinMarks.AutoSize = true;
+			this.chkSkinMarks.Enabled = false;
+			this.chkSkinMarks.Location = new System.Drawing.Point(6, 159);
+			this.chkSkinMarks.Name = "chkSkinMarks";
+			this.chkSkinMarks.Size = new System.Drawing.Size(55, 17);
+			this.chkSkinMarks.TabIndex = 24;
+			this.chkSkinMarks.Text = "Marks";
+			this.chkSkinMarks.UseVisualStyleBackColor = true;
+			this.chkSkinMarks.CheckedChanged += new System.EventHandler(this.chkSkinMarks_CheckedChanged);
+			// 
+			// cboSkinMarks
+			// 
+			this.cboSkinMarks.Enabled = false;
+			this.cboSkinMarks.FormattingEnabled = true;
+			this.cboSkinMarks.Location = new System.Drawing.Point(64, 157);
+			this.cboSkinMarks.Name = "cboSkinMarks";
+			this.cboSkinMarks.Size = new System.Drawing.Size(136, 21);
+			this.cboSkinMarks.TabIndex = 25;
+			// 
+			// chkDefaultSkin
+			// 
+			this.chkDefaultSkin.AutoSize = true;
+			this.chkDefaultSkin.Enabled = false;
+			this.chkDefaultSkin.Location = new System.Drawing.Point(6, 184);
+			this.chkDefaultSkin.Name = "chkDefaultSkin";
+			this.chkDefaultSkin.Size = new System.Drawing.Size(60, 17);
+			this.chkDefaultSkin.TabIndex = 26;
+			this.chkDefaultSkin.Text = "Default";
+			this.chkDefaultSkin.UseVisualStyleBackColor = true;
+			this.chkDefaultSkin.CheckedChanged += new System.EventHandler(this.chkDefaultSkin_CheckedChanged);
+			// 
+			// txtSkin
+			// 
+			this.txtSkin.Enabled = false;
+			this.txtSkin.Location = new System.Drawing.Point(72, 182);
+			this.txtSkin.Name = "txtSkin";
+			this.txtSkin.Size = new System.Drawing.Size(128, 20);
+			this.txtSkin.TabIndex = 27;
+			this.txtSkin.Text = "Default";
 			// 
 			// XwaHookDialog
 			// 
@@ -2643,6 +2745,7 @@
 			this.tabBackdrops.PerformLayout();
 			this.tabMission.ResumeLayout(false);
 			this.tabMission.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.numWingman)).EndInit();
 			this.tabSounds.ResumeLayout(false);
 			this.tabSounds.PerformLayout();
 			this.tabObjects.ResumeLayout(false);
@@ -2673,15 +2776,14 @@
 			this.tabHangarCamera.PerformLayout();
 			this.tabHangarFamilyCamera.ResumeLayout(false);
 			this.tabHangarFamilyCamera.PerformLayout();
-			this.tabSkins.ResumeLayout(false);
-			this.tabSkins.PerformLayout();
-			this.tabShield.ResumeLayout(false);
-			this.tabShield.PerformLayout();
-			((System.ComponentModel.ISupportInitialize)(this.numWingman)).EndInit();
 			this.tabSFoils.ResumeLayout(false);
 			this.tabSFoils.PerformLayout();
 			this.grpSFoils.ResumeLayout(false);
 			this.grpSFoils.PerformLayout();
+			this.tabSkins.ResumeLayout(false);
+			this.tabSkins.PerformLayout();
+			this.tabShield.ResumeLayout(false);
+			this.tabShield.PerformLayout();
 			this.ResumeLayout(false);
 
 		}
@@ -2878,5 +2980,13 @@
 		private System.Windows.Forms.Button cmdRemoveSFoils;
 		private System.Windows.Forms.Button cmdAddSFoils;
 		private System.Windows.Forms.GroupBox grpSFoils;
+		private System.Windows.Forms.ListBox lstSkins;
+		private System.Windows.Forms.Button cmdRemoveSkin;
+		private System.Windows.Forms.Button cmdAppendSkin;
+		private System.Windows.Forms.Button cmdAddSkin;
+		private System.Windows.Forms.TextBox txtSkin;
+		private System.Windows.Forms.CheckBox chkDefaultSkin;
+		private System.Windows.Forms.ComboBox cboSkinMarks;
+		private System.Windows.Forms.CheckBox chkSkinMarks;
 	}
 }
