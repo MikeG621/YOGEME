@@ -216,17 +216,26 @@
 			this.cmdAddSFoils = new System.Windows.Forms.Button();
 			this.chkSFoils = new System.Windows.Forms.CheckBox();
 			this.tabSkins = new System.Windows.Forms.TabPage();
+			this.txtSkin = new System.Windows.Forms.TextBox();
+			this.chkDefaultSkin = new System.Windows.Forms.CheckBox();
+			this.cboSkinMarks = new System.Windows.Forms.ComboBox();
+			this.chkSkinMarks = new System.Windows.Forms.CheckBox();
+			this.cmdRemoveSkin = new System.Windows.Forms.Button();
+			this.cmdAppendSkin = new System.Windows.Forms.Button();
+			this.cmdAddSkin = new System.Windows.Forms.Button();
 			this.lstSkins = new System.Windows.Forms.ListBox();
 			this.chkSkins = new System.Windows.Forms.CheckBox();
 			this.tabShield = new System.Windows.Forms.TabPage();
 			this.chkShield = new System.Windows.Forms.CheckBox();
-			this.cmdRemoveSkin = new System.Windows.Forms.Button();
-			this.cmdAddSkin = new System.Windows.Forms.Button();
-			this.cmdAppendSkin = new System.Windows.Forms.Button();
-			this.chkSkinMarks = new System.Windows.Forms.CheckBox();
-			this.cboSkinMarks = new System.Windows.Forms.ComboBox();
-			this.chkDefaultSkin = new System.Windows.Forms.CheckBox();
-			this.txtSkin = new System.Windows.Forms.TextBox();
+			this.label50 = new System.Windows.Forms.Label();
+			this.lstShield = new System.Windows.Forms.ListBox();
+			this.chkShieldGen = new System.Windows.Forms.CheckBox();
+			this.label51 = new System.Windows.Forms.Label();
+			this.numShieldRate = new System.Windows.Forms.NumericUpDown();
+			this.cboShield = new System.Windows.Forms.ComboBox();
+			this.cmdRemoveShield = new System.Windows.Forms.Button();
+			this.cmdAddShield = new System.Windows.Forms.Button();
+			this.label52 = new System.Windows.Forms.Label();
 			((System.ComponentModel.ISupportInitialize)(this.numFamHeadingZ)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numFamPosZ)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numFamHeadingXY)).BeginInit();
@@ -279,6 +288,7 @@
 			this.grpSFoils.SuspendLayout();
 			this.tabSkins.SuspendLayout();
 			this.tabShield.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.numShieldRate)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// cmdOK
@@ -2570,6 +2580,7 @@
 			// 
 			// tabSkins
 			// 
+			this.tabSkins.Controls.Add(this.label50);
 			this.tabSkins.Controls.Add(this.txtSkin);
 			this.tabSkins.Controls.Add(this.chkDefaultSkin);
 			this.tabSkins.Controls.Add(this.cboSkinMarks);
@@ -2585,6 +2596,81 @@
 			this.tabSkins.TabIndex = 5;
 			this.tabSkins.Text = "Skins";
 			this.tabSkins.UseVisualStyleBackColor = true;
+			// 
+			// txtSkin
+			// 
+			this.txtSkin.Enabled = false;
+			this.txtSkin.Location = new System.Drawing.Point(72, 182);
+			this.txtSkin.Name = "txtSkin";
+			this.txtSkin.Size = new System.Drawing.Size(128, 20);
+			this.txtSkin.TabIndex = 27;
+			this.txtSkin.Text = "Default";
+			// 
+			// chkDefaultSkin
+			// 
+			this.chkDefaultSkin.AutoSize = true;
+			this.chkDefaultSkin.Enabled = false;
+			this.chkDefaultSkin.Location = new System.Drawing.Point(6, 184);
+			this.chkDefaultSkin.Name = "chkDefaultSkin";
+			this.chkDefaultSkin.Size = new System.Drawing.Size(60, 17);
+			this.chkDefaultSkin.TabIndex = 26;
+			this.chkDefaultSkin.Text = "Default";
+			this.chkDefaultSkin.UseVisualStyleBackColor = true;
+			this.chkDefaultSkin.CheckedChanged += new System.EventHandler(this.chkDefaultSkin_CheckedChanged);
+			// 
+			// cboSkinMarks
+			// 
+			this.cboSkinMarks.Enabled = false;
+			this.cboSkinMarks.FormattingEnabled = true;
+			this.cboSkinMarks.Location = new System.Drawing.Point(64, 157);
+			this.cboSkinMarks.Name = "cboSkinMarks";
+			this.cboSkinMarks.Size = new System.Drawing.Size(136, 21);
+			this.cboSkinMarks.TabIndex = 25;
+			// 
+			// chkSkinMarks
+			// 
+			this.chkSkinMarks.AutoSize = true;
+			this.chkSkinMarks.Enabled = false;
+			this.chkSkinMarks.Location = new System.Drawing.Point(6, 159);
+			this.chkSkinMarks.Name = "chkSkinMarks";
+			this.chkSkinMarks.Size = new System.Drawing.Size(55, 17);
+			this.chkSkinMarks.TabIndex = 24;
+			this.chkSkinMarks.Text = "Marks";
+			this.chkSkinMarks.UseVisualStyleBackColor = true;
+			this.chkSkinMarks.CheckedChanged += new System.EventHandler(this.chkSkinMarks_CheckedChanged);
+			// 
+			// cmdRemoveSkin
+			// 
+			this.cmdRemoveSkin.Enabled = false;
+			this.cmdRemoveSkin.Location = new System.Drawing.Point(140, 130);
+			this.cmdRemoveSkin.Name = "cmdRemoveSkin";
+			this.cmdRemoveSkin.Size = new System.Drawing.Size(60, 23);
+			this.cmdRemoveSkin.TabIndex = 22;
+			this.cmdRemoveSkin.Text = "&Remove";
+			this.cmdRemoveSkin.UseVisualStyleBackColor = true;
+			this.cmdRemoveSkin.Click += new System.EventHandler(this.cmdRemoveSkin_Click);
+			// 
+			// cmdAppendSkin
+			// 
+			this.cmdAppendSkin.Enabled = false;
+			this.cmdAppendSkin.Location = new System.Drawing.Point(74, 130);
+			this.cmdAppendSkin.Name = "cmdAppendSkin";
+			this.cmdAppendSkin.Size = new System.Drawing.Size(60, 23);
+			this.cmdAppendSkin.TabIndex = 21;
+			this.cmdAppendSkin.Text = "A&ppend";
+			this.cmdAppendSkin.UseVisualStyleBackColor = true;
+			this.cmdAppendSkin.Click += new System.EventHandler(this.cmdAppendSkin_Click);
+			// 
+			// cmdAddSkin
+			// 
+			this.cmdAddSkin.Enabled = false;
+			this.cmdAddSkin.Location = new System.Drawing.Point(6, 130);
+			this.cmdAddSkin.Name = "cmdAddSkin";
+			this.cmdAddSkin.Size = new System.Drawing.Size(60, 23);
+			this.cmdAddSkin.TabIndex = 20;
+			this.cmdAddSkin.Text = "&Add";
+			this.cmdAddSkin.UseVisualStyleBackColor = true;
+			this.cmdAddSkin.Click += new System.EventHandler(this.cmdAddSkin_Click);
 			// 
 			// lstSkins
 			// 
@@ -2608,6 +2694,14 @@
 			// 
 			// tabShield
 			// 
+			this.tabShield.Controls.Add(this.label52);
+			this.tabShield.Controls.Add(this.cboShield);
+			this.tabShield.Controls.Add(this.cmdRemoveShield);
+			this.tabShield.Controls.Add(this.cmdAddShield);
+			this.tabShield.Controls.Add(this.numShieldRate);
+			this.tabShield.Controls.Add(this.label51);
+			this.tabShield.Controls.Add(this.chkShieldGen);
+			this.tabShield.Controls.Add(this.lstShield);
 			this.tabShield.Controls.Add(this.chkShield);
 			this.tabShield.Location = new System.Drawing.Point(4, 22);
 			this.tabShield.Name = "tabShield";
@@ -2625,81 +2719,92 @@
 			this.chkShield.TabIndex = 1;
 			this.chkShield.Text = "Use Shield";
 			this.chkShield.UseVisualStyleBackColor = true;
+			this.chkShield.CheckedChanged += new System.EventHandler(this.chkShield_CheckedChanged);
 			// 
-			// cmdRemoveSkin
+			// label50
 			// 
-			this.cmdRemoveSkin.Enabled = false;
-			this.cmdRemoveSkin.Location = new System.Drawing.Point(140, 130);
-			this.cmdRemoveSkin.Name = "cmdRemoveSkin";
-			this.cmdRemoveSkin.Size = new System.Drawing.Size(60, 23);
-			this.cmdRemoveSkin.TabIndex = 22;
-			this.cmdRemoveSkin.Text = "&Remove";
-			this.cmdRemoveSkin.UseVisualStyleBackColor = true;
-			this.cmdRemoveSkin.Click += new System.EventHandler(this.cmdRemoveSkin_Click);
+			this.label50.Location = new System.Drawing.Point(206, 135);
+			this.label50.Name = "label50";
+			this.label50.Size = new System.Drawing.Size(155, 84);
+			this.label50.TabIndex = 28;
+			this.label50.Text = "Choose if you want to apply to a Markings variant or not, then if you\'re using th" +
+    "e Default or a defined skin. Then hit \"Add\" to select an OPT, or \"Append\" to add" +
+    " a Skin to an existing item.";
 			// 
-			// cmdAddSkin
+			// lstShield
 			// 
-			this.cmdAddSkin.Enabled = false;
-			this.cmdAddSkin.Location = new System.Drawing.Point(6, 130);
-			this.cmdAddSkin.Name = "cmdAddSkin";
-			this.cmdAddSkin.Size = new System.Drawing.Size(60, 23);
-			this.cmdAddSkin.TabIndex = 20;
-			this.cmdAddSkin.Text = "&Add";
-			this.cmdAddSkin.UseVisualStyleBackColor = true;
-			this.cmdAddSkin.Click += new System.EventHandler(this.cmdAddSkin_Click);
+			this.lstShield.FormattingEnabled = true;
+			this.lstShield.Location = new System.Drawing.Point(6, 29);
+			this.lstShield.Name = "lstShield";
+			this.lstShield.Size = new System.Drawing.Size(186, 108);
+			this.lstShield.TabIndex = 2;
 			// 
-			// cmdAppendSkin
+			// chkShieldGen
 			// 
-			this.cmdAppendSkin.Enabled = false;
-			this.cmdAppendSkin.Location = new System.Drawing.Point(74, 130);
-			this.cmdAppendSkin.Name = "cmdAppendSkin";
-			this.cmdAppendSkin.Size = new System.Drawing.Size(60, 23);
-			this.cmdAppendSkin.TabIndex = 21;
-			this.cmdAppendSkin.Text = "A&ppend";
-			this.cmdAppendSkin.UseVisualStyleBackColor = true;
-			this.cmdAppendSkin.Click += new System.EventHandler(this.cmdAppendSkin_Click);
+			this.chkShieldGen.AutoSize = true;
+			this.chkShieldGen.Location = new System.Drawing.Point(198, 85);
+			this.chkShieldGen.Name = "chkShieldGen";
+			this.chkShieldGen.Size = new System.Drawing.Size(155, 17);
+			this.chkShieldGen.TabIndex = 3;
+			this.chkShieldGen.Text = "Rate applies per ShieldGen";
+			this.chkShieldGen.UseVisualStyleBackColor = true;
 			// 
-			// chkSkinMarks
+			// label51
 			// 
-			this.chkSkinMarks.AutoSize = true;
-			this.chkSkinMarks.Enabled = false;
-			this.chkSkinMarks.Location = new System.Drawing.Point(6, 159);
-			this.chkSkinMarks.Name = "chkSkinMarks";
-			this.chkSkinMarks.Size = new System.Drawing.Size(55, 17);
-			this.chkSkinMarks.TabIndex = 24;
-			this.chkSkinMarks.Text = "Marks";
-			this.chkSkinMarks.UseVisualStyleBackColor = true;
-			this.chkSkinMarks.CheckedChanged += new System.EventHandler(this.chkSkinMarks_CheckedChanged);
+			this.label51.AutoSize = true;
+			this.label51.Location = new System.Drawing.Point(195, 110);
+			this.label51.Name = "label51";
+			this.label51.Size = new System.Drawing.Size(80, 13);
+			this.label51.TabIndex = 4;
+			this.label51.Text = "Recharge Rate";
 			// 
-			// cboSkinMarks
+			// numShieldRate
 			// 
-			this.cboSkinMarks.Enabled = false;
-			this.cboSkinMarks.FormattingEnabled = true;
-			this.cboSkinMarks.Location = new System.Drawing.Point(64, 157);
-			this.cboSkinMarks.Name = "cboSkinMarks";
-			this.cboSkinMarks.Size = new System.Drawing.Size(136, 21);
-			this.cboSkinMarks.TabIndex = 25;
+			this.numShieldRate.Location = new System.Drawing.Point(281, 108);
+			this.numShieldRate.Name = "numShieldRate";
+			this.numShieldRate.Size = new System.Drawing.Size(72, 20);
+			this.numShieldRate.TabIndex = 5;
 			// 
-			// chkDefaultSkin
+			// cboShield
 			// 
-			this.chkDefaultSkin.AutoSize = true;
-			this.chkDefaultSkin.Enabled = false;
-			this.chkDefaultSkin.Location = new System.Drawing.Point(6, 184);
-			this.chkDefaultSkin.Name = "chkDefaultSkin";
-			this.chkDefaultSkin.Size = new System.Drawing.Size(60, 17);
-			this.chkDefaultSkin.TabIndex = 26;
-			this.chkDefaultSkin.Text = "Default";
-			this.chkDefaultSkin.UseVisualStyleBackColor = true;
-			this.chkDefaultSkin.CheckedChanged += new System.EventHandler(this.chkDefaultSkin_CheckedChanged);
+			this.cboShield.Enabled = false;
+			this.cboShield.FormattingEnabled = true;
+			this.cboShield.Location = new System.Drawing.Point(198, 29);
+			this.cboShield.Name = "cboShield";
+			this.cboShield.Size = new System.Drawing.Size(157, 21);
+			this.cboShield.TabIndex = 42;
 			// 
-			// txtSkin
+			// cmdRemoveShield
 			// 
-			this.txtSkin.Enabled = false;
-			this.txtSkin.Location = new System.Drawing.Point(72, 182);
-			this.txtSkin.Name = "txtSkin";
-			this.txtSkin.Size = new System.Drawing.Size(128, 20);
-			this.txtSkin.TabIndex = 27;
-			this.txtSkin.Text = "Default";
+			this.cmdRemoveShield.Enabled = false;
+			this.cmdRemoveShield.Location = new System.Drawing.Point(295, 56);
+			this.cmdRemoveShield.Name = "cmdRemoveShield";
+			this.cmdRemoveShield.Size = new System.Drawing.Size(60, 23);
+			this.cmdRemoveShield.TabIndex = 44;
+			this.cmdRemoveShield.Text = "&Remove";
+			this.cmdRemoveShield.UseVisualStyleBackColor = true;
+			this.cmdRemoveShield.Click += new System.EventHandler(this.cmdRemoveShield_Click);
+			// 
+			// cmdAddShield
+			// 
+			this.cmdAddShield.Enabled = false;
+			this.cmdAddShield.Location = new System.Drawing.Point(198, 56);
+			this.cmdAddShield.Name = "cmdAddShield";
+			this.cmdAddShield.Size = new System.Drawing.Size(60, 23);
+			this.cmdAddShield.TabIndex = 43;
+			this.cmdAddShield.Text = "&Add";
+			this.cmdAddShield.UseVisualStyleBackColor = true;
+			this.cmdAddShield.Click += new System.EventHandler(this.cmdAddShield_Click);
+			// 
+			// label52
+			// 
+			this.label52.Location = new System.Drawing.Point(195, 131);
+			this.label52.Name = "label52";
+			this.label52.Size = new System.Drawing.Size(190, 97);
+			this.label52.TabIndex = 45;
+			this.label52.Text = "Defaults:\r\nStarfighters = 20\r\nStar Destroyers = 5 per ShieldGen\r\nOther starships " +
+    "= 5\r\nOthers = 0\r\nPlayer will reset to 20 if set to 0\r\nAll starships set to 0 on " +
+    "Easy";
 			// 
 			// XwaHookDialog
 			// 
@@ -2784,6 +2889,7 @@
 			this.tabSkins.PerformLayout();
 			this.tabShield.ResumeLayout(false);
 			this.tabShield.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.numShieldRate)).EndInit();
 			this.ResumeLayout(false);
 
 		}
@@ -2988,5 +3094,14 @@
 		private System.Windows.Forms.CheckBox chkDefaultSkin;
 		private System.Windows.Forms.ComboBox cboSkinMarks;
 		private System.Windows.Forms.CheckBox chkSkinMarks;
+		private System.Windows.Forms.Label label50;
+		private System.Windows.Forms.Label label52;
+		private System.Windows.Forms.ComboBox cboShield;
+		private System.Windows.Forms.Button cmdRemoveShield;
+		private System.Windows.Forms.Button cmdAddShield;
+		private System.Windows.Forms.NumericUpDown numShieldRate;
+		private System.Windows.Forms.Label label51;
+		private System.Windows.Forms.CheckBox chkShieldGen;
+		private System.Windows.Forms.ListBox lstShield;
 	}
 }

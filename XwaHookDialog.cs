@@ -8,7 +8,7 @@
 
 /* CHANGELOG
  * [ADD] Wingman markings, Droid1/2Update
- * [ADD] S-Foils, Skins (32bpp) hook support
+ * [ADD] S-Foils, Skins (32bpp), Shield hook support
  * [FIX] Missing Droid1/2PositionZ read
  * [UPD] Layout redesigned
  * v1.8.2, 201219
@@ -147,6 +147,8 @@ namespace Idmr.Yogeme
 			for (int i = 0; i < 7; i++)
 				for (int j = 0; j < 3; j++)
 					_defaultFamilyCameras[i, j] = _familyCameras[i, j];
+			cboShield.Items.AddRange(Strings.CraftType);
+			cboShield.SelectedIndex = 0;
 			#endregion
 
 			if (config.XwaInstalled)
@@ -289,8 +291,8 @@ namespace Idmr.Yogeme
 				StreamReader srShield = new StreamReader(_shieldFile);
 				while ((line = srShield.ReadLine()) != null)
 				{
-					if (isComment(line)) continue;
-					//TODO: shields
+					if (!isComment(line))
+						parseShield(line);
 				}
 				srShield.Close();
 			}
@@ -339,10 +341,7 @@ namespace Idmr.Yogeme
 							lstFamilyMap.Items.Add(entry.ToString());
 					}
 					else if (readMode == ReadMode.Skins) lstSkins.Items.Add(line);
-					else if (readMode == ReadMode.Shield)
-					{
-						//TODO: shield
-					}
+					else if (readMode == ReadMode.Shield) parseShield(line);
 				}
 				#endregion
 				srMission.Close();
@@ -354,6 +353,7 @@ namespace Idmr.Yogeme
 			chkObjects.Checked = (lstObjects.Items.Count > 0);
 			chkHangars.Checked = useHangarObjects | useHangarCamera | useFamilyHangarCamera | useHangarMap;
 			chkSkins.Checked = (lstSkins.Items.Count > 0);
+			chkShield.Checked = (lstShield.Items.Count > 0);
 		}
 
 		string checkFile(string extension)
@@ -983,11 +983,6 @@ namespace Idmr.Yogeme
 		#endregion
 
 		#region Skins
-		// okay, so the key is either OPT or OPT_fgc_#, and the value is a CSV list
-		// Not going to ignore "Default", since it might be possible to override other skin profiles
-		// CraftOptName = SkinNameA, SkinNameB...
-		// CraftOptName_fgc_# = SkinName1, SkinName2, SkinName3...
-		// I'll need to deliniate "Add new" versus "Append"
 		private void chkDefaultSkin_CheckedChanged(object sender, EventArgs e)
 		{
 			txtSkin.Enabled = (!chkDefaultSkin.Checked && chkSkins.Checked);
@@ -1029,10 +1024,39 @@ namespace Idmr.Yogeme
 		}
 		private void cmdRemoveSkin_Click(object sender, EventArgs e)
 		{
-			if (lstSkins.SelectedIndex == -1) return;
-			lstSkins.Items.RemoveAt(lstSkins.SelectedIndex);
+			if (lstSkins.SelectedIndex != -1) lstSkins.Items.RemoveAt(lstSkins.SelectedIndex);
 		}
 		#endregion Skins
+
+		#region Shield
+		void parseShield(string line)
+		{
+			string[] parts = line.ToLower().Replace(" ", "").Split(',');
+			bool perGen = (parts[1] == "1");
+			int rate = (perGen ? int.Parse(parts[2]) : int.Parse(parts[3]));
+			lstShield.Items.Add(Strings.CraftType[int.Parse(parts[0])] + " = " + rate + (perGen ? " per" : ""));
+		}
+		private void chkShield_CheckedChanged(object sender, EventArgs e)
+		{
+			lstShield.Enabled = chkShield.Checked;
+			cmdAddShield.Enabled = chkShield.Checked;
+			cmdRemoveShield.Enabled = chkShield.Checked;
+			chkShieldGen.Enabled = chkShield.Checked;
+			cboShield.Enabled = chkShield.Checked;
+			numShieldRate.Enabled = chkShield.Checked;
+		}
+
+		private void cmdAddShield_Click(object sender, EventArgs e)
+		{
+			if (cboShield.SelectedIndex < 1) return;
+			string line = cboShield.Text + " = " + Math.Round(numShieldRate.Value) + (chkShieldGen.Checked ? " per" : "");
+			lstShield.Items.Add(line);
+		}
+		private void cmdRemoveShield_Click(object sender, EventArgs e)
+		{
+			if (lstShield.SelectedIndex != -1) lstShield.Items.RemoveAt(lstShield.SelectedIndex);
+		}
+		#endregion
 
 		private void cmdCancel_Click(object sender, EventArgs e)
 		{
@@ -1264,9 +1288,22 @@ namespace Idmr.Yogeme
 					for (int i = 0; i < lstSkins.Items.Count; i++) sw.WriteLine(lstSkins.Items[i]);
 					sw.WriteLine("");
 				}
-				if (chkShield.Checked /* && lstShield.Items.Count > 0*/)
+				if (chkShield.Checked && lstShield.Items.Count > 0)
 				{
-					// TODO: write shields
+					sw.WriteLine("[Shield]");
+					for (int i = 0; i < lstShield.Items.Count; i++)
+					{
+						string[] parts = lstShield.Items[i].ToString().Split('=');
+						parts[0] = parts[0].Trim();
+						int craft;
+						for (craft = 0; craft < Strings.CraftType.Length; craft++)
+							if (parts[0] == Strings.CraftType[craft]) break;
+						parts = parts[1].Trim().Split(' ');
+						bool perGen = (parts.Length > 1);
+						int rate = int.Parse(parts[0]);
+						sw.WriteLine(craft + ", " + (perGen ? "1, " + rate + ", 0" : "0, 0, " + rate));
+					}
+					sw.WriteLine("");
 				}
 				sw.Flush();
 				sw.Close();
