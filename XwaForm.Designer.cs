@@ -787,6 +787,7 @@ namespace Idmr.Yogeme
 			this.txtNotes = new System.Windows.Forms.TextBox();
 			this.dataOrders = new System.Data.DataView();
 			this.dataOrders_Raw = new System.Data.DataView();
+			this.menuMissionCraft = new System.Windows.Forms.MenuItem();
 			((System.ComponentModel.ISupportInitialize)(this.dataWaypoints)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.dataWaypoints_Raw)).BeginInit();
 			this.tabMain.SuspendLayout();
@@ -1190,7 +1191,8 @@ namespace Idmr.Yogeme
             this.menuHyperbuoy,
             this.menuSuperBackdrops,
             this.menuHooks,
-            this.menuWav});
+            this.menuWav,
+            this.menuMissionCraft});
 			this.menuTools.Text = "&Tools";
 			// 
 			// menuVerify
@@ -9266,6 +9268,12 @@ namespace Idmr.Yogeme
 			this.dataOrders_Raw.AllowDelete = false;
 			this.dataOrders_Raw.AllowNew = false;
 			// 
+			// menuMissionCraft
+			// 
+			this.menuMissionCraft.Index = 12;
+			this.menuMissionCraft.Text = "Mission &Craft List";
+			this.menuMissionCraft.Click += new System.EventHandler(this.menuMissionCraft_Click);
+			// 
 			// XwaForm
 			// 
 			this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
@@ -10269,5 +10277,6 @@ namespace Idmr.Yogeme
 		private MenuItem menuLibrary;
 		private ToolBarButton toolWav;
 		private MenuItem menuWav;
+		private MenuItem menuMissionCraft;
 	}
 }

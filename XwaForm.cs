@@ -7,6 +7,7 @@
  */
 
 /* CHANGELOG
+ * [NEW] Mission Craft List menu item to display pre-briefing craft list
  * [UPD #58] Map refreshes after adjusting craft orientation [JB]
  * [UPD #56] Replaced try/catch with TryParse [JB]
  * v1.9.2, 210328
@@ -527,29 +528,54 @@ namespace Idmr.Yogeme
 			cboCraft.Items.Clear();
 			cboCraft.Items.AddRange(Strings.CraftType);
 		}
-		bool isMissionCraft(/*int fgIndex,*/ Mission.Trigger trigger)
+		bool isMissionCraft(Mission.Trigger trigger)
 		{
-			if (trigger.Amount == 0 && trigger.VariableType == 1 && trigger.Variable == 0 && trigger.Condition == 0)
+			return (trigger.Amount == 0 && trigger.VariableType == 1 && trigger.Variable == 0 && trigger.Condition == 0);
+		}
+		string getMissionCraftString(int fgIndex)
+		{
+			FlightGroup playerFG = null;
+			foreach (FlightGroup fg in _mission.FlightGroups)
 			{
-				return true;
-				//Disabled for now, probably best to let the user know that the trigger is set this way even if it doesn't actually show up in the craft list.
-				/*
-                FlightGroup playerFG = null;
-                foreach (FlightGroup fg in _mission.FlightGroups)
-                {
-                    if (fg.PlayerNumber > 0)
-                    {
-                        playerFG = fg;
-                        break;
-                    }
-                }
-                if (playerFG == null)
-                    return false;
-
-                return (_mission.FlightGroups[fgIndex].Team == playerFG.Team);
-                 * */
+				if (fg.PlayerNumber > 0)
+				{
+					playerFG = fg;
+					break;
+				}
 			}
-			return false;
+
+			var craft = _mission.FlightGroups[fgIndex];
+			if (playerFG == null || craft.Team != playerFG.Team)
+				return string.Empty;
+
+			var trig1 = craft.ArrDepTriggers[0];
+			var trig2 = craft.ArrDepTriggers[1];
+			if (trig1.Amount == 0 && trig1.VariableType == 1 && trig1.Variable == 0 && trig1.Condition == 0 &&
+				trig2.Amount == 0 && trig2.VariableType == 1 && trig2.Variable == 0 && trig2.Condition == 0)
+			{
+				if (craft.CraftType >= 0x1A && craft.CraftType <= 0x1D) return string.Empty;   // CN/A - CN/D
+				if (craft.CraftType >= 0x37 && craft.CraftType <= 0x5B) return string.Empty;   // CN/E - REPYD
+				if (craft.CraftType >= 0x81 && craft.CraftType <= 0x95) return string.Empty;   // Golan I - Pirate Junkyard
+				if (craft.CraftType >= 0x97 && craft.CraftType <= 0xAD) return string.Empty;   // Pressure Tank - Cargo Tanker 5
+				if (craft.CraftType >= 0xAF && craft.CraftType <= 0xE3) return string.Empty;   // Rebel Pilot - DS II
+				if (craft.CraftType >= 0xE7) return string.Empty;  // Backdrops
+
+				// else we're good to proceed
+				string output;
+				bool isStarship = false;
+				if (craft.CraftType >= 0x28 && craft.CraftType <= 0x36) isStarship = true;   // CRV - SSD
+				else if (craft.CraftType >= 0x5C && craft.CraftType <= 0x60) isStarship = true;   // M/SC - Gunship
+				else if (craft.CraftType == 0x63 || craft.CraftType == 0x65 || craft.CraftType == 0x66) isStarship = true;  // Marauder, Imperial Research Ship, LY3000
+				else if (craft.CraftType >= 0xE4) isStarship = true;    // MC80
+
+				if (isStarship)
+					output = Strings.CraftType[craft.CraftType] + " " + craft.Name;
+				else
+					output = (craft.NumberOfCraft * craft.NumberOfWaves) + " " + Strings.CraftType[craft.CraftType];
+
+				return output;
+			}
+			return string.Empty;
 		}
 		Brush getFlightGroupDrawColor(int fgIndex)
 		{
@@ -628,10 +654,10 @@ namespace Idmr.Yogeme
 					triggerText += " '" + p + "'";
 			}
 
-			//[JB] Display whether it appears in the Mission Craft list before the briefing.
+			//[JB] Display whether it *might* appear in the Mission Craft list before the briefing.
 			if (lbl == lblADTrig[0] || lbl == lblADTrig[1])
 			{
-				if (isMissionCraft(/*_activeFG,*/ trigger) == true)
+				if (isMissionCraft(trigger))
 					triggerText += " (In Mission Craft List)";
 			}
 			lbl.Text = triggerText;
@@ -1740,6 +1766,20 @@ namespace Idmr.Yogeme
 			Common.Title(this, false);
 			if (tabFGMinor.SelectedIndex == 3)  //Update waypoints tab.
 				refreshWaypointTab();
+		}
+		private void menuMissionCraft_Click(object sender, EventArgs e)
+		{
+			string output = "";
+
+			for (int f = 0; f < _mission.FlightGroups.Count; f++)
+			{
+				var s = getMissionCraftString(f);
+				if (s != "") output += s + "\r\n";
+			}
+
+			if (output == "") output = "(None)";
+			else output = "NOTE: Capital ships will be listed first, non-capital ship quantities will be added when possible.\r\n\r\n" + output;
+			MessageBox.Show(output, "Mission Craft List", MessageBoxButtons.OK);
 		}
 		void menuNewXwing_Click(object sender, EventArgs e)  //[JB] Added Xwing support.
 		{
@@ -3375,6 +3415,7 @@ namespace Idmr.Yogeme
 
 		void cmdMissionCraft_Click(object sender, EventArgs e)
 		{
+			// TODO: the error checking should be better, and the warning message should be "softened"
 			FlightGroup thisFG = _mission.FlightGroups[_activeFG];
 
 			int warning = 0;
