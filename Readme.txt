@@ -26,6 +26,7 @@ Version History
   - Shield hook support added
 - (XWA) Map wireframes correctly take into account craft rotations when not using Waypoints. Adjusting rotation refreshes map. [Issue #58, #59] (JB))
 - (XWA) "Tools - Mission Craft List" menu item to display the pre-briefing craft list
+- (XWA) Added explicit PlayerNumber check if Verify isn't run since XWA will crash at the Briefing if missing
 
 v1.9.2, 28 Mar 2021
  - MissionVerify updated with "OR true" and "AND false" trigger detection for 1AO2 and 3AO4s [Issue #48]

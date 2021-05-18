@@ -7,6 +7,7 @@
  */
 
 /* CHANGELOG
+ * [NEW] Added explicit PlayerNumber check during save
  * [NEW] Mission Craft List menu item to display pre-briefing craft list
  * [UPD #58] Map refreshes after adjusting craft orientation [JB]
  * [UPD #56] Replaced try/catch with TryParse [JB]
@@ -851,6 +852,18 @@ namespace Idmr.Yogeme
 			refreshRecent();  //[JB] Setting _config.LastMission modifies the Recent list.  Need to refresh the menu to match.
 							  //Verify the mission after it's been saved
 			if (_config.Verify) Common.RunVerify(_mission.MissionPath, _config);
+			else
+			{
+				// Checking this since this is rather critical.
+				bool missingPlayer = true;
+				for (int f = 0; f < _mission.FlightGroups.Count; f++)
+					if (_mission.FlightGroups[f].PlayerNumber > 0)
+					{
+						missingPlayer = false;
+						break;
+					}
+				if (missingPlayer) MessageBox.Show("Mission is missing Player Craft! It *WILL* crash at the briefing!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Error);
+			}
 		}
 		void setInteractiveLabelColor(Label control, bool highlight)
 		{
