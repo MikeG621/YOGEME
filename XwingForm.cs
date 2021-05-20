@@ -4,10 +4,11 @@
  * This file authored by "JB" (Random Starfighter) (randomstarfighter@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.9+
+ * VERSION: 1.10
  */
 
 /* CHANGELOG:
+ * * v1.10, 210520
  * [UPD #56] Replaced try/catch with TyrParse [JB]
  * v1.9, 210108
  * [FIX] Clipboard path in some locations

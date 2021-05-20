@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2021 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.9.2+
+ * VERSION: 1.10
  */
 
 /* CHANGELOG
+ * * v1.10, 210520
  * [UPD #56] Replaced try/catch with TryParse [JB]
  * v1.9.2, 210328
  * [FIX] Test load failure if mission isn't in platform directory

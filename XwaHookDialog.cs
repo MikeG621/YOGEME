@@ -1,16 +1,18 @@
 ﻿/*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
- * Copyright (C) 2007-2020 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2021 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.8.2+
+ * VERSION: 1.10
  */
 
 /* CHANGELOG
+ * v1.10, 210520
  * [ADD] Wingman markings, Droid1/2Update
  * [ADD] S-Foils, Skins (32bpp), Shield hook support
  * [FIX] Missing Droid1/2PositionZ read
  * [UPD] Layout redesigned
+ * [FIX] Now can handle comments at the end of a line
  * v1.8.2, 201219
  * [FIX] Add BD/Sound/Object/Hangar was cutting off first letter due to removal of "\\"
  * [UPD] Default ObjectsProfile updated to "default"
@@ -187,8 +189,10 @@ namespace Idmr.Yogeme
 				StreamReader srBD = new StreamReader(_bdFile);
 				while ((line = srBD.ReadLine()) != null)
 				{
-					if (!isComment(line))
-						lstBackdrops.Items.Add(line);
+					line = removeComment(line);
+					if (line == "") continue;
+
+					lstBackdrops.Items.Add(line);
 				}
 				srBD.Close();
 			}
@@ -197,8 +201,10 @@ namespace Idmr.Yogeme
 				StreamReader srMiss = new StreamReader(_missionTxtFile);
 				while((line = srMiss.ReadLine()) != null)
 				{
-					if (!isComment(line))
-						parseMission(line);
+					line = removeComment(line);
+					if (line == "") continue;
+
+					parseMission(line);
 				}
 				srMiss.Close();
 			}
@@ -207,8 +213,10 @@ namespace Idmr.Yogeme
 				StreamReader srSounds = new StreamReader(_soundFile);
 				while ((line = srSounds.ReadLine()) != null)
 				{
-					if (!isComment(line))
-						lstSounds.Items.Add(line);
+					line = removeComment(line);
+					if (line == "") continue;
+
+					lstSounds.Items.Add(line);
 				}
 				srSounds.Close();
 			}
@@ -217,8 +225,10 @@ namespace Idmr.Yogeme
 				StreamReader srObjects = new StreamReader(_objFile);
 				while ((line = srObjects.ReadLine()) != null)
 				{
-					if (!isComment(line))
-						lstObjects.Items.Add(line);
+					line = removeComment(line);
+					if (line == "") continue;
+
+					lstObjects.Items.Add(line);
 				}
 				srObjects.Close();
 			}
@@ -227,8 +237,10 @@ namespace Idmr.Yogeme
 				StreamReader srHangarObjects = new StreamReader(_hangarObjectsFile);
 				while ((line = srHangarObjects.ReadLine()) != null)
 				{
-					if (!isComment(line))
-						parseHangarObjects(line);
+					line = removeComment(line);
+					if (line == "") continue;
+
+					parseHangarObjects(line);
 				}
 				srHangarObjects.Close();
 			}
@@ -237,8 +249,10 @@ namespace Idmr.Yogeme
 				StreamReader srHangarCamera = new StreamReader(_hangarCameraFile);
 				while((line = srHangarCamera.ReadLine()) != null)
 				{
-					if (!isComment(line))
-						parseHangarCamera(line);
+					line = removeComment(line);
+					if (line == "") continue;
+
+					parseHangarCamera(line);
 				}
 				srHangarCamera.Close();
 			}
@@ -247,8 +261,10 @@ namespace Idmr.Yogeme
 				StreamReader srFamilyHangarCamera = new StreamReader(_famHangarCameraFile);
 				while ((line = srFamilyHangarCamera.ReadLine()) != null)
 				{
-					if (!isComment(line))
-						parseFamilyHangarCamera(line);
+					line = removeComment(line);
+					if (line == "") continue;
+
+					parseFamilyHangarCamera(line);
 				}
 				srFamilyHangarCamera.Close();
 			}
@@ -258,7 +274,9 @@ namespace Idmr.Yogeme
 				MapEntry entry = new MapEntry();
 				while((line = srMap.ReadLine()) != null)
 				{
-					if (isComment(line)) continue;
+					line = removeComment(line);
+					if (line == "") continue;
+
 					if (entry.Parse(line))
 						lstMap.Items.Add(entry.ToString());
 				}
@@ -270,7 +288,9 @@ namespace Idmr.Yogeme
 				MapEntry entry = new MapEntry();
 				while ((line = srFamMap.ReadLine()) != null)
 				{
-					if (isComment(line)) continue;
+					line = removeComment(line);
+					if (line == "") continue;
+
 					if (entry.Parse(line))
 						lstFamilyMap.Items.Add(entry.ToString());
 				}
@@ -281,8 +301,10 @@ namespace Idmr.Yogeme
 				StreamReader sr32bpp = new StreamReader(_32bppFile);
 				while ((line = sr32bpp.ReadLine()) != null)
 				{
-					if (!isComment(line))
-						lstSkins.Items.Add(line);
+					line = removeComment(line);
+					if (line == "") continue;
+
+					lstSkins.Items.Add(line);
 				}
 				sr32bpp.Close();
 			}
@@ -291,8 +313,10 @@ namespace Idmr.Yogeme
 				StreamReader srShield = new StreamReader(_shieldFile);
 				while ((line = srShield.ReadLine()) != null)
 				{
-					if (!isComment(line))
-						parseShield(line);
+					line = removeComment(line);
+					if (line == "") continue;
+
+					parseShield(line);
 				}
 				srShield.Close();
 			}
@@ -303,7 +327,9 @@ namespace Idmr.Yogeme
 				#region read
 				while ((line = srMission.ReadLine()) != null)
 				{
-					if (isComment(line)) continue;
+					line = removeComment(line);
+					if (line == "") continue;
+
 					lineLower = line.ToLower();
 
 					if (line.StartsWith("["))
@@ -387,6 +413,9 @@ namespace Idmr.Yogeme
 		/// <remarks>This also parses S-Foils</remarks>
 		void parseMission(string line)
 		{
+			if (line.IndexOf(";") != -1)
+				line = line.Substring(0, line.IndexOf(";"));
+
 			string[] parts = line.ToLower().Replace(" ", "").Split(',');
 			if (parts[0] == "fg")
 			{
@@ -551,6 +580,9 @@ namespace Idmr.Yogeme
 		// TODO: need a top-level IFF selector, and clone all Hangar values X times, including read/write all of the IFF-specific hangar files
 		void parseHangarCamera(string line)
 		{
+			if (line.IndexOf(";") != -1)
+				line = line.Substring(0, line.IndexOf(";"));
+
 			int view = 0;
 			int camera = 0;
 			string[] parts = line.ToLower().Replace(" ", "").Split('=');
@@ -571,6 +603,9 @@ namespace Idmr.Yogeme
 		}
 		void parseFamilyHangarCamera(string line)
 		{
+			if (line.IndexOf(";") != -1)
+				line = line.Substring(0, line.IndexOf(";"));
+
 			int view = 0;
 			int camera = 0;
 			string[] parts = line.ToLower().Replace(" ", "").Split('=');
@@ -593,6 +628,9 @@ namespace Idmr.Yogeme
 		}
 		void parseHangarObjects(string line)
 		{
+			if (line.IndexOf(";") != -1)
+				line = line.Substring(0, line.IndexOf(";"));
+
 			string[] parts = line.ToLower().Replace(" ", "").Split('=');
 			if (parts.Length == 2)
 			{
@@ -1031,6 +1069,9 @@ namespace Idmr.Yogeme
 		#region Shield
 		void parseShield(string line)
 		{
+			if (line.IndexOf(";") != -1)
+				line = line.Substring(0, line.IndexOf(";"));
+
 			string[] parts = line.ToLower().Replace(" ", "").Split(',');
 			bool perGen = (parts[1] == "1");
 			int rate = (perGen ? int.Parse(parts[2]) : int.Parse(parts[3]));
@@ -1332,9 +1373,15 @@ namespace Idmr.Yogeme
 			Close();
 		}
 
-		bool isComment(string line)
+		string removeComment(string line)
 		{
-			return (line.StartsWith("#") || line.StartsWith(";") || line.StartsWith("////") || line == "");
+			if (line.IndexOf(";") != -1)
+				line = line.Substring(0, line.IndexOf(";"));
+			if (line.IndexOf("#") != -1)
+				line = line.Substring(0, line.IndexOf("#"));
+			if (line.IndexOf("////") != -1)
+				line = line.Substring(0, line.IndexOf("////"));
+			return line.Trim();
 		}
 
 		struct MapEntry
@@ -1356,6 +1403,9 @@ namespace Idmr.Yogeme
 
 			public bool Parse(string line)
 			{
+				if (line.IndexOf(";") != -1)
+					line = line.Substring(0, line.IndexOf(";"));
+
 				int offset = 0;
 				string[] parts = line.Replace(" ", "").Split(',');
 				if (parts.Length == 7) offset = 1;

@@ -4,10 +4,11 @@
  * This file authored by "JB" (Random Starfighter) (randomstarfighter@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.8+
+ * VERSION: 1.10
  */
 
 /* CHANGELOG
+ * v1.10, 210520
  * [FIX #58, #59] XWA wireframes when using rotations instead of Waypoints [JB]
  * v1.8, 201004
  * [FIX] _dosSpeciesMap now checks for existing resource before adding [JB]

@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2021 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.9.2+
+ * VERSION: 1.10
  */
 
 /* CHANGELOG
+ * * v1.10, 210520
  * [NEW] Added explicit PlayerNumber check during save
  * [NEW] Mission Craft List menu item to display pre-briefing craft list
  * [UPD #58] Map refreshes after adjusting craft orientation [JB]

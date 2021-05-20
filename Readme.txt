@@ -2,8 +2,8 @@
 ======================================
 
 Author: Michael Gaisser (mjgaisser@gmail.com)
-Version: 1.9.2
-Date: 2021.03.28
+Version: 1.10
+Date: 2021.05.20
 
 Thank you for downloading YOGEME, the all-in-one mission editor for the X-Wing
 series, Xwing95 through X-wing Alliance.  This program allows easy mission
@@ -16,17 +16,19 @@ For program usage and help (with images), see "yogeme.chm".
 ==========
 Version History
 
-- (All) Redid handling bad waypoint values [Issue #56] (JB)
-- (XW) Converting FG Goals from XW corrected [Issue #55] (JB, via Platform.dll)
-- (XWA) Hook Dialog redesigned
-  - Mission : Wingman markings, HangarObjects : Droid1/2Update added
-  - Fixed missing Droid1/2PositionZ read
-  - S-Foils hook support added
-  - Skins (32bpp) hook support added
-  - Shield hook support added
-- (XWA) Map wireframes correctly take into account craft rotations when not using Waypoints. Adjusting rotation refreshes map. [Issue #58, #59] (JB))
-- (XWA) "Tools - Mission Craft List" menu item to display the pre-briefing craft list
-- (XWA) Added explicit PlayerNumber check if Verify isn't run since XWA will crash at the Briefing if missing
+v1.10, 20 May 2021
+ - (All) Redid handling bad waypoint values [Issue #56] (JB)
+ - (XW) Converting FG Goals from XW corrected [Issue #55] (JB, via Platform.dll)
+ - (XWA) Hook Dialog redesigned
+   - Mission : Wingman markings, HangarObjects : Droid1/2Update added
+   - Fixed missing Droid1/2PositionZ read
+   - S-Foils hook support added
+   - Skins (32bpp) hook support added
+   - Shield hook support added
+   - Can now handle comments at the end of a line
+ - (XWA) Map wireframes correctly take into account craft rotations when not using Waypoints. Adjusting rotation refreshes map. [Issue #58, #59] (JB))
+ - (XWA) "Tools - Mission Craft List" menu item to display the pre-briefing craft list
+ - (XWA) Added explicit PlayerNumber check if Verify isn't run since XWA will crash at the Briefing if missing
 
 v1.9.2, 28 Mar 2021
  - MissionVerify updated with "OR true" and "AND false" trigger detection for 1AO2 and 3AO4s [Issue #48]

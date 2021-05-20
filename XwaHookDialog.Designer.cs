@@ -216,6 +216,7 @@
 			this.cmdAddSFoils = new System.Windows.Forms.Button();
 			this.chkSFoils = new System.Windows.Forms.CheckBox();
 			this.tabSkins = new System.Windows.Forms.TabPage();
+			this.label50 = new System.Windows.Forms.Label();
 			this.txtSkin = new System.Windows.Forms.TextBox();
 			this.chkDefaultSkin = new System.Windows.Forms.CheckBox();
 			this.cboSkinMarks = new System.Windows.Forms.ComboBox();
@@ -226,16 +227,15 @@
 			this.lstSkins = new System.Windows.Forms.ListBox();
 			this.chkSkins = new System.Windows.Forms.CheckBox();
 			this.tabShield = new System.Windows.Forms.TabPage();
-			this.chkShield = new System.Windows.Forms.CheckBox();
-			this.label50 = new System.Windows.Forms.Label();
-			this.lstShield = new System.Windows.Forms.ListBox();
-			this.chkShieldGen = new System.Windows.Forms.CheckBox();
-			this.label51 = new System.Windows.Forms.Label();
-			this.numShieldRate = new System.Windows.Forms.NumericUpDown();
+			this.label52 = new System.Windows.Forms.Label();
 			this.cboShield = new System.Windows.Forms.ComboBox();
 			this.cmdRemoveShield = new System.Windows.Forms.Button();
 			this.cmdAddShield = new System.Windows.Forms.Button();
-			this.label52 = new System.Windows.Forms.Label();
+			this.numShieldRate = new System.Windows.Forms.NumericUpDown();
+			this.label51 = new System.Windows.Forms.Label();
+			this.chkShieldGen = new System.Windows.Forms.CheckBox();
+			this.lstShield = new System.Windows.Forms.ListBox();
+			this.chkShield = new System.Windows.Forms.CheckBox();
 			((System.ComponentModel.ISupportInitialize)(this.numFamHeadingZ)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numFamPosZ)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numFamHeadingXY)).BeginInit();
@@ -1895,7 +1895,6 @@
 			this.chkDroid2Update.AutoSize = true;
 			this.chkDroid2Update.Checked = true;
 			this.chkDroid2Update.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.chkDroid2Update.Enabled = false;
 			this.chkDroid2Update.Location = new System.Drawing.Point(113, 210);
 			this.chkDroid2Update.Name = "chkDroid2Update";
 			this.chkDroid2Update.Size = new System.Drawing.Size(98, 17);
@@ -1908,7 +1907,6 @@
 			this.chkDroid1Update.AutoSize = true;
 			this.chkDroid1Update.Checked = true;
 			this.chkDroid1Update.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.chkDroid1Update.Enabled = false;
 			this.chkDroid1Update.Location = new System.Drawing.Point(9, 210);
 			this.chkDroid1Update.Name = "chkDroid1Update";
 			this.chkDroid1Update.Size = new System.Drawing.Size(98, 17);
@@ -1957,7 +1955,6 @@
 			// chkHangarFold
 			// 
 			this.chkHangarFold.AutoSize = true;
-			this.chkHangarFold.Enabled = false;
 			this.chkHangarFold.Location = new System.Drawing.Point(93, 218);
 			this.chkHangarFold.Name = "chkHangarFold";
 			this.chkHangarFold.Size = new System.Drawing.Size(153, 17);
@@ -2597,6 +2594,16 @@
 			this.tabSkins.Text = "Skins";
 			this.tabSkins.UseVisualStyleBackColor = true;
 			// 
+			// label50
+			// 
+			this.label50.Location = new System.Drawing.Point(206, 135);
+			this.label50.Name = "label50";
+			this.label50.Size = new System.Drawing.Size(155, 84);
+			this.label50.TabIndex = 28;
+			this.label50.Text = "Choose if you want to apply to a Markings variant or not, then if you\'re using th" +
+    "e Default or a defined skin. Then hit \"Add\" to select an OPT, or \"Append\" to add" +
+    " a Skin to an existing item.";
+			// 
 			// txtSkin
 			// 
 			this.txtSkin.Enabled = false;
@@ -2710,60 +2717,15 @@
 			this.tabShield.Text = "Shield";
 			this.tabShield.UseVisualStyleBackColor = true;
 			// 
-			// chkShield
+			// label52
 			// 
-			this.chkShield.AutoSize = true;
-			this.chkShield.Location = new System.Drawing.Point(6, 6);
-			this.chkShield.Name = "chkShield";
-			this.chkShield.Size = new System.Drawing.Size(77, 17);
-			this.chkShield.TabIndex = 1;
-			this.chkShield.Text = "Use Shield";
-			this.chkShield.UseVisualStyleBackColor = true;
-			this.chkShield.CheckedChanged += new System.EventHandler(this.chkShield_CheckedChanged);
-			// 
-			// label50
-			// 
-			this.label50.Location = new System.Drawing.Point(206, 135);
-			this.label50.Name = "label50";
-			this.label50.Size = new System.Drawing.Size(155, 84);
-			this.label50.TabIndex = 28;
-			this.label50.Text = "Choose if you want to apply to a Markings variant or not, then if you\'re using th" +
-    "e Default or a defined skin. Then hit \"Add\" to select an OPT, or \"Append\" to add" +
-    " a Skin to an existing item.";
-			// 
-			// lstShield
-			// 
-			this.lstShield.FormattingEnabled = true;
-			this.lstShield.Location = new System.Drawing.Point(6, 29);
-			this.lstShield.Name = "lstShield";
-			this.lstShield.Size = new System.Drawing.Size(186, 108);
-			this.lstShield.TabIndex = 2;
-			// 
-			// chkShieldGen
-			// 
-			this.chkShieldGen.AutoSize = true;
-			this.chkShieldGen.Location = new System.Drawing.Point(198, 85);
-			this.chkShieldGen.Name = "chkShieldGen";
-			this.chkShieldGen.Size = new System.Drawing.Size(155, 17);
-			this.chkShieldGen.TabIndex = 3;
-			this.chkShieldGen.Text = "Rate applies per ShieldGen";
-			this.chkShieldGen.UseVisualStyleBackColor = true;
-			// 
-			// label51
-			// 
-			this.label51.AutoSize = true;
-			this.label51.Location = new System.Drawing.Point(195, 110);
-			this.label51.Name = "label51";
-			this.label51.Size = new System.Drawing.Size(80, 13);
-			this.label51.TabIndex = 4;
-			this.label51.Text = "Recharge Rate";
-			// 
-			// numShieldRate
-			// 
-			this.numShieldRate.Location = new System.Drawing.Point(281, 108);
-			this.numShieldRate.Name = "numShieldRate";
-			this.numShieldRate.Size = new System.Drawing.Size(72, 20);
-			this.numShieldRate.TabIndex = 5;
+			this.label52.Location = new System.Drawing.Point(195, 131);
+			this.label52.Name = "label52";
+			this.label52.Size = new System.Drawing.Size(190, 97);
+			this.label52.TabIndex = 45;
+			this.label52.Text = "Defaults:\r\nStarfighters = 20\r\nStar Destroyers = 5 per ShieldGen\r\nOther starships " +
+    "= 5\r\nOthers = 0\r\nPlayer will reset to 20 if set to 0\r\nAll starships set to 0 on " +
+    "Easy";
 			// 
 			// cboShield
 			// 
@@ -2796,15 +2758,50 @@
 			this.cmdAddShield.UseVisualStyleBackColor = true;
 			this.cmdAddShield.Click += new System.EventHandler(this.cmdAddShield_Click);
 			// 
-			// label52
+			// numShieldRate
 			// 
-			this.label52.Location = new System.Drawing.Point(195, 131);
-			this.label52.Name = "label52";
-			this.label52.Size = new System.Drawing.Size(190, 97);
-			this.label52.TabIndex = 45;
-			this.label52.Text = "Defaults:\r\nStarfighters = 20\r\nStar Destroyers = 5 per ShieldGen\r\nOther starships " +
-    "= 5\r\nOthers = 0\r\nPlayer will reset to 20 if set to 0\r\nAll starships set to 0 on " +
-    "Easy";
+			this.numShieldRate.Location = new System.Drawing.Point(281, 108);
+			this.numShieldRate.Name = "numShieldRate";
+			this.numShieldRate.Size = new System.Drawing.Size(72, 20);
+			this.numShieldRate.TabIndex = 5;
+			// 
+			// label51
+			// 
+			this.label51.AutoSize = true;
+			this.label51.Location = new System.Drawing.Point(195, 110);
+			this.label51.Name = "label51";
+			this.label51.Size = new System.Drawing.Size(80, 13);
+			this.label51.TabIndex = 4;
+			this.label51.Text = "Recharge Rate";
+			// 
+			// chkShieldGen
+			// 
+			this.chkShieldGen.AutoSize = true;
+			this.chkShieldGen.Location = new System.Drawing.Point(198, 85);
+			this.chkShieldGen.Name = "chkShieldGen";
+			this.chkShieldGen.Size = new System.Drawing.Size(155, 17);
+			this.chkShieldGen.TabIndex = 3;
+			this.chkShieldGen.Text = "Rate applies per ShieldGen";
+			this.chkShieldGen.UseVisualStyleBackColor = true;
+			// 
+			// lstShield
+			// 
+			this.lstShield.FormattingEnabled = true;
+			this.lstShield.Location = new System.Drawing.Point(6, 29);
+			this.lstShield.Name = "lstShield";
+			this.lstShield.Size = new System.Drawing.Size(186, 108);
+			this.lstShield.TabIndex = 2;
+			// 
+			// chkShield
+			// 
+			this.chkShield.AutoSize = true;
+			this.chkShield.Location = new System.Drawing.Point(6, 6);
+			this.chkShield.Name = "chkShield";
+			this.chkShield.Size = new System.Drawing.Size(77, 17);
+			this.chkShield.TabIndex = 1;
+			this.chkShield.Text = "Use Shield";
+			this.chkShield.UseVisualStyleBackColor = true;
+			this.chkShield.CheckedChanged += new System.EventHandler(this.chkShield_CheckedChanged);
 			// 
 			// XwaHookDialog
 			// 
