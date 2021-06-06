@@ -3,10 +3,12 @@
  * Copyright (C) 2007-2021 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.10.1
+ * VERSION: 1.10.2
  */
 
 /* CHANGELOG
+ * v1.10.2, 210606
+ * [FIX] SBD region detection
  * v1.10.1, 210606
  * [FIX] Backdrop shadow index. Currently a locak hack, should really be fixed in Platform
  * v1.10, 210520
@@ -18,7 +20,7 @@
  * [FIX] Test load failure if mission isn't in platform directory
  * v1.9.1, 210130
  * [FIX] Region name refresh [JB]
- * [FIX] Region colors in paremter list [JB]
+ * [FIX] Region colors in parameter list [JB]
  * v1.9, 210108
  * [NEW] Wave Dialog menu and toolbar item
  * [FIX] Clipboard path
@@ -2120,7 +2122,7 @@ namespace Idmr.Yogeme
 			{
 				if (_mission.FlightGroups[i].CraftType == 0xB7)
 				{
-					if (_mission.FlightGroups[i].Backdrop == 55)
+					if (_mission.FlightGroups[i].Backdrop == 55 && _mission.FlightGroups[i].Waypoints[0].Region == region)
 					{
 						MessageBox.Show("Mission already contains SuperBackdrops in " + _mission.Regions[region] + ".", "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
 						return;

@@ -16,7 +16,11 @@ For program usage and help (with images), see "yogeme.chm".
 ==========
 Version History
 
-v1.10.1, 06 Jun 21
+v1.10.2, 06 Jun 2021
+ - (XWA) SuperBackdrop region detection.
+ - (XWA) Backdrop error messages with XWAUP v3 fixed (via ImageFormat.Dat.dll)
+
+v1.10.1, 06 Jun 2021
  - (XWA) Backdrop shadow fix
 
 v1.10, 20 May 2021
