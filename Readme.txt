@@ -2,8 +2,8 @@
 ======================================
 
 Author: Michael Gaisser (mjgaisser@gmail.com)
-Version: 1.10
-Date: 2021.05.20
+Version: 1.10.1
+Date: 2021.06.06
 
 Thank you for downloading YOGEME, the all-in-one mission editor for the X-Wing
 series, Xwing95 through X-wing Alliance.  This program allows easy mission
@@ -15,6 +15,9 @@ For program usage and help (with images), see "yogeme.chm".
 
 ==========
 Version History
+
+v1.10.1, 06 Jun 21
+ - (XWA) Backdrop shadow fix
 
 v1.10, 20 May 2021
  - (All) Redid handling bad waypoint values [Issue #56] (JB)

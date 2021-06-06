@@ -3,11 +3,13 @@
  * Copyright (C) 2007-2021 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.10
+ * VERSION: 1.10.1
  */
 
 /* CHANGELOG
- * * v1.10, 210520
+ * v1.10.1, 210606
+ * [FIX] Backdrop shadow index. Currently a locak hack, should really be fixed in Platform
+ * v1.10, 210520
  * [NEW] Added explicit PlayerNumber check during save
  * [NEW] Mission Craft List menu item to display pre-briefing craft list
  * [UPD #58] Map refreshes after adjusting craft orientation [JB]
@@ -2118,7 +2120,7 @@ namespace Idmr.Yogeme
 			{
 				if (_mission.FlightGroups[i].CraftType == 0xB7)
 				{
-					if (_mission.FlightGroups[i].Backdrop == 54)
+					if (_mission.FlightGroups[i].Backdrop == 55)
 					{
 						MessageBox.Show("Mission already contains SuperBackdrops in " + _mission.Regions[region] + ".", "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
 						return;
@@ -2128,7 +2130,7 @@ namespace Idmr.Yogeme
 			}
 			if (_mission.FlightGroups.Count >= Mission.FlightGroupLimit - requiredQty)
 			{
-				MessageBox.Show("Mission contains too many Flight Groups to add Super Backdrops (" + requiredQty + " needed.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				MessageBox.Show("Mission contains too many Flight Groups to add Super Backdrops (" + requiredQty + " needed).", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return;
 			}
 
@@ -2142,7 +2144,7 @@ namespace Idmr.Yogeme
 				if (i < 2)
 				{
 					_mission.FlightGroups[index].BackdropSize = "0.895";
-					_mission.FlightGroups[index].Shadow = 5;
+					_mission.FlightGroups[index].Shadow = 6;	// HACK: Should be Shadow 5
 				}
 				else _mission.FlightGroups[index].BackdropSize = "1.055";
 				_mission.FlightGroups[index].IFF = 3;   // Yellow
@@ -3096,7 +3098,9 @@ namespace Idmr.Yogeme
 			_loading = true;
 			if (state)
 			{
-				int shadow = _mission.FlightGroups[_activeFG].Shadow;
+				//HACK: Index fix
+				int shadow = _mission.FlightGroups[_activeFG].Shadow - 1;
+				if (shadow == -1) shadow = 0;
 				cboGlobCargo.Items.Clear();
 				cboGlobCargo.Items.Add("None (0)");
 				for (int i = 1; i <= 6; i++) cboGlobCargo.Items.Add("Shadow " + i);
@@ -3152,6 +3156,8 @@ namespace Idmr.Yogeme
 		{
 			if (_loading) return;
 			_mission.FlightGroups[_activeFG].GlobalCargo = Common.Update(this, _mission.FlightGroups[_activeFG].GlobalCargo, Convert.ToByte(cboGlobCargo.SelectedIndex));
+			// HACK: index fix
+			if (_mission.FlightGroups[_activeFG].CraftType == 0xB7) _mission.FlightGroups[_activeFG].Shadow++;
 		}
 
 		void chkRandSC_CheckedChanged(object sender, EventArgs e)
@@ -3179,8 +3185,9 @@ namespace Idmr.Yogeme
 			try
 			{
 				BackdropDialog dlg = null;
-				if (_hookBackdropInstalled) dlg = new BackdropDialog(_mission.FlightGroups[_activeFG].Backdrop, _mission.FlightGroups[_activeFG].GlobalCargo, _mission.MissionFileName, _config);
-				else dlg = new BackdropDialog(_mission.FlightGroups[_activeFG].Backdrop, _mission.FlightGroups[_activeFG].GlobalCargo, _config);
+				// HACK: index fix
+				if (_hookBackdropInstalled) dlg = new BackdropDialog(_mission.FlightGroups[_activeFG].Backdrop, _mission.FlightGroups[_activeFG].GlobalCargo - 1, _mission.MissionFileName, _config);
+				else dlg = new BackdropDialog(_mission.FlightGroups[_activeFG].Backdrop, _mission.FlightGroups[_activeFG].GlobalCargo - 1, _config);
 				if (dlg.ShowDialog() == DialogResult.OK)
 				{
 					cboGlobCargo.SelectedIndex = dlg.Shadow;
