@@ -1,12 +1,13 @@
 /*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
- * Copyright (C) 2007-2020 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2021 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.8.2
+ * VERSION: 1.8.2+
  */
 
 /* CHANGELOG
+ * [NEW #46] Color picker for XWA
  * v1.8.2, 201219
  * [NEW] Added zoom out abililty for oversized XWA images, with labels to show the sizes
  * [FIX] XWA values are really 1-indexed, so added an empty Group to shift properly
@@ -42,11 +43,12 @@
  * v1.0, 110921
  * - Release
  */
-using System;
-using System.IO;
-using System.Windows.Forms;
 using Idmr.ImageFormat.Dat;
 using Idmr.Platform;
+using System;
+using System.Drawing;
+using System.IO;
+using System.Windows.Forms;
 
 namespace Idmr.Yogeme
 {
@@ -66,12 +68,23 @@ namespace Idmr.Yogeme
 		readonly bool _hookInstalled;
 		readonly string _fileName;
 		static bool _planet2Loaded;
+		int _mouseX, _mouseY;
 
 		/// <summary>The selected Shadow setting</summary>
 		/// <remarks>XWA only</remarks>
-		public byte Shadow { get { return Convert.ToByte(_shadow != -1 ? _shadow : 255); } }
+		public byte Shadow => Convert.ToByte(_shadow != -1 ? _shadow : 255);
 		/// <summary>The selected Backdrop value</summary>
-		public byte BackdropIndex { get { return Convert.ToByte(_index); } }
+		public byte BackdropIndex => Convert.ToByte(_index);
+		/// <summary>The selected Color from the image</summary>
+		/// <remarks>XWA only, is copied for use as the backdrop name</remarks>
+		public string Color
+		{
+			get
+			{
+				string[] clr = lblColor.Text.Split(' ');
+				return Math.Round(decimal.Parse(clr[0]) / 256, 2) + " " + Math.Round(decimal.Parse(clr[1]) / 256, 2) + " " + Math.Round(decimal.Parse(clr[2]) / 256, 2);
+			}
+		}
 
 		/// <summary>Constructor for TIE and XvT</summary>
 		/// <param name="platform">Must be TIE, XvT or BoP</param>
@@ -458,6 +471,11 @@ namespace Idmr.Yogeme
 					label2.Left += size;
 					label3.Left += size;
 					label4.Left += size;
+					label5.Left += size;
+					lblColor.Left += size;
+					lblColor.Visible = true;
+					pctSample.Left += size;
+					pctSample.Visible = true;
 					numBackdrop.Left += size;
 					numShadow.Left += size;
 					cmdOK.Left += size;
@@ -543,6 +561,55 @@ namespace Idmr.Yogeme
 		private void vsbThumbs_ValueChanged(object sender, EventArgs e)
 		{
 			for (int i = 0; i < 104; i++) thumbs[i].Top = (i / 6 - vsbThumbs.Value) * 48;
+		}
+
+		private void pctBackdrop_MouseMove(object sender, MouseEventArgs e)
+		{
+			if (_platform != MissionFile.Platform.XWA) return;
+			int mouseX, mouseY;
+			mouseX = e.X;
+			mouseY = e.Y;
+			if (mouseX >= pctBackdrop.Image.Width || mouseY >= pctBackdrop.Image.Height) return;
+			Bitmap img = _planets.Groups[_index].Subs[_shadow].Image;
+			System.Diagnostics.Debug.WriteLine("mouse: " + mouseX + " " + mouseY);
+			if (img.Width > pctBackdrop.Width || img.Height > pctBackdrop.Height)
+			{
+				if (img.Width > img.Height)
+				{
+					// Width is driving the scale, shift the Y
+					mouseX = mouseX * img.Width / pctBackdrop.Width;
+					mouseY = mouseY * img.Width / pctBackdrop.Width - (img.Width - img.Height) / 2;
+				}
+				else if (img.Height > img.Width)
+				{
+					// Height is driving the scale, shift the X
+					mouseX = mouseX * img.Height / pctBackdrop.Height - (img.Height - img.Width) / 2;
+					mouseY = mouseY * img.Height / pctBackdrop.Height;
+				}
+				else
+				{
+					// Even scaling
+					mouseX = mouseX * img.Width / pctBackdrop.Width;
+					mouseY = mouseY * img.Height / pctBackdrop.Height;
+				}
+				System.Diagnostics.Debug.WriteLine("new mouse: " + mouseX + " " + mouseY);
+				if (mouseX < 0 || mouseX >= img.Width || mouseY < 0 || mouseY >= img.Height) return;
+			}
+			_mouseX = mouseX;
+			_mouseY = mouseY;
+			Color color = img.GetPixel(mouseX, mouseY);
+			pctSample.BackColor = color;
+		}
+
+		private void pctBackdrop_Click(object sender, EventArgs e)
+		{
+			if (_platform != MissionFile.Platform.XWA) return;
+			try
+			{
+				Color color = _planets.Groups[_index].Subs[_shadow].Image.GetPixel(_mouseX, _mouseY);
+				lblColor.Text = color.R + " " + color.G + " " + color.B;
+			}
+			catch { /* do nothing */ }
 		}
 
 		/* according to Allied:

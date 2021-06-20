@@ -139,6 +139,9 @@
 			this.label4 = new System.Windows.Forms.Label();
 			this.lblWindow = new System.Windows.Forms.Label();
 			this.lblImage = new System.Windows.Forms.Label();
+			this.lblColor = new System.Windows.Forms.Label();
+			this.label5 = new System.Windows.Forms.Label();
+			this.pctSample = new System.Windows.Forms.PictureBox();
 			((System.ComponentModel.ISupportInitialize)(this.pctBackdrop)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numShadow)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numBackdrop)).BeginInit();
@@ -247,12 +250,13 @@
 			((System.ComponentModel.ISupportInitialize)(this.thmb31)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.thmb55)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.thmb7)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.pctSample)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// cmdOK
 			// 
 			this.cmdOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.cmdOK.Location = new System.Drawing.Point(614, 135);
+			this.cmdOK.Location = new System.Drawing.Point(614, 204);
 			this.cmdOK.Name = "cmdOK";
 			this.cmdOK.Size = new System.Drawing.Size(75, 23);
 			this.cmdOK.TabIndex = 9;
@@ -279,6 +283,8 @@
 			this.pctBackdrop.Size = new System.Drawing.Size(256, 256);
 			this.pctBackdrop.TabIndex = 1;
 			this.pctBackdrop.TabStop = false;
+			this.pctBackdrop.Click += new System.EventHandler(this.pctBackdrop_Click);
+			this.pctBackdrop.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pctBackdrop_MouseMove);
 			// 
 			// label1
 			// 
@@ -1519,6 +1525,34 @@
 			this.lblImage.TabIndex = 15;
 			this.lblImage.Text = "1024x1024";
 			// 
+			// lblColor
+			// 
+			this.lblColor.AutoSize = true;
+			this.lblColor.Location = new System.Drawing.Point(624, 120);
+			this.lblColor.Name = "lblColor";
+			this.lblColor.Size = new System.Drawing.Size(31, 13);
+			this.lblColor.TabIndex = 16;
+			this.lblColor.Text = "0 0 0";
+			this.lblColor.Visible = false;
+			// 
+			// label5
+			// 
+			this.label5.AutoSize = true;
+			this.label5.Location = new System.Drawing.Point(584, 120);
+			this.label5.Name = "label5";
+			this.label5.Size = new System.Drawing.Size(34, 13);
+			this.label5.TabIndex = 17;
+			this.label5.Text = "Color:";
+			// 
+			// pctSample
+			// 
+			this.pctSample.Location = new System.Drawing.Point(697, 115);
+			this.pctSample.Name = "pctSample";
+			this.pctSample.Size = new System.Drawing.Size(22, 22);
+			this.pctSample.TabIndex = 18;
+			this.pctSample.TabStop = false;
+			this.pctSample.Visible = false;
+			// 
 			// BackdropDialog
 			// 
 			this.AcceptButton = this.cmdOK;
@@ -1526,6 +1560,9 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.cmdCancel;
 			this.ClientSize = new System.Drawing.Size(728, 275);
+			this.Controls.Add(this.pctSample);
+			this.Controls.Add(this.label5);
+			this.Controls.Add(this.lblColor);
 			this.Controls.Add(this.lblImage);
 			this.Controls.Add(this.lblWindow);
 			this.Controls.Add(this.label4);
@@ -1654,6 +1691,7 @@
 			((System.ComponentModel.ISupportInitialize)(this.thmb31)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.thmb55)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.thmb7)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.pctSample)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -1778,5 +1816,8 @@
 		private System.Windows.Forms.Label label4;
 		private System.Windows.Forms.Label lblWindow;
 		private System.Windows.Forms.Label lblImage;
+		private System.Windows.Forms.Label lblColor;
+		private System.Windows.Forms.Label label5;
+		private System.Windows.Forms.PictureBox pctSample;
 	}
 }

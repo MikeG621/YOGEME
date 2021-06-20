@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2021 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.10.2
+ * VERSION: 1.10.2+
  */
 
 /* CHANGELOG
+ * [NEW #46] Backdrop color from dialog copied for use
  * v1.10.2, 210606
  * [FIX] SBD region detection
  * v1.10.1, 210606
@@ -3194,6 +3195,10 @@ namespace Idmr.Yogeme
 				{
 					cboGlobCargo.SelectedIndex = dlg.Shadow;
 					numBackdrop.Value = dlg.BackdropIndex;
+					System.Runtime.Serialization.IFormatter formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+					Stream stream = new FileStream(Application.StartupPath + "\\YOGEME.bin", FileMode.Create, FileAccess.Write, FileShare.None);
+					formatter.Serialize(stream, dlg.Color);
+					stream.Close();
 				}
 			}
 			catch (Exception x)  //[JB] Catch all exceptions.

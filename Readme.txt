@@ -2,7 +2,7 @@
 ======================================
 
 Author: Michael Gaisser (mjgaisser@gmail.com)
-Version: 1.10.1
+Version: 1.10.2
 Date: 2021.06.06
 
 Thank you for downloading YOGEME, the all-in-one mission editor for the X-Wing
@@ -16,9 +16,11 @@ For program usage and help (with images), see "yogeme.chm".
 ==========
 Version History
 
+ - (XWA) Color picker for XWA backdrops. Copied to YOGEME's clipboard to be used for the backdrop name (via Ctrl+V) [Issue #46]
+
 v1.10.2, 06 Jun 2021
  - (XWA) SuperBackdrop region detection.
- - (XWA) Backdrop error messages with XWAUP v3 fixed (via ImageFormat.Dat.dll)
+ - (XWA) Backdrop error messages with XWAUP v3 fixed [Issue #44] (via ImageFormat.Dat.dll)
 
 v1.10.1, 06 Jun 2021
  - (XWA) Backdrop shadow fix
