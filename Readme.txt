@@ -13,6 +13,15 @@ original mainstream editors were created.
 
 For program usage and help (with images), see "yogeme.chm".
 
+==Install==
+YOGEME does not use an installer, simply download the latest ZIP file from the
+"Releases" page on Github and extract to your location of choice. There is an
+
+==Uninstall==
+To remove YOGEME, you can simply delete the directory where you placed it, or
+run the included "Uninstall.exe", which cleans up everything from the original
+ZIP and a settings file.
+
 ==========
 Version History
 
