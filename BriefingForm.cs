@@ -66,6 +66,7 @@ using System.Data;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Windows.Forms;
+using System.IO;
 
 namespace Idmr.Yogeme
 {
@@ -346,7 +347,9 @@ namespace Idmr.Yogeme
 			cboCraft.Items.AddRange(Platform.Xwa.Strings.CraftType);
 			cboNCraft.Items.AddRange(Platform.Xwa.Strings.CraftType);
 			#endregion
-			importIcons(Application.StartupPath + "\\images\\XWA_BRF.bmp", 56);
+			// Try loading directly from the installation.  If it fails, load the default image strip.
+			if (!loadXwaIcons(56))
+				importIcons(Application.StartupPath + "\\images\\XWA_BRF.bmp", 56);
 			_tags = _xwaBriefing.BriefingTag;
 			_strings = _xwaBriefing.BriefingString;
 			importStrings();
@@ -428,6 +431,51 @@ namespace Idmr.Yogeme
 			cboFGTag.Items.Add(name);
 		}
 
+		/// <summary>Attempts to load XWA's briefing icons directly from the installation files.</summary>
+		bool loadXwaIcons(int size)
+		{
+			try
+			{
+				System.Collections.Generic.List<string> shiplist = new System.Collections.Generic.List<string>(232);
+				string line;
+				using (StreamReader sr = new StreamReader(CraftDataManager.GetInstance().GetInstallPath() + "\\SHIPLIST.TXT"))
+				{
+					while (!sr.EndOfStream)
+					{
+						line = sr.ReadLine();
+						if (line.StartsWith("!")) shiplist.Add(line);
+					}
+				}
+				Image bmp = Image.FromFile(CraftDataManager.GetInstance().GetInstallPath() + "\\FRONTRES\\MAPICONS\\LICON.BMP");
+				imgCraft.ImageSize = new Size(size, size);
+				for (int i = 0; i < shiplist.Count; i++)
+				{
+					Bitmap icon = new Bitmap(size, size);
+					using (Graphics g = Graphics.FromImage(icon))
+					{
+						string[] tokens = shiplist[i].Split(',');
+						int x1 = 0, x2 = 0, y1 = 0, y2 = 0, width = 0, height = 0;
+						if (tokens.Length >= 13) // Extraneous commas may exist.
+						{
+							int.TryParse(tokens[9].Trim(), out x1);
+							int.TryParse(tokens[10].Trim(), out y1);
+							int.TryParse(tokens[11].Trim(), out x2);
+							int.TryParse(tokens[12].Trim(), out y2);
+							width = x2 - x1;
+							height = y2 - y1;
+						}
+						Rectangle src = new Rectangle(x1, y1, width, height);
+						if (width > size) width = size;
+						if (height > size) height = size;
+						Rectangle dest = new Rectangle((size / 2) - (width / 2), (size / 2) - (height / 2), width, height);
+						g.DrawImage(bmp, dest, src, GraphicsUnit.Pixel);
+					}
+					imgCraft.Images.Add(icon);
+				}
+			}
+			catch { return false; }
+			return true;
+		}
 		void importIcons(string filename, int size)
 		{
 			try
