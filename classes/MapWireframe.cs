@@ -328,13 +328,18 @@ namespace Idmr.Yogeme.MapWireframe
 		private int _globalOffset;  // The first piece of real data in the file is a pointer to itself. Since the entire file would be contiguous in memory, subtracting from any other pointer address gives us a relative offset into the file.
 
 		/// <summary>Initializes and attempts to load the contents from file.</summary>
+		/// <param name="filename">Path and filename of the OPT model to load.</param>
+		/// <param name="checkProfile">For XWAU compatibility, indicates that we should check for any corresponding model profiles.</param>
 		/// <returns>Returns <b>true</b> if the file is loaded.</returns>
-		public bool LoadFromFile(string filename)
+		public bool LoadFromFile(string filename, bool checkProfile)
 		{
 			try
 			{
 				if (!File.Exists(filename))
 					return false;
+
+				List<int> meshFilter = checkProfile ? getXwauDefaultProfileFilter(filename) : null;
+
 				using (FileStream fs = new FileStream(filename, FileMode.Open, FileAccess.Read))
 				{
 					using (BinaryReader br = new BinaryReader(fs))
@@ -342,7 +347,7 @@ namespace Idmr.Yogeme.MapWireframe
 						int version = br.ReadInt32();
 						if (version <= 0) fs.Position += 4;
 
-						parseTopNodes(fs, br);
+						parseTopNodes(fs, br, meshFilter);
 					}
 				}
 			}
@@ -353,9 +358,98 @@ namespace Idmr.Yogeme.MapWireframe
 			return true;
 		}
 
+		/// <summary>Checks a model for its corresponding profile definitions, scanning for meshes that should be deactivated in the default display.</summary>
+		/// <remarks>XWAU models can consolidate multiple profiles of craft meshes into a single OPT file, then deactivate meshes depending on <br/>
+		/// the chosen profile.  Loading the entire OPT as a wireframe may include superfluous geometry.</remarks>
+		/// <param name="filename">Path and filename of the OPT model to check.</param>
+		/// <returns>Returns a list of top-level node indices that must be filtered out when loading the <b>Default</b> wireframe.  This can be null.</returns>
+		private List<int> getXwauDefaultProfileFilter(string filename)
+		{
+			// According to the hook source code and documentation on the forum (https://www.xwaupgrade.com/phpBB3/viewtopic.php?f=33&t=13090&p=176375), the search criteria is:
+			//   FlightModels\[Model].opt
+			// It will first look for a standalone TXT file, prefixed with the model name:
+			//   FlightModels\[Model]ObjectProfiles.txt
+			// If that fails, attempts to find the [ObjectProfiles] section inside a matching INI file:
+			//   FlightModels\[Model].ini
+			string iniFilename = "";
+			int pathPos = filename.LastIndexOf('\\');
+			if (pathPos >= 0)
+			{
+				string path = filename.Substring(0, pathPos + 1);
+				string model = filename.Substring(pathPos + 1);
+				int extPos = model.LastIndexOf(".");
+				if (extPos >= 0)
+					model = model.Substring(0, extPos);
+
+				iniFilename = path + model + "ObjectProfiles.txt";
+			}
+
+			// If loading from the TXT file, we don't need the INI section header.
+			bool inSection = true;
+			if (!File.Exists(iniFilename))
+			{
+				// Load from INI instead, which is the most likely place to find this information.
+				iniFilename = filename.ToUpper().Replace(".OPT", ".INI");
+				inSection = false;
+			}
+
+			if (!File.Exists(iniFilename))
+				return null;
+
+			List<int> meshFilter = null;
+			try
+			{
+				// Parse any relevant text, retrieve the list of deactivated meshes for the "Default" model.
+				Dictionary<string, string> objectProfiles = new Dictionary<string, string>();
+				using (StreamReader sr = new StreamReader(iniFilename))
+				{
+					while (!sr.EndOfStream)
+					{
+						string line = sr.ReadLine();
+						int pos = line.IndexOf(";");
+						if (pos >= 0)
+							line = line.Substring(0, pos);
+						line = line.Trim().Replace("\t", "");
+
+						if (line.StartsWith("["))
+						{
+							inSection = (line == "[ObjectProfiles]");
+						}
+						else if (inSection && line.Length > 0)
+						{
+							string[] tokens = line.Split('=');
+							if (tokens.Length == 2)
+							{
+								objectProfiles.Add(tokens[0].ToUpper().Trim(), tokens[1].Trim());
+							}
+						}
+					}
+				}
+				if (objectProfiles.Count > 0)
+				{
+					meshFilter = new List<int>();
+					foreach (var item in objectProfiles)
+					{
+						if (item.Key == "DEFAULT")
+						{
+							string[] tokens = item.Value.Split(',');
+							for (int i = 0; i < tokens.Length; i++)
+							{
+								int result = -1;
+								int.TryParse(tokens[i].Trim(), out result);
+								meshFilter.Add(result);
+							}
+						}
+					}
+				}
+			}
+			catch { }
+			return meshFilter;
+		}
+
 		/// <summary>Parses all top-level nodes.</summary>
 		/// <remarks>Typically each top-level node is a single component of a particular MeshType. Its MeshType and mesh information will be defined somewhere in its child node tree.</remarks>
-		private void parseTopNodes(FileStream fs, BinaryReader br)
+		private void parseTopNodes(FileStream fs, BinaryReader br, List<int> meshFilter)
 		{
 			_basePosition = (int)fs.Position;
 			_globalOffset = br.ReadInt32();
@@ -369,6 +463,10 @@ namespace Idmr.Yogeme.MapWireframe
 			Components = new List<OptComponent>();
 			for (int i = 0; i < nodeCount; i++)
 			{
+				// XWAU may require us to filter out extra meshes that shouldn't appear on the default model.
+				if (meshFilter != null && meshFilter.Contains(i))
+					continue;
+
 				fs.Position = _basePosition + nodeTableOffset + (i * 4);
 				int nodeOffset = br.ReadInt32();
 				if (nodeOffset != 0)
@@ -1435,10 +1533,10 @@ namespace Idmr.Yogeme.MapWireframe
 						s2 = s2.Remove(s2.IndexOf('*'));
 					if (_curPlatform == Settings.Platform.BoP)
 					{
-						if (opt.LoadFromFile(Path.Combine(_modelLoadDirectory, s2 + ".op1")))
+						if (opt.LoadFromFile(Path.Combine(_modelLoadDirectory, s2 + ".op1"), false))
 							break;
 					}
-					if (opt.LoadFromFile(Path.Combine(_modelLoadDirectory, s2 + ".opt")))
+					if (opt.LoadFromFile(Path.Combine(_modelLoadDirectory, s2 + ".opt"), _curPlatform == Settings.Platform.XWA))
 						break;
 				}
 				def = new WireframeDefinition(opt);
