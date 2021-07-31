@@ -286,7 +286,6 @@ namespace Idmr.Yogeme
 					break;
 				case 2: // Ship Type
 					cbo.Items.AddRange(Strings.CraftType);
-					cbo.Items.RemoveAt(0);
 					break;
 				case 3: // Ship Class
 					cbo.Items.AddRange(Strings.ShipClass);
@@ -334,7 +333,6 @@ namespace Idmr.Yogeme
 					break;
 				case 16: // All ship types except
 					cbo.Items.AddRange(Strings.CraftType);
-					cbo.Items.RemoveAt(0);
 					break;
 				case 17: // All ship classes except
 					cbo.Items.AddRange(Strings.ShipClass);
