@@ -2960,7 +2960,7 @@ namespace Idmr.Yogeme
 			cboCounter.SelectedIndex = _mission.FlightGroups[_activeFG].Countermeasures;
 			numExplode.Value = _mission.FlightGroups[_activeFG].ExplosionTime;
 			numBackdrop.Value = _mission.FlightGroups[_activeFG].Backdrop;
-			cboGlobCargo.SelectedIndex = _mission.FlightGroups[_activeFG].GlobalCargo;
+			Common.SafeSetCBO(cboGlobCargo, _mission.FlightGroups[_activeFG].GlobalCargo, true);
 			cboGlobSpecCargo.SelectedIndex = _mission.FlightGroups[_activeFG].GlobalSpecialCargo;
 			#endregion
 			#region Arr/Dep
