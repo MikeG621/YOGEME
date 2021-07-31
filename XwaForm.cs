@@ -842,6 +842,14 @@ namespace Idmr.Yogeme
 				int gg = Common.ParseIntAfter(text, "GG:");
 				text = text.Replace("GG:" + gg, ((gg >= 0 && gg < 16 && _mission.GlobalGroups[gg] != "") ? "GG " + gg + ": " + _mission.GlobalGroups[gg] : "Global Group " + gg));
 			}
+			while (text.Contains("REG:"))
+			{
+				int reg = Common.ParseIntAfter(text, "REG:");
+				string regName = "#" + (reg + 1);
+				if (reg >= 0 && reg < 4 && !_mission.Regions[reg].ToUpper().StartsWith("REGION"))
+					regName += " (" +_mission.Regions[reg] + ")";
+				text = text.Replace("REG:" + reg, regName);
+			}
 			return text;
 		}
 		void saveMission(string fileMission)
@@ -3748,6 +3756,7 @@ namespace Idmr.Yogeme
 					break;
 				case 0x32:  //Hyper to Region
 					text = "Region #" + (value + 1);
+					orderLabelRefresh(); // Special case, refreshes the region name directly in the order string.
 					break;
 				case 0xA:   //Escort
 					if (value < 9) text = "Above";
