@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2021 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.9.2
+ * VERSION: 1.9.2+
  */
 
 /* CHANGELOG
+ * [UPD] Icons attempt to load from the platform directory to account for mods [JB]
  * v1.9.2, 210328
  * [FIX] Missing LST note in the title
  * [FIX #53] Move map for XWA

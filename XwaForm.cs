@@ -7,6 +7,9 @@
  */
 
 /* CHANGELOG
+ * [NEW] Hyper to Region order text shows number and name if defined [JB]
+ * [FIX] ComboBoxes when using CraftType [JB]
+ * [FIX] Exception on GlobalCargo during save [JB]
  * [NEW #46] Backdrop color from dialog copied for use
  * v1.10.2, 210606
  * [FIX] SBD region detection
@@ -3443,11 +3446,11 @@ namespace Idmr.Yogeme
 
 		void cmdMissionCraft_Click(object sender, EventArgs e)
 		{
-			// TODO: the error checking should be better, and the warning message should be "softened"
+			// TODO: the error checking should be better
 			FlightGroup thisFG = _mission.FlightGroups[_activeFG];
 
 			int warning = 0;
-			for (int i = 0; i < 4; i++)
+			for (int i = 0; i < 2; i++)
 			{
 				Mission.Trigger trig = thisFG.ArrDepTriggers[i];
 				if (trig.Amount != 0 || trig.VariableType > 1 || trig.Variable != 0 || trig.Condition != 0)
@@ -3470,7 +3473,14 @@ namespace Idmr.Yogeme
 			bool proceed = true;
 			if (warning > 0)
 			{
-				string msg = "For a craft to appear in the Mission Craft List prior to the briefing, its first two arrival triggers must be REPLACED!\r\n\r\nSet to Always(TRUE)\r\nTargeting the first Flight Group slot in the mission.\r\n\r\nAdditionally, this craft must be on the same team as the player, and non-stationary.\r\n\r\nAre you sure you want to make this Flight Group appear in the Mission Craft list?";
+				string msg = "For a craft to appear in the Mission Craft List prior to the briefing, its first two arrival triggers must be repaired.\r\n" +
+					"\r\n" +
+					"Set to Always(TRUE)\r\n" +
+					"Targeting the first Flight Group slot in the mission.\r\n" +
+					"\r\n" +
+					"Additionally, this craft must be on the same team as the player, and non-stationary.\r\n" +
+					"\r\n" +
+					"Are you sure you want to replace the arrival triggers?";
 				DialogResult res = MessageBox.Show(msg, "Confirm", MessageBoxButtons.YesNo);
 				if (res != DialogResult.Yes)
 					proceed = false;

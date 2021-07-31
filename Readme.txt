@@ -26,6 +26,15 @@ ZIP and a settings file.
 Version History
 
  - (XWA) Color picker for XWA backdrops. Copied to YOGEME's clipboard to be used for the backdrop name (via Ctrl+V) [Issue #46]
+ - Multiple fixes from Random Starfighter (JB)
+   - (All) SS Patrol and SS Await Return order strings now show target info (via Platform.dll)
+   - (XWA) Hyper to Region order text updated with token so it'll show number and name if defined (via Platform.dll)
+   - (XWA) Fixed some CraftType errors in Order and Trigger strings (via Platform.dll)
+   - (XWA) Also fixed some ComboBoxes when using CraftType
+   - (XWA) Briefing icons attempt to load from the platform directory to account for mods
+   - (XWA) FGs in map now also take into account Hyper orders for region visiblity
+   - (XWA) Map wireframes load default profile to account for additional hook meshes
+   - (XWA) Fixed an exception on GlobalCargo during save
 
 v1.10.2, 06 Jun 2021
  - (XWA) SuperBackdrop region detection.

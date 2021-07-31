@@ -410,6 +410,7 @@ namespace Idmr.Yogeme
 		#endregion Backdrops
 
 		#region MissionTie
+		// TODO: craft stats
 		/// <remarks>This also parses S-Foils</remarks>
 		void parseMission(string line)
 		{
