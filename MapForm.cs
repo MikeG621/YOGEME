@@ -1775,6 +1775,30 @@ namespace Idmr.Yogeme
 			}
 		}
 
+		/// <summary>Determines if the object is enabled and visible.</summary>
+		/// <remarks>For most platforms, checks the start point. For XWA, also checks for any hyper jump to the current region.</remarks>
+		bool isVisibleInRegion(int mapDataIndex, int waypoint)
+		{
+			if (!_mapData[mapDataIndex].WPs[0][waypoint].Enabled)
+				return false;
+			if (_platform != Settings.Platform.XWA)
+				return true;
+			int region = (int)numRegion.Value - 1;
+			if (_mapData[mapDataIndex].WPs[0][waypoint][4] == (short)region)
+				return true;
+			Platform.Xwa.FlightGroup xwaFg = (Platform.Xwa.FlightGroup)_mapData[mapDataIndex].FlightGroup;
+
+			for (int i = 0; i < 4; i++)
+			{
+				for (int j = 0; j < 4; j++)
+				{
+					if (xwaFg.Orders[i, j].Command == 0x32 && xwaFg.Orders[i, j].Variable1 == region) // Hyper to region
+						return true;
+				}
+			}
+			return false;
+		}
+
 		#region public functions
 		/// <summary>The down-and-dirty function that handles map display </summary>
 		/// <param name="persistant">When <b>true</b> draws to memory, <b>false</b> draws directly to the image</param>
@@ -1860,7 +1884,7 @@ namespace Idmr.Yogeme
 				// if previous sequential WP is checked and trace is required, draw trace line according to WP type
 				for (int k = 0; k < 4; k++) // Start
 				{
-					if (chkWP[k].Checked && _mapData[i].WPs[0][k].Enabled && (_platform != Settings.Platform.XWA || _mapData[i].WPs[0][k][4] == (short)(numRegion.Value - 1)))
+					if(chkWP[k].Checked && isVisibleInRegion(i, k))
 					{
 						drawCraft(g3, bmptemp, _mapData[i], _zoom * _mapData[i].WPs[0][k][coord1] / 160 + mX, -_zoom * _mapData[i].WPs[0][k][coord2] / 160 + mY);
 						//g3.DrawImageUnscaled(bmptemp, _zoom * _mapData[i].WPs[0][k][coord1] / 160 + X - 8, -_zoom * _mapData[i].WPs[0][k][coord2] / 160 + Y - 8);
@@ -1879,7 +1903,7 @@ namespace Idmr.Yogeme
 							if (chkTrace.Checked && !(chkTraceHideFade.Checked && _mapData[i].View == Visibility.Fade) && !(chkTraceSelected.Checked && !isMapObjectSelected(i)))
 							{
 								Platform.BaseFlightGroup.BaseWaypoint baseWp = _mapData[i].WPs[0][0];
-								if (k == 0 && (!chkWP[0].Checked || (baseWp[4] != numRegion.Value - 1)))
+								if (k == 0 && (!chkWP[0].Checked || !isVisibleInRegion(i, 0)))
 									continue;
 								else if (k > 0)
 								{
@@ -2590,7 +2614,7 @@ namespace Idmr.Yogeme
 			if (e.Index == -1) return;
 			e.DrawBackground();
 			Brush brText = getDrawColor(_mapData[e.Index]);
-			if (_platform == Settings.Platform.XWA && _mapData[e.Index].Region != numRegion.Value - 1)
+			if (_platform == Settings.Platform.XWA && !isVisibleInRegion(e.Index, 0))
 				brText = Brushes.Gray;
 			e.Graphics.DrawString(lstCraft.Items[e.Index].ToString(), e.Font, brText, e.Bounds, StringFormat.GenericDefault);
 			if (_mapData[e.Index].View != Visibility.Show)
