@@ -286,7 +286,6 @@ namespace Idmr.Yogeme
 					break;
 				case 2: // Ship Type
 					cbo.Items.AddRange(Strings.CraftType);
-					cbo.Items.RemoveAt(0);
 					break;
 				case 3: // Ship Class
 					cbo.Items.AddRange(Strings.ShipClass);
@@ -334,7 +333,6 @@ namespace Idmr.Yogeme
 					break;
 				case 16: // All ship types except
 					cbo.Items.AddRange(Strings.CraftType);
-					cbo.Items.RemoveAt(0);
 					break;
 				case 17: // All ship classes except
 					cbo.Items.AddRange(Strings.ShipClass);
@@ -843,6 +841,14 @@ namespace Idmr.Yogeme
 			{
 				int gg = Common.ParseIntAfter(text, "GG:");
 				text = text.Replace("GG:" + gg, ((gg >= 0 && gg < 16 && _mission.GlobalGroups[gg] != "") ? "GG " + gg + ": " + _mission.GlobalGroups[gg] : "Global Group " + gg));
+			}
+			while (text.Contains("REG:"))
+			{
+				int reg = Common.ParseIntAfter(text, "REG:");
+				string regName = "#" + (reg + 1);
+				if (reg >= 0 && reg < 4 && !_mission.Regions[reg].ToUpper().StartsWith("REGION"))
+					regName += " (" +_mission.Regions[reg] + ")";
+				text = text.Replace("REG:" + reg, regName);
 			}
 			return text;
 		}
@@ -2954,7 +2960,7 @@ namespace Idmr.Yogeme
 			cboCounter.SelectedIndex = _mission.FlightGroups[_activeFG].Countermeasures;
 			numExplode.Value = _mission.FlightGroups[_activeFG].ExplosionTime;
 			numBackdrop.Value = _mission.FlightGroups[_activeFG].Backdrop;
-			cboGlobCargo.SelectedIndex = _mission.FlightGroups[_activeFG].GlobalCargo;
+			Common.SafeSetCBO(cboGlobCargo, _mission.FlightGroups[_activeFG].GlobalCargo, true);
 			cboGlobSpecCargo.SelectedIndex = _mission.FlightGroups[_activeFG].GlobalSpecialCargo;
 			#endregion
 			#region Arr/Dep
@@ -3750,6 +3756,7 @@ namespace Idmr.Yogeme
 					break;
 				case 0x32:  //Hyper to Region
 					text = "Region #" + (value + 1);
+					orderLabelRefresh(); // Special case, refreshes the region name directly in the order string.
 					break;
 				case 0xA:   //Escort
 					if (value < 9) text = "Above";
