@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2021 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.8.2+
+ * VERSION: 1.11
  */
 
 /* CHANGELOG
+ * v1.11, 210801
  * [NEW #46] Color picker for XWA
  * v1.8.2, 201219
  * [NEW] Added zoom out abililty for oversized XWA images, with labels to show the sizes

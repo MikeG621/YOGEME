@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2021 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.10.2+
+ * VERSION: 1.11
  */
 
 /* CHANGELOG
+ * v1.11, 210801
  * [NEW] Hyper to Region order text shows number and name if defined [JB]
  * [FIX] ComboBoxes when using CraftType [JB]
  * [FIX] Exception on GlobalCargo during save [JB]

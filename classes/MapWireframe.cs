@@ -4,10 +4,11 @@
  * This file authored by "JB" (Random Starfighter) (randomstarfighter@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.10+
+ * VERSION: 1.11
  */
 
 /* CHANGELOG
+ * v1.11, 210801
  * [UPD] XWA wireframes load default profile to account for additional hook meshes [JB]
  * v1.10, 210520
  * [FIX #58, #59] XWA wireframes when using rotations instead of Waypoints [JB]

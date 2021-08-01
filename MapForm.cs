@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2021 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.10+
+ * VERSION: 1.11
  */
 
 /* CHANGELOG
+ * v1.11, 210801
  * [UPD] FGs now also take into account Hyper orders for region visiblity [JB]
  * v1.10, 210520
  * [FIX #58] XWA wireframes when using rotations instead of Waypoints [JB]

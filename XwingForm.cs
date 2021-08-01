@@ -8,7 +8,7 @@
  */
 
 /* CHANGELOG:
- * * v1.10, 210520
+ * v1.10, 210520
  * [UPD #56] Replaced try/catch with TyrParse [JB]
  * v1.9, 210108
  * [FIX] Clipboard path in some locations
