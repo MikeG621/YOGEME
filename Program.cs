@@ -3,10 +3,12 @@
  * Copyright (C) 2007-2018 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.5
+ * VERSION: 1.11.1
  */
 
 /* CHANGELOG
+ * v1.11.1, 210814
+ * [FIX] Set InvariantCulture to prevent text read errors [JB]
  * v1.5, 180910
  * [NEW] added X-wing [JB]
  * v1.3, 170107

@@ -2,8 +2,8 @@
 ======================================
 
 Author: Michael Gaisser (mjgaisser@gmail.com)
-Version: 1.11
-Date: 2021.08.01
+Version: 1.11.1
+Date: 2021.08.14
 
 Thank you for downloading YOGEME, the all-in-one mission editor for the X-Wing
 series, Xwing95 through X-wing Alliance.  This program allows easy mission
@@ -24,6 +24,9 @@ ZIP and a settings file.
 
 ==========
 Version History
+
+v1.11.1, 14 Aug 2021
+ - Set InvariantCulture to prevent text read errors (JB)
 
 v1.11, 01 Aug 2021
  - (XWA) Color picker for XWA backdrops. Copied to YOGEME's clipboard to be used for the backdrop name (via Ctrl+V) [Issue #46]
