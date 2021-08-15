@@ -44,6 +44,8 @@
 using System;
 using System.IO;
 using System.Windows.Forms;
+using System.Threading;
+using System.Globalization;
 
 namespace Idmr.Yogeme
 {
@@ -52,6 +54,7 @@ namespace Idmr.Yogeme
 		[STAThread]
 		static void Main(string[] Args)
 		{
+			Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
 			Settings config = new Settings();
             if (Args.Length != 1 && config.Startup == Settings.StartupMode.Normal) Application.Run(new StartForm(config));
 			else if (Args.Length != 1 && config.Startup == Settings.StartupMode.LastPlatform)
