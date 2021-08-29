@@ -862,7 +862,9 @@ namespace Idmr.Yogeme
 		void colorizedComboBox_DrawItem(object sender, DrawItemEventArgs e)
 		{
 			ComboBox variable = (ComboBox)sender;
+#pragma warning disable IDE0018 // Inline variable declaration
 			ComboBox variableType;
+#pragma warning restore IDE0018 // Inline variable declaration
 			colorizedFGList.TryGetValue(variable, out variableType);
 			bool colorize = true;
 			if (variableType != null)        //If a VariableType selection control is attached, check that Flight Group is selected.
@@ -1111,8 +1113,9 @@ namespace Idmr.Yogeme
 			}
 			else if (ActiveControl.GetType().ToString() == "System.Windows.Forms.DataGridTextBox")
 			{
-				formatter.Serialize(stream, ((DataGridTextBox)ActiveControl).SelectedText);
-				data.SetText(((DataGridTextBox)ActiveControl).SelectedText);
+				DataGridTextBox dgt = (DataGridTextBox)ActiveControl;
+				formatter.Serialize(stream, dgt.SelectedText);
+				data.SetText(dgt.SelectedText);
 				/*stream.Close(); //[JB] I can't get it to copy/paste the current cell content, but this will prevent the entire FG from copy/paste.
 				return;*/
 			}
@@ -1295,45 +1298,48 @@ namespace Idmr.Yogeme
 				}
 				catch { /* do nothing */ }
 			}
-			else
-			{ //TODO: re-sort this so everything can be in one if block
+			else if (ActiveControl.GetType().ToString() == "System.Windows.Forms.TextBox")
+			{
 				try
 				{
-					if (ActiveControl.GetType().ToString() == "System.Windows.Forms.TextBox")
-					{
-						string str = formatter.Deserialize(stream).ToString();
-						if (str.IndexOf("Idmr.", 0) != -1) throw new Exception(); // [JB] Prevent the class name when an entire Message is copied.
-						TextBox txt_t = (TextBox)ActiveControl;
-						txt_t.SelectedText = str;
-						Common.Title(this, false);
-						stream.Close();
-						return;
-					}
-					else if (ActiveControl.GetType().ToString() == "System.Windows.Forms.NumericUpDown")
-					{
-						string str = formatter.Deserialize(stream).ToString();
-						NumericUpDown control = (NumericUpDown)ActiveControl;
-						decimal value = Convert.ToDecimal(str);
-						if (value > control.Maximum) value = control.Maximum;
-						else if (value < control.Minimum) value = control.Minimum;
-						control.Value = value;
-						Common.Title(this, false);
-						stream.Close();
-						return;
-					}
-					else if (ActiveControl.GetType().ToString() == "System.Windows.Forms.DataGridTextBox")
-					{
-						//TODO: get this working
-						string str = formatter.Deserialize(stream).ToString();
-						if (str.IndexOf("Idmr.", 0) != -1) throw new Exception(); // [JB] Prevent the class name when an entire Message is copied.
-						((DataGridTextBox)ActiveControl).Text = str;
-						stream.Close(); //[JB] I can't get it to copy/paste the current cell content, but this will prevent the entire FG from copy/paste.
-						return;
-					}
+					string str = formatter.Deserialize(stream).ToString();
+					if (str.IndexOf("Idmr.", 0) != -1) throw new Exception(); // [JB] Prevent the class name when an entire Message is copied.
+					TextBox txt_t = (TextBox)ActiveControl;
+					txt_t.SelectedText = str;
+					Common.Title(this, false);
 				}
 				catch { /* do nothing */ }
 			}
-			if (sender.ToString() == "MessTrig" || (lblMess1.Focused || lblMess2.Focused))  //[JB] Detect if triggers have focus
+			else if (ActiveControl.GetType().ToString() == "System.Windows.Forms.NumericUpDown")
+			{
+				try
+				{
+					string str = formatter.Deserialize(stream).ToString();
+					NumericUpDown control = (NumericUpDown)ActiveControl;
+					decimal value = Convert.ToDecimal(str);
+					if (value > control.Maximum) value = control.Maximum;
+					else if (value < control.Minimum) value = control.Minimum;
+					control.Value = value;
+					Common.Title(this, false);
+				}
+				catch { /* do nothing */ }
+			}
+			else if (ActiveControl.GetType().ToString() == "System.Windows.Forms.DataGridTextBox")
+			{
+				try
+				{
+					string str = formatter.Deserialize(stream).ToString();
+					if (str.IndexOf("Idmr.", 0) != -1) throw new Exception();
+					DataGrid dg = (DataGrid)ActiveControl.Parent;
+					int row = dg.CurrentRowIndex;
+					DataTable dt = ((DataView)dg.DataSource).Table;
+					dt.Rows[row][dg.CurrentCell.ColumnNumber] = str;
+					if (dt.TableName == "Waypoints") table_RowChanged("paste", new DataRowChangeEventArgs(dt.Rows[row], DataRowAction.Change));
+					else tableRaw_RowChanged("paste", new DataRowChangeEventArgs(dt.Rows[row], DataRowAction.Change));
+				}
+				catch { /* do nothing */ }
+			}
+			else if (sender.ToString() == "MessTrig" || lblMess1.Focused || lblMess2.Focused)  //[JB] Detect if triggers have focus
 			{
 				try
 				{
@@ -1361,8 +1367,8 @@ namespace Idmr.Yogeme
 #pragma warning disable IDE0016 // Use 'throw' expression
 							if (fg == null) throw new Exception();
 #pragma warning restore IDE0016 // Use 'throw' expression
-							if (newFG() == false)
-								break;
+							if (!newFG()) break;
+
 							_mission.FlightGroups[_activeFG] = fg;
 							refreshMap(-1);
 							updateFGList(); //[JB] Update all the downdown lists.
@@ -2701,7 +2707,9 @@ namespace Idmr.Yogeme
 			for (j = 0; j < 15; j++) if (_table.Rows[j].Equals(e.Row)) break;   //find the row index that you're changing
 			for (i = 0; i < 3; i++)
 			{
+#pragma warning disable IDE0018 // Inline variable declaration
 				double cell;
+#pragma warning restore IDE0018 // Inline variable declaration
 				if (!double.TryParse(_table.Rows[j][i].ToString(), out cell))
 					_table.Rows[j][i] = 0;
 				short raw = (short)(cell * 160);
@@ -2719,7 +2727,9 @@ namespace Idmr.Yogeme
 			for (j = 0; j < 15; j++) if (_tableRaw.Rows[j].Equals(e.Row)) break;    //find the row index that you're changing
 			for (i = 0; i < 3; i++)
 			{
+#pragma warning disable IDE0018 // Inline variable declaration
 				short raw;
+#pragma warning restore IDE0018 // Inline variable declaration
 				if (!short.TryParse(_tableRaw.Rows[j][i].ToString(), out raw))
 					_tableRaw.Rows[j][i] = 0;
 				_mission.FlightGroups[_activeFG].Waypoints[j][i] = Common.Update(this, _mission.FlightGroups[_activeFG].Waypoints[j][i], raw);
