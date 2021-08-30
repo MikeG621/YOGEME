@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2021 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.10
+ * VERSION: 1.10+
  */
 
 /* CHANGELOG
+ * [UPD] Copy/paste now uses system clipboard, can CP Waypoints
  * v1.10, 210520
  * [UPD #56] Replaced try/catch with TryParse [JB]
  * v1.9.2, 210328
@@ -203,6 +204,7 @@ namespace Idmr.Yogeme
 			_loading = false;
 		}
 
+		#region methods
 		void closeForms()
 		{
 			if (_fMap != null) _fMap.Close();
@@ -1086,7 +1088,9 @@ namespace Idmr.Yogeme
 			txtMissSucc.Text = _mission.MissionSuccessful;
 			txtMissFail.Text = _mission.MissionFailed;
 		}
+		#endregion methods
 
+		#region event handlers
 		//[JB] Apply color changes to all interactive labels.  This is a callback event when the program settings are updated.
 		void applySettingsHandler(object sender, EventArgs e)
 		{
@@ -1109,8 +1113,7 @@ namespace Idmr.Yogeme
 		void colorizedComboBox_DrawItem(object sender, DrawItemEventArgs e)
 		{
 			ComboBox variable = (ComboBox)sender;
-			ComboBox variableType;
-			ColorizedFGList.TryGetValue(variable, out variableType);
+			ColorizedFGList.TryGetValue(variable, out ComboBox variableType);
 			bool colorize = true;
 			if (variableType != null)        //If a VariableType selection control is attached, check that a Flight Group type is selected.
 				colorize = (variableType.SelectedIndex == 1 || variableType.SelectedIndex == 0xF);
@@ -1315,6 +1318,7 @@ namespace Idmr.Yogeme
 					break;
 			}
 		}
+		#endregion event handlers
 
 		#region Menu
 		void menuAbout_Click(object sender, EventArgs e)
@@ -1332,92 +1336,84 @@ namespace Idmr.Yogeme
 		void menuCopy_Click(object sender, EventArgs e)
 		{
 			System.Runtime.Serialization.IFormatter formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
-			Stream stream = new FileStream(Application.StartupPath + "\\YOGEME.bin", FileMode.Create, FileAccess.Write, FileShare.None);
-			#region ArrDep
+			Stream stream = new MemoryStream();
+			DataObject data = new DataObject();
+
 			if (sender.ToString() == "AD" || hasFocus(lblADTrig))  //[JB] Detect if triggers have focus
 			{
 				formatter.Serialize(stream, _mission.FlightGroups[_activeFG].ArrDepTriggers[_activeArrDepTrigger]);
-				stream.Close();
-				return;
+				data.SetText(_mission.FlightGroups[_activeFG].ArrDepTriggers[_activeArrDepTrigger].ToString());
 			}
-			#endregion
-			#region FG Goal
-			if (sender.ToString() == "Goal" || hasFocus(lblGoal))  //[JB] Detect if goals have focus
+			else if (sender.ToString() == "Goal" || hasFocus(lblGoal))  //[JB] Detect if goals have focus
 			{
 				formatter.Serialize(stream, _mission.FlightGroups[_activeFG].Goals[_activeFGGoal]);
-				stream.Close();
-				return;
+				data.SetText(_mission.FlightGroups[_activeFG].Goals[_activeFGGoal].ToString());
 			}
-			#endregion
-			#region Orders
-			if (sender.ToString() == "Order" || hasFocus(lblOrder))  //[JB] Detect if orders have focus
+			else if (sender.ToString() == "Order" || hasFocus(lblOrder))  //[JB] Detect if orders have focus
 			{
 				formatter.Serialize(stream, _mission.FlightGroups[_activeFG].Orders[_activeOrder]);
-				stream.Close();
-				return;
+				data.SetText(_mission.FlightGroups[_activeFG].Orders[_activeOrder].ToString());
 			}
-			#endregion
-			#region Skip to O4
-			if (sender.ToString() == "Skip" || (lblSkipTrig1.Focused || lblSkipTrig2.Focused))  //[JB] Detect if triggers have focus
+			else if (sender.ToString() == "Skip" || lblSkipTrig1.Focused || lblSkipTrig2.Focused)  //[JB] Detect if triggers have focus
 			{
 				formatter.Serialize(stream, _mission.FlightGroups[_activeFG].SkipToOrder4Trigger[(lblSkipTrig1.ForeColor == getHighlightColor() ? 0 : 1)]);
-				stream.Close();
-				return;
+				data.SetText(_mission.FlightGroups[_activeFG].SkipToOrder4Trigger[(lblSkipTrig1.ForeColor == getHighlightColor() ? 0 : 1)].ToString());
 			}
-			#endregion
-			#region generic form controls
-			if (ActiveControl.GetType().ToString() == "System.Windows.Forms.TextBox")
+			else if (ActiveControl.GetType().ToString() == "System.Windows.Forms.TextBox")
 			{
-				TextBox txt_t = (TextBox)ActiveControl;
-				if (txt_t.SelectedText != "")
+				TextBox txt = (TextBox)ActiveControl;
+				if (txt.SelectedText != "")
 				{
-					formatter.Serialize(stream, txt_t.SelectedText);
-					stream.Close();
-					return;
+					formatter.Serialize(stream, txt.SelectedText);
+					data.SetText(txt.SelectedText);
 				}
 			}
 			else if (ActiveControl.GetType().ToString() == "System.Windows.Forms.NumericUpDown")  //[JB] Added copy/paste for this
 			{
-				NumericUpDown num_t = (NumericUpDown)ActiveControl;
-				formatter.Serialize(stream, num_t.Value);
-				stream.Close();
-				return;
+				NumericUpDown num = (NumericUpDown)ActiveControl;
+				formatter.Serialize(stream, num.Value);
+				data.SetText(num.Value.ToString());
 			}
 			else if (ActiveControl.GetType().ToString() == "System.Windows.Forms.DataGridTextBox")
 			{
-				stream.Close(); //[JB] I can't get it to copy/paste the current cell content, but this will prevent the entire FG from copy/paste.
-				return;
+				DataGridTextBox dgt = (DataGridTextBox)ActiveControl;
+				formatter.Serialize(stream, dgt.SelectedText);
+				data.SetText(dgt.SelectedText);
 			}
-			#endregion
-			#region MessTrig
-			if (sender.ToString() == "MessTrig" || hasFocus(lblMessTrig))  //[JB] Detect if triggers have focus
+			else if (sender.ToString() == "MessTrig" || hasFocus(lblMessTrig))  //[JB] Detect if triggers have focus
 			{
 				formatter.Serialize(stream, _mission.Messages[_activeMessage].Triggers[_activeMessageTrigger]);
-				stream.Close();
-				return;
+				data.SetText(_mission.Messages[_activeMessage].Triggers[_activeMessageTrigger].ToString());
 			}
-			#endregion
-
-			switch (tabMain.SelectedIndex)
+			else
 			{
-				case 0:
-					if (ActiveControl.GetType().ToString() == "System.Windows.Forms.Label") break; //[JB] Prevent copy/paste on any clickable label.
-					formatter.Serialize(stream, _mission.FlightGroups[_activeFG]);
-					break;
-				case 1:
-					if (ActiveControl.GetType().ToString() == "System.Windows.Forms.Label") break; //[JB] Prevent copy/paste on any clickable label.
-					if (_mission.Messages.Count != 0) formatter.Serialize(stream, _mission.Messages[_activeMessage]);
-					break;
-				case 2:
-					formatter.Serialize(stream, _mission.Globals[_activeTeam].Goals[_activeGlobalTrigger / 4].Triggers[_activeGlobalTrigger % 4].GoalTrigger);  //[JB] Changed to pasting Mission.Trigger rather than Globals.Goal.Trigger so it can copy/paste from other Triggers.
-					break;
-				case 3:
-					formatter.Serialize(stream, _mission.Teams[_activeTeam]);
-					break;
-				default:
-					break;
+				switch (tabMain.SelectedIndex)
+				{
+					case 0:
+						formatter.Serialize(stream, _mission.FlightGroups[_activeFG]);
+						data.SetText(_mission.FlightGroups[_activeFG].ToString());
+						break;
+					case 1:
+						if (_mission.Messages.Count != 0)
+						{
+							formatter.Serialize(stream, _mission.Messages[_activeMessage]);
+							data.SetText(_mission.Messages[_activeMessage].MessageString);
+						}
+						break;
+					case 2:
+						formatter.Serialize(stream, _mission.Globals[_activeTeam].Goals[_activeGlobalTrigger / 4].Triggers[_activeGlobalTrigger % 4].GoalTrigger);  //[JB] Changed to pasting Mission.Trigger rather than Globals.Goal.Trigger so it can copy/paste from other Triggers.
+						data.SetText(_mission.Globals[_activeTeam].Goals[_activeGlobalTrigger / 4].Triggers[_activeGlobalTrigger % 4].GoalTrigger.ToString());
+						break;
+					case 3:
+						formatter.Serialize(stream, _mission.Teams[_activeTeam]);
+						data.SetText(_mission.Teams[_activeTeam].Name);
+						break;
+					default:
+						break;
+				}
 			}
-			stream.Close();
+			data.SetData("yogeme", false, stream);
+			Clipboard.SetDataObject(data, true);
 		}
 		void menuER_Click(object sender, EventArgs e)
 		{
@@ -3351,8 +3347,7 @@ namespace Idmr.Yogeme
 			for (j = 0; j < 22; j++) if (_table.Rows[j].Equals(e.Row)) break;   //find the row index that you're changing
 			for (i = 0; i < 3; i++)
 			{
-				double cell;
-				if (!double.TryParse(_table.Rows[j][i].ToString(), out cell))
+				if (!double.TryParse(_table.Rows[j][i].ToString(), out double cell))
 					_table.Rows[j][i] = 0;
 				short raw = (short)(cell * 160);
 				_mission.FlightGroups[_activeFG].Waypoints[j][i] = Common.Update(this, _mission.FlightGroups[_activeFG].Waypoints[j][i], raw);
@@ -3369,8 +3364,7 @@ namespace Idmr.Yogeme
 			for (j = 0; j < 22; j++) if (_tableRaw.Rows[j].Equals(e.Row)) break;    //find the row index that you're changing
 			for (i = 0; i < 3; i++)
 			{
-				short raw;
-				if (!short.TryParse(_tableRaw.Rows[j][i].ToString(), out raw))
+				if (!short.TryParse(_tableRaw.Rows[j][i].ToString(), out short raw))
 					_tableRaw.Rows[j][i] = 0;
 				_mission.FlightGroups[_activeFG].Waypoints[j][i] = Common.Update(this, _mission.FlightGroups[_activeFG].Waypoints[j][i], raw);
 				_table.Rows[j][i] = Math.Round((double)raw / 160, 2);

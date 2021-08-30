@@ -7,6 +7,7 @@
  */
 
 /* CHANGELOG
+ * [UPD] Copy/paste now uses system clipboard, can CP Waypoints
  * v1.10, 210520
  * [UPD #56] Replaced try/catch with TryParse [JB]
  * v1.9.2, 210328
@@ -862,10 +863,7 @@ namespace Idmr.Yogeme
 		void colorizedComboBox_DrawItem(object sender, DrawItemEventArgs e)
 		{
 			ComboBox variable = (ComboBox)sender;
-#pragma warning disable IDE0018 // Inline variable declaration
-			ComboBox variableType;
-#pragma warning restore IDE0018 // Inline variable declaration
-			colorizedFGList.TryGetValue(variable, out variableType);
+			colorizedFGList.TryGetValue(variable, out ComboBox variableType);
 			bool colorize = true;
 			if (variableType != null)        //If a VariableType selection control is attached, check that Flight Group is selected.
 				colorize = (variableType.SelectedIndex == 1);
@@ -1116,8 +1114,6 @@ namespace Idmr.Yogeme
 				DataGridTextBox dgt = (DataGridTextBox)ActiveControl;
 				formatter.Serialize(stream, dgt.SelectedText);
 				data.SetText(dgt.SelectedText);
-				/*stream.Close(); //[JB] I can't get it to copy/paste the current cell content, but this will prevent the entire FG from copy/paste.
-				return;*/
 			}
 			else if (sender.ToString() == "MessTrig" || lblMess1.Focused || lblMess2.Focused) //[JB] Detect if triggers have focus
 			{
@@ -2707,10 +2703,7 @@ namespace Idmr.Yogeme
 			for (j = 0; j < 15; j++) if (_table.Rows[j].Equals(e.Row)) break;   //find the row index that you're changing
 			for (i = 0; i < 3; i++)
 			{
-#pragma warning disable IDE0018 // Inline variable declaration
-				double cell;
-#pragma warning restore IDE0018 // Inline variable declaration
-				if (!double.TryParse(_table.Rows[j][i].ToString(), out cell))
+				if (!double.TryParse(_table.Rows[j][i].ToString(), out double cell))
 					_table.Rows[j][i] = 0;
 				short raw = (short)(cell * 160);
 				_mission.FlightGroups[_activeFG].Waypoints[j][i] = Common.Update(this, _mission.FlightGroups[_activeFG].Waypoints[j][i], raw);
@@ -2727,10 +2720,7 @@ namespace Idmr.Yogeme
 			for (j = 0; j < 15; j++) if (_tableRaw.Rows[j].Equals(e.Row)) break;    //find the row index that you're changing
 			for (i = 0; i < 3; i++)
 			{
-#pragma warning disable IDE0018 // Inline variable declaration
-				short raw;
-#pragma warning restore IDE0018 // Inline variable declaration
-				if (!short.TryParse(_tableRaw.Rows[j][i].ToString(), out raw))
+				if (!short.TryParse(_tableRaw.Rows[j][i].ToString(), out short raw))
 					_tableRaw.Rows[j][i] = 0;
 				_mission.FlightGroups[_activeFG].Waypoints[j][i] = Common.Update(this, _mission.FlightGroups[_activeFG].Waypoints[j][i], raw);
 				_table.Rows[j][i] = Math.Round((double)raw / 160, 2);
