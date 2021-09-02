@@ -7,6 +7,7 @@
  */
 
 /* CHANGELOG
+ * [FIX] Pasting a message when at capacity now correctly does nothing
  * [UPD] Copy/paste now uses system clipboard, can CP Waypoints
  * v1.10, 210520
  * [UPD #56] Replaced try/catch with TryParse [JB]
@@ -1384,7 +1385,8 @@ namespace Idmr.Yogeme
 #pragma warning disable IDE0016 // Use 'throw' expression
 							if (mess == null) throw new Exception();
 #pragma warning restore IDE0016 // Use 'throw' expression
-							newMess();
+							if (!newMess()) break;
+
 							_mission.Messages[_activeMessage] = mess;
 							messlistRefresh();
 							lstMessages.SelectedIndex = _activeMessage;
@@ -2787,18 +2789,19 @@ namespace Idmr.Yogeme
 			lstMessages.Items[_activeMessage] = (_mission.Messages[_activeMessage].MessageString != "" ? _mission.Messages[_activeMessage].MessageString : " *");
 			lstMessages.Invalidate(lstMessages.GetItemRectangle(_activeMessage));
 		}
-		void newMess()
+		bool newMess()
 		{
 			if (_mission.Messages.Count == Mission.MessageLimit)
 			{
 				MessageBox.Show("Mission contains maximum number of Messages.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				return;
+				return false;
 			}
 			_activeMessage = _mission.Messages.Add();
 			if (_mission.Messages.Count == 1) enableMessage(true);
 			lstMessages.Items.Add(_mission.Messages[_activeMessage].MessageString);
 			lstMessages.SelectedIndex = _activeMessage;
 			Common.Title(this, _loading);
+			return true;
 		}
 		void swapMessage(int srcIndex, int dstIndex)
 		{
