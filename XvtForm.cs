@@ -1550,10 +1550,9 @@ namespace Idmr.Yogeme
 		void menuPaste_Click(object sender, EventArgs e)
 		{
 			System.Runtime.Serialization.IFormatter formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
-			Stream stream;
-			try { stream = new FileStream(Application.StartupPath + "\\YOGEME.bin", FileMode.Open, FileAccess.Read, FileShare.Read); }
-			catch { return; }
-			#region ArrDep
+			if (!(Clipboard.GetDataObject() is DataObject data) || !data.GetDataPresent("yogeme", false)) return;
+			if (!(data.GetData("yogeme", false) is MemoryStream stream)) return;
+
 			if (sender.ToString() == "AD" || hasFocus(lblADTrig))  //[JB] Detect if triggers have focus
 			{
 				try
@@ -1565,12 +1564,8 @@ namespace Idmr.Yogeme
 					Common.Title(this, false);
 				}
 				catch { /* do nothing */ }
-				stream.Close();
-				return;
 			}
-			#endregion
-			#region Orders
-			if (sender.ToString() == "Order" || hasFocus(lblOrder))  //[JB] Detect if orders have focus
+			else if (sender.ToString() == "Order" || hasFocus(lblOrder))  //[JB] Detect if orders have focus
 			{
 				try
 				{
@@ -1581,12 +1576,8 @@ namespace Idmr.Yogeme
 					Common.Title(this, false);
 				}
 				catch { /* do nothing */ }
-				stream.Close();
-				return;
 			}
-			#endregion
-			#region FG Goals
-			if (sender.ToString() == "Goal" || hasFocus(lblGoal))  //[JB] Detect if goals have focus
+			else if (sender.ToString() == "Goal" || hasFocus(lblGoal))  //[JB] Detect if goals have focus
 			{
 				try
 				{
@@ -1597,12 +1588,8 @@ namespace Idmr.Yogeme
 					Common.Title(this, false);
 				}
 				catch { /* do nothing */ }
-				stream.Close();
-				return;
 			}
-			#endregion
-			#region Skip to O4
-			if (sender.ToString() == "Skip" || (lblSkipTrig1.Focused || lblSkipTrig2.Focused))  //[JB] Detect if triggers have focus
+			else if (sender.ToString() == "Skip" || (lblSkipTrig1.Focused || lblSkipTrig2.Focused))  //[JB] Detect if triggers have focus
 			{
 				try
 				{
@@ -1614,126 +1601,122 @@ namespace Idmr.Yogeme
 					Common.Title(this, false);
 				}
 				catch { /* do nothing */ }
-				stream.Close();
-				return;
 			}
-			#endregion
-			#region generic form controls
-			try
+			else if (ActiveControl.GetType().ToString() == "System.Windows.Forms.TextBox")
 			{
-				if (ActiveControl.GetType().ToString() == "System.Windows.Forms.TextBox")
+				try
 				{
 					string s = formatter.Deserialize(stream).ToString();
 					if (s.IndexOf("System.", 0) != -1) throw new Exception();   // bypass byte[]
 					if (s.IndexOf("Idmr.", 0) != -1) throw new Exception(); // [JB] Prevent the class name when an entire Message is copied.
 					TextBox t = (TextBox)ActiveControl;
 					t.SelectedText = s;
-					stream.Close();
 					Common.Title(this, false);
-					return;
 				}
-				else if (ActiveControl.GetType().ToString() == "System.Windows.Forms.NumericUpDown") //[JB] Added copy/paste for this
-				{
-					string str_t = formatter.Deserialize(stream).ToString();
-					NumericUpDown control = (NumericUpDown)ActiveControl;
-					decimal value = Convert.ToDecimal(str_t);
-					if (value > control.Maximum) value = control.Maximum;
-					else if (value < control.Minimum) value = control.Minimum;
-					control.Value = value;
-					Common.Title(this, false);
-					stream.Close();
-					return;
-				}
-				else if (ActiveControl.GetType().ToString() == "System.Windows.Forms.DataGridTextBox")
-				{
-					stream.Close(); //[JB] I can't get it to copy/paste the current cell content, but this will prevent the entire FG from copy/paste.
-					return;
-				}
+				catch { /* do nothing */ }
 			}
-			catch { /* do nothing*/ }
-			#endregion
-			#region MessTrig
-			if (sender.ToString() == "MessTrig" || hasFocus(lblMessTrig))  //[JB] Detect if triggers have focus
+			else if (ActiveControl.GetType().ToString() == "System.Windows.Forms.NumericUpDown") //[JB] Added copy/paste for this
 			{
 				try
 				{
-					Mission.Trigger t = (Mission.Trigger)formatter.Deserialize(stream);
-					_mission.Messages[_activeMessage].Triggers[_activeMessageTrigger] = t;
+					string str = formatter.Deserialize(stream).ToString();
+					NumericUpDown num = (NumericUpDown)ActiveControl;
+					decimal value = Convert.ToDecimal(str);
+					if (value > num.Maximum) value = num.Maximum;
+					else if (value < num.Minimum) value = num.Minimum;
+					num.Value = value;
+					Common.Title(this, false);
+				}
+				catch { /* do nothing */ }
+			}
+			else if (ActiveControl.GetType().ToString() == "System.Windows.Forms.DataGridTextBox")
+			{
+				try
+				{
+					string str = formatter.Deserialize(stream).ToString();
+					if (str.IndexOf("System.", 0) != -1) throw new Exception();   // bypass byte[]
+					if (str.IndexOf("Idmr.", 0) != -1) throw new Exception();
+					DataGrid dg = (DataGrid)ActiveControl.Parent;
+					int row = dg.CurrentRowIndex;
+					DataTable dt = ((DataView)dg.DataSource).Table;
+					dt.Rows[row][dg.CurrentCell.ColumnNumber] = str;
+					if (dt.TableName == "Waypoints") table_RowChanged("paste", new DataRowChangeEventArgs(dt.Rows[row], DataRowAction.Change));
+					else tableRaw_RowChanged("paste", new DataRowChangeEventArgs(dt.Rows[row], DataRowAction.Change));
+				}
+				catch { /* do nothing */ }
+			}
+			else if (sender.ToString() == "MessTrig" || hasFocus(lblMessTrig))  //[JB] Detect if triggers have focus
+			{
+				try
+				{
+					_mission.Messages[_activeMessage].Triggers[_activeMessageTrigger] = (Mission.Trigger)formatter.Deserialize(stream);
 					lblMessTrigArr_Click(_activeMessageTrigger, new EventArgs());
 					labelRefresh(_mission.Messages[_activeMessage].Triggers[_activeMessageTrigger], lblMessTrig[_activeMessageTrigger]);
 					Common.Title(this, false);
 				}
 				catch { /* do nothing */ }
-				stream.Close();
-				return;
 			}
-			#endregion
-			#region overalls by tab
-			switch (tabMain.SelectedIndex)
+			else
 			{
-				case 0:
-					if (ActiveControl.GetType().ToString() == "System.Windows.Forms.Label") break; //[JB] Prevent copy/paste on any clickable label.
-					try
-					{
-						FlightGroup fg = (FlightGroup)formatter.Deserialize(stream);
+				switch (tabMain.SelectedIndex)
+				{
+					case 0:
+						try
+						{
+							FlightGroup fg = (FlightGroup)formatter.Deserialize(stream);
 #pragma warning disable IDE0016 // Use 'throw' expression
-						if (fg == null) throw new Exception();
+							if (fg == null) throw new Exception();
 #pragma warning restore IDE0016 // Use 'throw' expression
-							   //[JB] Need to test copy to make sure it worked
-						if (newFG() == false)
-							break;
-						_mission.FlightGroups[_activeFG] = fg;
-						refreshMap(-1);
-						updateFGList(); //[JB] Update all the downdown lists.
-						listRefresh();
-						_startingShips--;
-						lstFG.SelectedIndex = _activeFG;
-						lstFG_SelectedIndexChanged(0, new EventArgs()); //[JB] Need to force refresh of form controls.
-						craftStart(fg, true);
-					}
-					catch { /* do nothing */ }
-					break;
-				case 1:
-					if (ActiveControl.GetType().ToString() == "System.Windows.Forms.Label") break; //[JB] Prevent copy/paste on any clickable label.
-					try
-					{
-						Platform.Xvt.Message m = (Platform.Xvt.Message)formatter.Deserialize(stream);
+							if (!newFG()) break;
+
+							_mission.FlightGroups[_activeFG] = fg;
+							refreshMap(-1);
+							updateFGList(); //[JB] Update all the downdown lists.
+							listRefresh();
+							_startingShips--;
+							lstFG.SelectedIndex = _activeFG;
+							lstFG_SelectedIndexChanged(0, new EventArgs()); //[JB] Need to force refresh of form controls.
+							craftStart(fg, true);
+							lstFG.Focus();
+						}
+						catch { /* do nothing */ }
+						break;
+					case 1:
+						try
+						{
+							Platform.Xvt.Message m = (Platform.Xvt.Message)formatter.Deserialize(stream);
 #pragma warning disable IDE0016 // Use 'throw' expression
-						if (m == null) throw new Exception();
+							if (m == null) throw new Exception();
 #pragma warning restore IDE0016 // Use 'throw' expression
-						newMess();
-						_mission.Messages[_activeMessage] = m;
-						messListRefresh();
-						lstMessages.SelectedIndex = _activeMessage;
-					}
-					catch { /* do nothing */ }
-					break;
-				case 2:
-					try  //[JB] Changed to pasting Mission.Trigger rather than Globals.Goal.Trigger so it can copy/paste from other Triggers.
-					{
-						Mission.Trigger t = (Mission.Trigger)formatter.Deserialize(stream);
-						_mission.Globals[_activeTeam].Goals[_activeGlobalTrigger / 4].Triggers[_activeGlobalTrigger % 4].GoalTrigger = t;
-						lblGlobTrigArr_Click(_activeGlobalTrigger, new EventArgs());
-						Common.Title(this, false);
-					}
-					catch { /* do nothing */ }
-					break;
-				case 3:
-					try
-					{
-						Team t = (Team)formatter.Deserialize(stream);
-#pragma warning disable IDE0016 // Use 'throw' expression
-						if (t == null) throw new Exception();
-#pragma warning restore IDE0016 // Use 'throw' expression
-						_mission.Teams[_activeTeam] = t;
-						teamRefresh();
-						lblTeamArr_Click(lblTeam[_activeTeam], new EventArgs());
-						Common.Title(this, false);
-					}
-					catch { /* do nothing */ }
-					break;
+							if (!newMess()) break;
+
+							_mission.Messages[_activeMessage] = m;
+							messListRefresh();
+							lstMessages.SelectedIndex = _activeMessage;
+						}
+						catch { /* do nothing */ }
+						break;
+					case 2:
+						try  //[JB] Changed to pasting Mission.Trigger rather than Globals.Goal.Trigger so it can copy/paste from other Triggers.
+						{
+							_mission.Globals[_activeTeam].Goals[_activeGlobalTrigger / 4].Triggers[_activeGlobalTrigger % 4].GoalTrigger = (Mission.Trigger)formatter.Deserialize(stream);
+							lblGlobTrigArr_Click(_activeGlobalTrigger, new EventArgs());
+							Common.Title(this, false);
+						}
+						catch { /* do nothing */ }
+						break;
+					case 3:
+						try
+						{
+							_mission.Teams[_activeTeam] = (Team)formatter.Deserialize(stream) ?? throw new Exception();
+							teamRefresh();
+							lblTeamArr_Click(lblTeam[_activeTeam], new EventArgs());
+							Common.Title(this, false);
+						}
+						catch { /* do nothing */ }
+						break;
+				}
 			}
-			#endregion
 			stream.Close();
 		}
 		void menuRecentMissions_Click(object sender, EventArgs e)
@@ -3722,18 +3705,19 @@ namespace Idmr.Yogeme
 		#endregion
 		#endregion
 		#region Messages
-		void newMess()
+		bool newMess()
 		{
 			if (_mission.Messages.Count == Mission.MessageLimit)
 			{
 				MessageBox.Show("Mission contains maximum number of Messages.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				return;
+				return false;
 			}
 			_activeMessage = _mission.Messages.Add();
 			if (_mission.Messages.Count == 1) enableMessages(true);
 			lstMessages.Items.Add(_mission.Messages[_activeMessage].MessageString);
 			lstMessages.SelectedIndex = _activeMessage;
 			Common.Title(this, _loading);
+			return true;
 		}
 		void deleteMess()
 		{
