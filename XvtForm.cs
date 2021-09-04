@@ -1666,7 +1666,6 @@ namespace Idmr.Yogeme
 							FlightGroup fg = (FlightGroup)formatter.Deserialize(stream);
 #pragma warning disable IDE0016 // Use 'throw' expression
 							if (fg == null) throw new Exception();
-#pragma warning restore IDE0016 // Use 'throw' expression
 							if (!newFG()) break;
 
 							_mission.FlightGroups[_activeFG] = fg;
@@ -1685,14 +1684,13 @@ namespace Idmr.Yogeme
 						try
 						{
 							Platform.Xvt.Message m = (Platform.Xvt.Message)formatter.Deserialize(stream);
-#pragma warning disable IDE0016 // Use 'throw' expression
 							if (m == null) throw new Exception();
-#pragma warning restore IDE0016 // Use 'throw' expression
 							if (!newMess()) break;
 
 							_mission.Messages[_activeMessage] = m;
 							messListRefresh();
 							lstMessages.SelectedIndex = _activeMessage;
+#pragma warning restore IDE0016 // Use 'throw' expression
 						}
 						catch { /* do nothing */ }
 						break;
