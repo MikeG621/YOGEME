@@ -2732,6 +2732,7 @@ namespace Idmr.Yogeme
 		/// <remarks>Should be called during swap or delete (<paramref name="dstIndex"/> &lt; 0) operations.</remarks>
 		void replaceClipboardReference(int srcIndex, int dstIndex, bool isFG)
 		{
+			//TODO: clipboard ref replacement
 			//[JB] Replace any clipboard references.  Load it, check/modify type, save back to stream.  Since clipboard access is through a file on disk, I thought it would be best to avoid hammering it with changes if nothing actually changed on the clipboard.
 			Stream stream = null;
 			try
@@ -3172,13 +3173,12 @@ namespace Idmr.Yogeme
 
 		void cmdBackdrop_Click(object sender, EventArgs e)
 		{
-
 			cmdBackdrop.Text = "Loading...";
 			cmdBackdrop.Enabled = false;
 			try
 			{
 				BackdropDialog dlg = null;
-				// HACK: index fix
+				// HACK: backdrop index fix
 				if (_hookBackdropInstalled) dlg = new BackdropDialog(_mission.FlightGroups[_activeFG].Backdrop, _mission.FlightGroups[_activeFG].GlobalCargo - 1, _mission.MissionFileName, _config);
 				else dlg = new BackdropDialog(_mission.FlightGroups[_activeFG].Backdrop, _mission.FlightGroups[_activeFG].GlobalCargo - 1, _config);
 				if (dlg.ShowDialog() == DialogResult.OK)
@@ -3186,9 +3186,12 @@ namespace Idmr.Yogeme
 					cboGlobCargo.SelectedIndex = dlg.Shadow;
 					numBackdrop.Value = dlg.BackdropIndex;
 					System.Runtime.Serialization.IFormatter formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
-					Stream stream = new FileStream(Application.StartupPath + "\\YOGEME.bin", FileMode.Create, FileAccess.Write, FileShare.None);
+					Stream stream = new MemoryStream();
+					DataObject data = new DataObject();
 					formatter.Serialize(stream, dlg.Color);
-					stream.Close();
+					data.SetText(dlg.Color);
+					data.SetData("yogeme", false, stream);
+					Clipboard.SetDataObject(data, true);
 				}
 			}
 			catch (Exception x)  //[JB] Catch all exceptions.

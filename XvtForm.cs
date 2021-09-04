@@ -2215,6 +2215,7 @@ namespace Idmr.Yogeme
 		/// <remarks>Should be called during swap or delete (dstIndex < 0) operations.</remarks>
 		void replaceClipboardFGReference(int srcIndex, int dstIndex)
 		{
+			//TODO: clipboard ref replacement
 			//[JB] Replace any clipboard references.  Load it, check/modify type, save back to stream.  Since clipboard access is through a file on disk, I thought it would be best to avoid hammering it with changes if nothing actually changed on the clipboard.
 			Stream stream = null;
 			try

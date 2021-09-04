@@ -1300,9 +1300,10 @@ namespace Idmr.Yogeme
 				try
 				{
 					string str = formatter.Deserialize(stream).ToString();
+					// TODO: test if I need the "System." check
 					if (str.IndexOf("Idmr.", 0) != -1) throw new Exception(); // [JB] Prevent the class name when an entire Message is copied.
-					TextBox txt_t = (TextBox)ActiveControl;
-					txt_t.SelectedText = str;
+					TextBox txt = (TextBox)ActiveControl;
+					txt.SelectedText = str;
 					Common.Title(this, false);
 				}
 				catch { /* do nothing */ }
@@ -1312,11 +1313,11 @@ namespace Idmr.Yogeme
 				try
 				{
 					string str = formatter.Deserialize(stream).ToString();
-					NumericUpDown control = (NumericUpDown)ActiveControl;
+					NumericUpDown num = (NumericUpDown)ActiveControl;
 					decimal value = Convert.ToDecimal(str);
-					if (value > control.Maximum) value = control.Maximum;
-					else if (value < control.Minimum) value = control.Minimum;
-					control.Value = value;
+					if (value > num.Maximum) value = num.Maximum;
+					else if (value < num.Minimum) value = num.Minimum;
+					num.Value = value;
 					Common.Title(this, false);
 				}
 				catch { /* do nothing */ }
@@ -1757,74 +1758,79 @@ namespace Idmr.Yogeme
 		/// <remarks>Should be called during swap or delete (dstIndex &lt; 0) operations.</remarks>
 		void replaceClipboardFGReference(int srcIndex, int dstIndex)
 		{
-			//[JB] Replace any clipboard references.  Load it, check/modify type, save back to stream.  Since clipboard access is through a file on disk, I thought it would be best to avoid hammering it with changes if nothing actually changed on the clipboard.
-			Stream stream = null;
+			//[JB] Replace any clipboard references.  Load it, check/modify type, save back to stream.
 			try
 			{
 				System.Runtime.Serialization.IFormatter formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
-				stream = new FileStream(Application.StartupPath + "\\YOGEME.bin", FileMode.Open, FileAccess.Read, FileShare.Read);
+				if (!(Clipboard.GetDataObject() is DataObject data) || !data.GetDataPresent("yogeme", false)) return;
+				if (!(data.GetData("yogeme", false) is MemoryStream stream)) return;
+
 				object raw = formatter.Deserialize(stream);
 				stream.Close();
+
+				data = new DataObject();
 				bool change = false;
 				if (raw.GetType() == typeof(FlightGroup))
 				{
-					FlightGroup fg_temp = (FlightGroup)raw;
+					FlightGroup fg = (FlightGroup)raw;
 					if (dstIndex >= 0)
 					{
-						change |= fg_temp.TransformFGReferences(dstIndex, 255);
-						change |= fg_temp.TransformFGReferences(srcIndex, dstIndex);
-						change |= fg_temp.TransformFGReferences(255, srcIndex);
+						change |= fg.TransformFGReferences(dstIndex, 255);
+						change |= fg.TransformFGReferences(srcIndex, dstIndex);
+						change |= fg.TransformFGReferences(255, srcIndex);
 					}
 					else
 					{
-						change |= fg_temp.TransformFGReferences(srcIndex, -1);
+						change |= fg.TransformFGReferences(srcIndex, -1);
 					}
+					data.SetText(fg.ToString());
 				}
 				else if (raw.GetType() == typeof(Platform.Tie.Message))
 				{
-					Platform.Tie.Message mess_temp = (Platform.Tie.Message)raw;
-					foreach (var trig in mess_temp.Triggers)
+					Platform.Tie.Message mess = (Platform.Tie.Message)raw;
+					foreach (var trig in mess.Triggers)
 					{
 						if (dstIndex >= 0)
 							change |= trig.SwapFGReferences(srcIndex, dstIndex);
 						else
 							change |= trig.TransformFGReferences(srcIndex, dstIndex, true);
 					}
+					data.SetText(mess.MessageString);
 				}
 				else if (raw.GetType() == typeof(Mission.Trigger))
 				{
-					Mission.Trigger trig_temp = (Mission.Trigger)raw;
+					Mission.Trigger trig = (Mission.Trigger)raw;
 					if (dstIndex >= 0)
-						change |= trig_temp.SwapFGReferences(srcIndex, dstIndex);
+						change |= trig.SwapFGReferences(srcIndex, dstIndex);
 					else
-						change |= trig_temp.TransformFGReferences(srcIndex, dstIndex, true);
+						change |= trig.TransformFGReferences(srcIndex, dstIndex, true);
+					data.SetText(trig.ToString());
 
 				}
 				else if (raw.GetType() == typeof(FlightGroup.Order))
 				{
-					FlightGroup.Order order_temp = (FlightGroup.Order)raw;
+					FlightGroup.Order order = (FlightGroup.Order)raw;
 					if (dstIndex >= 0)
 					{
-						change |= order_temp.TransformFGReferences(dstIndex, 255);
-						change |= order_temp.TransformFGReferences(srcIndex, dstIndex);
-						change |= order_temp.TransformFGReferences(255, srcIndex);
+						change |= order.TransformFGReferences(dstIndex, 255);
+						change |= order.TransformFGReferences(srcIndex, dstIndex);
+						change |= order.TransformFGReferences(255, srcIndex);
 					}
 					else
 					{
-						change |= order_temp.TransformFGReferences(srcIndex, -1);
+						change |= order.TransformFGReferences(srcIndex, -1);
 					}
+					data.SetText(order.ToString());
 				}
 				if (change)
 				{
-					stream = new FileStream(Application.StartupPath + "\\YOGEME.bin", FileMode.Create, FileAccess.Write, FileShare.None);
+					stream = new MemoryStream();
 					formatter.Serialize(stream, raw);
-					stream.Close();
+					data.SetData("yogeme", false, stream);
+					Clipboard.SetDataObject(data, true);
 				}
 			}
-			catch
-			{
-				if (stream != null) stream.Close();  //Just in case...
-			}
+			catch { /* do nothing*/ }
 		}
 		/// <summary>Scans all Flight Groups to detect duplicate names, to provide helpful craft numbering within the editor so that the user can easily tell duplicates apart in triggers.</summary>
 		void recalculateEditorCraftNumbering()
