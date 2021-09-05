@@ -8,7 +8,8 @@
 
 /* CHANGELOG
  * [FIX] Pasting a message when at capacity now correctly does nothing
- * [UPD] Copy/paste now uses system clipboard, can CP Waypoints
+ * [UPD] Copy/paste now uses system clipboard
+ * [NEW] Copy/paste now works for Waypoints, can paste XvT/XWA Triggers/Orders
  * v1.10, 210520
  * [UPD #56] Replaced try/catch with TryParse [JB]
  * v1.9.2, 210328
@@ -1270,15 +1271,39 @@ namespace Idmr.Yogeme
 		}
 		void menuPaste_Click(object sender, EventArgs e)
 		{
+			// TODO: OEMText format to paste external strings into text boxes? Already works with R-click system context menu
 			System.Runtime.Serialization.IFormatter formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
 			if (!(Clipboard.GetDataObject() is DataObject data) || !data.GetDataPresent("yogeme", false)) return;
 			if (!(data.GetData("yogeme", false) is MemoryStream stream)) return;
+			
+			var obj = formatter.Deserialize(stream);
+
+			Mission.Trigger trig = null;
+			if (obj.GetType() == typeof(Mission.Trigger)) trig = (Mission.Trigger)obj;
+			else if (obj.GetType() == typeof(Platform.Xvt.Mission.Trigger)) trig = (Mission.Trigger)(Platform.Xvt.Mission.Trigger)obj;
+			else if (obj.GetType() == typeof(Platform.Xwa.Mission.Trigger))
+			{
+				trig = (Mission.Trigger)(Platform.Xwa.Mission.Trigger)obj;
+				if (trig.VariableType == 2 /* CraftType */) trig.Variable--;
+			}
+
+			FlightGroup.Order ord = null;
+			if (obj.GetType() == typeof(FlightGroup.Order)) ord = (FlightGroup.Order)obj;
+			else if (obj.GetType() == typeof(Platform.Xvt.FlightGroup.Order)) ord = (FlightGroup.Order)(Platform.Xvt.FlightGroup.Order)obj;
+			else if (obj.GetType() == typeof(Platform.Xwa.FlightGroup.Order))
+			{
+				ord = (FlightGroup.Order)(Platform.Xwa.FlightGroup.Order)obj;
+				if (ord.Target1Type == 2) ord.Target1--;
+				if (ord.Target2Type == 2) ord.Target2--;
+				if (ord.Target3Type == 2) ord.Target3--;
+				if (ord.Target4Type == 2) ord.Target4--;
+			}
 
 			if (sender.ToString() == "AD" || hasFocus(lblADTrig))  //[JB] Detect if triggers have focus
 			{
 				try
 				{
-					_mission.FlightGroups[_activeFG].ArrDepTriggers[_activeArrDepTrigger] = (Mission.Trigger)formatter.Deserialize(stream);
+					_mission.FlightGroups[_activeFG].ArrDepTriggers[_activeArrDepTrigger] = trig ?? throw new FormatException();
 					lblADTrigArr_Click(_activeArrDepTrigger, new EventArgs());
 					labelRefresh(_mission.FlightGroups[_activeFG].ArrDepTriggers[_activeArrDepTrigger], lblADTrig[_activeArrDepTrigger]);
 					Common.Title(this, false);
@@ -1289,7 +1314,7 @@ namespace Idmr.Yogeme
 			{
 				try
 				{
-					_mission.FlightGroups[_activeFG].Orders[_activeOrder] = (FlightGroup.Order)formatter.Deserialize(stream);
+					_mission.FlightGroups[_activeFG].Orders[_activeOrder] = ord ?? throw new FormatException();
 					lblOrderArr_Click(_activeOrder, new EventArgs());
 					Common.Title(this, false);
 				}
@@ -1299,8 +1324,8 @@ namespace Idmr.Yogeme
 			{
 				try
 				{
-					string str = formatter.Deserialize(stream).ToString();
-					if (str.IndexOf("Idmr.", 0) != -1) throw new Exception(); // [JB] Prevent the class name when an entire Message is copied.
+					string str = obj.ToString();
+					if (str.IndexOf("Idmr.", 0) != -1) throw new FormatException(); // [JB] Prevent the class name when an entire Message is copied.
 					TextBox txt = (TextBox)ActiveControl;
 					txt.SelectedText = str;
 					Common.Title(this, false);
@@ -1311,7 +1336,7 @@ namespace Idmr.Yogeme
 			{
 				try
 				{
-					string str = formatter.Deserialize(stream).ToString();
+					string str = obj.ToString();
 					NumericUpDown num = (NumericUpDown)ActiveControl;
 					decimal value = Convert.ToDecimal(str);
 					if (value > num.Maximum) value = num.Maximum;
@@ -1325,8 +1350,8 @@ namespace Idmr.Yogeme
 			{
 				try
 				{
-					string str = formatter.Deserialize(stream).ToString();
-					if (str.IndexOf("Idmr.", 0) != -1) throw new Exception();
+					string str = obj.ToString();
+					if (str.IndexOf("Idmr.", 0) != -1) throw new FormatException();
 					DataGrid dg = (DataGrid)ActiveControl.Parent;
 					int row = dg.CurrentRowIndex;
 					DataTable dt = ((DataView)dg.DataSource).Table;
@@ -1342,12 +1367,12 @@ namespace Idmr.Yogeme
 				{
 					if (lblMess1.ForeColor == getHighlightColor())
 					{
-						_mission.Messages[_activeMessage].Triggers[0] = (Mission.Trigger)formatter.Deserialize(stream);
+						_mission.Messages[_activeMessage].Triggers[0] = trig ?? throw new FormatException();
 						lblMessArr_Click(0, new EventArgs());
 					}
 					else
 					{
-						_mission.Messages[_activeMessage].Triggers[1] = (Mission.Trigger)formatter.Deserialize(stream);
+						_mission.Messages[_activeMessage].Triggers[1] = trig ?? throw new FormatException();
 						lblMessArr_Click(1, new EventArgs());
 					}
 					Common.Title(this, false);
@@ -1360,9 +1385,9 @@ namespace Idmr.Yogeme
 					case 0:
 						try
 						{
-							FlightGroup fg = (FlightGroup)formatter.Deserialize(stream);
+							FlightGroup fg = (FlightGroup)obj;
 #pragma warning disable IDE0016 // Use 'throw' expression. Can't use due to needing the null check before new()
-							if (fg == null) throw new Exception();
+							if (fg == null) throw new FormatException();
 							if (!newFG()) break;
 
 							_mission.FlightGroups[_activeFG] = fg;
@@ -1380,8 +1405,8 @@ namespace Idmr.Yogeme
 					case 1:
 						try
 						{
-							Platform.Tie.Message mess = (Platform.Tie.Message)formatter.Deserialize(stream);
-							if (mess == null) throw new Exception();
+							Platform.Tie.Message mess = (Platform.Tie.Message)obj;
+							if (mess == null) throw new FormatException();
 							if (!newMess()) break;
 
 							_mission.Messages[_activeMessage] = mess;
@@ -1394,7 +1419,7 @@ namespace Idmr.Yogeme
 					case 2:
 						try
 						{
-							_mission.GlobalGoals.Goals[_activeGlobalGoal / 2].Triggers[_activeGlobalGoal % 2] = (Mission.Trigger)formatter.Deserialize(stream);  //[JB] Fix, %3 to %2.  Only 2 triggers.  Fixes copy/paste.
+							_mission.GlobalGoals.Goals[_activeGlobalGoal / 2].Triggers[_activeGlobalGoal % 2] = trig ?? throw new FormatException();  //[JB] Fix, %3 to %2.  Only 2 triggers.  Fixes copy/paste.
 							lblGlobArr_Click(_activeGlobalGoal, new EventArgs());
 							Common.Title(this, false);
 						}
