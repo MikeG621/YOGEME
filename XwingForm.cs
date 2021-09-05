@@ -974,7 +974,7 @@ namespace Idmr.Yogeme
 				try
 				{
 					FlightGroup fg = (FlightGroup)formatter.Deserialize(stream);
-					if (fg == null) throw new Exception();
+					if (fg == null) throw new FormatException();
 
 					FlightGroup cur = _mission.FlightGroups[_activeFG];
 					cur.ArrivalHyperspace = fg.ArrivalHyperspace;
@@ -998,7 +998,7 @@ namespace Idmr.Yogeme
 				try
 				{
 					FlightGroup fg = (FlightGroup)formatter.Deserialize(stream);
-					if (fg == null) throw new Exception();
+					if (fg == null) throw new FormatException();
 
 					FlightGroup cur = _mission.FlightGroups[_activeFG];
 					cur.Order = fg.Order;
@@ -1048,7 +1048,7 @@ namespace Idmr.Yogeme
 				try
 				{
 					string str = formatter.Deserialize(stream).ToString();
-					if (str.IndexOf("Idmr.", 0) != -1) throw new Exception();
+					if (str.IndexOf("Idmr.", 0) != -1) throw new FormatException();
 
 					DataGrid dg = (DataGrid)ActiveControl.Parent;
 					int row = dg.CurrentRowIndex;
@@ -1067,7 +1067,7 @@ namespace Idmr.Yogeme
 						try
 						{
 							FlightGroup fg = (FlightGroup)formatter.Deserialize(stream);
-							if (fg == null) throw new Exception();
+							if (fg == null) throw new FormatException();
 
 							if (_mode == EditorMode.BRF)  //Can't validate anything if pasting into BRF, so reset indexes.
 							{

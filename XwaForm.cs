@@ -8,7 +8,8 @@
 
 /* CHANGELOG
  * [FIX] Pasting a message when at capacity now correctly does nothing
- * [UPD] Copy/paste now uses system clipboard, can CP Waypoints
+ * [UPD] Copy/paste now uses system clipboard
+ * [NEW] Copy/paste now works for Waypoints, can paste XvT/XWA Triggers/Orders
  * v1.11, 210801
  * [NEW] Hyper to Region order text shows number and name if defined [JB]
  * [FIX] ComboBoxes when using CraftType [JB]
@@ -1871,12 +1872,45 @@ namespace Idmr.Yogeme
 			if (!(Clipboard.GetDataObject() is DataObject data) || !data.GetDataPresent("yogeme", false)) return;
 			if (!(data.GetData("yogeme", false) is MemoryStream stream)) return;
 
+			var obj = formatter.Deserialize(stream);
+
+			Mission.Trigger trig = null;
+			if (obj.GetType() == typeof(Mission.Trigger)) trig = (Mission.Trigger)obj;
+			else if (obj.GetType() == typeof(Platform.Tie.Mission.Trigger))
+			{
+				trig = (Platform.Tie.Mission.Trigger)obj;	// upgrading is implicit
+				if (trig.VariableType == 2 /* CraftType */) trig.Variable++;
+			}
+			else if (obj.GetType() == typeof(Platform.Xvt.Mission.Trigger))
+			{
+				trig = (Platform.Xvt.Mission.Trigger)obj;
+				if (trig.VariableType == 2 /* CraftType */) trig.Variable++;
+			}
+
+			FlightGroup.Order ord = null;
+			if (obj.GetType() == typeof(FlightGroup.Order)) ord = (FlightGroup.Order)obj;
+			else if (obj.GetType() == typeof(Platform.Tie.FlightGroup.Order))
+			{
+				ord = (Platform.Tie.FlightGroup.Order)obj;
+				if (ord.Target1Type == 2) ord.Target1++;
+				if (ord.Target2Type == 2) ord.Target2++;
+				if (ord.Target3Type == 2) ord.Target3++;
+				if (ord.Target4Type == 2) ord.Target4++;
+			}
+			else if (obj.GetType() == typeof(Platform.Xvt.FlightGroup.Order))
+			{
+				ord = (Platform.Xvt.FlightGroup.Order)obj;
+				if (ord.Target1Type == 2) ord.Target1++;
+				if (ord.Target2Type == 2) ord.Target2++;
+				if (ord.Target3Type == 2) ord.Target3++;
+				if (ord.Target4Type == 2) ord.Target4++;
+			}
+
 			if (sender.ToString() == "AD" || hasFocus(lblADTrig))  //[JB] Detect if triggers have focus
 			{
 				try
 				{
-					Mission.Trigger trig = (Mission.Trigger)formatter.Deserialize(stream);
-					_mission.FlightGroups[_activeFG].ArrDepTriggers[_activeArrDepTrigger] = trig;
+					_mission.FlightGroups[_activeFG].ArrDepTriggers[_activeArrDepTrigger] = trig ?? throw new FormatException();
 					lblADTrigArr_Click(_activeArrDepTrigger, new EventArgs());
 					labelRefresh(_mission.FlightGroups[_activeFG].ArrDepTriggers[_activeArrDepTrigger], lblADTrig[_activeArrDepTrigger]);
 					Common.Title(this, false);
@@ -1887,8 +1921,7 @@ namespace Idmr.Yogeme
 			{
 				try
 				{
-					FlightGroup.Order order = (FlightGroup.Order)formatter.Deserialize(stream);
-					_mission.FlightGroups[_activeFG].Orders[(int)numORegion.Value - 1, _activeOrder % 4] = order;  //[JB] Fix pasting into regions above 1.  Formerly: _activeOrder / 4
+					_mission.FlightGroups[_activeFG].Orders[(int)numORegion.Value - 1, _activeOrder % 4] = ord ?? throw new FormatException();
 					lblOrderArr_Click(_activeOrder, new EventArgs());
 					orderLabelRefresh();
 					Common.Title(this, false);
@@ -1899,8 +1932,8 @@ namespace Idmr.Yogeme
 			{
 				try
 				{
-					FlightGroup.Goal goal = (FlightGroup.Goal)formatter.Deserialize(stream);
-					_mission.FlightGroups[_activeFG].Goals[_activeFGGoal] = goal;
+					FlightGroup.Goal goal = (FlightGroup.Goal)obj;
+					_mission.FlightGroups[_activeFG].Goals[_activeFGGoal] = goal ?? throw new FormatException();
 					lblGoalArr_Click(_activeFGGoal, new EventArgs());
 					goalLabelRefresh();
 					Common.Title(this, false);
@@ -1911,11 +1944,10 @@ namespace Idmr.Yogeme
 			{
 				try
 				{
-					Mission.Trigger trig = (Mission.Trigger)formatter.Deserialize(stream);
 					int j = (lblSkipTrig1.ForeColor == getHighlightColor() ? 0 : 1);
 					int r = cboSkipOrder.SelectedIndex / 4;  //[JB] Fix pasting to orders other than Order 1 Region 1
 					int o = cboSkipOrder.SelectedIndex % 4;
-					_mission.FlightGroups[_activeFG].Orders[r, o].SkipTriggers[j] = trig;
+					_mission.FlightGroups[_activeFG].Orders[r, o].SkipTriggers[j] = trig ?? throw new FormatException();
 					lblSkipTrigArr_Click(j, new EventArgs());
 					labelRefresh(_mission.FlightGroups[_activeFG].Orders[r, o].SkipTriggers[j], (j == 0 ? lblSkipTrig1 : lblSkipTrig2));    // no array, hence explicit naming
 					Common.Title(this, false);
@@ -1926,9 +1958,9 @@ namespace Idmr.Yogeme
 			{
 				try
 				{
-					string str = formatter.Deserialize(stream).ToString();
-					if (str.IndexOf("System.", 0) != -1) throw new Exception();   // bypass byte[]
-					if (str.IndexOf("Idmr.", 0) != -1) throw new Exception(); // [JB] Bypass message.
+					string str = obj.ToString();
+					if (str.IndexOf("System.", 0) != -1) throw new FormatException();   // bypass byte[]
+					if (str.IndexOf("Idmr.", 0) != -1) throw new FormatException(); // [JB] Bypass message.
 					TextBox txt = (TextBox)ActiveControl;
 					txt.SelectedText = str;
 					Common.Title(this, false);
@@ -1939,7 +1971,7 @@ namespace Idmr.Yogeme
 			{
 				try
 				{
-					string str = formatter.Deserialize(stream).ToString();
+					string str = obj.ToString();
 					NumericUpDown num = (NumericUpDown)ActiveControl;
 					decimal value = Convert.ToDecimal(str);
 					if (value > num.Maximum) value = num.Maximum;
@@ -1953,9 +1985,9 @@ namespace Idmr.Yogeme
 			{
 				try
 				{
-					string str = formatter.Deserialize(stream).ToString();
-					if (str.IndexOf("System.", 0) != -1) throw new Exception();   // bypass byte[]
-					if (str.IndexOf("Idmr.", 0) != -1) throw new Exception();
+					string str = obj.ToString();
+					if (str.IndexOf("System.", 0) != -1) throw new FormatException();   // bypass byte[]
+					if (str.IndexOf("Idmr.", 0) != -1) throw new FormatException();
 					DataGrid dg = (DataGrid)ActiveControl.Parent;
 					int row = dg.CurrentRowIndex;
 					DataTable dt = ((DataView)dg.DataSource).Table;
@@ -1971,8 +2003,7 @@ namespace Idmr.Yogeme
 			{
 				try
 				{
-					Mission.Trigger trig = (Mission.Trigger)formatter.Deserialize(stream);
-					_mission.Messages[_activeMessage].Triggers[_activeMessageTrigger] = trig;
+					_mission.Messages[_activeMessage].Triggers[_activeMessageTrigger] = trig ?? throw new FormatException();
 					lblMessTrigArr_Click(_activeMessageTrigger, new EventArgs());
 					labelRefresh(_mission.Messages[_activeMessage].Triggers[_activeMessageTrigger], lblMessTrig[_activeMessageTrigger]);
 					Common.Title(this, false);
@@ -1986,9 +2017,9 @@ namespace Idmr.Yogeme
 					case 0:
 						try
 						{
-							FlightGroup fg = (FlightGroup)formatter.Deserialize(stream);
+							FlightGroup fg = (FlightGroup)obj;
 #pragma warning disable IDE0016 // Use 'throw' expression. Can't use due to needing the null check before new()
-							if (fg == null) throw new Exception();
+							if (fg == null) throw new FormatException();
 							if (!newFG()) break;
 
 							_mission.FlightGroups[_activeFG] = fg;
@@ -2006,8 +2037,8 @@ namespace Idmr.Yogeme
 					case 1:
 						try
 						{
-							Platform.Xwa.Message mess = (Platform.Xwa.Message)formatter.Deserialize(stream);
-							if (mess == null) throw new Exception();
+							Platform.Xwa.Message mess = (Platform.Xwa.Message)obj;
+							if (mess == null) throw new FormatException();
 							if (!newMess()) break;
 
 							_mission.Messages[_activeMessage] = mess;
@@ -2020,7 +2051,7 @@ namespace Idmr.Yogeme
 					case 2:
 						try
 						{
-							_mission.Globals[_activeTeam].Goals[_activeGlobalTrigger / 4].Triggers[_activeGlobalTrigger % 4] = (Mission.Trigger)formatter.Deserialize(stream);
+							_mission.Globals[_activeTeam].Goals[_activeGlobalTrigger / 4].Triggers[_activeGlobalTrigger % 4] = trig ?? throw new FormatException();
 							lblGlobTrigArr_Click(_activeGlobalTrigger, new EventArgs());
 							Common.Title(this, false);
 						}
@@ -2029,7 +2060,7 @@ namespace Idmr.Yogeme
 					case 3:
 						try
 						{
-							_mission.Teams[_activeTeam] = (Team)formatter.Deserialize(stream) ?? throw new Exception();
+							_mission.Teams[_activeTeam] = (Team)obj ?? throw new FormatException();
 							teamRefresh();
 							lblTeamArr_Click(lblTeam[_activeTeam], new EventArgs());
 							Common.Title(this, false);
