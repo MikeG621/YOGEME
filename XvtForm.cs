@@ -7,6 +7,7 @@
  */
 
 /* CHANGELOG
+ * [FIX] Pasting a message when at capacity now correctly does nothing
  * [UPD] Copy/paste now uses system clipboard, can CP Waypoints
  * v1.10, 210520
  * [UPD #56] Replaced try/catch with TryParse [JB]
@@ -1664,7 +1665,7 @@ namespace Idmr.Yogeme
 						try
 						{
 							FlightGroup fg = (FlightGroup)formatter.Deserialize(stream);
-#pragma warning disable IDE0016 // Use 'throw' expression
+#pragma warning disable IDE0016 // Use 'throw' expression. Can't use due to needing the null check before new()
 							if (fg == null) throw new Exception();
 							if (!newFG()) break;
 
@@ -2215,75 +2216,79 @@ namespace Idmr.Yogeme
 		/// <remarks>Should be called during swap or delete (dstIndex < 0) operations.</remarks>
 		void replaceClipboardFGReference(int srcIndex, int dstIndex)
 		{
-			//TODO: clipboard ref replacement
-			//[JB] Replace any clipboard references.  Load it, check/modify type, save back to stream.  Since clipboard access is through a file on disk, I thought it would be best to avoid hammering it with changes if nothing actually changed on the clipboard.
-			Stream stream = null;
+			//[JB] Replace any clipboard references.  Load it, check/modify type, save back to stream.
 			try
 			{
 				System.Runtime.Serialization.IFormatter formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
-				stream = new FileStream(Application.StartupPath + "\\YOGEME.bin", FileMode.Open, FileAccess.Read, FileShare.Read);
+				if (!(Clipboard.GetDataObject() is DataObject data) || !data.GetDataPresent("yogeme", false)) return;
+				if (!(data.GetData("yogeme", false) is MemoryStream stream)) return;
+
 				object raw = formatter.Deserialize(stream);
 				stream.Close();
+
+				data = new DataObject();
 				bool change = false;
 				if (raw.GetType() == typeof(FlightGroup))
 				{
-					FlightGroup fg_temp = (FlightGroup)raw;
+					FlightGroup fg = (FlightGroup)raw;
 					if (dstIndex >= 0)
 					{
-						change |= fg_temp.TransformFGReferences(dstIndex, 255);
-						change |= fg_temp.TransformFGReferences(srcIndex, dstIndex);
-						change |= fg_temp.TransformFGReferences(255, srcIndex);
+						change |= fg.TransformFGReferences(dstIndex, 255);
+						change |= fg.TransformFGReferences(srcIndex, dstIndex);
+						change |= fg.TransformFGReferences(255, srcIndex);
 					}
 					else
 					{
-						change |= fg_temp.TransformFGReferences(srcIndex, -1);
+						change |= fg.TransformFGReferences(srcIndex, -1);
 					}
+					data.SetText(fg.ToString());
 				}
 				else if (raw.GetType() == typeof(Platform.Xvt.Message))
 				{
-					Platform.Xvt.Message mess_temp = (Platform.Xvt.Message)raw;
-					foreach (var trig in mess_temp.Triggers)
+					Platform.Xvt.Message mess = (Platform.Xvt.Message)raw;
+					foreach (var trig in mess.Triggers)
 					{
 						if (dstIndex >= 0)
 							change |= trig.SwapFGReferences(srcIndex, dstIndex);
 						else
 							change |= trig.TransformFGReferences(srcIndex, dstIndex, true);
 					}
+					data.SetText(mess.MessageString);
 				}
 				else if (raw.GetType() == typeof(Mission.Trigger))
 				{
-					Mission.Trigger trig_temp = (Mission.Trigger)raw;
+					Mission.Trigger trig = (Mission.Trigger)raw;
 					if (dstIndex >= 0)
-						change |= trig_temp.SwapFGReferences(srcIndex, dstIndex);
+						change |= trig.SwapFGReferences(srcIndex, dstIndex);
 					else
-						change |= trig_temp.TransformFGReferences(srcIndex, dstIndex, true);
+						change |= trig.TransformFGReferences(srcIndex, dstIndex, true);
+					data.SetText(trig.ToString());
 
 				}
 				else if (raw.GetType() == typeof(FlightGroup.Order))
 				{
-					FlightGroup.Order order_temp = (FlightGroup.Order)raw;
+					FlightGroup.Order order = (FlightGroup.Order)raw;
 					if (dstIndex >= 0)
 					{
-						change |= order_temp.TransformFGReferences(dstIndex, 255);
-						change |= order_temp.TransformFGReferences(srcIndex, dstIndex);
-						change |= order_temp.TransformFGReferences(255, srcIndex);
+						change |= order.TransformFGReferences(dstIndex, 255);
+						change |= order.TransformFGReferences(srcIndex, dstIndex);
+						change |= order.TransformFGReferences(255, srcIndex);
 					}
 					else
 					{
-						change |= order_temp.TransformFGReferences(srcIndex, -1);
+						change |= order.TransformFGReferences(srcIndex, -1);
 					}
+					data.SetText(order.ToString());
 				}
 				if (change)
 				{
-					stream = new FileStream(Application.StartupPath + "\\YOGEME.bin", FileMode.Create, FileAccess.Write, FileShare.None);
+					stream = new MemoryStream();
 					formatter.Serialize(stream, raw);
-					stream.Close();
+					data.SetData("yogeme", false, stream);
+					Clipboard.SetDataObject(data, true);
 				}
 			}
-			catch
-			{
-				if (stream != null) stream.Close();  //Just in case...
-			}
+			catch { /* do nothing*/ }
 		}
 		void swapFG(int srcIndex, int dstIndex)
 		{

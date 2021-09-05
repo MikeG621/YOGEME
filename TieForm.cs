@@ -1300,7 +1300,6 @@ namespace Idmr.Yogeme
 				try
 				{
 					string str = formatter.Deserialize(stream).ToString();
-					// TODO: test if I need the "System." check
 					if (str.IndexOf("Idmr.", 0) != -1) throw new Exception(); // [JB] Prevent the class name when an entire Message is copied.
 					TextBox txt = (TextBox)ActiveControl;
 					txt.SelectedText = str;
@@ -1362,9 +1361,8 @@ namespace Idmr.Yogeme
 						try
 						{
 							FlightGroup fg = (FlightGroup)formatter.Deserialize(stream);
-#pragma warning disable IDE0016 // Use 'throw' expression
+#pragma warning disable IDE0016 // Use 'throw' expression. Can't use due to needing the null check before new()
 							if (fg == null) throw new Exception();
-#pragma warning restore IDE0016 // Use 'throw' expression
 							if (!newFG()) break;
 
 							_mission.FlightGroups[_activeFG] = fg;
@@ -1383,14 +1381,13 @@ namespace Idmr.Yogeme
 						try
 						{
 							Platform.Tie.Message mess = (Platform.Tie.Message)formatter.Deserialize(stream);
-#pragma warning disable IDE0016 // Use 'throw' expression
 							if (mess == null) throw new Exception();
-#pragma warning restore IDE0016 // Use 'throw' expression
 							if (!newMess()) break;
 
 							_mission.Messages[_activeMessage] = mess;
 							messlistRefresh();
 							lstMessages.SelectedIndex = _activeMessage;
+#pragma warning restore IDE0016 // Use 'throw' expression
 						}
 						catch { /* do nothing */ }
 						break;

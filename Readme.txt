@@ -20,10 +20,16 @@ YOGEME does not use an installer, simply download the latest ZIP file from the
 ==Uninstall==
 To remove YOGEME, you can simply delete the directory where you placed it, or
 run the included "Uninstall.exe", which cleans up everything from the original
-ZIP and a settings file.
+ZIP and a settings file.  NOTE: Some anti-virus packages have recently started
+flagging the uninstaller. I assure you it's a false positive, but if it does
+get quarantined/deleted it doesn't affect anything.
 
 ==========
 Version History
+
+ - (All) Pasting a message when at capacity now correctly does nothing
+ - (All) Copy/paste now uses the system clipboard along with a string for external pasting.
+ - (All) Copy/paste now works for Waypoints
 
 v1.11.1, 14 Aug 2021
  - Set InvariantCulture to prevent text read errors (JB)
