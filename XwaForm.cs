@@ -430,10 +430,15 @@ namespace Idmr.Yogeme
 			_mission.FlightGroups[0].IFF = Convert.ToByte(_config.XwaIff);
 			#region required early control arrays
 			// these are extracted from startup() so SBD on init works
+			cboADTrig.Items.Clear();
 			cboADTrig.Items.AddRange(Strings.Trigger);
+			cboADTrigAmount.Items.Clear();
 			cboADTrigAmount.Items.AddRange(Strings.Amount);
+			cboADTrigType.Items.Clear();
 			cboADTrigType.Items.AddRange(Strings.VariableType);
+			cboAbort.Items.Clear();
 			cboAbort.Items.AddRange(Strings.Abort); cboAbort.SelectedIndex = 0;
+			cboDiff.Items.Clear();
 			cboDiff.Items.AddRange(Platform.BaseStrings.Difficulty); cboDiff.SelectedIndex = 0;
 			lblADTrig[0] = lblArr1;
 			lblADTrig[1] = lblArr2;
