@@ -27,9 +27,12 @@ get quarantined/deleted it doesn't affect anything.
 ==========
 Version History
 
- - (All) Pasting a message when at capacity now correctly does nothing
- - (All) Copy/paste now uses the system clipboard along with a string for external pasting.
+ - (All) Copy/paste now uses the system clipboard
+ - (All) Copying also includes a Text equivalant for external pasting
+ - (All) Can now more easily paste externally copied text
  - (All) Copy/paste now works for Waypoints
+ - (TIE-XWA) Copy/paste for Triggers and Orders are now cross-platform
+ - (TIE-XWA) Pasting a Message when at capacity now fails correctly
 
 v1.11.1, 14 Aug 2021
  - Set InvariantCulture to prevent text read errors (JB)

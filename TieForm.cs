@@ -8,7 +8,7 @@
 
 /* CHANGELOG
  * [FIX] Pasting a message when at capacity now correctly does nothing
- * [UPD] Copy/paste now uses system clipboard
+ * [UPD] Copy/paste now uses system clipboard, can more easily paste external text
  * [NEW] Copy/paste now works for Waypoints, can paste XvT/XWA Triggers/Orders
  * v1.10, 210520
  * [UPD #56] Replaced try/catch with TryParse [JB]
@@ -1271,12 +1271,20 @@ namespace Idmr.Yogeme
 		}
 		void menuPaste_Click(object sender, EventArgs e)
 		{
-			// TODO: OEMText format to paste external strings into text boxes? Already works with R-click system context menu
 			System.Runtime.Serialization.IFormatter formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
-			if (!(Clipboard.GetDataObject() is DataObject data) || !data.GetDataPresent("yogeme", false)) return;
-			if (!(data.GetData("yogeme", false) is MemoryStream stream)) return;
-			
-			var obj = formatter.Deserialize(stream);
+			if (!(Clipboard.GetDataObject() is DataObject data)) return;
+#if DEBUG
+			string[] formats = data.GetFormats();
+			foreach(string s in formats) System.Diagnostics.Debug.WriteLine(s);
+#endif
+			object obj;
+			if (data.GetData("yogeme", false) is MemoryStream stream)
+			{
+				obj = formatter.Deserialize(stream);
+				stream.Close();
+			}
+			else obj = data.GetData("Text");
+			if (obj == null) return;
 
 			Mission.Trigger trig = null;
 			if (obj.GetType() == typeof(Mission.Trigger)) trig = (Mission.Trigger)obj;
@@ -1427,7 +1435,6 @@ namespace Idmr.Yogeme
 						break;
 				}
 			}
-			stream.Close();
 		}
 		void menuRecentMissions_Click(object sender, EventArgs e)
 		{

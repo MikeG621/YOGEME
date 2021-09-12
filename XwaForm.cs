@@ -8,7 +8,7 @@
 
 /* CHANGELOG
  * [FIX] Pasting a message when at capacity now correctly does nothing
- * [UPD] Copy/paste now uses system clipboard
+ * [UPD] Copy/paste now uses system clipboard, can more easily paste external text
  * [NEW] Copy/paste now works for Waypoints, can paste XvT/XWA Triggers/Orders
  * v1.11, 210801
  * [NEW] Hyper to Region order text shows number and name if defined [JB]
@@ -1869,10 +1869,16 @@ namespace Idmr.Yogeme
 		void menuPaste_Click(object sender, EventArgs e)
 		{
 			System.Runtime.Serialization.IFormatter formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
-			if (!(Clipboard.GetDataObject() is DataObject data) || !data.GetDataPresent("yogeme", false)) return;
-			if (!(data.GetData("yogeme", false) is MemoryStream stream)) return;
+			if (!(Clipboard.GetDataObject() is DataObject data)) return;
 
-			var obj = formatter.Deserialize(stream);
+			object obj;
+			if (data.GetData("yogeme", false) is MemoryStream stream)
+			{
+				obj = formatter.Deserialize(stream);
+				stream.Close();
+			}
+			else obj = data.GetData("Text");
+			if (obj == null) return;
 
 			Mission.Trigger trig = null;
 			if (obj.GetType() == typeof(Mission.Trigger)) trig = (Mission.Trigger)obj;
@@ -2069,7 +2075,6 @@ namespace Idmr.Yogeme
 						break;
 				}
 			}
-			stream.Close();
 		}
 		void menuRecentMissions_Click(object sender, EventArgs e)
 		{

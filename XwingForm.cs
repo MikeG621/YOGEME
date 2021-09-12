@@ -8,7 +8,8 @@
  */
 
 /* CHANGELOG:
- * [UPD] Copy/paste now uses system clipboard, can CP Waypoints
+ * [UPD] Copy/paste now uses system clipboard, can more easily paste external text
+ * [NEW] Copy/paste now works for Waypoints
  * v1.10, 210520
  * [UPD #56] Replaced try/catch with TyrParse [JB]
  * v1.9, 210108
@@ -966,14 +967,22 @@ namespace Idmr.Yogeme
 		void menuPaste_Click(object sender, EventArgs e)
 		{
 			System.Runtime.Serialization.IFormatter formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
-			if (!(Clipboard.GetDataObject() is DataObject data) || !data.GetDataPresent("yogeme", false)) return;
-			if (!(data.GetData("yogeme", false) is MemoryStream stream)) return;
+			if (!(Clipboard.GetDataObject() is DataObject data)) return;
+
+			object obj;
+			if (data.GetData("yogeme", false) is MemoryStream stream)
+			{
+				obj = formatter.Deserialize(stream);
+				stream.Close();
+			}
+			else obj = data.GetData("Text");
+			if (obj == null) return;
 
 			if (sender.ToString() == "AD")
 			{
 				try
 				{
-					FlightGroup fg = (FlightGroup)formatter.Deserialize(stream);
+					FlightGroup fg = (FlightGroup)obj;
 					if (fg == null) throw new FormatException();
 
 					FlightGroup cur = _mission.FlightGroups[_activeFG];
@@ -997,7 +1006,7 @@ namespace Idmr.Yogeme
 			{
 				try
 				{
-					FlightGroup fg = (FlightGroup)formatter.Deserialize(stream);
+					FlightGroup fg = (FlightGroup)obj;
 					if (fg == null) throw new FormatException();
 
 					FlightGroup cur = _mission.FlightGroups[_activeFG];
@@ -1019,7 +1028,7 @@ namespace Idmr.Yogeme
 			{
 				try
 				{
-					string s = formatter.Deserialize(stream).ToString();
+					string s = obj.ToString();
 					if (s.IndexOf("System.", 0) != -1) return;
 					if (s.IndexOf("Idmr.", 0) != -1) return;
 
@@ -1033,7 +1042,7 @@ namespace Idmr.Yogeme
 			{
 				try
 				{
-					string str = formatter.Deserialize(stream).ToString();
+					string str = obj.ToString();
 					NumericUpDown num = (NumericUpDown)ActiveControl;
 					decimal value = Convert.ToDecimal(str);
 					if (value > num.Maximum) value = num.Maximum;
@@ -1047,7 +1056,7 @@ namespace Idmr.Yogeme
 			{
 				try
 				{
-					string str = formatter.Deserialize(stream).ToString();
+					string str = obj.ToString();
 					if (str.IndexOf("Idmr.", 0) != -1) throw new FormatException();
 
 					DataGrid dg = (DataGrid)ActiveControl.Parent;
@@ -1066,7 +1075,7 @@ namespace Idmr.Yogeme
 					case 0:
 						try
 						{
-							FlightGroup fg = (FlightGroup)formatter.Deserialize(stream);
+							FlightGroup fg = (FlightGroup)obj;
 							if (fg == null) throw new FormatException();
 
 							if (_mode == EditorMode.BRF)  //Can't validate anything if pasting into BRF, so reset indexes.
@@ -1092,7 +1101,6 @@ namespace Idmr.Yogeme
 						break;
 				}
 			}
-			stream.Close();
 		}
 		void menuRecentMissions_Click(object sender, EventArgs e)
 		{
