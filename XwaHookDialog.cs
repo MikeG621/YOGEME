@@ -7,6 +7,7 @@
  */
 
 /* CHANGELOG
+ * [UPD] Redid the layout so lst's less likely to be cutoff.
  * v1.10, 210520
  * [ADD] Wingman markings, Droid1/2Update
  * [ADD] S-Foils, Skins (32bpp), Shield hook support

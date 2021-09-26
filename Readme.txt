@@ -33,6 +33,7 @@ Version History
  - (All) Copy/paste now works for Waypoints
  - (TIE-XWA) Copy/paste for Triggers and Orders are now cross-platform
  - (TIE-XWA) Pasting a Message when at capacity now fails correctly
+ - (XWA) Redid layout of the hook dialog to prevent cutting off the list boxes
 
 v1.11.1, 14 Aug 2021
  - Set InvariantCulture to prevent text read errors (JB)
