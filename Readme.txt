@@ -2,8 +2,8 @@
 ======================================
 
 Author: Michael Gaisser (mjgaisser@gmail.com)
-Version: 1.11.1
-Date: 2021.08.14
+Version: 1.11.2
+Date: 2021.10.05
 
 Thank you for downloading YOGEME, the all-in-one mission editor for the X-Wing
 series, Xwing95 through X-wing Alliance.  This program allows easy mission
@@ -15,7 +15,7 @@ For program usage and help (with images), see "yogeme.chm".
 
 ==Install==
 YOGEME does not use an installer, simply download the latest ZIP file from the
-"Releases" page on Github and extract to your location of choice. There is an
+"Releases" page on Github and extract to your location of choice.
 
 ==Uninstall==
 To remove YOGEME, you can simply delete the directory where you placed it, or
@@ -27,6 +27,7 @@ get quarantined/deleted it doesn't affect anything.
 ==========
 Version History
 
+v1.11.2, 05 Oct 2021
  - (All) Copy/paste now uses the system clipboard
  - (All) Copying also includes a Text equivalant for external pasting
  - (All) Can now more easily paste externally copied text

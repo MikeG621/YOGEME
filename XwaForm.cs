@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2021 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.11+
+ * VERSION: 1.11.2
  */
 
 /* CHANGELOG
+ * v1.11.2, 2101005
  * [FIX] Pasting a message when at capacity now correctly does nothing
  * [UPD] Copy/paste now uses system clipboard, can more easily paste external text
  * [NEW] Copy/paste now works for Waypoints, can paste XvT/XWA Triggers/Orders

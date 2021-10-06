@@ -4,10 +4,11 @@
  * This file authored by "JB" (Random Starfighter) (randomstarfighter@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.10+
+ * VERSION: 1.11.2
  */
 
 /* CHANGELOG:
+ * v1.11.2, 2101005
  * [UPD] Copy/paste now uses system clipboard, can more easily paste external text
  * [NEW] Copy/paste now works for Waypoints
  * v1.10, 210520

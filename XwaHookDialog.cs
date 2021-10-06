@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2021 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.10
+ * VERSION: 1.11.2
  */
 
 /* CHANGELOG
+ * v1.11.2, 2101005
  * [UPD] Redid the layout so lst's less likely to be cutoff.
  * v1.10, 210520
  * [ADD] Wingman markings, Droid1/2Update
