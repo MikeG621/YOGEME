@@ -18,14 +18,16 @@ YOGEME does not use an installer, simply download the latest ZIP file from the
 "Releases" page on Github and extract to your location of choice.
 
 ==Uninstall==
-To remove YOGEME, you can simply delete the directory where you placed it, or
-run the included "Uninstall.exe", which cleans up everything from the original
-ZIP and a settings file.  NOTE: Some anti-virus packages have recently started
-flagging the uninstaller. I assure you it's a false positive, but if it does
-get quarantined/deleted it doesn't affect anything.
+To remove YOGEME, you simply delete the directory where you placed it. The
+Uninstall utility has been removed due to more anti-virus packages starting to
+flag it, and although it's a false-positive the situattion does not appear to
+be getting better. This will leave behind a single config file in AppData with
+your user settings.
 
 ==========
 Version History
+
+ - (XW) Created the Tour Editor, similar to TIE's Battle Editor
 
 v1.11.2, 05 Oct 2021
  - (All) Copy/paste now uses the system clipboard

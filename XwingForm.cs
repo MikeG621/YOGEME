@@ -4,10 +4,11 @@
  * This file authored by "JB" (Random Starfighter) (randomstarfighter@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.11.2
+ * VERSION: 1.11.2+
  */
 
 /* CHANGELOG:
+ * [NEW] Tour Editor
  * v1.11.2, 2101005
  * [UPD] Copy/paste now uses system clipboard, can more easily paste external text
  * [NEW] Copy/paste now works for Waypoints
@@ -85,6 +86,7 @@ namespace Idmr.Yogeme
 		MapForm _fMap;
 		BriefingFormXwing _fBrief;
 		FlightGroupLibraryForm _fLibrary;
+		TourForm _fTour;
 		#endregion
 		#region Control Arrays
 #pragma warning disable IDE1006 // Naming Styles
@@ -127,6 +129,8 @@ namespace Idmr.Yogeme
 			try { _fBrief.Close(); }
 			catch { /* do nothing */ }
 			try { _fLibrary.Close(); }
+			catch { /* do nothing */ }
+			try { _fTour.Close(); }
 			catch { /* do nothing */ }
 		}
 		void comboLoadIndex(ComboBox cbo, int index, bool nullable)
@@ -1183,6 +1187,12 @@ namespace Idmr.Yogeme
 		{
 			switchTo(EditorMode.XWI);
 			savXW.ShowDialog();
+		}
+		private void menuTour_Click(object sender, EventArgs e)
+		{
+			_fTour = new TourForm(_config);
+			try { _fTour.Show(); }
+			catch (ObjectDisposedException) { _fTour = null; }
 		}
 		void menuVerify_Click(object sender, EventArgs e)
 		{
