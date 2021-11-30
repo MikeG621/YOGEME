@@ -227,6 +227,7 @@ namespace Idmr.Yogeme
 			this.savXW = new System.Windows.Forms.SaveFileDialog();
 			this.dataWaypoints = new System.Data.DataView();
 			this.dataWaypointsRaw = new System.Data.DataView();
+			this.menuTour = new System.Windows.Forms.MenuItem();
 			this.tabMain.SuspendLayout();
 			this.tabFG.SuspendLayout();
 			this.tabFGMinor.SuspendLayout();
@@ -2149,6 +2150,7 @@ namespace Idmr.Yogeme
             this.menuVerify,
             this.menuMap,
             this.menuBriefing,
+            this.menuTour,
             this.menuOptions,
             this.menuGoalSummary,
             this.menuLibrary,
@@ -2176,26 +2178,26 @@ namespace Idmr.Yogeme
 			// 
 			// menuOptions
 			// 
-			this.menuOptions.Index = 3;
+			this.menuOptions.Index = 4;
 			this.menuOptions.Text = "&Options...";
 			this.menuOptions.Click += new System.EventHandler(this.menuOptions_Click);
 			// 
 			// menuGoalSummary
 			// 
-			this.menuGoalSummary.Index = 4;
+			this.menuGoalSummary.Index = 5;
 			this.menuGoalSummary.Text = "FG &Goal Summary";
 			this.menuGoalSummary.Click += new System.EventHandler(this.menuGoalSummary_Click);
 			// 
 			// menuLibrary
 			// 
-			this.menuLibrary.Index = 5;
+			this.menuLibrary.Index = 6;
 			this.menuLibrary.Text = "FG Librar&y";
 			this.menuLibrary.Click += new System.EventHandler(this.menuLibrary_Click);
 			// 
 			// menuTest
 			// 
 			this.menuTest.Enabled = false;
-			this.menuTest.Index = 6;
+			this.menuTest.Index = 7;
 			this.menuTest.Text = "&Test";
 			this.menuTest.Click += new System.EventHandler(this.menuTest_Click);
 			// 
@@ -2255,6 +2257,12 @@ namespace Idmr.Yogeme
 			// 
 			this.dataWaypointsRaw.AllowDelete = false;
 			this.dataWaypointsRaw.AllowNew = false;
+			// 
+			// menuTour
+			// 
+			this.menuTour.Index = 3;
+			this.menuTour.Text = "Tour &Editor";
+			this.menuTour.Click += new System.EventHandler(this.menuTour_Click);
 			// 
 			// XwingForm
 			// 
@@ -2537,5 +2545,6 @@ namespace Idmr.Yogeme
 		System.Data.DataView dataWaypoints;
 		System.Data.DataView dataWaypointsRaw;
 		private MenuItem menuLibrary;
+		private MenuItem menuTour;
 	}
 }

@@ -77,7 +77,7 @@ namespace Idmr.Yogeme
 		/// <summary>The selected Backdrop value</summary>
 		public byte BackdropIndex => Convert.ToByte(_index);
 		/// <summary>The selected Color from the image</summary>
-		/// <remarks>XWA only, is copied for use as the backdrop name</remarks>
+		/// <remarks>XWA only, is copied as rounded "#.## #.## #.##" for use as the backdrop name.</remarks>
 		public string Color
 		{
 			get

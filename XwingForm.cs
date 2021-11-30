@@ -4,10 +4,14 @@
  * This file authored by "JB" (Random Starfighter) (randomstarfighter@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.10
+ * VERSION: 1.11.2+
  */
 
 /* CHANGELOG:
+ * [NEW] Tour Editor
+ * v1.11.2, 2101005
+ * [UPD] Copy/paste now uses system clipboard, can more easily paste external text
+ * [NEW] Copy/paste now works for Waypoints
  * v1.10, 210520
  * [UPD #56] Replaced try/catch with TyrParse [JB]
  * v1.9, 210108
@@ -82,6 +86,7 @@ namespace Idmr.Yogeme
 		MapForm _fMap;
 		BriefingFormXwing _fBrief;
 		FlightGroupLibraryForm _fLibrary;
+		TourForm _fTour;
 		#endregion
 		#region Control Arrays
 #pragma warning disable IDE1006 // Naming Styles
@@ -116,6 +121,7 @@ namespace Idmr.Yogeme
 			_loading = false;
 		}
 
+		#region methods
 		void closeForms()
 		{
 			try { _fMap.Close(); }
@@ -123,6 +129,8 @@ namespace Idmr.Yogeme
 			try { _fBrief.Close(); }
 			catch { /* do nothing */ }
 			try { _fLibrary.Close(); }
+			catch { /* do nothing */ }
+			try { _fTour.Close(); }
 			catch { /* do nothing */ }
 		}
 		void comboLoadIndex(ComboBox cbo, int index, bool nullable)
@@ -587,7 +595,9 @@ namespace Idmr.Yogeme
 				}
 			}
 		}
+		#endregion methods
 
+		#region event handlers
 		void briefingModifiedCallback(object sender, EventArgs e)
 		{
 			Common.Title(this, _loading);
@@ -770,6 +780,7 @@ namespace Idmr.Yogeme
 					break;
 			}
 		}
+		#endregion event handlers
 
 		#region Menu
 		void menuAbout_Click(object sender, EventArgs e)
@@ -798,54 +809,49 @@ namespace Idmr.Yogeme
 		void menuCopy_Click(object sender, EventArgs e)
 		{
 			System.Runtime.Serialization.IFormatter formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
-			Stream stream = new FileStream(Application.StartupPath + "\\YOGEME.bin", FileMode.Create, FileAccess.Write, FileShare.None);
-			#region ArrDep
+			Stream stream = new MemoryStream();
+			DataObject data = new DataObject();
+
 			if (sender.ToString() == "AD")
 			{
 				formatter.Serialize(stream, _mission.FlightGroups[_activeFG]);
-				stream.Close();
-				return;
+				data.SetText(Strings.Trigger[_mission.FlightGroups[_activeFG].ArrivalEvent]);
 			}
-			#endregion
-			#region Order
-			if (sender.ToString() == "Order")
+			else if (sender.ToString() == "Order")
 			{
 				formatter.Serialize(stream, _mission.FlightGroups[_activeFG]);
-				stream.Close();
-				return;
+				data.SetText(Strings.Orders[_mission.FlightGroups[_activeFG].Order]);
 			}
-			#endregion
-			#region generic form controls
-			if (ActiveControl.GetType().ToString() == "System.Windows.Forms.TextBox")
+			else if (ActiveControl.GetType().ToString() == "System.Windows.Forms.TextBox")
 			{
-				TextBox txt_t = (TextBox)ActiveControl;
-				if (txt_t.SelectedText != "")
+				TextBox txt = (TextBox)ActiveControl;
+				if (txt.SelectedText != "")
 				{
-					formatter.Serialize(stream, txt_t.SelectedText);
-					stream.Close();
-					return;
+					formatter.Serialize(stream, txt.SelectedText);
+					data.SetText(txt.SelectedText);
 				}
 			}
 			else if (ActiveControl.GetType().ToString() == "System.Windows.Forms.NumericUpDown")  //[JB] Added copy/paste for this
 			{
-				NumericUpDown num_t = (NumericUpDown)ActiveControl;
-				formatter.Serialize(stream, num_t.Value);
-				stream.Close();
-				return;
+				NumericUpDown num = (NumericUpDown)ActiveControl;
+				formatter.Serialize(stream, num.Value);
+				data.SetText(num.Value.ToString());
 			}
 			else if (ActiveControl.GetType().ToString() == "System.Windows.Forms.DataGridTextBox")
 			{
-				stream.Close(); //[JB] I can't get it to copy/paste the current cell content, but this will prevent the entire FG from copy/paste.
-				return;
+				DataGridTextBox dgt = (DataGridTextBox)ActiveControl;
+				formatter.Serialize(stream, dgt.SelectedText);
+				data.SetText(dgt.SelectedText);
 			}
-			#endregion
 			switch (tabMain.SelectedIndex)
 			{
 				case 0:
 					formatter.Serialize(stream, _mission.FlightGroups[_activeFG]);
+					data.SetText(_mission.FlightGroups[_activeFG].ToString());
 					break;
 			}
-			stream.Close();
+			data.SetData("yogeme", false, stream);
+			Clipboard.SetDataObject(data, true);
 		}
 		void menuER_Click(object sender, EventArgs e)
 		{
@@ -966,128 +972,140 @@ namespace Idmr.Yogeme
 		void menuPaste_Click(object sender, EventArgs e)
 		{
 			System.Runtime.Serialization.IFormatter formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
-			Stream stream;
-			try { stream = new FileStream(Application.StartupPath + "\\YOGEME.bin", FileMode.Open, FileAccess.Read, FileShare.Read); }
-			catch { return; }
-			#region ArrDep
+			if (!(Clipboard.GetDataObject() is DataObject data)) return;
+
+			object obj;
+			if (data.GetData("yogeme", false) is MemoryStream stream)
+			{
+				obj = formatter.Deserialize(stream);
+				stream.Close();
+			}
+			else obj = data.GetData("Text");
+			if (obj == null) return;
+
 			if (sender.ToString() == "AD")
 			{
 				try
 				{
-					FlightGroup fg_temp = (FlightGroup)formatter.Deserialize(stream);
-					if (fg_temp == null) throw new Exception();
+					FlightGroup fg = (FlightGroup)obj;
+					if (fg == null) throw new FormatException();
+
 					FlightGroup cur = _mission.FlightGroups[_activeFG];
-					cur.ArrivalHyperspace = fg_temp.ArrivalHyperspace;
-					cur.DepartureHyperspace = fg_temp.DepartureHyperspace;
-					cur.Mothership = fg_temp.Mothership;
+					cur.ArrivalHyperspace = fg.ArrivalHyperspace;
+					cur.DepartureHyperspace = fg.DepartureHyperspace;
+					cur.Mothership = fg.Mothership;
 					if (cur.Mothership >= _mission.FlightGroups.Count)
 						cur.Mothership = -1;
-					cur.ArrivalFG = fg_temp.ArrivalFG;
+					cur.ArrivalFG = fg.ArrivalFG;
 					if (cur.ArrivalFG >= _mission.FlightGroups.Count)
 						cur.ArrivalFG = -1;
-					cur.ArrivalEvent = fg_temp.ArrivalEvent;
-					cur.ArrivalDelay = fg_temp.ArrivalDelay;
+					cur.ArrivalEvent = fg.ArrivalEvent;
+					cur.ArrivalDelay = fg.ArrivalDelay;
 					lstFG_SelectedIndexChanged(0, new EventArgs());
 					listRefresh();
 					Common.Title(this, false);
 				}
 				catch { /* do nothing */ }
-				stream.Close();
-				return;
 			}
-			#endregion
-			#region Order
-			if (sender.ToString() == "Order")
+			else if (sender.ToString() == "Order")
 			{
 				try
 				{
-					FlightGroup fg_temp = (FlightGroup)formatter.Deserialize(stream);
-					if (fg_temp == null) throw new Exception();
+					FlightGroup fg = (FlightGroup)obj;
+					if (fg == null) throw new FormatException();
+
 					FlightGroup cur = _mission.FlightGroups[_activeFG];
-					cur.Order = fg_temp.Order;
-					cur.TargetPrimary = fg_temp.TargetPrimary;
+					cur.Order = fg.Order;
+					cur.TargetPrimary = fg.TargetPrimary;
 					if (cur.TargetPrimary >= _mission.FlightGroups.Count)
 						cur.TargetPrimary = -1;
-					cur.TargetSecondary = fg_temp.TargetSecondary;
+					cur.TargetSecondary = fg.TargetSecondary;
 					if (cur.TargetSecondary >= _mission.FlightGroups.Count)
 						cur.TargetSecondary = -1;
-					cur.DockTimeThrottle = fg_temp.DockTimeThrottle;
+					cur.DockTimeThrottle = fg.DockTimeThrottle;
 					lstFG_SelectedIndexChanged(0, new EventArgs());
 					listRefresh();
 					Common.Title(this, false);
 				}
 				catch { /* do nothing */ }
-				stream.Close();
-				return;
 			}
-			#endregion
-			#region generic form controls
-			try
+			else if (ActiveControl.GetType().ToString() == "System.Windows.Forms.TextBox")
 			{
-				if (ActiveControl.GetType().ToString() == "System.Windows.Forms.TextBox")
+				try
 				{
-					string s = formatter.Deserialize(stream).ToString();
+					string s = obj.ToString();
 					if (s.IndexOf("System.", 0) != -1) return;
 					if (s.IndexOf("Idmr.", 0) != -1) return;
+
 					TextBox t = (TextBox)ActiveControl;
 					t.SelectedText = s;
-					stream.Close();
 					Common.Title(this, false);
-					return;
 				}
-				else if (ActiveControl.GetType().ToString() == "System.Windows.Forms.NumericUpDown") //[JB] Added copy/paste for this
-				{
-					string str_t = formatter.Deserialize(stream).ToString();
-					NumericUpDown control = (NumericUpDown)ActiveControl;
-					decimal value = Convert.ToDecimal(str_t);
-					if (value > control.Maximum) value = control.Maximum;
-					else if (value < control.Minimum) value = control.Minimum;
-					control.Value = value;
-					Common.Title(this, false);
-					stream.Close();
-					return;
-				}
-				else if (ActiveControl.GetType().ToString() == "System.Windows.Forms.DataGridTextBox")
-				{
-					stream.Close(); //[JB] I can't get it to copy/paste the current cell content, but this will prevent the entire FG from copy/paste.
-					return;
-				}
+				catch { /* do nothing */ }
 			}
-			catch { /* do nothing*/ }
-			#endregion
-			#region overalls by tab
-			switch (tabMain.SelectedIndex)
+			else if (ActiveControl.GetType().ToString() == "System.Windows.Forms.NumericUpDown") //[JB] Added copy/paste for this
 			{
-				case 0:
-					try
-					{
-						FlightGroup fg_temp = (FlightGroup)formatter.Deserialize(stream);
-						if (fg_temp == null) throw new Exception();
-						if (_mode == EditorMode.BRF)  //Can't validate anything if pasting into BRF, so reset indexes.
-						{
-							fg_temp.Mothership = -1;
-							fg_temp.ArrivalFG = -1;
-							fg_temp.ArrivalEvent = 0;
-							fg_temp.TargetPrimary = -1;
-							fg_temp.TargetSecondary = -1;
-						}
-						bool isCraft = fg_temp.IsFlightGroup();
-						newFG(isCraft);
-						_mission.FlightGroups[_activeFG] = fg_temp;
-						refreshMap(-1);
-						updateFGList(); //[JB] Update all the downdown lists.
-						listRefresh();
-						_startingShips--;
-						lstFG.SelectedIndex = _activeFG;
-						lstFG_SelectedIndexChanged(0, new EventArgs()); //[JB] Need to force refresh of form controls.
-						craftStart(fg_temp, true);
-						lstFG.Focus();  //[JB] Return focus to list.  Lets the user delete the pasted FG without having to manually select it again.
-					}
-					catch { /* do nothing */ }
-					break;
+				try
+				{
+					string str = obj.ToString();
+					NumericUpDown num = (NumericUpDown)ActiveControl;
+					decimal value = Convert.ToDecimal(str);
+					if (value > num.Maximum) value = num.Maximum;
+					else if (value < num.Minimum) value = num.Minimum;
+					num.Value = value;
+					Common.Title(this, false);
+				}
+				catch { /* do nothing */ }
 			}
-			#endregion
-			stream.Close();
+			else if (ActiveControl.GetType().ToString() == "System.Windows.Forms.DataGridTextBox")
+			{
+				try
+				{
+					string str = obj.ToString();
+					if (str.IndexOf("Idmr.", 0) != -1) throw new FormatException();
+
+					DataGrid dg = (DataGrid)ActiveControl.Parent;
+					int row = dg.CurrentRowIndex;
+					DataTable dt = ((DataView)dg.DataSource).Table;
+					dt.Rows[row][dg.CurrentCell.ColumnNumber] = str;
+					if (dt.TableName == "Waypoints") table_RowChanged("paste", new DataRowChangeEventArgs(dt.Rows[row], DataRowAction.Change));
+					else tableRaw_RowChanged("paste", new DataRowChangeEventArgs(dt.Rows[row], DataRowAction.Change));
+				}
+				catch { /* do nothing */ }
+			}
+			else
+			{
+				switch (tabMain.SelectedIndex)
+				{
+					case 0:
+						try
+						{
+							FlightGroup fg = (FlightGroup)obj;
+							if (fg == null) throw new FormatException();
+
+							if (_mode == EditorMode.BRF)  //Can't validate anything if pasting into BRF, so reset indexes.
+							{
+								fg.Mothership = -1;
+								fg.ArrivalFG = -1;
+								fg.ArrivalEvent = 0;
+								fg.TargetPrimary = -1;
+								fg.TargetSecondary = -1;
+							}
+							newFG(fg.IsFlightGroup());
+							_mission.FlightGroups[_activeFG] = fg;
+							refreshMap(-1);
+							updateFGList(); //[JB] Update all the downdown lists.
+							listRefresh();
+							_startingShips--;
+							lstFG.SelectedIndex = _activeFG;
+							lstFG_SelectedIndexChanged(0, new EventArgs()); //[JB] Need to force refresh of form controls.
+							craftStart(fg, true);
+							lstFG.Focus();  //[JB] Return focus to list.  Lets the user delete the pasted FG without having to manually select it again.
+						}
+						catch { /* do nothing */ }
+						break;
+				}
+			}
 		}
 		void menuRecentMissions_Click(object sender, EventArgs e)
 		{
@@ -1169,6 +1187,12 @@ namespace Idmr.Yogeme
 		{
 			switchTo(EditorMode.XWI);
 			savXW.ShowDialog();
+		}
+		private void menuTour_Click(object sender, EventArgs e)
+		{
+			_fTour = new TourForm(_config);
+			try { _fTour.Show(); }
+			catch (ObjectDisposedException) { _fTour = null; }
 		}
 		void menuVerify_Click(object sender, EventArgs e)
 		{
@@ -1442,14 +1466,17 @@ namespace Idmr.Yogeme
 		/// <remarks>Should be called during swap or delete (dstIndex < 0) operations.</remarks>
 		void replaceClipboardFGReference(int srcIndex, int dstIndex)
 		{
-			//[JB] Replace any clipboard references.  Load it, check/modify type, save back to stream.  Since clipboard access is through a file on disk, I thought it would be best to avoid hammering it with changes if nothing actually changed on the clipboard.
-			Stream stream = null;
+			//[JB] Replace any clipboard references.  Load it, check/modify type, save back to stream.
 			try
 			{
 				System.Runtime.Serialization.IFormatter formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
-				stream = new FileStream(Application.StartupPath + "\\YOGEME.bin", FileMode.Open, FileAccess.Read, FileShare.Read);
+				if (!(Clipboard.GetDataObject() is DataObject data) || !data.GetDataPresent("yogeme", false)) return;
+				if (!(data.GetData("yogeme", false) is MemoryStream stream)) return;
+
 				object raw = formatter.Deserialize(stream);
 				stream.Close();
+
+				data = new DataObject();
 				bool change = false;
 				if (raw.GetType() == typeof(FlightGroup))
 				{
@@ -1469,18 +1496,17 @@ namespace Idmr.Yogeme
 						if (fg.TargetPrimary == srcIndex) { fg.TargetPrimary = dst; change = true; } else if (fg.TargetPrimary > srcIndex && dstIndex == -1) { fg.TargetPrimary--; change = true; }
 						if (fg.TargetSecondary == srcIndex) { fg.TargetSecondary = dst; change = true; } else if (fg.TargetSecondary > srcIndex && dstIndex == -1) { fg.TargetSecondary--; change = true; }
 					}
-					if (change)
-					{
-						stream = new FileStream(Application.StartupPath + "\\YOGEME.bin", FileMode.Create, FileAccess.Write, FileShare.None);
-						formatter.Serialize(stream, raw);
-						stream.Close();
-					}
+					data.SetText(fg.ToString());
+				}
+				if (change)
+				{
+					stream = new MemoryStream();
+					formatter.Serialize(stream, raw);
+					data.SetData("yogeme", false, stream);
+					Clipboard.SetDataObject(data, true);
 				}
 			}
-			catch
-			{
-				if (stream != null) stream.Close();  //Just in case...
-			}
+			catch { /* do nothing*/ }
 		}
 		int translateNullableFG(ComboBox cbo)
 		{
@@ -2247,8 +2273,7 @@ namespace Idmr.Yogeme
 			int wpIndex = _waypointMapping[j];
 			for (i = 0; i < 3; i++)
 			{
-				double cell;
-				if (!double.TryParse(_table.Rows[j][i].ToString(), out cell))
+				if (!double.TryParse(_table.Rows[j][i].ToString(), out double cell))
 					_table.Rows[j][i] = 0;
 				short raw = (short)(cell * 160);
 				_mission.FlightGroups[_activeFG].Waypoints[wpIndex][i] = Common.Update(this, _mission.FlightGroups[_activeFG].Waypoints[wpIndex][i], raw);
@@ -2266,8 +2291,7 @@ namespace Idmr.Yogeme
 			int wpIndex = _waypointMapping[j];
 			for (i = 0; i < 3; i++)
 			{
-				short raw;
-				if (!short.TryParse(_tableRaw.Rows[j][i].ToString(), out raw))
+				if (!short.TryParse(_tableRaw.Rows[j][i].ToString(), out short raw))
 					_tableRaw.Rows[j][i] = 0;
 				_mission.FlightGroups[_activeFG].Waypoints[wpIndex][i] = Common.Update(this, _mission.FlightGroups[_activeFG].Waypoints[wpIndex][i], raw);
 				_table.Rows[j][i] = Math.Round((double)raw / 160, 2);

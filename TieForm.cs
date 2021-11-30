@@ -3,10 +3,14 @@
  * Copyright (C) 2007-2021 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.10
+ * VERSION: 1.11.2
  */
 
 /* CHANGELOG
+ * v1.11.2, 2101005
+ * [FIX] Pasting a message when at capacity now correctly does nothing
+ * [UPD] Copy/paste now uses system clipboard, can more easily paste external text
+ * [NEW] Copy/paste now works for Waypoints, can paste XvT/XWA Triggers/Orders
  * v1.10, 210520
  * [UPD #56] Replaced try/catch with TryParse [JB]
  * v1.9.2, 210328
@@ -189,6 +193,7 @@ namespace Idmr.Yogeme
 			_loading = false;
 		}
 
+		#region methods
 		void closeForms()
 		{
 			try { _fMap.Close(); }
@@ -608,8 +613,8 @@ namespace Idmr.Yogeme
 			dataWaypointsRaw.Table = _tableRaw;
 			dataWP.DataSource = dataWaypoints;
 			dataWP_Raw.DataSource = dataWaypointsRaw;
-			this._table.RowChanged += new DataRowChangeEventHandler(table_RowChanged);
-			this._tableRaw.RowChanged += new DataRowChangeEventHandler(tableRaw_RowChanged);
+			_table.RowChanged += new DataRowChangeEventHandler(table_RowChanged);
+			_tableRaw.RowChanged += new DataRowChangeEventHandler(tableRaw_RowChanged);
 			chkWP[0] = chkSP1;
 			chkWP[1] = chkSP2;
 			chkWP[2] = chkSP3;
@@ -840,7 +845,9 @@ namespace Idmr.Yogeme
 			checkQuestionLength(); //[JB] Added check.
 			#endregion
 		}
+		#endregion methods
 
+		#region event handlers
 		//[JB] Apply color changes to all interactive labels.  This is a callback event when the program settings are updated.
 		void applySettingsHandler(object sender, EventArgs e)
 		{
@@ -859,8 +866,7 @@ namespace Idmr.Yogeme
 		void colorizedComboBox_DrawItem(object sender, DrawItemEventArgs e)
 		{
 			ComboBox variable = (ComboBox)sender;
-			ComboBox variableType;
-			colorizedFGList.TryGetValue(variable, out variableType);
+			colorizedFGList.TryGetValue(variable, out ComboBox variableType);
 			bool colorize = true;
 			if (variableType != null)        //If a VariableType selection control is attached, check that Flight Group is selected.
 				colorize = (variableType.SelectedIndex == 1);
@@ -1056,6 +1062,7 @@ namespace Idmr.Yogeme
 					break;
 			}
 		}
+		#endregion event handlers
 
 		#region Menu
 		void menuAbout_Click(object sender, EventArgs e)
@@ -1078,69 +1085,67 @@ namespace Idmr.Yogeme
 		void menuCopy_Click(object sender, EventArgs e)
 		{
 			System.Runtime.Serialization.IFormatter formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
-			Stream stream = new FileStream(Application.StartupPath + "\\YOGEME.bin", FileMode.Create, FileAccess.Write, FileShare.None);
-			#region ArrDep
+			Stream stream = new MemoryStream();
+			DataObject data = new DataObject();
 			if (sender.ToString() == "AD" || hasFocus(lblADTrig))  //[JB] Detect if triggers have focus
 			{
 				formatter.Serialize(stream, _mission.FlightGroups[_activeFG].ArrDepTriggers[_activeArrDepTrigger]);
-				stream.Close();
-				return;
+				data.SetText(_mission.FlightGroups[_activeFG].ArrDepTriggers[_activeArrDepTrigger].ToString());
 			}
-			#endregion
-			#region Orders
-			if (sender.ToString() == "Order" || hasFocus(lblOrder))  //[JB] Detect if orders have focus
+			else if (sender.ToString() == "Order" || hasFocus(lblOrder))  //[JB] Detect if orders have focus
 			{
 				formatter.Serialize(stream, _mission.FlightGroups[_activeFG].Orders[_activeOrder]);
-				stream.Close();
-				return;
+				data.SetText(_mission.FlightGroups[_activeFG].Orders[_activeOrder].ToString());
 			}
-			#endregion
-			#region generic form controls
-			if (ActiveControl.GetType().ToString() == "System.Windows.Forms.TextBox")
+			else if (ActiveControl.GetType().ToString() == "System.Windows.Forms.TextBox")
 			{
-				TextBox txt_t = (TextBox)ActiveControl;
-				if (txt_t.SelectedText != "")
+				TextBox txt = (TextBox)ActiveControl;
+				if (txt.SelectedText != "")
 				{
-					formatter.Serialize(stream, txt_t.SelectedText);
-					stream.Close();
-					return;
+					formatter.Serialize(stream, txt.SelectedText);
+					data.SetText(txt.SelectedText);
 				}
 			}
 			else if (ActiveControl.GetType().ToString() == "System.Windows.Forms.NumericUpDown")   //[JB] Added copy/paste for this
 			{
-				NumericUpDown num_t = (NumericUpDown)ActiveControl;
-				formatter.Serialize(stream, num_t.Value);
-				stream.Close();
-				return;
+				NumericUpDown num = (NumericUpDown)ActiveControl;
+				formatter.Serialize(stream, num.Value);
+				data.SetText(num.Value.ToString());
 			}
 			else if (ActiveControl.GetType().ToString() == "System.Windows.Forms.DataGridTextBox")
 			{
-				stream.Close(); //[JB] I can't get it to copy/paste the current cell content, but this will prevent the entire FG from copy/paste.
-				return;
+				DataGridTextBox dgt = (DataGridTextBox)ActiveControl;
+				formatter.Serialize(stream, dgt.SelectedText);
+				data.SetText(dgt.SelectedText);
 			}
-			#endregion
-			#region MessTrig
-			if (sender.ToString() == "MessTrig" || (lblMess1.Focused || lblMess2.Focused)) //[JB] Detect if triggers have focus
+			else if (sender.ToString() == "MessTrig" || lblMess1.Focused || lblMess2.Focused) //[JB] Detect if triggers have focus
 			{
-				if (lblMess1.ForeColor == getHighlightColor()) formatter.Serialize(stream, _mission.Messages[_activeMessage].Triggers[0]);
-				else formatter.Serialize(stream, _mission.Messages[_activeMessage].Triggers[1]);
-				stream.Close();
-				return;
+				formatter.Serialize(stream, _mission.Messages[_activeMessage].Triggers[lblMess1.ForeColor == getHighlightColor() ? 0 : 1]);
+				data.SetText(_mission.Messages[_activeMessage].Triggers[lblMess1.ForeColor == getHighlightColor() ? 0 : 1].ToString());
 			}
-			#endregion
-			switch (tabMain.SelectedIndex)
+			else
 			{
-				case 0:
-					formatter.Serialize(stream, _mission.FlightGroups[_activeFG]);
-					break;
-				case 1:
-					if (_mission.Messages.Count != 0) formatter.Serialize(stream, _mission.Messages[_activeMessage]);
-					break;
-				case 2:
-					formatter.Serialize(stream, _mission.GlobalGoals.Goals[_activeGlobalGoal / 2].Triggers[_activeGlobalGoal % 2]);
-					break;
+				switch (tabMain.SelectedIndex)
+				{
+					case 0:
+						formatter.Serialize(stream, _mission.FlightGroups[_activeFG]);
+						data.SetText(_mission.FlightGroups[_activeFG].ToString());
+						break;
+					case 1:
+						if (_mission.Messages.Count != 0)
+						{
+							formatter.Serialize(stream, _mission.Messages[_activeMessage]);
+							data.SetText(_mission.Messages[_activeMessage].MessageString);
+						}
+						break;
+					case 2:
+						formatter.Serialize(stream, _mission.GlobalGoals.Goals[_activeGlobalGoal / 2].Triggers[_activeGlobalGoal % 2]);
+						data.SetText(_mission.GlobalGoals.Goals[_activeGlobalGoal / 2].Triggers[_activeGlobalGoal % 2].ToString());
+						break;
+				}
 			}
-			stream.Close();
+			data.SetData("yogeme", false, stream);
+			Clipboard.SetDataObject(data, true);
 		}
 		void menuDelete_Click(object sender, EventArgs e)
 		{
@@ -1268,157 +1273,169 @@ namespace Idmr.Yogeme
 		void menuPaste_Click(object sender, EventArgs e)
 		{
 			System.Runtime.Serialization.IFormatter formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
-			Stream stream;
-			try { stream = new FileStream(Application.StartupPath + "\\YOGEME.bin", FileMode.Open, FileAccess.Read, FileShare.Read); }
-			catch { return; }
-			#region ArrDep
+			if (!(Clipboard.GetDataObject() is DataObject data)) return;
+#if DEBUG
+			string[] formats = data.GetFormats();
+			foreach(string s in formats) System.Diagnostics.Debug.WriteLine(s);
+#endif
+			object obj;
+			if (data.GetData("yogeme", false) is MemoryStream stream)
+			{
+				obj = formatter.Deserialize(stream);
+				stream.Close();
+			}
+			else obj = data.GetData("Text");
+			if (obj == null) return;
+
+			Mission.Trigger trig = null;
+			if (obj.GetType() == typeof(Mission.Trigger)) trig = (Mission.Trigger)obj;
+			else if (obj.GetType() == typeof(Platform.Xvt.Mission.Trigger)) trig = (Mission.Trigger)(Platform.Xvt.Mission.Trigger)obj;
+			else if (obj.GetType() == typeof(Platform.Xwa.Mission.Trigger))
+			{
+				trig = (Mission.Trigger)(Platform.Xwa.Mission.Trigger)obj;
+				if (trig.VariableType == 2 /* CraftType */) trig.Variable--;
+			}
+
+			FlightGroup.Order ord = null;
+			if (obj.GetType() == typeof(FlightGroup.Order)) ord = (FlightGroup.Order)obj;
+			else if (obj.GetType() == typeof(Platform.Xvt.FlightGroup.Order)) ord = (FlightGroup.Order)(Platform.Xvt.FlightGroup.Order)obj;
+			else if (obj.GetType() == typeof(Platform.Xwa.FlightGroup.Order))
+			{
+				ord = (FlightGroup.Order)(Platform.Xwa.FlightGroup.Order)obj;
+				if (ord.Target1Type == 2) ord.Target1--;
+				if (ord.Target2Type == 2) ord.Target2--;
+				if (ord.Target3Type == 2) ord.Target3--;
+				if (ord.Target4Type == 2) ord.Target4--;
+			}
+
 			if (sender.ToString() == "AD" || hasFocus(lblADTrig))  //[JB] Detect if triggers have focus
 			{
 				try
 				{
-					_mission.FlightGroups[_activeFG].ArrDepTriggers[_activeArrDepTrigger] = (Mission.Trigger)formatter.Deserialize(stream);
+					_mission.FlightGroups[_activeFG].ArrDepTriggers[_activeArrDepTrigger] = trig ?? throw new FormatException();
 					lblADTrigArr_Click(_activeArrDepTrigger, new EventArgs());
 					labelRefresh(_mission.FlightGroups[_activeFG].ArrDepTriggers[_activeArrDepTrigger], lblADTrig[_activeArrDepTrigger]);
 					Common.Title(this, false);
 				}
 				catch { /* do nothing */ }
-				stream.Close();
-				return;
 			}
-			#endregion
-			#region Orders
-			if (sender.ToString() == "Order" || hasFocus(lblOrder))  //[JB] Detect if triggers have focus
+			else if (sender.ToString() == "Order" || hasFocus(lblOrder))  //[JB] Detect if triggers have focus
 			{
 				try
 				{
-					_mission.FlightGroups[_activeFG].Orders[_activeOrder] = (FlightGroup.Order)formatter.Deserialize(stream);
+					_mission.FlightGroups[_activeFG].Orders[_activeOrder] = ord ?? throw new FormatException();
 					lblOrderArr_Click(_activeOrder, new EventArgs());
 					Common.Title(this, false);
 				}
 				catch { /* do nothing */ }
-				stream.Close();
-				return;
 			}
-			#endregion
-			#region generic form controls
-			try
-			{
-				if (ActiveControl.GetType().ToString() == "System.Windows.Forms.TextBox")
-				{
-					//FG.length = 17, Mess.L = 14, Orders/Goals/Trigger = 13, str = str.L
-					string str_t = formatter.Deserialize(stream).ToString();
-					if (str_t.Length == 13 || str_t.Length == 14 || str_t.Length == 17)
-					{
-						FlightGroup fg_t = (FlightGroup)formatter.Deserialize(stream);
-						if (fg_t != null) throw new Exception();
-						Platform.Tie.Message mess_t = (Platform.Tie.Message)formatter.Deserialize(stream);
-						if (mess_t != null) throw new Exception();
-						byte[] b_t = (byte[])formatter.Deserialize(stream);
-						if (b_t.Length == 4 || b_t.Length == 18) throw new Exception();
-					}
-					if (str_t.IndexOf("Idmr.", 0) != -1) throw new Exception(); // [JB] Prevent the class name when an entire Message is copied.
-					TextBox txt_t = (TextBox)ActiveControl;
-					txt_t.SelectedText = str_t;
-					Common.Title(this, false);
-					stream.Close();
-					return;
-				}
-				else if (ActiveControl.GetType().ToString() == "System.Windows.Forms.NumericUpDown")
-				{
-					string str_t = formatter.Deserialize(stream).ToString();
-					NumericUpDown control = (NumericUpDown)ActiveControl;
-					decimal value = Convert.ToDecimal(str_t);
-					if (value > control.Maximum) value = control.Maximum;
-					else if (value < control.Minimum) value = control.Minimum;
-					control.Value = value;
-					Common.Title(this, false);
-					stream.Close();
-					return;
-				}
-				else if (ActiveControl.GetType().ToString() == "System.Windows.Forms.DataGridTextBox")
-				{
-					stream.Close(); //[JB] I can't get it to copy/paste the current cell content, but this will prevent the entire FG from copy/paste.
-					return;
-				}
-			}
-			catch { /* do nothing */ }
-			#endregion
-			#region MessTrig
-			if (sender.ToString() == "MessTrig" || (lblMess1.Focused || lblMess2.Focused))  //[JB] Detect if triggers have focus
+			else if (ActiveControl.GetType().ToString() == "System.Windows.Forms.TextBox")
 			{
 				try
 				{
-					//byte[] b_temp = (byte[])formatter.Deserialize(stream);
-					//if (b_temp.Length != 4) throw new Exception();
+					string str = obj.ToString();
+					if (str.IndexOf("Idmr.", 0) != -1) throw new FormatException(); // [JB] Prevent the class name when an entire Message is copied.
+					TextBox txt = (TextBox)ActiveControl;
+					txt.SelectedText = str;
+					Common.Title(this, false);
+				}
+				catch { /* do nothing */ }
+			}
+			else if (ActiveControl.GetType().ToString() == "System.Windows.Forms.NumericUpDown")
+			{
+				try
+				{
+					string str = obj.ToString();
+					NumericUpDown num = (NumericUpDown)ActiveControl;
+					decimal value = Convert.ToDecimal(str);
+					if (value > num.Maximum) value = num.Maximum;
+					else if (value < num.Minimum) value = num.Minimum;
+					num.Value = value;
+					Common.Title(this, false);
+				}
+				catch { /* do nothing */ }
+			}
+			else if (ActiveControl.GetType().ToString() == "System.Windows.Forms.DataGridTextBox")
+			{
+				try
+				{
+					string str = obj.ToString();
+					if (str.IndexOf("Idmr.", 0) != -1) throw new FormatException();
+					DataGrid dg = (DataGrid)ActiveControl.Parent;
+					int row = dg.CurrentRowIndex;
+					DataTable dt = ((DataView)dg.DataSource).Table;
+					dt.Rows[row][dg.CurrentCell.ColumnNumber] = str;
+					if (dt.TableName == "Waypoints") table_RowChanged("paste", new DataRowChangeEventArgs(dt.Rows[row], DataRowAction.Change));
+					else tableRaw_RowChanged("paste", new DataRowChangeEventArgs(dt.Rows[row], DataRowAction.Change));
+				}
+				catch { /* do nothing */ }
+			}
+			else if (sender.ToString() == "MessTrig" || lblMess1.Focused || lblMess2.Focused)  //[JB] Detect if triggers have focus
+			{
+				try
+				{
 					if (lblMess1.ForeColor == getHighlightColor())
 					{
-						_mission.Messages[_activeMessage].Triggers[0] = (Mission.Trigger)formatter.Deserialize(stream);
-						//for (int i=0;i<4;i++) TieMission.Messages[activeMessage].Triggers[0][i] = b_temp[i];
+						_mission.Messages[_activeMessage].Triggers[0] = trig ?? throw new FormatException();
 						lblMessArr_Click(0, new EventArgs());
 					}
 					else
 					{
-						_mission.Messages[_activeMessage].Triggers[1] = (Mission.Trigger)formatter.Deserialize(stream);
-						//for (int i=0;i<4;i++) TieMission.Messages[activeMessage].Triggers[1][i] = b_temp[i];
+						_mission.Messages[_activeMessage].Triggers[1] = trig ?? throw new FormatException();
 						lblMessArr_Click(1, new EventArgs());
 					}
 					Common.Title(this, false);
 				}
 				catch { /* do nothing */ }
-				stream.Close();
-				return;
 			}
-			#endregion
-			#region overalls by tab
-			switch (tabMain.SelectedIndex)
-			{
-				case 0:
-					try
-					{
-						FlightGroup fg_temp = (FlightGroup)formatter.Deserialize(stream);
-#pragma warning disable IDE0016 // Use 'throw' expression
-						if (fg_temp == null) throw new Exception();
+			else {
+				switch (tabMain.SelectedIndex)
+				{
+					case 0:
+						try
+						{
+							FlightGroup fg = (FlightGroup)obj;
+#pragma warning disable IDE0016 // Use 'throw' expression. Can't use due to needing the null check before new()
+							if (fg == null) throw new FormatException();
+							if (!newFG()) break;
+
+							_mission.FlightGroups[_activeFG] = fg;
+							refreshMap(-1);
+							updateFGList(); //[JB] Update all the downdown lists.
+							listRefresh();
+							_startingShips--;
+							lstFG.SelectedIndex = _activeFG;
+							lstFG_SelectedIndexChanged(0, new EventArgs()); //[JB] Need to force refresh of form controls.
+							craftStart(fg, true);
+							lstFG.Focus();  //[JB] Return focus to list.  Lets the user delete the pasted FG without having to manually select it again.
+						}
+						catch { /* do nothing */ }
+						break;
+					case 1:
+						try
+						{
+							Platform.Tie.Message mess = (Platform.Tie.Message)obj;
+							if (mess == null) throw new FormatException();
+							if (!newMess()) break;
+
+							_mission.Messages[_activeMessage] = mess;
+							messlistRefresh();
+							lstMessages.SelectedIndex = _activeMessage;
 #pragma warning restore IDE0016 // Use 'throw' expression
-						if (newFG() == false)
-							break;
-						_mission.FlightGroups[_activeFG] = fg_temp;
-						refreshMap(-1);
-						updateFGList(); //[JB] Update all the downdown lists.
-						listRefresh();
-						_startingShips--;
-						lstFG.SelectedIndex = _activeFG;
-						lstFG_SelectedIndexChanged(0, new EventArgs()); //[JB] Need to force refresh of form controls.
-						craftStart(fg_temp, true);
-						lstFG.Focus();  //[JB] Return focus to list.  Lets the user delete the pasted FG without having to manually select it again.
-					}
-					catch { /* do nothing */ }
-					break;
-				case 1:
-					try
-					{
-						Platform.Tie.Message mess_temp = (Platform.Tie.Message)formatter.Deserialize(stream);
-#pragma warning disable IDE0016 // Use 'throw' expression
-						if (mess_temp == null) throw new Exception();
-#pragma warning restore IDE0016 // Use 'throw' expression
-						newMess();
-						_mission.Messages[_activeMessage] = mess_temp;
-						messlistRefresh();
-						lstMessages.SelectedIndex = _activeMessage;
-					}
-					catch { /* do nothing */ }
-					break;
-				case 2:
-					try
-					{
-						_mission.GlobalGoals.Goals[_activeGlobalGoal / 2].Triggers[_activeGlobalGoal % 2] = (Mission.Trigger)formatter.Deserialize(stream);  //[JB] Fix, %3 to %2.  Only 2 triggers.  Fixes copy/paste.
-						lblGlobArr_Click(_activeGlobalGoal, new EventArgs());
-						Common.Title(this, false);
-					}
-					catch { /* do nothing */ }
-					break;
+						}
+						catch { /* do nothing */ }
+						break;
+					case 2:
+						try
+						{
+							_mission.GlobalGoals.Goals[_activeGlobalGoal / 2].Triggers[_activeGlobalGoal % 2] = trig ?? throw new FormatException();  //[JB] Fix, %3 to %2.  Only 2 triggers.  Fixes copy/paste.
+							lblGlobArr_Click(_activeGlobalGoal, new EventArgs());
+							Common.Title(this, false);
+						}
+						catch { /* do nothing */ }
+						break;
+				}
 			}
-			#endregion
-			stream.Close();
 		}
 		void menuRecentMissions_Click(object sender, EventArgs e)
 		{
@@ -1771,74 +1788,79 @@ namespace Idmr.Yogeme
 		/// <remarks>Should be called during swap or delete (dstIndex &lt; 0) operations.</remarks>
 		void replaceClipboardFGReference(int srcIndex, int dstIndex)
 		{
-			//[JB] Replace any clipboard references.  Load it, check/modify type, save back to stream.  Since clipboard access is through a file on disk, I thought it would be best to avoid hammering it with changes if nothing actually changed on the clipboard.
-			Stream stream = null;
+			//[JB] Replace any clipboard references.  Load it, check/modify type, save back to stream.
 			try
 			{
 				System.Runtime.Serialization.IFormatter formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
-				stream = new FileStream(Application.StartupPath + "\\YOGEME.bin", FileMode.Open, FileAccess.Read, FileShare.Read);
+				if (!(Clipboard.GetDataObject() is DataObject data) || !data.GetDataPresent("yogeme", false)) return;
+				if (!(data.GetData("yogeme", false) is MemoryStream stream)) return;
+
 				object raw = formatter.Deserialize(stream);
 				stream.Close();
+
+				data = new DataObject();
 				bool change = false;
 				if (raw.GetType() == typeof(FlightGroup))
 				{
-					FlightGroup fg_temp = (FlightGroup)raw;
+					FlightGroup fg = (FlightGroup)raw;
 					if (dstIndex >= 0)
 					{
-						change |= fg_temp.TransformFGReferences(dstIndex, 255);
-						change |= fg_temp.TransformFGReferences(srcIndex, dstIndex);
-						change |= fg_temp.TransformFGReferences(255, srcIndex);
+						change |= fg.TransformFGReferences(dstIndex, 255);
+						change |= fg.TransformFGReferences(srcIndex, dstIndex);
+						change |= fg.TransformFGReferences(255, srcIndex);
 					}
 					else
 					{
-						change |= fg_temp.TransformFGReferences(srcIndex, -1);
+						change |= fg.TransformFGReferences(srcIndex, -1);
 					}
+					data.SetText(fg.ToString());
 				}
 				else if (raw.GetType() == typeof(Platform.Tie.Message))
 				{
-					Platform.Tie.Message mess_temp = (Platform.Tie.Message)raw;
-					foreach (var trig in mess_temp.Triggers)
+					Platform.Tie.Message mess = (Platform.Tie.Message)raw;
+					foreach (var trig in mess.Triggers)
 					{
 						if (dstIndex >= 0)
 							change |= trig.SwapFGReferences(srcIndex, dstIndex);
 						else
 							change |= trig.TransformFGReferences(srcIndex, dstIndex, true);
 					}
+					data.SetText(mess.MessageString);
 				}
 				else if (raw.GetType() == typeof(Mission.Trigger))
 				{
-					Mission.Trigger trig_temp = (Mission.Trigger)raw;
+					Mission.Trigger trig = (Mission.Trigger)raw;
 					if (dstIndex >= 0)
-						change |= trig_temp.SwapFGReferences(srcIndex, dstIndex);
+						change |= trig.SwapFGReferences(srcIndex, dstIndex);
 					else
-						change |= trig_temp.TransformFGReferences(srcIndex, dstIndex, true);
+						change |= trig.TransformFGReferences(srcIndex, dstIndex, true);
+					data.SetText(trig.ToString());
 
 				}
 				else if (raw.GetType() == typeof(FlightGroup.Order))
 				{
-					FlightGroup.Order order_temp = (FlightGroup.Order)raw;
+					FlightGroup.Order order = (FlightGroup.Order)raw;
 					if (dstIndex >= 0)
 					{
-						change |= order_temp.TransformFGReferences(dstIndex, 255);
-						change |= order_temp.TransformFGReferences(srcIndex, dstIndex);
-						change |= order_temp.TransformFGReferences(255, srcIndex);
+						change |= order.TransformFGReferences(dstIndex, 255);
+						change |= order.TransformFGReferences(srcIndex, dstIndex);
+						change |= order.TransformFGReferences(255, srcIndex);
 					}
 					else
 					{
-						change |= order_temp.TransformFGReferences(srcIndex, -1);
+						change |= order.TransformFGReferences(srcIndex, -1);
 					}
+					data.SetText(order.ToString());
 				}
 				if (change)
 				{
-					stream = new FileStream(Application.StartupPath + "\\YOGEME.bin", FileMode.Create, FileAccess.Write, FileShare.None);
+					stream = new MemoryStream();
 					formatter.Serialize(stream, raw);
-					stream.Close();
+					data.SetData("yogeme", false, stream);
+					Clipboard.SetDataObject(data, true);
 				}
 			}
-			catch
-			{
-				if (stream != null) stream.Close();  //Just in case...
-			}
+			catch { /* do nothing*/ }
 		}
 		/// <summary>Scans all Flight Groups to detect duplicate names, to provide helpful craft numbering within the editor so that the user can easily tell duplicates apart in triggers.</summary>
 		void recalculateEditorCraftNumbering()
@@ -2719,8 +2741,7 @@ namespace Idmr.Yogeme
 			for (j = 0; j < 15; j++) if (_table.Rows[j].Equals(e.Row)) break;   //find the row index that you're changing
 			for (i = 0; i < 3; i++)
 			{
-				double cell;
-				if (!double.TryParse(_table.Rows[j][i].ToString(), out cell))
+				if (!double.TryParse(_table.Rows[j][i].ToString(), out double cell))
 					_table.Rows[j][i] = 0;
 				short raw = (short)(cell * 160);
 				_mission.FlightGroups[_activeFG].Waypoints[j][i] = Common.Update(this, _mission.FlightGroups[_activeFG].Waypoints[j][i], raw);
@@ -2737,8 +2758,7 @@ namespace Idmr.Yogeme
 			for (j = 0; j < 15; j++) if (_tableRaw.Rows[j].Equals(e.Row)) break;    //find the row index that you're changing
 			for (i = 0; i < 3; i++)
 			{
-				short raw;
-				if (!short.TryParse(_tableRaw.Rows[j][i].ToString(), out raw))
+				if (!short.TryParse(_tableRaw.Rows[j][i].ToString(), out short raw))
 					_tableRaw.Rows[j][i] = 0;
 				_mission.FlightGroups[_activeFG].Waypoints[j][i] = Common.Update(this, _mission.FlightGroups[_activeFG].Waypoints[j][i], raw);
 				_table.Rows[j][i] = Math.Round((double)raw / 160, 2);
@@ -2805,18 +2825,19 @@ namespace Idmr.Yogeme
 			lstMessages.Items[_activeMessage] = (_mission.Messages[_activeMessage].MessageString != "" ? _mission.Messages[_activeMessage].MessageString : " *");
 			lstMessages.Invalidate(lstMessages.GetItemRectangle(_activeMessage));
 		}
-		void newMess()
+		bool newMess()
 		{
 			if (_mission.Messages.Count == Mission.MessageLimit)
 			{
 				MessageBox.Show("Mission contains maximum number of Messages.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				return;
+				return false;
 			}
 			_activeMessage = _mission.Messages.Add();
 			if (_mission.Messages.Count == 1) enableMessage(true);
 			lstMessages.Items.Add(_mission.Messages[_activeMessage].MessageString);
 			lstMessages.SelectedIndex = _activeMessage;
 			Common.Title(this, _loading);
+			return true;
 		}
 		void swapMessage(int srcIndex, int dstIndex)
 		{
