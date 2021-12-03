@@ -522,7 +522,7 @@ namespace Idmr.Yogeme
 			// lstFG
 			// 
 			this.lstFG.BackColor = System.Drawing.Color.Black;
-			this.lstFG.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable;
+			this.lstFG.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
 			this.lstFG.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.lstFG.ForeColor = System.Drawing.Color.Gray;
 			this.lstFG.ItemHeight = 15;
@@ -530,7 +530,7 @@ namespace Idmr.Yogeme
             "3 - 12 - *1x(3) Ship name"});
 			this.lstFG.Location = new System.Drawing.Point(8, 24);
 			this.lstFG.Name = "lstFG";
-			this.lstFG.Size = new System.Drawing.Size(216, 480);
+			this.lstFG.Size = new System.Drawing.Size(216, 469);
 			this.lstFG.TabIndex = 1;
 			this.lstFG.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.lstFG_DrawItem);
 			this.lstFG.SelectedIndexChanged += new System.EventHandler(this.lstFG_SelectedIndexChanged);
@@ -3108,12 +3108,12 @@ namespace Idmr.Yogeme
 			// lstMessages
 			// 
 			this.lstMessages.BackColor = System.Drawing.Color.Black;
-			this.lstMessages.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable;
+			this.lstMessages.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
 			this.lstMessages.ForeColor = System.Drawing.Color.Gray;
 			this.lstMessages.ItemHeight = 15;
 			this.lstMessages.Location = new System.Drawing.Point(8, 8);
 			this.lstMessages.Name = "lstMessages";
-			this.lstMessages.Size = new System.Drawing.Size(320, 500);
+			this.lstMessages.Size = new System.Drawing.Size(320, 499);
 			this.lstMessages.TabIndex = 0;
 			this.lstMessages.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.lstMessages_DrawItem);
 			this.lstMessages.SelectedIndexChanged += new System.EventHandler(this.lstMessages_SelectedIndexChanged);
