@@ -832,7 +832,6 @@ namespace Idmr.Yogeme
 			this.txtName.Size = new System.Drawing.Size(128, 20);
 			this.txtName.TabIndex = 4;
 			this.txtName.Text = "New Ship";
-			this.txtName.Leave += new System.EventHandler(this.txtName_Leave);
 			// 
 			// lblNotUsed
 			// 
@@ -850,7 +849,6 @@ namespace Idmr.Yogeme
 			this.txtSpecCargo.Size = new System.Drawing.Size(128, 20);
 			this.txtSpecCargo.TabIndex = 7;
 			this.txtSpecCargo.Visible = false;
-			this.txtSpecCargo.Leave += new System.EventHandler(this.txtSpecCargo_Leave);
 			// 
 			// numSC
 			// 
@@ -880,7 +878,6 @@ namespace Idmr.Yogeme
 			this.txtCargo.Name = "txtCargo";
 			this.txtCargo.Size = new System.Drawing.Size(128, 20);
 			this.txtCargo.TabIndex = 6;
-			this.txtCargo.Leave += new System.EventHandler(this.txtCargo_Leave);
 			// 
 			// label22
 			// 
@@ -923,7 +920,6 @@ namespace Idmr.Yogeme
 			this.grpCraft3.Size = new System.Drawing.Size(240, 100);
 			this.grpCraft3.TabIndex = 15;
 			this.grpCraft3.TabStop = false;
-			this.grpCraft3.Leave += new System.EventHandler(this.grpCraft3_Leave);
 			// 
 			// chkPreventNumbering
 			// 
@@ -1072,7 +1068,6 @@ namespace Idmr.Yogeme
 			this.grpCraft2.Size = new System.Drawing.Size(232, 296);
 			this.grpCraft2.TabIndex = 14;
 			this.grpCraft2.TabStop = false;
-			this.grpCraft2.Leave += new System.EventHandler(this.grpCraft2_Leave);
 			// 
 			// cboCraft
 			// 
@@ -1228,7 +1223,6 @@ namespace Idmr.Yogeme
 			this.cboFormation.Name = "cboFormation";
 			this.cboFormation.Size = new System.Drawing.Size(136, 21);
 			this.cboFormation.TabIndex = 15;
-			this.cboFormation.SelectedIndexChanged += new System.EventHandler(this.cboFormation_SelectedIndexChanged);
 			// 
 			// cmdForms
 			// 
@@ -1333,7 +1327,6 @@ namespace Idmr.Yogeme
 			this.grpCraft4.Size = new System.Drawing.Size(240, 188);
 			this.grpCraft4.TabIndex = 11;
 			this.grpCraft4.TabStop = false;
-			this.grpCraft4.Leave += new System.EventHandler(this.grpCraft4_Leave);
 			// 
 			// cmdBackdrop
 			// 
@@ -1517,7 +1510,6 @@ namespace Idmr.Yogeme
 			this.chkArrHuman.Size = new System.Drawing.Size(136, 24);
 			this.chkArrHuman.TabIndex = 39;
 			this.chkArrHuman.Text = "Only if Human player";
-			this.chkArrHuman.Leave += new System.EventHandler(this.chkArrHuman_Leave);
 			// 
 			// cmdCopyAD
 			// 
@@ -1584,7 +1576,6 @@ namespace Idmr.Yogeme
 			this.grpDep.TabIndex = 27;
 			this.grpDep.TabStop = false;
 			this.grpDep.Text = "Departure";
-			this.grpDep.Leave += new System.EventHandler(this.grpDep_Leave);
 			// 
 			// label25
 			// 
@@ -1856,7 +1847,6 @@ namespace Idmr.Yogeme
 			this.numArrSec.Name = "numArrSec";
 			this.numArrSec.Size = new System.Drawing.Size(48, 20);
 			this.numArrSec.TabIndex = 25;
-			this.numArrSec.Leave += new System.EventHandler(this.numArrSec_Leave);
 			// 
 			// numArrMin
 			// 
@@ -1869,7 +1859,6 @@ namespace Idmr.Yogeme
 			this.numArrMin.Name = "numArrMin";
 			this.numArrMin.Size = new System.Drawing.Size(48, 20);
 			this.numArrMin.TabIndex = 25;
-			this.numArrMin.Leave += new System.EventHandler(this.numArrMin_Leave);
 			// 
 			// panel10
 			// 
@@ -1993,7 +1982,6 @@ namespace Idmr.Yogeme
 			this.cboArrMSAlt.Name = "cboArrMSAlt";
 			this.cboArrMSAlt.Size = new System.Drawing.Size(136, 21);
 			this.cboArrMSAlt.TabIndex = 5;
-			this.cboArrMSAlt.Leave += new System.EventHandler(this.cboArrMSAlt_Leave);
 			// 
 			// optArrMSAlt
 			// 
@@ -2024,7 +2012,6 @@ namespace Idmr.Yogeme
 			this.cboArrMS.Name = "cboArrMS";
 			this.cboArrMS.Size = new System.Drawing.Size(136, 21);
 			this.cboArrMS.TabIndex = 2;
-			this.cboArrMS.Leave += new System.EventHandler(this.cboArrMS_Leave);
 			// 
 			// optArrHyp
 			// 
@@ -2100,7 +2087,6 @@ namespace Idmr.Yogeme
 			this.cboADTrigAmount.Name = "cboADTrigAmount";
 			this.cboADTrigAmount.Size = new System.Drawing.Size(144, 21);
 			this.cboADTrigAmount.TabIndex = 32;
-			this.cboADTrigAmount.Leave += new System.EventHandler(this.cboADTrigAmount_Leave);
 			// 
 			// cboADTrigType
 			// 
@@ -2118,7 +2104,6 @@ namespace Idmr.Yogeme
 			this.cboADTrigVar.Name = "cboADTrigVar";
 			this.cboADTrigVar.Size = new System.Drawing.Size(144, 21);
 			this.cboADTrigVar.TabIndex = 34;
-			this.cboADTrigVar.Leave += new System.EventHandler(this.cboADTrigVar_Leave);
 			// 
 			// cboADTrig
 			// 
@@ -2127,7 +2112,6 @@ namespace Idmr.Yogeme
 			this.cboADTrig.Name = "cboADTrig";
 			this.cboADTrig.Size = new System.Drawing.Size(160, 21);
 			this.cboADTrig.TabIndex = 35;
-			this.cboADTrig.Leave += new System.EventHandler(this.cboADTrig_Leave);
 			// 
 			// label44
 			// 
@@ -2145,7 +2129,6 @@ namespace Idmr.Yogeme
 			this.cboDiff.Name = "cboDiff";
 			this.cboDiff.Size = new System.Drawing.Size(112, 21);
 			this.cboDiff.TabIndex = 36;
-			this.cboDiff.Leave += new System.EventHandler(this.cboDiff_Leave);
 			// 
 			// label45
 			// 
@@ -2311,7 +2294,6 @@ namespace Idmr.Yogeme
 			this.numGoalPoints.Name = "numGoalPoints";
 			this.numGoalPoints.Size = new System.Drawing.Size(56, 20);
 			this.numGoalPoints.TabIndex = 45;
-			this.numGoalPoints.Leave += new System.EventHandler(this.numGoalPoints_Leave);
 			// 
 			// label65
 			// 
@@ -2340,7 +2322,6 @@ namespace Idmr.Yogeme
 			this.txtGoalInc.Name = "txtGoalInc";
 			this.txtGoalInc.Size = new System.Drawing.Size(376, 20);
 			this.txtGoalInc.TabIndex = 42;
-			this.txtGoalInc.Leave += new System.EventHandler(this.txtGoalInc_Leave);
 			// 
 			// label60
 			// 
@@ -2462,7 +2443,6 @@ namespace Idmr.Yogeme
 			this.txtGoalComp.Name = "txtGoalComp";
 			this.txtGoalComp.Size = new System.Drawing.Size(376, 20);
 			this.txtGoalComp.TabIndex = 42;
-			this.txtGoalComp.Leave += new System.EventHandler(this.txtGoalComp_Leave);
 			// 
 			// txtGoalFail
 			// 
@@ -2472,7 +2452,6 @@ namespace Idmr.Yogeme
 			this.txtGoalFail.Name = "txtGoalFail";
 			this.txtGoalFail.Size = new System.Drawing.Size(376, 20);
 			this.txtGoalFail.TabIndex = 42;
-			this.txtGoalFail.Leave += new System.EventHandler(this.txtGoalFail_Leave);
 			// 
 			// label63
 			// 
@@ -2569,7 +2548,6 @@ namespace Idmr.Yogeme
 			this.numRoll.Name = "numRoll";
 			this.numRoll.Size = new System.Drawing.Size(48, 20);
 			this.numRoll.TabIndex = 49;
-			this.numRoll.Leave += new System.EventHandler(this.numRoll_Leave);
 			// 
 			// numPitch
 			// 
@@ -2587,7 +2565,6 @@ namespace Idmr.Yogeme
 			this.numPitch.Name = "numPitch";
 			this.numPitch.Size = new System.Drawing.Size(48, 20);
 			this.numPitch.TabIndex = 48;
-			this.numPitch.Leave += new System.EventHandler(this.numPitch_Leave);
 			// 
 			// numYaw
 			// 
@@ -2606,7 +2583,6 @@ namespace Idmr.Yogeme
 			this.numYaw.Name = "numYaw";
 			this.numYaw.Size = new System.Drawing.Size(48, 20);
 			this.numYaw.TabIndex = 47;
-			this.numYaw.Leave += new System.EventHandler(this.numYaw_Leave);
 			// 
 			// label56
 			// 
@@ -2920,7 +2896,6 @@ namespace Idmr.Yogeme
 			this.txtOString.Name = "txtOString";
 			this.txtOString.Size = new System.Drawing.Size(128, 20);
 			this.txtOString.TabIndex = 32;
-			this.txtOString.Leave += new System.EventHandler(this.txtOString_Leave);
 			// 
 			// label54
 			// 
@@ -2982,7 +2957,6 @@ namespace Idmr.Yogeme
 			this.optOT3T4OR.TabIndex = 13;
 			this.optOT3T4OR.TabStop = true;
 			this.optOT3T4OR.Text = "OR";
-			this.optOT3T4OR.CheckedChanged += new System.EventHandler(this.optOT3T4OR_CheckedChanged);
 			// 
 			// cboOT3
 			// 
@@ -2991,7 +2965,6 @@ namespace Idmr.Yogeme
 			this.cboOT3.Name = "cboOT3";
 			this.cboOT3.Size = new System.Drawing.Size(184, 21);
 			this.cboOT3.TabIndex = 11;
-			this.cboOT3.Leave += new System.EventHandler(this.cboOT3_Leave);
 			// 
 			// cboOT3Type
 			// 
@@ -3018,7 +2991,6 @@ namespace Idmr.Yogeme
 			this.cboOT4.Name = "cboOT4";
 			this.cboOT4.Size = new System.Drawing.Size(184, 21);
 			this.cboOT4.TabIndex = 15;
-			this.cboOT4.Leave += new System.EventHandler(this.cboOT4_Leave);
 			// 
 			// optOT3T4AND
 			// 
@@ -3062,7 +3034,6 @@ namespace Idmr.Yogeme
 			this.optOT1T2OR.TabIndex = 7;
 			this.optOT1T2OR.TabStop = true;
 			this.optOT1T2OR.Text = "OR";
-			this.optOT1T2OR.CheckedChanged += new System.EventHandler(this.optOT1T2OR_CheckedChanged);
 			// 
 			// cboOT1
 			// 
@@ -3071,7 +3042,6 @@ namespace Idmr.Yogeme
 			this.cboOT1.Name = "cboOT1";
 			this.cboOT1.Size = new System.Drawing.Size(184, 21);
 			this.cboOT1.TabIndex = 5;
-			this.cboOT1.Leave += new System.EventHandler(this.cboOT1_Leave);
 			// 
 			// cboOT1Type
 			// 
@@ -3098,7 +3068,6 @@ namespace Idmr.Yogeme
 			this.cboOT2.Name = "cboOT2";
 			this.cboOT2.Size = new System.Drawing.Size(184, 21);
 			this.cboOT2.TabIndex = 9;
-			this.cboOT2.Leave += new System.EventHandler(this.cboOT2_Leave);
 			// 
 			// optOT1T2AND
 			// 
@@ -3150,7 +3119,6 @@ namespace Idmr.Yogeme
 			this.cboOThrottle.Name = "cboOThrottle";
 			this.cboOThrottle.Size = new System.Drawing.Size(48, 21);
 			this.cboOThrottle.TabIndex = 19;
-			this.cboOThrottle.Leave += new System.EventHandler(this.cboOThrottle_Leave);
 			// 
 			// label51
 			// 
@@ -3402,7 +3370,6 @@ namespace Idmr.Yogeme
 			this.cboSkipAmount.Name = "cboSkipAmount";
 			this.cboSkipAmount.Size = new System.Drawing.Size(144, 21);
 			this.cboSkipAmount.TabIndex = 41;
-			this.cboSkipAmount.Leave += new System.EventHandler(this.cboSkipAmount_Leave);
 			// 
 			// cboSkipType
 			// 
@@ -3420,7 +3387,6 @@ namespace Idmr.Yogeme
 			this.cboSkipVar.Name = "cboSkipVar";
 			this.cboSkipVar.Size = new System.Drawing.Size(144, 21);
 			this.cboSkipVar.TabIndex = 43;
-			this.cboSkipVar.Leave += new System.EventHandler(this.cboSkipVar_Leave);
 			// 
 			// cboSkipTrig
 			// 
@@ -3429,7 +3395,6 @@ namespace Idmr.Yogeme
 			this.cboSkipTrig.Name = "cboSkipTrig";
 			this.cboSkipTrig.Size = new System.Drawing.Size(160, 21);
 			this.cboSkipTrig.TabIndex = 44;
-			this.cboSkipTrig.Leave += new System.EventHandler(this.cboSkipTrig_Leave);
 			// 
 			// label72
 			// 
@@ -3467,7 +3432,6 @@ namespace Idmr.Yogeme
 			this.optSkipOR.TabIndex = 24;
 			this.optSkipOR.TabStop = true;
 			this.optSkipOR.Text = "OR";
-			this.optSkipOR.CheckedChanged += new System.EventHandler(this.optSkipOR_CheckedChanged);
 			// 
 			// lblSkipTrig1
 			// 
@@ -3540,7 +3504,6 @@ namespace Idmr.Yogeme
 			this.cboOptCraft.Name = "cboOptCraft";
 			this.cboOptCraft.Size = new System.Drawing.Size(192, 21);
 			this.cboOptCraft.TabIndex = 5;
-			this.cboOptCraft.Leave += new System.EventHandler(this.cboOptCraft_Leave);
 			// 
 			// label70
 			// 
@@ -3573,7 +3536,6 @@ namespace Idmr.Yogeme
             0,
             0,
             0});
-			this.numOptWaves.Leave += new System.EventHandler(this.numOptWaves_Leave);
 			// 
 			// label69
 			// 
@@ -3630,7 +3592,6 @@ namespace Idmr.Yogeme
             0,
             0,
             0});
-			this.numOptCraft.Leave += new System.EventHandler(this.numOptCraft_Leave);
 			// 
 			// lblOptCraft2
 			// 
@@ -3934,7 +3895,6 @@ namespace Idmr.Yogeme
 			this.grpMoreArrival.TabIndex = 4;
 			this.grpMoreArrival.TabStop = false;
 			this.grpMoreArrival.Text = "Arrival";
-			this.grpMoreArrival.Leave += new System.EventHandler(this.grpMoreArrival_Leave);
 			// 
 			// numRandomArrivalDelayMinutes
 			// 
@@ -4307,7 +4267,6 @@ namespace Idmr.Yogeme
 			this.grpUnkAD.TabIndex = 8;
 			this.grpUnkAD.TabStop = false;
 			this.grpUnkAD.Text = "Arr/Dep";
-			this.grpUnkAD.Leave += new System.EventHandler(this.grpUnkAD_Leave);
 			// 
 			// numUnk5
 			// 
@@ -4357,7 +4316,6 @@ namespace Idmr.Yogeme
 			this.grpUnkCraft.TabIndex = 7;
 			this.grpUnkCraft.TabStop = false;
 			this.grpUnkCraft.Text = "Craft";
-			this.grpUnkCraft.Leave += new System.EventHandler(this.grpUnkCraft_Leave);
 			// 
 			// label27
 			// 
@@ -4428,7 +4386,7 @@ namespace Idmr.Yogeme
 			// lstFG
 			// 
 			this.lstFG.BackColor = System.Drawing.Color.Black;
-			this.lstFG.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable;
+			this.lstFG.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
 			this.lstFG.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.lstFG.ForeColor = System.Drawing.Color.Gray;
 			this.lstFG.ItemHeight = 15;
@@ -4436,7 +4394,8 @@ namespace Idmr.Yogeme
             "3 - 12 - *1x(3) Ship name"});
 			this.lstFG.Location = new System.Drawing.Point(8, 24);
 			this.lstFG.Name = "lstFG";
-			this.lstFG.Size = new System.Drawing.Size(216, 480);
+			this.lstFG.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
+			this.lstFG.Size = new System.Drawing.Size(216, 469);
 			this.lstFG.TabIndex = 3;
 			this.lstFG.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.lstFG_DrawItem);
 			this.lstFG.SelectedIndexChanged += new System.EventHandler(this.lstFG_SelectedIndexChanged);
@@ -4501,7 +4460,6 @@ namespace Idmr.Yogeme
 			this.cboMessColor.Name = "cboMessColor";
 			this.cboMessColor.Size = new System.Drawing.Size(120, 21);
 			this.cboMessColor.TabIndex = 36;
-			this.cboMessColor.SelectedIndexChanged += new System.EventHandler(this.cboMessColor_SelectedIndexChanged);
 			// 
 			// label109
 			// 
@@ -4520,7 +4478,6 @@ namespace Idmr.Yogeme
 			this.cboMessAmount.Name = "cboMessAmount";
 			this.cboMessAmount.Size = new System.Drawing.Size(144, 21);
 			this.cboMessAmount.TabIndex = 30;
-			this.cboMessAmount.Leave += new System.EventHandler(this.cboMessAmount_Leave);
 			// 
 			// cboMessType
 			// 
@@ -4540,7 +4497,6 @@ namespace Idmr.Yogeme
 			this.cboMessVar.Name = "cboMessVar";
 			this.cboMessVar.Size = new System.Drawing.Size(144, 21);
 			this.cboMessVar.TabIndex = 32;
-			this.cboMessVar.Leave += new System.EventHandler(this.cboMessVar_Leave);
 			// 
 			// cboMessTrig
 			// 
@@ -4550,7 +4506,6 @@ namespace Idmr.Yogeme
 			this.cboMessTrig.Name = "cboMessTrig";
 			this.cboMessTrig.Size = new System.Drawing.Size(160, 21);
 			this.cboMessTrig.TabIndex = 33;
-			this.cboMessTrig.Leave += new System.EventHandler(this.cboMessTrig_Leave);
 			// 
 			// label110
 			// 
@@ -4596,7 +4551,6 @@ namespace Idmr.Yogeme
 			this.optMess3OR4.TabIndex = 4;
 			this.optMess3OR4.TabStop = true;
 			this.optMess3OR4.Text = "OR";
-			this.optMess3OR4.CheckedChanged += new System.EventHandler(this.optMess3OR4_CheckedChanged);
 			// 
 			// optMess3AND4
 			// 
@@ -4624,7 +4578,6 @@ namespace Idmr.Yogeme
 			this.optMess1OR2.TabIndex = 4;
 			this.optMess1OR2.TabStop = true;
 			this.optMess1OR2.Text = "OR";
-			this.optMess1OR2.CheckedChanged += new System.EventHandler(this.optMess1OR2_CheckedChanged);
 			// 
 			// optMess1AND2
 			// 
@@ -4692,7 +4645,6 @@ namespace Idmr.Yogeme
 			this.optMess12OR34.TabIndex = 4;
 			this.optMess12OR34.TabStop = true;
 			this.optMess12OR34.Text = "OR";
-			this.optMess12OR34.CheckedChanged += new System.EventHandler(this.optMess12OR34_CheckedChanged);
 			// 
 			// numMessDelay
 			// 
@@ -4711,7 +4663,6 @@ namespace Idmr.Yogeme
 			this.numMessDelay.Name = "numMessDelay";
 			this.numMessDelay.Size = new System.Drawing.Size(48, 20);
 			this.numMessDelay.TabIndex = 25;
-			this.numMessDelay.Leave += new System.EventHandler(this.numMessDelay_Leave);
 			// 
 			// label55
 			// 
@@ -4738,7 +4689,7 @@ namespace Idmr.Yogeme
 			this.txtMessage.Name = "txtMessage";
 			this.txtMessage.Size = new System.Drawing.Size(360, 20);
 			this.txtMessage.TabIndex = 20;
-			this.txtMessage.Leave += new System.EventHandler(this.txtMessage_Leave);
+			this.txtMessage.TextChanged += new System.EventHandler(this.txtMessage_TextChanged);
 			// 
 			// label52
 			// 
@@ -4776,6 +4727,7 @@ namespace Idmr.Yogeme
 			this.lstMessages.ItemHeight = 15;
 			this.lstMessages.Location = new System.Drawing.Point(8, 8);
 			this.lstMessages.Name = "lstMessages";
+			this.lstMessages.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
 			this.lstMessages.Size = new System.Drawing.Size(320, 500);
 			this.lstMessages.TabIndex = 1;
 			this.lstMessages.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.lstMessages_DrawItem);
@@ -5005,7 +4957,7 @@ namespace Idmr.Yogeme
 			this.cboGlobalAmount.Name = "cboGlobalAmount";
 			this.cboGlobalAmount.Size = new System.Drawing.Size(144, 21);
 			this.cboGlobalAmount.TabIndex = 23;
-			this.cboGlobalAmount.Leave += new System.EventHandler(this.cboGlobalAmount_Leave);
+			this.cboGlobalAmount.SelectedIndexChanged += new System.EventHandler(this.cboGlobalAmount_SelectedIndexChanged);
 			// 
 			// cboGlobalType
 			// 
@@ -5023,7 +4975,7 @@ namespace Idmr.Yogeme
 			this.cboGlobalVar.Name = "cboGlobalVar";
 			this.cboGlobalVar.Size = new System.Drawing.Size(144, 21);
 			this.cboGlobalVar.TabIndex = 25;
-			this.cboGlobalVar.Leave += new System.EventHandler(this.cboGlobalVar_Leave);
+			this.cboGlobalVar.SelectedIndexChanged += new System.EventHandler(this.cboGlobalVar_SelectedIndexChanged);
 			// 
 			// cboGlobalTrig
 			// 
@@ -5032,7 +4984,7 @@ namespace Idmr.Yogeme
 			this.cboGlobalTrig.Name = "cboGlobalTrig";
 			this.cboGlobalTrig.Size = new System.Drawing.Size(160, 21);
 			this.cboGlobalTrig.TabIndex = 26;
-			this.cboGlobalTrig.Leave += new System.EventHandler(this.cboGlobalTrig_Leave);
+			this.cboGlobalTrig.SelectedIndexChanged += new System.EventHandler(this.cboGlobalTrig_SelectedIndexChanged);
 			// 
 			// label59
 			// 
@@ -7019,11 +6971,11 @@ namespace Idmr.Yogeme
 		CheckBox chkUnk29;
 		CheckBox chkUnk26;
 		CheckBox chkUnk27;
-        GroupBox grpRole;
-        ComboBox cboRole2;
+		GroupBox grpRole;
+		ComboBox cboRole2;
 		ComboBox cboRole3;
-        ComboBox cboRole4;
-        ComboBox cboRoleTeam1;
+		ComboBox cboRole4;
+		ComboBox cboRoleTeam1;
 		ComboBox cboRole1;
 		GroupBox groupBox22;
 		ComboBox cboOptCat;
@@ -7082,7 +7034,7 @@ namespace Idmr.Yogeme
 		CheckBox chkOptWAdvMissile;
 		CheckBox chkOptWAdvTorp;
 		CheckBox chkOptWMagPulse;
-        CheckBox chkOptWIonPulse;
+		CheckBox chkOptWIonPulse;
 		GroupBox groupBox20;
 		CheckBox chkOptBNone;
 		CheckBox chkOptBTractor;
@@ -7091,10 +7043,10 @@ namespace Idmr.Yogeme
 		CheckBox chkOptCNone;
 		CheckBox chkOptCChaff;
 		CheckBox chkOptCFlare;
-        CheckBox chkOptCCluster;
-        CheckBox chkOptBDecoy;
-        CheckBox chkOptBEnergy;
-        GroupBox groupBox16;
+		CheckBox chkOptCCluster;
+		CheckBox chkOptBDecoy;
+		CheckBox chkOptBEnergy;
+		GroupBox groupBox16;
 		Label lblGoal1;
 		Label lblGoal2;
 		Label lblGoal3;
@@ -7422,7 +7374,7 @@ namespace Idmr.Yogeme
 		Label lblOrder4;
 		Label label54;
 		TextBox txtOString;
-        Label label57;
+		Label label57;
 		CheckBox chkArrHuman;
 		Label label58;
 		ComboBox cboPosition;
@@ -7441,37 +7393,37 @@ namespace Idmr.Yogeme
 		private MenuItem menuRec4;
 		private MenuItem menuRec5;
 		private MenuItem menuTest;
-        private MenuItem menuGoalSummary;
+		private MenuItem menuGoalSummary;
 		private MenuItem menuNewXwing;
-        private CheckBox chkPreventNumbering;
-        private Label lblGoalTimeLimit;
-        private Label label19;
-        private NumericUpDown numGoalTimeLimit;
-        private ComboBox cboRoleTeam4;
-        private ComboBox cboRoleTeam3;
-        private ComboBox cboRoleTeam2;
-        private Button cmdMoveFGUp;
-        private Button cmdMoveFGDown;
-        private Button cmdMoveMessDown;
-        private Button cmdMoveMessUp;
-        private Label label25;
-        private Label label21;
-        private NumericUpDown numDepClockSec;
-        private NumericUpDown numDepClockMin;
-        private Label lblOVar1Note;
-        private Label lblOSpeedNote;
-        private Label label150;
-        private Label lblOVar2Note;
-        private ComboBox cboOSpeed;
-        private GroupBox grpIFF;
-        private Label lblIFF3;
-        private Label lblIFF4;
-        private Label lblIFF5;
-        private Label lblIFF6;
-        private TextBox txtIFF3;
-        private TextBox txtIFF4;
-        private TextBox txtIFF5;
-        private TextBox txtIFF6;
+		private CheckBox chkPreventNumbering;
+		private Label lblGoalTimeLimit;
+		private Label label19;
+		private NumericUpDown numGoalTimeLimit;
+		private ComboBox cboRoleTeam4;
+		private ComboBox cboRoleTeam3;
+		private ComboBox cboRoleTeam2;
+		private Button cmdMoveFGUp;
+		private Button cmdMoveFGDown;
+		private Button cmdMoveMessDown;
+		private Button cmdMoveMessUp;
+		private Label label25;
+		private Label label21;
+		private NumericUpDown numDepClockSec;
+		private NumericUpDown numDepClockMin;
+		private Label lblOVar1Note;
+		private Label lblOSpeedNote;
+		private Label label150;
+		private Label lblOVar2Note;
+		private ComboBox cboOSpeed;
+		private GroupBox grpIFF;
+		private Label lblIFF3;
+		private Label lblIFF4;
+		private Label lblIFF5;
+		private Label lblIFF6;
+		private TextBox txtIFF3;
+		private TextBox txtIFF4;
+		private TextBox txtIFF5;
+		private TextBox txtIFF6;
 		private Label label26;
 		private TabPage tabArrDep2;
 		private Label lblRandomArrivalDelayMinutes;

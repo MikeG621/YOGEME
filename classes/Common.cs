@@ -266,5 +266,64 @@ namespace Idmr.Yogeme
 		{
 			return (stringArray != null && index >= 0 && index < stringArray.Length) ? stringArray[index] : echo ? index.ToString() : "";
 		}
+
+		/// <summary>Independently enables or disables a pair of form Buttons depending on the state of a MultiSelect ListBox.</summary>
+		public static void UpdateMoveButtons(Button up, Button down, ListBox list)
+		{
+			up.Enabled = (list.SelectedIndices.Count > 0 && list.SelectedIndices[0] > 0);
+			down.Enabled = (list.SelectedIndices.Count > 0 && list.SelectedIndices[list.SelectedIndices.Count - 1] < list.Items.Count - 1);
+		}
+
+		/// <summary>Retrieves a copy of the selected indices from a ListBox control.</summary>
+		/// <remarks>Some operations that modify ListBox items will interfere with the original selection before the operation has completed.</remarks>
+		public static List<int> GetSelectedIndices(ListBox listBox)
+		{
+			List<int> ret = new List<int>();
+			foreach (int fgIndex in listBox.SelectedIndices)
+				ret.Add(fgIndex);
+			return ret;
+		}
+
+		/// <summary>Assigns or restores a previously retrieved copy of selected indices from a ListBox control</summary>
+		/// <param name="refresh">A platform-dependent flag to allow ignoring each SelectionIndexChanged event that is raised from selecting each item.</param>
+		public static void SetSelectedIndices(ListBox listBox, List<int> selection, ref bool refresh)
+		{
+			bool btemp = refresh;
+			refresh = true;
+			listBox.ClearSelected();
+			foreach (int itemIndex in selection)
+				listBox.SetSelected(itemIndex, true);
+			refresh = btemp;
+		}
     }
+}
+
+namespace Idmr.Yogeme
+{
+	/// <summary>Allows multi-edit properties to perform generic platform-dependent refresh operations.</summary>
+	public enum MultiEditRefreshType
+	{
+		None = 0,
+		ItemText = 1,        // A generic text change for an item in a multiselect ListBox (includes FG info like GG and GU, but also used for the message list)
+		CraftName = 2,       // Flightgroup dropdown boxes need to be updated (anything that affects the name, including recalculated craft numbering)
+		CraftCount = 4,      // Indicates that flightgroup craft/object totals need to be adjusted
+		FgGoalLabel = 8,     // FG goal trigger label
+		OrderLabel = 16,     // Order trigger label
+		ArrDepLabel = 32,    // Arrival/departure trigger label
+		SkipLabel = 64,      // Skip trigger label
+		OptCraftLabel = 128, // Optional craft label
+		MsgLabel = 256,      // Message trigger label
+	};
+
+	/// <summary>To be assigned as a custom Tag on form controls registered as a multi-edit property.</summary>
+	public class MultiEditProperty
+	{
+		public string Name;
+		public MultiEditRefreshType RefreshType;
+		public MultiEditProperty(string propertyName, MultiEditRefreshType refreshType)
+		{
+			Name = propertyName;
+			RefreshType = refreshType;
+		}
+	}
 }
