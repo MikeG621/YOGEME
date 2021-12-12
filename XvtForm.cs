@@ -2754,7 +2754,7 @@ namespace Idmr.Yogeme
 			numGG.Value = _mission.FlightGroups[_activeFG].GlobalGroup;
 			numGU.Value = _mission.FlightGroups[_activeFG].GlobalUnit;
 			refreshStatus();  //Handles Status1, special case for mines.
-			cboStatus2.SelectedIndex = _mission.FlightGroups[_activeFG].Status2;
+			Common.SafeSetCBO(cboStatus2, _mission.FlightGroups[_activeFG].Status2, true);
 			cboWarheads.SelectedIndex = _mission.FlightGroups[_activeFG].Missile;
 			cboBeam.SelectedIndex = _mission.FlightGroups[_activeFG].Beam;
 			cboCounter.SelectedIndex = _mission.FlightGroups[_activeFG].Countermeasures;
