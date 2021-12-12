@@ -506,7 +506,7 @@ namespace Idmr.Yogeme
 			// lstCraft
 			// 
 			this.lstCraft.BackColor = System.Drawing.Color.Black;
-			this.lstCraft.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable;
+			this.lstCraft.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
 			this.lstCraft.ForeColor = System.Drawing.Color.Gray;
 			this.lstCraft.FormattingEnabled = true;
 			this.lstCraft.Location = new System.Drawing.Point(2, 64);

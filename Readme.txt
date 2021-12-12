@@ -27,6 +27,9 @@ your user settings.
 ==========
 Version History
 
+ - (TIE-XWA) Unused Messages are now listed in Gray
+ - (All) Fixed the "looping" effect when scrolling through colored list boxes (Thanks to RandomStarfighter)
+ - (XWA) Removed "Not Identified" from the Status list (via Platform.dll)
  - (XW) Created the Tour Editor, similar to TIE's Battle Editor
 
 v1.11.2, 05 Oct 2021

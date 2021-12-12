@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2021 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.11.2
+ * VERSION: 1.11.2+
  */
 
 /* CHANGELOG
+ * [UPD] Unused messages drawn in gray
  * v1.11.2, 2101005
  * [FIX] Pasting a message when at capacity now correctly does nothing
  * [UPD] Copy/paste now uses system clipboard, can more easily paste external text
@@ -2936,8 +2937,9 @@ namespace Idmr.Yogeme
 			if (_mission.Messages.Count == 0) return;
 			if (_mission.Messages[e.Index] == null) return;
 			e.DrawBackground();
+			var mess = _mission.Messages[e.Index];
 			Brush brText = SystemBrushes.ControlText;
-			switch (_mission.Messages[e.Index].Color)
+			switch (mess.Color)
 			{
 				case 0:
 					brText = Brushes.Red; //Crimson;
@@ -2952,6 +2954,15 @@ namespace Idmr.Yogeme
 					brText = Brushes.MediumOrchid; //DarkOrchid;
 					break;
 			}
+
+			bool used = true;
+			// evaluate the FALSE conditions to detect if it's locked into NEVER
+			bool[] never = new bool[3];
+			for (int i = 0; i < 2; i++) never[i] = (mess.Triggers[i].Condition == 10);
+			never[2] = ((never[0] || never[1]) && !mess.Trig1AndOrTrig2) || (never[0] && never[1]);   // T1/2 pair
+			if (never[2]) used = false;
+			if (!used) brText = Brushes.Gray;
+
 			e.Graphics.DrawString(lstMessages.Items[e.Index].ToString(), e.Font, brText, e.Bounds, StringFormat.GenericDefault);
 		}
 		void lstMessages_SelectedIndexChanged(object sender, EventArgs e)

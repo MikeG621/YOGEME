@@ -214,6 +214,7 @@ namespace Idmr.Yogeme
 			this.menuVerify = new System.Windows.Forms.MenuItem();
 			this.menuMap = new System.Windows.Forms.MenuItem();
 			this.menuBriefing = new System.Windows.Forms.MenuItem();
+			this.menuTour = new System.Windows.Forms.MenuItem();
 			this.menuOptions = new System.Windows.Forms.MenuItem();
 			this.menuGoalSummary = new System.Windows.Forms.MenuItem();
 			this.menuLibrary = new System.Windows.Forms.MenuItem();
@@ -227,7 +228,6 @@ namespace Idmr.Yogeme
 			this.savXW = new System.Windows.Forms.SaveFileDialog();
 			this.dataWaypoints = new System.Data.DataView();
 			this.dataWaypointsRaw = new System.Data.DataView();
-			this.menuTour = new System.Windows.Forms.MenuItem();
 			this.tabMain.SuspendLayout();
 			this.tabFG.SuspendLayout();
 			this.tabFGMinor.SuspendLayout();
@@ -301,7 +301,7 @@ namespace Idmr.Yogeme
 			// lstFG
 			// 
 			this.lstFG.BackColor = System.Drawing.Color.Black;
-			this.lstFG.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable;
+			this.lstFG.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
 			this.lstFG.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.lstFG.ForeColor = System.Drawing.Color.Gray;
 			this.lstFG.ItemHeight = 15;
@@ -309,7 +309,7 @@ namespace Idmr.Yogeme
             "3 - 12 - *1x(3) Ship name"});
 			this.lstFG.Location = new System.Drawing.Point(8, 24);
 			this.lstFG.Name = "lstFG";
-			this.lstFG.Size = new System.Drawing.Size(216, 480);
+			this.lstFG.Size = new System.Drawing.Size(216, 469);
 			this.lstFG.TabIndex = 1;
 			this.lstFG.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.lstFG_DrawItem);
 			this.lstFG.SelectedIndexChanged += new System.EventHandler(this.lstFG_SelectedIndexChanged);
@@ -2176,6 +2176,12 @@ namespace Idmr.Yogeme
 			this.menuBriefing.Text = "&Briefing";
 			this.menuBriefing.Click += new System.EventHandler(this.menuBriefing_Click);
 			// 
+			// menuTour
+			// 
+			this.menuTour.Index = 3;
+			this.menuTour.Text = "Tour &Editor";
+			this.menuTour.Click += new System.EventHandler(this.menuTour_Click);
+			// 
 			// menuOptions
 			// 
 			this.menuOptions.Index = 4;
@@ -2257,12 +2263,6 @@ namespace Idmr.Yogeme
 			// 
 			this.dataWaypointsRaw.AllowDelete = false;
 			this.dataWaypointsRaw.AllowNew = false;
-			// 
-			// menuTour
-			// 
-			this.menuTour.Index = 3;
-			this.menuTour.Text = "Tour &Editor";
-			this.menuTour.Click += new System.EventHandler(this.menuTour_Click);
 			// 
 			// XwingForm
 			// 

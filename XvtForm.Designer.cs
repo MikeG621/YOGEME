@@ -4395,7 +4395,7 @@ namespace Idmr.Yogeme
 			this.lstFG.Location = new System.Drawing.Point(8, 24);
 			this.lstFG.Name = "lstFG";
 			this.lstFG.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-			this.lstFG.Size = new System.Drawing.Size(216, 469);
+			this.lstFG.Size = new System.Drawing.Size(216, 454);
 			this.lstFG.TabIndex = 3;
 			this.lstFG.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.lstFG_DrawItem);
 			this.lstFG.SelectedIndexChanged += new System.EventHandler(this.lstFG_SelectedIndexChanged);
@@ -4722,13 +4722,13 @@ namespace Idmr.Yogeme
 			// lstMessages
 			// 
 			this.lstMessages.BackColor = System.Drawing.Color.Black;
-			this.lstMessages.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable;
+			this.lstMessages.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
 			this.lstMessages.ForeColor = System.Drawing.Color.Gray;
 			this.lstMessages.ItemHeight = 15;
 			this.lstMessages.Location = new System.Drawing.Point(8, 8);
 			this.lstMessages.Name = "lstMessages";
 			this.lstMessages.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-			this.lstMessages.Size = new System.Drawing.Size(320, 500);
+			this.lstMessages.Size = new System.Drawing.Size(320, 469);
 			this.lstMessages.TabIndex = 1;
 			this.lstMessages.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.lstMessages_DrawItem);
 			this.lstMessages.SelectedIndexChanged += new System.EventHandler(this.lstMessages_SelectedIndexChanged);

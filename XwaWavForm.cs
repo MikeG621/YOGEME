@@ -65,6 +65,15 @@ namespace Idmr.Yogeme
 			Reload();
 		}
 
+		// Mission WAVs are located in /Wave/MISSIONVOICE. There's a <mission>.LST with 64 message WAVs and 6 EOM WAVs.
+		// Not all are necessarily present, but they need to be listed properly so there's 70 lines, path is from /Wave/
+		// The EOM WAVs are PMC1, PMC2, PMF1, PMF2, OMC1, OMC2
+
+		// Over in /Wave/Frontend there's the other mission WAVs. Everything is auto, no LST, based on filename prefix (B0M1, etc).
+		// Briefing strings are B's, the pre-briefing is N, S is mission description, W is mission complete
+		// Looks like there's usually an "S" or "W" per paragraph, B's start with 2 (since string#1 is the title)
+		// naming convention is [prefix][battle##][mission##][message##].WAV
+
 		/// <summary>Refresh the form with the current mission data</summary>
 		public void Reload()
 		{
