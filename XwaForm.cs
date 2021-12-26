@@ -7,6 +7,7 @@
  */
 
 /* CHANGELOG
+ * [FIX] Combos cleared during init to prevent duplicated entries [JB]
  * [UPD] Unused messages drawn in gray
  * v1.11.2, 2101005
  * [FIX] Pasting a message when at capacity now correctly does nothing

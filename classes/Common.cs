@@ -1,12 +1,13 @@
 /*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
- * Copyright (C) 2007-2020 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2021 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.8.1
+ * VERSION: 1.8.1+
  */
 
 /* CHANGELOG
+ * [NEW] MultiEdit [JB]
  * v1.8.1, 201213
  * [FIX] Verify falls back to default if invalid, then saves default if present
  * [UPD] Verify now takes in entire Settings instead of just the path
@@ -296,10 +297,7 @@ namespace Idmr.Yogeme
 			refresh = btemp;
 		}
     }
-}
 
-namespace Idmr.Yogeme
-{
 	/// <summary>Allows multi-edit properties to perform generic platform-dependent refresh operations.</summary>
 	public enum MultiEditRefreshType
 	{

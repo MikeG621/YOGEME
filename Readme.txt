@@ -27,10 +27,16 @@ your user settings.
 ==========
 Version History
 
- - (TIE-XWA) Unused Messages are now listed in Gray
  - (All) Fixed the "looping" effect when scrolling through colored list boxes (Thanks to RandomStarfighter)
- - (XWA) Removed "Not Identified" from the Status list (via Platform.dll)
  - (XW) Created the Tour Editor, similar to TIE's Battle Editor
+ - (XvT) Multi-select in FlightGroups and Messages [Issue #64] (JB)
+     This was pretty extensive, several files were touched to get this going, including updates to Platform.dll.
+     Allows for changing properties for multiple FGs/Messages, multi-delete, shifting up/down in the list.
+     Properties shown in the tab will be highest selected item.
+ - (XWA) Removed "Not Identified" from the Status list (via Platform.dll)
+ - (XWA) Fixed duplication issues in drop-downs (JB)
+ - (TIE-XWA) Unused Messages are now listed in Gray
+ - (Map) Fixed an issue with multi-delete (JB)
 
 v1.11.2, 05 Oct 2021
  - (All) Copy/paste now uses the system clipboard
