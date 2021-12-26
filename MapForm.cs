@@ -1709,6 +1709,7 @@ namespace Idmr.Yogeme
 		{
 			lstSelection.Items.Clear();
 			_selectionList.Clear();
+			_sortedMapDataList.Clear();
 			lstCraft.Items.Clear();
 			for (int i = 0; i < _mapData.Length; i++)
 			{
