@@ -2,8 +2,8 @@
 ======================================
 
 Author: Michael Gaisser (mjgaisser@gmail.com)
-Version: 1.11.2
-Date: 2021.10.05
+Version: 1.12
+Date: 2022.01.03
 
 Thank you for downloading YOGEME, the all-in-one mission editor for the X-Wing
 series, Xwing95 through X-wing Alliance.  This program allows easy mission
@@ -27,12 +27,14 @@ your user settings.
 ==========
 Version History
 
+v1.12, 03 Jan 2022
  - (All) Fixed the "looping" effect when scrolling through colored list boxes (Thanks to RandomStarfighter)
  - (XW) Created the Tour Editor, similar to TIE's Battle Editor
- - (XvT) Multi-select in FlightGroups and Messages [Issue #64] (JB)
+ - (XvT) Multi-select in FlightGroups and Messages [Issue #23] (JB)
      This was pretty extensive, several files were touched to get this going, including updates to Platform.dll.
      Allows for changing properties for multiple FGs/Messages, multi-delete, shifting up/down in the list.
      Properties shown in the tab will be highest selected item.
+     Rest of the platforms will be coming.
  - (XWA) Removed "Not Identified" from the Status list (via Platform.dll)
  - (XWA) Fixed duplication issues in drop-downs (JB)
  - (TIE-XWA) Unused Messages are now listed in Gray

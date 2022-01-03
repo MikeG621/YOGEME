@@ -1,14 +1,16 @@
 /*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
- * Copyright (C) 2007-2021 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2022 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.11.2+
+ * VERSION: 1.12
  */
 
 /* CHANGELOG
+ * v1.12, 220103
  * [FIX] Combos cleared during init to prevent duplicated entries [JB]
  * [UPD] Unused messages drawn in gray
+ * [FIX] Listbox scrolling
  * v1.11.2, 2101005
  * [FIX] Pasting a message when at capacity now correctly does nothing
  * [UPD] Copy/paste now uses system clipboard, can more easily paste external text

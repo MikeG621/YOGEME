@@ -1,14 +1,16 @@
 /*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
- * Copyright (C) 2007-2021 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2022 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.11.2+
+ * VERSION: 1.12
  */
 
 /* CHANGELOG
+ * v1.12, 220103
  * [NEW] Multi-select [JB]
  * [UPD] Unused messages drawn in gray
+ * [FIX] Listbox scrolling
  * v1.11.2, 2101005
  * [FIX] Pasting a message when at capacity now correctly does nothing
  * [UPD] Copy/paste now uses system clipboard, can more easily paste external text
@@ -1172,11 +1174,13 @@ namespace Idmr.Yogeme
 		}
 		Mission.Trigger getTriggerFromControls(ComboBox amount, ComboBox varType, ComboBox var, ComboBox condition)
 		{
-			Mission.Trigger ret = new Mission.Trigger();
-			ret.Amount = (byte)amount.SelectedIndex;
-			ret.VariableType = (byte)varType.SelectedIndex;
-			ret.Variable = (byte)var.SelectedIndex;
-			ret.Condition = (byte)condition.SelectedIndex;
+			Mission.Trigger ret = new Mission.Trigger
+			{
+				Amount = (byte)amount.SelectedIndex,
+				VariableType = (byte)varType.SelectedIndex,
+				Variable = (byte)var.SelectedIndex,
+				Condition = (byte)condition.SelectedIndex
+			};
 			return ret;
 		}
 		#endregion methods
