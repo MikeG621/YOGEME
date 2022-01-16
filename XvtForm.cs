@@ -720,6 +720,7 @@ namespace Idmr.Yogeme
 			#endregion
 			#region Orders
 			cboOrders.Items.AddRange(Strings.Orders);
+			cboOString.Items.AddRange(Strings.OrderDesignation);
 			cboOT1Type.Items.AddRange(Strings.VariableType);
 			cboOT2Type.Items.AddRange(Strings.VariableType);
 			cboOT3Type.Items.AddRange(Strings.VariableType);
@@ -1082,7 +1083,7 @@ namespace Idmr.Yogeme
 			registerFgMultiEdit(numGoalTimeLimit, "GoalTriggerTime", 0);
 
 			registerFgMultiEdit(cboOrders, "OrderCommand", MultiEditRefreshType.OrderLabel);
-			registerFgMultiEdit(txtOString, "OrderDesignation", 0);
+			registerFgMultiEdit(cboOString, "OrderDesignation", 0);
 			registerFgMultiEdit(cboOT1, "OrderTarget1", MultiEditRefreshType.OrderLabel);
 			registerFgMultiEdit(cboOT2, "OrderTarget2", MultiEditRefreshType.OrderLabel);
 			registerFgMultiEdit(cboOT3, "OrderTarget3", MultiEditRefreshType.OrderLabel);
@@ -3108,7 +3109,7 @@ namespace Idmr.Yogeme
 			optOT1T2OR.Checked = order.T1AndOrT2;
 			optOT1T2AND.Checked = !optOT1T2OR.Checked;
 			cboOSpeed.SelectedIndex = order.Speed;
-			txtOString.Text = order.Designation;
+			cboOString.Text = order.Designation;
 			_loading = btemp;
 		}
 		void lblOrderArr_DoubleClick(object sender, EventArgs e)
