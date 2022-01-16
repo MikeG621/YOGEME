@@ -382,6 +382,8 @@ namespace Idmr.Yogeme
 			_activeMessage = 0;
 			_mission.FlightGroups[0].CraftType = Convert.ToByte(_config.XvtCraft);
 			_mission.FlightGroups[0].IFF = Convert.ToByte(_config.XvtIff);
+			_startingShips = 0;
+			craftStart(_mission.FlightGroups[0], true);
 			string[] fgList = _mission.FlightGroups.GetList();
 			comboReset(cboArrMS, fgList, 0);
 			comboReset(cboArrMSAlt, fgList, 0);
@@ -2170,7 +2172,6 @@ namespace Idmr.Yogeme
 							break;  // exit the outer for() loop
 					}
 				}
-				_noRefresh = true;  // Disable refresh while delete is active
 				replaceClipboardFGReference(_activeFG, -1);
 				if (_mission.FlightGroups.Count != 1) lstFG.Items.RemoveAt(_activeFG);
 				craftStart(_mission.FlightGroups[_activeFG], false);
@@ -2185,7 +2186,6 @@ namespace Idmr.Yogeme
 					break;
 				}
 				else _activeFG = _mission.DeleteFG(_activeFG); // Actual delete handled in platform.
-				_noRefresh = false;
 			}
 			// Fix bounds and make new selection.
 			if (startFG >= _mission.FlightGroups.Count)
