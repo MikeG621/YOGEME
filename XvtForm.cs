@@ -540,15 +540,6 @@ namespace Idmr.Yogeme
 			variable.DrawMode = DrawMode.OwnerDrawVariable;
 			variable.DrawItem += colorizedComboBox_DrawItem;
 		}
-		void addControlChangedHandler(Control control, EventHandler handler)
-		{
-			string ct = control.GetType().ToString();
-			if (ct == "System.Windows.Forms.TextBox") ((TextBox)control).TextChanged += handler;
-			else if (ct == "System.Windows.Forms.NumericUpDown") ((NumericUpDown)control).ValueChanged += handler;
-			else if (ct == "System.Windows.Forms.ComboBox") ((ComboBox)control).SelectedIndexChanged += handler;
-			else if (ct == "System.Windows.Forms.CheckBox") ((CheckBox)control).CheckedChanged += handler;
-			else if (ct == "System.Windows.Forms.RadioButton") ((RadioButton)control).CheckedChanged += handler;
-		}
 		string replaceTargetText(string text)
 		{
 			while (text.Contains("FG:"))
@@ -1120,10 +1111,10 @@ namespace Idmr.Yogeme
 			registerFgMultiEdit(numUnk1, "Unk1", 0);   // These are the only unknowns with individual handlers.
 			registerFgMultiEdit(numUnk5, "Unk5", 0);
 
-			registerMsgMultiEdit(cboMessAmount, "MessTrigger", MultiEditRefreshType.MsgLabel);
-			registerMsgMultiEdit(cboMessType, "MessTrigger", MultiEditRefreshType.MsgLabel);
-			registerMsgMultiEdit(cboMessVar, "MessTrigger", MultiEditRefreshType.MsgLabel);
-			registerMsgMultiEdit(cboMessTrig, "MessTrigger", MultiEditRefreshType.MsgLabel);
+			registerMsgMultiEdit(cboMessAmount, "MessTrigger", 0);
+			registerMsgMultiEdit(cboMessType, "MessTrigger", 0);
+			registerMsgMultiEdit(cboMessVar, "MessTrigger", 0);
+			registerMsgMultiEdit(cboMessTrig, "MessTrigger", 0);
 			registerMsgMultiEdit(cboMessColor, "MessColor", MultiEditRefreshType.ItemText);
 			registerMsgMultiEdit(numMessDelay, "MessDelay", 0);
 			registerMsgMultiEdit(optMess1OR2, "Mess1OR2", 0);
@@ -1153,24 +1144,13 @@ namespace Idmr.Yogeme
 		}
 		void registerFgMultiEdit(Control control, string propertyName, MultiEditRefreshType refreshType)
 		{
-			addControlChangedHandler(control, flightgroupMultiEditHandler);
+			Common.AddControlChangedHandler(control, flightgroupMultiEditHandler);
 			control.Tag = new MultiEditProperty(propertyName, refreshType);
 		}
 		void registerMsgMultiEdit(Control control, string propertyName, MultiEditRefreshType refreshType)
 		{
-			addControlChangedHandler(control, messageMultiEditHandler);
+			Common.AddControlChangedHandler(control, messageMultiEditHandler);
 			control.Tag = new MultiEditProperty(propertyName, refreshType);
-		}
-		object getControlValue(object sender)
-		{
-			object value = 0;
-			string ct = sender.GetType().ToString();
-			if (ct == "System.Windows.Forms.TextBox") value = ((TextBox)sender).Text;
-			else if (ct == "System.Windows.Forms.NumericUpDown") value = (int)((NumericUpDown)sender).Value;
-			else if (ct == "System.Windows.Forms.CheckBox") value = ((CheckBox)sender).Checked;
-			else if (ct == "System.Windows.Forms.ComboBox") value = ((ComboBox)sender).SelectedIndex;
-			else if (ct == "System.Windows.Forms.RadioButton") value = ((RadioButton)sender).Checked;
-			return value;
 		}
 		Mission.Trigger getTriggerFromControls(ComboBox amount, ComboBox varType, ComboBox var, ComboBox condition)
 		{
@@ -1287,7 +1267,7 @@ namespace Idmr.Yogeme
 			MultiEditProperty prop = (MultiEditProperty)((Control)sender).Tag;
 			if (prop.Name != "")
 			{
-				setFlightgroupProperty(prop.RefreshType, prop.Name, getControlValue(sender));
+				setFlightgroupProperty(prop.RefreshType, prop.Name, Common.GetControlValue(sender));
 				Common.Title(this, false);  // Since we're not loading, any change marks as dirty.
 			}
 			if (prop.RefreshType.HasFlag(MultiEditRefreshType.ItemText)) listRefreshSelectedItems();
@@ -1302,7 +1282,7 @@ namespace Idmr.Yogeme
 			MultiEditProperty prop = (MultiEditProperty)((Control)sender).Tag;
 			if (prop.Name != "")
 			{
-				setMessageProperty(prop.RefreshType, prop.Name, getControlValue(sender));
+				setMessageProperty(prop.RefreshType, prop.Name, Common.GetControlValue(sender));
 				Common.Title(this, false);
 			}
 			if (prop.RefreshType.HasFlag(MultiEditRefreshType.ItemText)) messRefreshSelectedItems();
@@ -1792,7 +1772,7 @@ namespace Idmr.Yogeme
 					foreach (Platform.Xvt.Message msg in getSelectedMessages())
 						msg.Triggers[_activeMessageTrigger] = new Mission.Trigger(trig);
 					lblMessTrigArr_Click(_activeMessageTrigger, new EventArgs());
-					labelRefresh(_mission.Messages[_activeMessage].Triggers[_activeMessageTrigger], lblMessTrig[_activeMessageTrigger]);
+					labelRefresh(trig, lblMessTrig[_activeMessageTrigger]);
 					Common.Title(this, false);
 				}
 				catch { /* do nothing */ }
@@ -2580,112 +2560,108 @@ namespace Idmr.Yogeme
 			foreach (FlightGroup fg in getSelectedFlightgroups())
 			{
 				if (refreshType.HasFlag(MultiEditRefreshType.CraftCount)) craftStart(fg, false);
-
-				if (name == "Name") fg.Name = (string)value;
-				else if (name == "NumberOfCraft")
+				switch (name)
 				{
-					fg.NumberOfCraft = Convert.ToByte(value);
-					if (fg.SpecialCargoCraft > fg.NumberOfCraft) fg.SpecialCargoCraft = 0;
+					case "Name": fg.Name = (string)value; break;
+					case "NumberOfCraft":
+						fg.NumberOfCraft = Convert.ToByte(value);
+						if (fg.SpecialCargoCraft > fg.NumberOfCraft) fg.SpecialCargoCraft = 0;
+						break;
+					case "NumberOfWaves": fg.NumberOfWaves = Convert.ToByte(value); break;
+					// "GlobalGroup" has special logic, not handled here.
+					case "GlobalUnit": fg.GlobalUnit = Convert.ToByte(value); break;
+					case "PreventCraftNumbering": fg.PreventCraftNumbering = Convert.ToBoolean(value); break;
+					case "Cargo": fg.Cargo = (string)value; break;
+					case "SpecialCargo": fg.SpecialCargo = (string)value; break;
+					case "SpecialCargoCraft":
+						fg.SpecialCargoCraft = Convert.ToByte((int)value);
+						if (fg.SpecialCargoCraft > fg.NumberOfCraft) fg.SpecialCargoCraft = 0;
+						break;
+					case "RandSpecCargo": fg.RandSpecCargo = Convert.ToBoolean(value); break;
+					case "CraftType": fg.CraftType = Convert.ToByte(value); break;
+					case "IFF": fg.IFF = Convert.ToByte(value); break;
+					case "Team": fg.Team = Convert.ToByte(value); break;
+					case "AI": fg.AI = Convert.ToByte(value); break;
+					case "Markings": fg.Markings = Convert.ToByte(value); break;
+					case "PlayerNumber": fg.PlayerNumber = Convert.ToByte(value); break;
+					case "PlayerCraft": fg.PlayerCraft = Convert.ToByte(value); break;
+					case "Radio": fg.Radio = Convert.ToByte(value); break;
+					case "Formation": fg.Formation = Convert.ToByte(value); break;
+					case "FormDistance": fg.FormDistance = Convert.ToByte(value); break;
+					case "FormLeaderDist": fg.FormLeaderDist = Convert.ToByte(value); break;
+					case "Status1": fg.Status1 = Convert.ToByte(value); break;
+					case "Status2": fg.Status2 = Convert.ToByte(value); break;
+					case "Missile": fg.Missile = Convert.ToByte(value); break;
+					case "Beam": fg.Beam = Convert.ToByte(value); break;
+					case "Countermeasures": fg.Countermeasures = Convert.ToByte(value); break;
+					case "ExplosionTime": fg.ExplosionTime = Convert.ToByte(value); break;
+					case "ArrivalCraft1": fg.ArrivalCraft1 = Convert.ToByte(value); break;
+					case "ArrivalCraft2": fg.ArrivalCraft2 = Convert.ToByte(value); break;
+					case "DepartureCraft1": fg.DepartureCraft1 = Convert.ToByte(value); break;
+					case "DepartureCraft2": fg.DepartureCraft2 = Convert.ToByte(value); break;
+					case "ArrivalMethod1": fg.ArrivalMethod1 = Convert.ToBoolean(value); break;
+					case "ArrivalMethod2": fg.ArrivalMethod2 = Convert.ToBoolean(value); break;
+					case "DepartureMethod1": fg.DepartureMethod1 = Convert.ToBoolean(value); break;
+					case "DepartureMethod2": fg.DepartureMethod2 = Convert.ToBoolean(value); break;
+					case "ArrDepTrigger":
+						trig = getTriggerFromControls(cboADTrigAmount, cboADTrigType, cboADTrigVar, cboADTrig);
+						fg.ArrDepTriggers[_activeArrDepTrigger] = trig;     // trig needed for refresh at end
+						break;
+					case "SkipTrigger":
+						trig = getTriggerFromControls(cboSkipAmount, cboSkipType, cboSkipVar, cboSkipTrig);
+						fg.SkipToOrder4Trigger[_activeSkipTrigger] = trig;  // trig needed for refresh at end
+						break;
+					case "SkipTriggerOr": fg.SkipToO4T1AndOrT2 = Convert.ToBoolean(value); break;
+					case "AbortTrigger": fg.AbortTrigger = Convert.ToByte(value); break;
+					case "ArrivalDelayMinutes": fg.ArrivalDelayMinutes = Convert.ToByte(value); break;
+					case "ArrivalDelaySeconds": fg.ArrivalDelaySeconds = Convert.ToByte(value); break;
+					case "DepartureTimerMinutes": fg.DepartureTimerMinutes = Convert.ToByte(value); break;
+					case "DepartureTimerSeconds": fg.DepartureTimerSeconds = Convert.ToByte(value); break;
+					case "DepartureClockMinutes": fg.DepartureClockMinutes = Convert.ToByte(value); break;
+					case "DepartureClockSeconds": fg.DepartureClockSeconds = Convert.ToByte(value); break;
+					case "Difficulty": fg.Difficulty = Convert.ToByte(value); break;
+					case "ArriveOnlyIfHuman": fg.ArriveOnlyIfHuman = Convert.ToBoolean(value); break;
+					case "GoalTriggerAmount": fg.Goals[_activeFGGoal].Amount = Convert.ToByte(value); break;
+					case "GoalTriggerArgument": fg.Goals[_activeFGGoal].Argument = Convert.ToByte(value); break;
+					case "GoalTriggerCondition": fg.Goals[_activeFGGoal].Condition = Convert.ToByte(value); break;
+					case "GoalTriggerPoints": fg.Goals[_activeFGGoal].Points = Convert.ToInt16(value); break;
+					case "GoalTriggerTime": fg.Goals[_activeFGGoal].TimeLimit = Convert.ToByte(value); break;
+					case "GoalTriggerInc": fg.Goals[_activeFGGoal].IncompleteText = (string)value; break;
+					case "GoalTriggerComp": fg.Goals[_activeFGGoal].CompleteText = (string)value; break;
+					case "GoalTriggerFail": fg.Goals[_activeFGGoal].FailedText = (string)value; break;
+					case "OrderCommand": fg.Orders[_activeOrder].Command = Convert.ToByte(value); break;
+					case "OrderDesignation": fg.Orders[_activeOrder].Designation = (string)value; break;
+					case "OrderTarget1": fg.Orders[_activeOrder].Target1 = Convert.ToByte(value); break;
+					case "OrderTarget2": fg.Orders[_activeOrder].Target2 = Convert.ToByte(value); break;
+					case "OrderTarget3": fg.Orders[_activeOrder].Target3 = Convert.ToByte(value); break;
+					case "OrderTarget4": fg.Orders[_activeOrder].Target4 = Convert.ToByte(value); break;
+					case "OrderTarget1Type": fg.Orders[_activeOrder].Target1Type = Convert.ToByte(value); break;
+					case "OrderTarget2Type": fg.Orders[_activeOrder].Target2Type = Convert.ToByte(value); break;
+					case "OrderTarget3Type": fg.Orders[_activeOrder].Target3Type = Convert.ToByte(value); break;
+					case "OrderTarget4Type": fg.Orders[_activeOrder].Target4Type = Convert.ToByte(value); break;
+					case "OrderVar1": fg.Orders[_activeOrder].Variable1 = Convert.ToByte(value); break;
+					case "OrderVar2": fg.Orders[_activeOrder].Variable2 = Convert.ToByte(value); break;
+					case "Order12Or": fg.Orders[_activeOrder].T1AndOrT2 = Convert.ToBoolean(value); break;
+					case "Order34Or": fg.Orders[_activeOrder].T3AndOrT4 = Convert.ToBoolean(value); break;
+					case "OrderThrottle": fg.Orders[_activeOrder].Throttle = Convert.ToByte(value); break;
+					case "OrderSpeed": fg.Orders[_activeOrder].Speed = Convert.ToByte(value); break;
+					case "StopArrivingWhen": fg.StopArrivingWhen = Convert.ToByte(value); break;
+					case "RandomArrivalDelayMinutes": fg.RandomArrivalDelayMinutes = Convert.ToByte(value); break;
+					case "RandomArrivalDelaySeconds": fg.RandomArrivalDelaySeconds = Convert.ToByte(value); break;
+					case "OptCategory": fg.OptCraftCategory = (FlightGroup.OptionalCraftCategory)Convert.ToByte(value); break;
+					case "OptNumWaves": fg.OptCraft[_activeOptionCraft].NumberOfWaves = Convert.ToByte((int)value - 1); break;
+					case "OptNumCraft": fg.OptCraft[_activeOptionCraft].NumberOfCraft = Convert.ToByte(value); break;  // Take value exactly as is.
+					case "OptCraftType":
+						fg.OptCraft[_activeOptionCraft].CraftType = Convert.ToByte(value);
+						if (fg.OptCraft[_activeOptionCraft].NumberOfCraft < 1) fg.OptCraft[_activeOptionCraft].NumberOfCraft = 1;
+						break;
+					case "Pitch": fg.Pitch = Convert.ToInt16(value); break;
+					case "Yaw": fg.Yaw = Convert.ToInt16(value); break;
+					case "Roll": fg.Roll = Convert.ToInt16(value); break;
+					case "Unk1": fg.Unknowns.Unknown1 = Convert.ToByte(value); break;
+					case "Unk5": fg.Unknowns.Unknown5 = Convert.ToByte(value); break;
+					default: throw new ArgumentException("Unhandled multi-edit property: " + name);
 				}
-				else if (name == "NumberOfWaves") fg.NumberOfWaves = Convert.ToByte(value);
-				// "GlobalGroup" has special logic, not handled here.
-				else if (name == "GlobalUnit") fg.GlobalUnit = Convert.ToByte(value);
-				else if (name == "PreventCraftNumbering") fg.PreventCraftNumbering = Convert.ToBoolean(value);
-				else if (name == "Cargo") fg.Cargo = (string)value;
-				else if (name == "SpecialCargo") fg.SpecialCargo = (string)value;
-				else if (name == "SpecialCargoCraft")
-				{
-					fg.SpecialCargoCraft = Convert.ToByte((int)value);
-					if (fg.SpecialCargoCraft > fg.NumberOfCraft) fg.SpecialCargoCraft = 0;
-				}
-				else if (name == "RandSpecCargo") fg.RandSpecCargo = Convert.ToBoolean(value);
-				else if (name == "CraftType") fg.CraftType = Convert.ToByte(value);
-				else if (name == "IFF") fg.IFF = Convert.ToByte(value);
-				else if (name == "Team") fg.Team = Convert.ToByte(value);
-				else if (name == "AI") fg.AI = Convert.ToByte(value);
-				else if (name == "Markings") fg.Markings = Convert.ToByte(value);
-				else if (name == "PlayerNumber") fg.PlayerNumber = Convert.ToByte(value);
-				else if (name == "PlayerCraft") fg.PlayerCraft = Convert.ToByte(value);
-				else if (name == "Radio") fg.Radio = Convert.ToByte(value);
-				else if (name == "Formation") fg.Formation = Convert.ToByte(value);
-				else if (name == "FormDistance") fg.FormDistance = Convert.ToByte(value);
-				else if (name == "FormLeaderDist") fg.FormLeaderDist = Convert.ToByte(value);
-				else if (name == "Status1") fg.Status1 = Convert.ToByte(value);
-				else if (name == "Status2") fg.Status2 = Convert.ToByte(value);
-				else if (name == "Missile") fg.Missile = Convert.ToByte(value);
-				else if (name == "Beam") fg.Beam = Convert.ToByte(value);
-				else if (name == "Countermeasures") fg.Countermeasures = Convert.ToByte(value);
-				else if (name == "ExplosionTime") fg.ExplosionTime = Convert.ToByte(value);
-				else if (name == "ArrivalCraft1") fg.ArrivalCraft1 = Convert.ToByte(value);
-				else if (name == "ArrivalCraft2") fg.ArrivalCraft2 = Convert.ToByte(value);
-				else if (name == "DepartureCraft1") fg.DepartureCraft1 = Convert.ToByte(value);
-				else if (name == "DepartureCraft2") fg.DepartureCraft2 = Convert.ToByte(value);
-				else if (name == "ArrivalMethod1") fg.ArrivalMethod1 = Convert.ToBoolean(value);
-				else if (name == "ArrivalMethod2") fg.ArrivalMethod2 = Convert.ToBoolean(value);
-				else if (name == "DepartureMethod1") fg.DepartureMethod1 = Convert.ToBoolean(value);
-				else if (name == "DepartureMethod2") fg.DepartureMethod2 = Convert.ToBoolean(value);
-				else if (name == "ArrDepTrigger")
-				{
-					trig = getTriggerFromControls(cboADTrigAmount, cboADTrigType, cboADTrigVar, cboADTrig);
-					fg.ArrDepTriggers[_activeArrDepTrigger] = trig;     // trig needed for refresh at end
-				}
-				else if (name == "SkipTrigger")
-				{
-					trig = getTriggerFromControls(cboSkipAmount, cboSkipType, cboSkipVar, cboSkipTrig);
-					fg.SkipToOrder4Trigger[_activeSkipTrigger] = trig;  // trig needed for refresh at end
-				}
-				else if (name == "SkipTriggerOr") fg.SkipToO4T1AndOrT2 = Convert.ToBoolean(value);
-				else if (name == "AbortTrigger") fg.AbortTrigger = Convert.ToByte(value);
-				else if (name == "ArrivalDelayMinutes") fg.ArrivalDelayMinutes = Convert.ToByte(value);
-				else if (name == "ArrivalDelaySeconds") fg.ArrivalDelaySeconds = Convert.ToByte(value);
-				else if (name == "DepartureTimerMinutes") fg.DepartureTimerMinutes = Convert.ToByte(value);
-				else if (name == "DepartureTimerSeconds") fg.DepartureTimerSeconds = Convert.ToByte(value);
-				else if (name == "DepartureClockMinutes") fg.DepartureClockMinutes = Convert.ToByte(value);
-				else if (name == "DepartureClockSeconds") fg.DepartureClockSeconds = Convert.ToByte(value);
-				else if (name == "Difficulty") fg.Difficulty = Convert.ToByte(value);
-				else if (name == "ArriveOnlyIfHuman") fg.ArriveOnlyIfHuman = Convert.ToBoolean(value);
-				else if (name == "GoalTriggerAmount") fg.Goals[_activeFGGoal].Amount = Convert.ToByte(value);
-				else if (name == "GoalTriggerArgument") fg.Goals[_activeFGGoal].Argument = Convert.ToByte(value);
-				else if (name == "GoalTriggerCondition") fg.Goals[_activeFGGoal].Condition = Convert.ToByte(value);
-				else if (name == "GoalTriggerPoints") fg.Goals[_activeFGGoal].Points = Convert.ToInt16(value);
-				else if (name == "GoalTriggerTime") fg.Goals[_activeFGGoal].TimeLimit = Convert.ToByte(value);
-				else if (name == "GoalTriggerInc") fg.Goals[_activeFGGoal].IncompleteText = (string)value;
-				else if (name == "GoalTriggerComp") fg.Goals[_activeFGGoal].CompleteText = (string)value;
-				else if (name == "GoalTriggerFail") fg.Goals[_activeFGGoal].FailedText = (string)value;
-				else if (name == "OrderCommand") fg.Orders[_activeOrder].Command = Convert.ToByte(value);
-				else if (name == "OrderDesignation") fg.Orders[_activeOrder].Designation = (string)value;
-				else if (name == "OrderTarget1") fg.Orders[_activeOrder].Target1 = Convert.ToByte(value);
-				else if (name == "OrderTarget2") fg.Orders[_activeOrder].Target2 = Convert.ToByte(value);
-				else if (name == "OrderTarget3") fg.Orders[_activeOrder].Target3 = Convert.ToByte(value);
-				else if (name == "OrderTarget4") fg.Orders[_activeOrder].Target4 = Convert.ToByte(value);
-				else if (name == "OrderTarget1Type") fg.Orders[_activeOrder].Target1Type = Convert.ToByte(value);
-				else if (name == "OrderTarget2Type") fg.Orders[_activeOrder].Target2Type = Convert.ToByte(value);
-				else if (name == "OrderTarget3Type") fg.Orders[_activeOrder].Target3Type = Convert.ToByte(value);
-				else if (name == "OrderTarget4Type") fg.Orders[_activeOrder].Target4Type = Convert.ToByte(value);
-				else if (name == "OrderVar1") fg.Orders[_activeOrder].Variable1 = Convert.ToByte(value);
-				else if (name == "OrderVar2") fg.Orders[_activeOrder].Variable2 = Convert.ToByte(value);
-				else if (name == "Order12Or") fg.Orders[_activeOrder].T1AndOrT2 = Convert.ToBoolean(value);
-				else if (name == "Order34Or") fg.Orders[_activeOrder].T3AndOrT4 = Convert.ToBoolean(value);
-				else if (name == "OrderThrottle") fg.Orders[_activeOrder].Throttle = Convert.ToByte(value);
-				else if (name == "OrderSpeed") fg.Orders[_activeOrder].Speed = Convert.ToByte(value);
-				else if (name == "StopArrivingWhen") fg.StopArrivingWhen = Convert.ToByte(value);
-				else if (name == "RandomArrivalDelayMinutes") fg.RandomArrivalDelayMinutes = Convert.ToByte(value);
-				else if (name == "RandomArrivalDelaySeconds") fg.RandomArrivalDelaySeconds = Convert.ToByte(value);
-				else if (name == "OptCategory") fg.OptCraftCategory = (FlightGroup.OptionalCraftCategory)Convert.ToByte(value);
-				else if (name == "OptNumWaves") fg.OptCraft[_activeOptionCraft].NumberOfWaves = Convert.ToByte((int)value - 1);
-				else if (name == "OptNumCraft") fg.OptCraft[_activeOptionCraft].NumberOfCraft = Convert.ToByte(value);  // Take value exactly as is.
-				else if (name == "OptCraftType")
-				{
-					fg.OptCraft[_activeOptionCraft].CraftType = Convert.ToByte(value);
-					if (fg.OptCraft[_activeOptionCraft].NumberOfCraft < 1) fg.OptCraft[_activeOptionCraft].NumberOfCraft = 1;
-				}
-				else if (name == "Pitch") fg.Pitch = Convert.ToInt16(value);
-				else if (name == "Yaw") fg.Yaw = Convert.ToInt16(value);
-				else if (name == "Roll") fg.Roll = Convert.ToInt16(value);
-				else if (name == "Unk1") fg.Unknowns.Unknown1 = Convert.ToByte(value);
-				else if (name == "Unk5") fg.Unknowns.Unknown5 = Convert.ToByte(value);
-				else throw new ArgumentException("Unhandled multi-edit property: " + name);
-
 				if(refreshType.HasFlag(MultiEditRefreshType.CraftCount)) craftStart(fg, true);
 			}
 			if (refreshType.HasFlag(MultiEditRefreshType.ArrDepLabel) && trig != null) labelRefresh(trig, lblADTrig[_activeArrDepTrigger]);
@@ -3127,7 +3103,7 @@ namespace Idmr.Yogeme
 			lblODesc.Text = s[0];
 			lblOVar1.Text = s[1];
 			lblOVar2.Text = s[2];
-			numOVar1_ValueChanged(0, new EventArgs()); //[JB] Force refresh, since label information is provided to the user.
+			numOVar1_ValueChanged(0, new EventArgs()); // Force refresh, since label information is provided to the user.
 			numOVar2_ValueChanged(0, new EventArgs());
 		}
 		void cboOT1Type_SelectedIndexChanged(object sender, EventArgs e)
@@ -3785,21 +3761,23 @@ namespace Idmr.Yogeme
 		}
 		void setMessageProperty(MultiEditRefreshType refreshType, string name, object value)
 		{
-			Mission.Trigger trig = null;  // Need a trigger to refresh certain labels.  Doesn't matter which item it's from.
+			int trigRefresh = 0;
 			foreach (Platform.Xvt.Message msg in getSelectedMessages())
 			{
-				if (name == "MessTrigger")
+				switch (name)
 				{
-					trig = getTriggerFromControls(cboMessAmount, cboMessType, cboMessVar, cboMessTrig);
-					msg.Triggers[_activeMessageTrigger] = trig;  // trig needed for refresh
+					case "MessTrigger":
+						Mission.Trigger trig = getTriggerFromControls(cboMessAmount, cboMessType, cboMessVar, cboMessTrig);
+						msg.Triggers[_activeMessageTrigger] = trig;  // trig needed for refresh
+						if (trigRefresh++ == 0) labelRefresh(trig, lblMessTrig[_activeMessageTrigger]);  // only refresh once
+						break;
+					case "MessColor": msg.Color = Convert.ToByte(value); break;
+					case "MessDelay": msg.Delay = Convert.ToByte((int)value / 5); break;
+					case "Mess1OR2": msg.T1AndOrT2 = Convert.ToBoolean(value); break;
+					case "Mess3OR4": msg.T3AndOrT4 = Convert.ToBoolean(value); break;
+					case "Mess12OR34": msg.T12AndOrT34 = Convert.ToBoolean(value); break;
 				}
-				else if (name == "MessColor") msg.Color = Convert.ToByte(value);
-				else if (name == "MessDelay") msg.Delay = Convert.ToByte((int)value / 5);
-				else if (name == "Mess1OR2") msg.T1AndOrT2 = Convert.ToBoolean(value);
-				else if (name == "Mess3OR4") msg.T3AndOrT4 = Convert.ToBoolean(value);
-				else if (name == "Mess12OR34") msg.T12AndOrT34 = Convert.ToBoolean(value);
 			}
-			if(refreshType.HasFlag(MultiEditRefreshType.MsgLabel) && trig != null) labelRefresh(trig, lblMessTrig[_activeMessageTrigger]);
 		}
 		void moveMessages(int direction)
 		{
