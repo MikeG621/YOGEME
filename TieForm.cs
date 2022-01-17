@@ -499,11 +499,13 @@ namespace Idmr.Yogeme
 		}
 		Mission.Trigger getTriggerFromControls(ComboBox amount, ComboBox varType, ComboBox var, ComboBox condition)
 		{
-			Mission.Trigger ret = new Mission.Trigger();
-			ret.Amount = (byte)amount.SelectedIndex;
-			ret.VariableType = (byte)varType.SelectedIndex;
-			ret.Variable = (byte)var.SelectedIndex;
-			ret.Condition = (byte)condition.SelectedIndex;
+			Mission.Trigger ret = new Mission.Trigger()
+			{
+				Amount = (byte)amount.SelectedIndex,
+				VariableType = (byte)varType.SelectedIndex,
+				Variable = (byte)var.SelectedIndex,
+				Condition = (byte)condition.SelectedIndex
+			};
 			return ret;
 		}
 		string replaceTargetText(string text)

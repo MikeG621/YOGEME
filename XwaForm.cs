@@ -1435,13 +1435,15 @@ namespace Idmr.Yogeme
 		}
 		Mission.Trigger getTriggerFromControls(ComboBox amount, ComboBox varType, ComboBox var, ComboBox condition, ComboBox param1, NumericUpDown param2)
 		{
-			Mission.Trigger ret = new Mission.Trigger();
-			ret.Amount = (byte)amount.SelectedIndex;
-			ret.VariableType = (byte)varType.SelectedIndex;
-			ret.Variable = (byte)var.SelectedIndex;
-			ret.Condition = (byte)condition.SelectedIndex;
-			ret.Parameter1 = (byte)param1.SelectedIndex;
-			ret.Parameter2 = (byte)param2.Value;
+			Mission.Trigger ret = new Mission.Trigger
+			{
+				Amount = (byte)amount.SelectedIndex,
+				VariableType = (byte)varType.SelectedIndex,
+				Variable = (byte)var.SelectedIndex,
+				Condition = (byte)condition.SelectedIndex,
+				Parameter1 = (byte)param1.SelectedIndex,
+				Parameter2 = (byte)param2.Value
+			};
 			return ret;
 		}
 		#endregion methods
