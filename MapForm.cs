@@ -1,12 +1,15 @@
 /*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
- * Copyright (C) 2007-2021 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2022 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.11
+ * VERSION: 1.12
  */
 
 /* CHANGELOG
+ * v1.12, 220103
+ * [FIX] Cleared sortedMapDataList on reload to fix multi-delete [JB]
+ * [FIX] Listbox scrolling
  * v1.11, 210801
  * [UPD] FGs now also take into account Hyper orders for region visiblity [JB]
  * v1.10, 210520

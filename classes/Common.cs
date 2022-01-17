@@ -1,12 +1,14 @@
 /*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
- * Copyright (C) 2007-2020 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2022 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.8.1
+ * VERSION: 1.12
  */
 
 /* CHANGELOG
+ * v1.12, 220103
+ * [NEW] MultiEdit [JB]
  * v1.8.1, 201213
  * [FIX] Verify falls back to default if invalid, then saves default if present
  * [UPD] Verify now takes in entire Settings instead of just the path
@@ -336,23 +338,30 @@ namespace Idmr.Yogeme
 			return value;
 		}
     }
-}
 
-namespace Idmr.Yogeme
-{
 	/// <summary>Allows multi-edit properties to perform generic platform-dependent refresh operations.</summary>
 	public enum MultiEditRefreshType
 	{
+		/// <summary>None.</summary>
 		None = 0,
-		ItemText = 1,        // A generic text change for an item in a multiselect ListBox (includes FG info like GG and GU, but also used for the message list)
-		CraftName = 2,       // Flightgroup dropdown boxes need to be updated (anything that affects the name, including recalculated craft numbering)
-		CraftCount = 4,      // Indicates that flightgroup craft/object totals need to be adjusted
-		FgGoalLabel = 8,     // FG goal trigger label
-		OrderLabel = 16,     // Order trigger label
-		ArrDepLabel = 32,    // Arrival/departure trigger label
-		SkipLabel = 64,      // Skip trigger label
-		OptCraftLabel = 128, // Optional craft label
-		Map = 256,           // The map should be updated (something involved with waypoints changed)
+		/// <summary>A generic text change for an item in a multiselect ListBox (includes FG info like GG and GU, but also used for the message list)</summary>
+		ItemText = 1,
+		/// <summary>Flightgroup name change that affects dropdown boxes (anything that affects the name, including recalculated craft numbering)</summary>
+		CraftName = 2,
+		/// <summary>Flightgroup craft/object totals need to be adjusted</summary>
+		CraftCount = 4,
+		/// <summary>FG goal trigger label</summary>
+		FgGoalLabel = 8,
+		/// <summary>Order trigger label</summary>
+		OrderLabel = 16,
+		/// <summary>Arrival/departure trigger label</summary>
+		ArrDepLabel = 32,
+		/// <summary>Skip trigger label</summary>
+		SkipLabel = 64,
+		/// <summary>Optional craft label</summary>
+		OptCraftLabel = 128,
+		/// <summary> The map should be updated</summary>
+		Map = 256
 	};
 
 	/// <summary>To be assigned as a custom Tag on form controls registered as a multi-edit property.</summary>
