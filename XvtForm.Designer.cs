@@ -222,7 +222,7 @@ namespace Idmr.Yogeme
 			this.lblOVar2Note = new System.Windows.Forms.Label();
 			this.lblOVar1Note = new System.Windows.Forms.Label();
 			this.label57 = new System.Windows.Forms.Label();
-			this.txtOString = new System.Windows.Forms.TextBox();
+			this.cboOString = new System.Windows.Forms.ComboBox();
 			this.label54 = new System.Windows.Forms.Label();
 			this.cmdCopyOrder = new System.Windows.Forms.Button();
 			this.lblODesc = new System.Windows.Forms.Label();
@@ -2820,7 +2820,7 @@ namespace Idmr.Yogeme
 			this.tabOrders.Controls.Add(this.lblOVar2Note);
 			this.tabOrders.Controls.Add(this.lblOVar1Note);
 			this.tabOrders.Controls.Add(this.label57);
-			this.tabOrders.Controls.Add(this.txtOString);
+			this.tabOrders.Controls.Add(this.cboOString);
 			this.tabOrders.Controls.Add(this.label54);
 			this.tabOrders.Controls.Add(this.cmdCopyOrder);
 			this.tabOrders.Controls.Add(this.lblODesc);
@@ -2891,11 +2891,11 @@ namespace Idmr.Yogeme
 			// 
 			// txtOString
 			// 
-			this.txtOString.Location = new System.Drawing.Point(408, 16);
-			this.txtOString.MaxLength = 15;
-			this.txtOString.Name = "txtOString";
-			this.txtOString.Size = new System.Drawing.Size(128, 20);
-			this.txtOString.TabIndex = 32;
+			this.cboOString.Location = new System.Drawing.Point(408, 16);
+			this.cboOString.MaxLength = 15;
+			this.cboOString.Name = "cboOString";
+			this.cboOString.Size = new System.Drawing.Size(128, 20);
+			this.cboOString.TabIndex = 32;
 			// 
 			// label54
 			// 
@@ -7373,7 +7373,7 @@ namespace Idmr.Yogeme
 		Button cmdPasteOrder;
 		Label lblOrder4;
 		Label label54;
-		TextBox txtOString;
+		ComboBox cboOString;
 		Label label57;
 		CheckBox chkArrHuman;
 		Label label58;

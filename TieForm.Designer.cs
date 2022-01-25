@@ -530,6 +530,7 @@ namespace Idmr.Yogeme
             "3 - 12 - *1x(3) Ship name"});
 			this.lstFG.Location = new System.Drawing.Point(8, 24);
 			this.lstFG.Name = "lstFG";
+			this.lstFG.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
 			this.lstFG.Size = new System.Drawing.Size(216, 469);
 			this.lstFG.TabIndex = 1;
 			this.lstFG.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.lstFG_DrawItem);
@@ -610,7 +611,6 @@ namespace Idmr.Yogeme
 			this.grpCraft4.Size = new System.Drawing.Size(240, 95);
 			this.grpCraft4.TabIndex = 10;
 			this.grpCraft4.TabStop = false;
-			this.grpCraft4.Leave += new System.EventHandler(this.grpCraft4_Leave);
 			// 
 			// numBackdrop
 			// 
@@ -723,7 +723,6 @@ namespace Idmr.Yogeme
 			this.grpCraft2.Size = new System.Drawing.Size(232, 240);
 			this.grpCraft2.TabIndex = 9;
 			this.grpCraft2.TabStop = false;
-			this.grpCraft2.Leave += new System.EventHandler(this.grpCraft2_Leave);
 			// 
 			// chkRadio
 			// 
@@ -872,7 +871,6 @@ namespace Idmr.Yogeme
 			this.cboFormation.Name = "cboFormation";
 			this.cboFormation.Size = new System.Drawing.Size(136, 21);
 			this.cboFormation.TabIndex = 15;
-			this.cboFormation.SelectedIndexChanged += new System.EventHandler(this.cboFormation_SelectedIndexChanged);
 			// 
 			// cmdForms
 			// 
@@ -896,7 +894,6 @@ namespace Idmr.Yogeme
 			this.grpCraft3.Size = new System.Drawing.Size(240, 72);
 			this.grpCraft3.TabIndex = 8;
 			this.grpCraft3.TabStop = false;
-			this.grpCraft3.Leave += new System.EventHandler(this.grpCraft3_Leave);
 			// 
 			// numWaves
 			// 
@@ -1012,7 +1009,6 @@ namespace Idmr.Yogeme
 			this.txtName.Name = "txtName";
 			this.txtName.Size = new System.Drawing.Size(128, 20);
 			this.txtName.TabIndex = 4;
-			this.txtName.Leave += new System.EventHandler(this.txtName_Leave);
 			// 
 			// lblNotUsed
 			// 
@@ -1030,7 +1026,6 @@ namespace Idmr.Yogeme
 			this.txtSpecCargo.Size = new System.Drawing.Size(128, 20);
 			this.txtSpecCargo.TabIndex = 7;
 			this.txtSpecCargo.Visible = false;
-			this.txtSpecCargo.Leave += new System.EventHandler(this.txtSpecCargo_Leave);
 			// 
 			// numSC
 			// 
@@ -1073,7 +1068,6 @@ namespace Idmr.Yogeme
 			this.txtCargo.Name = "txtCargo";
 			this.txtCargo.Size = new System.Drawing.Size(128, 20);
 			this.txtCargo.TabIndex = 6;
-			this.txtCargo.Leave += new System.EventHandler(this.txtCargo_Leave);
 			// 
 			// label5
 			// 
@@ -1098,7 +1092,6 @@ namespace Idmr.Yogeme
 			this.txtPilot.Name = "txtPilot";
 			this.txtPilot.Size = new System.Drawing.Size(128, 20);
 			this.txtPilot.TabIndex = 5;
-			this.txtPilot.Leave += new System.EventHandler(this.txtPilot_Leave);
 			// 
 			// label6
 			// 
@@ -1196,7 +1189,6 @@ namespace Idmr.Yogeme
 			this.grpDep.TabIndex = 1;
 			this.grpDep.TabStop = false;
 			this.grpDep.Text = "Departure";
-			this.grpDep.Leave += new System.EventHandler(this.grpDep_Leave);
 			// 
 			// numDepSec
 			// 
@@ -1385,7 +1377,6 @@ namespace Idmr.Yogeme
 			this.grpArr.TabIndex = 0;
 			this.grpArr.TabStop = false;
 			this.grpArr.Text = "Arrival";
-			this.grpArr.Leave += new System.EventHandler(this.grpArr_Leave);
 			// 
 			// numArrSec
 			// 
@@ -1544,7 +1535,6 @@ namespace Idmr.Yogeme
 			this.optArrOR.TabIndex = 13;
 			this.optArrOR.TabStop = true;
 			this.optArrOR.Text = "OR";
-			this.optArrOR.CheckedChanged += new System.EventHandler(this.optArrOR_CheckedChanged);
 			// 
 			// label24
 			// 
@@ -1571,7 +1561,6 @@ namespace Idmr.Yogeme
 			this.cboADTrigAmount.Name = "cboADTrigAmount";
 			this.cboADTrigAmount.Size = new System.Drawing.Size(144, 21);
 			this.cboADTrigAmount.TabIndex = 19;
-			this.cboADTrigAmount.Leave += new System.EventHandler(this.cboADTrigAmount_Leave);
 			// 
 			// cboADTrigType
 			// 
@@ -1589,7 +1578,6 @@ namespace Idmr.Yogeme
 			this.cboADTrigVar.Name = "cboADTrigVar";
 			this.cboADTrigVar.Size = new System.Drawing.Size(144, 21);
 			this.cboADTrigVar.TabIndex = 21;
-			this.cboADTrigVar.Leave += new System.EventHandler(this.cboADTrigVar_Leave);
 			// 
 			// cboADTrig
 			// 
@@ -1598,7 +1586,6 @@ namespace Idmr.Yogeme
 			this.cboADTrig.Name = "cboADTrig";
 			this.cboADTrig.Size = new System.Drawing.Size(160, 21);
 			this.cboADTrig.TabIndex = 22;
-			this.cboADTrig.Leave += new System.EventHandler(this.cboADTrig_Leave);
 			// 
 			// label22
 			// 
@@ -1616,7 +1603,6 @@ namespace Idmr.Yogeme
 			this.cboDiff.Name = "cboDiff";
 			this.cboDiff.Size = new System.Drawing.Size(112, 21);
 			this.cboDiff.TabIndex = 23;
-			this.cboDiff.Leave += new System.EventHandler(this.cboDiff_Leave);
 			// 
 			// label27
 			// 
@@ -1703,7 +1689,6 @@ namespace Idmr.Yogeme
 			this.numBonGoalP.Name = "numBonGoalP";
 			this.numBonGoalP.Size = new System.Drawing.Size(72, 20);
 			this.numBonGoalP.TabIndex = 8;
-			this.numBonGoalP.Leave += new System.EventHandler(this.numBonGoalP_Leave);
 			// 
 			// label35
 			// 
@@ -1906,7 +1891,6 @@ namespace Idmr.Yogeme
 			this.numRoll.Name = "numRoll";
 			this.numRoll.Size = new System.Drawing.Size(48, 20);
 			this.numRoll.TabIndex = 18;
-			this.numRoll.Leave += new System.EventHandler(this.numRoll_Leave);
 			// 
 			// numPitch
 			// 
@@ -1924,7 +1908,6 @@ namespace Idmr.Yogeme
 			this.numPitch.Name = "numPitch";
 			this.numPitch.Size = new System.Drawing.Size(48, 20);
 			this.numPitch.TabIndex = 17;
-			this.numPitch.Leave += new System.EventHandler(this.numPitch_Leave);
 			// 
 			// numYaw
 			// 
@@ -1942,7 +1925,6 @@ namespace Idmr.Yogeme
 			this.numYaw.Name = "numYaw";
 			this.numYaw.Size = new System.Drawing.Size(48, 20);
 			this.numYaw.TabIndex = 16;
-			this.numYaw.Leave += new System.EventHandler(this.numYaw_Leave);
 			// 
 			// label56
 			// 
@@ -2206,7 +2188,6 @@ namespace Idmr.Yogeme
 			this.optOT3T4OR.TabIndex = 13;
 			this.optOT3T4OR.TabStop = true;
 			this.optOT3T4OR.Text = "OR";
-			this.optOT3T4OR.CheckedChanged += new System.EventHandler(this.optOT3T4OR_CheckedChanged);
 			// 
 			// cboOT3
 			// 
@@ -2215,7 +2196,6 @@ namespace Idmr.Yogeme
 			this.cboOT3.Name = "cboOT3";
 			this.cboOT3.Size = new System.Drawing.Size(184, 21);
 			this.cboOT3.TabIndex = 11;
-			this.cboOT3.Leave += new System.EventHandler(this.cboOT3_Leave);
 			// 
 			// cboOT3Type
 			// 
@@ -2242,7 +2222,6 @@ namespace Idmr.Yogeme
 			this.cboOT4.Name = "cboOT4";
 			this.cboOT4.Size = new System.Drawing.Size(184, 21);
 			this.cboOT4.TabIndex = 15;
-			this.cboOT4.Leave += new System.EventHandler(this.cboOT4_Leave);
 			// 
 			// optOT3T4AND
 			// 
@@ -2286,7 +2265,6 @@ namespace Idmr.Yogeme
 			this.optOT1T2OR.TabIndex = 7;
 			this.optOT1T2OR.TabStop = true;
 			this.optOT1T2OR.Text = "OR";
-			this.optOT1T2OR.CheckedChanged += new System.EventHandler(this.optOT1T2OR_CheckedChanged);
 			// 
 			// cboOT1
 			// 
@@ -2295,7 +2273,6 @@ namespace Idmr.Yogeme
 			this.cboOT1.Name = "cboOT1";
 			this.cboOT1.Size = new System.Drawing.Size(184, 21);
 			this.cboOT1.TabIndex = 5;
-			this.cboOT1.Leave += new System.EventHandler(this.cboOT1_Leave);
 			// 
 			// cboOT1Type
 			// 
@@ -2322,7 +2299,6 @@ namespace Idmr.Yogeme
 			this.cboOT2.Name = "cboOT2";
 			this.cboOT2.Size = new System.Drawing.Size(184, 21);
 			this.cboOT2.TabIndex = 9;
-			this.cboOT2.Leave += new System.EventHandler(this.cboOT2_Leave);
 			// 
 			// optOT1T2AND
 			// 
@@ -2374,7 +2350,6 @@ namespace Idmr.Yogeme
 			this.cboOThrottle.Name = "cboOThrottle";
 			this.cboOThrottle.Size = new System.Drawing.Size(48, 21);
 			this.cboOThrottle.TabIndex = 1;
-			this.cboOThrottle.Leave += new System.EventHandler(this.cboOThrottle_Leave);
 			// 
 			// label29
 			// 
@@ -2491,7 +2466,6 @@ namespace Idmr.Yogeme
 			this.grpPermaDeath.TabIndex = 0;
 			this.grpPermaDeath.TabStop = false;
 			this.grpPermaDeath.Text = "Permanent Death Throughout Campaign";
-			this.grpPermaDeath.Leave += new System.EventHandler(this.grpPermaDeath_Leave);
 			// 
 			// chkPermaDeath
 			// 
@@ -2600,7 +2574,6 @@ namespace Idmr.Yogeme
 			this.chkUnk21.TabIndex = 10;
 			this.chkUnk21.Text = "      Unknown 21";
 			this.chkUnk21.UseVisualStyleBackColor = true;
-			this.chkUnk21.Leave += new System.EventHandler(this.chkUnk21_Leave);
 			// 
 			// chkUnk19
 			// 
@@ -2612,7 +2585,6 @@ namespace Idmr.Yogeme
 			this.chkUnk19.TabIndex = 10;
 			this.chkUnk19.Text = "      Unknown 19";
 			this.chkUnk19.UseVisualStyleBackColor = true;
-			this.chkUnk19.Leave += new System.EventHandler(this.chkUnk19_Leave);
 			// 
 			// numUnk20
 			// 
@@ -2934,7 +2906,6 @@ namespace Idmr.Yogeme
 			this.numMessDelay.Name = "numMessDelay";
 			this.numMessDelay.Size = new System.Drawing.Size(48, 20);
 			this.numMessDelay.TabIndex = 9;
-			this.numMessDelay.Leave += new System.EventHandler(this.numMessDelay_Leave);
 			// 
 			// label55
 			// 
@@ -2962,7 +2933,6 @@ namespace Idmr.Yogeme
 			this.cboMessAmount.Name = "cboMessAmount";
 			this.cboMessAmount.Size = new System.Drawing.Size(144, 21);
 			this.cboMessAmount.TabIndex = 5;
-			this.cboMessAmount.Leave += new System.EventHandler(this.cboMessAmount_Leave);
 			// 
 			// cboMessType
 			// 
@@ -2982,7 +2952,6 @@ namespace Idmr.Yogeme
 			this.cboMessVar.Name = "cboMessVar";
 			this.cboMessVar.Size = new System.Drawing.Size(144, 21);
 			this.cboMessVar.TabIndex = 7;
-			this.cboMessVar.Leave += new System.EventHandler(this.cboMessVar_Leave);
 			// 
 			// cboMessTrig
 			// 
@@ -2992,7 +2961,6 @@ namespace Idmr.Yogeme
 			this.cboMessTrig.Name = "cboMessTrig";
 			this.cboMessTrig.Size = new System.Drawing.Size(160, 21);
 			this.cboMessTrig.TabIndex = 8;
-			this.cboMessTrig.Leave += new System.EventHandler(this.cboMessTrig_Leave);
 			// 
 			// label58
 			// 
@@ -3052,7 +3020,6 @@ namespace Idmr.Yogeme
 			this.optMessOR.TabIndex = 4;
 			this.optMessOR.TabStop = true;
 			this.optMessOR.Text = "OR";
-			this.optMessOR.CheckedChanged += new System.EventHandler(this.optMessOR_CheckedChanged);
 			// 
 			// optMessAND
 			// 
@@ -3084,7 +3051,6 @@ namespace Idmr.Yogeme
 			this.cboMessColor.Name = "cboMessColor";
 			this.cboMessColor.Size = new System.Drawing.Size(72, 21);
 			this.cboMessColor.TabIndex = 2;
-			this.cboMessColor.SelectedIndexChanged += new System.EventHandler(this.cboMessColor_SelectedIndexChanged);
 			// 
 			// txtMessage
 			// 
@@ -3113,6 +3079,7 @@ namespace Idmr.Yogeme
 			this.lstMessages.ItemHeight = 15;
 			this.lstMessages.Location = new System.Drawing.Point(8, 8);
 			this.lstMessages.Name = "lstMessages";
+			this.lstMessages.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
 			this.lstMessages.Size = new System.Drawing.Size(320, 499);
 			this.lstMessages.TabIndex = 0;
 			this.lstMessages.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.lstMessages_DrawItem);
@@ -3179,7 +3146,7 @@ namespace Idmr.Yogeme
 			this.cboGlobalAmount.Name = "cboGlobalAmount";
 			this.cboGlobalAmount.Size = new System.Drawing.Size(144, 21);
 			this.cboGlobalAmount.TabIndex = 0;
-			this.cboGlobalAmount.Leave += new System.EventHandler(this.cboGlobalAmount_Leave);
+			this.cboGlobalAmount.SelectedIndexChanged += new System.EventHandler(this.cboGlobalAmount_SelectedIndexChanged);
 			// 
 			// cboGlobalType
 			// 
@@ -3197,7 +3164,7 @@ namespace Idmr.Yogeme
 			this.cboGlobalVar.Name = "cboGlobalVar";
 			this.cboGlobalVar.Size = new System.Drawing.Size(144, 21);
 			this.cboGlobalVar.TabIndex = 2;
-			this.cboGlobalVar.Leave += new System.EventHandler(this.cboGlobalVar_Leave);
+			this.cboGlobalVar.SelectedIndexChanged += new System.EventHandler(this.cboGlobalVar_SelectedIndexChanged);
 			// 
 			// cboGlobalTrig
 			// 
@@ -3206,7 +3173,7 @@ namespace Idmr.Yogeme
 			this.cboGlobalTrig.Name = "cboGlobalTrig";
 			this.cboGlobalTrig.Size = new System.Drawing.Size(160, 21);
 			this.cboGlobalTrig.TabIndex = 3;
-			this.cboGlobalTrig.Leave += new System.EventHandler(this.cboGlobalTrig_Leave);
+			this.cboGlobalTrig.SelectedIndexChanged += new System.EventHandler(this.cboGlobalTrig_SelectedIndexChanged);
 			// 
 			// label59
 			// 

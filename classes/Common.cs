@@ -297,6 +297,46 @@ namespace Idmr.Yogeme
 				listBox.SetSelected(itemIndex, true);
 			refresh = btemp;
 		}
+
+		/// <summary>Adds an event handler function to be processed by common input controls when their value changes.</summary>
+		public static void AddControlChangedHandler(Control control, EventHandler handler)
+		{
+			string ct = control.GetType().ToString();
+			if (ct == "System.Windows.Forms.TextBox") ((TextBox)control).TextChanged += handler;
+			else if (ct == "System.Windows.Forms.NumericUpDown") ((NumericUpDown)control).ValueChanged += handler;
+			else if (ct == "System.Windows.Forms.CheckBox") ((CheckBox)control).CheckedChanged += handler;
+			else if (ct == "System.Windows.Forms.RadioButton") ((RadioButton)control).CheckedChanged += handler;
+			else if (ct == "System.Windows.Forms.ComboBox")
+			{
+				ComboBox cbo = (ComboBox)control;
+				if (cbo.DropDownStyle == ComboBoxStyle.DropDownList)
+					cbo.SelectedIndexChanged += handler;
+				else
+					cbo.TextChanged += handler;
+			}
+			else throw new ArgumentException("Cannot register changed handler to unacceptable control type: " + ct);
+		}
+
+		/// <summary>Retrieves the current value of common editable form control as a generic object.</summary>
+		/// <returns>TextBox returns string.  CheckBox and RadioButton return bool.  NumericUpDown and ComboBoxbox return int.</returns>
+		public static object GetControlValue(object sender)
+		{
+			object value = 0;
+			string ct = sender.GetType().ToString();
+			if (ct == "System.Windows.Forms.TextBox") value = ((TextBox)sender).Text;
+			else if (ct == "System.Windows.Forms.NumericUpDown") value = (int)((NumericUpDown)sender).Value;
+			else if (ct == "System.Windows.Forms.CheckBox") value = ((CheckBox)sender).Checked;
+			else if (ct == "System.Windows.Forms.RadioButton") value = ((RadioButton)sender).Checked;
+			else if (ct == "System.Windows.Forms.ComboBox")
+			{
+				ComboBox cbo = (ComboBox)sender;
+				if (cbo.DropDownStyle == ComboBoxStyle.DropDownList)
+					value = cbo.SelectedIndex;  // The only style where the text isn't editable.
+				else
+					value = cbo.Text;
+			}
+			return value;
+		}
     }
 
 	/// <summary>Allows multi-edit properties to perform generic platform-dependent refresh operations.</summary>
@@ -320,8 +360,8 @@ namespace Idmr.Yogeme
 		SkipLabel = 64,
 		/// <summary>Optional craft label</summary>
 		OptCraftLabel = 128,
-		/// <summary> Message trigger label</summary>
-		MsgLabel = 256
+		/// <summary> The map should be updated</summary>
+		Map = 256
 	};
 
 	/// <summary>To be assigned as a custom Tag on form controls registered as a multi-edit property.</summary>
