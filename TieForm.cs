@@ -2385,15 +2385,11 @@ namespace Idmr.Yogeme
 		}
 		void cmdForms_Click(object sender, EventArgs e)
 		{
-			try  //[JB] Added try/catch
+			FormationDialog dlg = new FormationDialog(_mission.FlightGroups[_activeFG].Formation, _mission.FlightGroups[_activeFG].FormDistance, Settings.Platform.TIE);
+			if (dlg.ShowDialog() == DialogResult.OK)
 			{
-				FormationDialog dlg = new FormationDialog(_mission.FlightGroups[_activeFG].Formation);
-				dlg.SetToTie95();
-				if (dlg.ShowDialog() == DialogResult.OK) cboFormation.SelectedIndex = dlg.Formation;
-			}
-			catch
-			{
-				MessageBox.Show("The Formations browser could not be loaded.", "Error");
+				cboFormation.SelectedIndex = dlg.Formation;
+				numSpacing.Value = dlg.Spacing;
 			}
 		}
 		void numBackdrop_Leave(object sender, EventArgs e)
