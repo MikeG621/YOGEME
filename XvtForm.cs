@@ -3,10 +3,14 @@
  * Copyright (C) 2007-2022 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.12
+ * VERSION: 1.12+
  */
 
 /* CHANGELOG
+ * [UPD] OrderDesignation now a drop-down [JB]
+ * [UPD] long else-if in setFlightgroupProperty() and setMessageProperty() changed to switch [JB]
+ * [FIX] minor issues with multi-select [JB]
+ * [UPD] multi-select functions moved to Common [JB]
  * v1.12, 220103
  * [NEW] Multi-select [JB]
  * [UPD] Unused messages drawn in gray
@@ -2163,6 +2167,7 @@ namespace Idmr.Yogeme
 				craftStart(_mission.FlightGroups[_activeFG], false);
 				if (_mission.FlightGroups.Count == 1)
 				{
+#pragma warning disable IDE0059 // Unnecessary assignment of a value
 					_activeFG = _mission.DeleteFG(_activeFG);  // Need to perform a full delete to wipe the FG indexes (messages or briefing tags may still have them).  The delete function always ensures that Count==1, so it must be inside this block, not before.
 					_mission.FlightGroups.Clear();
 					_activeFG = 0;
@@ -2172,6 +2177,7 @@ namespace Idmr.Yogeme
 					break;
 				}
 				else _activeFG = _mission.DeleteFG(_activeFG); // Actual delete handled in platform.
+#pragma warning restore IDE0059 // Unnecessary assignment of a value
 			}
 			// Fix bounds and make new selection.
 			if (startFG >= _mission.FlightGroups.Count)

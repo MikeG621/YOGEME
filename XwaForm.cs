@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2022 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.12
+ * VERSION: 1.12+
  */
 
 /* CHANGELOG
+ * [NEW] Multi-select [JB]
  * v1.12, 220103
  * [FIX] Combos cleared during init to prevent duplicated entries [JB]
  * [UPD] Unused messages drawn in gray
@@ -2557,6 +2558,7 @@ namespace Idmr.Yogeme
 				craftStart(_mission.FlightGroups[_activeFG], false);
 				if (_mission.FlightGroups.Count == 1)
 				{
+#pragma warning disable IDE0059 // Unnecessary assignment of a value
 					_activeFG = _mission.DeleteFG(_activeFG);  // Need to perform a full delete to wipe the FG indexes (messages or briefing tags may still have them).  The delete function always ensures that Count==1, so it must be inside this block, not before.
 					_mission.FlightGroups.Clear();
 					_activeFG = 0;
@@ -2565,6 +2567,7 @@ namespace Idmr.Yogeme
 					craftStart(_mission.FlightGroups[0], true);
 				}
 				else _activeFG = _mission.DeleteFG(_activeFG);  // Actual delete moved to platform.
+#pragma warning restore IDE0059 // Unnecessary assignment of a value
 			}
 			// Fix bounds and make new selection.
 			if (startFG >= _mission.FlightGroups.Count)
@@ -3320,7 +3323,7 @@ namespace Idmr.Yogeme
 			int r = cboSkipOrder.SelectedIndex / 4;
 			int o = cboSkipOrder.SelectedIndex % 4;
 			labelRefresh(_mission.FlightGroups[_activeFG].Orders[r, o].SkipTriggers[0], lblSkipTrig1);
-			labelRefresh(_mission.FlightGroups[_activeFG].Orders[r, 0].SkipTriggers[1], lblSkipTrig2);
+			labelRefresh(_mission.FlightGroups[_activeFG].Orders[r, o].SkipTriggers[1], lblSkipTrig2);
 			lblSkipTrigArr_Click(lblSkipTrig1, new EventArgs());
 			refreshSkipIndicators();
 			optSkipOR.Checked = _mission.FlightGroups[_activeFG].Orders[r, o].SkipT1AndOrT2;
@@ -3819,7 +3822,6 @@ namespace Idmr.Yogeme
 		}
 		void numOVar1_ValueChanged(object sender, EventArgs e)
 		{
-			int r = (int)(numORegion.Value - 1);
 			byte value = (byte)numOVar1.Value;
 			int command = cboOrders.SelectedIndex;
 			string text = "";
@@ -3873,7 +3875,6 @@ namespace Idmr.Yogeme
 		}
 		void numOVar2_ValueChanged(object sender, EventArgs e)
 		{
-			int r = (int)(numORegion.Value - 1);
 			int command = cboOrders.SelectedIndex;
 			int var = (int)numOVar2.Value;
 			string text = "";

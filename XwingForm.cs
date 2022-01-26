@@ -4,10 +4,11 @@
  * This file authored by "JB" (Random Starfighter) (randomstarfighter@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.12
+ * VERSION: 1.12+
  */
 
 /* CHANGELOG:
+ * [NEW] Multi-select [JB]
  * v1.12, 220103
  * [NEW] Tour Editor
  * [FIX] Listbox scrolling
@@ -1351,6 +1352,7 @@ namespace Idmr.Yogeme
 				craftStart(_mission.FlightGroups[_activeFG], false);
 				if (_mission.FlightGroups.Count == 1)
 				{
+#pragma warning disable IDE0059 // Unnecessary assignment of a value
 					_activeFG = _mission.FlightGroups.RemoveAt(_activeFG);  // Still need to delete to clear the indexes.  The delete function always ensures that Count==1, so it has to be inside this block, not before.
 					_mission.FlightGroups.Clear();
 					_activeFG = 0;
@@ -1361,6 +1363,7 @@ namespace Idmr.Yogeme
 					break;
 				}
 				else _activeFG = _mission.FlightGroups.RemoveAt(_activeFG);
+#pragma warning restore IDE0059 // Unnecessary assignment of a value
 			}
 			// Fix bounds and make new selection.
 			if (startFG >= _mission.FlightGroups.Count)
@@ -1899,7 +1902,6 @@ namespace Idmr.Yogeme
 			else
 			{
 				train = false; start = false;  //Hide other stuff.
-				min = 0;
 				max = _mission.FlightGroups.Count - 1; //Max needs to be a valid index for the cmdMove buttons to operate.
 				text = "Briefing Icon: " + (_activeFG + 1) + " of " + (max + 1);
 			}

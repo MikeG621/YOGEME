@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2022 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.12
+ * VERSION: 1.12+
  */
 
 /* CHANGELOG
+ * [NEW] Multi-select [JB]
  * v1.12, 220103
  * [UPD] Unused messages drawn in gray
  * [FIX] Listbox scrolling
@@ -1750,6 +1751,7 @@ namespace Idmr.Yogeme
 				craftStart(_mission.FlightGroups[_activeFG], false);
 				if (_mission.FlightGroups.Count == 1)
 				{
+#pragma warning disable IDE0059 // Unnecessary assignment of a value
 					_activeFG = _mission.DeleteFG(_activeFG);  // Need to perform a full delete to wipe the FG indexes (messages or briefing tags may still have them).  The delete function always ensures that Count==1, so it must be inside this block, not before.
 					_mission.FlightGroups.Clear();
 					_activeFG = 0;
@@ -1759,6 +1761,7 @@ namespace Idmr.Yogeme
 					break;
 				}
 				else _activeFG = _mission.DeleteFG(_activeFG);  // Actual delete moved to platform.
+#pragma warning restore IDE0059 // Unnecessary assignment of a value
 			}
 			// Fix bounds and make new selection.
 			if (startFG >= _mission.FlightGroups.Count)
@@ -2896,7 +2899,7 @@ namespace Idmr.Yogeme
 				l.Focus();
 				_activeMessageTrig = Convert.ToByte(lblMess1 == l ? 0 : 1);    // selected
 			}
-			catch (InvalidCastException) { _activeMessageTrig = Convert.ToByte(sender); l = (_activeMessageTrig == _activeMessageTrig ? lblMess1 : lblMess2); }
+			catch (InvalidCastException) { _activeMessageTrig = Convert.ToByte(sender); l = (_activeMessageTrig == 0 ? lblMess1 : lblMess2); }
 			setInteractiveLabelColor(l, true);
 			setInteractiveLabelColor((_activeMessageTrig == 0 ? lblMess2 : lblMess1), false);
 			bool btemp = _loading;

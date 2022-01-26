@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2022 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.12
+ * VERSION: 1.12+
  */
 
 /* CHANGELOG
+ * [UPD] more multi-edit functions pulled in [JB]
  * v1.12, 220103
  * [NEW] MultiEdit [JB]
  * v1.8.1, 201213
@@ -263,13 +264,20 @@ namespace Idmr.Yogeme
 		}
 
 		/// <summary>Safely returns a string from a string array.</summary>
-		/// <remarks>Performs array bounds checking to return an item in the array. If invalid, returns an empty string. If <paramref name="echo"/> is true, returns a string representation of the index instead of an empty string if not found.</remarks>
- 		public static string SafeString(string[] stringArray, int index, bool echo)
+		/// <remarks>Performs array bounds checking to return an item in the array.</remarks>
+		/// <param name="stringArray">The array to pull from.</param>
+		/// <param name="index">The selected index.</param>
+		/// <param name="echo">Whether or not to return <paramref name="index"/> on error.</param>
+		/// <returns>The indicated string in the array. If <paramref name="index"/> is invalid, will return an empty string unless <paramref name="echo"/> is <b>true</b>, then returns <paramref name="index"/>.</returns>
+		public static string SafeString(string[] stringArray, int index, bool echo)
 		{
 			return (stringArray != null && index >= 0 && index < stringArray.Length) ? stringArray[index] : echo ? index.ToString() : "";
 		}
 
 		/// <summary>Independently enables or disables a pair of form Buttons depending on the state of a MultiSelect ListBox.</summary>
+		/// <param name="up">The appropriate "Move Up" button.</param>
+		/// <param name="down">The appropriate "Move Down" button.</param>
+		/// <param name="list">The list used to determined if <paramref name="up"/> and <paramref name="down"/> are enabled.</param>
 		public static void UpdateMoveButtons(Button up, Button down, ListBox list)
 		{
 			up.Enabled = (list.SelectedIndices.Count > 0 && list.SelectedIndices[0] > 0);
@@ -278,6 +286,8 @@ namespace Idmr.Yogeme
 
 		/// <summary>Retrieves a copy of the selected indices from a ListBox control.</summary>
 		/// <remarks>Some operations that modify ListBox items will interfere with the original selection before the operation has completed.</remarks>
+		/// <param name="listBox">The approriate ListBox.</param>
+		/// <returns>The copied list of indices.</returns>
 		public static List<int> GetSelectedIndices(ListBox listBox)
 		{
 			List<int> ret = new List<int>();
@@ -287,6 +297,8 @@ namespace Idmr.Yogeme
 		}
 
 		/// <summary>Assigns or restores a previously retrieved copy of selected indices from a ListBox control</summary>
+		/// <param name="listBox">The approriate ListBox.</param>
+		/// <param name="selection">The list of indices.</param>
 		/// <param name="refresh">A platform-dependent flag to allow ignoring each SelectionIndexChanged event that is raised from selecting each item.</param>
 		public static void SetSelectedIndices(ListBox listBox, List<int> selection, ref bool refresh)
 		{
@@ -299,6 +311,8 @@ namespace Idmr.Yogeme
 		}
 
 		/// <summary>Adds an event handler function to be processed by common input controls when their value changes.</summary>
+		/// <param name="control">The control to assign the handler to.</param>
+		/// <param name="handler">The handler event to assign.</param>
 		public static void AddControlChangedHandler(Control control, EventHandler handler)
 		{
 			string ct = control.GetType().ToString();
@@ -318,7 +332,9 @@ namespace Idmr.Yogeme
 		}
 
 		/// <summary>Retrieves the current value of common editable form control as a generic object.</summary>
-		/// <returns>TextBox returns string.  CheckBox and RadioButton return bool.  NumericUpDown and ComboBoxbox return int.</returns>
+		/// <remarks>TextBox returns string. CheckBox and RadioButton return bool. NumericUpDown and ComboBoxbox return int.</remarks>
+		/// <param name="sender">A form control.</param>
+		/// <returns>The value of <paramref name="sender"/> as a control-approriate type.</returns>
 		public static object GetControlValue(object sender)
 		{
 			object value = 0;
@@ -369,6 +385,10 @@ namespace Idmr.Yogeme
 	{
 		public string Name;
 		public MultiEditRefreshType RefreshType;
+
+		/// <summary>Initializes a new instance with the given values.</summary>
+		/// <param name="propertyName">The name of the property.</param>
+		/// <param name="refreshType">The type(s) of refresh operations approriate for the property.</param>
 		public MultiEditProperty(string propertyName, MultiEditRefreshType refreshType)
 		{
 			Name = propertyName;

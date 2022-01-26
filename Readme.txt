@@ -27,6 +27,9 @@ your user settings.
 ==========
 Version History
 
+ - (All) Multi-select added to all platforms [Issue #23] (JB)
+ - (XvT) Order Designation is now an editable drop-down (JB)
+
 v1.12, 03 Jan 2022
  - (All) Fixed the "looping" effect when scrolling through colored list boxes (Thanks to RandomStarfighter)
  - (XW) Created the Tour Editor, similar to TIE's Battle Editor
