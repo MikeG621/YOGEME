@@ -18,12 +18,9 @@
  */
 
 using System;
-using System.Collections;
 using System.Drawing;
-using System.Reflection;
 using System.Windows.Forms;
 using System.Collections.Generic;
-using System.Diagnostics;
 
 namespace Idmr.Yogeme
 {
