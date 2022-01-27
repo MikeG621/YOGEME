@@ -1686,7 +1686,11 @@ namespace Idmr.Yogeme
 				try
 				{
 					foreach (FlightGroup fg in getSelectedFlightgroups())
+					{
+						craftStart(fg, false);
 						fg.ArrDepTriggers[_activeArrDepTrigger] = new Mission.Trigger(trig);
+						craftStart(fg, true);
+					}
 					lblADTrigArr_Click(_activeArrDepTrigger, new EventArgs());
 					labelRefresh(_mission.FlightGroups[_activeFG].ArrDepTriggers[_activeArrDepTrigger], lblADTrig[_activeArrDepTrigger]);
 					Common.Title(this, false);

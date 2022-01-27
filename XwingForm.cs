@@ -1024,6 +1024,7 @@ namespace Idmr.Yogeme
 
 					foreach (FlightGroup cur in getSelectedFlightgroups())
 					{
+						craftStart(cur, false);
 						cur.ArrivalHyperspace = fg.ArrivalHyperspace;
 						cur.DepartureHyperspace = fg.DepartureHyperspace;
 						cur.Mothership = fg.Mothership;
@@ -1034,6 +1035,7 @@ namespace Idmr.Yogeme
 							cur.ArrivalFG = -1;
 						cur.ArrivalEvent = fg.ArrivalEvent;
 						cur.ArrivalDelay = fg.ArrivalDelay;
+						craftStart(cur, true);
 					}
 					lstFG_SelectedIndexChanged(0, new EventArgs());
 					listRefreshSelectedItems();
