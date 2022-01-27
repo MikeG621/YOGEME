@@ -1021,7 +1021,7 @@ namespace Idmr.Yogeme
 			MultiEditProperty prop = (MultiEditProperty)((Control)sender).Tag;
 			if (prop.Name != "")
 			{
-				setMessageProperty(prop.RefreshType, prop.Name, Common.GetControlValue(sender));
+				setMessageProperty(/*prop.RefreshType,*/ prop.Name, Common.GetControlValue(sender));
 				Common.Title(this, false);
 			}
 			if (prop.RefreshType.HasFlag(MultiEditRefreshType.ItemText)) messRefreshSelectedItems();
@@ -1698,7 +1698,7 @@ namespace Idmr.Yogeme
 					if (trig.VariableType == 1 && trig.Variable == fgIndex)
 						count[cGoal]++;
 
-			foreach (Idmr.Platform.Tie.Message msg in _mission.Messages)
+			foreach (Platform.Tie.Message msg in _mission.Messages)
 				foreach (Mission.Trigger trig in msg.Triggers)
 					if (trig.VariableType == 1 && trig.Variable == fgIndex)
 						count[cMessage]++;
@@ -2820,7 +2820,7 @@ namespace Idmr.Yogeme
 				msgs.Add(_mission.Messages[msgIndex]);
 			return msgs;
 		}
-		void setMessageProperty(MultiEditRefreshType refreshType, string name, object value)
+		void setMessageProperty(/*MultiEditRefreshType refreshType,*/ string name, object value)
 		{
 			int trigRefresh = 0;
 			foreach (Platform.Tie.Message msg in getSelectedMessages())
@@ -2970,7 +2970,7 @@ namespace Idmr.Yogeme
 			numMessDelay.Value = _mission.Messages[_activeMessage].Delay * 5;
 			optMessOR.Checked = _mission.Messages[_activeMessage].Trig1AndOrTrig2;
 			optMessAND.Checked = !optMessOR.Checked;
-			lblMessArr_Click(0, new System.EventArgs());
+			lblMessArr_Click(0, new EventArgs());
 			_loading = btemp;
 		}
 		void txtMessage_Leave(object sender, EventArgs e)

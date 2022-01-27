@@ -27,8 +27,10 @@ your user settings.
 ==========
 Version History
 
+ - Formation dialog redesigned (JB)
  - (All) Multi-select added to all platforms [Issue #23] (JB)
  - (XvT) Order Designation is now an editable drop-down (JB)
+ - (Xwing) Formation list fixed (via Platform.dll) [Issue #63] (JB)
 
 v1.12, 03 Jan 2022
  - (All) Fixed the "looping" effect when scrolling through colored list boxes (Thanks to RandomStarfighter)

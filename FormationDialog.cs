@@ -1,12 +1,13 @@
 ﻿/*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
- * Copyright (C) 2007-2020 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2022 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.7
+ * VERSION: 1.7+
  */
 
 /* CHANGELOG
+ * [UPD] Redesign [JB]
  * v1.7, 200816
  * [UPD] Images are now foreground instead of background [JB]
  * v1.2.3, 141214
@@ -36,10 +37,10 @@ namespace Idmr.Yogeme
 		int _activeAxisDataCount = 0;
 
 		Settings.Platform _platform;
-		Bitmap _canvas;
-		Bitmap _frontIcon;
-		Bitmap _sideIcon;
-		Bitmap _topIcon;
+		readonly Bitmap _canvas;
+		readonly Bitmap _frontIcon;
+		readonly Bitmap _sideIcon;
+		readonly Bitmap _topIcon;
 
 		#region Raw Data
 		#region Bitmap Icons
@@ -540,7 +541,7 @@ namespace Idmr.Yogeme
 
 		/// <summary>Creates an array of positions for each craft in a formation.</summary>
 		/// <remarks>XW has more significant differences than other platforms, so it has its own function.</remarks>
-		FormPosition[] generatePositionsXwing(int count, int spacing)
+		FormPosition[] generatePositionsXwing(int count /*, int spacing*/)
 		{
 			if (count < 1) count = 1;
 			if (count >= 12) count = 12;
@@ -696,9 +697,9 @@ namespace Idmr.Yogeme
 			g = Graphics.FromImage(_canvas);
 			g.Clear(Color.Black);
 
-			FormPosition[] positions = null;
+			FormPosition[] positions;
 			if (_platform == Settings.Platform.XWING)
-				positions = generatePositionsXwing(count, (int)numFormSpacing.Value);
+				positions = generatePositionsXwing(count /*, (int)numFormSpacing.Value*/);
 			else
 				positions = generatePositions(count, (int)numFormSpacing.Value);
 
@@ -721,8 +722,7 @@ namespace Idmr.Yogeme
 			g.DrawString("Side (Y - Z)", DefaultFont, Brushes.LightGray, halfWidth + 30, halfHeight + 3);
 			g.DrawString("Behind (X - Z)", DefaultFont, Brushes.LightGray, 30, halfHeight + 3);
 
-			Pen pd = new Pen(Color.FromArgb(45, 45, 45));
-			pd.DashStyle = System.Drawing.Drawing2D.DashStyle.Dash;
+			Pen pd = new Pen(Color.FromArgb(45, 45, 45)) { DashStyle = System.Drawing.Drawing2D.DashStyle.Dash };
 			int x, y;
 			if (!chkFormFitPanel.Checked)
 			{

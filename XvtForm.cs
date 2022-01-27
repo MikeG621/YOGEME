@@ -1291,7 +1291,7 @@ namespace Idmr.Yogeme
 			MultiEditProperty prop = (MultiEditProperty)((Control)sender).Tag;
 			if (prop.Name != "")
 			{
-				setMessageProperty(prop.RefreshType, prop.Name, Common.GetControlValue(sender));
+				setMessageProperty(/*prop.RefreshType,*/ prop.Name, Common.GetControlValue(sender));
 				Common.Title(this, false);
 			}
 			if (prop.RefreshType.HasFlag(MultiEditRefreshType.ItemText)) messRefreshSelectedItems();
@@ -3769,7 +3769,7 @@ namespace Idmr.Yogeme
 				msgs.Add(_mission.Messages[msgIndex]);
 			return msgs;
 		}
-		void setMessageProperty(MultiEditRefreshType refreshType, string name, object value)
+		void setMessageProperty(/*MultiEditRefreshType refreshType,*/ string name, object value)
 		{
 			int trigRefresh = 0;
 			foreach (Platform.Xvt.Message msg in getSelectedMessages())
