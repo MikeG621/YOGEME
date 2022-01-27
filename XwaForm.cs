@@ -3506,12 +3506,12 @@ namespace Idmr.Yogeme
 		}
 		void cmdForms_Click(object sender, EventArgs e)
 		{
-			try
+			FormationDialog dlg = new FormationDialog(_mission.FlightGroups[_activeFG].Formation, _mission.FlightGroups[_activeFG].FormDistance, Settings.Platform.XWA);
+			if (dlg.ShowDialog() == DialogResult.OK)
 			{
-				FormationDialog dlg = new FormationDialog(_mission.FlightGroups[_activeFG].Formation);
-				if (dlg.ShowDialog() == DialogResult.OK) cboFormation.SelectedIndex = dlg.Formation;
+				cboFormation.SelectedIndex = dlg.Formation;
+				numSpacing.Value = dlg.Spacing;
 			}
-			catch { MessageBox.Show("The Formations browser could not be loaded.", "Error"); }
 		}
 		void numGG_KeyDown(object sender, KeyEventArgs e)
 		{

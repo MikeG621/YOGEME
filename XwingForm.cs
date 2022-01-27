@@ -2121,16 +2121,9 @@ namespace Idmr.Yogeme
 		}
 		void cmdForms_Click(object sender, EventArgs e)
 		{
-			try  //[JB] Added try/catch
-			{
-				FormationDialog dlg = new FormationDialog(_mission.FlightGroups[_activeFG].Formation);
-				dlg.SetToTie95();
-				if (dlg.ShowDialog() == DialogResult.OK) cboFormation.SelectedIndex = dlg.Formation;
-			}
-			catch
-			{
-				MessageBox.Show("The Formations browser could not be loaded.", "Error");
-			}
+			FormationDialog dlg = new FormationDialog(_mission.FlightGroups[_activeFG].Formation, 0, Settings.Platform.XWING);
+			if (dlg.ShowDialog() == DialogResult.OK)
+				cboFormation.SelectedIndex = dlg.Formation;
 		}
 		void numSC_ValueChanged(object sender, EventArgs e)
 		{
