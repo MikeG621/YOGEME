@@ -1334,7 +1334,7 @@ namespace Idmr.Yogeme
 			registerFgMultiEdit(cboAbort, "AbortTrigger", 0);
 			registerFgMultiEdit(numDepMin, "DepartureTimerMinutes", 0);
 			registerFgMultiEdit(numDepSec, "DepartureTimerSeconds", 0);
-			registerFgMultiEdit(cboDiff, "Difficulty", MultiEditRefreshType.ItemText);
+			registerFgMultiEdit(cboDiff, "Difficulty", MultiEditRefreshType.ItemText | MultiEditRefreshType.CraftCount);
 			registerFgMultiEdit(chkArrHuman, "ArriveOnlyIfHuman", MultiEditRefreshType.ItemText);
 			registerFgMultiEdit(txtGoalInc, "GoalTriggerInc", 0);
 			registerFgMultiEdit(txtGoalComp, "GoalTriggerComp", 0);
