@@ -6169,6 +6169,7 @@ namespace Idmr.Yogeme
 			this.txtMissDesc.MaxLength = 1024;
 			this.txtMissDesc.Multiline = true;
 			this.txtMissDesc.Name = "txtMissDesc";
+			this.txtMissDesc.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
 			this.txtMissDesc.Size = new System.Drawing.Size(236, 328);
 			this.txtMissDesc.TabIndex = 0;
 			this.txtMissDesc.Leave += new System.EventHandler(this.txtMissDesc_Leave);
@@ -6182,6 +6183,7 @@ namespace Idmr.Yogeme
 			this.txtMissSucc.MaxLength = 4096;
 			this.txtMissSucc.Multiline = true;
 			this.txtMissSucc.Name = "txtMissSucc";
+			this.txtMissSucc.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
 			this.txtMissSucc.Size = new System.Drawing.Size(236, 328);
 			this.txtMissSucc.TabIndex = 0;
 			this.txtMissSucc.Leave += new System.EventHandler(this.txtMissSucc_Leave);
@@ -6195,6 +6197,7 @@ namespace Idmr.Yogeme
 			this.txtMissFail.MaxLength = 4096;
 			this.txtMissFail.Multiline = true;
 			this.txtMissFail.Name = "txtMissFail";
+			this.txtMissFail.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
 			this.txtMissFail.Size = new System.Drawing.Size(236, 328);
 			this.txtMissFail.TabIndex = 0;
 			this.txtMissFail.Leave += new System.EventHandler(this.txtMissFail_Leave);
