@@ -3630,6 +3630,14 @@ namespace Idmr.Yogeme
 			try { cboSkipVar.SelectedIndex = _mission.FlightGroups[_activeFG].SkipToOrder4Trigger[_activeSkipTrigger].Variable; }
 			catch { cboSkipVar.SelectedIndex = 0; }
 		}
+		void cmdCopySkip_Click(object sender, EventArgs e)
+		{
+			menuCopy_Click("Skip", new EventArgs());
+		}
+		void cmdPasteSkip_Click(object sender, EventArgs e)
+		{
+			menuPaste_Click("Skip", new EventArgs());
+		}
 		void grpRole_Leave(object sender, EventArgs e)
 		{
 			ComboBox[] teams = new ComboBox[4];

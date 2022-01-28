@@ -3353,6 +3353,7 @@ namespace Idmr.Yogeme
 			this.cmdCopySkip.Name = "cmdCopySkip";
 			this.cmdCopySkip.Size = new System.Drawing.Size(24, 23);
 			this.cmdCopySkip.TabIndex = 45;
+			this.cmdCopySkip.Click += new System.EventHandler(this.cmdCopySkip_Click);
 			// 
 			// label71
 			// 
@@ -3414,6 +3415,7 @@ namespace Idmr.Yogeme
 			this.cmdPasteSkip.Name = "cmdPasteSkip";
 			this.cmdPasteSkip.Size = new System.Drawing.Size(24, 23);
 			this.cmdPasteSkip.TabIndex = 46;
+			this.cmdPasteSkip.Click += new System.EventHandler(this.cmdPasteSkip_Click);
 			// 
 			// optSkipAND
 			// 
