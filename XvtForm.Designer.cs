@@ -518,7 +518,6 @@ namespace Idmr.Yogeme
 			this.lblIFF5 = new System.Windows.Forms.Label();
 			this.lblIFF4 = new System.Windows.Forms.Label();
 			this.lblIFF3 = new System.Windows.Forms.Label();
-			this.label150 = new System.Windows.Forms.Label();
 			this.groupBox36 = new System.Windows.Forms.GroupBox();
 			this.chkMissUnk3 = new System.Windows.Forms.CheckBox();
 			this.numMissUnk1 = new System.Windows.Forms.NumericUpDown();
@@ -5859,7 +5858,6 @@ namespace Idmr.Yogeme
 			this.tabMission.Controls.Add(this.numRndSeed);
 			this.tabMission.Controls.Add(this.label29);
 			this.tabMission.Controls.Add(this.grpIFF);
-			this.tabMission.Controls.Add(this.label150);
 			this.tabMission.Controls.Add(this.groupBox36);
 			this.tabMission.Controls.Add(this.optXvT);
 			this.tabMission.Controls.Add(this.label104);
@@ -5998,16 +5996,6 @@ namespace Idmr.Yogeme
 			this.lblIFF3.TabIndex = 1;
 			this.lblIFF3.Text = "IFF3 - Blue";
 			this.lblIFF3.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
-			// 
-			// label150
-			// 
-			this.label150.AutoSize = true;
-			this.label150.Location = new System.Drawing.Point(345, 475);
-			this.label150.Name = "label150";
-			this.label150.Size = new System.Drawing.Size(415, 13);
-			this.label150.TabIndex = 17;
-			this.label150.Text = "Tip: Use the right-click context menu to copy/paste text between the system clipb" +
-    "oard.";
 			// 
 			// groupBox36
 			// 
@@ -7418,7 +7406,6 @@ namespace Idmr.Yogeme
 		private NumericUpDown numDepClockMin;
 		private Label lblOVar1Note;
 		private Label lblOSpeedNote;
-		private Label label150;
 		private Label lblOVar2Note;
 		private ComboBox cboOSpeed;
 		private GroupBox grpIFF;

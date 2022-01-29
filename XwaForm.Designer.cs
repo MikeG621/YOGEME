@@ -702,7 +702,6 @@ namespace Idmr.Yogeme
 			this.lblTeam9 = new System.Windows.Forms.Label();
 			this.lblTeam10 = new System.Windows.Forms.Label();
 			this.tabMission = new System.Windows.Forms.TabPage();
-			this.label150 = new System.Windows.Forms.Label();
 			this.label123 = new System.Windows.Forms.Label();
 			this.txtFailNote = new System.Windows.Forms.TextBox();
 			this.label82 = new System.Windows.Forms.Label();
@@ -8259,7 +8258,6 @@ namespace Idmr.Yogeme
 			// 
 			// tabMission
 			// 
-			this.tabMission.Controls.Add(this.label150);
 			this.tabMission.Controls.Add(this.label123);
 			this.tabMission.Controls.Add(this.txtFailNote);
 			this.tabMission.Controls.Add(this.label82);
@@ -8289,16 +8287,6 @@ namespace Idmr.Yogeme
 			this.tabMission.TabIndex = 4;
 			this.tabMission.Text = "Mission";
 			this.tabMission.UseVisualStyleBackColor = true;
-			// 
-			// label150
-			// 
-			this.label150.AutoSize = true;
-			this.label150.Location = new System.Drawing.Point(345, 499);
-			this.label150.Name = "label150";
-			this.label150.Size = new System.Drawing.Size(415, 13);
-			this.label150.TabIndex = 16;
-			this.label150.Text = "Tip: Use the right-click context menu to copy/paste text between the system clipb" +
-    "oard.";
 			// 
 			// label123
 			// 
@@ -10203,7 +10191,6 @@ namespace Idmr.Yogeme
         private ComboBox cboPilot;
         private Label lblOSpeedNote;
         private Label lblOVar1Note;
-        private Label label150;
         private Label label151;
         private Label lblOVar2Note;
         private Label lblGoalTimeLimitSec;

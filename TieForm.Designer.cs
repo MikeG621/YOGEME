@@ -292,7 +292,6 @@ namespace Idmr.Yogeme
 			this.optPrimOR = new System.Windows.Forms.RadioButton();
 			this.optPrimAND = new System.Windows.Forms.RadioButton();
 			this.tabOfficer = new System.Windows.Forms.TabPage();
-			this.label150 = new System.Windows.Forms.Label();
 			this.lblQuestionNote = new System.Windows.Forms.Label();
 			this.cmdAutoAlign = new System.Windows.Forms.Button();
 			this.cmdPreview = new System.Windows.Forms.Button();
@@ -3345,7 +3344,6 @@ namespace Idmr.Yogeme
 			// 
 			// tabOfficer
 			// 
-			this.tabOfficer.Controls.Add(this.label150);
 			this.tabOfficer.Controls.Add(this.lblQuestionNote);
 			this.tabOfficer.Controls.Add(this.cmdAutoAlign);
 			this.tabOfficer.Controls.Add(this.cmdPreview);
@@ -3365,16 +3363,6 @@ namespace Idmr.Yogeme
 			this.tabOfficer.Size = new System.Drawing.Size(785, 510);
 			this.tabOfficer.TabIndex = 3;
 			this.tabOfficer.Text = "Officers";
-			// 
-			// label150
-			// 
-			this.label150.AutoSize = true;
-			this.label150.Location = new System.Drawing.Point(253, 488);
-			this.label150.Name = "label150";
-			this.label150.Size = new System.Drawing.Size(415, 13);
-			this.label150.TabIndex = 17;
-			this.label150.Text = "Tip: Use the right-click context menu to copy/paste text between the system clipb" +
-    "oard.";
 			// 
 			// lblQuestionNote
 			// 
@@ -4874,7 +4862,6 @@ namespace Idmr.Yogeme
         private Label lblOVar1Note;
         private Button cmdAutoAlign;
         private Label lblQuestionNote;
-        private Label label150;
         private Label lblOVar2Note;
         private ComboBox cboPC1Color;
         private ComboBox cboPC2Color;
