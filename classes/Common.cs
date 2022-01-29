@@ -332,9 +332,9 @@ namespace Idmr.Yogeme
 		}
 
 		/// <summary>Retrieves the current value of common editable form control as a generic object.</summary>
-		/// <remarks>TextBox returns string. CheckBox and RadioButton return bool. NumericUpDown and ComboBoxbox return int.</remarks>
 		/// <param name="sender">A form control.</param>
-		/// <returns>The value of <paramref name="sender"/> as a control-approriate type.</returns>
+		/// <returns>The value of <paramref name="sender"/> as a control-appropriate type. <br/>
+		/// TextBox returns string. CheckBox and RadioButton return bool. NumericUpDown and ComboBox return int. Text editable ComboBox returns string.</returns>
 		public static object GetControlValue(object sender)
 		{
 			object value = 0;
@@ -353,7 +353,118 @@ namespace Idmr.Yogeme
 			}
 			return value;
 		}
-    }
+
+		/// <summary>Attempts to handle a Paste operation for common editable form controls.</summary>
+		/// <param name="active">Must be the calling form's ActiveControl.</param>
+		/// <param name="data">Data to assign to the control.</param>
+		/// <returns>Returns true if the operation was successfully handled.</returns>
+		public static bool Paste(Control active, object data)
+		{
+			if (active.GetType() == typeof(TextBox))
+			{
+				try
+				{
+					string s = data.ToString();
+					if (s.IndexOf("System.", 0) != -1) throw new FormatException();   // bypass byte[]
+					if (s.IndexOf("Idmr.", 0) != -1) throw new FormatException(); // Prevent the class name for custom data types
+					TextBox t = (TextBox)active;
+					t.SelectedText = s;
+					return true;
+				}
+				catch { }
+			}
+			else if (active.GetType() == typeof(NumericUpDown))
+			{
+				try
+				{
+					string str = data.ToString();
+					NumericUpDown num = (NumericUpDown)active;
+					decimal value = Convert.ToDecimal(str);
+					if (value > num.Maximum) value = num.Maximum;
+					else if (value < num.Minimum) value = num.Minimum;
+					num.Value = value;
+					return true;
+				}
+				catch { }
+			}
+			return false;
+		}
+
+		/// <summary>Attempts to handle a Cut operation for common editable form controls.</summary>
+		/// <remarks>This could be avoided if there wasn't a MenuItem handler to trap CtrlX.</remarks>
+		/// <param name="active">Must be the calling form's ActiveControl.</param>
+		/// <returns>Returns true if the operation was successfully handled.</returns>
+		public static bool Cut(Control active)
+		{
+			if (active.GetType() == typeof(TextBox))
+			{
+				((TextBox)active).Cut();
+				return true;
+			}
+			else if (active.GetType() == typeof(NumericUpDown))
+			{
+				NumericUpDown num = (NumericUpDown)active;
+				// Search for the TextBox component within the control.
+				foreach (Control child in active.Controls)
+				{
+					try
+					{
+						TextBox tb = (TextBox)child;
+						tb.Cut();
+						// Cutting text from this type of control can cause empty strings which are desynchronized from the actual selected numeric value.
+						// This still occurs even if cutting via the default right-click context menu. But since we're cutting via keyboard shortcut, we can fix it.
+						string text = tb.Text;
+						decimal v = num.Minimum;
+						decimal.TryParse(text, out v);
+						if (v < num.Minimum) v = num.Minimum;
+						else if (v > num.Maximum) v = num.Maximum;
+						num.Value = v;
+						tb.Text = v.ToString();
+						return true;
+					}
+					catch (InvalidCastException) { }
+				}
+			}
+			else if (active.GetType() == typeof(DataGridTextBox))
+			{
+				((DataGridTextBox)active).Cut();
+				return true;
+			}
+			return false;
+		}
+
+		/// <summary>Attempts to handle a KeyDown event for common editable form controls.</summary>
+		/// <param name="active">Must be the calling form's ActiveControl.</param>
+		/// <param name="e">Must be the calling form's KeyEventArgs as passed to the KeyDown event.</param>
+		/// <returns>Returns true if the operation was successfully handled. <paramref name="e"/> will not be modified even if handled.</returns>
+		public static bool KeyDown(Control active, KeyEventArgs e)
+		{
+			if (active.GetType() == typeof(TextBox))
+			{
+				TextBox txt = (TextBox)active;
+				if (e.KeyCode == Keys.Enter)
+				{
+					// Multiline textboxes need to allow newlines.
+					if (txt.Multiline == true)
+						return false;
+
+					// Calling Focus() on a TextBox control might cause it to select all text, so preserve the caret position.
+					int caret = txt.SelectionStart;
+					active.Parent.Focus(); // Triggers a Leave event.
+					active.Focus();
+					txt.SelectionStart = caret;
+					txt.SelectionLength = 0;
+					return true;
+				}
+				else if (e.KeyCode == Keys.A && e.Modifiers == Keys.Control)
+				{
+					txt.SelectAll();
+					return true;
+				}
+			}
+			return false;
+		}
+	}
 
 	/// <summary>Allows multi-edit properties to perform generic platform-dependent refresh operations.</summary>
 	public enum MultiEditRefreshType
