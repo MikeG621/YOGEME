@@ -977,27 +977,10 @@ namespace Idmr.Yogeme
 					e.Handled = true;
 				}
 			}
-			else if (e.KeyCode == Keys.Enter) //Allows the Enter key to submit changes in a TextBox or similar control by triggering a Leave() event.
+			else if (Common.KeyDown(ActiveControl, e))
 			{
-				Control c = ActiveControl;
-				bool text = c.GetType().ToString() == "System.Windows.Forms.TextBox";
-				int caret = 0;
-				if (text)  //Focus() on a TextBox control might cause it to select all text, so preserve the caret position. 
-				{
-					if (((TextBox)c).Multiline == true) return;  //Multiline textboxes need to allow newlines.
-					caret = ((TextBox)c).SelectionStart;
-				}
-
-				tabMain.Focus();
-				c.Focus();
-				if (text)
-				{
-					((TextBox)c).SelectionStart = caret;
-					((TextBox)c).SelectionLength = 0;
-				}
-
 				e.Handled = true;
-				e.SuppressKeyPress = true; //Stop the Windows UI beeping
+				e.SuppressKeyPress = true; // Stop the Windows UI beeping
 			}
 		}
 
@@ -1225,6 +1208,11 @@ namespace Idmr.Yogeme
 			data.SetData("yogeme", false, stream);
 			Clipboard.SetDataObject(data, true);
 		}
+		void menuCut_Click(object sender, EventArgs e)
+		{
+			if(Common.Cut(ActiveControl))
+				Common.Title(this, false);
+		}
 		void menuDelete_Click(object sender, EventArgs e)
 		{
 			//Ensure controls have focus, otherwise editing various text controls will trigger deletions.
@@ -1414,33 +1402,11 @@ namespace Idmr.Yogeme
 				}
 				catch { /* do nothing */ }
 			}
-			else if (ActiveControl.GetType().ToString() == "System.Windows.Forms.TextBox")
+			else if (Common.Paste(ActiveControl, obj))
 			{
-				try
-				{
-					string str = obj.ToString();
-					if (str.IndexOf("Idmr.", 0) != -1) throw new FormatException(); // [JB] Prevent the class name when an entire Message is copied.
-					TextBox txt = (TextBox)ActiveControl;
-					txt.SelectedText = str;
-					Common.Title(this, false);
-				}
-				catch { /* do nothing */ }
+				Common.Title(this, false);
 			}
-			else if (ActiveControl.GetType().ToString() == "System.Windows.Forms.NumericUpDown")
-			{
-				try
-				{
-					string str = obj.ToString();
-					NumericUpDown num = (NumericUpDown)ActiveControl;
-					decimal value = Convert.ToDecimal(str);
-					if (value > num.Maximum) value = num.Maximum;
-					else if (value < num.Minimum) value = num.Minimum;
-					num.Value = value;
-					Common.Title(this, false);
-				}
-				catch { /* do nothing */ }
-			}
-			else if (ActiveControl.GetType().ToString() == "System.Windows.Forms.DataGridTextBox")
+			else if (ActiveControl.GetType() == typeof(DataGridTextBox))
 			{
 				try
 				{
