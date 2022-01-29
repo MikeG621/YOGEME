@@ -1466,6 +1466,7 @@ namespace Idmr.Yogeme
 							_mission.Messages[_activeMessage] = mess;
 							messRefreshItem(_activeMessage);
 							lstMessages.SelectedIndex = _activeMessage;
+							lstMessages_SelectedIndexChanged(0, new EventArgs());
 #pragma warning restore IDE0016 // Use 'throw' expression
 						}
 						catch { /* do nothing */ }
