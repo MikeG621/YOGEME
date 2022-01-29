@@ -467,30 +467,15 @@ namespace Idmr.Yogeme
 				lblADTrig[i].DoubleClick += new EventHandler(lblADTrigArr_DoubleClick);
 				lblADTrig[i].Tag = i;
 			}
-			cboOrders.Items.AddRange(Strings.Orders);
-			cboOT1Type.Items.AddRange(Strings.VariableType);
-			cboOT2Type.Items.AddRange(Strings.VariableType);
-			cboOT3Type.Items.AddRange(Strings.VariableType);
-			cboOT4Type.Items.AddRange(Strings.VariableType);
-			for (int i = 1; i < 256; i++)  //The designer already starts with one item "default" for 0 MGLT.
-				cboOSpeed.Items.Add(Convert.ToInt32(i * 2.2235));
-			cboOSpeed.SelectedIndex = 0;
-			lblOrder[0] = lblOrder1;
-			lblOrder[1] = lblOrder2;
-			lblOrder[2] = lblOrder3;
-			lblOrder[3] = lblOrder4;
-			for (int i = 0; i < 4; i++)
-			{
-				lblOrder[i].Click += new EventHandler(lblOrderArr_Click);
-				lblOrder[i].DoubleClick += new EventHandler(lblOrderArr_DoubleClick);
-				lblOrder[i].MouseUp += new MouseEventHandler(lblOrderArr_MouseUp);
-				lblOrder[i].Tag = i;
-			}
 			cboSkipAmount.Items.AddRange(Strings.Amount);
+			cboSkipTrig.Items.Clear();
 			cboSkipTrig.Items.AddRange(Strings.Trigger);
+			cboSkipType.Items.Clear();
 			cboSkipType.Items.AddRange(Strings.VariableType);
 			cboGlobalAmount.Items.AddRange(Strings.Amount);
+			cboGlobalTrig.Items.Clear();
 			cboGlobalTrig.Items.AddRange(Strings.Trigger);
+			cboGlobalType.Items.Clear();
 			cboGlobalType.Items.AddRange(Strings.VariableType);
 			lblGlobTrig[0] = lblPrim1;
 			lblGlobTrig[1] = lblPrim2;
@@ -960,6 +945,28 @@ namespace Idmr.Yogeme
 				optADAndOr[i].CheckedChanged += new EventHandler(optADAndOrArr_CheckedChanged);
 				optADAndOr[i].Tag = i;
 			}
+			#endregion
+			#region Orders
+			cboOrders.Items.AddRange(Strings.Orders);
+			cboOT1Type.Items.AddRange(Strings.VariableType);
+			cboOT2Type.Items.AddRange(Strings.VariableType);
+			cboOT3Type.Items.AddRange(Strings.VariableType);
+			cboOT4Type.Items.AddRange(Strings.VariableType);
+			lblOrder[0] = lblOrder1;
+			lblOrder[1] = lblOrder2;
+			lblOrder[2] = lblOrder3;
+			lblOrder[3] = lblOrder4;
+			for (int i = 0; i < 4; i++)
+			{
+				lblOrder[i].Click += new EventHandler(lblOrderArr_Click);
+				lblOrder[i].DoubleClick += new EventHandler(lblOrderArr_DoubleClick);
+				lblOrder[i].MouseUp += new MouseEventHandler(lblOrderArr_MouseUp);
+				lblOrder[i].Tag = i;
+			}
+			for (int i = 1; i < 256; i++)  //The designer already starts with one item "default" for 0 MGLT.
+				cboOSpeed.Items.Add(Convert.ToInt32(i * 2.2235));
+			cboOSpeed.SelectedIndex = 0;
+			// Rest of order init happens in initializeMission()
 			#endregion
 			#region Waypoints
 			_tableWP.Columns.Add("X"); _tableWP.Columns.Add("Y"); _tableWP.Columns.Add("Z");
