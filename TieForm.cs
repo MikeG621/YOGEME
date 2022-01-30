@@ -2938,8 +2938,9 @@ namespace Idmr.Yogeme
 			lblMessArr_Click(0, new EventArgs());
 			_loading = btemp;
 		}
-		void txtMessage_Leave(object sender, EventArgs e)
+		void txtMessage_TextChanged(object sender, EventArgs e)
 		{
+			if (_loading) return;
 			_mission.Messages[_activeMessage].MessageString = Common.Update(this, _mission.Messages[_activeMessage].MessageString, txtMessage.Text);
 			messRefreshItem(_activeMessage);
 		}

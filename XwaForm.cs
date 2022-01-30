@@ -4757,8 +4757,9 @@ namespace Idmr.Yogeme
 		{
 			lblDelay.Text = Common.GetFormattedTime(_mission.GetDelaySeconds((byte)numMessDelay.Value), true);
 		}
-		void txtMessage_Leave(object sender, EventArgs e)
+		void txtMessage_TextChanged(object sender, EventArgs e)
 		{
+			if (_loading) return;
 			_mission.Messages[_activeMessage].MessageString = Common.Update(this, _mission.Messages[_activeMessage].MessageString, txtMessage.Text);
 			messRefreshItem(_activeMessage);
 		}

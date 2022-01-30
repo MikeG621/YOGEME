@@ -6478,7 +6478,7 @@ namespace Idmr.Yogeme
 			this.txtMessage.Name = "txtMessage";
 			this.txtMessage.Size = new System.Drawing.Size(360, 20);
 			this.txtMessage.TabIndex = 20;
-			this.txtMessage.Leave += new System.EventHandler(this.txtMessage_Leave);
+			this.txtMessage.TextChanged += new System.EventHandler(this.txtMessage_TextChanged);
 			// 
 			// label26
 			// 
