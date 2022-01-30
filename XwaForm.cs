@@ -7,6 +7,7 @@
  */
 
 /* CHANGELOG
+ * [NEW] copy/paste for Order Waypoints
  * [NEW] Multi-select [JB]
  * v1.12, 220103
  * [FIX] Combos cleared during init to prevent duplicated entries [JB]
@@ -1758,6 +1759,11 @@ namespace Idmr.Yogeme
 				formatter.Serialize(stream, _mission.FlightGroups[_activeFG].Orders[(int)numORegion.Value - 1, _activeOrder % 4]);   //[JB] Fixed copy from the appropriate region.
 				data.SetText(_mission.FlightGroups[_activeFG].Orders[(int)numORegion.Value - 1, _activeOrder % 4].ToString());
 			}
+			else if (sender.ToString() == "OrderWP")
+			{
+				formatter.Serialize(stream, _mission.FlightGroups[_activeFG].Orders[cboWP.SelectedIndex / 4, cboWP.SelectedIndex % 4]);   // Copy the whole order
+				data.SetText(_mission.FlightGroups[_activeFG].Orders[cboWP.SelectedIndex / 4, cboWP.SelectedIndex % 4].ToString());
+			}
 			else if (sender.ToString() == "Skip" || (lblSkipTrig1.Focused || lblSkipTrig2.Focused))  //[JB] Detect if triggers have focus
 			{
 				int i = (lblSkipTrig1.ForeColor == getHighlightColor() ? 0 : 1);
@@ -2040,6 +2046,18 @@ namespace Idmr.Yogeme
 						fg.Orders[(int)numORegion.Value - 1, _activeOrder % 4] = new FlightGroup.Order(ord);
 					lblOrderArr_Click(_activeOrder, new EventArgs());
 					orderLabelRefresh();
+					Common.Title(this, false);
+				}
+				catch { /* do nothing */ }
+			}
+			else if (sender.ToString() == "OrderWP")
+			{
+				try
+				{
+					foreach (FlightGroup fg in getSelectedFlightgroups())
+						for (int w = 0; w < ord.Waypoints.Length; w++)
+							fg.Orders[cboWP.SelectedIndex / 4, cboWP.SelectedIndex % 4].Waypoints[w] = ord.Waypoints[w];
+					cboWP_SelectedIndexChanged("Paste", new EventArgs());
 					Common.Title(this, false);
 				}
 				catch { /* do nothing */ }
@@ -3803,13 +3821,22 @@ namespace Idmr.Yogeme
 			try { cboOT4.SelectedIndex = _mission.FlightGroups[_activeFG].Orders[(int)(numORegion.Value - 1), _activeOrder].Target4; }
 			catch { cboOT4.SelectedIndex = 0; }
 		}
+
 		void cmdCopyOrder_Click(object sender, EventArgs e)
 		{
 			menuCopy_Click("Order", new EventArgs());
 		}
+		void cmdCopyOrderWP_Click(object sender, EventArgs e)
+		{
+			menuCopy_Click("OrderWP", new EventArgs());
+		}
 		void cmdPasteOrder_Click(object sender, EventArgs e)
 		{
 			menuPaste_Click("Order", new EventArgs());
+		}
+		void cmdPasteOrderWP_Click(object sender, EventArgs e)
+		{
+			menuPaste_Click("OrderWP", new EventArgs());
 		}
 
 		void numORegion_ValueChanged(object sender, EventArgs e)
