@@ -2090,20 +2090,13 @@ namespace Idmr.Yogeme
 			if (cboOT3Type.SelectedIndex == 1) comboReset(cboOT3, fgList, _mission.FlightGroups[_activeFG].Orders[_activeOrder].Target3);
 			if (cboOT4Type.SelectedIndex == 1) comboReset(cboOT4, fgList, _mission.FlightGroups[_activeFG].Orders[_activeOrder].Target4);
 			if (cboMessType.SelectedIndex == 1) comboReset(cboMessVar, fgList, cboMessVar.SelectedIndex);
-			//[JB] This is the simplest way to force all labels to refresh, but not the most efficient. An annoying side effect of forcing clicks is that the current selection will change, so restore after refreshing.
-			int restore = _activeArrDepTrigger;
-			for (int i = 0; i < lblADTrig.Length; i++) lblADTrigArr_Click(lblADTrig[i], new EventArgs());
-			lblADTrigArr_Click(lblADTrig[restore], new EventArgs());
-
-			//_activeGlobalGoal is handled when switching tabs. See updateMissionTabs(), which refreshes the labels there.
-
-			restore = _activeOrder;
-			for (int i = 0; i < lblOrder.Length; i++) lblOrderArr_Click(lblOrder[i], new EventArgs());
-			lblOrderArr_Click(lblOrder[restore], new EventArgs());
-
-			restore = _activeMessageTrig;
-			lblMessArr_Click(restore == 0 ? lblMess2 : lblMess1, new EventArgs());  //Only two, inactive one first, then active.
-			lblMessArr_Click(restore == 0 ? lblMess1 : lblMess2, new EventArgs());
+			// Refresh trigger labels
+			for (int i = 0; i < 3; i++) labelRefresh(_mission.FlightGroups[_activeFG].ArrDepTriggers[i], lblADTrig[i]);
+			lblADTrigArr_Click(lblADTrig[_activeArrDepTrigger], new EventArgs());
+			byte restore = _activeOrder;
+			for (_activeOrder = 0; _activeOrder < 3; _activeOrder++) orderLabelRefresh();
+			_activeOrder = restore;
+			// Global goals and messages are handled when switching tabs. See updateMissionTabs()
 
 			_loading = temp;
 			listRefreshItem(_activeFG);

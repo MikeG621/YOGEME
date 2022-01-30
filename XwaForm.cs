@@ -3163,10 +3163,10 @@ namespace Idmr.Yogeme
 			string[] fgList = _mission.FlightGroups.GetList();
 			bool temp = _loading;
 			_loading = true;
-			comboReset(cboArrMS, fgList, 0);
-			comboReset(cboArrMSAlt, fgList, 0);
-			comboReset(cboDepMS, fgList, 0);
-			comboReset(cboDepMSAlt, fgList, 0);
+			comboReset(cboArrMS, fgList, _mission.FlightGroups[_activeFG].ArrivalCraft1);
+			comboReset(cboArrMSAlt, fgList, _mission.FlightGroups[_activeFG].ArrivalCraft2);
+			comboReset(cboDepMS, fgList, _mission.FlightGroups[_activeFG].DepartureCraft1);
+			comboReset(cboDepMSAlt, fgList, _mission.FlightGroups[_activeFG].DepartureCraft2);
 			cboMessFG.Items.Clear(); cboMessFG.Items.AddRange(fgList);
 			if (_mission.Messages.Count != 0) cboMessFG.SelectedIndex = _mission.Messages[_activeMessage].OriginatingFG;
 			parameterRefresh(cboSkipPara);
@@ -3174,26 +3174,24 @@ namespace Idmr.Yogeme
 			parameterRefresh(cboADPara);
 			parameterRefresh(cboMessPara);
 			parameterRefresh(cboGlobalPara);
-			//[JB] This is the simplest way to force all labels to refresh, but not the most efficient. An annoying side effect of forcing clicks is that the current selection will change, so restore after refreshing.
-			int restore = _activeArrDepTrigger;
-			foreach (var lbl in lblADTrig) lblADTrigArr_Click(lbl, new EventArgs());
-			lblADTrigArr_Click(lblADTrig[restore], new EventArgs());
-
-			restore = _activeGlobalTrigger;
-			foreach (var lbl in lblGlobTrig) lblGlobTrigArr_Click(lbl, new EventArgs());
-			lblGlobTrigArr_Click(lblGlobTrig[restore], new EventArgs());
-
-			restore = _activeOrder;
-			foreach (var lbl in lblOrder) lblOrderArr_Click(lbl, new EventArgs());
+			// Refresh trigger labels
+			for (int i = 0; i < 6; i++) labelRefresh(_mission.FlightGroups[_activeFG].ArrDepTriggers[i], lblADTrig[i]);
+			lblADTrigArr_Click(lblADTrig[_activeArrDepTrigger], new EventArgs());
+			byte restore = _activeOrder;
+			for (_activeOrder = 0; _activeOrder < 4; _activeOrder++) orderLabelRefresh();
 			lblOrderArr_Click(lblOrder[restore], new EventArgs());
-
-			restore = _activeMessageTrigger;
-			foreach (var lbl in lblMessTrig) lblMessTrigArr_Click(lbl, new EventArgs());
-			lblMessTrigArr_Click(lblMessTrig[restore], new EventArgs());
-
-			restore = _activeSkipTrigger;
-			lblSkipTrigArr_Click(restore == 0 ? lblSkipTrig2 : lblSkipTrig1, new EventArgs());  //Only two, inactive one first, then active.
-			lblSkipTrigArr_Click(restore == 0 ? lblSkipTrig1 : lblSkipTrig2, new EventArgs());
+			int r = cboSkipOrder.SelectedIndex / 4;
+			int o = cboSkipOrder.SelectedIndex % 4;
+			labelRefresh(_mission.FlightGroups[_activeFG].Orders[r, o].SkipTriggers[0], lblSkipTrig1);
+			labelRefresh(_mission.FlightGroups[_activeFG].Orders[r, o].SkipTriggers[1], lblSkipTrig2);
+			lblSkipTrigArr_Click(_activeSkipTrigger == 0 ? lblSkipTrig1 : lblSkipTrig2, new EventArgs());
+			for (int i = 0; i < 12; i++) labelRefresh(_mission.Globals[_activeTeam].Goals[i / 4].Triggers[i % 4], lblGlobTrig[i]);
+			lblGlobTrigArr_Click(lblGlobTrig[_activeGlobalTrigger], new EventArgs());
+			if (_mission.Messages.Count > 0)
+			{
+				for (int i = 0; i < 6; i++) labelRefresh(_mission.Messages[_activeMessage].Triggers[i], lblMessTrig[i]);
+				lblMessTrigArr_Click(lblMessTrig[_activeMessageTrigger], new EventArgs());
+			}
 
 			_loading = temp;
 			listRefreshItem(_activeFG);
@@ -4284,7 +4282,7 @@ namespace Idmr.Yogeme
 			}
 			catch (InvalidCastException)
 			{
-				i = (int)sender;    // i = clicked trigger from code
+				i = Convert.ToByte(sender);    // i = clicked trigger from code
 				if (i == 0) { l = lblSkipTrig1; ; ll = lblSkipTrig2; }
 				else { l = lblSkipTrig2; ll = lblSkipTrig1; }
 			}

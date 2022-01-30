@@ -2413,10 +2413,10 @@ namespace Idmr.Yogeme
 			string[] fgList = _mission.FlightGroups.GetList();
 			bool temp = _loading;
 			_loading = true;
-			comboReset(cboArrMS, fgList, 0);
-			comboReset(cboArrMSAlt, fgList, 0);
-			comboReset(cboDepMS, fgList, 0);
-			comboReset(cboDepMSAlt, fgList, 0);
+			comboReset(cboArrMS, fgList, _mission.FlightGroups[_activeFG].ArrivalCraft1);
+			comboReset(cboArrMSAlt, fgList, _mission.FlightGroups[_activeFG].ArrivalCraft2);
+			comboReset(cboDepMS, fgList, _mission.FlightGroups[_activeFG].DepartureCraft1);
+			comboReset(cboDepMSAlt, fgList, _mission.FlightGroups[_activeFG].DepartureCraft2);
 			//[JB] Force refresh of trigger/order controls if Type==Flight Group is selected.
 			if (cboADTrigType.SelectedIndex == 1) comboReset(cboADTrigVar, fgList, _mission.FlightGroups[_activeFG].ArrDepTriggers[_activeArrDepTrigger].Variable);
 			if (cboSkipType.SelectedIndex == 1) comboReset(cboSkipVar, fgList, cboSkipVar.SelectedIndex);
@@ -2426,27 +2426,23 @@ namespace Idmr.Yogeme
 			if (cboOT3Type.SelectedIndex == 1) comboReset(cboOT3, fgList, _mission.FlightGroups[_activeFG].Orders[_activeOrder].Target3);
 			if (cboOT4Type.SelectedIndex == 1) comboReset(cboOT4, fgList, _mission.FlightGroups[_activeFG].Orders[_activeOrder].Target4);
 			if (cboMessType.SelectedIndex == 1) comboReset(cboMessVar, fgList, cboMessVar.SelectedIndex);
-			//[JB] This is the simplest way to force all labels to refresh, but not the most efficient. An annoying side effect of forcing clicks is that the current selection will change, so restore after refreshing.
-			int restore = _activeArrDepTrigger;
-			foreach (var lbl in lblADTrig) lblADTrigArr_Click(lbl, new EventArgs());
-			lblADTrigArr_Click(lblADTrig[restore], new EventArgs());
-
+			// Refresh trigger labels
+			for (int i = 0; i < 6; i++) labelRefresh(_mission.FlightGroups[_activeFG].ArrDepTriggers[i], lblADTrig[i]);
+			lblADTrigArr_Click(lblADTrig[_activeArrDepTrigger], new EventArgs());
+			byte restore = _activeOrder;
+			for (_activeOrder = 0; _activeOrder < 4; _activeOrder++) orderLabelRefresh();
+			_activeOrder = restore;
+			labelRefresh(_mission.FlightGroups[_activeFG].SkipToOrder4Trigger[0], lblSkipTrig1);
+			labelRefresh(_mission.FlightGroups[_activeFG].SkipToOrder4Trigger[1], lblSkipTrig2);
+			lblSkipTrigArr_Click(_activeSkipTrigger == 0 ? lblSkipTrig1 : lblSkipTrig2, new EventArgs());
 			restore = _activeGlobalTrigger;
 			foreach (var lbl in lblGlobTrig) lblGlobTrigArr_Click(lbl, new EventArgs());
-			if (restore >= 0) lblGlobTrigArr_Click(lblGlobTrig[restore], new EventArgs());
-
-			restore = _activeOrder;
-			foreach (var lbl in lblOrder) lblOrderArr_Click(lbl, new EventArgs());
-			lblOrderArr_Click(lblOrder[restore], new EventArgs());
-
-			restore = _activeMessageTrigger;
-			foreach (var lbl in lblMessTrig) lblMessTrigArr_Click(lbl, new EventArgs());
-			lblMessTrigArr_Click(lblMessTrig[restore], new EventArgs());
-
-			restore = _activeSkipTrigger;
-			lblSkipTrigArr_Click((restore == 0 ? lblSkipTrig2 : lblSkipTrig1), new EventArgs());  //Only two, inactive one first, then active.
-			lblSkipTrigArr_Click((restore == 0 ? lblSkipTrig1 : lblSkipTrig2), new EventArgs());
-
+			lblGlobTrigArr_Click(lblGlobTrig[restore], new EventArgs());
+			if (_mission.Messages.Count > 0)
+			{
+				for (int i = 0; i < 4; i++) labelRefresh(_mission.Messages[_activeMessage].Triggers[i], lblMessTrig[i]);
+				lblMessTrigArr_Click(lblMessTrig[_activeMessageTrigger], new EventArgs());
+			}
 			_loading = temp;
 			listRefreshItem(_activeFG);
 		}
