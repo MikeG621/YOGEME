@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2022 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.12+
+ * VERSION: 1.13
  */
 
 /* CHANGELOG
+ * v1.13, 220130
  * [UPD] OrderDesignation now a drop-down [JB]
  * [UPD] long else-if in setFlightgroupProperty() and setMessageProperty() changed to switch [JB]
  * [FIX] minor issues with multi-select [JB]

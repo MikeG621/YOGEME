@@ -787,6 +787,8 @@ namespace Idmr.Yogeme
 			this.txtNotes = new System.Windows.Forms.TextBox();
 			this.dataOrders = new System.Data.DataView();
 			this.dataOrders_Raw = new System.Data.DataView();
+			this.cmdCopyOrderWP = new System.Windows.Forms.Button();
+			this.cmdPasteOrderWP = new System.Windows.Forms.Button();
 			((System.ComponentModel.ISupportInitialize)(this.dataWaypoints)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.dataWaypoints_Raw)).BeginInit();
 			this.tabMain.SuspendLayout();
@@ -3381,6 +3383,8 @@ namespace Idmr.Yogeme
 			// 
 			// tabWP
 			// 
+			this.tabWP.Controls.Add(this.cmdCopyOrderWP);
+			this.tabWP.Controls.Add(this.cmdPasteOrderWP);
 			this.tabWP.Controls.Add(this.numHYP);
 			this.tabWP.Controls.Add(this.numSP3);
 			this.tabWP.Controls.Add(this.numSP2);
@@ -3526,7 +3530,7 @@ namespace Idmr.Yogeme
             "2, Region 4",
             "3, Region 4",
             "4, Region 4"});
-			this.cboWP.Location = new System.Drawing.Point(222, 212);
+			this.cboWP.Location = new System.Drawing.Point(184, 210);
 			this.cboWP.Name = "cboWP";
 			this.cboWP.Size = new System.Drawing.Size(88, 21);
 			this.cboWP.TabIndex = 50;
@@ -3593,7 +3597,7 @@ namespace Idmr.Yogeme
 			// 
 			// label21
 			// 
-			this.label21.Location = new System.Drawing.Point(174, 212);
+			this.label21.Location = new System.Drawing.Point(136, 210);
 			this.label21.Name = "label21";
 			this.label21.Size = new System.Drawing.Size(42, 20);
 			this.label21.TabIndex = 21;
@@ -9202,6 +9206,28 @@ namespace Idmr.Yogeme
 			this.dataOrders_Raw.AllowDelete = false;
 			this.dataOrders_Raw.AllowNew = false;
 			// 
+			// cmdCopyOrderWP
+			// 
+			this.cmdCopyOrderWP.ImageAlign = System.Drawing.ContentAlignment.BottomRight;
+			this.cmdCopyOrderWP.ImageIndex = 6;
+			this.cmdCopyOrderWP.ImageList = this.imgToolbar;
+			this.cmdCopyOrderWP.Location = new System.Drawing.Point(278, 208);
+			this.cmdCopyOrderWP.Name = "cmdCopyOrderWP";
+			this.cmdCopyOrderWP.Size = new System.Drawing.Size(24, 23);
+			this.cmdCopyOrderWP.TabIndex = 52;
+			this.cmdCopyOrderWP.Click += new System.EventHandler(this.cmdCopyOrderWP_Click);
+			// 
+			// cmdPasteOrderWP
+			// 
+			this.cmdPasteOrderWP.ImageAlign = System.Drawing.ContentAlignment.BottomRight;
+			this.cmdPasteOrderWP.ImageIndex = 7;
+			this.cmdPasteOrderWP.ImageList = this.imgToolbar;
+			this.cmdPasteOrderWP.Location = new System.Drawing.Point(310, 208);
+			this.cmdPasteOrderWP.Name = "cmdPasteOrderWP";
+			this.cmdPasteOrderWP.Size = new System.Drawing.Size(24, 23);
+			this.cmdPasteOrderWP.TabIndex = 53;
+			this.cmdPasteOrderWP.Click += new System.EventHandler(this.cmdPasteOrderWP_Click);
+			// 
 			// XwaForm
 			// 
 			this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
@@ -10205,5 +10231,7 @@ namespace Idmr.Yogeme
 		private ToolBarButton toolWav;
 		private MenuItem menuWav;
 		private MenuItem menuMissionCraft;
+		private Button cmdCopyOrderWP;
+		private Button cmdPasteOrderWP;
 	}
 }

@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2022 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.12+
+ * VERSION: 1.13
  */
 
 /* CHANGELOG
+ * v1.13, 220130
  * [NEW] Multi-select [JB]
  * v1.12, 220103
  * [UPD] Unused messages drawn in gray

@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2022 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.7+
+ * VERSION: 1.13
  */
 
 /* CHANGELOG
+ * v1.13, 220130
  * [UPD] Redesign [JB]
  * v1.7, 200816
  * [UPD] Images are now foreground instead of background [JB]
