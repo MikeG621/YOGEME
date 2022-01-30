@@ -127,6 +127,10 @@
 			<param name="Local" value="pages\XW\miss.html">
 			</OBJECT>
 		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Tour Editor">
+			<param name="Local" value="pages\XW\tour.html">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
 			<param name="Name" value="Briefing Dialog">
 			<param name="Local" value="pages\XW\brief.html">
 			</OBJECT>

@@ -2,8 +2,8 @@
 ======================================
 
 Author: Michael Gaisser (mjgaisser@gmail.com)
-Version: 1.12
-Date: 2022.01.03
+Version: 1.13
+Date: 2022.01.30
 
 Thank you for downloading YOGEME, the all-in-one mission editor for the X-Wing
 series, Xwing95 through X-wing Alliance.  This program allows easy mission
@@ -20,13 +20,14 @@ YOGEME does not use an installer, simply download the latest ZIP file from the
 ==Uninstall==
 To remove YOGEME, you simply delete the directory where you placed it. The
 Uninstall utility has been removed due to more anti-virus packages starting to
-flag it, and although it's a false-positive the situattion does not appear to
+flag it, and although it's a false-positive the situation does not appear to
 be getting better. This will leave behind a single config file in AppData with
 your user settings.
 
 ==========
 Version History
 
+v1.13, 30 Jan 2022
  - Formation dialog redesigned (JB)
  - (All) Multi-select added to all platforms [Issue #23] (JB)
  - (Xwing) Formation list fixed (via Platform.dll) [Issue #63] (JB)

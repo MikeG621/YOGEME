@@ -4,10 +4,11 @@
  * This file authored by "JB" (Random Starfighter) (randomstarfighter@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.12+
+ * VERSION: 1.13
  */
 
 /* CHANGELOG:
+ * v1.13, 220130
  * [NEW] Multi-select [JB]
  * v1.12, 220103
  * [NEW] Tour Editor
