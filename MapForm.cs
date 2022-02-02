@@ -1491,6 +1491,7 @@ namespace Idmr.Yogeme
 				for (int i = 12; i < 22; i++) chkWP[i].Enabled = false;
 				lblRegion.Visible = true;
 				numRegion.Visible = true;
+				// TODO: rename Start3 to RDV
 			}
 			if (_platform != Settings.Platform.XWING)
 			{

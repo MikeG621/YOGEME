@@ -72,7 +72,7 @@ namespace Idmr.Yogeme
 		// The EOM WAVs are PMC1, PMC2, PMF1, PMF2, OMC1, OMC2
 
 		// Over in /Wave/Frontend there's the other mission WAVs. Everything is auto, no LST, based on filename prefix (B0M1, etc).
-		// Briefing strings are B's, the pre-briefing is N, S is mission description, W is mission complete
+		// Briefing strings are B's, hints/failed is L, the pre-briefing is N, S is mission description, W is mission complete
 		// Looks like there's usually an "S" or "W" per paragraph, B's start with 2 (since string#1 is the title)
 		// naming convention is [prefix][battle##][mission##][message##].WAV
 
@@ -361,6 +361,7 @@ namespace Idmr.Yogeme
 		}
 		#endregion controls
 
+		//TODO: Add "L" capability
 		/// <summary>Gets the letter prefix for PrePost messages, lstPrePostCategories.SI must not be <b>-1</b></summary>
 		string _prefix => (lstPrePostCategories.SelectedIndex == 0 ? "N" : (lstPrePostCategories.SelectedIndex == 1 ? "S" : "W"));
 	}

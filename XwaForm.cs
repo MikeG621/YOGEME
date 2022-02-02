@@ -4106,6 +4106,7 @@ namespace Idmr.Yogeme
 			refreshMap(_activeFG);
 		}
 
+		// TODO: break this out into separate Order/Region cbo's like everywhere else
 		void cboWP_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (cboWP.SelectedIndex == -1) return;
