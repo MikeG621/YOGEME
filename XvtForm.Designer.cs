@@ -518,7 +518,6 @@ namespace Idmr.Yogeme
 			this.lblIFF5 = new System.Windows.Forms.Label();
 			this.lblIFF4 = new System.Windows.Forms.Label();
 			this.lblIFF3 = new System.Windows.Forms.Label();
-			this.label150 = new System.Windows.Forms.Label();
 			this.groupBox36 = new System.Windows.Forms.GroupBox();
 			this.chkMissUnk3 = new System.Windows.Forms.CheckBox();
 			this.numMissUnk1 = new System.Windows.Forms.NumericUpDown();
@@ -3353,6 +3352,7 @@ namespace Idmr.Yogeme
 			this.cmdCopySkip.Name = "cmdCopySkip";
 			this.cmdCopySkip.Size = new System.Drawing.Size(24, 23);
 			this.cmdCopySkip.TabIndex = 45;
+			this.cmdCopySkip.Click += new System.EventHandler(this.cmdCopySkip_Click);
 			// 
 			// label71
 			// 
@@ -3414,6 +3414,7 @@ namespace Idmr.Yogeme
 			this.cmdPasteSkip.Name = "cmdPasteSkip";
 			this.cmdPasteSkip.Size = new System.Drawing.Size(24, 23);
 			this.cmdPasteSkip.TabIndex = 46;
+			this.cmdPasteSkip.Click += new System.EventHandler(this.cmdPasteSkip_Click);
 			// 
 			// optSkipAND
 			// 
@@ -5857,7 +5858,6 @@ namespace Idmr.Yogeme
 			this.tabMission.Controls.Add(this.numRndSeed);
 			this.tabMission.Controls.Add(this.label29);
 			this.tabMission.Controls.Add(this.grpIFF);
-			this.tabMission.Controls.Add(this.label150);
 			this.tabMission.Controls.Add(this.groupBox36);
 			this.tabMission.Controls.Add(this.optXvT);
 			this.tabMission.Controls.Add(this.label104);
@@ -5996,16 +5996,6 @@ namespace Idmr.Yogeme
 			this.lblIFF3.TabIndex = 1;
 			this.lblIFF3.Text = "IFF3 - Blue";
 			this.lblIFF3.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
-			// 
-			// label150
-			// 
-			this.label150.AutoSize = true;
-			this.label150.Location = new System.Drawing.Point(345, 475);
-			this.label150.Name = "label150";
-			this.label150.Size = new System.Drawing.Size(415, 13);
-			this.label150.TabIndex = 17;
-			this.label150.Text = "Tip: Use the right-click context menu to copy/paste text between the system clipb" +
-    "oard.";
 			// 
 			// groupBox36
 			// 
@@ -6167,6 +6157,7 @@ namespace Idmr.Yogeme
 			this.txtMissDesc.MaxLength = 1024;
 			this.txtMissDesc.Multiline = true;
 			this.txtMissDesc.Name = "txtMissDesc";
+			this.txtMissDesc.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
 			this.txtMissDesc.Size = new System.Drawing.Size(236, 328);
 			this.txtMissDesc.TabIndex = 0;
 			this.txtMissDesc.Leave += new System.EventHandler(this.txtMissDesc_Leave);
@@ -6180,6 +6171,7 @@ namespace Idmr.Yogeme
 			this.txtMissSucc.MaxLength = 4096;
 			this.txtMissSucc.Multiline = true;
 			this.txtMissSucc.Name = "txtMissSucc";
+			this.txtMissSucc.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
 			this.txtMissSucc.Size = new System.Drawing.Size(236, 328);
 			this.txtMissSucc.TabIndex = 0;
 			this.txtMissSucc.Leave += new System.EventHandler(this.txtMissSucc_Leave);
@@ -6193,6 +6185,7 @@ namespace Idmr.Yogeme
 			this.txtMissFail.MaxLength = 4096;
 			this.txtMissFail.Multiline = true;
 			this.txtMissFail.Name = "txtMissFail";
+			this.txtMissFail.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
 			this.txtMissFail.Size = new System.Drawing.Size(236, 328);
 			this.txtMissFail.TabIndex = 0;
 			this.txtMissFail.Leave += new System.EventHandler(this.txtMissFail_Leave);
@@ -6566,6 +6559,7 @@ namespace Idmr.Yogeme
 			this.menuCut.Index = 2;
 			this.menuCut.Shortcut = System.Windows.Forms.Shortcut.CtrlX;
 			this.menuCut.Text = "Cu&t";
+			this.menuCut.Click += new System.EventHandler(this.menuCut_Click);
 			// 
 			// menuCopy
 			// 
@@ -7412,7 +7406,6 @@ namespace Idmr.Yogeme
 		private NumericUpDown numDepClockMin;
 		private Label lblOVar1Note;
 		private Label lblOSpeedNote;
-		private Label label150;
 		private Label lblOVar2Note;
 		private ComboBox cboOSpeed;
 		private GroupBox grpIFF;

@@ -2098,6 +2098,7 @@ namespace Idmr.Yogeme
 			this.menuCut.Index = 2;
 			this.menuCut.Shortcut = System.Windows.Forms.Shortcut.CtrlX;
 			this.menuCut.Text = "Cu&t";
+			this.menuCut.Click += new System.EventHandler(this.menuCut_Click);
 			// 
 			// menuCopy
 			// 

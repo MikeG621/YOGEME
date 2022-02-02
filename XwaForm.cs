@@ -469,30 +469,15 @@ namespace Idmr.Yogeme
 				lblADTrig[i].DoubleClick += new EventHandler(lblADTrigArr_DoubleClick);
 				lblADTrig[i].Tag = i;
 			}
-			cboOrders.Items.AddRange(Strings.Orders);
-			cboOT1Type.Items.AddRange(Strings.VariableType);
-			cboOT2Type.Items.AddRange(Strings.VariableType);
-			cboOT3Type.Items.AddRange(Strings.VariableType);
-			cboOT4Type.Items.AddRange(Strings.VariableType);
-			for (int i = 1; i < 256; i++)  //The designer already starts with one item "default" for 0 MGLT.
-				cboOSpeed.Items.Add(Convert.ToInt32(i * 2.2235));
-			cboOSpeed.SelectedIndex = 0;
-			lblOrder[0] = lblOrder1;
-			lblOrder[1] = lblOrder2;
-			lblOrder[2] = lblOrder3;
-			lblOrder[3] = lblOrder4;
-			for (int i = 0; i < 4; i++)
-			{
-				lblOrder[i].Click += new EventHandler(lblOrderArr_Click);
-				lblOrder[i].DoubleClick += new EventHandler(lblOrderArr_DoubleClick);
-				lblOrder[i].MouseUp += new MouseEventHandler(lblOrderArr_MouseUp);
-				lblOrder[i].Tag = i;
-			}
 			cboSkipAmount.Items.AddRange(Strings.Amount);
+			cboSkipTrig.Items.Clear();
 			cboSkipTrig.Items.AddRange(Strings.Trigger);
+			cboSkipType.Items.Clear();
 			cboSkipType.Items.AddRange(Strings.VariableType);
 			cboGlobalAmount.Items.AddRange(Strings.Amount);
+			cboGlobalTrig.Items.Clear();
 			cboGlobalTrig.Items.AddRange(Strings.Trigger);
+			cboGlobalType.Items.Clear();
 			cboGlobalType.Items.AddRange(Strings.VariableType);
 			lblGlobTrig[0] = lblPrim1;
 			lblGlobTrig[1] = lblPrim2;
@@ -963,6 +948,28 @@ namespace Idmr.Yogeme
 				optADAndOr[i].Tag = i;
 			}
 			#endregion
+			#region Orders
+			cboOrders.Items.AddRange(Strings.Orders);
+			cboOT1Type.Items.AddRange(Strings.VariableType);
+			cboOT2Type.Items.AddRange(Strings.VariableType);
+			cboOT3Type.Items.AddRange(Strings.VariableType);
+			cboOT4Type.Items.AddRange(Strings.VariableType);
+			lblOrder[0] = lblOrder1;
+			lblOrder[1] = lblOrder2;
+			lblOrder[2] = lblOrder3;
+			lblOrder[3] = lblOrder4;
+			for (int i = 0; i < 4; i++)
+			{
+				lblOrder[i].Click += new EventHandler(lblOrderArr_Click);
+				lblOrder[i].DoubleClick += new EventHandler(lblOrderArr_DoubleClick);
+				lblOrder[i].MouseUp += new MouseEventHandler(lblOrderArr_MouseUp);
+				lblOrder[i].Tag = i;
+			}
+			for (int i = 1; i < 256; i++)  //The designer already starts with one item "default" for 0 MGLT.
+				cboOSpeed.Items.Add(Convert.ToInt32(i * 2.2235));
+			cboOSpeed.SelectedIndex = 0;
+			// Rest of order init happens in initializeMission()
+			#endregion
 			#region Waypoints
 			_tableWP.Columns.Add("X"); _tableWP.Columns.Add("Y"); _tableWP.Columns.Add("Z");
 			_tableWPRaw.Columns.Add("X"); _tableWPRaw.Columns.Add("Y"); _tableWPRaw.Columns.Add("Z");
@@ -1328,7 +1335,7 @@ namespace Idmr.Yogeme
 			registerFgMultiEdit(cboADTrigAmount, "ArrDepTrigger", MultiEditRefreshType.ArrDepLabel);
 			registerFgMultiEdit(cboADTrigType, "ArrDepTrigger", MultiEditRefreshType.ArrDepLabel);
 			registerFgMultiEdit(cboADTrigVar, "ArrDepTrigger", MultiEditRefreshType.ArrDepLabel);
-			registerFgMultiEdit(cboADTrig, "ArrDepTrigger", MultiEditRefreshType.ArrDepLabel);
+			registerFgMultiEdit(cboADTrig, "ArrDepTrigger", MultiEditRefreshType.ArrDepLabel | MultiEditRefreshType.CraftCount);
 			registerFgMultiEdit(cboADPara, "ArrDepTrigger", MultiEditRefreshType.ArrDepLabel);
 			registerFgMultiEdit(numADPara, "ArrDepTrigger", MultiEditRefreshType.ArrDepLabel);
 			registerFgMultiEdit(numArrMin, "ArrivalDelayMinutes", MultiEditRefreshType.ItemText | MultiEditRefreshType.CraftCount);
@@ -1336,7 +1343,7 @@ namespace Idmr.Yogeme
 			registerFgMultiEdit(cboAbort, "AbortTrigger", 0);
 			registerFgMultiEdit(numDepMin, "DepartureTimerMinutes", 0);
 			registerFgMultiEdit(numDepSec, "DepartureTimerSeconds", 0);
-			registerFgMultiEdit(cboDiff, "Difficulty", MultiEditRefreshType.ItemText);
+			registerFgMultiEdit(cboDiff, "Difficulty", MultiEditRefreshType.ItemText | MultiEditRefreshType.CraftCount);
 			registerFgMultiEdit(chkArrHuman, "ArriveOnlyIfHuman", MultiEditRefreshType.ItemText);
 			registerFgMultiEdit(txtGoalInc, "GoalTriggerInc", 0);
 			registerFgMultiEdit(txtGoalComp, "GoalTriggerComp", 0);
@@ -1539,27 +1546,10 @@ namespace Idmr.Yogeme
 					e.Handled = true;
 				}
 			}
-			else if (e.KeyCode == Keys.Enter) //Allows the Enter key to submit changes in a TextBox or similar control by triggering a Leave() event.
+			else if (Common.KeyDown(ActiveControl, e))
 			{
-				Control c = ActiveControl;
-				bool text = c.GetType().ToString() == "System.Windows.Forms.TextBox";
-				int caret = 0;
-				if (text)  //Focus() on a TextBox control might cause it to select all text, so preserve the caret position. 
-				{
-					if (((TextBox)c).Multiline == true) return;  //Multiline textboxes need to allow newlines.
-					caret = ((TextBox)c).SelectionStart;
-				}
-
-				tabMain.Focus();
-				c.Focus();
-				if (text)
-				{
-					((TextBox)c).SelectionStart = caret;
-					((TextBox)c).SelectionLength = 0;
-				}
-
 				e.Handled = true;
-				e.SuppressKeyPress = true; //Stop the Windows UI beeping
+				e.SuppressKeyPress = true; // Stop the Windows UI beeping
 			}
 		}
 
@@ -1829,6 +1819,11 @@ namespace Idmr.Yogeme
 			data.SetData("yogeme", false, stream);
 			Clipboard.SetDataObject(data, true);
 		}
+		void menuCut_Click(object sender, EventArgs e)
+		{
+			if(Common.Cut(ActiveControl))
+				Common.Title(this, false);
+		}
 		void menuER_Click(object sender, EventArgs e)
 		{
 			Common.LaunchER();
@@ -2032,7 +2027,11 @@ namespace Idmr.Yogeme
 				try
 				{
 					foreach (FlightGroup fg in getSelectedFlightgroups())
+					{
+						craftStart(fg, false);
 						fg.ArrDepTriggers[_activeArrDepTrigger] = new Mission.Trigger(trig);
+						craftStart(fg, true);
+					}
 					lblADTrigArr_Click(_activeArrDepTrigger, new EventArgs());
 					labelRefresh(_mission.FlightGroups[_activeFG].ArrDepTriggers[_activeArrDepTrigger], lblADTrig[_activeArrDepTrigger]);
 					Common.Title(this, false);
@@ -2091,34 +2090,11 @@ namespace Idmr.Yogeme
 				}
 				catch { /* do nothing */ }
 			}
-			else if (ActiveControl.GetType().ToString() == "System.Windows.Forms.TextBox")
+			else if (Common.Paste(ActiveControl, obj))
 			{
-				try
-				{
-					string str = obj.ToString();
-					if (str.IndexOf("System.", 0) != -1) throw new FormatException();   // bypass byte[]
-					if (str.IndexOf("Idmr.", 0) != -1) throw new FormatException(); // [JB] Bypass message.
-					TextBox txt = (TextBox)ActiveControl;
-					txt.SelectedText = str;
-					Common.Title(this, false);
-				}
-				catch { /* do nothing */ }
+				Common.Title(this, false);
 			}
-			else if (ActiveControl.GetType().ToString() == "System.Windows.Forms.NumericUpDown") //[JB] Added copy/paste for this
-			{
-				try
-				{
-					string str = obj.ToString();
-					NumericUpDown num = (NumericUpDown)ActiveControl;
-					decimal value = Convert.ToDecimal(str);
-					if (value > num.Maximum) value = num.Maximum;
-					else if (value < num.Minimum) value = num.Minimum;
-					num.Value = value;
-					Common.Title(this, false);
-				}
-				catch { /* do nothing */ }
-			}
-			else if (ActiveControl.GetType().ToString() == "System.Windows.Forms.DataGridTextBox")
+			else if (ActiveControl.GetType() == typeof(DataGridTextBox))
 			{
 				try
 				{
@@ -2182,6 +2158,7 @@ namespace Idmr.Yogeme
 							_mission.Messages[_activeMessage] = mess;
 							messRefreshItem(_activeMessage);
 							lstMessages.SelectedIndex = _activeMessage;
+							lstMessages_SelectedIndexChanged(0, new EventArgs());
 #pragma warning restore IDE0016 // Use 'throw' expression
 						}
 						catch { /* do nothing */ }
@@ -3205,10 +3182,10 @@ namespace Idmr.Yogeme
 			string[] fgList = _mission.FlightGroups.GetList();
 			bool temp = _loading;
 			_loading = true;
-			comboReset(cboArrMS, fgList, 0);
-			comboReset(cboArrMSAlt, fgList, 0);
-			comboReset(cboDepMS, fgList, 0);
-			comboReset(cboDepMSAlt, fgList, 0);
+			comboReset(cboArrMS, fgList, _mission.FlightGroups[_activeFG].ArrivalCraft1);
+			comboReset(cboArrMSAlt, fgList, _mission.FlightGroups[_activeFG].ArrivalCraft2);
+			comboReset(cboDepMS, fgList, _mission.FlightGroups[_activeFG].DepartureCraft1);
+			comboReset(cboDepMSAlt, fgList, _mission.FlightGroups[_activeFG].DepartureCraft2);
 			cboMessFG.Items.Clear(); cboMessFG.Items.AddRange(fgList);
 			if (_mission.Messages.Count != 0) cboMessFG.SelectedIndex = _mission.Messages[_activeMessage].OriginatingFG;
 			parameterRefresh(cboSkipPara);
@@ -3216,26 +3193,24 @@ namespace Idmr.Yogeme
 			parameterRefresh(cboADPara);
 			parameterRefresh(cboMessPara);
 			parameterRefresh(cboGlobalPara);
-			//[JB] This is the simplest way to force all labels to refresh, but not the most efficient. An annoying side effect of forcing clicks is that the current selection will change, so restore after refreshing.
-			int restore = _activeArrDepTrigger;
-			foreach (var lbl in lblADTrig) lblADTrigArr_Click(lbl, new EventArgs());
-			lblADTrigArr_Click(lblADTrig[restore], new EventArgs());
-
-			restore = _activeGlobalTrigger;
-			foreach (var lbl in lblGlobTrig) lblGlobTrigArr_Click(lbl, new EventArgs());
-			lblGlobTrigArr_Click(lblGlobTrig[restore], new EventArgs());
-
-			restore = _activeOrder;
-			foreach (var lbl in lblOrder) lblOrderArr_Click(lbl, new EventArgs());
+			// Refresh trigger labels
+			for (int i = 0; i < 6; i++) labelRefresh(_mission.FlightGroups[_activeFG].ArrDepTriggers[i], lblADTrig[i]);
+			lblADTrigArr_Click(lblADTrig[_activeArrDepTrigger], new EventArgs());
+			byte restore = _activeOrder;
+			for (_activeOrder = 0; _activeOrder < 4; _activeOrder++) orderLabelRefresh();
 			lblOrderArr_Click(lblOrder[restore], new EventArgs());
-
-			restore = _activeMessageTrigger;
-			foreach (var lbl in lblMessTrig) lblMessTrigArr_Click(lbl, new EventArgs());
-			lblMessTrigArr_Click(lblMessTrig[restore], new EventArgs());
-
-			restore = _activeSkipTrigger;
-			lblSkipTrigArr_Click(restore == 0 ? lblSkipTrig2 : lblSkipTrig1, new EventArgs());  //Only two, inactive one first, then active.
-			lblSkipTrigArr_Click(restore == 0 ? lblSkipTrig1 : lblSkipTrig2, new EventArgs());
+			int r = cboSkipOrder.SelectedIndex / 4;
+			int o = cboSkipOrder.SelectedIndex % 4;
+			labelRefresh(_mission.FlightGroups[_activeFG].Orders[r, o].SkipTriggers[0], lblSkipTrig1);
+			labelRefresh(_mission.FlightGroups[_activeFG].Orders[r, o].SkipTriggers[1], lblSkipTrig2);
+			lblSkipTrigArr_Click(_activeSkipTrigger == 0 ? lblSkipTrig1 : lblSkipTrig2, new EventArgs());
+			for (int i = 0; i < 12; i++) labelRefresh(_mission.Globals[_activeTeam].Goals[i / 4].Triggers[i % 4], lblGlobTrig[i]);
+			lblGlobTrigArr_Click(lblGlobTrig[_activeGlobalTrigger], new EventArgs());
+			if (_mission.Messages.Count > 0)
+			{
+				for (int i = 0; i < 6; i++) labelRefresh(_mission.Messages[_activeMessage].Triggers[i], lblMessTrig[i]);
+				lblMessTrigArr_Click(lblMessTrig[_activeMessageTrigger], new EventArgs());
+			}
 
 			_loading = temp;
 			listRefreshItem(_activeFG);
@@ -4336,7 +4311,7 @@ namespace Idmr.Yogeme
 			}
 			catch (InvalidCastException)
 			{
-				i = (int)sender;    // i = clicked trigger from code
+				i = Convert.ToByte(sender);    // i = clicked trigger from code
 				if (i == 0) { l = lblSkipTrig1; ; ll = lblSkipTrig2; }
 				else { l = lblSkipTrig2; ll = lblSkipTrig1; }
 			}
@@ -4783,8 +4758,9 @@ namespace Idmr.Yogeme
 		{
 			lblDelay.Text = Common.GetFormattedTime(_mission.GetDelaySeconds((byte)numMessDelay.Value), true);
 		}
-		void txtMessage_Leave(object sender, EventArgs e)
+		void txtMessage_TextChanged(object sender, EventArgs e)
 		{
+			if (_loading) return;
 			_mission.Messages[_activeMessage].MessageString = Common.Update(this, _mission.Messages[_activeMessage].MessageString, txtMessage.Text);
 			messRefreshItem(_activeMessage);
 		}

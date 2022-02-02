@@ -816,7 +816,7 @@ namespace Idmr.Yogeme
 			registerFgMultiEdit(cboADTrigAmount, "ArrDepTrigger", MultiEditRefreshType.ArrDepLabel);
 			registerFgMultiEdit(cboADTrigType, "ArrDepTrigger", MultiEditRefreshType.ArrDepLabel);
 			registerFgMultiEdit(cboADTrigVar, "ArrDepTrigger", MultiEditRefreshType.ArrDepLabel);
-			registerFgMultiEdit(cboADTrig, "ArrDepTrigger", MultiEditRefreshType.ArrDepLabel);
+			registerFgMultiEdit(cboADTrig, "ArrDepTrigger", MultiEditRefreshType.ArrDepLabel | MultiEditRefreshType.CraftCount);
 			registerFgMultiEdit(optArrOR, "ArrDepTriggerOr", 0);
 			registerFgMultiEdit(numArrMin, "ArrivalDelayMinutes", MultiEditRefreshType.ItemText | MultiEditRefreshType.CraftCount);
 			registerFgMultiEdit(numArrSec, "ArrivalDelaySeconds", MultiEditRefreshType.ItemText | MultiEditRefreshType.CraftCount);
@@ -978,27 +978,10 @@ namespace Idmr.Yogeme
 					e.Handled = true;
 				}
 			}
-			else if (e.KeyCode == Keys.Enter) //Allows the Enter key to submit changes in a TextBox or similar control by triggering a Leave() event.
+			else if (Common.KeyDown(ActiveControl, e))
 			{
-				Control c = ActiveControl;
-				bool text = c.GetType().ToString() == "System.Windows.Forms.TextBox";
-				int caret = 0;
-				if (text)  //Focus() on a TextBox control might cause it to select all text, so preserve the caret position. 
-				{
-					if (((TextBox)c).Multiline == true) return;  //Multiline textboxes need to allow newlines.
-					caret = ((TextBox)c).SelectionStart;
-				}
-
-				tabMain.Focus();
-				c.Focus();
-				if (text)
-				{
-					((TextBox)c).SelectionStart = caret;
-					((TextBox)c).SelectionLength = 0;
-				}
-
 				e.Handled = true;
-				e.SuppressKeyPress = true; //Stop the Windows UI beeping
+				e.SuppressKeyPress = true; // Stop the Windows UI beeping
 			}
 		}
 
@@ -1226,6 +1209,11 @@ namespace Idmr.Yogeme
 			data.SetData("yogeme", false, stream);
 			Clipboard.SetDataObject(data, true);
 		}
+		void menuCut_Click(object sender, EventArgs e)
+		{
+			if(Common.Cut(ActiveControl))
+				Common.Title(this, false);
+		}
 		void menuDelete_Click(object sender, EventArgs e)
 		{
 			//Ensure controls have focus, otherwise editing various text controls will trigger deletions.
@@ -1392,7 +1380,11 @@ namespace Idmr.Yogeme
 				try
 				{
 					foreach (FlightGroup fg in getSelectedFlightgroups())
+					{
+						craftStart(fg, false);
 						fg.ArrDepTriggers[_activeArrDepTrigger] = new Mission.Trigger(trig);
+						craftStart(fg, true);
+					}
 					lblADTrigArr_Click(_activeArrDepTrigger, new EventArgs());
 					labelRefresh(_mission.FlightGroups[_activeFG].ArrDepTriggers[_activeArrDepTrigger], lblADTrig[_activeArrDepTrigger]);
 					Common.Title(this, false);
@@ -1411,33 +1403,11 @@ namespace Idmr.Yogeme
 				}
 				catch { /* do nothing */ }
 			}
-			else if (ActiveControl.GetType().ToString() == "System.Windows.Forms.TextBox")
+			else if (Common.Paste(ActiveControl, obj))
 			{
-				try
-				{
-					string str = obj.ToString();
-					if (str.IndexOf("Idmr.", 0) != -1) throw new FormatException(); // [JB] Prevent the class name when an entire Message is copied.
-					TextBox txt = (TextBox)ActiveControl;
-					txt.SelectedText = str;
-					Common.Title(this, false);
-				}
-				catch { /* do nothing */ }
+				Common.Title(this, false);
 			}
-			else if (ActiveControl.GetType().ToString() == "System.Windows.Forms.NumericUpDown")
-			{
-				try
-				{
-					string str = obj.ToString();
-					NumericUpDown num = (NumericUpDown)ActiveControl;
-					decimal value = Convert.ToDecimal(str);
-					if (value > num.Maximum) value = num.Maximum;
-					else if (value < num.Minimum) value = num.Minimum;
-					num.Value = value;
-					Common.Title(this, false);
-				}
-				catch { /* do nothing */ }
-			}
-			else if (ActiveControl.GetType().ToString() == "System.Windows.Forms.DataGridTextBox")
+			else if (ActiveControl.GetType() == typeof(DataGridTextBox))
 			{
 				try
 				{
@@ -1497,6 +1467,7 @@ namespace Idmr.Yogeme
 							_mission.Messages[_activeMessage] = mess;
 							messRefreshItem(_activeMessage);
 							lstMessages.SelectedIndex = _activeMessage;
+							lstMessages_SelectedIndexChanged(0, new EventArgs());
 #pragma warning restore IDE0016 // Use 'throw' expression
 						}
 						catch { /* do nothing */ }
@@ -2120,20 +2091,13 @@ namespace Idmr.Yogeme
 			if (cboOT3Type.SelectedIndex == 1) comboReset(cboOT3, fgList, _mission.FlightGroups[_activeFG].Orders[_activeOrder].Target3);
 			if (cboOT4Type.SelectedIndex == 1) comboReset(cboOT4, fgList, _mission.FlightGroups[_activeFG].Orders[_activeOrder].Target4);
 			if (cboMessType.SelectedIndex == 1) comboReset(cboMessVar, fgList, cboMessVar.SelectedIndex);
-			//[JB] This is the simplest way to force all labels to refresh, but not the most efficient. An annoying side effect of forcing clicks is that the current selection will change, so restore after refreshing.
-			int restore = _activeArrDepTrigger;
-			for (int i = 0; i < lblADTrig.Length; i++) lblADTrigArr_Click(lblADTrig[i], new EventArgs());
-			lblADTrigArr_Click(lblADTrig[restore], new EventArgs());
-
-			//_activeGlobalGoal is handled when switching tabs. See updateMissionTabs(), which refreshes the labels there.
-
-			restore = _activeOrder;
-			for (int i = 0; i < lblOrder.Length; i++) lblOrderArr_Click(lblOrder[i], new EventArgs());
-			lblOrderArr_Click(lblOrder[restore], new EventArgs());
-
-			restore = _activeMessageTrig;
-			lblMessArr_Click(restore == 0 ? lblMess2 : lblMess1, new EventArgs());  //Only two, inactive one first, then active.
-			lblMessArr_Click(restore == 0 ? lblMess1 : lblMess2, new EventArgs());
+			// Refresh trigger labels
+			for (int i = 0; i < 3; i++) labelRefresh(_mission.FlightGroups[_activeFG].ArrDepTriggers[i], lblADTrig[i]);
+			lblADTrigArr_Click(lblADTrig[_activeArrDepTrigger], new EventArgs());
+			byte restore = _activeOrder;
+			for (_activeOrder = 0; _activeOrder < 3; _activeOrder++) orderLabelRefresh();
+			_activeOrder = restore;
+			// Global goals and messages are handled when switching tabs. See updateMissionTabs()
 
 			_loading = temp;
 			listRefreshItem(_activeFG);
@@ -2974,8 +2938,9 @@ namespace Idmr.Yogeme
 			lblMessArr_Click(0, new EventArgs());
 			_loading = btemp;
 		}
-		void txtMessage_Leave(object sender, EventArgs e)
+		void txtMessage_TextChanged(object sender, EventArgs e)
 		{
+			if (_loading) return;
 			_mission.Messages[_activeMessage].MessageString = Common.Update(this, _mission.Messages[_activeMessage].MessageString, txtMessage.Text);
 			messRefreshItem(_activeMessage);
 		}
