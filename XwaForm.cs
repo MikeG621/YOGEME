@@ -3,10 +3,14 @@
  * Copyright (C) 2007-2022 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.13
+ * VERSION: 1.13+
  */
 
 /* CHANGELOG
+ * [NEW] menuCut [JB]
+ * [FIX] multi-select refresh issues [JB]
+ * [FIX] craftStart issues during Paste and arrival changes [JB]
+ * [FIX] cbo loading during start/init [JB]
  * v1.13, 220130
  * [NEW] copy/paste for Order Waypoints
  * [NEW] Multi-select [JB]
@@ -469,6 +473,26 @@ namespace Idmr.Yogeme
 				lblADTrig[i].DoubleClick += new EventHandler(lblADTrigArr_DoubleClick);
 				lblADTrig[i].Tag = i;
 			}
+			lblOrder[0] = lblOrder1;
+			lblOrder[1] = lblOrder2;
+			lblOrder[2] = lblOrder3;
+			lblOrder[3] = lblOrder4;
+			for (int i = 0; i < 4; i++)
+			{
+				lblOrder[i].Click += new EventHandler(lblOrderArr_Click);
+				lblOrder[i].DoubleClick += new EventHandler(lblOrderArr_DoubleClick);
+				lblOrder[i].MouseUp += new MouseEventHandler(lblOrderArr_MouseUp);
+				lblOrder[i].Tag = i;
+			}
+			if (cboOrders.Items.Count == 0) cboOrders.Items.AddRange(Strings.Orders);
+			if (cboOT1Type.Items.Count == 0) cboOT1Type.Items.AddRange(Strings.VariableType);
+			if (cboOT2Type.Items.Count == 0) cboOT2Type.Items.AddRange(Strings.VariableType);
+			if (cboOT3Type.Items.Count == 0) cboOT3Type.Items.AddRange(Strings.VariableType);
+			if (cboOT4Type.Items.Count == 0) cboOT4Type.Items.AddRange(Strings.VariableType);
+			if (cboOSpeed.Items.Count == 1)
+				for (int i = 1; i < 256; i++)  //The designer already starts with one item "default" for 0 MGLT.
+				cboOSpeed.Items.Add(Convert.ToInt32(i * 2.2235));
+			cboOSpeed.SelectedIndex = 0;
 			cboSkipAmount.Items.AddRange(Strings.Amount);
 			cboSkipTrig.Items.Clear();
 			cboSkipTrig.Items.AddRange(Strings.Trigger);
@@ -947,28 +971,6 @@ namespace Idmr.Yogeme
 				optADAndOr[i].CheckedChanged += new EventHandler(optADAndOrArr_CheckedChanged);
 				optADAndOr[i].Tag = i;
 			}
-			#endregion
-			#region Orders
-			cboOrders.Items.AddRange(Strings.Orders);
-			cboOT1Type.Items.AddRange(Strings.VariableType);
-			cboOT2Type.Items.AddRange(Strings.VariableType);
-			cboOT3Type.Items.AddRange(Strings.VariableType);
-			cboOT4Type.Items.AddRange(Strings.VariableType);
-			lblOrder[0] = lblOrder1;
-			lblOrder[1] = lblOrder2;
-			lblOrder[2] = lblOrder3;
-			lblOrder[3] = lblOrder4;
-			for (int i = 0; i < 4; i++)
-			{
-				lblOrder[i].Click += new EventHandler(lblOrderArr_Click);
-				lblOrder[i].DoubleClick += new EventHandler(lblOrderArr_DoubleClick);
-				lblOrder[i].MouseUp += new MouseEventHandler(lblOrderArr_MouseUp);
-				lblOrder[i].Tag = i;
-			}
-			for (int i = 1; i < 256; i++)  //The designer already starts with one item "default" for 0 MGLT.
-				cboOSpeed.Items.Add(Convert.ToInt32(i * 2.2235));
-			cboOSpeed.SelectedIndex = 0;
-			// Rest of order init happens in initializeMission()
 			#endregion
 			#region Waypoints
 			_tableWP.Columns.Add("X"); _tableWP.Columns.Add("Y"); _tableWP.Columns.Add("Z");
@@ -3201,6 +3203,7 @@ namespace Idmr.Yogeme
 			lblOrderArr_Click(lblOrder[restore], new EventArgs());
 			int r = cboSkipOrder.SelectedIndex / 4;
 			int o = cboSkipOrder.SelectedIndex % 4;
+			if (o == -1) o = 0;
 			labelRefresh(_mission.FlightGroups[_activeFG].Orders[r, o].SkipTriggers[0], lblSkipTrig1);
 			labelRefresh(_mission.FlightGroups[_activeFG].Orders[r, o].SkipTriggers[1], lblSkipTrig2);
 			lblSkipTrigArr_Click(_activeSkipTrigger == 0 ? lblSkipTrig1 : lblSkipTrig2, new EventArgs());

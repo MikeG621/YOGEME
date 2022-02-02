@@ -3,10 +3,14 @@
  * Copyright (C) 2007-2022 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.13
+ * VERSION: 1.13+
  */
 
 /* CHANGELOG
+ * [NEW] menuCut [JB]
+ * [FIX] multi-select refresh issues [JB]
+ * [FIX] craftStart issues during Paste and arrival changes [JB]
+ * [NEW] added copy/paste buttons for Skip triggers [JB]
  * v1.13, 220130
  * [UPD] OrderDesignation now a drop-down [JB]
  * [UPD] long else-if in setFlightgroupProperty() and setMessageProperty() changed to switch [JB]

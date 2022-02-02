@@ -3,10 +3,12 @@
  * Copyright (C) 2007-2022 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.13
+ * VERSION: 1.13+
  */
 
 /* CHANGELOG
+ * [NEW] Cut and Paste handling [JB]
+ * [NEW] KeyDown hadnling for multi-line TextBoxes [JB]
  * v1.13, 220130
  * [UPD] more multi-edit functions pulled in [JB]
  * v1.12, 220103

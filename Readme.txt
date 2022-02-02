@@ -27,6 +27,14 @@ your user settings.
 ==========
 Version History
 
+Various fixes from RandomStarfighter
+ - (All) Fixed multi-select refresh issues
+ - (All) Added Cut (Ctrl+X) menu
+ - (All) Fixed control and craftStart refreshes during paste and other operations
+ - (All) Fixed handling of Enter key in multi-l;ine text boxes
+ - (XvT) Added buttons for Skip trigger copy/paste
+ - (XWA) Reworked some more drop-down loading to prevent duplicates
+
 v1.13, 30 Jan 2022
  - Formation dialog redesigned (JB)
  - (All) Multi-select added to all platforms [Issue #23] (JB)
