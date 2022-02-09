@@ -2,8 +2,9 @@
 ======================================
 
 Author: Michael Gaisser (mjgaisser@gmail.com)
-Version: 1.13
-Date: 2022.01.30
+Contributor: Random Starfighter (JB)
+Version: 1.13.1
+Date: 2022.02.08
 
 Thank you for downloading YOGEME, the all-in-one mission editor for the X-Wing
 series, Xwing95 through X-wing Alliance.  This program allows easy mission
@@ -27,13 +28,16 @@ your user settings.
 ==========
 Version History
 
-Various fixes from RandomStarfighter
- - (All) Fixed multi-select refresh issues
- - (All) Added Cut (Ctrl+X) menu
- - (All) Fixed control and craftStart refreshes during paste and other operations
- - (All) Fixed handling of Enter key in multi-l;ine text boxes
- - (XvT) Added buttons for Skip trigger copy/paste
- - (XWA) Reworked some more drop-down loading to prevent duplicates
+v1.31.1, 08 Feb 2022
+ - (XWA) SP3 waypoint renamed to RDV
+ - (XWA) Order Waypoint drop-down replaced with a pair of numerics
+ - Various fixes from RandomStarfighter
+   - (All) Fixed multi-select refresh issues
+   - (All) Added Cut (Ctrl+X) menu
+   - (All) Fixed control and craftStart refreshes during paste and other operations
+   - (All) Fixed handling of Enter key in multi-line text boxes
+   - (XvT) Added buttons for Skip trigger copy/paste
+   - (XWA) Reworked some more drop-down loading to prevent duplicates
 
 v1.13, 30 Jan 2022
  - Formation dialog redesigned (JB)

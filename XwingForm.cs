@@ -4,10 +4,11 @@
  * This file authored by "JB" (Random Starfighter) (randomstarfighter@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.13+
+ * VERSION: 1.13.1
  */
 
 /* CHANGELOG:
+ * v1.13.1, 220208
  * [NEW] menuCut [JB]
  * [FIX] multi-select refresh issues [JB]
  * [FIX] craftStart issues during Paste and arrival changes [JB]

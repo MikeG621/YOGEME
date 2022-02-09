@@ -3,10 +3,13 @@
  * Copyright (C) 2007-2022 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.13+
+ * VERSION: 1.13.1
  */
 
 /* CHANGELOG
+ * v1.13.1, 220208
+ * [UPD] Order Waypoint cbo replaced with a pair of numerics
+ * [UPD] SP3 waypoint Text changed to RDV (Designer)
  * [NEW] menuCut [JB]
  * [FIX] multi-select refresh issues [JB]
  * [FIX] craftStart issues during Paste and arrival changes [JB]
@@ -1754,8 +1757,8 @@ namespace Idmr.Yogeme
 			}
 			else if (sender.ToString() == "OrderWP")
 			{
-				formatter.Serialize(stream, _mission.FlightGroups[_activeFG].Orders[cboWP.SelectedIndex / 4, cboWP.SelectedIndex % 4]);   // Copy the whole order
-				data.SetText(_mission.FlightGroups[_activeFG].Orders[cboWP.SelectedIndex / 4, cboWP.SelectedIndex % 4].ToString());
+				formatter.Serialize(stream, _mission.FlightGroups[_activeFG].Orders[(int)numWPOrderRegion.Value - 1, (int)numWPOrder.Value - 1]);   // Copy the whole order
+				data.SetText(_mission.FlightGroups[_activeFG].Orders[(int)numWPOrderRegion.Value - 1, (int)numWPOrder.Value - 1].ToString());
 			}
 			else if (sender.ToString() == "Skip" || (lblSkipTrig1.Focused || lblSkipTrig2.Focused))  //[JB] Detect if triggers have focus
 			{
@@ -2058,8 +2061,8 @@ namespace Idmr.Yogeme
 				{
 					foreach (FlightGroup fg in getSelectedFlightgroups())
 						for (int w = 0; w < ord.Waypoints.Length; w++)
-							fg.Orders[cboWP.SelectedIndex / 4, cboWP.SelectedIndex % 4].Waypoints[w] = ord.Waypoints[w];
-					cboWP_SelectedIndexChanged("Paste", new EventArgs());
+							fg.Orders[(int)numWPOrderRegion.Value - 1, (int)numWPOrder.Value - 1].Waypoints[w] = ord.Waypoints[w];
+					numWPOrder_ValueChanged("Paste", new EventArgs());
 					Common.Title(this, false);
 				}
 				catch { /* do nothing */ }
@@ -3805,17 +3808,9 @@ namespace Idmr.Yogeme
 		{
 			menuCopy_Click("Order", new EventArgs());
 		}
-		void cmdCopyOrderWP_Click(object sender, EventArgs e)
-		{
-			menuCopy_Click("OrderWP", new EventArgs());
-		}
 		void cmdPasteOrder_Click(object sender, EventArgs e)
 		{
 			menuPaste_Click("Order", new EventArgs());
-		}
-		void cmdPasteOrderWP_Click(object sender, EventArgs e)
-		{
-			menuPaste_Click("OrderWP", new EventArgs());
 		}
 
 		void numORegion_ValueChanged(object sender, EventArgs e)
@@ -4038,11 +4033,10 @@ namespace Idmr.Yogeme
 		{
 			bool btemp = _loading;
 			_loading = true;
-			int oldSelection = cboWP.SelectedIndex;
-			if (oldSelection < 0)
-				oldSelection = 0;
-			cboWP.SelectedIndex = -1;   // force change
-			cboWP.SelectedIndex = oldSelection;
+			int oldSelection = (int)numWPOrder.Value;
+			if (oldSelection != 4) numWPOrder.Value++;
+			else numWPOrder.Value--; // force change
+			numWPOrder.Value = oldSelection;
 			for (int i = 0; i < 4; i++)
 			{
 				for (int j = 0; j < 3; j++)
@@ -4076,22 +4070,30 @@ namespace Idmr.Yogeme
 			}
 			else
 			{
-				int order = cboWP.SelectedIndex % 4;
-				int region = cboWP.SelectedIndex / 4;
+				int order = (int)numWPOrder.Value - 1;
+				int region = (int)numWPOrderRegion.Value - 1;
 				foreach(FlightGroup fg in getSelectedFlightgroups())
 					fg.Orders[region, order].Waypoints[index - 4].Enabled = Common.Update(this, fg.Orders[region, order].Waypoints[index - 4].Enabled, c.Checked);
 			}
 			refreshMap(_activeFG);
 		}
 
-		// TODO: break this out into separate Order/Region cbo's like everywhere else
-		void cboWP_SelectedIndexChanged(object sender, EventArgs e)
+		void cmdCopyOrderWP_Click(object sender, EventArgs e)
 		{
-			if (cboWP.SelectedIndex == -1) return;
+			menuCopy_Click("OrderWP", new EventArgs());
+		}
+		void cmdPasteOrderWP_Click(object sender, EventArgs e)
+		{
+			menuPaste_Click("OrderWP", new EventArgs());
+		}
+
+		/// <remarks>This handles both numWPOrder and numWPOrderRegion</remarks>
+		void numWPOrder_ValueChanged(object sender, EventArgs e)
+		{
 			bool btemp = _loading;
 			_loading = true;
-			int order = cboWP.SelectedIndex % 4;
-			int region = cboWP.SelectedIndex / 4;
+			int order = (int)numWPOrder.Value - 1;
+			int region = (int)numWPOrderRegion.Value - 1;
 			for (int i = 0; i < 8; i++)
 			{
 				for (int j = 0; j < 3; j++)
@@ -4106,6 +4108,7 @@ namespace Idmr.Yogeme
 			_loading = btemp;
 			refreshMap(_activeFG);
 		}
+
 		void tableWP_RowChanged(object sender, DataRowChangeEventArgs e)
 		{
 			if (_loading) return;
@@ -4147,8 +4150,8 @@ namespace Idmr.Yogeme
 			int i, j;
 			_loading = true;
 			for (j = 0; j < 8; j++) if (_tableOrder.Rows[j].Equals(e.Row)) break;   //find the row index that you're changing
-			int order = cboWP.SelectedIndex % 4;
-			int region = cboWP.SelectedIndex / 4;
+			int order = (int)numWPOrder.Value - 1;
+			int region = (int)numWPOrderRegion.Value - 1;
 			for (i = 0; i < 3; i++)
 			{
 				if (!double.TryParse(_tableOrder.Rows[j][i].ToString(), out double cell))
@@ -4167,8 +4170,8 @@ namespace Idmr.Yogeme
 			int i, j;
 			_loading = true;
 			for (j = 0; j < 8; j++) if (_tableOrderRaw.Rows[j].Equals(e.Row)) break;    //find the row index that you're changing
-			int order = cboWP.SelectedIndex % 4;
-			int region = cboWP.SelectedIndex / 4;
+			int order = (int)numWPOrder.Value - 1;
+			int region = (int)numWPOrderRegion.Value - 1;
 			for (i = 0; i < 3; i++)
 			{
 				if (!short.TryParse(_tableOrderRaw.Rows[j][i].ToString(), out short raw))

@@ -267,16 +267,20 @@ namespace Idmr.Yogeme
 			this.label64 = new System.Windows.Forms.Label();
 			this.numGoalTeam = new System.Windows.Forms.NumericUpDown();
 			this.tabWP = new System.Windows.Forms.TabPage();
+			this.numWPOrder = new System.Windows.Forms.NumericUpDown();
+			this.label150 = new System.Windows.Forms.Label();
+			this.numWPOrderRegion = new System.Windows.Forms.NumericUpDown();
+			this.label19 = new System.Windows.Forms.Label();
+			this.cmdCopyOrderWP = new System.Windows.Forms.Button();
+			this.cmdPasteOrderWP = new System.Windows.Forms.Button();
 			this.numHYP = new System.Windows.Forms.NumericUpDown();
 			this.numSP3 = new System.Windows.Forms.NumericUpDown();
 			this.numSP2 = new System.Windows.Forms.NumericUpDown();
 			this.numSP1 = new System.Windows.Forms.NumericUpDown();
-			this.cboWP = new System.Windows.Forms.ComboBox();
 			this.label76 = new System.Windows.Forms.Label();
 			this.numRoll = new System.Windows.Forms.NumericUpDown();
 			this.numPitch = new System.Windows.Forms.NumericUpDown();
 			this.numYaw = new System.Windows.Forms.NumericUpDown();
-			this.label21 = new System.Windows.Forms.Label();
 			this.label25 = new System.Windows.Forms.Label();
 			this.label56 = new System.Windows.Forms.Label();
 			this.dataO_Raw = new System.Windows.Forms.DataGrid();
@@ -787,8 +791,6 @@ namespace Idmr.Yogeme
 			this.txtNotes = new System.Windows.Forms.TextBox();
 			this.dataOrders = new System.Data.DataView();
 			this.dataOrders_Raw = new System.Data.DataView();
-			this.cmdCopyOrderWP = new System.Windows.Forms.Button();
-			this.cmdPasteOrderWP = new System.Windows.Forms.Button();
 			((System.ComponentModel.ISupportInitialize)(this.dataWaypoints)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.dataWaypoints_Raw)).BeginInit();
 			this.tabMain.SuspendLayout();
@@ -831,6 +833,8 @@ namespace Idmr.Yogeme
 			this.groupBox16.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numGoalTeam)).BeginInit();
 			this.tabWP.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.numWPOrder)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.numWPOrderRegion)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numHYP)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numSP3)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numSP2)).BeginInit();
@@ -3383,18 +3387,20 @@ namespace Idmr.Yogeme
 			// 
 			// tabWP
 			// 
+			this.tabWP.Controls.Add(this.numWPOrder);
+			this.tabWP.Controls.Add(this.label150);
+			this.tabWP.Controls.Add(this.numWPOrderRegion);
+			this.tabWP.Controls.Add(this.label19);
 			this.tabWP.Controls.Add(this.cmdCopyOrderWP);
 			this.tabWP.Controls.Add(this.cmdPasteOrderWP);
 			this.tabWP.Controls.Add(this.numHYP);
 			this.tabWP.Controls.Add(this.numSP3);
 			this.tabWP.Controls.Add(this.numSP2);
 			this.tabWP.Controls.Add(this.numSP1);
-			this.tabWP.Controls.Add(this.cboWP);
 			this.tabWP.Controls.Add(this.label76);
 			this.tabWP.Controls.Add(this.numRoll);
 			this.tabWP.Controls.Add(this.numPitch);
 			this.tabWP.Controls.Add(this.numYaw);
-			this.tabWP.Controls.Add(this.label21);
 			this.tabWP.Controls.Add(this.label25);
 			this.tabWP.Controls.Add(this.label56);
 			this.tabWP.Controls.Add(this.dataO_Raw);
@@ -3420,6 +3426,92 @@ namespace Idmr.Yogeme
 			this.tabWP.Size = new System.Drawing.Size(544, 478);
 			this.tabWP.TabIndex = 3;
 			this.tabWP.Text = "Waypoints";
+			// 
+			// numWPOrder
+			// 
+			this.numWPOrder.Location = new System.Drawing.Point(181, 208);
+			this.numWPOrder.Maximum = new decimal(new int[] {
+            4,
+            0,
+            0,
+            0});
+			this.numWPOrder.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+			this.numWPOrder.Name = "numWPOrder";
+			this.numWPOrder.Size = new System.Drawing.Size(33, 20);
+			this.numWPOrder.TabIndex = 57;
+			this.numWPOrder.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+			this.numWPOrder.ValueChanged += new System.EventHandler(this.numWPOrder_ValueChanged);
+			// 
+			// label150
+			// 
+			this.label150.AutoSize = true;
+			this.label150.Location = new System.Drawing.Point(142, 210);
+			this.label150.Name = "label150";
+			this.label150.Size = new System.Drawing.Size(33, 13);
+			this.label150.TabIndex = 56;
+			this.label150.Text = "Order";
+			// 
+			// numWPOrderRegion
+			// 
+			this.numWPOrderRegion.Location = new System.Drawing.Point(264, 208);
+			this.numWPOrderRegion.Maximum = new decimal(new int[] {
+            4,
+            0,
+            0,
+            0});
+			this.numWPOrderRegion.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+			this.numWPOrderRegion.Name = "numWPOrderRegion";
+			this.numWPOrderRegion.Size = new System.Drawing.Size(33, 20);
+			this.numWPOrderRegion.TabIndex = 55;
+			this.numWPOrderRegion.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+			this.numWPOrderRegion.ValueChanged += new System.EventHandler(this.numWPOrder_ValueChanged);
+			// 
+			// label19
+			// 
+			this.label19.AutoSize = true;
+			this.label19.Location = new System.Drawing.Point(217, 210);
+			this.label19.Name = "label19";
+			this.label19.Size = new System.Drawing.Size(41, 13);
+			this.label19.TabIndex = 54;
+			this.label19.Text = "Region";
+			// 
+			// cmdCopyOrderWP
+			// 
+			this.cmdCopyOrderWP.ImageAlign = System.Drawing.ContentAlignment.BottomRight;
+			this.cmdCopyOrderWP.ImageIndex = 6;
+			this.cmdCopyOrderWP.ImageList = this.imgToolbar;
+			this.cmdCopyOrderWP.Location = new System.Drawing.Point(303, 208);
+			this.cmdCopyOrderWP.Name = "cmdCopyOrderWP";
+			this.cmdCopyOrderWP.Size = new System.Drawing.Size(24, 23);
+			this.cmdCopyOrderWP.TabIndex = 52;
+			this.cmdCopyOrderWP.Click += new System.EventHandler(this.cmdCopyOrderWP_Click);
+			// 
+			// cmdPasteOrderWP
+			// 
+			this.cmdPasteOrderWP.ImageAlign = System.Drawing.ContentAlignment.BottomRight;
+			this.cmdPasteOrderWP.ImageIndex = 7;
+			this.cmdPasteOrderWP.ImageList = this.imgToolbar;
+			this.cmdPasteOrderWP.Location = new System.Drawing.Point(335, 208);
+			this.cmdPasteOrderWP.Name = "cmdPasteOrderWP";
+			this.cmdPasteOrderWP.Size = new System.Drawing.Size(24, 23);
+			this.cmdPasteOrderWP.TabIndex = 53;
+			this.cmdPasteOrderWP.Click += new System.EventHandler(this.cmdPasteOrderWP_Click);
 			// 
 			// numHYP
 			// 
@@ -3509,33 +3601,6 @@ namespace Idmr.Yogeme
             0,
             0});
 			// 
-			// cboWP
-			// 
-			this.cboWP.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.cboWP.FormattingEnabled = true;
-			this.cboWP.Items.AddRange(new object[] {
-            "1, Region 1",
-            "2, Region 1",
-            "3, Region 1",
-            "4, Region 1",
-            "1, Region 2",
-            "2, Region 2",
-            "3, Region 2",
-            "4, Region 2",
-            "1, Region 3",
-            "2, Region 3",
-            "3, Region 3",
-            "4, Region 3",
-            "1, Region 4",
-            "2, Region 4",
-            "3, Region 4",
-            "4, Region 4"});
-			this.cboWP.Location = new System.Drawing.Point(184, 210);
-			this.cboWP.Name = "cboWP";
-			this.cboWP.Size = new System.Drawing.Size(88, 21);
-			this.cboWP.TabIndex = 50;
-			this.cboWP.SelectedIndexChanged += new System.EventHandler(this.cboWP_SelectedIndexChanged);
-			// 
 			// label76
 			// 
 			this.label76.Image = ((System.Drawing.Image)(resources.GetObject("label76.Image")));
@@ -3594,15 +3659,6 @@ namespace Idmr.Yogeme
 			this.numYaw.Name = "numYaw";
 			this.numYaw.Size = new System.Drawing.Size(48, 20);
 			this.numYaw.TabIndex = 47;
-			// 
-			// label21
-			// 
-			this.label21.Location = new System.Drawing.Point(136, 210);
-			this.label21.Name = "label21";
-			this.label21.Size = new System.Drawing.Size(42, 20);
-			this.label21.TabIndex = 21;
-			this.label21.Text = "Order:";
-			this.label21.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			// 
 			// label25
 			// 
@@ -3724,7 +3780,7 @@ namespace Idmr.Yogeme
 			this.chkSP3.Name = "chkSP3";
 			this.chkSP3.Size = new System.Drawing.Size(96, 16);
 			this.chkSP3.TabIndex = 24;
-			this.chkSP3.Text = "Start Point3";
+			this.chkSP3.Text = "Rendezvous";
 			// 
 			// chkSP2
 			// 
@@ -9206,28 +9262,6 @@ namespace Idmr.Yogeme
 			this.dataOrders_Raw.AllowDelete = false;
 			this.dataOrders_Raw.AllowNew = false;
 			// 
-			// cmdCopyOrderWP
-			// 
-			this.cmdCopyOrderWP.ImageAlign = System.Drawing.ContentAlignment.BottomRight;
-			this.cmdCopyOrderWP.ImageIndex = 6;
-			this.cmdCopyOrderWP.ImageList = this.imgToolbar;
-			this.cmdCopyOrderWP.Location = new System.Drawing.Point(278, 208);
-			this.cmdCopyOrderWP.Name = "cmdCopyOrderWP";
-			this.cmdCopyOrderWP.Size = new System.Drawing.Size(24, 23);
-			this.cmdCopyOrderWP.TabIndex = 52;
-			this.cmdCopyOrderWP.Click += new System.EventHandler(this.cmdCopyOrderWP_Click);
-			// 
-			// cmdPasteOrderWP
-			// 
-			this.cmdPasteOrderWP.ImageAlign = System.Drawing.ContentAlignment.BottomRight;
-			this.cmdPasteOrderWP.ImageIndex = 7;
-			this.cmdPasteOrderWP.ImageList = this.imgToolbar;
-			this.cmdPasteOrderWP.Location = new System.Drawing.Point(310, 208);
-			this.cmdPasteOrderWP.Name = "cmdPasteOrderWP";
-			this.cmdPasteOrderWP.Size = new System.Drawing.Size(24, 23);
-			this.cmdPasteOrderWP.TabIndex = 53;
-			this.cmdPasteOrderWP.Click += new System.EventHandler(this.cmdPasteOrderWP_Click);
-			// 
 			// XwaForm
 			// 
 			this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
@@ -9295,6 +9329,9 @@ namespace Idmr.Yogeme
 			this.groupBox16.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.numGoalTeam)).EndInit();
 			this.tabWP.ResumeLayout(false);
+			this.tabWP.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.numWPOrder)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.numWPOrderRegion)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.numHYP)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.numSP3)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.numSP2)).EndInit();
@@ -9934,8 +9971,6 @@ namespace Idmr.Yogeme
 		private Label label99;
 		private DataGrid dataO_Raw;
 		private DataGrid dataO;
-		private ComboBox cboWP;
-		private Label label21;
 		private NumericUpDown numHYP;
 		private NumericUpDown numSP3;
 		private NumericUpDown numSP2;
@@ -10233,5 +10268,9 @@ namespace Idmr.Yogeme
 		private MenuItem menuMissionCraft;
 		private Button cmdCopyOrderWP;
 		private Button cmdPasteOrderWP;
+		private NumericUpDown numWPOrder;
+		private Label label150;
+		private NumericUpDown numWPOrderRegion;
+		private Label label19;
 	}
 }

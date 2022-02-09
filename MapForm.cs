@@ -3,10 +3,12 @@
  * Copyright (C) 2007-2022 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.12
+ * VERSION: 1.13.1
  */
 
 /* CHANGELOG
+ * v1.13.1, 220208
+ * [UPD] XWA SP3 now labeled "RDV"
  * v1.12, 220103
  * [FIX] Cleared sortedMapDataList on reload to fix multi-delete [JB]
  * [FIX] Listbox scrolling
@@ -1491,7 +1493,7 @@ namespace Idmr.Yogeme
 				for (int i = 12; i < 22; i++) chkWP[i].Enabled = false;
 				lblRegion.Visible = true;
 				numRegion.Visible = true;
-				// TODO: rename Start3 to RDV
+				chkSP3.Text = "RDV";
 			}
 			if (_platform != Settings.Platform.XWING)
 			{
