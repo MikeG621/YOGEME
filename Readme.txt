@@ -28,7 +28,7 @@ your user settings.
 ==========
 Version History
 
-v1.31.1, 08 Feb 2022
+v1.13.1, 08 Feb 2022
  - (XWA) SP3 waypoint renamed to RDV
  - (XWA) Order Waypoint drop-down replaced with a pair of numerics
  - Various fixes from RandomStarfighter
