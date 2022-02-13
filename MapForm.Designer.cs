@@ -93,6 +93,8 @@ namespace Idmr.Yogeme
 			this.cmdCenterSelected = new System.Windows.Forms.Button();
 			this.cboViewDifficulty = new System.Windows.Forms.ComboBox();
 			this.cboViewIff = new System.Windows.Forms.ComboBox();
+			this.chkWireframe = new System.Windows.Forms.CheckBox();
+			this.chkLimit = new System.Windows.Forms.CheckBox();
 			((System.ComponentModel.ISupportInitialize)(this.pctMap)).BeginInit();
 			this.grpDir.SuspendLayout();
 			this.grpPoints.SuspendLayout();
@@ -713,15 +715,15 @@ namespace Idmr.Yogeme
 			// lblExpandSelection
 			// 
 			this.lblExpandSelection.AutoSize = true;
-			this.lblExpandSelection.Location = new System.Drawing.Point(134, 18);
+			this.lblExpandSelection.Location = new System.Drawing.Point(51, 40);
 			this.lblExpandSelection.Name = "lblExpandSelection";
-			this.lblExpandSelection.Size = new System.Drawing.Size(105, 13);
+			this.lblExpandSelection.Size = new System.Drawing.Size(60, 13);
 			this.lblExpandSelection.TabIndex = 49;
-			this.lblExpandSelection.Text = "Expand selection by:";
+			this.lblExpandSelection.Text = "Expand by:";
 			// 
 			// cmdExpandByCraft
 			// 
-			this.cmdExpandByCraft.Location = new System.Drawing.Point(137, 35);
+			this.cmdExpandByCraft.Location = new System.Drawing.Point(113, 35);
 			this.cmdExpandByCraft.Margin = new System.Windows.Forms.Padding(0);
 			this.cmdExpandByCraft.Name = "cmdExpandByCraft";
 			this.cmdExpandByCraft.Size = new System.Drawing.Size(39, 23);
@@ -732,7 +734,7 @@ namespace Idmr.Yogeme
 			// 
 			// cmdExpandByIff
 			// 
-			this.cmdExpandByIff.Location = new System.Drawing.Point(176, 35);
+			this.cmdExpandByIff.Location = new System.Drawing.Point(152, 35);
 			this.cmdExpandByIff.Margin = new System.Windows.Forms.Padding(0);
 			this.cmdExpandByIff.Name = "cmdExpandByIff";
 			this.cmdExpandByIff.Size = new System.Drawing.Size(39, 23);
@@ -743,7 +745,7 @@ namespace Idmr.Yogeme
 			// 
 			// cmdExpandBySize
 			// 
-			this.cmdExpandBySize.Location = new System.Drawing.Point(215, 35);
+			this.cmdExpandBySize.Location = new System.Drawing.Point(191, 35);
 			this.cmdExpandBySize.Margin = new System.Windows.Forms.Padding(0);
 			this.cmdExpandBySize.Name = "cmdExpandBySize";
 			this.cmdExpandBySize.Size = new System.Drawing.Size(39, 23);
@@ -754,7 +756,7 @@ namespace Idmr.Yogeme
 			// 
 			// cmdInvertSelection
 			// 
-			this.cmdInvertSelection.Location = new System.Drawing.Point(77, 35);
+			this.cmdInvertSelection.Location = new System.Drawing.Point(2, 35);
 			this.cmdInvertSelection.Margin = new System.Windows.Forms.Padding(3, 3, 12, 3);
 			this.cmdInvertSelection.Name = "cmdInvertSelection";
 			this.cmdInvertSelection.Size = new System.Drawing.Size(48, 23);
@@ -885,10 +887,35 @@ namespace Idmr.Yogeme
 			this.cboViewIff.TabIndex = 53;
 			this.cboViewIff.SelectedIndexChanged += new System.EventHandler(this.cboViewIff_SelectedIndexChanged);
 			// 
+			// chkWireframe
+			// 
+			this.chkWireframe.AutoSize = true;
+			this.chkWireframe.Checked = true;
+			this.chkWireframe.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.chkWireframe.Location = new System.Drawing.Point(54, 6);
+			this.chkWireframe.Name = "chkWireframe";
+			this.chkWireframe.Size = new System.Drawing.Size(79, 17);
+			this.chkWireframe.TabIndex = 59;
+			this.chkWireframe.Text = "Wireframes";
+			this.chkWireframe.UseVisualStyleBackColor = true;
+			this.chkWireframe.CheckedChanged += new System.EventHandler(this.chkWireframe_CheckedChanged);
+			// 
+			// chkLimit
+			// 
+			this.chkLimit.AutoSize = true;
+			this.chkLimit.Location = new System.Drawing.Point(139, 6);
+			this.chkLimit.Name = "chkLimit";
+			this.chkLimit.Size = new System.Drawing.Size(105, 17);
+			this.chkLimit.TabIndex = 60;
+			this.chkLimit.Text = "Only above XXm";
+			this.chkLimit.UseVisualStyleBackColor = true;
+			this.chkLimit.CheckedChanged += new System.EventHandler(this.chkLimit_CheckedChanged);
+			// 
 			// MapForm
 			// 
 			this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
 			this.ClientSize = new System.Drawing.Size(824, 535);
+			this.Controls.Add(this.chkLimit);
 			this.Controls.Add(this.cboViewIff);
 			this.Controls.Add(this.cboViewDifficulty);
 			this.Controls.Add(this.cmdCenterSelected);
@@ -935,10 +962,11 @@ namespace Idmr.Yogeme
 			this.Controls.Add(this.hscZoom);
 			this.Controls.Add(this.pctMap);
 			this.Controls.Add(this.chkTrace);
+			this.Controls.Add(this.chkWireframe);
 			this.DoubleBuffered = true;
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.KeyPreview = true;
-			this.MinimumSize = new System.Drawing.Size(700, 574);
+			this.MinimumSize = new System.Drawing.Size(750, 574);
 			this.Name = "MapForm";
 			this.Text = "YOGEME Map Interface";
 			this.Activated += new System.EventHandler(this.form_Activated);
@@ -1035,5 +1063,7 @@ namespace Idmr.Yogeme
 		private Button cmdCenterSelected;
 		private ComboBox cboViewDifficulty;
 		private ComboBox cboViewIff;
+		private CheckBox chkWireframe;
+		private CheckBox chkLimit;
 	}
 }

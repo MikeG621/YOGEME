@@ -28,6 +28,9 @@ your user settings.
 ==========
 Version History
 
+ - (Map) Checkboxes to toggle wireframes and use of icon size limit added
+ - (Map) Minimum width increased, selection buttons fixed to left side
+
 v1.13.1, 08 Feb 2022
  - (XWA) SP3 waypoint renamed to RDV
  - (XWA) Order Waypoint drop-down replaced with a pair of numerics

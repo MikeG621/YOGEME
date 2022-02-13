@@ -3,10 +3,13 @@
  * Copyright (C) 2007-2022 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.13.1
+ * VERSION: 1.13.1+
  */
 
 /* CHANGELOG
+ * [NEW] checkboxes to toggle wireframes and icon limit
+ * [UPD] increased minimum form width
+ * [UPD] fixed selection buttons to left side
  * v1.13.1, 220208
  * [UPD] XWA SP3 now labeled "RDV"
  * v1.12, 220103
@@ -242,7 +245,7 @@ namespace Idmr.Yogeme
 		{
 			WireframeInstance model = _wireframeManager.GetOrCreateWireframeInstance(dat.Craft, dat.FgIndex);
 
-			if (!_settings.WireframeEnabled || model == null || model.ModelDef == null || (_settings.WireframeIconThresholdEnabled && model.ModelDef.LongestSpanMeters < _settings.WireframeIconThresholdSize))
+			if (!chkWireframe.Checked || model == null || model.ModelDef == null || (chkLimit.Checked && model.ModelDef.LongestSpanMeters < _settings.WireframeIconThresholdSize))
 			{
 				g.DrawImageUnscaled(bmp, x - 8, y - 8);
 				return;
@@ -1419,7 +1422,7 @@ namespace Idmr.Yogeme
 			_settings = config;
 			if (_wireframeManager == null)
 				_wireframeManager = new WireframeManager();
-			_wireframeManager.SetPlatform(_platform, config);
+			_wireframeManager.SetPlatform(_platform, _settings);
 
 			#region checkbox array
 			chkWP[0] = chkSP1;
@@ -1456,17 +1459,20 @@ namespace Idmr.Yogeme
 			_mapZ = h / 2;
 			_dragIcon[0] = -1;
 			_loading = true;
-			chkTags.Checked = Convert.ToBoolean(config.MapOptions & Settings.MapOpts.FGTags);
-			chkTrace.Checked = Convert.ToBoolean(config.MapOptions & Settings.MapOpts.Traces);
-			chkDistance.Checked = Convert.ToBoolean(config.MapOptions & Settings.MapOpts.TraceDistance);
-			chkTime.Checked = Convert.ToBoolean(config.MapOptions & Settings.MapOpts.TraceTime);
-			chkTraceHideFade.Checked = Convert.ToBoolean(config.MapOptions & Settings.MapOpts.TraceHideFade);
-			chkTraceSelected.Checked = Convert.ToBoolean(config.MapOptions & Settings.MapOpts.TraceSelected);
+			chkTags.Checked = Convert.ToBoolean(_settings.MapOptions & Settings.MapOpts.FGTags);
+			chkTrace.Checked = Convert.ToBoolean(_settings.MapOptions & Settings.MapOpts.Traces);
+			chkDistance.Checked = Convert.ToBoolean(_settings.MapOptions & Settings.MapOpts.TraceDistance);
+			chkTime.Checked = Convert.ToBoolean(_settings.MapOptions & Settings.MapOpts.TraceTime);
+			chkTraceHideFade.Checked = Convert.ToBoolean(_settings.MapOptions & Settings.MapOpts.TraceHideFade);
+			chkTraceSelected.Checked = Convert.ToBoolean(_settings.MapOptions & Settings.MapOpts.TraceSelected);
+			chkWireframe.Checked = _settings.WireframeEnabled;
+			chkLimit.Checked = _settings.WireframeIconThresholdEnabled;
+			chkLimit.Text = "Only above " + _settings.WireframeIconThresholdSize + "m";
 			chkDistance.Enabled = chkTrace.Checked;
 			chkTime.Enabled = chkTrace.Checked;
 			chkTraceHideFade.Enabled = chkTrace.Checked;
 			chkTraceSelected.Enabled = chkTrace.Checked;
-			int t = config.Waypoints;
+			int t = _settings.Waypoints;
 			if (_platform == Settings.Platform.XWING)
 			{
 				for (int i = 0; i < 3; i++) chkWP[i].Checked = Convert.ToBoolean(t & (1 << i));
@@ -1480,7 +1486,7 @@ namespace Idmr.Yogeme
 				chkBRF2.Text = "CS3";
 				chkBRF3.Text = "CS4";
 			}
-			if (_platform == Settings.Platform.TIE)
+			else if (_platform == Settings.Platform.TIE)
 			{
 				for (int i = 0; i < 15; i++) chkWP[i].Checked = Convert.ToBoolean(t & (1 << i));
 				for (int i = 15; i < 22; i++) chkWP[i].Enabled = false;
@@ -1614,12 +1620,12 @@ namespace Idmr.Yogeme
 			moveControlLeft(lblHide, cmdHideAdd, 0);
 
 			// Align the "expand selection" controls to the left of the hide/fade controls.
-			moveControlLeft(cmdExpandBySize, lblHide, 20);
+			/*moveControlLeft(cmdExpandBySize, lblHide, 20);
 			moveControlLeft(cmdExpandByIff, cmdExpandBySize, 0);
 			moveControlLeft(cmdExpandByCraft, cmdExpandByIff, 0);
 			moveControlLeft(cmdInvertSelection, cmdExpandByCraft, 0);
 			moveControlAbove(lblExpandSelection, cmdExpandByCraft, 0);
-			lblExpandSelection.Left = cmdExpandByCraft.Left;
+			lblExpandSelection.Left = cmdExpandByCraft.Left;*/
 
 			// Align the "fit to" buttons near the center bottom of the map, just above the zoom bar.
 			cmdFitDefault.Left = (pctMap.Left + (pctMap.Width / 2)) + cmdFitDefault.Width + cmdFitDefault.Margin.Left + 10;
@@ -2453,7 +2459,11 @@ namespace Idmr.Yogeme
 		}*/
 		#endregion
 		#region frmMap
-		void form_Activated(object sender, EventArgs e) { MapPaint(); }
+		void form_Activated(object sender, EventArgs e)
+		{
+			chkLimit.Text = "Only above " + _settings.WireframeIconThresholdSize + "m";
+			MapPaint();
+		}
 		void form_FormClosed(object sender, FormClosedEventArgs e) { _map.Dispose(); }
 		void form_FormClosing(object sender, FormClosingEventArgs e)
 		{
@@ -2468,6 +2478,8 @@ namespace Idmr.Yogeme
 			if (chkTraceHideFade.Checked) mapOpts |= Settings.MapOpts.TraceHideFade;
 			if (chkTraceSelected.Checked) mapOpts |= Settings.MapOpts.TraceSelected;
 			_settings.MapOptions = mapOpts;
+			_settings.WireframeEnabled = chkWireframe.Checked;
+			_settings.WireframeIconThresholdEnabled = chkLimit.Checked;
 
 			onDataModified = null;
 			_isClosing = true;
@@ -2615,6 +2627,8 @@ namespace Idmr.Yogeme
 				deselect();
 			MapPaint();
 		}
+		void chkWireframe_CheckedChanged(object sender, EventArgs e) { if (!_loading) MapPaint(); }
+		void chkLimit_CheckedChanged(object sender, EventArgs e) { if (!_loading) MapPaint(); }
 		#endregion
 
 		#region Selection and visibility
