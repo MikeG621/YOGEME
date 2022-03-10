@@ -665,10 +665,11 @@ namespace Idmr.Yogeme
 			this.lstPrePostCategories.Items.AddRange(new object[] {
             "Pre-mission Banter",
             "Mission Description",
-            "Successful Debrief"});
+            "Successful Debrief",
+            "Failed Hints"});
 			this.lstPrePostCategories.Location = new System.Drawing.Point(6, 58);
 			this.lstPrePostCategories.Name = "lstPrePostCategories";
-			this.lstPrePostCategories.Size = new System.Drawing.Size(120, 43);
+			this.lstPrePostCategories.Size = new System.Drawing.Size(120, 56);
 			this.lstPrePostCategories.TabIndex = 1;
 			this.lstPrePostCategories.SelectedIndexChanged += new System.EventHandler(this.lstPrePostCategories_SelectedIndexChanged);
 			// 

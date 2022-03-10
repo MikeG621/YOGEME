@@ -28,6 +28,9 @@ your user settings.
 ==========
 Version History
 
+ - Converter utility updated to v1.7 to fix XvT2XWA order problems
+ - (XWA) Added Format 25C backdrop support via v2.4 of ImageFormat.Dat.dll
+ - (XWA) Added ability to edit Hint/Failed briefing audio, which plays immediately after leaving the mission
  - (Map) Checkboxes to toggle wireframes and use of icon size limit added
  - (Map) Minimum width increased, selection buttons fixed to left side
 

@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2022 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.12
+ * VERSION: 1.12+
  */
 
 /* CHANGELOG
+ * [NEW] Failed/Hints audio
  * v1.12, 220103
  * [FIX] Listbox scrolling
  * v1.9.2, 210328
@@ -111,7 +112,7 @@ namespace Idmr.Yogeme
 		}
 
 		#region controls
-		private void cmdClose_Click(object sender, EventArgs e)
+		void cmdClose_Click(object sender, EventArgs e)
 		{
 			Close();
 		}
@@ -132,14 +133,14 @@ namespace Idmr.Yogeme
 			_activeSounds.Add(plr);
 		}
 
-		private void mediaPlayer_MediaEnded(object sender, EventArgs e)
+		void mediaPlayer_MediaEnded(object sender, EventArgs e)
 		{
 			var plr = (System.Windows.Media.MediaPlayer)sender;
 			_activeSounds.Remove(plr);
 			plr.Close();
 		}
 
-		private void cmdMessage_Click(object sender, EventArgs e)
+		void cmdMessage_Click(object sender, EventArgs e)
 		{
 			bool isEom = ((Button)sender).Name == "cmdEom";
 			var lst = (isEom ? lstEom : lstMessages);
@@ -168,7 +169,7 @@ namespace Idmr.Yogeme
 			cmdSaveEom.Enabled = true;
 			cmdSaveMessage.Enabled = true;
 		}
-		private void cmdSave_Click(object sender, EventArgs e)
+		void cmdSave_Click(object sender, EventArgs e)
 		{
 			string contents = string.Join("\r\n", _messages) + "\r\n";
 			if (!File.Exists(_lstFile + _bakExt) && File.Exists(_lstFile)) File.Copy(_lstFile, _lstFile + _bakExt);
@@ -180,7 +181,7 @@ namespace Idmr.Yogeme
 			cmdSaveMessage.Enabled = false;
 			cmdSaveEom.Enabled = false;
 		}
-		private void lstEom_SelectedIndexChanged(object sender, EventArgs e)
+		void lstEom_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (lstEom.SelectedIndex == -1) return;
 
@@ -191,7 +192,7 @@ namespace Idmr.Yogeme
 			if (_messages != null) txtEom.Text = _messages[lstEom.SelectedIndex + 64];
 			cmdPlayEom.Visible = File.Exists(_wave + txtEom.Text);
 		}
-		private void lstMessages_SelectedIndexChanged(object sender, EventArgs e)
+		void lstMessages_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (lstMessages.SelectedIndex == -1) return;
 
@@ -204,7 +205,7 @@ namespace Idmr.Yogeme
 			cmdPlayMessage.Visible = File.Exists(_wave + txtMessage.Text);
 		}
 
-		private void cmdAdd_Click(object sender, EventArgs e)
+		void cmdAdd_Click(object sender, EventArgs e)
 		{
 			if (lstPrePostCategories.SelectedIndex == -1) return;
 
@@ -218,7 +219,7 @@ namespace Idmr.Yogeme
 			lstPrePost.SelectedIndex = lstPrePost.Items.Count - 1;
 			File.Copy(opnWav.FileName, _wave + txtPrePostWav.Text, true);
 		}
-		private void cmdDown_Click(object sender, EventArgs e)
+		void cmdDown_Click(object sender, EventArgs e)
 		{
 			backupPrePost();
 
@@ -233,7 +234,7 @@ namespace Idmr.Yogeme
 
 			lstPrePost.SelectedIndex++;
 		}
-		private void cmdPrePost_Click(object sender, EventArgs e)
+		void cmdPrePost_Click(object sender, EventArgs e)
 		{
 			bool isBriefing = ((Button)sender).Name == "cmdBriefing";
 
@@ -248,7 +249,7 @@ namespace Idmr.Yogeme
 
 			File.Copy(opnWav.FileName, wave, true);
 		}
-		private void cmdRemove_Click(object sender, EventArgs e)
+		void cmdRemove_Click(object sender, EventArgs e)
 		{
 			if (lstPrePostCategories.SelectedIndex == -1 || lstPrePost.SelectedIndex == -1) return;
 
@@ -263,7 +264,7 @@ namespace Idmr.Yogeme
 
 			lstPrePost.Items.RemoveAt(lstPrePost.Items.Count - 1);
 		}
-		private void cmdUp_Click(object sender, EventArgs e)
+		void cmdUp_Click(object sender, EventArgs e)
 		{
 			backupPrePost();
 
@@ -278,7 +279,8 @@ namespace Idmr.Yogeme
 
 			lstPrePost.SelectedIndex--;
 		}
-		private void lstBriefing_SelectedIndexChanged(object sender, EventArgs e)
+
+		void lstBriefing_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (lstBriefing.SelectedIndex == -1) return;
 
@@ -289,7 +291,7 @@ namespace Idmr.Yogeme
 			txtBriefing.Text = _frontend.Substring(_wave.Length) + "B" + _battleNumber.ToString("D2") + _missionNumber.ToString("D2") + (lstBriefing.SelectedIndex + 1).ToString("D2") + _wavExt;
 			cmdPlayBriefing.Visible = File.Exists(_wave + txtBriefing.Text);
 		}
-		private void lstPrePost_SelectedIndexChanged(object sender, EventArgs e)
+		void lstPrePost_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			cmdRemove.Enabled = lstPrePost.SelectedIndex != -1;
 			if (lstPrePost.SelectedIndex == -1 || lstPrePostCategories.SelectedIndex == -1)
@@ -315,13 +317,18 @@ namespace Idmr.Yogeme
 				lblPrePostNote.Text = _mission.DescriptionNotes;
 				txtPrePost.Text = _mission.MissionDescription;
 			}
-			else
+			else if (_prefix == "W")
 			{
 				lblPrePostNote.Text = _mission.SuccessfulNotes;
 				txtPrePost.Text = _mission.MissionSuccessful;
 			}
+			else
+			{
+				lblPrePostNote.Text = _mission.FailedNotes;
+				txtPrePost.Text = _mission.MissionFailed;
+			}
 		}
-		private void lstPrePostCategories_SelectedIndexChanged(object sender, EventArgs e)
+		void lstPrePostCategories_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			cmdUp.Enabled = false;
 			cmdDown.Enabled = false;
@@ -361,8 +368,7 @@ namespace Idmr.Yogeme
 		}
 		#endregion controls
 
-		//TODO: Add "L" capability
 		/// <summary>Gets the letter prefix for PrePost messages, lstPrePostCategories.SI must not be <b>-1</b></summary>
-		string _prefix => (lstPrePostCategories.SelectedIndex == 0 ? "N" : (lstPrePostCategories.SelectedIndex == 1 ? "S" : "W"));
+		string _prefix => (lstPrePostCategories.SelectedIndex == 0 ? "N" : (lstPrePostCategories.SelectedIndex == 1 ? "S" : (lstPrePostCategories.SelectedIndex == 2 ? "W" : "L")));
 	}
 }
