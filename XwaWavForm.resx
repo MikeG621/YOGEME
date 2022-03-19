@@ -118,14 +118,6 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="cmdPlayPrePost.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAABGdBTUEAALGOfPtRkwAAACBjSFJNAAB6
-        JQAAgIMAAPn/AACA6QAAdTAAAOpgAAA6mAAAF2+SX8VGAAAACXBIWXMAAAGKAAABigEzlzBYAAAAO0lE
-        QVQoU4XKWQ4AIAwC0d7/0miNFheIHyST9gWA7xgjX5Bj9HSQMZGCjA3dUKJ1q1+FATmGATl5PIdodVDS
-        Lk7w9SEAAAAASUVORK5CYII=
-</value>
-  </data>
   <data name="cmdPlayMessage.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAABGdBTUEAALGOfPtRkwAAACBjSFJNAAB6
@@ -153,6 +145,14 @@
   <data name="label3.Text" xml:space="preserve">
     <value>These .WAV files follow a specific location and naming convention. Files chosen will be copied/renamed accordingly.
 These are for Strings only and fire during the matching Caption event. *Changes are immediate*</value>
+  </data>
+  <data name="cmdPlayPrePost.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAABGdBTUEAALGOfPtRkwAAACBjSFJNAAB6
+        JQAAgIMAAPn/AACA6QAAdTAAAOpgAAA6mAAAF2+SX8VGAAAACXBIWXMAAAGKAAABigEzlzBYAAAAO0lE
+        QVQoU4XKWQ4AIAwC0d7/0miNFheIHyST9gWA7xgjX5Bj9HSQMZGCjA3dUKJ1q1+FATmGATl5PIdodVDS
+        Lk7w9SEAAAAASUVORK5CYII=
+</value>
   </data>
   <metadata name="opnWav.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>

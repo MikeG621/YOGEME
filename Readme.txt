@@ -3,8 +3,8 @@
 
 Author: Michael Gaisser (mjgaisser@gmail.com)
 Contributor: Random Starfighter (JB)
-Version: 1.13.1
-Date: 2022.02.08
+Version: 1.13.2
+Date: 2022.03.19
 
 Thank you for downloading YOGEME, the all-in-one mission editor for the X-Wing
 series, Xwing95 through X-wing Alliance.  This program allows easy mission
@@ -28,9 +28,12 @@ your user settings.
 ==========
 Version History
 
- - Converter utility updated to v1.7 to fix XvT2XWA order problems
+v1.13.2, 19 Mar 2022
+ - Converter utility updated to v1.7.2 to fix XvT2XWA order problems
+ - (All) Save will globally trigger Leave events so Ctrl+S doesn't lose last edit
  - (XWA) Added Format 25C backdrop support via v2.4 of ImageFormat.Dat.dll
  - (XWA) Added ability to edit Hint/Failed briefing audio, which plays immediately after leaving the mission
+ - (XWA) Fixed the WAV LST staying open and preventing save.
  - (Map) Checkboxes to toggle wireframes and use of icon size limit added
  - (Map) Minimum width increased, selection buttons fixed to left side
 

@@ -7,6 +7,7 @@
  */
 
 /* CHANGELOG
+ * [FIX] LST wasn't closing during read
  * [NEW] Failed/Hints audio
  * v1.12, 220103
  * [FIX] Listbox scrolling
@@ -88,8 +89,8 @@ namespace Idmr.Yogeme
 				lstBriefing.Items.Add("#" + (i + 1) + ": " + (_mission.Briefings[0].BriefingString[i] != "" ? _mission.Briefings[0].BriefingString[i] : "(none)"));
 			if (File.Exists(_lstFile))
 			{
-				StreamReader sr = File.OpenText(_lstFile);
-				_messages = sr.ReadToEnd().Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+				using (StreamReader sr = File.OpenText(_lstFile))
+					_messages = sr.ReadToEnd().Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
 			}
 		}
 
@@ -174,9 +175,8 @@ namespace Idmr.Yogeme
 			string contents = string.Join("\r\n", _messages) + "\r\n";
 			if (!File.Exists(_lstFile + _bakExt) && File.Exists(_lstFile)) File.Copy(_lstFile, _lstFile + _bakExt);
 			File.Delete(_lstFile);
-			StreamWriter sw = new FileInfo(_lstFile).CreateText();
-			sw.Write(contents);
-			sw.Close();
+			using (StreamWriter sw = new FileInfo(_lstFile).CreateText())
+				sw.Write(contents);
 
 			cmdSaveMessage.Enabled = false;
 			cmdSaveEom.Enabled = false;

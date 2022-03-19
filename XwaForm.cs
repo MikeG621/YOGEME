@@ -3,10 +3,12 @@
  * Copyright (C) 2007-2022 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.13.1
+ * VERSION: 1.13.2
  */
 
 /* CHANGELOG
+ * v1.13.2, 220319
+ * [FIX] Remove focus during save to trigger any Leave events
  * v1.13.1, 220208
  * [UPD] Order Waypoint cbo replaced with a pair of numerics
  * [UPD] SP3 waypoint Text changed to RDV (Designer)
@@ -876,6 +878,7 @@ namespace Idmr.Yogeme
 		}
 		void saveMission(string fileMission)
 		{
+			tabMain.Focus();
 			try { _fBrief.Save(); }
 			catch { /* do nothing */ }
 			lblTeamArr_Click(lblTeam[_activeTeam], new EventArgs());    // forces an update

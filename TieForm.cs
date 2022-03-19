@@ -3,10 +3,12 @@
  * Copyright (C) 2007-2022 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.13.1
+ * VERSION: 1.13.2
  */
 
 /* CHANGELOG
+ * v1.13.2, 220319
+ * [FIX] Remove focus during save to trigger any Leave events
  * v1.13.1, 220208
  * [NEW] menuCut [JB]
  * [FIX] multi-select refresh issues [JB]
@@ -530,6 +532,7 @@ namespace Idmr.Yogeme
 		}
 		void saveMission(string fileMission)
 		{
+			tabMain.Focus();
 			try { _fBrief.Save(); }
 			catch { /* do nothing */ }
 			if (Text.IndexOf("*") == -1) return;	// don't save if unmodifed
