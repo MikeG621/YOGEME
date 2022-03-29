@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2022 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.13.1+
+ * VERSION: 1.13.2
  */
 
 /* CHANGELOG
+ * v1.13.2, 220319
  * [NEW] checkboxes to toggle wireframes and icon limit
  * [UPD] increased minimum form width
  * [UPD] fixed selection buttons to left side
