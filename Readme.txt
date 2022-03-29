@@ -28,6 +28,8 @@ your user settings.
 ==========
 Version History
 
+ - (Map) Fixed the window stealing focus when you mouse over the map if the window wasn't selected
+
 v1.13.2, 19 Mar 2022
  - Converter utility updated to v1.7.2 to fix XvT2XWA order problems
  - (All) Save will globally trigger Leave events so Ctrl+S doesn't lose last edit
