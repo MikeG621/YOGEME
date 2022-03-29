@@ -970,6 +970,7 @@ namespace Idmr.Yogeme
 			this.Name = "MapForm";
 			this.Text = "YOGEME Map Interface";
 			this.Activated += new System.EventHandler(this.form_Activated);
+			this.Deactivate += new System.EventHandler(this.form_Deactivate);
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.form_FormClosing);
 			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.form_FormClosed);
 			this.Load += new System.EventHandler(this.form_Load);

@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2022 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.13.2
+ * VERSION: 1.13.2+
  */
 
 /* CHANGELOG
+ * [FIX] pctMap_Enter stealing focus when window wasn't active
  * v1.13.2, 220319
  * [NEW] checkboxes to toggle wireframes and icon limit
  * [UPD] increased minimum form width
@@ -133,6 +134,7 @@ namespace Idmr.Yogeme
 #pragma warning restore IDE1006 // Naming Styles
 		bool _isClosing = false;              //Need a flag during form close to check whether external MapPaint() calls should be ignored.
 		Settings _settings = null;
+		bool _hasFocus;
 		#endregion vars
 
 		#region ctors
@@ -2261,7 +2263,6 @@ namespace Idmr.Yogeme
 				lblCoor2.Text = "Y:";
 			}
 		}
-
 		/// <summary>Rotate map to Front view</summary>
 		void optXZ_CheckedChanged(object sender, EventArgs e)
 		{
@@ -2273,7 +2274,6 @@ namespace Idmr.Yogeme
 				lblCoor2.Text = "Z:";
 			}
 		}
-
 		/// <summary>Rotate map to Side view </summary>
 		void optYZ_CheckedChanged(object sender, EventArgs e)
 		{
@@ -2350,7 +2350,14 @@ namespace Idmr.Yogeme
 				middleClick();
 			}
 		}
-		void pctMap_MouseEnter(object sender, EventArgs e) { pctMap.Focus(); _mapFocus = true; }
+		void pctMap_MouseEnter(object sender, EventArgs e)
+		{
+			if (_hasFocus)
+			{
+				pctMap.Focus();
+				_mapFocus = true;
+			}
+		}
 		void pctMap_MouseLeave(object sender, EventArgs e) { _mapFocus = false; }
 		void pctMap_MouseMove(object sender, MouseEventArgs e)
 		{
@@ -2449,22 +2456,15 @@ namespace Idmr.Yogeme
 		{
 			e.IsInputKey = true;
 		}
-		/*
-		/// <summary>Used to determine if mouse click is near a craft waypoint</summary>
-		/// <returns>True if num1==(num2 ± 6)</returns>
-		bool isApprox(int num1, double num2)
-		{
-			// +/- 6 is a good enough size
-			if (num1 <= (num2 + 6) && num1 >= (num2 - 6)) return true;
-			else return false;
-		}*/
 		#endregion
 		#region frmMap
 		void form_Activated(object sender, EventArgs e)
 		{
+			_hasFocus = true;
 			chkLimit.Text = "Only above " + _settings.WireframeIconThresholdSize + "m";
 			MapPaint();
 		}
+		void form_Deactivate(object sender, EventArgs e) { _hasFocus = false; }
 		void form_FormClosed(object sender, FormClosedEventArgs e) { _map.Dispose(); }
 		void form_FormClosing(object sender, FormClosingEventArgs e)
 		{
@@ -2521,7 +2521,6 @@ namespace Idmr.Yogeme
 			_isDragged = false;
 			updateLayout();
 		}
-
 		void form_KeyDown(object sender, KeyEventArgs e)
 		{
 			// By default, pressing a key tries to select the next item matching that character. Suppress that behavior.
@@ -2813,7 +2812,6 @@ namespace Idmr.Yogeme
 		#endregion Selection and visibility
 
 		void numOrder_ValueChanged(object sender, EventArgs e) { if (!_loading) { deselect(); MapPaint(); } }  //[JB] Added deselect
-
 		void numRegion_ValueChanged(object sender, EventArgs e)
 		{
 			if (!_loading)
@@ -2829,7 +2827,6 @@ namespace Idmr.Yogeme
 		{
 			setSnapUnit(cboSnapUnit.SelectedIndex);
 		}
-
 		void cboSnapTo_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			cboSnapUnit.Enabled = (cboSnapTo.SelectedIndex > 0);
@@ -2841,22 +2838,18 @@ namespace Idmr.Yogeme
 			if(_selectionList.Count > 0)
 				fitMapToObjects(_selectionList);
 		}
-
 		void cmdFitWorld_Click(object sender, EventArgs e)
 		{
 			fitMapToWorld();
 		}
-
 		void cmdFitDefault_Click(object sender, EventArgs e)
 		{
 			fitMapToObjects(null);
 		}
-
 		void cmdCenterSelected_Click(object sender, EventArgs e)
 		{
 			centerMapOnSelection();
 		}
-
 		void cmdHelp_Click(object sender, EventArgs e)
 		{
 			string text = "Left-click: select at cursor, or drag to select multiple objects." + Environment.NewLine;
@@ -2993,8 +2986,6 @@ namespace Idmr.Yogeme
 			public short WpDragStartY { get; set; }
 			public short WpDragStartZ { get; set; }
 		}
-
-		
 
 		/*Bitmap getBitmap(int craftType)
         {
