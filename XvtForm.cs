@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2022 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.13.2
+ * VERSION: 1.13.2+
  */
 
 /* CHANGELOG
+ * [FIX] ComboBox stutter for colorized cbo's due to OwnerDrawVariable
  * v1.13.2, 220319
  * [FIX] Remove focus during save to trigger any Leave events
  * v1.13.1, 220208
@@ -552,7 +553,7 @@ namespace Idmr.Yogeme
 			if (variable == null)
 				return;
 			ColorizedFGList[variable] = variableType;
-			variable.DrawMode = DrawMode.OwnerDrawVariable;
+			variable.DrawMode = DrawMode.OwnerDrawFixed;
 			variable.DrawItem += colorizedComboBox_DrawItem;
 		}
 		string replaceTargetText(string text)

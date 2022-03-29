@@ -28,6 +28,7 @@ your user settings.
 ==========
 Version History
 
+ - (All) Fixed ComboBox stutter for sometimes-colorized cbo's
  - (Map) Fixed the window stealing focus when you mouse over the map if the window wasn't selected
 
 v1.13.2, 19 Mar 2022
