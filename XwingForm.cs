@@ -4,10 +4,11 @@
  * This file authored by "JB" (Random Starfighter) (randomstarfighter@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.13.2+
+ * VERSION: 1.13.3
  */
 
 /* CHANGELOG:
+ * v1.13.3, 220402
  * [FIX] ComboBox stutter for colorized cbo's due to OwnerDrawVariable
  * v1.13.2, 220319
  * [FIX] Remove focus during save to trigger any Leave events

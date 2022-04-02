@@ -3,8 +3,8 @@
 
 Author: Michael Gaisser (mjgaisser@gmail.com)
 Contributor: Random Starfighter (JB)
-Version: 1.13.2
-Date: 2022.03.19
+Version: 1.13.3
+Date: 2022.04.02
 
 Thank you for downloading YOGEME, the all-in-one mission editor for the X-Wing
 series, Xwing95 through X-wing Alliance.  This program allows easy mission
@@ -28,7 +28,9 @@ your user settings.
 ==========
 Version History
 
+v1.13.3, 02 Apr 2022
  - (All) Fixed ComboBox stutter for sometimes-colorized cbo's
+ - (XWA) Tooltip for Goal Active Sequence added
  - (Map) Fixed the window stealing focus when you mouse over the map if the window wasn't selected
 
 v1.13.2, 19 Mar 2022

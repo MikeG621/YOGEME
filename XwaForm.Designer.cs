@@ -791,6 +791,7 @@ namespace Idmr.Yogeme
 			this.txtNotes = new System.Windows.Forms.TextBox();
 			this.dataOrders = new System.Data.DataView();
 			this.dataOrders_Raw = new System.Data.DataView();
+			this.ttActiveSequence = new System.Windows.Forms.ToolTip(this.components);
 			((System.ComponentModel.ISupportInitialize)(this.dataWaypoints)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.dataWaypoints_Raw)).BeginInit();
 			this.tabMain.SuspendLayout();
@@ -3104,6 +3105,7 @@ namespace Idmr.Yogeme
 			this.numGoalActSeq.Size = new System.Drawing.Size(46, 20);
 			this.numGoalActSeq.TabIndex = 14;
 			this.numGoalActSeq.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+			this.ttActiveSequence.SetToolTip(this.numGoalActSeq, resources.GetString("numGoalActSeq.ToolTip"));
 			// 
 			// label61
 			// 
@@ -6645,6 +6647,7 @@ namespace Idmr.Yogeme
 			this.numGlobActSeq.Size = new System.Drawing.Size(46, 20);
 			this.numGlobActSeq.TabIndex = 44;
 			this.numGlobActSeq.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+			this.ttActiveSequence.SetToolTip(this.numGlobActSeq, resources.GetString("numGlobActSeq.ToolTip"));
 			this.numGlobActSeq.Leave += new System.EventHandler(this.numGlobActSeq_Leave);
 			// 
 			// grpGlobUnk
@@ -9262,6 +9265,10 @@ namespace Idmr.Yogeme
 			this.dataOrders_Raw.AllowDelete = false;
 			this.dataOrders_Raw.AllowNew = false;
 			// 
+			// ttActiveSequence
+			// 
+			this.ttActiveSequence.ToolTipTitle = "Active Sequence";
+			// 
 			// XwaForm
 			// 
 			this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
@@ -10272,5 +10279,6 @@ namespace Idmr.Yogeme
 		private Label label150;
 		private NumericUpDown numWPOrderRegion;
 		private Label label19;
+		private ToolTip ttActiveSequence;
 	}
 }
