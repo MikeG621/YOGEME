@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2022 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.13.3
+ * VERSION: 1.13.3+
  */
 
 /* CHANGELOG
+ * [UPD] moved chkWP[12+] checks in MapPaint to non-XWA block
  * v1.13.3, 220402
  * [FIX] pctMap_Enter stealing focus when window wasn't active
  * v1.13.2, 220319
@@ -99,17 +100,16 @@ namespace Idmr.Yogeme
 		readonly List<SelectionData> _selectionList = new List<SelectionData>();  // List of all craft and waypoints that are currently selected and itemized in the list control.
 		readonly List<int> _sortedMapDataList = new List<int>();  // List of _mapData indices sorted for drawing order.
 		readonly int[] _dragIcon = new int[2];   // [0] = fg, [1] = wp
-		bool _loading = false;
+		bool _isLoading = false;
 #pragma warning disable IDE1006 // Naming Styles
 		readonly CheckBox[] chkWP = new CheckBox[22];
 #pragma warning restore IDE1006 // Naming Styles
 		readonly Settings.Platform _platform;
-		//int _wpSetCount = 1;	// assigned, never used
 		bool _isDragged;
 		bool _leftButtonDown = false;     // Left mouse button currently held down.
 		bool _rightButtonDown = false;
-		bool _dragSelectState = false;    // Indicates that a drag-select is in progress, and to draw the selection box.
-		bool _dragMoveState = false;      // A drag-move is in progress.
+		bool _dragSelectActive = false;    // Indicates that a drag-select is in progress, and to draw the selection box.
+		bool _dragMoveActive = false;      // A drag-move is in progress.
 		bool _dragMoveSnapReady = false;  // The starting position for drag-move operation has been assigned, so that snapping can work correctly.
 		Point _clickPixelDown = new Point(0, 0);  //Form pixel coordinates of mouse click.
 		Point _clickPixelUp = new Point(0, 0);
@@ -580,13 +580,13 @@ namespace Idmr.Yogeme
 		{
 			// If part of a larger move operation, it must be flagged as ready after the first frame of movement has been processed.
 			// This initializes the starting point so that snapping can work properly.
-			if (_dragMoveState && !_dragMoveSnapReady)
+			if (_dragMoveActive && !_dragMoveSnapReady)
 			{
 				dat.WpDragStartX = dat.WPRef.RawX;
 				dat.WpDragStartY = dat.WPRef.RawY;
 				dat.WpDragStartZ = dat.WPRef.RawZ;
 			}
-			else if (!_dragMoveState)
+			else if (!_dragMoveActive)
 			{
 				_dragMoveSnapReady = false;
 			}
@@ -594,16 +594,16 @@ namespace Idmr.Yogeme
 			switch (_displayMode)
 			{
 				case Orientation.XY:
-					currentX = (_dragMoveState ? dat.WpDragStartX : dat.WPRef.RawX);
-					currentY = (_dragMoveState ? dat.WpDragStartY : dat.WPRef.RawY);
+					currentX = (_dragMoveActive ? dat.WpDragStartX : dat.WPRef.RawX);
+					currentY = (_dragMoveActive ? dat.WpDragStartY : dat.WPRef.RawY);
 					break;
 				case Orientation.XZ:
-					currentX = (_dragMoveState ? dat.WpDragStartX : dat.WPRef.RawX);
-					currentY = (_dragMoveState ? dat.WpDragStartZ : dat.WPRef.RawZ);
+					currentX = (_dragMoveActive ? dat.WpDragStartX : dat.WPRef.RawX);
+					currentY = (_dragMoveActive ? dat.WpDragStartZ : dat.WPRef.RawZ);
 					break;
 				case Orientation.YZ:
-					currentX = (_dragMoveState ? dat.WpDragStartY : dat.WPRef.RawY);
-					currentY = (_dragMoveState ? dat.WpDragStartZ : dat.WPRef.RawZ);
+					currentX = (_dragMoveActive ? dat.WpDragStartY : dat.WPRef.RawY);
+					currentY = (_dragMoveActive ? dat.WpDragStartZ : dat.WPRef.RawZ);
 					break;
 			}
 
@@ -611,7 +611,7 @@ namespace Idmr.Yogeme
 			// Integer division by the amount prevents any fractional values.
 			int newX = 0, newY = 0;
 			int snapAmount = getRawSnapAmount();
-			int snapType = (_dragMoveState ? cboSnapTo.SelectedIndex : 0);
+			int snapType = (_dragMoveActive ? cboSnapTo.SelectedIndex : 0);
 			switch (snapType)
 			{
 				case 0:  // No snap.
@@ -662,7 +662,7 @@ namespace Idmr.Yogeme
 		/// <remarks>Amount is derived from the snap amount if snapping is enabled (otherwise uses a default value), but snapping is always relative to self.</remarks>
 		void moveSelectionByKey(KeyEventArgs e, int directionX, int directionY)
 		{
-			if(_dragMoveState || _selectionList.Count == 0)
+			if(_dragMoveActive || _selectionList.Count == 0)
 				return;
 
 			int amount;
@@ -1462,7 +1462,7 @@ namespace Idmr.Yogeme
 			_mapY = h / 2;
 			_mapZ = h / 2;
 			_dragIcon[0] = -1;
-			_loading = true;
+			_isLoading = true;
 			chkTags.Checked = Convert.ToBoolean(_settings.MapOptions & Settings.MapOpts.FGTags);
 			chkTrace.Checked = Convert.ToBoolean(_settings.MapOptions & Settings.MapOpts.Traces);
 			chkDistance.Checked = Convert.ToBoolean(_settings.MapOptions & Settings.MapOpts.TraceDistance);
@@ -1499,11 +1499,11 @@ namespace Idmr.Yogeme
 			else if (_platform == Settings.Platform.XWA)
 			{
 				for (int i = 0; i < 12; i++) chkWP[i].Checked = Convert.ToBoolean(t & (1 << i));
-				chkWP[3].Text = "HYP";
 				for (int i = 12; i < 22; i++) chkWP[i].Enabled = false;
 				lblRegion.Visible = true;
 				numRegion.Visible = true;
 				chkSP3.Text = "RDV";
+				chkSP4.Text = "HYP";
 			}
 			if (_platform != Settings.Platform.XWING)
 			{
@@ -1554,7 +1554,7 @@ namespace Idmr.Yogeme
 			numSnapAmount.Value = Convert.ToDecimal(_settings.MapSnapAmount);
 			performMiddleClickAction(_settings.MapMiddleClickActionNoneSelected);
 
-			_loading = false;
+			_isLoading = false;
 		}
 
 		/// <summary>Comparison function that sorts MapData objects by visibility. Brings faded items up front so that they can be drawn first. Visible items will overlap them.</summary>
@@ -1805,8 +1805,9 @@ namespace Idmr.Yogeme
 			int region = (int)numRegion.Value - 1;
 			if (_mapData[mapDataIndex].WPs[0][waypoint][4] == (short)region)
 				return true;
-			Platform.Xwa.FlightGroup xwaFg = (Platform.Xwa.FlightGroup)_mapData[mapDataIndex].FlightGroup;
 
+			// BUG: this results in SP1 displaying in other regions, should instead show proper exit point
+			Platform.Xwa.FlightGroup xwaFg = (Platform.Xwa.FlightGroup)_mapData[mapDataIndex].FlightGroup;
 			for (int i = 0; i < 4; i++)
 			{
 				for (int j = 0; j < 4; j++)
@@ -1823,11 +1824,8 @@ namespace Idmr.Yogeme
 		/// <param name="persistant">When <b>true</b> draws to memory, <b>false</b> draws directly to the image</param>
 		public void MapPaint()
 		{
-			if (_isClosing) return;
-			//_lastMapPaintTime = Environment.TickCount;
+			if (_isClosing || _isLoading) return;
 
-			if (_loading)
-				return;
 			#region orientation setup
 			int mX = _mapX, mY = _mapZ, coord1 = 0, coord2 = 2;
 			switch (_displayMode)
@@ -1906,7 +1904,6 @@ namespace Idmr.Yogeme
 					if(chkWP[k].Checked && isVisibleInRegion(i, k))
 					{
 						drawCraft(g3, bmptemp, _mapData[i], _zoom * _mapData[i].WPs[0][k][coord1] / 160 + mX, -_zoom * _mapData[i].WPs[0][k][coord2] / 160 + mY);
-						//g3.DrawImageUnscaled(bmptemp, _zoom * _mapData[i].WPs[0][k][coord1] / 160 + X - 8, -_zoom * _mapData[i].WPs[0][k][coord2] / 160 + Y - 8);
 						if (chkTags.Checked && _mapData[i].View == Visibility.Show) g3.DrawString(_mapData[i].Name + " " + chkWP[k].Text, DefaultFont, sbg, _zoom * _mapData[i].WPs[0][k][coord1] / 160 + mX + 8, -_zoom * _mapData[i].WPs[0][k][coord2] / 160 + mY + 8);
 					}
 				}
@@ -1957,11 +1954,11 @@ namespace Idmr.Yogeme
 						{
 							g3.DrawEllipse(pn, _zoom * _mapData[i].WPs[0][k][coord1] / 160 + mX - 1, -_zoom * _mapData[i].WPs[0][k][coord2] / 160 + mY - 1, 3, 3);
 							if (chkTags.Checked && _mapData[i].View == Visibility.Show) g3.DrawString(_mapData[i].Name + " " + chkWP[k].Text, DefaultFont, sbg, _zoom * _mapData[i].WPs[0][k][coord1] / 160 + mX + 4, -_zoom * _mapData[i].WPs[0][k][coord2] / 160 + mY + 4);
-							if (chkWP[(k == 4 ? 0 : (k - 1))].Checked && chkTrace.Checked  && !(chkTraceHideFade.Checked && _mapData[i].View == Visibility.Fade) && !(chkTraceSelected.Checked && !isMapObjectSelected(i)))
+							if (chkWP[(k == 4 ? 0 : (k - 1))].Checked && chkTrace.Checked && !(chkTraceHideFade.Checked && _mapData[i].View == Visibility.Fade) && !(chkTraceSelected.Checked && !isMapObjectSelected(i)))
 							{
 								int comp = (k == 4 ? 0 : (k - 1));
 								g3.DrawLine(pnTrace, _zoom * _mapData[i].WPs[0][comp][coord1] / 160 + mX, -_zoom * _mapData[i].WPs[0][comp][coord2] / 160 + mY, _zoom * _mapData[i].WPs[0][k][coord1] / 160 + mX, -_zoom * _mapData[i].WPs[0][k][coord2] / 160 + mY);
-								if(_mapData[i].View == Visibility.Show)
+								if (_mapData[i].View == Visibility.Show)
 								{
 									int offy = chkTags.Checked ? 14 : 0; //To render it below the FG tag
 									if (chkDistance.Checked)
@@ -1977,42 +1974,42 @@ namespace Idmr.Yogeme
 							}
 						}
 					}
-				}
-				// remaining are not valid for XWA
-				if (chkWP[12].Checked && _mapData[i].WPs[0][12].Enabled) // RND
-				{
-					g3.DrawEllipse(pn, _zoom * _mapData[i].WPs[0][12][coord1] / 160 + mX - 1, -_zoom * _mapData[i].WPs[0][12][coord2] / 160 + mY - 1, 3, 3);
-					if (chkTags.Checked && _mapData[i].View == Visibility.Show) g3.DrawString(_mapData[i].Name + " " + chkWP[12].Text, DefaultFont, sbg, _zoom * _mapData[i].WPs[0][12][coord1] / 160 + mX + 4, -_zoom * _mapData[i].WPs[0][12][coord2] / 160 + mY + 4);
-				}
-				if (chkWP[13].Checked && _mapData[i].WPs[0][13].Enabled)    // HYP
-				{
-					g3.DrawEllipse(pn, _zoom * _mapData[i].WPs[0][13][coord1] / 160 + mX - 1, -_zoom * _mapData[i].WPs[0][13][coord2] / 160 + mY - 1, 3, 3);
-					if (chkTags.Checked && _mapData[i].View == Visibility.Show) g3.DrawString(_mapData[i].Name + " " + chkWP[13].Text, DefaultFont, sbg, _zoom * _mapData[i].WPs[0][13][coord1] / 160 + mX + 4, -_zoom * _mapData[i].WPs[0][13][coord2] / 160 + mY + 4);
-					if (chkTrace.Checked && !(chkTraceHideFade.Checked && _mapData[i].View == Visibility.Fade) && !(chkTraceSelected.Checked && !isMapObjectSelected(i)))
+
+					if (chkWP[12].Checked && _mapData[i].WPs[0][12].Enabled) // RND
 					{
-						// in this case, make sure last visible WP is the last enabled before tracing to HYP
-						pnTrace.DashStyle = System.Drawing.Drawing2D.DashStyle.Dash;
-						for (int k = 4; k < 12; k++)
-						{
-							if (k != 11)
-							{
-								if (chkWP[k].Checked && _mapData[i].WPs[0][k].Enabled && !_mapData[i].WPs[0][k + 1].Enabled)
-								{
-									g3.DrawLine(pnTrace, _zoom * _mapData[i].WPs[0][k][coord1] / 160 + mX, -_zoom * _mapData[i].WPs[0][k][coord2] / 160 + mY, _zoom * _mapData[i].WPs[0][13][coord1] / 160 + mX, -_zoom * _mapData[i].WPs[0][13][coord2] / 160 + mY);
-									break;
-								}
-							}
-							else if (chkWP[k].Checked && _mapData[i].WPs[0][k].Enabled) g3.DrawLine(pnTrace, _zoom * _mapData[i].WPs[0][11][coord1] / 160 + mX, -_zoom * _mapData[i].WPs[0][11][coord2] / 160 + mY, _zoom * _mapData[i].WPs[0][13][coord1] / 160 + mX, -_zoom * _mapData[i].WPs[0][13][coord2] / 160 + mY); ;
-						}
-						pnTrace.DashStyle = System.Drawing.Drawing2D.DashStyle.Solid;
+						g3.DrawEllipse(pn, _zoom * _mapData[i].WPs[0][12][coord1] / 160 + mX - 1, -_zoom * _mapData[i].WPs[0][12][coord2] / 160 + mY - 1, 3, 3);
+						if (chkTags.Checked && _mapData[i].View == Visibility.Show) g3.DrawString(_mapData[i].Name + " " + chkWP[12].Text, DefaultFont, sbg, _zoom * _mapData[i].WPs[0][12][coord1] / 160 + mX + 4, -_zoom * _mapData[i].WPs[0][12][coord2] / 160 + mY + 4);
 					}
-				}
-				for (int k = 14; k < 22; k++)   // BRF
-				{
-					if (chkWP[k].Checked && _mapData[i].WPs[0][k].Enabled)
+					if (chkWP[13].Checked && _mapData[i].WPs[0][13].Enabled)    // HYP
 					{
-						g3.DrawImageUnscaled(bmptemp, _zoom * _mapData[i].WPs[0][k][coord1] / 160 + mX - 8, -_zoom * _mapData[i].WPs[0][k][coord2] / 160 + mY - 8);
-						if (chkTags.Checked && _mapData[i].View == Visibility.Show) g3.DrawString(_mapData[i].Name + " " + chkWP[k].Text, DefaultFont, sbg, _zoom * _mapData[i].WPs[0][k][coord1] / 160 + mX + 8, -_zoom * _mapData[i].WPs[0][k][coord2] / 160 + mY + 8);
+						g3.DrawEllipse(pn, _zoom * _mapData[i].WPs[0][13][coord1] / 160 + mX - 1, -_zoom * _mapData[i].WPs[0][13][coord2] / 160 + mY - 1, 3, 3);
+						if (chkTags.Checked && _mapData[i].View == Visibility.Show) g3.DrawString(_mapData[i].Name + " " + chkWP[13].Text, DefaultFont, sbg, _zoom * _mapData[i].WPs[0][13][coord1] / 160 + mX + 4, -_zoom * _mapData[i].WPs[0][13][coord2] / 160 + mY + 4);
+						if (chkTrace.Checked && !(chkTraceHideFade.Checked && _mapData[i].View == Visibility.Fade) && !(chkTraceSelected.Checked && !isMapObjectSelected(i)))
+						{
+							// in this case, make sure last visible WP is the last enabled before tracing to HYP
+							pnTrace.DashStyle = System.Drawing.Drawing2D.DashStyle.Dash;
+							for (int k = 4; k < 12; k++)
+							{
+								if (k != 11)
+								{
+									if (chkWP[k].Checked && _mapData[i].WPs[0][k].Enabled && !_mapData[i].WPs[0][k + 1].Enabled)
+									{
+										g3.DrawLine(pnTrace, _zoom * _mapData[i].WPs[0][k][coord1] / 160 + mX, -_zoom * _mapData[i].WPs[0][k][coord2] / 160 + mY, _zoom * _mapData[i].WPs[0][13][coord1] / 160 + mX, -_zoom * _mapData[i].WPs[0][13][coord2] / 160 + mY);
+										break;
+									}
+								}
+								else if (chkWP[k].Checked && _mapData[i].WPs[0][k].Enabled) g3.DrawLine(pnTrace, _zoom * _mapData[i].WPs[0][11][coord1] / 160 + mX, -_zoom * _mapData[i].WPs[0][11][coord2] / 160 + mY, _zoom * _mapData[i].WPs[0][13][coord1] / 160 + mX, -_zoom * _mapData[i].WPs[0][13][coord2] / 160 + mY); ;
+							}
+							pnTrace.DashStyle = System.Drawing.Drawing2D.DashStyle.Solid;
+						}
+					}
+					for (int k = 14; k < 22; k++)   // BRF
+					{
+						if (chkWP[k].Checked && _mapData[i].WPs[0][k].Enabled)
+						{
+							g3.DrawImageUnscaled(bmptemp, _zoom * _mapData[i].WPs[0][k][coord1] / 160 + mX - 8, -_zoom * _mapData[i].WPs[0][k][coord2] / 160 + mY - 8);
+							if (chkTags.Checked && _mapData[i].View == Visibility.Show) g3.DrawString(_mapData[i].Name + " " + chkWP[k].Text, DefaultFont, sbg, _zoom * _mapData[i].WPs[0][k][coord1] / 160 + mX + 8, -_zoom * _mapData[i].WPs[0][k][coord2] / 160 + mY + 8);
+						}
 					}
 				}
 			}
@@ -2033,7 +2030,7 @@ namespace Idmr.Yogeme
 				g3.DrawLine(pnSel, x + 8, y - 8, x + 8, y - 4); //Vertical right
 				g3.DrawLine(pnSel, x + 8, y + 4, x + 8, y + 8);
 			}
-			if (_dragSelectState == true)
+			if (_dragSelectActive)
 			{
 				Pen sel = new Pen(Color.White);
 				Point p1 = _clickPixelDown;
@@ -2326,7 +2323,7 @@ namespace Idmr.Yogeme
 
 				if (!_rightButtonDown)
 				{
-					if (!_dragSelectState) convertMousepointToWaypoint(e.X, e.Y, ref _clickMapDown);
+					if (!_dragSelectActive) convertMousepointToWaypoint(e.X, e.Y, ref _clickMapDown);
 
 					_clickPixelDown.X = e.X;
 					_clickPixelDown.Y = e.Y;
@@ -2338,9 +2335,9 @@ namespace Idmr.Yogeme
 					List<SelectionData> objects = new List<SelectionData>();
 					enumSelectionObjects(ref _clickPixelDown, ref _clickPixelDown, objects);
 					bool isObjectAtPoint = isListObjectSelected(objects);
-					if (!_shiftState && !isObjectAtPoint) _dragSelectState = true;
-					else if (!_shiftState && isObjectAtPoint && !ModifierKeys.HasFlag(Keys.Control)) _dragMoveState = true;
-					else if (_shiftState && _selectionList.Count > 0) _dragMoveState = true;
+					if (!_shiftState && !isObjectAtPoint) _dragSelectActive = true;
+					else if (!_shiftState && isObjectAtPoint && !ModifierKeys.HasFlag(Keys.Control)) _dragMoveActive = true;
+					else if (_shiftState && _selectionList.Count > 0) _dragMoveActive = true;
 
 					convertMousepointToWaypoint(e.X, e.Y, ref _clickMapUp);
 					_dragMapPrevious = _clickMapUp;
@@ -2376,11 +2373,11 @@ namespace Idmr.Yogeme
 				convertMousepointToWaypoint(e.X, e.Y, ref _clickMapUp);
 
 				//Calling MapPaint() directly every "frame" of mouse movement when there's a lot of items to draw, will produce a significant amount of slowdown. 
-				if (_dragSelectState)
+				if (_dragSelectActive)
 				{
 					scheduleMapPaint(); //Repaint to draw selection box.
 				}
-				else if((_shiftState ||_dragMoveState) && _selectionList.Count > 0)
+				else if((_shiftState ||_dragMoveActive) && _selectionList.Count > 0)
 				{
 					moveSelectionToCursor();  //Dragging selected items, so move them.
 					scheduleMapPaint(); //Repaint with new positions.
@@ -2426,16 +2423,16 @@ namespace Idmr.Yogeme
 				_clickPixelUp.X = e.X;
 				_clickPixelUp.Y = e.Y;
 				convertMousepointToWaypoint(e.X, e.Y, ref _clickMapUp);
-				_dragSelectState = false;  // Set to false so the selection box won't be painted.
-				if (!_shiftState && !_dragMoveState)
+				_dragSelectActive = false;  // Set to false so the selection box won't be painted.
+				if (!_shiftState && !_dragMoveActive)
 				{
 					performSelection();
 					MapPaint();
 				}
-				if (_dragMoveState)
+				if (_dragMoveActive)
 				{
 					moveSelectionToCursor();
-					_dragMoveState = false;
+					_dragMoveActive = false;
 				}
 			}
 			else if (e.Button == MouseButtons.Right)
@@ -2604,10 +2601,10 @@ namespace Idmr.Yogeme
 		#endregion
 
 		#region Checkboxes
-		void chkTags_CheckedChanged(object sender, EventArgs e) { if (!_loading) MapPaint(); }
+		void chkTags_CheckedChanged(object sender, EventArgs e) { if (!_isLoading) MapPaint(); }
 		void chkTrace_CheckedChanged(object sender, EventArgs e)
 		{
-			if (!_loading)
+			if (!_isLoading)
 			{
 				MapPaint();
 				chkDistance.Enabled = chkTrace.Checked;
@@ -2616,20 +2613,20 @@ namespace Idmr.Yogeme
 				chkTraceSelected.Enabled = chkTrace.Checked;
 			}
 		}
-		void chkDistance_CheckedChanged(object sender, EventArgs e) { if (!_loading) MapPaint(); }
-		void chkTime_CheckedChanged(object sender, EventArgs e) { if (!_loading) MapPaint(); }
-		void chkTraceHideFade_CheckedChanged(object sender, EventArgs e) { if (!_loading) MapPaint(); }
-		void chkTraceSelected_CheckedChanged(object sender, EventArgs e) { if (!_loading) MapPaint(); }
+		void chkDistance_CheckedChanged(object sender, EventArgs e) { if (!_isLoading) MapPaint(); }
+		void chkTime_CheckedChanged(object sender, EventArgs e) { if (!_isLoading) MapPaint(); }
+		void chkTraceHideFade_CheckedChanged(object sender, EventArgs e) { if (!_isLoading) MapPaint(); }
+		void chkTraceSelected_CheckedChanged(object sender, EventArgs e) { if (!_isLoading) MapPaint(); }
 		void chkWPArr_CheckedChanged(object sender, EventArgs e)
 		{
-			if (_loading) return;
+			if (_isLoading) return;
 			if ((CheckBox)sender == chkWP[14] && chkWP[14].Checked) for (int i = 0; i < 14; i++) chkWP[i].Checked = false;
 			if (((CheckBox)sender).Checked == false) //[JB] Disabled points might still be selected.
 				deselect();
 			MapPaint();
 		}
-		void chkWireframe_CheckedChanged(object sender, EventArgs e) { if (!_loading) MapPaint(); }
-		void chkLimit_CheckedChanged(object sender, EventArgs e) { if (!_loading) MapPaint(); }
+		void chkWireframe_CheckedChanged(object sender, EventArgs e) { if (!_isLoading) MapPaint(); }
+		void chkLimit_CheckedChanged(object sender, EventArgs e) { if (!_isLoading) MapPaint(); }
 		#endregion
 
 		#region Selection and visibility
@@ -2812,10 +2809,10 @@ namespace Idmr.Yogeme
 		}
 		#endregion Selection and visibility
 
-		void numOrder_ValueChanged(object sender, EventArgs e) { if (!_loading) { deselect(); MapPaint(); } }  //[JB] Added deselect
+		void numOrder_ValueChanged(object sender, EventArgs e) { if (!_isLoading) { deselect(); MapPaint(); } }  //[JB] Added deselect
 		void numRegion_ValueChanged(object sender, EventArgs e)
 		{
-			if (!_loading)
+			if (!_isLoading)
 			{
 				deselect();
 				MapPaint();
