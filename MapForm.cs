@@ -7,6 +7,7 @@
  */
 
 /* CHANGELOG
+ * [UPD] isVisibleInRegion now returns an enum to denote actually present versus other regions
  * [UPD] moved chkWP[12+] checks in MapPaint to non-XWA block
  * v1.13.3, 220402
  * [FIX] pctMap_Enter stealing focus when window wasn't active
@@ -136,6 +137,7 @@ namespace Idmr.Yogeme
 		bool _isClosing = false;              //Need a flag during form close to check whether external MapPaint() calls should be ignored.
 		Settings _settings = null;
 		bool _hasFocus;
+		enum WaypointVisibility { Absent, Present, OtherRegion };
 		#endregion vars
 
 		#region ctors
@@ -1796,27 +1798,27 @@ namespace Idmr.Yogeme
 
 		/// <summary>Determines if the object is enabled and visible.</summary>
 		/// <remarks>For most platforms, checks the start point. For XWA, also checks for any hyper jump to the current region.</remarks>
-		bool isVisibleInRegion(int mapDataIndex, int waypoint)
+		WaypointVisibility isVisibleInRegion(int mapDataIndex, int waypoint)
 		{
 			if (!_mapData[mapDataIndex].WPs[0][waypoint].Enabled)
-				return false;
+				return WaypointVisibility.Absent;
 			if (_platform != Settings.Platform.XWA)
-				return true;
+				return WaypointVisibility.Present;
 			int region = (int)numRegion.Value - 1;
 			if (_mapData[mapDataIndex].WPs[0][waypoint][4] == (short)region)
-				return true;
+				return WaypointVisibility.Present;
 
-			// BUG: this results in SP1 displaying in other regions, should instead show proper exit point
+			// Note: this results in SP1 displaying in other regions, the proper exit point must be corrected for display
 			Platform.Xwa.FlightGroup xwaFg = (Platform.Xwa.FlightGroup)_mapData[mapDataIndex].FlightGroup;
 			for (int i = 0; i < 4; i++)
 			{
 				for (int j = 0; j < 4; j++)
 				{
 					if (xwaFg.Orders[i, j].Command == 0x32 && xwaFg.Orders[i, j].Variable1 == region) // Hyper to region
-						return true;
+						return WaypointVisibility.OtherRegion;
 				}
 			}
-			return false;
+			return WaypointVisibility.Absent;
 		}
 
 		#region public functions
@@ -1901,10 +1903,20 @@ namespace Idmr.Yogeme
 				// if previous sequential WP is checked and trace is required, draw trace line according to WP type
 				for (int k = 0; k < 4; k++) // Start
 				{
-					if(chkWP[k].Checked && isVisibleInRegion(i, k))
+					if(chkWP[k].Checked && isVisibleInRegion(i, k) == WaypointVisibility.Present)
 					{
 						drawCraft(g3, bmptemp, _mapData[i], _zoom * _mapData[i].WPs[0][k][coord1] / 160 + mX, -_zoom * _mapData[i].WPs[0][k][coord2] / 160 + mY);
 						if (chkTags.Checked && _mapData[i].View == Visibility.Show) g3.DrawString(_mapData[i].Name + " " + chkWP[k].Text, DefaultFont, sbg, _zoom * _mapData[i].WPs[0][k][coord1] / 160 + mX + 8, -_zoom * _mapData[i].WPs[0][k][coord2] / 160 + mY + 8);
+					}
+					else if (isVisibleInRegion(i, k) == WaypointVisibility.OtherRegion)
+                    {
+						// TODO: This is where we need to insert XWA Hyper exit modifications
+						/* According to AlliED:
+						 * Player craft is along the vector from the exit buoy to O1WP1, .062km behind it
+						 * NPC craft is along the vector from the exit buoy to O1WP1, located with the same offset as the entry beacon to the last Hyper Order WP
+						 * Destination WP (dst in drawCraft) should detect O1WP1 just fine, but the coords should be calculated from the appropriate exit point, not SP
+						 * Src MapData will need to be saved it so it can be used for traces later in the function
+						 */
 					}
 				}
 				if (_platform == Settings.Platform.XWA) // WPs     [JB] XWA's north/south is inverted compared to XvT.
@@ -1919,7 +1931,7 @@ namespace Idmr.Yogeme
 							if (chkTrace.Checked && !(chkTraceHideFade.Checked && _mapData[i].View == Visibility.Fade) && !(chkTraceSelected.Checked && !isMapObjectSelected(i)))
 							{
 								Platform.BaseFlightGroup.BaseWaypoint baseWp = _mapData[i].WPs[0][0];
-								if (k == 0 && (!chkWP[0].Checked || !isVisibleInRegion(i, 0)))
+								if (k == 0 && (!chkWP[0].Checked || isVisibleInRegion(i, 0) == WaypointVisibility.Absent))
 									continue;
 								else if (k > 0)
 								{
@@ -2145,7 +2157,6 @@ namespace Idmr.Yogeme
 		{
 			int numCraft = fg.Count;
 			_mapData = new MapData[numCraft];
-			//_wpSetCount = 17;
 			for (int i = 0; i < numCraft; i++)
 			{
 				_mapData[i] = new MapData(_platform)
@@ -2635,7 +2646,7 @@ namespace Idmr.Yogeme
 			if (e.Index == -1) return;
 			e.DrawBackground();
 			Brush brText = getDrawColor(_mapData[e.Index]);
-			if (_platform == Settings.Platform.XWA && !isVisibleInRegion(e.Index, 0))
+			if (_platform == Settings.Platform.XWA && isVisibleInRegion(e.Index, 0) == WaypointVisibility.Absent)
 				brText = Brushes.Gray;
 			e.Graphics.DrawString(lstCraft.Items[e.Index].ToString(), e.Font, brText, e.Bounds, StringFormat.GenericDefault);
 			if (_mapData[e.Index].View != Visibility.Show)
