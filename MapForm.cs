@@ -1910,13 +1910,27 @@ namespace Idmr.Yogeme
 					}
 					else if (isVisibleInRegion(i, k) == WaypointVisibility.OtherRegion)
                     {
+						Platform.Xwa.FlightGroup fg = (Platform.Xwa.FlightGroup)_mapData[i].FlightGroup;
+						Platform.BaseFlightGroup.BaseWaypoint exitWP, exitBuoy, o1w1;
+						o1w1 = _mapData[i].WPs[(int)(numRegion.Value - 1) * 4 + 1][0];
 						// TODO: This is where we need to insert XWA Hyper exit modifications
 						/* According to AlliED:
 						 * Player craft is along the vector from the exit buoy to O1WP1, .062km behind it
 						 * NPC craft is along the vector from the exit buoy to O1WP1, located with the same offset as the entry beacon to the last Hyper Order WP
+						 * Buoy WP will need to determine the correct buoy (possibly multiple Enter buoys in the same region)
 						 * Destination WP (dst in drawCraft) should detect O1WP1 just fine, but the coords should be calculated from the appropriate exit point, not SP
-						 * Src MapData will need to be saved it so it can be used for traces later in the function
+						 * exitWP MapData will need to be saved it so it can be used for traces later in the function
 						 */
+						if (fg.PlayerCraft != 0)
+                        {
+							// Player
+                        }
+						else
+                        {
+							// AI
+							Platform.BaseFlightGroup.BaseWaypoint enterBuoy, hyper; // previous region
+                        }
+						// draw darkened dashed line maybe 0.1 behind the exit point. simple projection
 					}
 				}
 				if (_platform == Settings.Platform.XWA) // WPs     [JB] XWA's north/south is inverted compared to XvT.
@@ -2943,7 +2957,7 @@ namespace Idmr.Yogeme
 						break;
 				}
 			}
-
+			// TODO: might be able to remove some of these since FG is there?
 			public int Craft;
 			public int FgIndex;
 			public byte IFF;
