@@ -1903,34 +1903,18 @@ namespace Idmr.Yogeme
 				// if previous sequential WP is checked and trace is required, draw trace line according to WP type
 				for (int k = 0; k < 4; k++) // Start
 				{
-					if(chkWP[k].Checked && isVisibleInRegion(i, k) == WaypointVisibility.Present)
+					if(chkWP[k].Checked && isVisibleInRegion(i, k) != WaypointVisibility.Absent) // HACK: bypass until it's done
+					// if(chkWP[k].Checked && isVisibleInRegion(i, k) == WaypointVisibility.Present)
 					{
 						drawCraft(g3, bmptemp, _mapData[i], _zoom * _mapData[i].WPs[0][k][coord1] / 160 + mX, -_zoom * _mapData[i].WPs[0][k][coord2] / 160 + mY);
 						if (chkTags.Checked && _mapData[i].View == Visibility.Show) g3.DrawString(_mapData[i].Name + " " + chkWP[k].Text, DefaultFont, sbg, _zoom * _mapData[i].WPs[0][k][coord1] / 160 + mX + 8, -_zoom * _mapData[i].WPs[0][k][coord2] / 160 + mY + 8);
 					}
 					else if (isVisibleInRegion(i, k) == WaypointVisibility.OtherRegion)
                     {
-						Platform.Xwa.FlightGroup fg = (Platform.Xwa.FlightGroup)_mapData[i].FlightGroup;
-						Platform.BaseFlightGroup.BaseWaypoint exitWP, exitBuoy, o1w1;
-						o1w1 = _mapData[i].WPs[(int)(numRegion.Value - 1) * 4 + 1][0];
-						// TODO: This is where we need to insert XWA Hyper exit modifications
-						/* According to AlliED:
-						 * Player craft is along the vector from the exit buoy to O1WP1, .062km behind it
-						 * NPC craft is along the vector from the exit buoy to O1WP1, located with the same offset as the entry beacon to the last Hyper Order WP
-						 * Buoy WP will need to determine the correct buoy (possibly multiple Enter buoys in the same region)
-						 * Destination WP (dst in drawCraft) should detect O1WP1 just fine, but the coords should be calculated from the appropriate exit point, not SP
-						 * exitWP MapData will need to be saved it so it can be used for traces later in the function
-						 */
-						if (fg.PlayerCraft != 0)
-                        {
-							// Player
-                        }
-						else
-                        {
-							// AI
-							Platform.BaseFlightGroup.BaseWaypoint enterBuoy, hyper; // previous region
-                        }
-						// draw darkened dashed line maybe 0.1 behind the exit point. simple projection
+						// TODO: draw darkened dashed line maybe 0.1 behind the exit point. simple projection
+						Platform.BaseFlightGroup.BaseWaypoint exitWP = _mapData[i].WPs[17][(int)(numRegion.Value - 1)];
+						drawCraft(g3, bmptemp, _mapData[i], _zoom * exitWP[coord1] / 160 + mX, -_zoom * exitWP[coord2] / 160 + mY);
+						if (chkTags.Checked && _mapData[i].View == Visibility.Show) g3.DrawString(_mapData[i].Name + " " + chkWP[k].Text, DefaultFont, sbg, _zoom * exitWP[coord1] / 160 + mX + 8, -_zoom * exitWP[coord2] / 160 + mY + 8);
 					}
 				}
 				if (_platform == Settings.Platform.XWA) // WPs     [JB] XWA's north/south is inverted compared to XvT.
@@ -2193,6 +2177,37 @@ namespace Idmr.Yogeme
 					int order = j % 4;
 					_mapData[i].WPs[j + 1] = fg[i].Orders[region, order].Waypoints;
 				}
+				/*Platform.BaseFlightGroup.BaseWaypoint exitWP, exitBuoy, o1w1;
+				int[] vector = new int[3];
+				for (int r = 0; i < 4; r++)
+				{
+					o1w1 = _mapData[i].WPs[r * 4 + 1][0];
+					for (int c = 0; c < 3; c++) vector[c] = o1w1[c] - exitBuoy[c];
+					double vectorLength = Math.Sqrt(Math.Pow(vector[0], 2) + Math.Pow(vector[1], 2) + Math.Pow(vector[2], 2));
+					// TODO: This is where we need to insert XWA Hyper exit modifications
+					/* According to AlliED:
+					 * NPC craft is along the vector from the exit buoy to O1WP1, located with the same offset as the entry beacon to the last Hyper Order(#50) WP
+					 * Buoy WP will need to determine the correct buoy (possibly multiple Enter buoys in the same region)
+					 * Destination WP (dst in drawCraft) should detect O1WP1 just fine, but the coords should be calculated from the appropriate exit point, not SP
+					 * exitWP MapData will need to be saved it so it can be used for traces later in the function
+					 * also need to update wireframes with new exit point, so orientation is correct
+					 * Buoys are CraftType: 85, Designation1: from #12-15, to #16-19
+					 
+					if (fg[i].PlayerCraft != 0)
+					{
+						// Player
+						int offset = 10;    //.062 km
+						for (int c = 0; c < 3; c++) _mapData[i].WPs[17][r][c] = (short)(exitBuoy[c] - offset * vector[c] / vectorLength);
+					}
+					else
+					{
+						// AI
+						Platform.BaseFlightGroup.BaseWaypoint enterBuoy, hyper; // previous region
+						int[] offset = new int[3];
+						// TODO: calc offset
+						for (int c = 0; c < 3; c++) _mapData[i].WPs[17][r][c] = (short)(exitBuoy[c] - offset[c] * vector[c] / vectorLength);
+					}
+				}*/
 				_mapData[i].FullName = Platform.Xwa.Strings.CraftAbbrv[_mapData[i].Craft] + " " + fg[i].Name;
 			}
 			reloadSelectionControls();
@@ -2937,23 +2952,17 @@ namespace Idmr.Yogeme
 				{
 					case Settings.Platform.XWING:
 						WPs = new Platform.Xwing.FlightGroup.Waypoint[1][];
-						//WPs[0] = new Platform.Xwing.FlightGroup.Waypoint[7];
-						//for(int i = 0; i < WPs[0].Length; i++) WPs[0][i] = new Platform.Xwing.FlightGroup.Waypoint();
 						break;
 					case Settings.Platform.TIE:
 						WPs = new Platform.Tie.FlightGroup.Waypoint[1][];
-						//WPs[0] = new Platform.Tie.FlightGroup.Waypoint[15];
-						//for(int i = 0; i < WPs[0].Length; i++) WPs[0][i] = new Platform.Tie.FlightGroup.Waypoint();
 						break;
 					case Settings.Platform.XvT:
 					case Settings.Platform.BoP:
 						WPs = new Platform.Xvt.FlightGroup.Waypoint[1][];
-						//WPs[0] = new Platform.Xvt.FlightGroup.Waypoint[22];
-						//for (int i = 0; i < WPs[0].Length; i++) WPs[0][i] = new Platform.Xvt.FlightGroup.Waypoint();
 						break;
 					case Settings.Platform.XWA:
-						WPs = new Platform.Xwa.FlightGroup.Waypoint[17][];
-						//for (int i = 0; i < x; i++) WPs[i] = new Platform.Xwa.FlightGroup.Waypoint();
+						WPs = new Platform.Xwa.FlightGroup.Waypoint[18][];  // 0 is Starts, 1-16 are orders, 17 is HyperExits
+						WPs[17] = new Platform.BaseFlightGroup.BaseWaypoint[4];
 						break;
 				}
 			}
@@ -3009,109 +3018,5 @@ namespace Idmr.Yogeme
 			public short WpDragStartY { get; set; }
 			public short WpDragStartZ { get; set; }
 		}
-
-		/*Bitmap getBitmap(int craftType)
-        {
-            if (imgCraft.Images.Count == 0)
-            {
-                imgCraft = new ImageList();
-                switch (_platform)
-                {
-                    case Settings.Platform.XWING:
-                    case Settings.Platform.TIE:
-                        //importDat(Application.StartupPath + "\\images\\TIE_BRF.dat", 34);
-						imgCraft.Images.AddStrip(Image.FromFile(Application.StartupPath + "\\images\\craft_TIE.bmp"));
-                        break;
-                    case Settings.Platform.XvT:
-                    case Settings.Platform.BoP:
-						//importDat(Application.StartupPath + "\\images\\XvT_BRF.dat", 22);
-						imgCraft.Images.AddStrip(Image.FromFile(Application.StartupPath + "\\images\\craft_XvT.bmp"));
-						break;
-                    case Settings.Platform.XWA:
-						//importDat(Application.StartupPath + "\\images\\XWA_BRF.dat", 56);
-						imgCraft.Images.AddStrip(Image.FromFile(Application.StartupPath + "\\images\\craft_XWA.bmp"));
-						break;
-                }
-			}
-            if (craftType < 0 || craftType >= imgCraft.Images.Count)
-                return new Bitmap(0, 0);
-
-            return new Bitmap(imgCraft.Images[craftType]);
-        }*/
-
-		/*void importDat(string filename, int size)
-        {
-            try
-            {
-                FileStream fs = File.OpenRead(filename);
-                BinaryReader br = new BinaryReader(fs);
-                int count = br.ReadInt16();
-                Bitmap bm = new Bitmap(count * size, size, PixelFormat.Format24bppRgb);
-                Graphics g = Graphics.FromImage(bm);
-                SolidBrush sb = new SolidBrush(Color.Black);
-                g.FillRectangle(sb, 0, 0, bm.Width, bm.Height);
-                byte[] blue = { 0, 0x48, 0x60, 0x78, 0x94, 0xAC, 0xC8, 0xE0, 0xFC };
-                byte[] green = { 0, 0, 4, 0x10, 0x24, 0x3C, 0x58, 0x78, 0xA0 };
-                for (int i = 0; i < count; i++)
-                {
-                    fs.Position = i * 2 + 2;
-                    fs.Position = br.ReadUInt16();
-                    byte b;
-                    w = br.ReadByte();	// using these vars just because I can
-                    h = br.ReadByte();
-                    int x;
-                    for (int q = 0; q < h; q++)
-                    {
-                        for (int r = 0; r < (w + 1) / 2; r++)
-                        {
-                            b = br.ReadByte();
-                            int p1 = b & 0xF;
-                            int p2 = (b & 0xF0) >> 4;
-                            x = (size - w) / 2 + size * i + r * 2;
-                            if (_platform == Settings.Platform.TIE)
-                            {
-                                x = size / 2 - w + size * i + r * 4;
-                                if (p1 != 0)
-                                {
-                                    bm.SetPixel(x, size / 2 - h + q * 2, Color.FromArgb(0, green[p1], blue[p1]));
-                                    bm.SetPixel(x + 1, size / 2 - h + q * 2, Color.FromArgb(0, green[p1], blue[p1]));
-                                    bm.SetPixel(x, size / 2 - h + q * 2 + 1, Color.FromArgb(0, green[p1], blue[p1]));
-                                    bm.SetPixel(x + 1, size / 2 - h + q * 2 + 1, Color.FromArgb(0, green[p1], blue[p1]));
-                                }
-                                if (p2 != 0)
-                                {
-                                    bm.SetPixel(x + 2, size / 2 - h + q * 2, Color.FromArgb(0, green[p2], blue[p2]));
-                                    bm.SetPixel(x + 3, size / 2 - h + q * 2, Color.FromArgb(0, green[p2], blue[p2]));
-                                    bm.SetPixel(x + 2, size / 2 - h + q * 2 + 1, Color.FromArgb(0, green[p2], blue[p2]));
-                                    bm.SetPixel(x + 3, size / 2 - h + q * 2 + 1, Color.FromArgb(0, green[p2], blue[p2]));
-                                }
-                            }
-                            else if (_platform == Settings.Platform.XvT)
-                            {
-                                p1 = (p1 != 0 ? (5 - p1) * 0x28 : 0);
-                                p2 = (p2 != 0 ? (5 - p2) * 0x28 : 0);
-                                if (p1 != 0) bm.SetPixel(x, (size - h) / 2 + q, Color.FromArgb(p1, p1, p1));
-                                if (p2 != 0) bm.SetPixel(x + 1, (size - h) / 2 + q, Color.FromArgb(p2, p2, p2));
-                            }
-                            else
-                            {
-                                p1 = (p1 != 0 ? p1 * 0x10 + 0xF : 0);
-                                p2 = (p2 != 0 ? p2 * 0x10 + 0xF : 0);
-                                if (p1 != 0) bm.SetPixel(x, (size - h) / 2 + q, Color.FromArgb(p1, p1, p1));
-                                if (p2 != 0) bm.SetPixel(x + 1, (size - h) / 2 + q, Color.FromArgb(p2, p2, p2));
-                            }
-                        }
-                    }
-                }
-                imgCraft.ImageSize = new Size(size, size);
-                imgCraft.Images.AddStrip(bm);
-                fs.Close();
-            }
-            catch (Exception x)
-            {
-                MessageBox.Show(x.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                Close();
-            }
-        }*/
 	}
 }
