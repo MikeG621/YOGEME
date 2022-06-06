@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2022 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.8+
+ * VERSION: 1.13.4
  */
 
 /* CHANGELOG
+ * v1.13.4, 220606
  * [NEW] OneIndexedFGs
  * v1.8, 201004
  * [NEW] options for Map M-click actions [JB]

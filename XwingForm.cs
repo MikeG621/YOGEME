@@ -4,10 +4,11 @@
  * This file authored by "JB" (Random Starfighter) (randomstarfighter@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.13.3+
+ * VERSION: 1.13.4
  */
 
 /* CHANGELOG:
+ * v1.13.4, 220606
  * [UPD] OneIndexedFGs implementation
  * v1.13.3, 220402
  * [FIX] ComboBox stutter for colorized cbo's due to OwnerDrawVariable

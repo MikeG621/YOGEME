@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2022 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.13.3+
+ * VERSION: 1.13.4
  */
 
 /* CHANGELOG
+ * v1.13.4, 220606
  * [UPD] isVisibleInRegion now returns an enum to denote actually present versus other regions
  * [UPD] moved chkWP[12+] checks in MapPaint to non-XWA block
  * v1.13.3, 220402
@@ -2962,7 +2963,7 @@ namespace Idmr.Yogeme
 						break;
 					case Settings.Platform.XWA:
 						WPs = new Platform.Xwa.FlightGroup.Waypoint[18][];  // 0 is Starts, 1-16 are orders, 17 is HyperExits
-						WPs[17] = new Platform.BaseFlightGroup.BaseWaypoint[4];
+						WPs[17] = new Platform.Xwa.FlightGroup.Waypoint[4];
 						break;
 				}
 			}

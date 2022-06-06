@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2022 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.9.1+
+ * VERSION: 1.13.4
  */
 
 /* CHANGELOG
+ * v1.13.4, 220606
  * [NEW] OneIndexedFGs
  * v1.9.1, 210130
  * [FIX] Crash in SBD detection if GetFiles() dir doesn't exist [JB]
@@ -270,7 +271,7 @@ namespace Idmr.Yogeme
 					MapSnapAmount = br.ReadSingle();
 					MapSnapUnit = br.ReadByte();
 
-					OneIndexedFGs = br.ReadBoolean();	// added in 1.14
+					OneIndexedFGs = br.ReadBoolean();	// added in 1.13.4
 				}
 				catch { System.Diagnostics.Debug.WriteLine("old settings file"); /*do nothing*/ }
 
