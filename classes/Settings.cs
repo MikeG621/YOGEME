@@ -1,12 +1,13 @@
 ﻿/*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
- * Copyright (C) 2007-2021 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2022 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.9.1
+ * VERSION: 1.9.1+
  */
 
 /* CHANGELOG
+ * [NEW] OneIndexedFGs
  * v1.9.1, 210130
  * [FIX] Crash in SBD detection if GetFiles() dir doesn't exist [JB]
  * v1.9, 210108
@@ -146,6 +147,8 @@ namespace Idmr.Yogeme
 			MapSnapTo = 0;
 			MapSnapAmount = 0.10f;
 			MapSnapUnit = 0;
+
+			OneIndexedFGs = true;
 		}
 
 		/// <summary>Loads saved settings</summary>
@@ -266,6 +269,8 @@ namespace Idmr.Yogeme
 					MapSnapTo = br.ReadByte();
 					MapSnapAmount = br.ReadSingle();
 					MapSnapUnit = br.ReadByte();
+
+					OneIndexedFGs = br.ReadBoolean();	// added in 1.14
 				}
 				catch { System.Diagnostics.Debug.WriteLine("old settings file"); /*do nothing*/ }
 
@@ -528,7 +533,7 @@ namespace Idmr.Yogeme
 			FileStream fs = File.OpenWrite(_settingsDir + "\\Settings.dat");
 			BinaryWriter bw = new BinaryWriter(fs);
 			fs.WriteByte(0xFF);
-			fs.WriteByte(0x07);  //[JB] Changed version from 6 to 7 when adding X-wing support and color features.
+			fs.WriteByte(0x08);
 			bw.Write(BopInstalled);
 			if (_bopPath != null) bw.Write(_bopPath);
 			else bw.Write("");
@@ -610,6 +615,8 @@ namespace Idmr.Yogeme
 			bw.Write(MapSnapTo);
 			bw.Write(MapSnapAmount);
 			bw.Write(MapSnapUnit);
+
+			bw.Write(OneIndexedFGs);
 
 			fs.SetLength(fs.Position);
 			fs.Close();
@@ -845,6 +852,9 @@ namespace Idmr.Yogeme
 		public float MapSnapAmount { get; set; }
 		/// <summary>Gets or sets the unit of measurement for map movement snapping.</summary>
 		public byte MapSnapUnit { get; set; }
+
+		/// <summary>Gets or sets if the FlightGroup counter display starts at 1 instead of 0.</summary>
+		public bool OneIndexedFGs { get; set; }
 		#endregion
 	}
 	/* Settings and values
@@ -927,5 +937,6 @@ namespace Idmr.Yogeme
 	 * (v7+) MapSnapTo BYTE: 0 = None, 1 = Self, 2 = Grid
 	 * (v7+) MapSnapAmount FLOAT:
 	 * (v7+) MapSnapUnit BYTE: 0 = km, 1 = Raw
+	 * (v8+) OneIndexedFGs BOOL:
 	 */
 }

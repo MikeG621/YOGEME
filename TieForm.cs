@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2022 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.13.3
+ * VERSION: 1.13.3+
  */
 
 /* CHANGELOG
+ * [UPD] OneIndexedFGs implementation
  * v1.13.3, 220402
  * [FIX] ComboBox stutter for colorized cbo's due to OwnerDrawVariable
  * v1.13.2, 220319
@@ -2196,7 +2197,7 @@ namespace Idmr.Yogeme
 		{
 			if (lstFG.SelectedIndex == -1 || _noRefresh) return;
 			_activeFG = lstFG.SelectedIndex;
-			lblFG.Text = "Flight Group #" + (_activeFG + 1).ToString() + " of " + _mission.FlightGroups.Count.ToString();
+			lblFG.Text = "Flight Group #" + (_activeFG + (_config.OneIndexedFGs ? 1 : 0)).ToString() + " of " + _mission.FlightGroups.Count.ToString();
 			bool btemp = _loading;
 			_loading = true;
 			#region Craft

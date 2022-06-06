@@ -4,10 +4,11 @@
  * This file authored by "JB" (Random Starfighter) (randomstarfighter@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.13.3
+ * VERSION: 1.13.3+
  */
 
 /* CHANGELOG:
+ * [UPD] OneIndexedFGs implementation
  * v1.13.3, 220402
  * [FIX] ComboBox stutter for colorized cbo's due to OwnerDrawVariable
  * v1.13.2, 220319
@@ -1862,14 +1863,14 @@ namespace Idmr.Yogeme
 			{
 				if (isFG)
 				{
-					text = "Flight Group: " + (countGroups(true, true) + 1) + " of " + (countGroups(true, false) + 1);
+					text = "Flight Group: " + (countGroups(true, true) + (_config.OneIndexedFGs ? 1 : 0)) + " of " + (countGroups(true, false) + 1);
 					min = _mission.FlightGroups.GetFirstOfFlightGroup();
 					max = _mission.FlightGroups.GetLastOfFlightGroup();
 					lblFG.ForeColor = (max - min < 16) ? SystemColors.ControlText : Color.Red;  //Indexes are 0 to 15
 				}
 				else
 				{
-					text = "Object Group: " + (countGroups(false, true) + 1) + " of " + (countGroups(false, false) + 1);
+					text = "Object Group: " + (countGroups(false, true) + (_config.OneIndexedFGs ? 1 : 0)) + " of " + (countGroups(false, false) + 1);
 					min = _mission.FlightGroups.GetFirstOfObjectGroup();
 					max = _mission.FlightGroups.GetLastOfObjectGroup();
 					lblFG.ForeColor = (max - min < 64) ? SystemColors.ControlText : Color.Red;
@@ -1879,7 +1880,7 @@ namespace Idmr.Yogeme
 			{
 				train = false; start = false;  //Hide other stuff.
 				max = _mission.FlightGroups.Count - 1; //Max needs to be a valid index for the cmdMove buttons to operate.
-				text = "Briefing Icon: " + (_activeFG + 1) + " of " + (max + 1);
+				text = "Briefing Icon: " + (_activeFG + (_config.OneIndexedFGs ? 1 : 0)) + " of " + (max + 1);
 			}
 			lblCraft.Visible = !train || start;
 			lblCraft.Text = !start ? "# of craft" : "Minutes";

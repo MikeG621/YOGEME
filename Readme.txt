@@ -28,6 +28,8 @@ your user settings.
 ==========
 Version History
 
+ - (All) Option to display FlightGroup "#X of X" as 1-indexed or 0-indexed
+
 v1.13.3, 02 Apr 2022
  - (All) Fixed ComboBox stutter for sometimes-colorized cbo's
  - (XWA) Tooltip for Goal Active Sequence added

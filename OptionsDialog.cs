@@ -1,12 +1,13 @@
 /*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
- * Copyright (C) 2007-2020 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2022 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.8
+ * VERSION: 1.8+
  */
 
 /* CHANGELOG
+ * [NEW] OneIndexedFGs
  * v1.8, 201004
  * [NEW] options for Map M-click actions [JB]
  * [UPD] MapOptions no longer completely reset during OK, other flags are set on Map itself [JB]
@@ -170,6 +171,8 @@ namespace Idmr.Yogeme
 
 			cboMiddleClickActionSelected.SelectedIndex = (int)_config.MapMiddleClickActionSelected;
 			cboMiddleClickAction.SelectedIndex = (int)_config.MapMiddleClickActionNoneSelected;
+
+			chkOneIndexedFG.Checked = _config.OneIndexedFGs;
 
 			_closeCallback = callback;
 		}
@@ -365,6 +368,8 @@ namespace Idmr.Yogeme
 
 			_config.MapMiddleClickActionSelected = (MapForm.MiddleClickAction)cboMiddleClickActionSelected.SelectedIndex;
 			_config.MapMiddleClickActionNoneSelected = (MapForm.MiddleClickAction)cboMiddleClickAction.SelectedIndex;
+
+			_config.OneIndexedFGs = chkOneIndexedFG.Checked;
 
 			_closeCallback?.Invoke(0, new EventArgs());
 			Close();
