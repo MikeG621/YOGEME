@@ -7,6 +7,7 @@
  */
 
 /* CHANGELOG
+ * [NEW] FG Goal auto-toggles when setting the Trigger
  * [UPD] OneIndexedFGs implementation
  * v1.13.3, 220402
  * [FIX] ComboBox stutter for colorized cbo's due to OwnerDrawVariable
@@ -4002,6 +4003,7 @@ namespace Idmr.Yogeme
 		{
 			comboProxCheck(cboGoalTrigger.SelectedIndex, cboGoalAmount);
 			updateFGGoalParam();
+			if (!_loading) chkGoalEnable.Checked = cboGoalTrigger.SelectedIndex != 10;
 		}
 		void numGoalTeam_ValueChanged(object sender, EventArgs e)
 		{

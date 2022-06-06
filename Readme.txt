@@ -29,6 +29,7 @@ your user settings.
 Version History
 
  - (All) Option to display FlightGroup "#X of X" as 1-indexed or 0-indexed
+ - (XWA) FG Goal auto-toggles when setting the Trigger
 
 v1.13.3, 02 Apr 2022
  - (All) Fixed ComboBox stutter for sometimes-colorized cbo's
