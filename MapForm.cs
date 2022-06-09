@@ -3,10 +3,12 @@
  * Copyright (C) 2007-2022 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.13.4
+ * VERSION: 1.13.5
  */
 
 /* CHANGELOG
+ * v1.13.5, 220608
+ * [FIX] Removed a chunk that could've executed relating to not-yet-implemented changes
  * v1.13.4, 220606
  * [UPD] isVisibleInRegion now returns an enum to denote actually present versus other regions
  * [UPD] moved chkWP[12+] checks in MapPaint to non-XWA block
@@ -1910,13 +1912,13 @@ namespace Idmr.Yogeme
 						drawCraft(g3, bmptemp, _mapData[i], _zoom * _mapData[i].WPs[0][k][coord1] / 160 + mX, -_zoom * _mapData[i].WPs[0][k][coord2] / 160 + mY);
 						if (chkTags.Checked && _mapData[i].View == Visibility.Show) g3.DrawString(_mapData[i].Name + " " + chkWP[k].Text, DefaultFont, sbg, _zoom * _mapData[i].WPs[0][k][coord1] / 160 + mX + 8, -_zoom * _mapData[i].WPs[0][k][coord2] / 160 + mY + 8);
 					}
-					else if (isVisibleInRegion(i, k) == WaypointVisibility.OtherRegion)
+					/*else if (isVisibleInRegion(i, k) == WaypointVisibility.OtherRegion)
                     {
 						// TODO: draw darkened dashed line maybe 0.1 behind the exit point. simple projection
 						Platform.BaseFlightGroup.BaseWaypoint exitWP = _mapData[i].WPs[17][(int)(numRegion.Value - 1)];
 						drawCraft(g3, bmptemp, _mapData[i], _zoom * exitWP[coord1] / 160 + mX, -_zoom * exitWP[coord2] / 160 + mY);
 						if (chkTags.Checked && _mapData[i].View == Visibility.Show) g3.DrawString(_mapData[i].Name + " " + chkWP[k].Text, DefaultFont, sbg, _zoom * exitWP[coord1] / 160 + mX + 8, -_zoom * exitWP[coord2] / 160 + mY + 8);
-					}
+					}*/
 				}
 				if (_platform == Settings.Platform.XWA) // WPs     [JB] XWA's north/south is inverted compared to XvT.
 				{

@@ -3,8 +3,8 @@
 
 Author: Michael Gaisser (mjgaisser@gmail.com)
 Contributor: Random Starfighter (JB)
-Version: 1.13.4
-Date: 2022.06.06
+Version: 1.13.5
+Date: 2022.06.08
 
 Thank you for downloading YOGEME, the all-in-one mission editor for the X-Wing
 series, Xwing95 through X-wing Alliance.  This program allows easy mission
@@ -27,6 +27,9 @@ your user settings.
 
 ==========
 Version History
+
+v1.13.5, 08 Jun 2022
+ - (Map) Fixed a crash in XWA if SP1 wasn't checked when changing the Region selection
 
 v1.13.4, 06 Jun 2022
  - (All) Option to display FlightGroup "#X of X" as 1-indexed or 0-indexed
