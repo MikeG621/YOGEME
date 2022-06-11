@@ -1906,19 +1906,26 @@ namespace Idmr.Yogeme
 				// if previous sequential WP is checked and trace is required, draw trace line according to WP type
 				for (int k = 0; k < 4; k++) // Start
 				{
-					if(chkWP[k].Checked && isVisibleInRegion(i, k) != WaypointVisibility.Absent) // HACK: bypass until it's done
-					// if(chkWP[k].Checked && isVisibleInRegion(i, k) == WaypointVisibility.Present)
+					// HACK: debug bypass, remove when done for Release
+#if DEBUG
+					if (chkWP[k].Checked && isVisibleInRegion(i, k) == WaypointVisibility.Present)
+#else
+					//if(chkWP[k].Checked && isVisibleInRegion(i, k) != WaypointVisibility.Absent)
+#endif
 					{
 						drawCraft(g3, bmptemp, _mapData[i], _zoom * _mapData[i].WPs[0][k][coord1] / 160 + mX, -_zoom * _mapData[i].WPs[0][k][coord2] / 160 + mY);
 						if (chkTags.Checked && _mapData[i].View == Visibility.Show) g3.DrawString(_mapData[i].Name + " " + chkWP[k].Text, DefaultFont, sbg, _zoom * _mapData[i].WPs[0][k][coord1] / 160 + mX + 8, -_zoom * _mapData[i].WPs[0][k][coord2] / 160 + mY + 8);
 					}
-					/*else if (isVisibleInRegion(i, k) == WaypointVisibility.OtherRegion)
+					// HACK debug bypass, remove when done for Release
+#if DEBUG
+					else if (isVisibleInRegion(i, k) == WaypointVisibility.OtherRegion)
                     {
 						// TODO: draw darkened dashed line maybe 0.1 behind the exit point. simple projection
 						Platform.BaseFlightGroup.BaseWaypoint exitWP = _mapData[i].WPs[17][(int)(numRegion.Value - 1)];
 						drawCraft(g3, bmptemp, _mapData[i], _zoom * exitWP[coord1] / 160 + mX, -_zoom * exitWP[coord2] / 160 + mY);
 						if (chkTags.Checked && _mapData[i].View == Visibility.Show) g3.DrawString(_mapData[i].Name + " " + chkWP[k].Text, DefaultFont, sbg, _zoom * exitWP[coord1] / 160 + mX + 8, -_zoom * exitWP[coord2] / 160 + mY + 8);
-					}*/
+					}
+#endif
 				}
 				if (_platform == Settings.Platform.XWA) // WPs     [JB] XWA's north/south is inverted compared to XvT.
 				{
@@ -2180,37 +2187,89 @@ namespace Idmr.Yogeme
 					int order = j % 4;
 					_mapData[i].WPs[j + 1] = fg[i].Orders[region, order].Waypoints;
 				}
-				/*Platform.BaseFlightGroup.BaseWaypoint exitWP, exitBuoy, o1w1;
-				int[] vector = new int[3];
-				for (int r = 0; i < 4; r++)
+				// HACK: debug bypass, remove for Release
+#if DEBUG
+				for (int r = 0; r < 4; r++)
 				{
-					o1w1 = _mapData[i].WPs[r * 4 + 1][0];
-					for (int c = 0; c < 3; c++) vector[c] = o1w1[c] - exitBuoy[c];
-					double vectorLength = Math.Sqrt(Math.Pow(vector[0], 2) + Math.Pow(vector[1], 2) + Math.Pow(vector[2], 2));
-					// TODO: This is where we need to insert XWA Hyper exit modifications
+					var exitBuoy = new Platform.Xwa.FlightGroup.Waypoint();
+					for (int o = 0; o < 16; o++)
+                    {
+						if (fg[i].Orders[o / 4, o % 4].Command == 50 && fg[i].Orders[o/4,o%4].Variable1 == r)
+                        {
+							int fromRegion = o / 4;
+							for (int b = 0; b < numCraft; b++)
+                            {
+								if (fg[b].CraftType == 85 && fg[b].Waypoints[0][4] == r && fg[b].Designation1 == fromRegion + 12)	// From are #12-15
+                                {
+									exitBuoy = fg[b].Waypoints[0];
+									break;
+                                }
+                            }
+							break;
+                        }
+                    }
+					var o1w1 = _mapData[i].WPs[r * 4 + 1][0];
+					
 					/* According to AlliED:
 					 * NPC craft is along the vector from the exit buoy to O1WP1, located with the same offset as the entry beacon to the last Hyper Order(#50) WP
 					 * Buoy WP will need to determine the correct buoy (possibly multiple Enter buoys in the same region)
 					 * Destination WP (dst in drawCraft) should detect O1WP1 just fine, but the coords should be calculated from the appropriate exit point, not SP
-					 * exitWP MapData will need to be saved it so it can be used for traces later in the function
 					 * also need to update wireframes with new exit point, so orientation is correct
-					 * Buoys are CraftType: 85, Designation1: from #12-15, to #16-19
+					 */
 					 
-					if (fg[i].PlayerCraft != 0)
+					if (fg[i].PlayerNumber != 0)
 					{
 						// Player
+						int[] vector = new int[3];
+						for (int c = 0; c < 3; c++) vector[c] = o1w1[c] - exitBuoy[c];
+						double vectorLength = Math.Sqrt(Math.Pow(vector[0], 2) + Math.Pow(vector[1], 2) + Math.Pow(vector[2], 2));
+						if (vectorLength == 0)
+						{
+							vector[1] = 1;
+							vectorLength = 1;
+						}
 						int offset = 10;    //.062 km
 						for (int c = 0; c < 3; c++) _mapData[i].WPs[17][r][c] = (short)(exitBuoy[c] - offset * vector[c] / vectorLength);
+                        _mapData[i].WPs[18][r] = o1w1;
+						// okay, so this is working, simple enough
 					}
 					else
 					{
 						// AI
-						Platform.BaseFlightGroup.BaseWaypoint enterBuoy, hyper; // previous region
+						// offsets are wrong, likely grabbing wrong WPs
+						var hyperEntry = new Platform.Xwa.FlightGroup.Waypoint();
+						for (int o = 0; o < 16; o++)
+						{
+							int reg = o / 4;
+							int ord = o % 4;
+							if (fg[i].Orders[reg, ord].Command == 50 && fg[i].Orders[reg, ord].Variable1 == r)
+							{
+								for (int w = 1; w < 8; w++)
+								{
+									if (!fg[i].Orders[reg, ord].Waypoints[w].Enabled)
+									{
+										hyperEntry = fg[i].Orders[reg, ord].Waypoints[w - 1];
+										hyperEntry.Region = (byte)reg;
+										break;
+									}
+								}
+								break;
+							}
+						}
+						var enterBuoy = new Platform.Xwa.FlightGroup.Waypoint();
+						for (int b = 0; b < numCraft; b++)
+							if (fg[b].CraftType == 85 && fg[b].Waypoints[0][4] == hyperEntry.Region && fg[i].Designation1 == r + 16)  // To are #16-19
+							{
+								enterBuoy = fg[b].Waypoints[0];
+								break;
+							}
 						int[] offset = new int[3];
-						// TODO: calc offset
-						for (int c = 0; c < 3; c++) _mapData[i].WPs[17][r][c] = (short)(exitBuoy[c] - offset[c] * vector[c] / vectorLength);
+						for (int c = 0; c < 3; c++) offset[c] = hyperEntry[c] - enterBuoy[c];
+						for (int c = 0; c < 3; c++) _mapData[i].WPs[17][r][c] = (short)(exitBuoy[c] + offset[c]);
+						for (int c = 0; c < 3; c++) _mapData[i].WPs[18][r][c] = (short)(o1w1[c] + offset[c]);
 					}
-				}*/
+				}
+#endif
 				_mapData[i].FullName = Platform.Xwa.Strings.CraftAbbrv[_mapData[i].Craft] + " " + fg[i].Name;
 			}
 			reloadSelectionControls();
@@ -2280,9 +2339,9 @@ namespace Idmr.Yogeme
 
 			scheduleMapPaint();
 		}
-		#endregion public
+#endregion public
 
-		#region controls
+#region controls
 		/// <summary>Change the zoom of the map and reset local x/y/z coords as neccessary</summary>
 		void hscZoom_ValueChanged(object sender, EventArgs e)
 		{
@@ -2343,7 +2402,7 @@ namespace Idmr.Yogeme
 			}
 		}
 
-		#region pctMap
+#region pctMap
 		void pctMap_MouseDown(object sender, MouseEventArgs e)
 		{
 			// move map, center on mouse
@@ -2497,8 +2556,8 @@ namespace Idmr.Yogeme
 		{
 			e.IsInputKey = true;
 		}
-		#endregion
-		#region frmMap
+#endregion
+#region frmMap
 		void form_Activated(object sender, EventArgs e)
 		{
 			_hasFocus = true;
@@ -2641,9 +2700,9 @@ namespace Idmr.Yogeme
 			if (_mapFocus)
 				_shiftState = e.Shift;
 		}
-		#endregion
+#endregion
 
-		#region Checkboxes
+#region Checkboxes
 		void chkTags_CheckedChanged(object sender, EventArgs e) { if (!_isLoading) MapPaint(); }
 		void chkTrace_CheckedChanged(object sender, EventArgs e)
 		{
@@ -2670,9 +2729,9 @@ namespace Idmr.Yogeme
 		}
 		void chkWireframe_CheckedChanged(object sender, EventArgs e) { if (!_isLoading) MapPaint(); }
 		void chkLimit_CheckedChanged(object sender, EventArgs e) { if (!_isLoading) MapPaint(); }
-		#endregion
+#endregion
 
-		#region Selection and visibility
+#region Selection and visibility
 		void lstCraft_DrawItem(object sender, DrawItemEventArgs e)
 		{
 			if (e.Index == -1) return;
@@ -2850,7 +2909,7 @@ namespace Idmr.Yogeme
 			scheduleMapPaint();
 			lstCraft.Invalidate();
 		}
-		#endregion Selection and visibility
+#endregion Selection and visibility
 
 		void numOrder_ValueChanged(object sender, EventArgs e) { if (!_isLoading) { deselect(); MapPaint(); } }  //[JB] Added deselect
 		void numRegion_ValueChanged(object sender, EventArgs e)
@@ -2930,7 +2989,7 @@ namespace Idmr.Yogeme
 			text += "Ctrl+F1 to F4: Change selected waypoints to region." + Environment.NewLine;
 			MessageBox.Show(text, "Command Reference");
 		}
-		#endregion controls
+#endregion controls
 
 		enum Visibility { Show, Fade, Hide };
 		class MapData
@@ -2964,8 +3023,14 @@ namespace Idmr.Yogeme
 						WPs = new Platform.Xvt.FlightGroup.Waypoint[1][];
 						break;
 					case Settings.Platform.XWA:
-						WPs = new Platform.Xwa.FlightGroup.Waypoint[18][];  // 0 is Starts, 1-16 are orders, 17 is HyperExits
+						WPs = new Platform.Xwa.FlightGroup.Waypoint[19][];  // 0 is Starts, 1-16 are orders, 17 is HyperExits, 18 is HyperExitVectorTarget
 						WPs[17] = new Platform.Xwa.FlightGroup.Waypoint[4];
+						WPs[18] = new Platform.Xwa.FlightGroup.Waypoint[4];
+						for (int i = 0; i < 4; i++)
+                        {
+                            WPs[17][i] = new Platform.Xwa.FlightGroup.Waypoint();
+							WPs[18][i] = new Platform.Xwa.FlightGroup.Waypoint();
+						}
 						break;
 				}
 			}
