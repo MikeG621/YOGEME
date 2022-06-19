@@ -7,24 +7,24 @@
 <p align=center><big><h2>Briefing Dialog</h2></big></p>
 Opening the Briefing Dialog will bring you to the main Briefing Animation tab.<br>
 <p align=center><img src="../../images/XWA/Brief.png"></p>
-This is the pre-mission briefing animation that plays before you fly. It animates at 25 fps, allows you to write on it, highlight FlightGroups, as well as moving and zooming the map. XWA adds the capability of moving craft icons, as the briefing is isolated from the FlightGroup data. You also have the ability to display craft data and change regions (which really throws up the region name while you wipe the slate).<br><br>
+<p>This is the pre-mission briefing animation that plays before you fly. It animates at 25 fps, allows you to write on it, highlight FlightGroups, as well as moving and zooming the map. XWA adds the capability of moving craft icons, as the briefing is isolated from the FlightGroup data. You also have the ability to display craft data and change regions (which really throws up the region name while you wipe the slate).</p>
 
-The XWA Briefing dialog behaves the same as TIE and XvT, although there is the cosmetic difference on the main display and a few extra events.  All of the previous events behave exactly the same, although due to the isolation of data, only the strings and text tags can be converted back and forth to TIE/XvT. XWA also gives a *lot* more room for briefing information in the mission file, so the number of possible events is much, much higher.  XWA also allows craft icons to move and rotate about the map, hence the increased event capacity.<br><br>
+<p>The XWA Briefing dialog behaves the same as TIE and XvT, although there is the cosmetic difference on the main display and a few extra events.  All of the previous events behave exactly the same, although due to the isolation of data, only the strings and text tags can be converted back and forth to TIE/XvT. XWA also gives a *lot* more room for briefing information in the mission file, so the number of possible events is much, much higher.  XWA also allows craft icons to move and rotate about the map, hence the increased event capacity.</p>
 
-To place an icon, use the <i>NewShip</i> button. Select the slot, ship type and IFF color, and click the point on the map where you'd like it. You can reposition it as often as needed until you commit with the <i>OK</i> button.<br><br>
+<p>To place an icon, use the <i>NewShip</i> button. Select the slot, ship type and IFF color, and click the point on the map where you'd like it. You can reposition it as often as needed until you commit with the <i>OK</i> button.</p>
 
-The <i>Rotate</i> button points the craft icon in 90° increments, and the Mirror value flips the 0° default orientation.<br><br>
+<p>The <i>Rotate</i> button points the craft icon in 90° increments, and the Mirror value flips the 0° default orientation.</p>
 
-To use <i>MoveShip</i>, again choose the icon and click on the map where you want it to go. The <i>Time</i> field is the duration of the movement. The current briefing time is when the motion begins, and YOGEME will create all of the individual Move events to result in a smooth animation over that period of time. If you want the icon to snap to position, or are doing the initial setup, just leave the Time at zero. You can always clean up the values in the Event list as trying to get straight lines can be tricky, but using the M-click for the coordinates popup can get you close. To make coordinated movements easier, the Time field will not reset between operations, and the final position will be displayed until the timer slider is moved.<br><br>
+<p>To use <i>MoveShip</i>, again choose the icon and click on the map where you want it to go. The <i>Time</i> field is the duration of the movement. The current briefing time is when the motion begins, and YOGEME will create all of the individual Move events to result in a smooth animation over that period of time. If you want the icon to snap to position, or are doing the initial setup, just leave the Time at zero. You can always clean up the values in the Event list as trying to get straight lines can be tricky, but using the M-click for the coordinates popup can get you close. To make coordinated movements easier, the Time field will not reset between operations, and the final position will be displayed until the timer slider is moved.</p>
 
-The <i>Region</i> and <i>ShipInfo</i> buttons bring up the title pages for transitions or extra informations. Note that the ShipInfo does require a second event to turn it off, while the Region acts like a 3-second pause.<br><br>
+<p>The <i>Region</i> and <i>ShipInfo</i> buttons bring up the title pages for transitions or extra informations. Note that the ShipInfo does require a second event to turn it off, while the Region acts like a 3-second pause.</p>
 
 <p align=center><img src="../../images/XWA/Brief-Strings.png"></p>
-In addition to the new events, XWA also allows you to edit the notes assigned to the Briefing Strings.  These were typically used as instructions for the voice actors.<br><br>
+<p>In addition to the new events, XWA also allows you to edit the notes assigned to the Briefing Strings.  These were typically used as instructions for the voice actors.</p>
 
 <p align=center><img src="../../images/XWA/Brief-teams.png"></p>
-Same as XvT, since v1.3 there's the "Visible to Teams" tab, which is primarily for multiplayer purposes and allows for the editing of both briefings.<br><br>
+<p>Same as XvT, since v1.3 there's the "Visible to Teams" tab, which is primarily for multiplayer purposes and allows for the editing of both briefings.</p>
 
-Remaining information can be viewed on the <a href="../TIE/brief.html">TIE Briefing Dialog</a> page.<br>
+Remaining information can be viewed on the <a href="../TIE/brief.html">TIE Briefing Dialog</a> page.
 </body>
 </html>

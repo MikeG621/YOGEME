@@ -128,7 +128,7 @@
         AAEAAAD/////AQAAAAAAAAAMAgAAAFdTeXN0ZW0uV2luZG93cy5Gb3JtcywgVmVyc2lvbj00LjAuMC4w
         LCBDdWx0dXJlPW5ldXRyYWwsIFB1YmxpY0tleVRva2VuPWI3N2E1YzU2MTkzNGUwODkFAQAAACZTeXN0
         ZW0uV2luZG93cy5Gb3Jtcy5JbWFnZUxpc3RTdHJlYW1lcgEAAAAERGF0YQcCAgAAAAkDAAAADwMAAABu
-        DwAAAk1TRnQBSQFMAgEBDwEAAegBAgHoAQIBEAEAARABAAT/AQkBAAj/AUIBTQE2AQQGAAE2AQQCAAEo
+        DwAAAk1TRnQBSQFMAgEBDwEAAfABAgHwAQIBEAEAARABAAT/AQkBAAj/AUIBTQE2AQQGAAE2AQQCAAEo
         AwABQAMAAUADAAEBAQABCAYAARAYAAGAAgABgAMAAoABAAGAAwABgAEAAYABAAKAAgADwAEAAcAB3AHA
         AQAB8AHKAaYBAAEzBQABMwEAATMBAAEzAQACMwIAAxYBAAMcAQADIgEAAykBAANVAQADTQEAA0IBAAM5
         AQABgAF8Af8BAAJQAf8BAAGTAQAB1gEAAf8B7AHMAQABxgHWAe8BAAHWAucBAAGQAakBrQIAAf8BMwMA
@@ -211,20 +211,6 @@
   <metadata name="ttActiveSequence.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>932, 16</value>
   </metadata>
-  <data name="numGlobActSeq.ToolTip" xml:space="preserve">
-    <value>0 = Always active
-1 = Always active
-2 = Only active after all #1 complete
-3 = Only active after all #2 complete
-4 = Only active after all #3 complete
-5 = Only active after all #4 complete
-6 = Only active after all #5 complete
-7 = Only shown when completed/failed
-</value>
-  </data>
-  <metadata name="ttActiveSequence.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>932, 16</value>
-  </metadata>
   <data name="numGoalActSeq.ToolTip" xml:space="preserve">
     <value>0 = Always active
 1 = Always active
@@ -259,6 +245,17 @@
         iptFRFLUWgWIGiMlIxCShc1D+SY5FnPxNk23HQSbI4fm8w3MeAo4aQO9IEM2BbjfQPdbMxA9vdCAl2aA
         vTsx/i54aMxDazwOHMLcTbM6Nb9iC7AaYGPT6Dmd09oJfsom6ILRv588S4C/Ak3xGmcCmg2dVBMmLo0R
         odngAUAMwco0ESk/D+xj9e0WndAAAAAASUVORK5CYII=
+</value>
+  </data>
+  <data name="numGlobActSeq.ToolTip" xml:space="preserve">
+    <value>0 = Always active
+1 = Always active
+2 = Only active after all #1 complete
+3 = Only active after all #2 complete
+4 = Only active after all #3 complete
+5 = Only active after all #4 complete
+6 = Only active after all #5 complete
+7 = Only shown when completed/failed
 </value>
   </data>
   <metadata name="dataOrders.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
