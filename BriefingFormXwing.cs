@@ -1,13 +1,14 @@
 /*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
- * Copyright (C) 2007-2020 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2022 Michael Gaisser (mjgaisser@gmail.com)
  * This file authored by "JB" (Random Starfighter) (randomstarfighter@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.8
+ * VERSION: 1.8+
  */
 
 /* CHANGELOG
+ * [NEW] Shift All checkbox on Events tab so timing can move together
  * v1.8, 201004
  * [UPD] renamed the redraw and popup timers, added to front-end instead of back-end
  * v1.7, 200816
@@ -2417,52 +2418,64 @@ namespace Idmr.Yogeme
 		{
 			lblEventTime.Text = string.Format("{0:= 0.00 seconds}", numTime.Value / _timerInterval);
 			int size = lstEvents.Items.Count;
-			int i = lstEvents.SelectedIndex;
-			if (_loading || i == -1) return;
+			int index = lstEvents.SelectedIndex;
+			if (_loading || index == -1) return;
 			_loading = true;
 
-			short diff = (short)(numTime.Value - _events[i, 0]);
-			_events[i, 0] = (short)numTime.Value;
+			short diff = (short)(numTime.Value - _events[index, 0]);
+			_events[index, 0] = (short)numTime.Value;
 
-			int p = i;
-			if (diff > 0)  //Positive change, moving down in the list
+			if (chkShift.Checked)
 			{
-				if (i < size - 1 && _events[i, 0] != _events[i + 1, 0])  //If equal time to next entry, no need to sort
+				updateList(index);
+				for (int i = index + 1; i < lstEvents.Items.Count; i++)
 				{
-					p = i + 1;  //Step over to prevent comparing to self
-					while (p < size && _events[p, 0] < _events[i, 0]) p++;  //Search until a greater time index is found
-					p--;  //If found, insert before.  If not found (p=size) adjusts to last slot in array.
+					_events[i, 0] += diff;
+					updateList(i);
 				}
 			}
-			else if (diff < 0)  //Negative change, moving up in the list
+			else
 			{
-				if (i > 0 && _events[i, 0] != _events[i - 1, 0])    //If equal time to previous entry, no need to sort
+				int p = index;
+				if (diff > 0)  //Positive change, moving down in the list
 				{
-					p = i - 1;
-					while (p >= 0 && _events[p, 0] > _events[i, 0]) p--;   //Search until a lesser time index is found
-					p++;  //If found, insert after.  If not found (p=-1) adjusts to first slot in array.
+					if (index < size - 1 && _events[index, 0] != _events[index + 1, 0])  //If equal time to next entry, no need to sort
+					{
+						p = index + 1;  //Step over to prevent comparing to self
+						while (p < size && _events[p, 0] < _events[index, 0]) p++;  //Search until a greater time index is found
+						p--;  //If found, insert before.  If not found (p=size) adjusts to last slot in array.
+					}
 				}
-			}
-			if (diff != 0)
-			{
-				shiftEvents(i, p);
-				lstEvents.Items.RemoveAt(i);
-				lstEvents.Items.Insert(p, "");
-				lstEvents.SelectedIndex = p;
-				updateList(p);
+				else if (diff < 0)  //Negative change, moving up in the list
+				{
+					if (index > 0 && _events[index, 0] != _events[index - 1, 0])    //If equal time to previous entry, no need to sort
+					{
+						p = index - 1;
+						while (p >= 0 && _events[p, 0] > _events[index, 0]) p--;   //Search until a lesser time index is found
+						p++;  //If found, insert after.  If not found (p=-1) adjusts to first slot in array.
+					}
+				}
+				if (diff != 0)
+				{
+					shiftEvents(index, p);
+					lstEvents.Items.RemoveAt(index);
+					lstEvents.Items.Insert(p, "");
+					lstEvents.SelectedIndex = p;
+					updateList(p);
+				}
 			}
 
 			_loading = false;
 			onModified?.Invoke("TimeChanged", new EventArgs());
 			try
 			{
-				if (_events[i - 1, 0] == _events[i, 0]) cmdUp.Enabled = true;
+				if (_events[index - 1, 0] == _events[index, 0]) cmdUp.Enabled = true;
 				else cmdUp.Enabled = false;
 			}
 			catch { cmdUp.Enabled = false; }
 			try
 			{
-				if (_events[i + 1, 0] == _events[i, 0]) cmdDown.Enabled = true;
+				if (_events[index + 1, 0] == _events[index, 0]) cmdDown.Enabled = true;
 				else cmdDown.Enabled = false;
 			}
 			catch { cmdDown.Enabled = false; }
