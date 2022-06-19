@@ -29,6 +29,7 @@ your user settings.
 Version History
 
  - (Start) Added option to load last mission from the initial launcher
+ - (All) Exit confirmation when enabled now only shows if mission isn't saved
 
 v1.13.5, 08 Jun 2022
  - (Map) Fixed a crash in XWA if SP1 wasn't checked when changing the Region selection

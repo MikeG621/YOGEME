@@ -4,10 +4,11 @@
  * This file authored by "JB" (Random Starfighter) (randomstarfighter@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.13.4
+ * VERSION: 1.13.4+
  */
 
 /* CHANGELOG:
+ * [UPD] Confirm save now only asks if modified
  * v1.13.4, 220606
  * [UPD] OneIndexedFGs implementation
  * v1.13.3, 220402
@@ -673,9 +674,9 @@ namespace Idmr.Yogeme
 		void form_Closing(object sender, System.ComponentModel.CancelEventArgs e)
 		{
 			promptSave();
-			if (_config.ConfirmExit && _applicationExit)
+			if (_config.ConfirmExit && _applicationExit && Text.IndexOf("*") != -1)
 			{
-				DialogResult res = MessageBox.Show("Are you sure you wish to exit?", "Confirm", MessageBoxButtons.YesNo);
+				DialogResult res = MessageBox.Show("There are unsaved changes, are you sure you wish to exit?", "Confirm", MessageBoxButtons.YesNo);
 				if (res == DialogResult.No) { e.Cancel = true; return; }
 			}
 			closeForms();
