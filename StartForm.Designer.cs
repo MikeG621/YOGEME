@@ -20,19 +20,21 @@ namespace Idmr.Yogeme
 		{
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(StartForm));
             this.grpPlatform = new System.Windows.Forms.GroupBox();
+            this.optLastMission = new System.Windows.Forms.RadioButton();
             this.chkBoP = new System.Windows.Forms.CheckBox();
+            this.optXWING = new System.Windows.Forms.RadioButton();
             this.optTIE = new System.Windows.Forms.RadioButton();
             this.optXvT = new System.Windows.Forms.RadioButton();
             this.optXWA = new System.Windows.Forms.RadioButton();
             this.lblChoose = new System.Windows.Forms.Label();
             this.cmdOK = new System.Windows.Forms.Button();
             this.cmdCancel = new System.Windows.Forms.Button();
-            this.optXWING = new System.Windows.Forms.RadioButton();
             this.grpPlatform.SuspendLayout();
             this.SuspendLayout();
             // 
             // grpPlatform
             // 
+            this.grpPlatform.Controls.Add(this.optLastMission);
             this.grpPlatform.Controls.Add(this.chkBoP);
             this.grpPlatform.Controls.Add(this.optXWING);
             this.grpPlatform.Controls.Add(this.optTIE);
@@ -40,9 +42,20 @@ namespace Idmr.Yogeme
             this.grpPlatform.Controls.Add(this.optXWA);
             this.grpPlatform.Location = new System.Drawing.Point(24, 48);
             this.grpPlatform.Name = "grpPlatform";
-            this.grpPlatform.Size = new System.Drawing.Size(200, 106);
+            this.grpPlatform.Size = new System.Drawing.Size(200, 131);
             this.grpPlatform.TabIndex = 0;
             this.grpPlatform.TabStop = false;
+            // 
+            // optLastMission
+            // 
+            this.optLastMission.AutoSize = true;
+            this.optLastMission.Location = new System.Drawing.Point(16, 98);
+            this.optLastMission.Name = "optLastMission";
+            this.optLastMission.Size = new System.Drawing.Size(83, 17);
+            this.optLastMission.TabIndex = 2;
+            this.optLastMission.TabStop = true;
+            this.optLastMission.Text = "Last Mission";
+            this.optLastMission.UseVisualStyleBackColor = true;
             // 
             // chkBoP
             // 
@@ -53,6 +66,15 @@ namespace Idmr.Yogeme
             this.chkBoP.TabIndex = 1;
             this.chkBoP.Text = "BoP";
             this.chkBoP.CheckedChanged += new System.EventHandler(this.chkBoP_CheckedChanged);
+            // 
+            // optXWING
+            // 
+            this.optXWING.Enabled = false;
+            this.optXWING.Location = new System.Drawing.Point(16, 18);
+            this.optXWING.Name = "optXWING";
+            this.optXWING.Size = new System.Drawing.Size(160, 18);
+            this.optXWING.TabIndex = 0;
+            this.optXWING.Text = "X-wing";
             // 
             // optTIE
             // 
@@ -93,7 +115,7 @@ namespace Idmr.Yogeme
             // cmdOK
             // 
             this.cmdOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.cmdOK.Location = new System.Drawing.Point(32, 162);
+            this.cmdOK.Location = new System.Drawing.Point(24, 185);
             this.cmdOK.Name = "cmdOK";
             this.cmdOK.Size = new System.Drawing.Size(80, 32);
             this.cmdOK.TabIndex = 2;
@@ -103,28 +125,19 @@ namespace Idmr.Yogeme
             // cmdCancel
             // 
             this.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cmdCancel.Location = new System.Drawing.Point(136, 162);
+            this.cmdCancel.Location = new System.Drawing.Point(144, 185);
             this.cmdCancel.Name = "cmdCancel";
             this.cmdCancel.Size = new System.Drawing.Size(80, 32);
             this.cmdCancel.TabIndex = 2;
             this.cmdCancel.Text = "&Cancel";
             this.cmdCancel.Click += new System.EventHandler(this.cmdCancel_Click);
             // 
-            // optXWING
-            // 
-            this.optXWING.Enabled = false;
-            this.optXWING.Location = new System.Drawing.Point(16, 18);
-            this.optXWING.Name = "optXWING";
-            this.optXWING.Size = new System.Drawing.Size(160, 18);
-            this.optXWING.TabIndex = 0;
-            this.optXWING.Text = "X-wing";
-            // 
             // StartForm
             // 
             this.AcceptButton = this.cmdOK;
             this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
             this.CancelButton = this.cmdCancel;
-            this.ClientSize = new System.Drawing.Size(250, 199);
+            this.ClientSize = new System.Drawing.Size(250, 232);
             this.Controls.Add(this.cmdOK);
             this.Controls.Add(this.lblChoose);
             this.Controls.Add(this.grpPlatform);
@@ -136,8 +149,9 @@ namespace Idmr.Yogeme
             this.Name = "StartForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Ye Olde Galactic Empire Mission Editor";
-            this.Closing += new System.ComponentModel.CancelEventHandler(this.frmStart_Closing);
+            this.Closing += new System.ComponentModel.CancelEventHandler(this.form_Closing);
             this.grpPlatform.ResumeLayout(false);
+            this.grpPlatform.PerformLayout();
             this.ResumeLayout(false);
 
 		}
@@ -152,5 +166,6 @@ namespace Idmr.Yogeme
 		Button cmdCancel;
 		CheckBox chkBoP;
         private RadioButton optXWING;
-	}
+        private RadioButton optLastMission;
+    }
 }

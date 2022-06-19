@@ -1,12 +1,13 @@
 /*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
- * Copyright (C) 2007-2018 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2022 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.5
+ * VERSION: 1.5+
  */
 
 /* CHANGELOG
+ * [NEW] Last Mission option
  * v1.5, 180910
  * [NEW] Xwing [JB]
  * v1.2.3, 141214
@@ -31,8 +32,7 @@ namespace Idmr.Yogeme
 	/// <summary>The initial interface and effective program start</summary>
 	public partial class StartForm : Form
 	{
-		Settings _config;
-		bool _exit = true;
+        readonly Settings _config;
 
 		public StartForm(Settings settings)
 		{
@@ -51,6 +51,9 @@ namespace Idmr.Yogeme
 			optXvT.Checked = (_config.LastPlatform == Settings.Platform.XvT);
 			chkBoP.Checked = (_config.LastPlatform == Settings.Platform.BoP);
 			optXWA.Checked = (_config.LastPlatform == Settings.Platform.XWA);
+			// using RecentMissions[1] here, since LastMission gets wiped if launching to a platform with a new file
+			if (_config.RecentMissions[1] == "") optLastMission.Enabled = false;
+			else optLastMission.Text += " (" + Path.GetFileNameWithoutExtension(_config.RecentMissions[1]) + ")";
 		}
 
 		void chkBoP_CheckedChanged(object sender, EventArgs e) { if (chkBoP.Checked) optXvT.Checked = true; }
@@ -58,44 +61,47 @@ namespace Idmr.Yogeme
 		void cmdCancel_Click(object sender, EventArgs e) { Close(); }
 		void cmdOK_Click(object sender, EventArgs e)
 		{
-			if (!optXWING.Checked && !optTIE.Checked && !optXvT.Checked && !optXWA.Checked) 
+			if (!optXWING.Checked && !optTIE.Checked && !optXvT.Checked && !optXWA.Checked && !optLastMission.Checked) 
 			{
 				MessageBox.Show("Please select a platform");
 				return;
 			}
-            if (optXWING.Checked)
+			Hide();
+            if (optXWING.Checked) new XwingForm(_config).Show();
+            else if (optTIE.Checked) new TieForm(_config).Show();
+			else if (optXvT.Checked) new XvtForm(_config, chkBoP.Checked).Show();
+			else if (optXWA.Checked) new XwaForm(_config).Show();
+			else
             {
-                Hide();
-                new XwingForm(_config).Show();
-            } 
-            if (optTIE.Checked)
-			{
-				Hide();
-				new TieForm(_config).Show();
-			}
-			if (optXvT.Checked)
-			{
-				Hide();
-				new XvtForm(_config, chkBoP.Checked).Show();
-			}
-			if (optXWA.Checked)
-			{
-				Hide();
-				new XwaForm(_config).Show();
+				switch (_config.LastPlatform)
+				{
+					case Settings.Platform.XWING:
+						new XwingForm(_config, _config.RecentMissions[1]).Show();
+						break;
+					case Settings.Platform.TIE:
+						new TieForm(_config, _config.RecentMissions[1]).Show();
+						break;
+					case Settings.Platform.XvT:
+						new XvtForm(_config, _config.RecentMissions[1]).Show();
+						break;
+					case Settings.Platform.BoP:
+						new XvtForm(_config, _config.RecentMissions[1]).Show();
+						break;
+					case Settings.Platform.XWA:
+						new XwaForm(_config, _config.RecentMissions[1]).Show();
+						break;
+				}
 			}
 		}
 
-		void frmStart_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+		void form_Closing(object sender, System.ComponentModel.CancelEventArgs e)
 		{
-			if (_exit)
+			if (_config.ConfirmExit)
 			{
-				if (_config.ConfirmExit)
-				{
-					DialogResult res = MessageBox.Show("Do you really want to exit?", "Confirm Exit", MessageBoxButtons.YesNo);
-					if (res == DialogResult.No) { e.Cancel = true; return; }
-				}
-				Application.Exit();
+				DialogResult res = MessageBox.Show("Do you really want to exit?", "Confirm Exit", MessageBoxButtons.YesNo);
+				if (res == DialogResult.No) { e.Cancel = true; return; }
 			}
+			Application.Exit();
 		}
 	}
 }
