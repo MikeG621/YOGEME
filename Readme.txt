@@ -3,8 +3,8 @@
 
 Author: Michael Gaisser (mjgaisser@gmail.com)
 Contributor: Random Starfighter (JB)
-Version: 1.13.5
-Date: 2022.06.08
+Version: 1.13.6
+Date: 2022.06.19
 
 Thank you for downloading YOGEME, the all-in-one mission editor for the X-Wing
 series, Xwing95 through X-wing Alliance.  This program allows easy mission
@@ -28,6 +28,7 @@ your user settings.
 ==========
 Version History
 
+v1.13.6, 19 Jun 2022
  - (Start) Added option to load last mission from the initial launcher.
  - (All) Exit confirmation when enabled now only shows if mission isn't saved. Prevents the double confirmation if default options are checked.
  - (Briefing) "Shift All" checkbox on the Events tab so all events after the selected move together.

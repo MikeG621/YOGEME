@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2022 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.11+
+ * VERSION: 1.13.6
  */
 
 /* CHANGELOG
+ * v1.13.6, 220619
  * [NEW] Shift All checkbox on Events tab so timing can move together
  * v1.11, 210801
  * [UPD] Icons attempt to load from the platform directory to account for mods [JB]

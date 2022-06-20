@@ -1910,7 +1910,7 @@ namespace Idmr.Yogeme
 #if DEBUG
 					if (chkWP[k].Checked && isVisibleInRegion(i, k) == WaypointVisibility.Present)
 #else
-					//if(chkWP[k].Checked && isVisibleInRegion(i, k) != WaypointVisibility.Absent)
+					if(chkWP[k].Checked && isVisibleInRegion(i, k) != WaypointVisibility.Absent)
 #endif
 					{
 						drawCraft(g3, bmptemp, _mapData[i], _zoom * _mapData[i].WPs[0][k][coord1] / 160 + mX, -_zoom * _mapData[i].WPs[0][k][coord2] / 160 + mY);

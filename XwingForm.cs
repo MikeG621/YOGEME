@@ -4,10 +4,11 @@
  * This file authored by "JB" (Random Starfighter) (randomstarfighter@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.13.4+
+ * VERSION: 1.13.6
  */
 
 /* CHANGELOG:
+ * v1.13.6, 220619
  * [UPD] Confirm save now only asks if modified
  * v1.13.4, 220606
  * [UPD] OneIndexedFGs implementation

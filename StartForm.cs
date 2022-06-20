@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2022 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.5+
+ * VERSION: 1.13.6
  */
 
 /* CHANGELOG
+ * v1.13.6, 220619
  * [NEW] Last Mission option
  * v1.5, 180910
  * [NEW] Xwing [JB]

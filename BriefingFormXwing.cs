@@ -4,10 +4,11 @@
  * This file authored by "JB" (Random Starfighter) (randomstarfighter@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.8+
+ * VERSION: 1.13.6
  */
 
 /* CHANGELOG
+ * v1.13.6, 220619
  * [NEW] Shift All checkbox on Events tab so timing can move together
  * v1.8, 201004
  * [UPD] renamed the redraw and popup timers, added to front-end instead of back-end
