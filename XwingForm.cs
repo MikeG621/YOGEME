@@ -4,10 +4,11 @@
  * This file authored by "JB" (Random Starfighter) (randomstarfighter@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.13.6+
+ * VERSION: 1.13.7
  */
 
 /* CHANGELOG:
+ * v1.13.7, 220730
  * [FIX] crash when copying a WP value via Ctrl+C and no text is selected
  * v1.13.6, 220619
  * [UPD] Confirm save now only asks if modified
