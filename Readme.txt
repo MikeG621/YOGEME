@@ -28,6 +28,9 @@ your user settings.
 ==========
 Version History
 
+ - (All) Fixed a crash if copying a single Waypoint value, but no text is selected
+ - (XWA) Fixed the Order WPs being linked together after a multi-select Paste
+
 v1.13.6, 19 Jun 2022
  - (Start) Added option to load last mission from the initial launcher.
  - (All) Exit confirmation when enabled now only shows if mission isn't saved. Prevents the double confirmation if default options are checked.

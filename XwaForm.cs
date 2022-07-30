@@ -3,10 +3,12 @@
  * Copyright (C) 2007-2022 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.13.6
+ * VERSION: 1.13.6+
  */
 
 /* CHANGELOG
+ * [FIX] crash when copying a WP value via Ctrl+C and no text is selected
+ * [FIX] OrderWPs being linked after a multi-select paste
  * v1.13.6, 220619
  * [UPD] Confirm save now only asks if modified
  * v1.13.4, 220606
@@ -1796,8 +1798,11 @@ namespace Idmr.Yogeme
 			else if (ActiveControl.GetType().ToString() == "System.Windows.Forms.DataGridTextBox")
 			{
 				DataGridTextBox dgt = (DataGridTextBox)ActiveControl;
-				formatter.Serialize(stream, dgt.SelectedText);
-				data.SetText(dgt.SelectedText);
+				if (dgt.Text != "")
+				{
+					formatter.Serialize(stream, dgt.Text);
+					data.SetText(dgt.Text);
+				}
 			}
 			else if (sender.ToString() == "MessTrig" || hasFocus(lblMessTrig))  //[JB] Detect if triggers have focus
 			{
@@ -2071,7 +2076,7 @@ namespace Idmr.Yogeme
 				{
 					foreach (FlightGroup fg in getSelectedFlightgroups())
 						for (int w = 0; w < ord.Waypoints.Length; w++)
-							fg.Orders[(int)numWPOrderRegion.Value - 1, (int)numWPOrder.Value - 1].Waypoints[w] = ord.Waypoints[w];
+							fg.Orders[(int)numWPOrderRegion.Value - 1, (int)numWPOrder.Value - 1].Waypoints[w] = Idmr.Common.ObjectCopier.DeepClone(ord.Waypoints[w]);
 					numWPOrder_ValueChanged("Paste", new EventArgs());
 					Common.Title(this, false);
 				}

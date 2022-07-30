@@ -4,10 +4,11 @@
  * This file authored by "JB" (Random Starfighter) (randomstarfighter@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.13.6
+ * VERSION: 1.13.6+
  */
 
 /* CHANGELOG:
+ * [FIX] crash when copying a WP value via Ctrl+C and no text is selected
  * v1.13.6, 220619
  * [UPD] Confirm save now only asks if modified
  * v1.13.4, 220606
@@ -869,8 +870,11 @@ namespace Idmr.Yogeme
 			else if (ActiveControl.GetType().ToString() == "System.Windows.Forms.DataGridTextBox")
 			{
 				DataGridTextBox dgt = (DataGridTextBox)ActiveControl;
-				formatter.Serialize(stream, dgt.SelectedText);
-				data.SetText(dgt.SelectedText);
+				if (dgt.Text != "")
+				{
+					formatter.Serialize(stream, dgt.Text);
+					data.SetText(dgt.Text);
+				}
 			}
 			switch (tabMain.SelectedIndex)
 			{
