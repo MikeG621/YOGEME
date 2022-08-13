@@ -2202,12 +2202,15 @@ namespace Idmr.Yogeme
 								if (fg[b].CraftType == 85 && fg[b].Waypoints[0][4] == r && fg[b].Designation1 == fromRegion + 12)	// From are #12-15
                                 {
 									exitBuoy = fg[b].Waypoints[0];
+									System.Diagnostics.Debug.WriteLine(fg[i].ToString() + " enters Region " + (r + 1) + " from " + (fromRegion + 1) + " via " + fg[b].ToString());
 									break;
                                 }
                             }
 							break;
                         }
                     }
+					if (!exitBuoy.Enabled) continue;
+
 					var o1w1 = _mapData[i].WPs[r * 4 + 1][0];
 					
 					/* According to AlliED:
@@ -2231,12 +2234,10 @@ namespace Idmr.Yogeme
 						int offset = 10;    //.062 km
 						for (int c = 0; c < 3; c++) _mapData[i].WPs[17][r][c] = (short)(exitBuoy[c] - offset * vector[c] / vectorLength);
                         _mapData[i].WPs[18][r] = o1w1;
-						// okay, so this is working, simple enough
 					}
 					else
 					{
 						// AI
-						// offsets are wrong, likely grabbing wrong WPs
 						var hyperEntry = new Platform.Xwa.FlightGroup.Waypoint();
 						for (int o = 0; o < 16; o++)
 						{
@@ -2258,9 +2259,10 @@ namespace Idmr.Yogeme
 						}
 						var enterBuoy = new Platform.Xwa.FlightGroup.Waypoint();
 						for (int b = 0; b < numCraft; b++)
-							if (fg[b].CraftType == 85 && fg[b].Waypoints[0][4] == hyperEntry.Region && fg[i].Designation1 == r + 16)  // To are #16-19
+							if (fg[b].CraftType == 85 && fg[b].Waypoints[0][4] == hyperEntry.Region && fg[b].Designation1 == r + 16)  // To are #16-19
 							{
 								enterBuoy = fg[b].Waypoints[0];
+                                System.Diagnostics.Debug.WriteLine(fg[i].ToString() + " leaves Region " + (hyperEntry.Region + 1) + " to " + (r + 1) + " via " + fg[b].ToString());
 								break;
 							}
 						int[] offset = new int[3];
