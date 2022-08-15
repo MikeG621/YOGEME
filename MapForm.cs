@@ -293,7 +293,7 @@ namespace Idmr.Yogeme
 
 			if (_platform == Settings.Platform.XWA && !dst.Enabled)
 				model.UpdateSimple(meshZoom, _settings.WireframeMeshTypeVisibility, dat.Yaw, dat.Pitch, dat.Roll);
-			else if (_platform == Settings.Platform.XWA && dat.WPs[17][region].Enabled)
+			else if (_platform == Settings.Platform.XWA && dat.WPs[17][region].Enabled && ((Platform.Xwa.FlightGroup.Waypoint)dat.WPs[0][0]).Region != region)
 				model.UpdateParams(dat.WPs[17][region], dat.WPs[18][region], meshZoom, _displayMode, _settings.WireframeMeshTypeVisibility);
 			else
 				model.UpdateParams(dat.WPs[0][0], dst, meshZoom, _displayMode, _settings.WireframeMeshTypeVisibility);
@@ -1944,11 +1944,8 @@ namespace Idmr.Yogeme
 							if (chkTrace.Checked && !(chkTraceHideFade.Checked && _mapData[i].View == Visibility.Fade) && !(chkTraceSelected.Checked && !isMapObjectSelected(i)))
 							{
 								Platform.BaseFlightGroup.BaseWaypoint baseWp = _mapData[i].WPs[0][0];
-								if (_mapData[i].WPs[17][region].Enabled)
-								{
+								if (_mapData[i].WPs[17][region].Enabled && ((Platform.Xwa.FlightGroup.Waypoint)_mapData[i].WPs[0][0]).Region != region)
 									baseWp = _mapData[i].WPs[17][region];
-									System.Diagnostics.Debug.WriteLine(baseWp.ToString());
-								}
 								if (k == 0 && (!chkWP[0].Checked || isVisibleInRegion(i, 0) == WaypointVisibility.Absent))
 									continue;
 								else if (k > 0)
@@ -2049,6 +2046,11 @@ namespace Idmr.Yogeme
 					continue;
 				int x = _zoom * dat.WPRef[coord1] / 160 + mX;
 				int y = -_zoom * dat.WPRef[coord2] / 160 + mY;
+				if (_platform == Settings.Platform.XWA && dat.MapDataRef.WPs[17][(int)numRegion.Value - 1].Enabled && ((Platform.Xwa.FlightGroup.Waypoint)dat.WPRef).Region != (numRegion.Value - 1))
+				{
+					x = _zoom * dat.MapDataRef.WPs[17][(int)numRegion.Value - 1][coord1] / 160 + mX;
+					y = -_zoom * dat.MapDataRef.WPs[17][(int)numRegion.Value - 1][coord2] / 160 + mY;
+				}
 				x += 1;  //Doesn't seem to line up with icon correctly, push it over.
 							//[JB] Draws a four corner selection box like in-game.
 				g3.DrawLine(pnSel, x - 8, y - 8, x - 4, y - 8); //Horizontal top
