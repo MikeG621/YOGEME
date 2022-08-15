@@ -268,9 +268,11 @@ namespace Idmr.Yogeme
 
 			Platform.BaseFlightGroup.BaseWaypoint dst;
 
+			int region = -1;
 			if (_platform == Settings.Platform.XWA)
 			{
-				int ord = (int)((numRegion.Value - 1) * 4 + numOrder.Value);
+				region = (int)numRegion.Value - 1;
+				int ord = (int)(region * 4 + numOrder.Value);
 				dst = dat.WPs[ord][0];
 				if (!dat.WPs[ord][0].Enabled)  // Default to first order if no waypoint defined, this keeps the orientation consistent if checking different orders and they're empty.
 					dst = dat.WPs[1][0];
@@ -291,12 +293,14 @@ namespace Idmr.Yogeme
 
 			if (_platform == Settings.Platform.XWA && !dst.Enabled)
 				model.UpdateSimple(meshZoom, _settings.WireframeMeshTypeVisibility, dat.Yaw, dat.Pitch, dat.Roll);
+			else if (_platform == Settings.Platform.XWA && dat.WPs[17][region].Enabled)
+				model.UpdateParams(dat.WPs[17][region], dat.WPs[18][region], meshZoom, _displayMode, _settings.WireframeMeshTypeVisibility);
 			else
 				model.UpdateParams(dat.WPs[0][0], dst, meshZoom, _displayMode, _settings.WireframeMeshTypeVisibility);
 
-			Pen body = new Pen((dat.View == Visibility.Fade ? _fadeColor : getIFFColor(dat.IFF)));
-			Pen hangar = new Pen((dat.View == Visibility.Fade ? _fadeColor : Color.White));
-			Pen dock = new Pen((dat.View == Visibility.Fade ? _fadeColor : Color.Yellow));
+			Pen body = new Pen(dat.View == Visibility.Fade ? _fadeColor : getIFFColor(dat.IFF));
+			Pen hangar = new Pen(dat.View == Visibility.Fade ? _fadeColor : Color.White);
+			Pen dock = new Pen(dat.View == Visibility.Fade ? _fadeColor : Color.Yellow);
 			Pen p;
 			int x1, x2, y1, y2;
 			int lineDrawCount = 0;
@@ -1929,7 +1933,8 @@ namespace Idmr.Yogeme
 				}
 				if (_platform == Settings.Platform.XWA) // WPs     [JB] XWA's north/south is inverted compared to XvT.
 				{
-					int ord = (int)((numRegion.Value - 1) * 4 + (numOrder.Value - 1) + 1);
+					int region = (int)numRegion.Value - 1;
+					int ord = (int)(region * 4 + (numOrder.Value - 1) + 1);
 					for (int k = 0; k < 8; k++)
 					{
 						if (chkWP[k + 4].Checked && _mapData[i].WPs[ord][k].Enabled)
@@ -1939,6 +1944,11 @@ namespace Idmr.Yogeme
 							if (chkTrace.Checked && !(chkTraceHideFade.Checked && _mapData[i].View == Visibility.Fade) && !(chkTraceSelected.Checked && !isMapObjectSelected(i)))
 							{
 								Platform.BaseFlightGroup.BaseWaypoint baseWp = _mapData[i].WPs[0][0];
+								if (_mapData[i].WPs[17][region].Enabled)
+								{
+									baseWp = _mapData[i].WPs[17][region];
+									System.Diagnostics.Debug.WriteLine(baseWp.ToString());
+								}
 								if (k == 0 && (!chkWP[0].Checked || isVisibleInRegion(i, 0) == WaypointVisibility.Absent))
 									continue;
 								else if (k > 0)
@@ -2233,6 +2243,7 @@ namespace Idmr.Yogeme
 						}
 						int offset = 10;    //.062 km
 						for (int c = 0; c < 3; c++) _mapData[i].WPs[17][r][c] = (short)(exitBuoy[c] - offset * vector[c] / vectorLength);
+						_mapData[i].WPs[17][r].Enabled = true;
                         _mapData[i].WPs[18][r] = o1w1;
 					}
 					else
@@ -2268,7 +2279,9 @@ namespace Idmr.Yogeme
 						int[] offset = new int[3];
 						for (int c = 0; c < 3; c++) offset[c] = hyperEntry[c] - enterBuoy[c];
 						for (int c = 0; c < 3; c++) _mapData[i].WPs[17][r][c] = (short)(exitBuoy[c] + offset[c]);
+						_mapData[i].WPs[17][r].Enabled = true;
 						for (int c = 0; c < 3; c++) _mapData[i].WPs[18][r][c] = (short)(o1w1[c] + offset[c]);
+						_mapData[i].WPs[18][r].Enabled = true;
 					}
 				}
 #endif
