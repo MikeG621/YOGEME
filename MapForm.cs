@@ -1893,6 +1893,9 @@ namespace Idmr.Yogeme
 					_sortedMapDataList.Add(i);
 				_sortedMapDataList.Sort(compareDrawOrder);
 			}
+			int region = -1;
+			if (_platform == Settings.Platform.XWA) region = (int)numRegion.Value - 1;
+
 			foreach(int i in _sortedMapDataList)
 			{
 				if (_mapData[i].View == Visibility.Hide || !passFilter(_mapData[i]))
@@ -1925,15 +1928,14 @@ namespace Idmr.Yogeme
 					else if (isVisibleInRegion(i, k) == WaypointVisibility.OtherRegion)
                     {
 						// TODO: draw darkened dashed line maybe 0.1 behind the exit point. simple projection
-						Platform.BaseFlightGroup.BaseWaypoint exitWP = _mapData[i].WPs[17][(int)(numRegion.Value - 1)];
+						Platform.BaseFlightGroup.BaseWaypoint exitWP = _mapData[i].WPs[17][region];
 						drawCraft(g3, bmptemp, _mapData[i], _zoom * exitWP[coord1] / 160 + mX, -_zoom * exitWP[coord2] / 160 + mY);
-						if (chkTags.Checked && _mapData[i].View == Visibility.Show) g3.DrawString(_mapData[i].Name + " " + chkWP[k].Text, DefaultFont, sbg, _zoom * exitWP[coord1] / 160 + mX + 8, -_zoom * exitWP[coord2] / 160 + mY + 8);
+						if (chkTags.Checked && _mapData[i].View == Visibility.Show) g3.DrawString(_mapData[i].Name + " Exit", DefaultFont, sbg, _zoom * exitWP[coord1] / 160 + mX + 8, -_zoom * exitWP[coord2] / 160 + mY + 8);
 					}
 #endif
 				}
 				if (_platform == Settings.Platform.XWA) // WPs     [JB] XWA's north/south is inverted compared to XvT.
 				{
-					int region = (int)numRegion.Value - 1;
 					int ord = (int)(region * 4 + (numOrder.Value - 1) + 1);
 					for (int k = 0; k < 8; k++)
 					{
@@ -2046,10 +2048,10 @@ namespace Idmr.Yogeme
 					continue;
 				int x = _zoom * dat.WPRef[coord1] / 160 + mX;
 				int y = -_zoom * dat.WPRef[coord2] / 160 + mY;
-				if (_platform == Settings.Platform.XWA && dat.MapDataRef.WPs[17][(int)numRegion.Value - 1].Enabled && ((Platform.Xwa.FlightGroup.Waypoint)dat.WPRef).Region != (numRegion.Value - 1))
+				if (_platform == Settings.Platform.XWA && dat.MapDataRef.WPs[17][region].Enabled && ((Platform.Xwa.FlightGroup.Waypoint)dat.WPRef).Region != (numRegion.Value - 1))
 				{
-					x = _zoom * dat.MapDataRef.WPs[17][(int)numRegion.Value - 1][coord1] / 160 + mX;
-					y = -_zoom * dat.MapDataRef.WPs[17][(int)numRegion.Value - 1][coord2] / 160 + mY;
+					x = _zoom * dat.MapDataRef.WPs[17][region][coord1] / 160 + mX;
+					y = -_zoom * dat.MapDataRef.WPs[17][region][coord2] / 160 + mY;
 				}
 				x += 1;  //Doesn't seem to line up with icon correctly, push it over.
 							//[JB] Draws a four corner selection box like in-game.
