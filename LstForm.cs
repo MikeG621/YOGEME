@@ -3,10 +3,12 @@
  * Copyright (C) 2007-2020 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.8.1
+ * VERSION: 1.13.8
  */
 
 /* CHANGELOG
+ * v1.13.8, 220828
+ * [ADD #70] XWA's COMBAT.LST for Justagai's MP Hook
  * v1.8.1, 201213
  * [UPD] Settings passed in instead of re-init
  * v1.4, 171016
@@ -62,6 +64,8 @@ namespace Idmr.Yogeme
 					"* 1B1M2ex.tie\r\n!MISSION_3_DESC!etc";
 				cboFile.Items.Add("MELEE\\MISSION.LST");
 				cboFile.Items.Add("MISSIONS\\MISSION.LST");
+				if (File.Exists(_installPath + "\\COMBAT\\MISSION.lst"))
+					cboFile.Items.Add("COMBAT\\MISSION.LST");
 				cboFile.SelectedIndex = 1;
 			}
 			if (platform==Settings.Platform.XvT || platform==Settings.Platform.BoP)

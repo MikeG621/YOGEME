@@ -3,8 +3,8 @@
 
 Author: Michael Gaisser (mjgaisser@gmail.com)
 Contributor: Random Starfighter (JB)
-Version: 1.13.7
-Date: 2022.07.30
+Version: 1.13.8
+Date: 2022.08.28
 
 Thank you for downloading YOGEME, the all-in-one mission editor for the X-Wing
 series, Xwing95 through X-wing Alliance.  This program allows easy mission
@@ -27,6 +27,9 @@ your user settings.
 
 ==========
 Version History
+
+v1.13.8, 28 Aug 2022
+ - (XWA) Added ability to edit COMBAT.LST if Justagai's MP Hook is installed
 
 v1.13.7, 30 Jul 2022
  - (All) Fixed a crash if copying a single Waypoint value, but no text is selected
