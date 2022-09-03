@@ -28,6 +28,8 @@ your user settings.
 ==========
 Version History
 
+ - New error dialog with the aiblity to skip future errors. Currently only for Backdrop DAT loading
+
 v1.13.8, 28 Aug 2022
  - (XWA) Added ability to edit COMBAT.LST if Justagai's MP Hook is installed
 

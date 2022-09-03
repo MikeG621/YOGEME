@@ -1,12 +1,13 @@
 /*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
- * Copyright (C) 2007-2021 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2022 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.11
+ * VERSION: 1.11+
  */
 
 /* CHANGELOG
+ * [NEW] Ability to skip repeated DAT load failures
  * v1.11, 210801
  * [NEW #46] Color picker for XWA
  * v1.8.2, 201219
@@ -318,6 +319,7 @@ namespace Idmr.Yogeme
 				System.Collections.Generic.List<string> resdata = new System.Collections.Generic.List<string>(50);
 				DatFile temp;
 				string line;
+				bool ignoreError = false;
 				try
 				{
 					sr = new StreamReader(_installDirectory + "\\RESDATA.TXT");
@@ -346,9 +348,13 @@ namespace Idmr.Yogeme
 							}
 						}
 					}
-					catch
+					catch (Exception x)
 					{
-						MessageBox.Show("Error reading DAT file from RESDATA.TXT:\n" + _installDirectory + "\\" + resdata[i] + "\nFile skipped.", "Error");
+						string message = "Error reading DAT file from RESDATA.TXT:\n";
+						if (x.InnerException != null && x.InnerException.GetType() == typeof(FileNotFoundException)) message = "DAT File not found:\n";
+						var dlgError = new ErrorDialog(message + _installDirectory + "\\" + resdata[i] + "\nFile skipped.", !ignoreError);
+						dlgError.ShowDialog();
+						ignoreError |= dlgError.IgnoreErrors;
 					}
 				}
 				if (_hookInstalled && File.Exists(_fileName))

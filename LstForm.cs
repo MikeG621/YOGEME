@@ -1,6 +1,6 @@
 ﻿/*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
- * Copyright (C) 2007-2020 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2022 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
  * VERSION: 1.13.8
@@ -28,7 +28,7 @@ using System.Windows.Forms;
 
 namespace Idmr.Yogeme
 {
-	/// <summary>One of the simplest forms, allows for LST editing</summary>
+	/// <summary>Form for LST editing to assign custom missions</summary>
 	public partial class LstForm : Form
 	{
 		readonly string _installPath;
