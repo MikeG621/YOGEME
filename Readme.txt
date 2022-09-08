@@ -3,8 +3,8 @@
 
 Author: Michael Gaisser (mjgaisser@gmail.com)
 Contributor: Random Starfighter (JB)
-Version: 1.13.8
-Date: 2022.08.28
+Version: 1.13.9
+Date: 2022.09.07
 
 Thank you for downloading YOGEME, the all-in-one mission editor for the X-Wing
 series, Xwing95 through X-wing Alliance.  This program allows easy mission
@@ -28,7 +28,9 @@ your user settings.
 ==========
 Version History
 
- - New error dialog with the aiblity to skip future errors. Currently only for Backdrop DAT loading
+v1.13.9, 07 Sep 2022
+ - New error dialog with the ability to skip future errors. Currently only for Backdrop DAT loading [Issue #72]
+ - (XWA) Lines in RESDATA.txt will be skipped when loading backdrops if commented out by ; or // [Issue #72]
 
 v1.13.8, 28 Aug 2022
  - (XWA) Added ability to edit COMBAT.LST if Justagai's MP Hook is installed
@@ -505,18 +507,11 @@ v1.0 - 21 Sept 2011
 ==========
 Installation Notes
 
-No special setup is needed, simply unzip and run. YOGEME will auto-detect your
-installed platforms and enable those editing capabilities (you shouldn't be
-making missions for a platform you can't play, they tend to be bug-ridden),
-however if you absolutely need a disabled platform, it can be activated in the
-Options dialog. Note however that certain functions may not work properly for
-an uninstalled platform.
-
-==========
-Uninstallation Notes
-
-Run Uninstall.exe, it will remove the settings file in your user directory and
-all original YOGEME files.
+YOGEME will auto-detect your installed platforms and enable those editing
+capabilities (you shouldn't be making missions for a platform you can't play,
+they tend to be bug-ridden), however if you absolutely need a disabled
+platform, it can be activated in the Options dialog. Note however that certain
+functions may not work properly for an uninstalled platform.
 
 ==========
 Special Thanks

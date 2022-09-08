@@ -3,11 +3,13 @@
  * Copyright (C) 2007-2022 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.11+
+ * VERSION: 1.13.9
  */
 
 /* CHANGELOG
- * [NEW] Ability to skip repeated DAT load failures
+ * v1.13.9, 220907
+ * [NEW #72] Ability to skip repeated DAT load failures
+ * [NEW #72] Resdata read will ignore lines commented by ; or //
  * v1.11, 210801
  * [NEW #46] Color picker for XWA
  * v1.8.2, 201219
@@ -323,7 +325,7 @@ namespace Idmr.Yogeme
 				try
 				{
 					sr = new StreamReader(_installDirectory + "\\RESDATA.TXT");
-					while ((line = sr.ReadLine()) != null) if (line != "") resdata.Add(line);
+					while ((line = sr.ReadLine()) != null) if (line != "" && !line.StartsWith(";") && !line.StartsWith("//")) resdata.Add(line);
 					sr.Close();
 				}
 				catch
@@ -350,11 +352,14 @@ namespace Idmr.Yogeme
 					}
 					catch (Exception x)
 					{
-						string message = "Error reading DAT file from RESDATA.TXT:\n";
-						if (x.InnerException != null && x.InnerException.GetType() == typeof(FileNotFoundException)) message = "DAT File not found:\n";
-						var dlgError = new ErrorDialog(message + _installDirectory + "\\" + resdata[i] + "\nFile skipped.", !ignoreError);
-						dlgError.ShowDialog();
-						ignoreError |= dlgError.IgnoreErrors;
+						if (!ignoreError)
+						{
+							string message = "Error reading DAT file from RESDATA.TXT:\n";
+							if (x.InnerException != null && x.InnerException.GetType() == typeof(FileNotFoundException)) message = "DAT File not found:\n";
+							var dlgError = new ErrorDialog(message + _installDirectory + "\\" + resdata[i] + "\nFile skipped.", true);
+							dlgError.ShowDialog();
+							ignoreError |= dlgError.IgnoreErrors;
+						}
 					}
 				}
 				if (_hookInstalled && File.Exists(_fileName))
