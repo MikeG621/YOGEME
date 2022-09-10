@@ -8,7 +8,7 @@
 
 /* CHANGELOG
  * v1.13.9, 220907
- * [NEW #72] Ability to skip repeated DAT load failures
+ * [NEW #71] Ability to skip repeated DAT load failures
  * [NEW #72] Resdata read will ignore lines commented by ; or //
  * v1.11, 210801
  * [NEW #46] Color picker for XWA

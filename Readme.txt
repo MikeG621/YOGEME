@@ -29,7 +29,7 @@ your user settings.
 Version History
 
 v1.13.9, 07 Sep 2022
- - New error dialog with the ability to skip future errors. Currently only for Backdrop DAT loading [Issue #72]
+ - New error dialog with the ability to skip future errors. Currently only for Backdrop DAT loading [Issue #71]
  - (XWA) Lines in RESDATA.txt will be skipped when loading backdrops if commented out by ; or // [Issue #72]
 
 v1.13.8, 28 Aug 2022

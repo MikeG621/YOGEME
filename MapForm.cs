@@ -83,9 +83,13 @@ using Idmr.Common;
 using Idmr.Yogeme.MapWireframe;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlTypes;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Net;
+using System.Security.Cryptography;
 using System.Windows.Forms;
+using System.Xml.Serialization;
 
 namespace Idmr.Yogeme
 {
@@ -1828,24 +1832,65 @@ namespace Idmr.Yogeme
 			return WaypointVisibility.Absent;
 		}
 
-		#region public functions
-		/// <summary>The down-and-dirty function that handles map display </summary>
-		/// <param name="persistant">When <b>true</b> draws to memory, <b>false</b> draws directly to the image</param>
-		public void MapPaint()
+		/// <summary>Gets a waypoint along the vector defined by two points with the given raw offset from the starting point.</summary>
+		/// <param name="start">The origin Waypoint</param>
+		/// <param name="end">The end Waypoint to define length and direction of the vector.</param>
+		/// <param name="rawOffset">The distance in raw units from <paramref name="start"/>. Negative values are "behind" start.</param>
+		/// <returns>A Waypoint of the location.</returns>
+		Platform.BaseFlightGroup.BaseWaypoint getOffsetWaypoint(Platform.BaseFlightGroup.BaseWaypoint start, Platform.BaseFlightGroup.BaseWaypoint end, int rawOffset)
+		{
+			int[] vector = new int[3];
+            for (int c = 0; c < 3; c++) vector[c] = end[c] - start[c];
+            double vectorLength = Math.Sqrt(Math.Pow(vector[0], 2) + Math.Pow(vector[1], 2) + Math.Pow(vector[2], 2));
+            if (vectorLength == 0)
+            {
+                vector[1] = 1;
+                vectorLength = 1;
+            }
+			var offsetWaypoint = new Platform.Xwa.FlightGroup.Waypoint();
+            for (int c = 0; c < 3; c++) offsetWaypoint[c] = (short)(start[c] + rawOffset * vector[c] / vectorLength);
+			return offsetWaypoint;
+        }
+
+		/// <summary>Converts a waypoint into map coordinates for drawing.</summary>
+		/// <param name="waypoint">Source waypoint</param>
+		/// <returns>A map point taking into account Zoom and Display Orientation</returns>
+		Point getMapPoint(Platform.BaseFlightGroup.BaseWaypoint waypoint)
+		{
+			Point mapPoint = new Point();
+            int mX = _mapX, mY = _mapZ, coord1 = 0, coord2 = 2;
+            switch (_displayMode)
+            {
+                case Orientation.XY:
+                    mY = _mapY;
+                    coord2 = 1;
+                    break;
+                case Orientation.YZ:
+                    mX = _mapY;
+                    coord1 = 1;
+                    break;
+            }
+			mapPoint.X = _zoom * waypoint[coord1] / 160 + mX;
+            mapPoint.Y = -_zoom * waypoint[coord2] / 160 + mY;
+			return mapPoint;
+        }
+
+        #region public functions
+        /// <summary>The down-and-dirty function that handles map display </summary>
+        /// <param name="persistant">When <b>true</b> draws to memory, <b>false</b> draws directly to the image</param>
+        public void MapPaint()
 		{
 			if (_isClosing || _isLoading) return;
 
 			#region orientation setup
-			int mX = _mapX, mY = _mapZ, coord1 = 0, coord2 = 2;
+			int mX = _mapX, mY = _mapZ;
 			switch (_displayMode)
 			{
 				case Orientation.XY:
 					mY = _mapY;
-					coord2 = 1;
 					break;
 				case Orientation.YZ:
 					mX = _mapY;
-					coord1 = 1;
 					break;
 			}
 			#endregion
@@ -1856,6 +1901,11 @@ namespace Idmr.Yogeme
 			SolidBrush sbg = new SolidBrush(Color.DimGray); // for FG tags
 			Pen pnTrace = new Pen(Color.Gray);      // for WP traces
 			Pen pnSel = new Pen(Color.White);  //[JB] For selection boxes
+			Pen pnDashTrace = new Pen(Color.DimGray)
+			{
+				DashStyle = System.Drawing.Drawing2D.DashStyle.Dash,
+				DashPattern = new float[] { 4, 2 }
+			};
 			Graphics g3;
 			g3 = Graphics.FromImage(_map);      //graphics obj, load from the memory bitmap
 			g3.Clear(SystemColors.Control);     //clear it
@@ -1920,17 +1970,20 @@ namespace Idmr.Yogeme
 					if(chkWP[k].Checked && isVisibleInRegion(i, k) != WaypointVisibility.Absent)
 #endif
 					{
-						drawCraft(g3, bmptemp, _mapData[i], _zoom * _mapData[i].WPs[0][k][coord1] / 160 + mX, -_zoom * _mapData[i].WPs[0][k][coord2] / 160 + mY);
-						if (chkTags.Checked && _mapData[i].View == Visibility.Show) g3.DrawString(_mapData[i].Name + " " + chkWP[k].Text, DefaultFont, sbg, _zoom * _mapData[i].WPs[0][k][coord1] / 160 + mX + 8, -_zoom * _mapData[i].WPs[0][k][coord2] / 160 + mY + 8);
+                        var startPoint = getMapPoint(_mapData[i].WPs[0][k]);
+                        drawCraft(g3, bmptemp, _mapData[i], startPoint.X, startPoint.Y);
+						if (chkTags.Checked && _mapData[i].View == Visibility.Show) g3.DrawString(_mapData[i].Name + " " + chkWP[k].Text, DefaultFont, sbg, startPoint.X + 8, startPoint.Y + 8);
 					}
 					// HACK debug bypass, remove when done for Release
 #if DEBUG
 					else if (isVisibleInRegion(i, k) == WaypointVisibility.OtherRegion)
                     {
-						// TODO: draw darkened dashed line maybe 0.1 behind the exit point. simple projection
 						Platform.BaseFlightGroup.BaseWaypoint exitWP = _mapData[i].WPs[17][region];
-						drawCraft(g3, bmptemp, _mapData[i], _zoom * exitWP[coord1] / 160 + mX, -_zoom * exitWP[coord2] / 160 + mY);
-						if (chkTags.Checked && _mapData[i].View == Visibility.Show) g3.DrawString(_mapData[i].Name + " Exit", DefaultFont, sbg, _zoom * exitWP[coord1] / 160 + mX + 8, -_zoom * exitWP[coord2] / 160 + mY + 8);
+						var exitPoint = getMapPoint(exitWP);
+						drawCraft(g3, bmptemp, _mapData[i], exitPoint.X, exitPoint.Y);
+						if (chkTags.Checked && _mapData[i].View == Visibility.Show) g3.DrawString(_mapData[i].Name + " Exit", DefaultFont, sbg, exitPoint.X + 8, exitPoint.Y + 8);
+						var exitDirection = getMapPoint(getOffsetWaypoint(exitWP, _mapData[i].WPs[18][region], -50));	// .31 km
+						g3.DrawLine(pnDashTrace, exitPoint.X, exitPoint.Y, exitDirection.X, exitDirection.Y);
 					}
 #endif
 				}
@@ -1941,8 +1994,9 @@ namespace Idmr.Yogeme
 					{
 						if (chkWP[k + 4].Checked && _mapData[i].WPs[ord][k].Enabled)
 						{
-							g3.DrawEllipse(pn, _zoom * _mapData[i].WPs[ord][k][coord1] / 160 + mX - 1, -_zoom * _mapData[i].WPs[ord][k][coord2] / 160 + mY - 1, 3, 3);
-							if (chkTags.Checked && _mapData[i].View == Visibility.Show) g3.DrawString(_mapData[i].Name + " " + chkWP[k + 4].Text, DefaultFont, sbg, _zoom * _mapData[i].WPs[ord][k][coord1] / 160 + mX + 4, -_zoom * _mapData[i].WPs[ord][k][coord2] / 160 + mY + 4);
+							var ordPoint = getMapPoint(_mapData[i].WPs[ord][k]);
+							g3.DrawEllipse(pn, ordPoint.X - 1, ordPoint.Y - 1, 3, 3);
+							if (chkTags.Checked && _mapData[i].View == Visibility.Show) g3.DrawString(_mapData[i].Name + " " + chkWP[k + 4].Text, DefaultFont, sbg, ordPoint.X + 4, ordPoint.Y + 4);
 							if (chkTrace.Checked && !(chkTraceHideFade.Checked && _mapData[i].View == Visibility.Fade) && !(chkTraceSelected.Checked && !isMapObjectSelected(i)))
 							{
 								Platform.BaseFlightGroup.BaseWaypoint baseWp = _mapData[i].WPs[0][0];
@@ -1956,18 +2010,19 @@ namespace Idmr.Yogeme
 										continue;
 									baseWp = _mapData[i].WPs[ord][k - 1];
 								}
-								g3.DrawLine(pnTrace, _zoom * baseWp[coord1] / 160 + mX, -_zoom * baseWp[coord2] / 160 + mY, _zoom * _mapData[i].WPs[ord][k][coord1] / 160 + mX, -_zoom * _mapData[i].WPs[ord][k][coord2] / 160 + mY);
+								var basePoint = getMapPoint(baseWp);
+								g3.DrawLine(pnTrace, basePoint.X, basePoint.Y, ordPoint.X, ordPoint.Y);
 								if (_mapData[i].View == Visibility.Show)
 								{
 									int offy = chkTags.Checked ? 14 : 0; //To render it below the FG tag
 									if (chkDistance.Checked)
 									{
-										g3.DrawString(getDistanceString(_mapData[i].WPs[ord][k], baseWp), DefaultFont, sbg, _zoom * _mapData[i].WPs[ord][k][coord1] / 160 + mX + 4, -_zoom * _mapData[i].WPs[ord][k][coord2] / 160 + mY + 4 + offy);
+										g3.DrawString(getDistanceString(_mapData[i].WPs[ord][k], baseWp), DefaultFont, sbg, ordPoint.X + 4, ordPoint.Y + 4 + offy);
 										offy += 14;
 									}
 									if (chkTime.Checked)
 									{
-										g3.DrawString(getTimeString(_mapData[i].FlightGroup, (int)numOrder.Value - 1, _mapData[i].WPs[ord][k], baseWp), DefaultFont, sbg, _zoom * _mapData[i].WPs[ord][k][coord1] / 160 + mX + 4, -_zoom * _mapData[i].WPs[ord][k][coord2] / 160 + mY + 4 + offy);
+										g3.DrawString(getTimeString(_mapData[i].FlightGroup, (int)numOrder.Value - 1, _mapData[i].WPs[ord][k], baseWp), DefaultFont, sbg, ordPoint.X + 4, ordPoint.Y + 4 + offy);
 									}
 								}
 							}
@@ -1981,23 +2036,25 @@ namespace Idmr.Yogeme
 					{
 						if (chkWP[k].Checked && _mapData[i].WPs[0][k].Enabled)
 						{
-							g3.DrawEllipse(pn, _zoom * _mapData[i].WPs[0][k][coord1] / 160 + mX - 1, -_zoom * _mapData[i].WPs[0][k][coord2] / 160 + mY - 1, 3, 3);
-							if (chkTags.Checked && _mapData[i].View == Visibility.Show) g3.DrawString(_mapData[i].Name + " " + chkWP[k].Text, DefaultFont, sbg, _zoom * _mapData[i].WPs[0][k][coord1] / 160 + mX + 4, -_zoom * _mapData[i].WPs[0][k][coord2] / 160 + mY + 4);
+							var waypoint = getMapPoint(_mapData[i].WPs[0][k]);
+							g3.DrawEllipse(pn, waypoint.X - 1, waypoint.Y - 1, 3, 3);
+							if (chkTags.Checked && _mapData[i].View == Visibility.Show) g3.DrawString(_mapData[i].Name + " " + chkWP[k].Text, DefaultFont, sbg, waypoint.X + 4, waypoint.Y + 4);
 							if (chkWP[(k == 4 ? 0 : (k - 1))].Checked && chkTrace.Checked && !(chkTraceHideFade.Checked && _mapData[i].View == Visibility.Fade) && !(chkTraceSelected.Checked && !isMapObjectSelected(i)))
 							{
 								int comp = (k == 4 ? 0 : (k - 1));
-								g3.DrawLine(pnTrace, _zoom * _mapData[i].WPs[0][comp][coord1] / 160 + mX, -_zoom * _mapData[i].WPs[0][comp][coord2] / 160 + mY, _zoom * _mapData[i].WPs[0][k][coord1] / 160 + mX, -_zoom * _mapData[i].WPs[0][k][coord2] / 160 + mY);
+								var previousPoint = getMapPoint(_mapData[i].WPs[0][comp]);
+								g3.DrawLine(pnTrace, previousPoint.X, previousPoint.Y, waypoint.X, waypoint.Y);
 								if (_mapData[i].View == Visibility.Show)
 								{
 									int offy = chkTags.Checked ? 14 : 0; //To render it below the FG tag
 									if (chkDistance.Checked)
 									{
-										g3.DrawString(getDistanceString(_mapData[i].WPs[0][k], _mapData[i].WPs[0][comp]), DefaultFont, sbg, _zoom * _mapData[i].WPs[0][k][coord1] / 160 + mX + 4, -_zoom * _mapData[i].WPs[0][k][coord2] / 160 + mY + 4 + offy);
+										g3.DrawString(getDistanceString(_mapData[i].WPs[0][k], _mapData[i].WPs[0][comp]), DefaultFont, sbg, waypoint.X + 4, waypoint.Y + 4 + offy);
 										offy += 14;
 									}
 									if (chkTime.Checked)
 									{
-										g3.DrawString(getTimeString(_mapData[i].FlightGroup, (int)(numOrder.Value - 1), _mapData[i].WPs[0][k], _mapData[i].WPs[0][comp]), DefaultFont, sbg, _zoom * _mapData[i].WPs[0][k][coord1] / 160 + mX + 4, -_zoom * _mapData[i].WPs[0][k][coord2] / 160 + mY + 4 + offy);
+										g3.DrawString(getTimeString(_mapData[i].FlightGroup, (int)(numOrder.Value - 1), _mapData[i].WPs[0][k], _mapData[i].WPs[0][comp]), DefaultFont, sbg, waypoint.X + 4, waypoint.Y + 4 + offy);
 									}
 								}
 							}
@@ -2006,28 +2063,27 @@ namespace Idmr.Yogeme
 
 					if (chkWP[12].Checked && _mapData[i].WPs[0][12].Enabled) // RND
 					{
-						g3.DrawEllipse(pn, _zoom * _mapData[i].WPs[0][12][coord1] / 160 + mX - 1, -_zoom * _mapData[i].WPs[0][12][coord2] / 160 + mY - 1, 3, 3);
-						if (chkTags.Checked && _mapData[i].View == Visibility.Show) g3.DrawString(_mapData[i].Name + " " + chkWP[12].Text, DefaultFont, sbg, _zoom * _mapData[i].WPs[0][12][coord1] / 160 + mX + 4, -_zoom * _mapData[i].WPs[0][12][coord2] / 160 + mY + 4);
+						var rndPoint = getMapPoint(_mapData[i].WPs[0][12]);
+						g3.DrawEllipse(pn, rndPoint.X - 1, rndPoint.Y - 1, 3, 3);
+						if (chkTags.Checked && _mapData[i].View == Visibility.Show) g3.DrawString(_mapData[i].Name + " " + chkWP[12].Text, DefaultFont, sbg, rndPoint.X + 4, rndPoint.Y + 4);
 					}
 					if (chkWP[13].Checked && _mapData[i].WPs[0][13].Enabled)    // HYP
 					{
-						g3.DrawEllipse(pn, _zoom * _mapData[i].WPs[0][13][coord1] / 160 + mX - 1, -_zoom * _mapData[i].WPs[0][13][coord2] / 160 + mY - 1, 3, 3);
-						if (chkTags.Checked && _mapData[i].View == Visibility.Show) g3.DrawString(_mapData[i].Name + " " + chkWP[13].Text, DefaultFont, sbg, _zoom * _mapData[i].WPs[0][13][coord1] / 160 + mX + 4, -_zoom * _mapData[i].WPs[0][13][coord2] / 160 + mY + 4);
+                        var hypPoint = getMapPoint(_mapData[i].WPs[0][13]);
+                        g3.DrawEllipse(pn, hypPoint.X - 1, hypPoint.Y - 1, 3, 3);
+						if (chkTags.Checked && _mapData[i].View == Visibility.Show) g3.DrawString(_mapData[i].Name + " " + chkWP[13].Text, DefaultFont, sbg, hypPoint.X + 4, hypPoint.Y + 4);
 						if (chkTrace.Checked && !(chkTraceHideFade.Checked && _mapData[i].View == Visibility.Fade) && !(chkTraceSelected.Checked && !isMapObjectSelected(i)))
 						{
 							// in this case, make sure last visible WP is the last enabled before tracing to HYP
 							pnTrace.DashStyle = System.Drawing.Drawing2D.DashStyle.Dash;
 							for (int k = 4; k < 12; k++)
 							{
-								if (k != 11)
+								if (chkWP[k].Checked && _mapData[i].WPs[0][k].Enabled && (k == 11 || !_mapData[i].WPs[0][k + 1].Enabled))
 								{
-									if (chkWP[k].Checked && _mapData[i].WPs[0][k].Enabled && !_mapData[i].WPs[0][k + 1].Enabled)
-									{
-										g3.DrawLine(pnTrace, _zoom * _mapData[i].WPs[0][k][coord1] / 160 + mX, -_zoom * _mapData[i].WPs[0][k][coord2] / 160 + mY, _zoom * _mapData[i].WPs[0][13][coord1] / 160 + mX, -_zoom * _mapData[i].WPs[0][13][coord2] / 160 + mY);
-										break;
-									}
+									var lastPoint = getMapPoint(_mapData[i].WPs[0][k]);
+									g3.DrawLine(pnTrace, lastPoint.X, lastPoint.Y, hypPoint.X, hypPoint.Y);
+									break;
 								}
-								else if (chkWP[k].Checked && _mapData[i].WPs[0][k].Enabled) g3.DrawLine(pnTrace, _zoom * _mapData[i].WPs[0][11][coord1] / 160 + mX, -_zoom * _mapData[i].WPs[0][11][coord2] / 160 + mY, _zoom * _mapData[i].WPs[0][13][coord1] / 160 + mX, -_zoom * _mapData[i].WPs[0][13][coord2] / 160 + mY); ;
 							}
 							pnTrace.DashStyle = System.Drawing.Drawing2D.DashStyle.Solid;
 						}
@@ -2036,8 +2092,9 @@ namespace Idmr.Yogeme
 					{
 						if (chkWP[k].Checked && _mapData[i].WPs[0][k].Enabled)
 						{
-							g3.DrawImageUnscaled(bmptemp, _zoom * _mapData[i].WPs[0][k][coord1] / 160 + mX - 8, -_zoom * _mapData[i].WPs[0][k][coord2] / 160 + mY - 8);
-							if (chkTags.Checked && _mapData[i].View == Visibility.Show) g3.DrawString(_mapData[i].Name + " " + chkWP[k].Text, DefaultFont, sbg, _zoom * _mapData[i].WPs[0][k][coord1] / 160 + mX + 8, -_zoom * _mapData[i].WPs[0][k][coord2] / 160 + mY + 8);
+                            var brfPoint = getMapPoint(_mapData[i].WPs[0][k]);
+                            g3.DrawImageUnscaled(bmptemp, brfPoint.X - 8, brfPoint.Y - 8);
+							if (chkTags.Checked && _mapData[i].View == Visibility.Show) g3.DrawString(_mapData[i].Name + " " + chkWP[k].Text, DefaultFont, sbg, brfPoint.X + 8, brfPoint.Y + 8);
 						}
 					}
 				}
@@ -2046,14 +2103,13 @@ namespace Idmr.Yogeme
 			{
 				if (!dat.Active)
 					continue;
-				int x = _zoom * dat.WPRef[coord1] / 160 + mX;
-				int y = -_zoom * dat.WPRef[coord2] / 160 + mY;
+				var datPoint = getMapPoint(dat.WPRef);
 				if (_platform == Settings.Platform.XWA && dat.MapDataRef.WPs[17][region].Enabled && ((Platform.Xwa.FlightGroup.Waypoint)dat.WPRef).Region != (numRegion.Value - 1))
 				{
-					x = _zoom * dat.MapDataRef.WPs[17][region][coord1] / 160 + mX;
-					y = -_zoom * dat.MapDataRef.WPs[17][region][coord2] / 160 + mY;
-				}
-				x += 1;  //Doesn't seem to line up with icon correctly, push it over.
+                    datPoint = getMapPoint(dat.MapDataRef.WPs[17][region]);
+                }
+				int x = datPoint.X + 1;  //Doesn't seem to line up with icon correctly, push it over.
+				int y = datPoint.Y;
 							//[JB] Draws a four corner selection box like in-game.
 				g3.DrawLine(pnSel, x - 8, y - 8, x - 4, y - 8); //Horizontal top
 				g3.DrawLine(pnSel, x + 4, y - 8, x + 8, y - 8);
@@ -2237,16 +2293,8 @@ namespace Idmr.Yogeme
 					if (fg[i].PlayerNumber != 0)
 					{
 						// Player
-						int[] vector = new int[3];
-						for (int c = 0; c < 3; c++) vector[c] = o1w1[c] - exitBuoy[c];
-						double vectorLength = Math.Sqrt(Math.Pow(vector[0], 2) + Math.Pow(vector[1], 2) + Math.Pow(vector[2], 2));
-						if (vectorLength == 0)
-						{
-							vector[1] = 1;
-							vectorLength = 1;
-						}
-						int offset = 10;    //.062 km
-						for (int c = 0; c < 3; c++) _mapData[i].WPs[17][r][c] = (short)(exitBuoy[c] - offset * vector[c] / vectorLength);
+						var exitPoint = getOffsetWaypoint(exitBuoy, o1w1, -100);	// .625 km
+						for (int c = 0; c < 3; c++) _mapData[i].WPs[17][r][c] = exitPoint[c];
 						_mapData[i].WPs[17][r].Enabled = true;
                         _mapData[i].WPs[18][r] = o1w1;
 					}
