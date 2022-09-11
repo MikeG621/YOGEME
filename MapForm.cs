@@ -80,16 +80,13 @@
  */
 
 using Idmr.Common;
+using Idmr.Platform;
 using Idmr.Yogeme.MapWireframe;
 using System;
 using System.Collections.Generic;
-using System.Data.SqlTypes;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.Net;
-using System.Security.Cryptography;
 using System.Windows.Forms;
-using System.Xml.Serialization;
 
 namespace Idmr.Yogeme
 {
@@ -270,7 +267,7 @@ namespace Idmr.Yogeme
 			if (x + viewSpan < 0 || x - viewSpan > w || y + viewSpan < 0 || y - viewSpan > h)
 				return;
 
-			Platform.BaseFlightGroup.BaseWaypoint dst;
+			BaseFlightGroup.BaseWaypoint dst;
 
 			int region = -1;
 			if (_platform == Settings.Platform.XWA)
@@ -385,7 +382,7 @@ namespace Idmr.Yogeme
 			return coord;
 		}
 
-		string getDistanceString(Platform.BaseFlightGroup.BaseWaypoint wp1, Platform.BaseFlightGroup.BaseWaypoint wp2)
+		string getDistanceString(BaseFlightGroup.BaseWaypoint wp1, BaseFlightGroup.BaseWaypoint wp2)
 		{
 			double xlen = wp1.X - wp2.X;
 			double ylen = wp1.Y - wp2.Y;
@@ -394,7 +391,7 @@ namespace Idmr.Yogeme
 			return Math.Round(dist, 2).ToString() + " km";
 		}
 
-		string getTimeString(object fg, int orderIndex, Platform.BaseFlightGroup.BaseWaypoint wp1, Platform.BaseFlightGroup.BaseWaypoint wp2)
+		string getTimeString(object fg, int orderIndex, BaseFlightGroup.BaseWaypoint wp1, BaseFlightGroup.BaseWaypoint wp2)
 		{
 			double xlen = wp1.X - wp2.X;
 			double ylen = wp1.Y - wp2.Y;
@@ -466,7 +463,7 @@ namespace Idmr.Yogeme
 			}
 			else
 			{
-				speed = CraftDataManager.GetInstance().GetCraftSpeed(((Platform.BaseFlightGroup)fg).CraftType);
+				speed = CraftDataManager.GetInstance().GetCraftSpeed(((BaseFlightGroup)fg).CraftType);
 				speed = (int)(((double)throttle / 100) * speed);
 			}
 			if (speed == 0)
@@ -664,7 +661,7 @@ namespace Idmr.Yogeme
 			int offsetY = _clickMapUp.Y - _clickMapDown.Y;
 			foreach (SelectionData dat in _selectionList)
 			{
-				if (dat.Active)
+				if (dat.Active && dat.WpOrder != 17)	// do not move Exit points. Will update on next load
 					moveObject(dat, offsetX, offsetY);
 			}
 			_dragMoveSnapReady = true;
@@ -983,6 +980,7 @@ namespace Idmr.Yogeme
 				}
 				if (ord > 0)
 				{
+					//TODO: if WP[18][reg] enabled, ignore WP[ord][0]
 					for (int wp = 0; wp < _mapData[i].WPs[ord].Length; wp++)
 					{
 						if (!chkWP[4 + wp].Checked || !_mapData[i].WPs[ord][wp].Enabled) continue;
@@ -991,6 +989,13 @@ namespace Idmr.Yogeme
 							output.Add(new SelectionData(i, _mapData[i], ord, wp));
 						}
 					}
+				}
+				if (_platform == Settings.Platform.XWA)
+				{
+					var hyp = (Platform.Xwa.FlightGroup.Waypoint)_mapData[i].WPs[17][(int)numRegion.Value - 1];
+					if (hyp.Enabled && waypointInside(hyp, ref m1, ref m2))
+						output.Add(new SelectionData(i, _mapData[i], 17, (int)numRegion.Value - 1));
+					// TODO: need to detect grabbing WP[18][reg], which modifies WP[ord][0]
 				}
 			}
 		}
@@ -1003,7 +1008,7 @@ namespace Idmr.Yogeme
 		}
 
 		/// <summary>Determines if a waypoint (raw units) is within a bounding box formed by a top/left and bottom/right point.</summary>
-		bool waypointInside(Platform.BaseFlightGroup.BaseWaypoint wp, ref Point p1, ref Point p2)
+		bool waypointInside(BaseFlightGroup.BaseWaypoint wp, ref Point p1, ref Point p2)
 		{
 			int tx = wp.RawX;
 			int ty = wp.RawY;
@@ -1331,7 +1336,7 @@ namespace Idmr.Yogeme
 			{
 				if(wp < _mapData[i].WPs[ord].Length)
 				{
-					Platform.BaseFlightGroup.BaseWaypoint baseWp = _mapData[i].WPs[ord][wp];
+					BaseFlightGroup.BaseWaypoint baseWp = _mapData[i].WPs[ord][wp];
 					if (!baseWp.Enabled && create)
 					{
 						if (_platform == Settings.Platform.XWA)
@@ -1837,7 +1842,7 @@ namespace Idmr.Yogeme
 		/// <param name="end">The end Waypoint to define length and direction of the vector.</param>
 		/// <param name="rawOffset">The distance in raw units from <paramref name="start"/>. Negative values are "behind" start.</param>
 		/// <returns>A Waypoint of the location.</returns>
-		Platform.BaseFlightGroup.BaseWaypoint getOffsetWaypoint(Platform.BaseFlightGroup.BaseWaypoint start, Platform.BaseFlightGroup.BaseWaypoint end, int rawOffset)
+		BaseFlightGroup.BaseWaypoint getOffsetWaypoint(BaseFlightGroup.BaseWaypoint start, BaseFlightGroup.BaseWaypoint end, int rawOffset)
 		{
 			int[] vector = new int[3];
             for (int c = 0; c < 3; c++) vector[c] = end[c] - start[c];
@@ -1855,7 +1860,7 @@ namespace Idmr.Yogeme
 		/// <summary>Converts a waypoint into map coordinates for drawing.</summary>
 		/// <param name="waypoint">Source waypoint</param>
 		/// <returns>A map point taking into account Zoom and Display Orientation</returns>
-		Point getMapPoint(Platform.BaseFlightGroup.BaseWaypoint waypoint)
+		Point getMapPoint(BaseFlightGroup.BaseWaypoint waypoint)
 		{
 			Point mapPoint = new Point();
             int mX = _mapX, mY = _mapZ, coord1 = 0, coord2 = 2;
@@ -1978,7 +1983,7 @@ namespace Idmr.Yogeme
 #if DEBUG
 					else if (isVisibleInRegion(i, k) == WaypointVisibility.OtherRegion)
                     {
-						Platform.BaseFlightGroup.BaseWaypoint exitWP = _mapData[i].WPs[17][region];
+						var exitWP = _mapData[i].WPs[17][region];
 						var exitPoint = getMapPoint(exitWP);
 						drawCraft(g3, bmptemp, _mapData[i], exitPoint.X, exitPoint.Y);
 						if (chkTags.Checked && _mapData[i].View == Visibility.Show) g3.DrawString(_mapData[i].Name + " Exit", DefaultFont, sbg, exitPoint.X + 8, exitPoint.Y + 8);
@@ -1990,16 +1995,23 @@ namespace Idmr.Yogeme
 				if (_platform == Settings.Platform.XWA) // WPs     [JB] XWA's north/south is inverted compared to XvT.
 				{
 					int ord = (int)(region * 4 + (numOrder.Value - 1) + 1);
-					for (int k = 0; k < 8; k++)
+                    bool offset = false;
+                    for (int k = 0; k < 8; k++)
 					{
 						if (chkWP[k + 4].Checked && _mapData[i].WPs[ord][k].Enabled)
 						{
 							var ordPoint = getMapPoint(_mapData[i].WPs[ord][k]);
+							if (k == 0 && _mapData[i].WPs[18][region].Enabled)
+							{
+								offset = true;
+								ordPoint = getMapPoint(_mapData[i].WPs[18][region]);
+							}
 							g3.DrawEllipse(pn, ordPoint.X - 1, ordPoint.Y - 1, 3, 3);
-							if (chkTags.Checked && _mapData[i].View == Visibility.Show) g3.DrawString(_mapData[i].Name + " " + chkWP[k + 4].Text, DefaultFont, sbg, ordPoint.X + 4, ordPoint.Y + 4);
+							if (chkTags.Checked && _mapData[i].View == Visibility.Show)
+								g3.DrawString(_mapData[i].Name + " " + chkWP[k + 4].Text + (k == 0 && offset ? " (Exit)" : ""), DefaultFont, sbg, ordPoint.X + 4, ordPoint.Y + 4);
 							if (chkTrace.Checked && !(chkTraceHideFade.Checked && _mapData[i].View == Visibility.Fade) && !(chkTraceSelected.Checked && !isMapObjectSelected(i)))
 							{
-								Platform.BaseFlightGroup.BaseWaypoint baseWp = _mapData[i].WPs[0][0];
+								var baseWp = _mapData[i].WPs[0][0];
 								if (_mapData[i].WPs[17][region].Enabled && ((Platform.Xwa.FlightGroup.Waypoint)_mapData[i].WPs[0][0]).Region != region)
 									baseWp = _mapData[i].WPs[17][region];
 								if (k == 0 && (!chkWP[0].Checked || isVisibleInRegion(i, 0) == WaypointVisibility.Absent))
@@ -2009,6 +2021,8 @@ namespace Idmr.Yogeme
 									if (!chkWP[k + 3].Checked)
 										continue;
 									baseWp = _mapData[i].WPs[ord][k - 1];
+									if (k == 1 && offset)
+										baseWp = _mapData[i].WPs[18][region];
 								}
 								var basePoint = getMapPoint(baseWp);
 								g3.DrawLine(pnTrace, basePoint.X, basePoint.Y, ordPoint.X, ordPoint.Y);
@@ -2017,12 +2031,12 @@ namespace Idmr.Yogeme
 									int offy = chkTags.Checked ? 14 : 0; //To render it below the FG tag
 									if (chkDistance.Checked)
 									{
-										g3.DrawString(getDistanceString(_mapData[i].WPs[ord][k], baseWp), DefaultFont, sbg, ordPoint.X + 4, ordPoint.Y + 4 + offy);
+										g3.DrawString(getDistanceString(offset && k == 0 ? _mapData[i].WPs[18][region] : _mapData[i].WPs[ord][k], baseWp), DefaultFont, sbg, ordPoint.X + 4, ordPoint.Y + 4 + offy);
 										offy += 14;
 									}
 									if (chkTime.Checked)
 									{
-										g3.DrawString(getTimeString(_mapData[i].FlightGroup, (int)numOrder.Value - 1, _mapData[i].WPs[ord][k], baseWp), DefaultFont, sbg, ordPoint.X + 4, ordPoint.Y + 4 + offy);
+										g3.DrawString(getTimeString(_mapData[i].FlightGroup, (int)numOrder.Value - 1, offset && k == 0 ? _mapData[i].WPs[18][region] : _mapData[i].WPs[ord][k], baseWp), DefaultFont, sbg, ordPoint.X + 4, ordPoint.Y + 4 + offy);
 									}
 								}
 							}
@@ -2282,14 +2296,6 @@ namespace Idmr.Yogeme
 					if (!exitBuoy.Enabled) continue;
 
 					var o1w1 = _mapData[i].WPs[r * 4 + 1][0];
-					
-					/* According to AlliED:
-					 * NPC craft is along the vector from the exit buoy to O1WP1, located with the same offset as the entry beacon to the last Hyper Order(#50) WP
-					 * Buoy WP will need to determine the correct buoy (possibly multiple Enter buoys in the same region)
-					 * Destination WP (dst in drawCraft) should detect O1WP1 just fine, but the coords should be calculated from the appropriate exit point, not SP
-					 * also need to update wireframes with new exit point, so orientation is correct
-					 */
-					 
 					if (fg[i].PlayerNumber != 0)
 					{
 						// Player
@@ -2346,7 +2352,7 @@ namespace Idmr.Yogeme
 		/// <remarks>Should be called by the main program form during minor data adjustments.  For major changes such as FG delete, use <see cref="Import"/> for a complete refresh.</remarks>
 		/// <param name="index">Index of the FlightGroup.</param>
 		/// <param name="fg">The FlightGroup object to pull information from.  Compatible with all platforms.</param>
-		public void UpdateFlightGroup(int index, Platform.BaseFlightGroup fg)
+		public void UpdateFlightGroup(int index, BaseFlightGroup fg)
 		{
 			if (IsDisposed || _isClosing) return;
 			if (index < 0 || index >= _mapData.Length || fg == null) return;
@@ -2528,13 +2534,6 @@ namespace Idmr.Yogeme
 		void pctMap_MouseLeave(object sender, EventArgs e) { _mapFocus = false; }
 		void pctMap_MouseMove(object sender, MouseEventArgs e)
 		{
-			Rectangle mapRect = pctMap.RectangleToScreen(pctMap.DisplayRectangle);
-			if (mapRect.Contains(MousePosition))
-			{
-				Point mouse = new Point();
-				convertMousepointToWaypoint(MousePosition.X - mapRect.Left, MousePosition.Y - mapRect.Top, ref mouse);
-			}
-
 			if (_leftButtonDown)
 			{
 				_clickPixelUp.X = e.X;
@@ -3114,7 +3113,7 @@ namespace Idmr.Yogeme
 			public short Yaw;
 			public short Pitch;
 			public short Roll;
-			public Platform.BaseFlightGroup.BaseWaypoint[][] WPs;
+			public BaseFlightGroup.BaseWaypoint[][] WPs;
 		}
 
 		class SelectionData
@@ -3145,7 +3144,7 @@ namespace Idmr.Yogeme
 
 			public int MapDataIndex { get; private set; }
 			public MapData MapDataRef { get; private set; }
-			public Platform.BaseFlightGroup.BaseWaypoint WPRef { get; private set; }
+			public BaseFlightGroup.BaseWaypoint WPRef { get; private set; }
 			public int WpOrder { get; private set; }
 			public int WpIndex { get; private set; }
 			public bool Active { get; set; }          // This operates as a quick toggle in the selection list.
