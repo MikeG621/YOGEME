@@ -3,10 +3,13 @@
  * Copyright (C) 2007-2022 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.13.7
+ * VERSION: 1.13.7+
  */
 
 /* CHANGELOG
+ * [DEL #73] Captured on Ejection options
+ * [DEL #74] Secret Goals
+ * [UPD #77] comboVarRefresh updated to Misc to Rating, Status, and All
  * v1.13.7, 220730
  * [FIX] crash when copying a WP value via Ctrl+C and no text is selected
  * v1.13.6, 220619
@@ -248,7 +251,7 @@ namespace Idmr.Yogeme
 					cbo.Items.AddRange(Strings.ObjectType);
 					break;
 				case 5:
-					cbo.Items.AddRange(getIffStrings());  //[JB] Changed by feature request.
+					cbo.Items.AddRange(getIffStrings());
 					break;
 				case 6:
 					cbo.Items.AddRange(Strings.Orders);
@@ -259,8 +262,12 @@ namespace Idmr.Yogeme
 				//case 8: Global Group
 				//since it's just numbers, same as default, left out for specifics
 				case 9:
-					cbo.Items.AddRange(Strings.Misc);
+					cbo.Items.AddRange(Strings.Rating);
 					break;
+				case 0xA:
+					cbo.Items.AddRange(Strings.Status);
+					break;
+				//case 0xB: All Craft, always true
 				default:
 					string[] temp = new string[256];
 					for (int i = 0; i <= 255; i++) temp[i] = i.ToString();
@@ -700,17 +707,17 @@ namespace Idmr.Yogeme
 			cboGoal[1] = cboPrimGoalA;
 			cboGoal[2] = cboSecGoalT;
 			cboGoal[3] = cboSecGoalA;
-			cboGoal[4] = cboSecretGoalT;
-			cboGoal[5] = cboSecretGoalA;
 			cboGoal[6] = cboBonGoalT;
 			cboGoal[7] = cboBonGoalA;
 			for (int i = 0; i < 4; i++)
 			{
+				if (i == 2) continue;
 				cboGoal[i * 2].Items.AddRange(Strings.Trigger); cboGoal[i * 2].SelectedIndex = 10;
 				cboGoal[i * 2 + 1].Items.AddRange(Strings.GoalAmount); cboGoal[i * 2 + 1].SelectedIndex = 0;
 			}
 			for (int i = 0; i < 8; i++)
 			{
+				if (i == 4 || i == 5) continue;
 				cboGoal[i].Leave += new EventHandler(cboGoalArr_Leave);
 				cboGoal[i].Tag = i;
 			}
@@ -890,8 +897,6 @@ namespace Idmr.Yogeme
 			lblGlobArr_Click(lblGlob[_activeGlobalGoal], new EventArgs());
 			#endregion
 			#region Mission tab
-			optCapture.Checked = _mission.CapturedOnEjection;
-			optRescue.Checked = !optCapture.Checked;
 			for (int i = 0; i < 6; i++)
 			{
 				txtEoM[i].Text = _mission.EndOfMissionMessages[i];
@@ -1793,9 +1798,6 @@ namespace Idmr.Yogeme
 				n = composeGoalString(c, fg.Goals.SecondaryAmount, fg.Goals.SecondaryCondition);
 				if (n != "") goalList[1].Add(n);
 
-				n = composeGoalString(c, fg.Goals.SecretAmount, fg.Goals.SecretCondition);
-				if (n != "") goalList[2].Add(n);
-
 				n = composeGoalString(c, fg.Goals.BonusAmount, fg.Goals.BonusCondition);
 				if (n != "")
 				{
@@ -1815,7 +1817,6 @@ namespace Idmr.Yogeme
 				{
 					case 0: output += "PRIMARY:\r\n"; break;
 					case 1: output += "SECONDARY:\r\n"; break;
-					case 2: output += "SECRET:\r\n"; break;
 					case 3: output += "BONUS:\r\n"; break;
 				}
 				foreach (string s in goalList[i])
@@ -2259,7 +2260,11 @@ namespace Idmr.Yogeme
 			cboDiff.SelectedIndex = _mission.FlightGroups[_activeFG].Difficulty;
 			lblADTrigArr_Click(lblADTrig[0], new EventArgs());  //[JB] Added sender.  Fixes massive slowdown from exception handling a null control.  Also fixed the remaining _Click() calls with the relevant senders.
 			#endregion
-			for (int i = 0; i < 8; i++) cboGoal[i].SelectedIndex = _mission.FlightGroups[_activeFG].Goals[i];
+			for (int i = 0; i < 8; i++)
+			{
+				if (i == 4 || i == 5) continue;
+				cboGoal[i].SelectedIndex = _mission.FlightGroups[_activeFG].Goals[i];
+			}
 			numBonGoalP.Value = _mission.FlightGroups[_activeFG].Goals.BonusPoints;
 			refreshWaypointTab();  //[JB] Code moved to separate function so that the map callback can refresh it too.
 			for (_activeOrder = 0; _activeOrder < 3; _activeOrder++) orderLabelRefresh();
@@ -3279,12 +3284,6 @@ namespace Idmr.Yogeme
 			TextBox t = (TextBox)sender;
 			_mission.IFFs[(int)t.Tag] = Common.Update(this, _mission.IFFs[(int)t.Tag], t.Text);
 			comboReset(cboIFF, getIffStrings(), cboIFF.SelectedIndex);
-		}
-
-		void optCapture_CheckedChanged(object sender, System.EventArgs e)
-		{
-			if (!_loading)
-				_mission.CapturedOnEjection = Common.Update(this, _mission.CapturedOnEjection, optCapture.Checked);
 		}
 
 		void cboEoMColorArr_SelectedIndexChanged(object sender, EventArgs e)

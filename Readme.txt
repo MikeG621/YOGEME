@@ -28,6 +28,14 @@ your user settings.
 ==========
 Version History
 
+ - Updates for TIE, all involving Platform.dll to some degree. Deleted items are those confirmed to have zero effect in the exectuable.
+   - "Captured on Ejection" and "Secret Goals" removed (involves GUI update) [Issues #73 and #74]
+   - Trigger "Unknown (arrive?)" now "cannon subsystem disabled" [Issue #75]
+   - Trigger Type "Craft When" fixed [Issue #76]
+   - Trigger Type "Misc" now "Adjusted AI Skill", added "Status" and "All Craft" types to match XvT [Issue #77]
+   - Status "No Lasers" now "No Turrets", everything past "Hyperdrive Added" deleted [Issue #78]
+   - Orders after "Board to Repair" deleted [Issue #79]
+
 v1.13.9, 07 Sep 2022
  - New error dialog with the ability to skip future errors. Currently only for Backdrop DAT loading [Issue #71]
  - (XWA) Lines in RESDATA.txt will be skipped when loading backdrops if commented out by ; or // [Issue #72]
