@@ -28,7 +28,8 @@ your user settings.
 ==========
 Version History
 
- - Updates for TIE, all involving Platform.dll to some degree. Deleted items are those confirmed to have zero effect in the exectuable.
+ - (XWA) Added a toggle ability to shade the FG list by region
+ - Updates for TIE, all involving Platform.dll to some degree. Deleted items are those confirmed to have zero effect in the executable.
    - "Captured on Ejection" and "Secret Goals" removed (involves GUI update) [Issues #73 and #74]
    - Trigger "Unknown (arrive?)" now "cannon subsystem disabled" [Issue #75]
    - Trigger Type "Craft When" fixed [Issue #76]

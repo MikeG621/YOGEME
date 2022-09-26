@@ -7,6 +7,7 @@
  */
 
 /* CHANGELOG
+ * [NEW] ability to shade FG list by Region
  * v1.13.7, 220730
  * [FIX] crash when copying a WP value via Ctrl+C and no text is selected
  * [FIX] OrderWPs being linked after a multi-select paste
@@ -3243,6 +3244,8 @@ namespace Idmr.Yogeme
 			if (e.Index == -1 || _mission.FlightGroups[e.Index] == null) return;
 			e.DrawBackground();
 			Brush brText = getFlightGroupDrawColor(e.Index);  //[JB] Moved color selection to different function so that colorized dropdowns could use it too.
+			if (chkRegionFilter.Checked && _mission.FlightGroups[e.Index].Waypoints[0].Region != (short)(numFilterRegion.Value - 1))
+				brText = Brushes.Gray;
 			e.Graphics.DrawString(lstFG.Items[e.Index].ToString(), e.Font, brText, e.Bounds, StringFormat.GenericDefault);
 		}
 		void lstFG_SelectedIndexChanged(object sender, EventArgs e)
@@ -3400,8 +3403,17 @@ namespace Idmr.Yogeme
 			moveFlightgroups(1);
 		}
 
-		#region Craft
-		void enableBackdrop(bool state)
+        void chkRegionFilter_CheckedChanged(object sender, EventArgs e)
+        {
+			lstFG.Invalidate();
+        }
+        void numFilterRegion_ValueChanged(object sender, EventArgs e)
+        {
+			if (chkRegionFilter.Checked) lstFG.Invalidate();
+        }
+
+        #region Craft
+        void enableBackdrop(bool state)
 		{
 			bool btemp = _loading;
 			numBackdrop.Enabled = state;
@@ -5279,6 +5291,9 @@ namespace Idmr.Yogeme
 		{
 			_mission.MissionNotes = Common.Update(this, _mission.MissionNotes, txtNotes.Text);
 		}
+
 		#endregion
+
+		
 	}
 }

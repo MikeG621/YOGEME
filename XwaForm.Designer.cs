@@ -792,6 +792,8 @@ namespace Idmr.Yogeme
             this.dataOrders = new System.Data.DataView();
             this.dataOrders_Raw = new System.Data.DataView();
             this.ttActiveSequence = new System.Windows.Forms.ToolTip(this.components);
+            this.chkRegionFilter = new System.Windows.Forms.CheckBox();
+            this.numFilterRegion = new System.Windows.Forms.NumericUpDown();
             ((System.ComponentModel.ISupportInitialize)(this.dataWaypoints)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataWaypoints_Raw)).BeginInit();
             this.tabMain.SuspendLayout();
@@ -965,6 +967,7 @@ namespace Idmr.Yogeme
             this.groupBox37.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataOrders)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataOrders_Raw)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numFilterRegion)).BeginInit();
             this.SuspendLayout();
             // 
             // menuXWA
@@ -1512,6 +1515,8 @@ namespace Idmr.Yogeme
             // 
             // tabFG
             // 
+            this.tabFG.Controls.Add(this.numFilterRegion);
+            this.tabFG.Controls.Add(this.chkRegionFilter);
             this.tabFG.Controls.Add(this.tabFGMinor);
             this.tabFG.Controls.Add(this.label1);
             this.tabFG.Controls.Add(this.lstFG);
@@ -9269,6 +9274,40 @@ namespace Idmr.Yogeme
             // 
             this.ttActiveSequence.ToolTipTitle = "Active Sequence";
             // 
+            // chkRegionFilter
+            // 
+            this.chkRegionFilter.AutoSize = true;
+            this.chkRegionFilter.Location = new System.Drawing.Point(7, 497);
+            this.chkRegionFilter.Name = "chkRegionFilter";
+            this.chkRegionFilter.Size = new System.Drawing.Size(85, 17);
+            this.chkRegionFilter.TabIndex = 6;
+            this.chkRegionFilter.Text = "Filter Region";
+            this.chkRegionFilter.UseVisualStyleBackColor = true;
+            this.chkRegionFilter.CheckedChanged += new System.EventHandler(this.chkRegionFilter_CheckedChanged);
+            // 
+            // numFilterRegion
+            // 
+            this.numFilterRegion.Location = new System.Drawing.Point(92, 496);
+            this.numFilterRegion.Maximum = new decimal(new int[] {
+            4,
+            0,
+            0,
+            0});
+            this.numFilterRegion.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.numFilterRegion.Name = "numFilterRegion";
+            this.numFilterRegion.Size = new System.Drawing.Size(34, 20);
+            this.numFilterRegion.TabIndex = 7;
+            this.numFilterRegion.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.numFilterRegion.ValueChanged += new System.EventHandler(this.numFilterRegion_ValueChanged);
+            // 
             // XwaForm
             // 
             this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
@@ -9292,6 +9331,7 @@ namespace Idmr.Yogeme
             ((System.ComponentModel.ISupportInitialize)(this.dataWaypoints_Raw)).EndInit();
             this.tabMain.ResumeLayout(false);
             this.tabFG.ResumeLayout(false);
+            this.tabFG.PerformLayout();
             this.tabFGMinor.ResumeLayout(false);
             this.tabCraft.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
@@ -9503,6 +9543,7 @@ namespace Idmr.Yogeme
             this.groupBox37.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataOrders)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataOrders_Raw)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numFilterRegion)).EndInit();
             this.ResumeLayout(false);
 
 		}
@@ -10280,5 +10321,7 @@ namespace Idmr.Yogeme
 		private NumericUpDown numWPOrderRegion;
 		private Label label19;
 		private ToolTip ttActiveSequence;
-	}
+        private NumericUpDown numFilterRegion;
+        private CheckBox chkRegionFilter;
+    }
 }
