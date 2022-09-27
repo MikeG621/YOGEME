@@ -1824,7 +1824,6 @@ namespace Idmr.Yogeme
 			if (_mapData[mapDataIndex].WPs[0][waypoint][4] == (short)region)
 				return WaypointVisibility.Present;
 
-			// Note: this results in SP1 displaying in other regions, the proper exit point must be corrected for display
 			Platform.Xwa.FlightGroup xwaFg = (Platform.Xwa.FlightGroup)_mapData[mapDataIndex].FlightGroup;
 			for (int i = 0; i < 4; i++)
 			{
@@ -1988,7 +1987,7 @@ namespace Idmr.Yogeme
 						drawCraft(g3, bmptemp, _mapData[i], exitPoint.X, exitPoint.Y);
 						if (chkTags.Checked && _mapData[i].View == Visibility.Show) g3.DrawString(_mapData[i].Name + " Exit", DefaultFont, sbg, exitPoint.X + 8, exitPoint.Y + 8);
 						var exitDirection = getMapPoint(getOffsetWaypoint(exitWP, _mapData[i].WPs[18][region], -50));	// .31 km
-						g3.DrawLine(pnDashTrace, exitPoint.X, exitPoint.Y, exitDirection.X, exitDirection.Y);
+						g3.DrawLine(pnDashTrace, exitPoint.X, exitPoint.Y, exitDirection.X, exitDirection.Y);	// hyper tail leading into the exit
 					}
 #endif
 				}
@@ -1996,19 +1995,18 @@ namespace Idmr.Yogeme
 				{
 					int ord = (int)(region * 4 + (numOrder.Value - 1) + 1);
                     bool offset = false;
+					bool pointing = false;
                     for (int k = 0; k < 8; k++)
 					{
-						if (chkWP[k + 4].Checked && _mapData[i].WPs[ord][k].Enabled)
+                        if (k == 0 && _mapData[i].WPs[18][region].Enabled) offset = true;
+                        if (chkWP[k + 4].Checked && _mapData[i].WPs[ord][k].Enabled)
 						{
 							var ordPoint = getMapPoint(_mapData[i].WPs[ord][k]);
-							if (k == 0 && _mapData[i].WPs[18][region].Enabled)
-							{
-								offset = true;
-								ordPoint = getMapPoint(_mapData[i].WPs[18][region]);
-							}
-							g3.DrawEllipse(pn, ordPoint.X - 1, ordPoint.Y - 1, 3, 3);
+							pointing = offset && k == 0;
+							if (pointing) ordPoint = getMapPoint(_mapData[i].WPs[18][region]);
+                            g3.DrawEllipse(pn, ordPoint.X - 1, ordPoint.Y - 1, 3, 3);
 							if (chkTags.Checked && _mapData[i].View == Visibility.Show)
-								g3.DrawString(_mapData[i].Name + " " + chkWP[k + 4].Text + (k == 0 && offset ? " (Exit)" : ""), DefaultFont, sbg, ordPoint.X + 4, ordPoint.Y + 4);
+								g3.DrawString(_mapData[i].Name + " " + (pointing ? "Aim" : chkWP[k + 4].Text), DefaultFont, sbg, ordPoint.X + 4, ordPoint.Y + 4);
 							if (chkTrace.Checked && !(chkTraceHideFade.Checked && _mapData[i].View == Visibility.Fade) && !(chkTraceSelected.Checked && !isMapObjectSelected(i)))
 							{
 								var baseWp = _mapData[i].WPs[0][0];
@@ -2018,25 +2016,29 @@ namespace Idmr.Yogeme
 									continue;
 								else if (k > 0)
 								{
-									if (!chkWP[k + 3].Checked)
-										continue;
-									baseWp = _mapData[i].WPs[ord][k - 1];
-									if (k == 1 && offset)
-										baseWp = _mapData[i].WPs[18][region];
+									if (offset && k == 1)
+										baseWp = _mapData[i].WPs[17][region];   // trace WP2 back to hyper exit
+									else
+									{
+                                        if (!chkWP[k + 3].Checked)
+                                            continue;
+                                        baseWp = _mapData[i].WPs[ord][k - 1];
+                                    }
 								}
 								var basePoint = getMapPoint(baseWp);
-								g3.DrawLine(pnTrace, basePoint.X, basePoint.Y, ordPoint.X, ordPoint.Y);
-								if (_mapData[i].View == Visibility.Show)
+								if (pointing) g3.DrawLine(pnDashTrace, basePoint.X, basePoint.Y, ordPoint.X, ordPoint.Y);
+                                else g3.DrawLine(pnTrace, basePoint.X, basePoint.Y, ordPoint.X, ordPoint.Y);
+								if (_mapData[i].View == Visibility.Show && !pointing)
 								{
 									int offy = chkTags.Checked ? 14 : 0; //To render it below the FG tag
 									if (chkDistance.Checked)
 									{
-										g3.DrawString(getDistanceString(offset && k == 0 ? _mapData[i].WPs[18][region] : _mapData[i].WPs[ord][k], baseWp), DefaultFont, sbg, ordPoint.X + 4, ordPoint.Y + 4 + offy);
+										g3.DrawString(getDistanceString(_mapData[i].WPs[ord][k], baseWp), DefaultFont, sbg, ordPoint.X + 4, ordPoint.Y + 4 + offy);
 										offy += 14;
 									}
 									if (chkTime.Checked)
 									{
-										g3.DrawString(getTimeString(_mapData[i].FlightGroup, (int)numOrder.Value - 1, offset && k == 0 ? _mapData[i].WPs[18][region] : _mapData[i].WPs[ord][k], baseWp), DefaultFont, sbg, ordPoint.X + 4, ordPoint.Y + 4 + offy);
+										g3.DrawString(getTimeString(_mapData[i].FlightGroup, (int)numOrder.Value - 1, _mapData[i].WPs[ord][k], baseWp), DefaultFont, sbg, ordPoint.X + 4, ordPoint.Y + 4 + offy);
 									}
 								}
 							}
@@ -2414,7 +2416,7 @@ namespace Idmr.Yogeme
 		}
 #endregion public
 
-#region controls
+		#region controls
 		/// <summary>Change the zoom of the map and reset local x/y/z coords as neccessary</summary>
 		void hscZoom_ValueChanged(object sender, EventArgs e)
 		{
@@ -2475,7 +2477,7 @@ namespace Idmr.Yogeme
 			}
 		}
 
-#region pctMap
+		#region pctMap
 		void pctMap_MouseDown(object sender, MouseEventArgs e)
 		{
 			// move map, center on mouse
@@ -2623,7 +2625,7 @@ namespace Idmr.Yogeme
 			e.IsInputKey = true;
 		}
 #endregion
-#region frmMap
+		#region frmMap
 		void form_Activated(object sender, EventArgs e)
 		{
 			_hasFocus = true;
@@ -2766,9 +2768,9 @@ namespace Idmr.Yogeme
 			if (_mapFocus)
 				_shiftState = e.Shift;
 		}
-#endregion
+		#endregion
 
-#region Checkboxes
+		#region Checkboxes
 		void chkTags_CheckedChanged(object sender, EventArgs e) { if (!_isLoading) MapPaint(); }
 		void chkTrace_CheckedChanged(object sender, EventArgs e)
 		{
@@ -2797,7 +2799,7 @@ namespace Idmr.Yogeme
 		void chkLimit_CheckedChanged(object sender, EventArgs e) { if (!_isLoading) MapPaint(); }
 #endregion
 
-#region Selection and visibility
+		#region Selection and visibility
 		void lstCraft_DrawItem(object sender, DrawItemEventArgs e)
 		{
 			if (e.Index == -1) return;
