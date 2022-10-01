@@ -653,7 +653,13 @@ namespace Idmr.Yogeme
 					dat.WPRef.RawZ = (short)newY;
 					break;
 			}
-		}
+
+			if (dat.WpOrder == 18)
+			{
+				// also apply the offset to the intial order WP
+				moveObject(new SelectionData(0, dat.MapDataRef, dat.WpIndex * 4 + 1, 0), offsetX, offsetY);
+            }
+        }
 
 		void moveSelectionToCursor()
 		{
@@ -959,8 +965,12 @@ namespace Idmr.Yogeme
 			}
 
 			int ord = 0;
+			int reg = 0;
 			if (_platform == Settings.Platform.XWA)
-				ord = (int)((numRegion.Value - 1) * 4 + numOrder.Value);
+			{
+				reg = (int)(numRegion.Value - 1);
+				ord = (int)(reg * 4 + numOrder.Value);
+			}
 			for (int i = 0; i < _mapData.Length; i++)
 			{
 				if (_mapData[i].View == Visibility.Hide || !passFilter(_mapData[i])) continue;
@@ -980,10 +990,10 @@ namespace Idmr.Yogeme
 				}
 				if (ord > 0)
 				{
-					//TODO: if WP[18][reg] enabled, ignore WP[ord][0]
 					for (int wp = 0; wp < _mapData[i].WPs[ord].Length; wp++)
 					{
 						if (!chkWP[4 + wp].Checked || !_mapData[i].WPs[ord][wp].Enabled) continue;
+						if (_platform == Settings.Platform.XWA && _mapData[i].WPs[18][reg].Enabled && wp == 0) continue;
 						if (waypointInside(_mapData[i].WPs[ord][wp], ref m1, ref m2))
 						{
 							output.Add(new SelectionData(i, _mapData[i], ord, wp));
@@ -992,11 +1002,13 @@ namespace Idmr.Yogeme
 				}
 				if (_platform == Settings.Platform.XWA)
 				{
-					var hyp = (Platform.Xwa.FlightGroup.Waypoint)_mapData[i].WPs[17][(int)numRegion.Value - 1];
+					var hyp = (Platform.Xwa.FlightGroup.Waypoint)_mapData[i].WPs[17][reg];
 					if (hyp.Enabled && waypointInside(hyp, ref m1, ref m2))
-						output.Add(new SelectionData(i, _mapData[i], 17, (int)numRegion.Value - 1));
-					// TODO: need to detect grabbing WP[18][reg], which modifies WP[ord][0]
-				}
+						output.Add(new SelectionData(i, _mapData[i], 17, reg));
+					var exit = (Platform.Xwa.FlightGroup.Waypoint)_mapData[i].WPs[18][reg];
+                    if (exit.Enabled && waypointInside(exit, ref m1, ref m2))
+                        output.Add(new SelectionData(i, _mapData[i], 18, reg));
+                }
 			}
 		}
 
