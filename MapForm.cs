@@ -659,9 +659,15 @@ namespace Idmr.Yogeme
 				// also apply the offset to the intial order WP
 				moveObject(new SelectionData(0, dat.MapDataRef, dat.WpIndex * 4 + 1, 0), offsetX, offsetY);
             }
+
+            // HACK: debug bypass, remove for Release
+#if DEBUG
+            if (_platform == Settings.Platform.XWA && ((Platform.Xwa.FlightGroup)dat.MapDataRef.FlightGroup).CraftType == 85)
+				processHyperPoints();
+#endif
         }
 
-		void moveSelectionToCursor()
+        void moveSelectionToCursor()
 		{
 			int offsetX = _clickMapUp.X - _clickMapDown.X;
 			int offsetY = _clickMapUp.Y - _clickMapDown.Y;
@@ -1891,6 +1897,91 @@ namespace Idmr.Yogeme
 			return mapPoint;
         }
 
+		void processHyperPoints()
+		{
+            int numCraft = _mapData.Length;
+			for (int i = 0; i < numCraft; i++)
+			{
+				var fg = (Platform.Xwa.FlightGroup)_mapData[i].FlightGroup;
+
+                for (int r = 0; r < 4; r++)
+				{
+					_mapData[i].WPs[17][r].Enabled = false;
+					_mapData[i].WPs[18][r].Enabled = false;
+					var exitBuoySP = new Platform.Xwa.FlightGroup.Waypoint();
+					for (int o = 0; o < 16; o++)
+					{
+						if (fg.Orders[o / 4, o % 4].Command == 50 && fg.Orders[o / 4, o % 4].Variable1 == r)
+						{
+							int fromRegion = o / 4;
+							for (int b = 0; b < numCraft; b++)
+							{
+								var buoy = (Platform.Xwa.FlightGroup)_mapData[b].FlightGroup;
+                                if (buoy.CraftType == 85 && buoy.Waypoints[0][4] == r && buoy.Designation1 == fromRegion + 12)   // From are #12-15
+								{
+									exitBuoySP = buoy.Waypoints[0];
+									System.Diagnostics.Debug.WriteLine(fg.ToString() + " enters Region " + (r + 1) + " from " + (fromRegion + 1) + " via " + buoy.ToString());
+									break;
+								}
+							}
+							break;
+						}
+					}
+					if (!exitBuoySP.Enabled) continue;
+
+					var o1w1 = _mapData[i].WPs[r * 4 + 1][0];
+					if (fg.PlayerNumber != 0)
+					{
+						// Player
+						var exitPoint = getOffsetWaypoint(exitBuoySP, o1w1, -100);    // .625 km
+						for (int c = 0; c < 3; c++) _mapData[i].WPs[17][r][c] = exitPoint[c];
+						_mapData[i].WPs[17][r].Enabled = true;
+						_mapData[i].WPs[18][r] = o1w1;
+					}
+					else
+					{
+						// AI
+						var hyperEntry = new Platform.Xwa.FlightGroup.Waypoint();
+						for (int o = 0; o < 16; o++)
+						{
+							int reg = o / 4;
+							int ord = o % 4;
+							if (fg.Orders[reg, ord].Command == 50 && fg.Orders[reg, ord].Variable1 == r)
+							{
+								for (int w = 1; w < 8; w++)
+								{
+									if (!fg.Orders[reg, ord].Waypoints[w].Enabled)
+									{
+										hyperEntry = fg.Orders[reg, ord].Waypoints[w - 1];
+										hyperEntry.Region = (byte)reg;
+										break;
+									}
+								}
+								break;
+							}
+						}
+						var enterBuoy = new Platform.Xwa.FlightGroup.Waypoint();
+						for (int b = 0; b < numCraft; b++)
+						{
+                            var buoy = (Platform.Xwa.FlightGroup)_mapData[b].FlightGroup;
+                            if (buoy.CraftType == 85 && buoy.Waypoints[0][4] == hyperEntry.Region && buoy.Designation1 == r + 16)  // To are #16-19
+							{
+								enterBuoy = buoy.Waypoints[0];
+								System.Diagnostics.Debug.WriteLine(fg.ToString() + " leaves Region " + (hyperEntry.Region + 1) + " to " + (r + 1) + " via " + buoy.ToString());
+								break;
+							}
+						}
+						int[] offset = new int[3];
+						for (int c = 0; c < 3; c++) offset[c] = hyperEntry[c] - enterBuoy[c];
+						for (int c = 0; c < 3; c++) _mapData[i].WPs[17][r][c] = (short)(exitBuoySP[c] + offset[c]);
+						_mapData[i].WPs[17][r].Enabled = true;
+						for (int c = 0; c < 3; c++) _mapData[i].WPs[18][r][c] = (short)(o1w1[c] + offset[c]);
+						_mapData[i].WPs[18][r].Enabled = true;
+					}
+				}
+			}
+        }
+
         #region public functions
         /// <summary>The down-and-dirty function that handles map display </summary>
         /// <param name="persistant">When <b>true</b> draws to memory, <b>false</b> draws directly to the image</param>
@@ -2285,81 +2376,13 @@ namespace Idmr.Yogeme
 					int order = j % 4;
 					_mapData[i].WPs[j + 1] = fg[i].Orders[region, order].Waypoints;
 				}
-				// HACK: debug bypass, remove for Release
-#if DEBUG
-				for (int r = 0; r < 4; r++)
-				{
-					var exitBuoy = new Platform.Xwa.FlightGroup.Waypoint();
-					for (int o = 0; o < 16; o++)
-                    {
-						if (fg[i].Orders[o / 4, o % 4].Command == 50 && fg[i].Orders[o/4,o%4].Variable1 == r)
-                        {
-							int fromRegion = o / 4;
-							for (int b = 0; b < numCraft; b++)
-                            {
-								if (fg[b].CraftType == 85 && fg[b].Waypoints[0][4] == r && fg[b].Designation1 == fromRegion + 12)	// From are #12-15
-                                {
-									exitBuoy = fg[b].Waypoints[0];
-									System.Diagnostics.Debug.WriteLine(fg[i].ToString() + " enters Region " + (r + 1) + " from " + (fromRegion + 1) + " via " + fg[b].ToString());
-									break;
-                                }
-                            }
-							break;
-                        }
-                    }
-					if (!exitBuoy.Enabled) continue;
-
-					var o1w1 = _mapData[i].WPs[r * 4 + 1][0];
-					if (fg[i].PlayerNumber != 0)
-					{
-						// Player
-						var exitPoint = getOffsetWaypoint(exitBuoy, o1w1, -100);	// .625 km
-						for (int c = 0; c < 3; c++) _mapData[i].WPs[17][r][c] = exitPoint[c];
-						_mapData[i].WPs[17][r].Enabled = true;
-                        _mapData[i].WPs[18][r] = o1w1;
-					}
-					else
-					{
-						// AI
-						var hyperEntry = new Platform.Xwa.FlightGroup.Waypoint();
-						for (int o = 0; o < 16; o++)
-						{
-							int reg = o / 4;
-							int ord = o % 4;
-							if (fg[i].Orders[reg, ord].Command == 50 && fg[i].Orders[reg, ord].Variable1 == r)
-							{
-								for (int w = 1; w < 8; w++)
-								{
-									if (!fg[i].Orders[reg, ord].Waypoints[w].Enabled)
-									{
-										hyperEntry = fg[i].Orders[reg, ord].Waypoints[w - 1];
-										hyperEntry.Region = (byte)reg;
-										break;
-									}
-								}
-								break;
-							}
-						}
-						var enterBuoy = new Platform.Xwa.FlightGroup.Waypoint();
-						for (int b = 0; b < numCraft; b++)
-							if (fg[b].CraftType == 85 && fg[b].Waypoints[0][4] == hyperEntry.Region && fg[b].Designation1 == r + 16)  // To are #16-19
-							{
-								enterBuoy = fg[b].Waypoints[0];
-                                System.Diagnostics.Debug.WriteLine(fg[i].ToString() + " leaves Region " + (hyperEntry.Region + 1) + " to " + (r + 1) + " via " + fg[b].ToString());
-								break;
-							}
-						int[] offset = new int[3];
-						for (int c = 0; c < 3; c++) offset[c] = hyperEntry[c] - enterBuoy[c];
-						for (int c = 0; c < 3; c++) _mapData[i].WPs[17][r][c] = (short)(exitBuoy[c] + offset[c]);
-						_mapData[i].WPs[17][r].Enabled = true;
-						for (int c = 0; c < 3; c++) _mapData[i].WPs[18][r][c] = (short)(o1w1[c] + offset[c]);
-						_mapData[i].WPs[18][r].Enabled = true;
-					}
-				}
-#endif
 				_mapData[i].FullName = Platform.Xwa.Strings.CraftAbbrv[_mapData[i].Craft] + " " + fg[i].Name;
 			}
-			reloadSelectionControls();
+            // HACK: debug bypass, remove for Release
+#if DEBUG
+            processHyperPoints();
+#endif
+            reloadSelectionControls();
 		}
 
 		/// <summary>Updates the mapdata properties of a FlightGroup.</summary>
@@ -2402,7 +2425,11 @@ namespace Idmr.Yogeme
 					_mapData[index].Yaw = ((Platform.Xwa.FlightGroup)fg).Yaw;
 					_mapData[index].Pitch = ((Platform.Xwa.FlightGroup)fg).Pitch;
 					_mapData[index].Roll = ((Platform.Xwa.FlightGroup)fg).Roll;
-					break;
+                    // HACK: debug bypass, remove for Release
+#if DEBUG
+                    processHyperPoints();
+#endif
+                    break;
 			}
 			if (abbrev != null)
 				_mapData[index].FullName = abbrev[_mapData[index].Craft] + " " + fg.Name;
