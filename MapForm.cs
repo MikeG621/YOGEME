@@ -1937,7 +1937,8 @@ namespace Idmr.Yogeme
 						var exitPoint = getOffsetWaypoint(exitBuoySP, o1w1, -100);    // .625 km
 						for (int c = 0; c < 3; c++) _mapData[i].WPs[17][r][c] = exitPoint[c];
 						_mapData[i].WPs[17][r].Enabled = true;
-						_mapData[i].WPs[18][r] = o1w1;
+                        for (int c = 0; c < 3; c++) _mapData[i].WPs[18][r][c] = o1w1[c];
+                        _mapData[i].WPs[18][r].Enabled = o1w1.Enabled;
 					}
 					else
 					{
