@@ -8,6 +8,7 @@
  */
 
 /* CHANGELOG
+ * [UPD] UpdateParams now includes Roll, leaving Matrix3(,) unused
  * v1.11, 210801
  * [UPD] XWA wireframes load default profile to account for additional hook meshes [JB]
  * v1.10, 210520
@@ -170,7 +171,7 @@ namespace Idmr.Yogeme.MapWireframe
 	/// <summary>Represents a 3x3 matrix for rotational transformations</summary>
 	public class Matrix3
 	{
-		/// <summary>Initializes a matrix for a rotational transform, combining pitch and yaw (without roll).</summary>
+		/*/// <summary>Initializes a matrix for a rotational transform, combining pitch and yaw (without roll).</summary>
 		/// <remarks>In a normal coordinate system, this would be matrix multiplication for (Roll * Yaw) in that order.</br>
 		/// But X-Wing uses a different system, so we use (CraftPitch * CraftYaw) to get the desired results on screen.</remarks>
 		public Matrix3(double yaw, double pitch)
@@ -184,7 +185,7 @@ namespace Idmr.Yogeme.MapWireframe
 			V31 = (Math.Sin(pitch) * Math.Sin(yaw));
 			V32 = (Math.Sin(pitch) * Math.Cos(yaw));
 			V33 = Math.Cos(pitch);
-		}
+		}*/
 
 		/// <summary>Initializes a matrix for a rotational transform, combining pitch, yaw, and roll.</summary>
 		/// <remarks>In a normal coordinate system, this would be matrix multiplication for (Pitch * Roll * Yaw) in that order.</br>
@@ -1239,7 +1240,7 @@ namespace Idmr.Yogeme.MapWireframe
 		/// <param name="orientation">The viewing direction of the map</param>
 		/// <param name="meshTypeVisibilityFlags">The flags determining which Mesh types to display</param>
 		/// <remarks>If no change is detected, the wireframe remains as is. Resulting vertex positions are relative to the model origin.</remarks>
-		public void UpdateParams(Platform.BaseFlightGroup.BaseWaypoint cur, Platform.BaseFlightGroup.BaseWaypoint dest, int zoom, MapForm.Orientation orientation, long meshTypeVisibilityFlags)
+		public void UpdateParams(Platform.BaseFlightGroup.BaseWaypoint cur, Platform.BaseFlightGroup.BaseWaypoint dest, int zoom, MapForm.Orientation orientation, long meshTypeVisibilityFlags, int degRoll)
 		{
 			if (ModelDef == null)
 				return;
@@ -1264,7 +1265,8 @@ namespace Idmr.Yogeme.MapWireframe
 
 			double yaw = 0.0;
 			double pitch = 0.0;
-			if (_curX == _dstX && _curY == _dstY && _curZ == _dstZ)
+            double roll = -degRoll * (Math.PI / 180.0f);
+            if (_curX == _dstX && _curY == _dstY && _curZ == _dstZ)
 			{
 				if (dest.Enabled)
 				{
@@ -1288,7 +1290,7 @@ namespace Idmr.Yogeme.MapWireframe
 					yaw -= Math.PI * 2;
 			}
 
-			updatePoints(_scaleMult, new Matrix3(yaw, pitch));
+			updatePoints(_scaleMult, new Matrix3(yaw, pitch, roll));
 		}
 
 		/// <summary>Updates the transformed vertices as it should appear on screen. This applies direct rotations without needing to calculate waypoint angles.</summary>

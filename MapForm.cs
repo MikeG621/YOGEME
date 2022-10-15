@@ -7,6 +7,7 @@
  */
 
 /* CHANGELOG
+ * [FIX] Wireframe roll
  * v1.13.5, 220608
  * [FIX] Removed a chunk that could've executed relating to not-yet-implemented changes
  * v1.13.4, 220606
@@ -295,9 +296,9 @@ namespace Idmr.Yogeme
 			if (_platform == Settings.Platform.XWA && !dst.Enabled)
 				model.UpdateSimple(meshZoom, _settings.WireframeMeshTypeVisibility, dat.Yaw, dat.Pitch, dat.Roll);
 			else if (_platform == Settings.Platform.XWA && dat.WPs[17][region].Enabled && ((Platform.Xwa.FlightGroup.Waypoint)dat.WPs[0][0]).Region != region)
-				model.UpdateParams(dat.WPs[17][region], dat.WPs[18][region], meshZoom, _displayMode, _settings.WireframeMeshTypeVisibility);
+				model.UpdateParams(dat.WPs[17][region], dat.WPs[18][region], meshZoom, _displayMode, _settings.WireframeMeshTypeVisibility, dat.Roll);
 			else
-				model.UpdateParams(dat.WPs[0][0], dst, meshZoom, _displayMode, _settings.WireframeMeshTypeVisibility);
+				model.UpdateParams(dat.WPs[0][0], dst, meshZoom, _displayMode, _settings.WireframeMeshTypeVisibility, dat.Roll);
 
 			Pen body = new Pen(dat.View == Visibility.Fade ? _fadeColor : getIFFColor(dat.IFF));
 			Pen hangar = new Pen(dat.View == Visibility.Fade ? _fadeColor : Color.White);
