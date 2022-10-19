@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2022 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.13.7+
+ * VERSION: 1.13.10
  */
 
 /* CHANGELOG
+ * v1.13.10, 221018
  * [DEL #73] Captured on Ejection options
  * [DEL #74] Secret Goals
  * [UPD #77] comboVarRefresh updated to Misc to Rating, Status, and All

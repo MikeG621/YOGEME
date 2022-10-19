@@ -3,10 +3,12 @@
  * Copyright (C) 2007-2022 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.13.5
+ * VERSION: 1.13.10
  */
 
 /* CHANGELOG
+ * v1.13.10, 221018
+ * [NEW] Correct display of hyper exit points
  * [FIX] Wireframe roll
  * v1.13.5, 220608
  * [FIX] Removed a chunk that could've executed relating to not-yet-implemented changes
@@ -661,11 +663,8 @@ namespace Idmr.Yogeme
 				moveObject(new SelectionData(0, dat.MapDataRef, dat.WpIndex * 4 + 1, 0), offsetX, offsetY);
             }
 
-            // HACK: debug bypass, remove for Release
-#if DEBUG
             if (_platform == Settings.Platform.XWA && ((Platform.Xwa.FlightGroup)dat.MapDataRef.FlightGroup).CraftType == 85)
 				processHyperPoints();
-#endif
         }
 
         void moveSelectionToCursor()
@@ -2072,19 +2071,12 @@ namespace Idmr.Yogeme
 				// if previous sequential WP is checked and trace is required, draw trace line according to WP type
 				for (int k = 0; k < 4; k++) // Start
 				{
-					// HACK: debug bypass, remove when done for Release
-#if DEBUG
 					if (chkWP[k].Checked && isVisibleInRegion(i, k) == WaypointVisibility.Present)
-#else
-					if(chkWP[k].Checked && isVisibleInRegion(i, k) != WaypointVisibility.Absent)
-#endif
 					{
                         var startPoint = getMapPoint(_mapData[i].WPs[0][k]);
                         drawCraft(g3, bmptemp, _mapData[i], startPoint.X, startPoint.Y);
 						if (chkTags.Checked && _mapData[i].View == Visibility.Show) g3.DrawString(_mapData[i].Name + " " + chkWP[k].Text, DefaultFont, sbg, startPoint.X + 8, startPoint.Y + 8);
 					}
-					// HACK debug bypass, remove when done for Release
-#if DEBUG
 					else if (isVisibleInRegion(i, k) == WaypointVisibility.OtherRegion)
                     {
 						var exitWP = _mapData[i].WPs[17][region];
@@ -2094,7 +2086,6 @@ namespace Idmr.Yogeme
 						var exitDirection = getMapPoint(getOffsetWaypoint(exitWP, _mapData[i].WPs[18][region], -50));	// .31 km
 						g3.DrawLine(pnDashTrace, exitPoint.X, exitPoint.Y, exitDirection.X, exitDirection.Y);	// hyper tail leading into the exit
 					}
-#endif
 				}
 				if (_platform == Settings.Platform.XWA) // WPs     [JB] XWA's north/south is inverted compared to XvT.
 				{
@@ -2380,10 +2371,7 @@ namespace Idmr.Yogeme
 				}
 				_mapData[i].FullName = Platform.Xwa.Strings.CraftAbbrv[_mapData[i].Craft] + " " + fg[i].Name;
 			}
-            // HACK: debug bypass, remove for Release
-#if DEBUG
             processHyperPoints();
-#endif
             reloadSelectionControls();
 		}
 

@@ -1,13 +1,14 @@
 ﻿/*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
- * Copyright (C) 2007-2021 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2022 Michael Gaisser (mjgaisser@gmail.com)
  * This file authored by "JB" (Random Starfighter) (randomstarfighter@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.11
+ * VERSION: 1.13.10
  */
 
 /* CHANGELOG
+ * v1.13.10, 221018
  * [UPD] UpdateParams now includes Roll, leaving Matrix3(,) unused
  * v1.11, 210801
  * [UPD] XWA wireframes load default profile to account for additional hook meshes [JB]
@@ -700,9 +701,8 @@ namespace Idmr.Yogeme.MapWireframe
 					using (BinaryReader br = new BinaryReader(fs, System.Text.Encoding.GetEncoding(437)))	// IBM437
 					{
 						List<LfdResourceInfo> resourceList = loadLfdResourceTableFromStream(br);
-						int offset = 0;
 
-						LfdResourceInfo entry = getResourceInfo(resourceList, speciesName, out offset);
+						LfdResourceInfo entry = getResourceInfo(resourceList, speciesName, out int offset);
 						if (entry != null)
 						{
 							_lfdCraftFormat = entry.GetCraftFormat();

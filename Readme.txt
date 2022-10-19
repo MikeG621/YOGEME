@@ -3,8 +3,8 @@
 
 Author: Michael Gaisser (mjgaisser@gmail.com)
 Contributor: Random Starfighter (JB)
-Version: 1.13.9
-Date: 2022.09.07
+Version: 1.13.10
+Date: 2022.10.18
 
 Thank you for downloading YOGEME, the all-in-one mission editor for the X-Wing
 series, Xwing95 through X-wing Alliance.  This program allows easy mission
@@ -28,7 +28,10 @@ your user settings.
 ==========
 Version History
 
+v1.13.10, 18 Oct 2022
  - (XWA) Added a toggle ability to shade the FG list by region
+ - (XWA) Fixed Wireframe Roll in the map
+ - (XWA) Craft now display the hyper exit points instead of SP1 in other regions
  - Updates for TIE, all involving Platform.dll to some degree. Deleted items are those confirmed to have zero effect in the executable.
    - "Captured on Ejection" and "Secret Goals" removed (involves GUI update) [Issues #73 and #74]
    - Trigger "Unknown (arrive?)" now "cannon subsystem disabled" [Issue #75]
