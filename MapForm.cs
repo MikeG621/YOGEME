@@ -1940,11 +1940,19 @@ namespace Idmr.Yogeme
 					if (fg.PlayerNumber != 0)
 					{
 						// Player
-						var exitPoint = getOffsetWaypoint(exitBuoySP, o1w1, -100);    // .625 km
-						for (int c = 0; c < 3; c++) _mapData[i].WPs[17][r][c] = exitPoint[c];
-						_mapData[i].WPs[17][r].Enabled = true;
-                        for (int c = 0; c < 3; c++) _mapData[i].WPs[18][r][c] = o1w1[c];
-                        _mapData[i].WPs[18][r].Enabled = o1w1.Enabled;
+						for (int o = 0; o < 16; o++)
+						{
+                            int reg = o / 4;
+                            int ord = o % 4;
+							if (fg.Orders[reg, ord].Command == 50 && fg.Orders[reg, ord].Variable1 == r)
+							{
+								var exitPoint = getOffsetWaypoint(exitBuoySP, o1w1, -100);    // .625 km
+								for (int c = 0; c < 3; c++) _mapData[i].WPs[17][r][c] = exitPoint[c];
+								_mapData[i].WPs[17][r].Enabled = true;
+								for (int c = 0; c < 3; c++) _mapData[i].WPs[18][r][c] = o1w1[c];
+								_mapData[i].WPs[18][r].Enabled = o1w1.Enabled;
+							}
+						}
 					}
 					else
 					{
@@ -1962,12 +1970,15 @@ namespace Idmr.Yogeme
 									{
 										hyperEntry = fg.Orders[reg, ord].Waypoints[w - 1];
 										hyperEntry.Region = (byte)reg;
+										hyperEntry.Enabled = true;
 										break;
 									}
 								}
 								break;
 							}
 						}
+						if (!hyperEntry.Enabled) continue;	// this is the "not found"/"doesn't hyper" check
+
 						var enterBuoy = new Platform.Xwa.FlightGroup.Waypoint();
 						for (int b = 0; b < numCraft; b++)
 						{
