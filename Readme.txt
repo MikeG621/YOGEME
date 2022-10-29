@@ -28,6 +28,8 @@ your user settings.
 ==========
 Version History
 
+ - (Map) Implemented usage of LfdReader for "classic" wireframe models
+
 v1.13.10, 18 Oct 2022
  - (XWA) Added a toggle ability to shade the FG list by region
  - (XWA) Fixed Wireframe Roll in the map

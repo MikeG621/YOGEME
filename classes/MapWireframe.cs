@@ -4,10 +4,11 @@
  * This file authored by "JB" (Random Starfighter) (randomstarfighter@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.13.10
+ * VERSION: 1.13.10+
  */
 
 /* CHANGELOG
+ * [UPD] Implemented LfdReader and removed unused code
  * v1.13.10, 221018
  * [UPD] UpdateParams now includes Roll, leaving Matrix3(,) unused
  * v1.11, 210801
@@ -24,6 +25,7 @@
  * [NEW] created [JB]
  */
 
+using Idmr.LfdReader;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -51,15 +53,6 @@ using System.IO;
 
 namespace Idmr.Yogeme.MapWireframe
 {
-
-	/// <summary>Provides context to anything that needs to load a DOS model.</summary>
-	public enum LfdCraftFormat
-	{
-		None = 0,
-		CRFT = 1,
-		CPLX = 2,
-		SHIP = 3,
-	}
 	/// <summary>All nodes within the tree structure have a type that determines its data format.</summary>
 	public enum OptNodeType
 	{
@@ -121,13 +114,6 @@ namespace Idmr.Yogeme.MapWireframe
 	/// <summary>Represents a single point within a mesh</summary>
 	public class Vertex
 	{
-		/// <summary>Initialize a point at the origin</summary>
-		public Vertex()
-		{
-			X = 0.0f;
-			Y = 0.0f;
-			Z = 0.0f;
-		}
 		/// <summary>Initialize a point at the given coordinates</summary>
 		public Vertex(int x, int y, int z)
 		{
@@ -172,22 +158,6 @@ namespace Idmr.Yogeme.MapWireframe
 	/// <summary>Represents a 3x3 matrix for rotational transformations</summary>
 	public class Matrix3
 	{
-		/*/// <summary>Initializes a matrix for a rotational transform, combining pitch and yaw (without roll).</summary>
-		/// <remarks>In a normal coordinate system, this would be matrix multiplication for (Roll * Yaw) in that order.</br>
-		/// But X-Wing uses a different system, so we use (CraftPitch * CraftYaw) to get the desired results on screen.</remarks>
-		public Matrix3(double yaw, double pitch)
-		{
-			V11 = Math.Cos(yaw);
-			V12 = -Math.Sin(yaw);
-			V13 = 0;
-			V21 = (Math.Cos(pitch) * Math.Sin(yaw));
-			V22 = (Math.Cos(pitch) * Math.Cos(yaw));
-			V23 = -Math.Sin(pitch);
-			V31 = (Math.Sin(pitch) * Math.Sin(yaw));
-			V32 = (Math.Sin(pitch) * Math.Cos(yaw));
-			V33 = Math.Cos(pitch);
-		}*/
-
 		/// <summary>Initializes a matrix for a rotational transform, combining pitch, yaw, and roll.</summary>
 		/// <remarks>In a normal coordinate system, this would be matrix multiplication for (Pitch * Roll * Yaw) in that order.</br>
 		/// But X-Wing uses a different system, so we use (CraftRoll * CraftPitch * CraftYaw) to get the desired results on screen.</remarks>
@@ -586,22 +556,6 @@ namespace Idmr.Yogeme.MapWireframe
 		public List<OptComponent> Components { get; private set; } = new List<OptComponent>();
 	}
 
-	/// <summary>Represents a single point within a DOS mesh</summary>
-	/// <remarks>Presented as an array to make it easier to access its members.</remarks>
-	public class Vertex3_Int16
-	{
-		/// <summary>Initializes a point at the origin</summary>
-		public Vertex3_Int16()
-		{
-			Data[0] = 0;
-			Data[1] = 0;
-			Data[2] = 0;
-		}
-
-		/// <summary>Gets the [X, Y, Z] values</summary>
-		public short[] Data { get; } = new short[3];
-	}
-
 	/// <summary>Represents a single line within a mesh</summary>
 	/// <remarks>The indices point to a <see cref="Vertex"/> within a parent <see cref="MeshLayerDefinition"/></remarks>
 	public class Line
@@ -621,290 +575,86 @@ namespace Idmr.Yogeme.MapWireframe
 		public int V2 { get; private set; }
 	}
 
-	/// <summary>Represents the mesh faces of a single LOD.</summary>
-	public class CraftLod
-	{
-		/// <summary>Initializes the LOD with the specified distance and offset</summary>
-		/// <param name="distance">The distance assigned to the LOD</param>
-		/// <param name="fileOffset">The offset at which the LOD data resides</param>
-		public CraftLod(int distance, short fileOffset)
-		{
-			Distance = distance;
-			FileOffset = fileOffset;
-		}
-
-		/// <summary>Gets the LOD distance</summary>
-		/// <remarks>This isn't referenced or used anywhere</remarks>
-		public int Distance { get; private set; }
-		/// <summary>Gets the offset within the OPT file</summary>
-		public short FileOffset { get; private set; }
-		/// <summary>Gets the vertices of the LOD</summary>
-		public List<Vertex3_Int16> Vertices { get; } = new List<Vertex3_Int16>();
-		/// <summary>Gets the lines of the LOD</summary>
-		public List<Line> Lines { get; } = new List<Line>();
-	}
-
-	/// <summary>Represents the loaded information for a single component.</summary>
-	public class CraftComponent
-	{
-		/// <summary>Gets or sets the mesh type</summary>
-		public MeshType MeshType { get; set; } = MeshType.Default;
-		/// <summary>Gets the LODs</summary>
-		public List<CraftLod> Lods { get; } = new List<CraftLod>();
-	}
-
 	/// <summary>Represents a DOS craft format (CRFT, CPLX, and SHIP).</summary>
 	/// <remarks>The format is similar to OPT in the sense that it contains a list of components, along with various pieces of data. These resources are typically packed into uncompressed LFD archives, which are automatically handled by the loading functions.</remarks>
 	public class CraftFile
 	{
-		// TODO: duplication of Lfd processing vs LfdReader, replace in the long run
-		private LfdCraftFormat _lfdCraftFormat = LfdCraftFormat.None;
+		Resource.ResourceType _lfdCraftFormat = Resource.ResourceType.Undefined;
 
 		/// <summary>Initializes the object and attempts to load relevant data from a standalone file.</summary>
-		/// <remarks>Requires the craft file format to already be known, as the context cannot be determined from the file contents.</remarks>
-		public bool LoadFromFile(string speciesName, LfdCraftFormat craftFormat)
+		/// <param name="craftFormat">The type of the file data.</param>
+		/// <param name="cftFile">The filename of the individual CFT file</param>
+		/// <returns><b>true</b> if successfully loaded, otherwise <b>false</b>.</returns>
+		/// <remarks>Requires the craft file format to already be known, as the context cannot be determined from the file contents.<br/>
+		/// Can technically handle a <paramref name="craftFormat"/> of CRFT, CPLX or SHIP, although should only occur with processing B-WING.CFT, which is CRFT.</remarks>
+		public bool LoadCftFile(string cftFile, Resource.ResourceType craftFormat)
 		{
-			if (!File.Exists(speciesName) || craftFormat == LfdCraftFormat.None)
+			if (!File.Exists(cftFile) || craftFormat == Resource.ResourceType.Undefined)
 				return false;
 			_lfdCraftFormat = craftFormat;
+
 			try
 			{
-				using (FileStream fs = new FileStream(speciesName, FileMode.Open, FileAccess.Read))
-				{
-					using (BinaryReader br = new BinaryReader(fs))
-					{
-						short fileSize = br.ReadInt16();
-						if (_lfdCraftFormat == LfdCraftFormat.CRFT || _lfdCraftFormat == LfdCraftFormat.CPLX)
-							parseXwing(fs, br);
-						else if (_lfdCraftFormat == LfdCraftFormat.SHIP)
-							parseTie(fs, br);
-					}
-				}
+				if (_lfdCraftFormat == Resource.ResourceType.Crft || _lfdCraftFormat == Resource.ResourceType.Cplx)
+					parseXwing(cftFile, 0);
+				else if (_lfdCraftFormat == Resource.ResourceType.Ship)
+					Craft = new Ship(cftFile, 0);
+				else return false;  // just in case the Type is something random, shouldn't ever happen
 			}
-			catch (Exception)
-			{
-				return false;
-			}
+			catch { return false; }
+            
 			return true;
 		}
 
 		/// <summary>Initializes the object and attempts to load relevant data from within an LFD archive.</summary>
-		public bool LoadFromArchive(string archiveName, string speciesName)
+		/// <param name="archiveName">The SPECIES LFD file</param>
+		/// <param name="resourceName">The resource within <paramref name="archiveName"/>.</param>
+		/// <returns><b>true</b> if successful, otherwise <b>false</b>.</returns>
+		public bool LoadFromArchive(string archiveName, string resourceName)
 		{
-			_lfdCraftFormat = LfdCraftFormat.None;
-			if (!File.Exists(archiveName))
+			_lfdCraftFormat = Resource.ResourceType.Undefined;
+            if (!File.Exists(archiveName) || Resource.GetType(archiveName, 0) != Resource.ResourceType.Rmap)
 				return false;
+
+			var rmap = new Rmap(archiveName);
+			int index = 0;
+			for (; index < rmap.NumberOfHeaders; index++)
+				if (rmap.SubHeaders[index].Name.ToUpper() == resourceName.ToUpper()) break;
+			if (index == rmap.NumberOfHeaders) return false;	// didn't find the name
+
+			_lfdCraftFormat = rmap.SubHeaders[index].Type;
 			try
 			{
-				using (FileStream fs = new FileStream(archiveName, FileMode.Open, FileAccess.Read))
-				{
-					using (BinaryReader br = new BinaryReader(fs, System.Text.Encoding.GetEncoding(437)))	// IBM437
-					{
-						List<LfdResourceInfo> resourceList = loadLfdResourceTableFromStream(br);
+				if (_lfdCraftFormat == Resource.ResourceType.Crft || _lfdCraftFormat == Resource.ResourceType.Cplx)
+					parseXwing(archiveName, rmap.SubHeaders[index].Offset);
+				else if (_lfdCraftFormat == Resource.ResourceType.Ship)
+					Craft = new Ship(archiveName, rmap.SubHeaders[index].Offset);
+                else return false;  // just in case the Type is something random, shouldn't ever happen
+            }
+			catch { return false; }
 
-						LfdResourceInfo entry = getResourceInfo(resourceList, speciesName, out int offset);
-						if (entry != null)
-						{
-							_lfdCraftFormat = entry.GetCraftFormat();
-							fs.Position = offset;
-
-							LfdResourceInfo current = new LfdResourceInfo();
-							current.ReadFromStream(br);
-							if (current.Length != entry.Length)
-								return false;
-
-							short fileSize = br.ReadInt16();
-							if (fileSize != current.Length - 2)
-								return false;
-
-							if (_lfdCraftFormat == LfdCraftFormat.CRFT || _lfdCraftFormat == LfdCraftFormat.CPLX)
-								parseXwing(fs, br);
-							else if (_lfdCraftFormat == LfdCraftFormat.SHIP)
-								parseTie(fs, br);
-						}
-					}
-				}
-			}
-			catch (Exception)
-			{
-				return false;
-			}
 			return true;
 		}
 
-		/// <summary>Returns a list of resources contained in an LFD archive.</summary>
-		private List<LfdResourceInfo> loadLfdResourceTableFromStream(BinaryReader br)
-		{
-			List<LfdResourceInfo> result = new List<LfdResourceInfo>();
-			LfdResourceInfo header = new LfdResourceInfo();
-			header.ReadFromStream(br);
-			if (header.Type != "RMAP")
-				return result;
-
-			result.Add(header);
-			for (int i = 0; i < header.Length / 16; i++)
-			{
-				LfdResourceInfo resource = new LfdResourceInfo();
-				resource.ReadFromStream(br);
-				result.Add(resource);
-			}
-			return result;
-		}
-
-		/// <summary>Retrieves a resource entry from the specified list and calculates its file position.</summary>
-		/// <returns>Returns the matching resource entry, or null if not found. If found, its file offset is placed in the output parameter.</returns>
-		private LfdResourceInfo getResourceInfo(List<LfdResourceInfo> resourceList, string resourceName, out int fileOffset)
-		{
-			int totalSize = 0;
-			for (int i = 0; i < resourceList.Count; i++)
-			{
-				if (resourceList[i].GetCraftFormat() != LfdCraftFormat.None && string.Compare(resourceList[i].Name, resourceName, StringComparison.InvariantCultureIgnoreCase) == 0)
-				{
-					fileOffset = totalSize;
-					return resourceList[i];
-				}
-				totalSize += 16 + resourceList[i].Length;
-			}
-			fileOffset = 0;
-			return null;
-		}
-
 		/// <summary>Parses the header and top-level contents of the CRFT and CPLX formats used in XWING.</summary>
-		private void parseXwing(FileStream fs, BinaryReader br)
+		void parseXwing(string lfdName, long offset)
 		{
-			byte componentCount = br.ReadByte();
-			byte shadingRecordCount = br.ReadByte();
-
-			fs.Position += 16 * shadingRecordCount;
-
-			for (int i = 0; i < componentCount; i++)
+			Ship ship;
+			if (_lfdCraftFormat == Resource.ResourceType.Crft)
 			{
-				long recStart = fs.Position;
-				short nodeOffset = br.ReadInt16();
-				if (nodeOffset != 0)
-				{
-					fs.Position = recStart + nodeOffset;
-					CraftComponent comp = new CraftComponent();
-					parseNode(fs, br, comp);
-					Components.Add(comp);
-					fs.Position = recStart + 2;
-				}
+				Crft crft = new Crft(lfdName, offset);
+				ship = crft;
 			}
+			else
+			{
+				Cplx cplx = new Cplx(lfdName, offset);
+				ship = cplx;
+            }
+
+			Craft = ship;
 		}
 
-		/// <summary>Parses the header and top-level contents of the SHIP format used in TIE.</summary>
-		private void parseTie(FileStream fs, BinaryReader br)
-		{
-			fs.Position += 30;   // Skip unknown.
-
-			byte componentCount = br.ReadByte();
-			byte shadingSetCount = br.ReadByte();
-			// Skip int16 unknown, then 6 bytes per shading set.
-			fs.Position += 2 + (6 * shadingSetCount);
-
-			for (int i = 0; i < componentCount; i++)
-			{
-				long recStart = fs.Position;
-				short meshType = br.ReadInt16();
-				fs.Position += 42;
-				short lodOffset = br.ReadInt16();
-
-				fs.Position = recStart + lodOffset;
-				CraftComponent comp = new CraftComponent
-				{
-					MeshType = (MeshType)meshType
-				};
-				parseNode(fs, br, comp);
-				Components.Add(comp);
-				fs.Position = recStart + 64;
-			}
-		}
-
-		/// <summary>Parses the node mesh information for all DOS formats.</summary>
-		private void parseNode(FileStream fs, BinaryReader br, CraftComponent node)
-		{
-			long nodeBasePosition = fs.Position;
-
-			int distance;
-			short offset;
-			do
-			{
-				distance = br.ReadInt32();
-				offset = br.ReadInt16();
-				node.Lods.Add(new CraftLod(distance, offset));
-			} while (distance != 0x7FFFFFFF);
-
-			for (int i = 0; i < node.Lods.Count; i++)
-			{
-				fs.Position = nodeBasePosition + (i * 6) + node.Lods[i].FileOffset;
-
-				//short header = br.ReadInt16();
-				fs.Position += 2;
-				byte vertexCount = br.ReadByte();
-				//byte unknown = br.ReadByte();
-				fs.Position++;
-				byte shapeCount = br.ReadByte();
-				fs.Position += shapeCount; // Skip over the shape colors.
-				fs.Position += 12;         // Skip boundMin and boundMax (each are 6 bytes, Vertex3_16bit).
-
-				for (int j = 0; j < vertexCount; j++)
-				{
-					short test;
-					Vertex3_Int16 v = new Vertex3_Int16();
-					for (int k = 0; k < 3; k++)
-					{
-						v.Data[k] = br.ReadInt16();
-						test = (short)((v.Data[k] & 0xFF00) >> 8);
-						if (test == 0x7F)
-						{
-							test = (short)((v.Data[k] & 0xFF) >> 1);
-							if (j - test >= 0 && j - test < node.Lods[i].Vertices.Count)
-							{
-								v.Data[k] = node.Lods[i].Vertices[j - test].Data[k];
-							}
-						}
-					}
-					node.Lods[i].Vertices.Add(v);
-				}
-
-				if (_lfdCraftFormat == LfdCraftFormat.CPLX || _lfdCraftFormat == LfdCraftFormat.SHIP)
-					fs.Position += 6 * vertexCount;  // Skip vertex normals.
-
-				long shapeBasePosition = fs.Position;
-				short[] shapeOffsets = new short[shapeCount];
-				// Read shape headers.
-				for (int j = 0; j < shapeCount; j++)
-				{
-					fs.Position += 6;  // Skip face normal.
-					shapeOffsets[j] = br.ReadInt16();
-				}
-
-				for (int j = 0; j < shapeCount; j++)
-				{
-					fs.Position = shapeBasePosition + (j * 8) + shapeOffsets[j];
-					byte type = br.ReadByte();
-					byte vertices = (byte)(type & 0x0F);
-					if (vertices == 2)
-					{
-						byte[] data = br.ReadBytes(7);
-						node.Lods[i].Lines.Add(new Line(data[2], data[3]));
-					}
-					else
-					{
-						int length = 3 + (vertices * 2);
-						byte[] data = br.ReadBytes(length);
-						for (int k = 0; k < vertices; k++)
-						{
-							int v1 = data[k * 2];
-							int v2 = data[(k + 1) * 2];
-							node.Lods[i].Lines.Add(new Line(v1, v2));
-						}
-					}
-				}
-			}
-		}
-
-		public List<CraftComponent> Components { get; } = new List<CraftComponent>();
+		public Ship Craft { get; private set; }
 	}
 
 	/// <summary>Represents a compiled list of vertices and lines derived from the mesh and its faces.</summary>
@@ -1019,57 +769,57 @@ namespace Idmr.Yogeme.MapWireframe
 		/// <remarks>Performs some basic optimization to prevent shared edges, so that lines don't have to be drawn twice.</remarks>
 		public WireframeDefinition(CraftFile craft)
 		{
+			if (craft == null || craft.Craft == null) return;
+
 			// This function is conceptually similar to creating from OPT, except we already have our lines and don't need to examine the faces.
 #pragma warning disable IDE0059 // Unnecessary assignment of a value: assignment function performs other necessary actions
 			MeshLayerDefinition layer = getOrCreateMeshLayerDefinition(MeshType.MainHull);
 #pragma warning restore IDE0059 // Unnecessary assignment of a value
-			for (int i = 0; i < craft.Components.Count; i++)
+			for (int i = 0; i < craft.Craft.Components.Length; i++)
 			{
-				CraftComponent comp = craft.Components[i];
-				if (comp.Lods.Count == 0)
+				var comp = craft.Craft.Components[i];
+				if (comp.Lods.Length == 0)
 					continue;
-				CraftLod lod = comp.Lods[0];
+				var lod = comp.Lods[0];
 
-				int[] vertUsed = new int[lod.Vertices.Count];
+				int[] vertUsed = new int[lod.MeshVertices.Length];
 				HashSet<int> lineUsed = new HashSet<int>();
 
-				layer = getOrCreateMeshLayerDefinition(comp.MeshType);
-				for (int j = 0; j < lod.Lines.Count; j++)
+				layer = getOrCreateMeshLayerDefinition((MeshType)comp.MeshType);
+				for (int j = 0; j < lod.Shapes.Length; j++)
 				{
-					int v1 = lod.Lines[j].V1;
-					int v2 = lod.Lines[j].V2;
+					for (int l = 0; l < lod.Shapes[j].Lines.Length; l++)
+					{
+						int v1, v2;
+						v1 = lod.Shapes[j].Lines[l].Vertex1;
+						v2 = lod.Shapes[j].Lines[l].Vertex2;
 
-					if (vertUsed[v1] == 0)
-					{
-						int x = lod.Vertices[v1].Data[0];
-						int y = lod.Vertices[v1].Data[1];
-						int z = lod.Vertices[v1].Data[2];
-						layer.Vertices.Add(new Vertex(x, y, z));
-						vertUsed[v1] = layer.Vertices.Count; // One-based.
-					}
-					if (vertUsed[v2] == 0)
-					{
-						int x = lod.Vertices[v2].Data[0];
-						int y = lod.Vertices[v2].Data[1];
-						int z = lod.Vertices[v2].Data[2];
-						layer.Vertices.Add(new Vertex(x, y, z));
-						vertUsed[v2] = layer.Vertices.Count;
-					}
+						if (vertUsed[v1] == 0)
+						{
+							layer.Vertices.Add(new Vertex(lod.MeshVertices[v1].X, lod.MeshVertices[v1].Y, lod.MeshVertices[v1].Z));
+							vertUsed[v1] = layer.Vertices.Count; // One-based.
+						}
+						if (vertUsed[v2] == 0)
+						{
+							layer.Vertices.Add(new Vertex(lod.MeshVertices[v2].X, lod.MeshVertices[v2].Y, lod.MeshVertices[v2].Z));
+							vertUsed[v2] = layer.Vertices.Count;
+						}
 
-					// Normalize and construct a key to determine if this line already exists. Add if it doesn't.
-					if (v2 < v1)
-					{
-						int temp = v1;
-						v1 = v2;
-						v2 = temp;
-					}
-					int key = v1 | (v2 << 16);
-					if (!lineUsed.Contains(key))
-					{
-						v1 = vertUsed[v1] - 1;  // Convert back to zero-based index.
-						v2 = vertUsed[v2] - 1;
-						layer.Lines.Add(new Line(v1, v2));
-						lineUsed.Add(key);
+						// Normalize and construct a key to determine if this line already exists. Add if it doesn't.
+						if (v2 < v1)
+						{
+							int temp = v1;
+							v1 = v2;
+							v2 = temp;
+						}
+						int key = v1 | (v2 << 16);
+						if (!lineUsed.Contains(key))
+						{
+							v1 = vertUsed[v1] - 1;  // Convert back to zero-based index.
+							v2 = vertUsed[v2] - 1;
+							layer.Lines.Add(new Line(v1, v2));
+							lineUsed.Add(key);
+						}
 					}
 				}
 			}
@@ -1356,40 +1106,7 @@ namespace Idmr.Yogeme.MapWireframe
 		public int AssignedFGIndex { get; private set; }
 	}
 
-	/// <summary>Stores the header information of a single resource entry within an LFD archive.</summary>
-	public class LfdResourceInfo
-	{
-		public string Type;
-		public string Name;
-		public int Length;
-
-		public LfdResourceInfo()
-		{
-			Type = "";
-			Name = "";
-			Length = 0;
-		}
-
-		public void ReadFromStream(BinaryReader br)
-		{
-			Type = new string(br.ReadChars(4)).Trim();
-			Name = new string(br.ReadChars(8)).Trim();
-			if (Type.IndexOf('\0') >= 0)
-				Type = Type.Remove(Type.IndexOf('\0'));
-			if (Name.IndexOf('\0') >= 0)
-				Name = Name.Remove(Name.IndexOf('\0'));
-			Length = br.ReadInt32();
-		}
-		public LfdCraftFormat GetCraftFormat()
-		{
-			if (Type == "CRFT") return LfdCraftFormat.CRFT;
-			else if (Type == "CPLX") return LfdCraftFormat.CPLX;
-			else if (Type == "SHIP") return LfdCraftFormat.SHIP;
-			return LfdCraftFormat.None;
-		}
-	}
-
-	/// <summary>Represents the central manager exposed to MapForm for accessing and managing wireframe models.</summary>
+		/// <summary>Represents the central manager exposed to MapForm for accessing and managing wireframe models.</summary>
 	/// <remarks>Most of the heavy-lifting is managed internally, abstracting as much work as possible away from the MapForm.</remarks>
 	public class WireframeManager
 	{
@@ -1404,7 +1121,7 @@ namespace Idmr.Yogeme.MapWireframe
 
 		// Only used for DOS formats.
 		Dictionary<string, string> _dosSpeciesMap = null;          // Maps a list of all available species (as scanned from the SPECIES*.LFD archives) to the full path+filename of the archive it can be loaded from. (Ex: DREAD -> *path*\SPECIES2.LFD)
-		LfdCraftFormat _dosCraftFormat = LfdCraftFormat.None;      // Required for X-wing, specifically one file (BWING.CRF). It exists as a standalone file, not archived in SPECIES.LFD. Since the format cannot be derived from the file extension (XW93 and XW94 have the same file name), the context must be determined from the assets within SPECIES.LFD.
+		Resource.ResourceType _dosCraftFormat = Resource.ResourceType.Undefined;      // Required for X-wing, specifically one file (BWING.CRF). It exists as a standalone file, not archived in SPECIES.LFD. Since the format cannot be derived from the file extension (XW93 and XW94 have the same file name), the context must be determined from the assets within SPECIES.LFD.
 
 		/// <summary>Initializes a blank manager</summary>
 		public WireframeManager()
@@ -1454,7 +1171,7 @@ namespace Idmr.Yogeme.MapWireframe
 				// Prepare new cache and reset the loading context.
 				_wireframeDefinitions = new Dictionary<int, WireframeDefinition>();
 				_wireframeInstances = new List<WireframeInstance>();
-				_dosCraftFormat = LfdCraftFormat.None;
+				_dosCraftFormat = Resource.ResourceType.Undefined;
 				_dosSpeciesMap = new Dictionary<string, string>();
 
 				if (platform != Settings.Platform.None)
@@ -1482,35 +1199,19 @@ namespace Idmr.Yogeme.MapWireframe
 
 		/// <summary>Opens a DOS SPECIES*.LFD archive, generating a list of resources it contains.</summary>
 		/// <remarks>Also detects the craft file format to establish a proper loading context.</remarks>
-		private void parseSpeciesFile(string filename)
+		void parseSpeciesFile(string filename)
 		{
 			if (!File.Exists(filename))
 				return;
-			try
+			if (Resource.GetType(filename, 0) == Resource.ResourceType.Rmap)
 			{
-				using (FileStream fs = new FileStream(filename, FileMode.Open, FileAccess.Read))
+				var rmap = new Rmap(filename);
+				for (int h = 0; h < rmap.NumberOfHeaders; h++)
 				{
-					using (BinaryReader br = new BinaryReader(fs, System.Text.Encoding.GetEncoding(437)))
-					{
-						LfdResourceInfo resource = new LfdResourceInfo();
-						resource.ReadFromStream(br);
-						if (resource.Type == "RMAP")
-						{
-							int count = resource.Length / 16;
-							for (int i = 0; i < count; i++)
-							{
-								resource.ReadFromStream(br);
-
-								if(!_dosSpeciesMap.ContainsKey(resource.Name.ToLower()))
-									_dosSpeciesMap.Add(resource.Name.ToLower(), filename);
-								if (_dosCraftFormat == LfdCraftFormat.None)
-									_dosCraftFormat = resource.GetCraftFormat();
-							}
-						}
-					}
+					if (!_dosSpeciesMap.ContainsKey(rmap.SubHeaders[h].Name.ToLower())) _dosSpeciesMap.Add(rmap.SubHeaders[h].Name.ToLower(), filename);
+					if (_dosCraftFormat == Resource.ResourceType.Undefined) _dosCraftFormat = rmap.SubHeaders[h].Type;
 				}
 			}
-			catch (Exception) { }
 		}
 
 		/// <summary>Loads a model definition into the cache, or retrieves an already existing cache entry.</summary>
@@ -1526,7 +1227,7 @@ namespace Idmr.Yogeme.MapWireframe
 
 			string resourceNames = _craftData[craftType].ResourceNames.ToLower();
 			WireframeDefinition def;
-			if (_dosCraftFormat == LfdCraftFormat.None)
+			if (_dosCraftFormat == Resource.ResourceType.Undefined)
 			{
 				OptFile opt = new OptFile();
 				string[] names = resourceNames.Split('|');
@@ -1566,7 +1267,7 @@ namespace Idmr.Yogeme.MapWireframe
 					else
 					{
 						// This is really only required for the B-wing in the DOS versions of XWING, which exists in a standalone file.
-						if (craft.LoadFromFile(Path.Combine(_modelLoadDirectory, s2 + ".cft"), _dosCraftFormat))
+						if (craft.LoadCftFile(Path.Combine(_modelLoadDirectory, s2 + ".cft"), _dosCraftFormat))
 							break;
 					}
 				}
