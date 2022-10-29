@@ -4,10 +4,11 @@
  * This file authored by "JB" (Random Starfighter) (randomstarfighter@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.13.7
+ * VERSION: 1.13.7+
  */
 
 /* CHANGELOG:
+ * [FIX] Open dialog not following current directory after switching paltforms via "Open Recent"
  * v1.13.7, 220730
  * [FIX] crash when copying a WP value via Ctrl+C and no text is selected
  * v1.13.6, 220619
@@ -997,7 +998,8 @@ namespace Idmr.Yogeme
 		{
 			promptSave();
 			opnXW.FileName = _mission.MissionFileName;
-			if (opnXW.ShowDialog() == DialogResult.OK)  //[JB] Fixes bug where dialog could be stuck open. 
+            if (_mission.MissionFileName != "NewMission.xwi") opnXW.InitialDirectory = Directory.GetParent(_mission.MissionPath).FullName; // follow current mission, fixes when switching platforms it wouldn't follow
+            if (opnXW.ShowDialog() == DialogResult.OK)
 			{
 				opnXW_FileOk(0, new System.ComponentModel.CancelEventArgs());
 				_config.SetWorkingPath(Path.GetDirectoryName(opnXW.FileName));

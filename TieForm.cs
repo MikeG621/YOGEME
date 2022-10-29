@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2022 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.13.10
+ * VERSION: 1.13.10+
  */
 
 /* CHANGELOG
+ * [FIX] Open dialog not following current directory after switching paltforms via "Open Recent"
  * v1.13.10, 221018
  * [DEL #73] Captured on Ejection options
  * [DEL #74] Secret Goals
@@ -1350,7 +1351,8 @@ namespace Idmr.Yogeme
 		{
 			promptSave();
 			opnTIE.FileName = _mission.MissionFileName;
-			if (opnTIE.ShowDialog() == DialogResult.OK)  //[JB] Fixes bug where dialog could be stuck open. 
+            if (_mission.MissionFileName != "NewMission.tie") opnTIE.InitialDirectory = Directory.GetParent(_mission.MissionPath).FullName; // follow current mission, fixes when switching platforms it wouldn't follow
+            if (opnTIE.ShowDialog() == DialogResult.OK)
 			{
 				opnTIE_FileOk(0, new System.ComponentModel.CancelEventArgs());
 				_config.SetWorkingPath(Path.GetDirectoryName(opnTIE.FileName));

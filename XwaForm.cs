@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2022 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.13.10
+ * VERSION: 1.13.10+
  */
 
 /* CHANGELOG
+ * [FIX] Open dialog not following current directory after switching paltforms via "Open Recent"
  * v1.13.10, 221018
  * [NEW] ability to shade FG list by Region
  * v1.13.7, 220730
@@ -1988,7 +1989,8 @@ namespace Idmr.Yogeme
 		{
 			promptSave();
 			opnXWA.FileName = _mission.MissionFileName;
-			if (opnXWA.ShowDialog() == DialogResult.OK)  //[JB] Wait until dialog is closed before loading.  Fixes bug where dialog could be stuck open.  Also update paths for last-opened folder. 
+			if (_mission.MissionFileName != "NewMission.tie") opnXWA.InitialDirectory = Directory.GetParent(_mission.MissionPath).FullName;	// follow current mission, fixes when switching platforms it wouldn't follow
+			if (opnXWA.ShowDialog() == DialogResult.OK)
 			{
 				opnXWA_FileOk(0, new System.ComponentModel.CancelEventArgs());
 				_config.SetWorkingPath(Path.GetDirectoryName(opnXWA.FileName));
