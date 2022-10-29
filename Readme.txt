@@ -29,6 +29,7 @@ your user settings.
 Version History
 
  - (Map) Implemented usage of LfdReader for "classic" wireframe models
+ - (Map) XWA, SP1 always treated as Enabled for icon display and hyperspace processing
  - (All) Open dialog now follows current mission properly after switching platforms via "Open Recent"
 
 v1.13.10, 18 Oct 2022

@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2022 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.13.10
+ * VERSION: 1.13.10+
  */
 
 /* CHANGELOG
+ * [FIX] SP1 now always treated as Enabled
  * v1.13.10, 221018
  * [NEW] Correct display of hyper exit points
  * [FIX] Wireframe roll
@@ -232,10 +233,11 @@ namespace Idmr.Yogeme
 			onDataModified = dataModifiedCallback;
 			startup(settings);
 		}
-		#endregion ctors
+        #endregion ctors
 
-		/// <summary>Converts the location on the physical map to a raw craft waypoint (160 raw units = 1 km).</summary>
-		void convertMousepointToWaypoint(int mouseX, int mouseY, ref Point pt)
+        #region private methods
+        /// <summary>Converts the location on the physical map to a raw craft waypoint (160 raw units = 1 km).</summary>
+        void convertMousepointToWaypoint(int mouseX, int mouseY, ref Point pt)
 		{
 			switch (_displayMode)
 			{
@@ -1834,10 +1836,16 @@ namespace Idmr.Yogeme
 		/// <remarks>For most platforms, checks the start point. For XWA, also checks for any hyper jump to the current region.</remarks>
 		WaypointVisibility isVisibleInRegion(int mapDataIndex, int waypoint)
 		{
-			if (!_mapData[mapDataIndex].WPs[0][waypoint].Enabled)
-				return WaypointVisibility.Absent;
 			if (_platform != Settings.Platform.XWA)
-				return WaypointVisibility.Present;
+			{
+                if (_mapData[mapDataIndex].WPs[0][waypoint].Enabled)
+                    return WaypointVisibility.Present;
+                return WaypointVisibility.Absent;
+			}
+
+			bool enabled = (waypoint == 0 || _mapData[mapDataIndex].WPs[0][waypoint].Enabled);
+			if (!enabled) return WaypointVisibility.Absent;
+
 			int region = (int)numRegion.Value - 1;
 			if (_mapData[mapDataIndex].WPs[0][waypoint][4] == (short)region)
 				return WaypointVisibility.Present;
@@ -1927,7 +1935,6 @@ namespace Idmr.Yogeme
 							break;
 						}
 					}
-					if (!exitBuoySP.Enabled) continue;
 
 					var o1w1 = _mapData[i].WPs[r * 4 + 1][0];
 					if (fg.PlayerNumber != 0)
@@ -1982,6 +1989,7 @@ namespace Idmr.Yogeme
 				}
 			}
         }
+        #endregion private methods
 
         #region public functions
         /// <summary>The down-and-dirty function that handles map display </summary>
