@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2022 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.13.7
+ * VERSION: 1.13.10
  */
 
 /* CHANGELOG
+ * v1.13.10, 221018
  * [NEW] ability to shade FG list by Region
  * v1.13.7, 220730
  * [FIX] crash when copying a WP value via Ctrl+C and no text is selected
