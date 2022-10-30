@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2022 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.13.10+
+ * VERSION: 1.13.11
  */
 
 /* CHANGELOG
+ * v1.13.11, 221030
  * [FIX] Open dialog not following current directory after switching paltforms via "Open Recent"
  * v1.13.10, 221018
  * [NEW] ability to shade FG list by Region

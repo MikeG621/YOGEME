@@ -3,11 +3,12 @@
  * Copyright (C) 2007-2022 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.13.10+
+ * VERSION: 1.13.11
  */
 
 /* CHANGELOG
- * [FIX] SP1 now always treated as Enabled
+ * v1.13.11, 221030
+ * [FIX] XWA SP1 now always treated as Enabled
  * v1.13.10, 221018
  * [NEW] Correct display of hyper exit points
  * [FIX] Wireframe roll
