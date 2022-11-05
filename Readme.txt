@@ -28,6 +28,8 @@ your user settings.
 ==========
 Version History
 
+ - (XWA) Order Region selection resets during Open/New mission
+
 v1.13.11, 30 Oct 2022
  - (Map) Implemented usage of LfdReader for "classic" wireframe models
  - (Map) XWA, SP1 always treated as Enabled for icon display and hyperspace processing

@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2022 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.13.11
+ * VERSION: 1.13.11+
  */
 
 /* CHANGELOG
+ * [FIX] Order Region selection resets on Open/New
  * v1.13.11, 221030
  * [FIX] Open dialog not following current directory after switching paltforms via "Open Recent"
  * v1.13.10, 221018
@@ -561,6 +562,7 @@ namespace Idmr.Yogeme
 			comboReset(cboArrMSAlt, fgList, 0);
 			comboReset(cboDepMS, fgList, 0);
 			comboReset(cboDepMSAlt, fgList, 0);
+			numORegion.Value = 1;
 			comboReset(cboTeam, _mission.Teams.GetList(), _mission.FlightGroups[0].Team);
 			cboGlobalTeam.Items.Clear();
 			cboGlobalTeam.Items.AddRange(_mission.Teams.GetList());
@@ -789,6 +791,7 @@ namespace Idmr.Yogeme
 				if (_mission.FlightGroups[i].ArrivesIn30Seconds) craftStart(_mission.FlightGroups[i], true);
 			}
 			updateFGList();
+			numORegion.Value = 1;
 			if (_mission.Messages.Count == 0) enableMessages(false);
 			else
 			{
