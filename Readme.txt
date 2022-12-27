@@ -28,6 +28,7 @@ your user settings.
 ==========
 Version History
 
+ - (XWA) Enabled Order Waypoints are no longer displayed if the craft never visits that Region
  - (XWA) Order Region selection resets during Open/New mission
 
 v1.13.11, 30 Oct 2022
