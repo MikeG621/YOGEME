@@ -2436,10 +2436,7 @@ namespace Idmr.Yogeme
 					_mapData[index].Yaw = ((Platform.Xwa.FlightGroup)fg).Yaw;
 					_mapData[index].Pitch = ((Platform.Xwa.FlightGroup)fg).Pitch;
 					_mapData[index].Roll = ((Platform.Xwa.FlightGroup)fg).Roll;
-                    // HACK: debug bypass, remove for Release
-#if DEBUG
                     processHyperPoints();
-#endif
                     break;
 			}
 			if (abbrev != null)
