@@ -7,6 +7,7 @@
  */
 
 /* CHANGELOG
+ * [NEW] RememberSelectedOrder option functionality
  * [FIX] Order Region selection resets on Open/New
  * v1.13.11, 221030
  * [FIX] Open dialog not following current directory after switching paltforms via "Open Recent"
@@ -1867,8 +1868,7 @@ namespace Idmr.Yogeme
 		}
 		void menuLibrary_Click(object sender, EventArgs e)
 		{
-			if (_fLibrary != null)
-				_fLibrary.Close();
+			_fLibrary?.Close();
 			_fLibrary = new FlightGroupLibraryForm(Settings.Platform.XWA, _mission.FlightGroups, flightGroupLibraryCallback);
 		}
 		void flightGroupLibraryCallback(object sender, EventArgs e)
@@ -2553,10 +2553,9 @@ namespace Idmr.Yogeme
 		}
 		void deleteFG()
 		{
-			if (_fBrief != null)  //Close (which also saves) the briefing before accessing it.  Don't call save directly since this may cause FG index corruption if multiple FGs are deleted.
-				_fBrief.Close();
+			_fBrief?.Close(); //Close (which also saves) the briefing before accessing it.  Don't call save directly since this may cause FG index corruption if multiple FGs are deleted.
 
-			List<int> selection = Common.GetSelectedIndices(lstFG);
+            List<int> selection = Common.GetSelectedIndices(lstFG);
 			int startFG = _activeFG;
 			for (int si = selection.Count - 1; si >= 0; si--)  // Delete from end so prior indices remain intact.
 			{
@@ -2992,7 +2991,7 @@ namespace Idmr.Yogeme
 			}
 			Common.SetSelectedIndices(lstFG, selection, ref _noRefresh);  // Apply adjusted indices
 
-			if (_fBrief != null) _fBrief.Close();
+			_fBrief?.Close();
 			refreshMap(-1);
 			updateFGList();
 			Common.Title(this, false);
@@ -3257,9 +3256,11 @@ namespace Idmr.Yogeme
 		}
 		void lstFG_SelectedIndexChanged(object sender, EventArgs e)
 		{
+			System.Diagnostics.Debug.WriteLine("lstFG_SI: " + _activeOrder);
 			if (lstFG.SelectedIndex == -1 || _noRefresh) return;
 			_activeFG = lstFG.SelectedIndex;
-			lblFG.Text = "Flight Group #" + (_activeFG + (_config.OneIndexedFGs ? 1 : 0)).ToString() + " of " + _mission.FlightGroups.Count.ToString();
+            byte order = _activeOrder;
+            lblFG.Text = "Flight Group #" + (_activeFG + (_config.OneIndexedFGs ? 1 : 0)).ToString() + " of " + _mission.FlightGroups.Count.ToString();
 			bool btemp = _loading;
 			_loading = true;
 			#region Craft
@@ -3333,7 +3334,7 @@ namespace Idmr.Yogeme
 			refreshWaypointTab();  //[JB] Code moved to separate function so that the map callback can refresh it too.
 			#endregion
 			for (_activeOrder = 0; _activeOrder < 4; _activeOrder++) orderLabelRefresh();
-			lblOrderArr_Click(lblOrder[0], new EventArgs());
+			lblOrderArr_Click(lblOrder[_config.RememberSelectedOrder ? order : 0], new EventArgs());
 			#region Options
 			Common.SafeSetCBO(cboRole1Teams, (_mission.FlightGroups[_activeFG].EnableDesignation1 == 255) ? 0 : _mission.FlightGroups[_activeFG].EnableDesignation1 + 1, true);
 			Common.SafeSetCBO(cboRole2Teams, (_mission.FlightGroups[_activeFG].EnableDesignation2 == 255) ? 0 : _mission.FlightGroups[_activeFG].EnableDesignation2 + 1, true);
@@ -3399,7 +3400,8 @@ namespace Idmr.Yogeme
 			_loading = btemp;
 			Common.UpdateMoveButtons(cmdMoveFGUp, cmdMoveFGDown, lstFG);
 			if (!lstFG.Focused) lstFG.Focus();  //[JB] Return control back to the list (helpful to maintain navigation using the arrow keys when certain tabs are open)
-		}
+            System.Diagnostics.Debug.WriteLine("lstFG_SI exit: " + _activeOrder);
+        }
 
 		void cmdMoveFGUp_Click(object sender, EventArgs e)
 		{
@@ -3757,13 +3759,13 @@ namespace Idmr.Yogeme
 
 		void lblOrderArr_Click(object sender, EventArgs e)
 		{
-			//[JB] Added catch from XvT. Fixes bug where the labels wouldn't refresh after double click paste.
-			Label l;
+            //[JB] Added catch from XvT. Fixes bug where the labels wouldn't refresh after double click paste.
+            Label l;
 			try { l = (Label)sender; }
 			catch { _activeOrder = Convert.ToByte(sender); l = lblOrder[_activeOrder]; /*l = lblOrder[(int)sender];*/ }
-			l.Focus();
+            l.Focus();
 			_activeOrder = Convert.ToByte(l.Tag);
-			FlightGroup.Order order = _mission.FlightGroups[_activeFG].Orders[(int)numORegion.Value - 1, _activeOrder];
+            FlightGroup.Order order = _mission.FlightGroups[_activeFG].Orders[(int)numORegion.Value - 1, _activeOrder];
 			setInteractiveLabelColor(l, true);
 			for (int i = 0; i < 4; i++) if (i != _activeOrder) setInteractiveLabelColor(lblOrder[i], false);
 			bool btemp = _loading;
@@ -3788,7 +3790,7 @@ namespace Idmr.Yogeme
 			cboOSpeed.SelectedIndex = order.Speed;
 			txtOString.Text = order.CustomText;
 			_loading = btemp;
-		}
+        }
 		void lblOrderArr_DoubleClick(object sender, EventArgs e)
 		{
 			if (((MouseEventArgs)e).Button != MouseButtons.Left) return;  //[JB] Fixed to help prevent rapid right clicks from triggering paste.  Seemed to affect this frequently, despite other controls with similar events not suffering the same behavior.
@@ -3850,8 +3852,9 @@ namespace Idmr.Yogeme
 
 		void numORegion_ValueChanged(object sender, EventArgs e)
 		{
-			for (_activeOrder = 0; _activeOrder < 4; _activeOrder++) orderLabelRefresh();
-			lblOrderArr_Click(0, new EventArgs());
+            byte order = _activeOrder;
+            for (_activeOrder = 0; _activeOrder < 4; _activeOrder++) orderLabelRefresh();
+			lblOrderArr_Click(_config.RememberSelectedOrder ? order : 0, new EventArgs());
 		}
 		void cboOSpeed_SelectedIndexChanged(object sender, EventArgs e)
 		{
@@ -4237,7 +4240,7 @@ namespace Idmr.Yogeme
 		}
 		void refreshSkipIndicators()  //[JB] Maintain order indicators when a Skip Trigger is modified.
 		{
-			byte restore = _activeOrder;
+            byte restore = _activeOrder;
 			//Scan through all of the orders in each region.  Determine if the Skip Trigger is potentially used.  If so update the dropdown list with an indicator, and also force a refresh on the corresponding item in the Orders tab.
 			for (int o = 0; o < 4; o++)
 			{
@@ -4272,7 +4275,7 @@ namespace Idmr.Yogeme
 				}
 			}
 			lblOrderArr_Click(lblOrder[restore], new EventArgs());  //Refreshing any of the labels will have changed the order selection, so restore it.
-		}
+        }
 
 		void chkOptArr_CheckedChanged(object sender, EventArgs e)
 		{
@@ -5300,7 +5303,5 @@ namespace Idmr.Yogeme
 		}
 
 		#endregion
-
-		
 	}
 }

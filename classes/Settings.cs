@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2022 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.13.4
+ * VERSION: 1.13.4+
  */
 
 /* CHANGELOG
+ * [NEW] RememberSelectedOrder
  * v1.13.4, 220606
  * [NEW] OneIndexedFGs
  * v1.9.1, 210130
@@ -150,6 +151,8 @@ namespace Idmr.Yogeme
 			MapSnapUnit = 0;
 
 			OneIndexedFGs = true;
+
+			RememberSelectedOrder = false;
 		}
 
 		/// <summary>Loads saved settings</summary>
@@ -272,6 +275,8 @@ namespace Idmr.Yogeme
 					MapSnapUnit = br.ReadByte();
 
 					OneIndexedFGs = br.ReadBoolean();	// added in 1.13.4
+
+					RememberSelectedOrder= br.ReadBoolean();	// added in 1.13.12
 				}
 				catch { System.Diagnostics.Debug.WriteLine("old settings file"); /*do nothing*/ }
 
@@ -534,7 +539,7 @@ namespace Idmr.Yogeme
 			FileStream fs = File.OpenWrite(_settingsDir + "\\Settings.dat");
 			BinaryWriter bw = new BinaryWriter(fs);
 			fs.WriteByte(0xFF);
-			fs.WriteByte(0x08);
+			fs.WriteByte(0x09);
 			bw.Write(BopInstalled);
 			if (_bopPath != null) bw.Write(_bopPath);
 			else bw.Write("");
@@ -618,6 +623,8 @@ namespace Idmr.Yogeme
 			bw.Write(MapSnapUnit);
 
 			bw.Write(OneIndexedFGs);
+
+			bw.Write(RememberSelectedOrder);
 
 			fs.SetLength(fs.Position);
 			fs.Close();
@@ -856,6 +863,9 @@ namespace Idmr.Yogeme
 
 		/// <summary>Gets or sets if the FlightGroup counter display starts at 1 instead of 0.</summary>
 		public bool OneIndexedFGs { get; set; }
+
+		/// <summary>Gets or sets if the selected order resets when changing FlightGroups.</summary>
+		public bool RememberSelectedOrder { get; set; }
 		#endregion
 	}
 	/* Settings and values

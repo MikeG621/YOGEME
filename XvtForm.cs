@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2022 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.13.11
+ * VERSION: 1.13.11+
  */
 
 /* CHANGELOG
+ * [NEW] RememberSelectedOrder option functionality
  * v1.13.11, 221030
  * [FIX] Open dialog not following current directory after switching paltforms via "Open Recent"
  * v1.13.7, 220730
@@ -235,10 +236,10 @@ namespace Idmr.Yogeme
 		#region methods
 		void closeForms()
 		{
-			if (_fMap != null) _fMap.Close();
-			if (_fBrief != null) _fBrief.Close();
-			if (_fLST != null) _fLST.Close();
-			if (_fLibrary != null) _fLibrary.Close();
+			_fMap?.Close();
+			_fBrief?.Close();
+			_fLST?.Close();
+			_fLibrary?.Close();
 		}
 		void comboVarRefresh(int index, ComboBox cbo)
 		{   //index is usually cboTrigType.SelectedIndex, cbo = cboTrigVar
@@ -1539,8 +1540,7 @@ namespace Idmr.Yogeme
 		}
 		void menuLibrary_Click(object sender, EventArgs e)
 		{
-			if (_fLibrary != null)
-				_fLibrary.Close();
+			_fLibrary?.Close();
 			_fLibrary = new FlightGroupLibraryForm(Settings.Platform.XvT, _mission.FlightGroups, flightGroupLibraryCallback);
 		}
 		void flightGroupLibraryCallback(object sender, EventArgs e)
@@ -2129,10 +2129,9 @@ namespace Idmr.Yogeme
 		}
 		void deleteFG()
 		{
-			if (_fBrief != null)  //Close (which also saves) the briefing before accessing it.  Don't call save directly since this may cause FG index corruption if multiple FGs are deleted.
-				_fBrief.Close();
+			_fBrief?.Close(); //Close (which also saves) the briefing before accessing it.  Don't call save directly since this may cause FG index corruption if multiple FGs are deleted.
 
-			List<int> selection = Common.GetSelectedIndices(lstFG);
+            List<int> selection = Common.GetSelectedIndices(lstFG);
 			int startFG = _activeFG;
 			for (int si = selection.Count - 1; si >= 0; si--)  // Delete from end so prior indices remain intact.
 			{
@@ -2687,7 +2686,7 @@ namespace Idmr.Yogeme
 			}
 			Common.SetSelectedIndices(lstFG, selection, ref _noRefresh);  // Apply adjusted indices
 
-			if (_fBrief != null) _fBrief.Close();
+			_fBrief?.Close();
 			refreshMap(-1);
 			updateFGList();
 			Common.Title(this, false);
@@ -2705,6 +2704,7 @@ namespace Idmr.Yogeme
 		{
 			if (lstFG.SelectedIndex == -1 || _noRefresh) return;
 			_activeFG = lstFG.SelectedIndex;
+			byte order = _activeOrder;
 			lblFG.Text = "Flight Group #" + (_activeFG + (_config.OneIndexedFGs ? 1 : 0)).ToString() + " of " + _mission.FlightGroups.Count.ToString();
 			bool btemp = _loading;
 			_loading = true;
@@ -2778,7 +2778,7 @@ namespace Idmr.Yogeme
 			refreshWaypointTab();  //[JB] Code moved to separate function so that the map callback can refresh it too.
 			#endregion
 			for (_activeOrder = 0; _activeOrder < 4; _activeOrder++) orderLabelRefresh();
-			lblOrderArr_Click(lblOrder[0], new EventArgs());
+			lblOrderArr_Click(lblOrder[_config.RememberSelectedOrder ? order : 0], new EventArgs());
 			#region Options
 			cboRole1.SelectedIndex = 0;
 			cboRole2.SelectedIndex = 0;

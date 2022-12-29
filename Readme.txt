@@ -28,6 +28,9 @@ your user settings.
 ==========
 Version History
 
+ - Various simple cleanups
+ - (All) Added "Keep Selected Order" to the main options page so it doesn't reset to Order 1 when switching FG
+ - (XWA) Removed a leftover debug bypass from the 1.13.10 Map testing
  - (XWA) Enabled Order Waypoints are no longer displayed if the craft never visits that Region
  - (XWA) Order Region selection resets during Open/New mission
 

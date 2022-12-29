@@ -7,6 +7,7 @@
  */
 
 /* CHANGELOG
+ * [FIX] Removed a leftover debug bypass from the 1.13.10 testing
  * [FIX] XWA Enabled Order Waypoints are no longer displayed if the craft never visits that Region
  * v1.13.11, 221030
  * [FIX] XWA SP1 now always treated as Enabled

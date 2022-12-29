@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2022 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.13.4
+ * VERSION: 1.13.4+
  */
 
 /* CHANGELOG
+ * [NEW] RememberSelectedOrder
  * v1.13.4, 220606
  * [NEW] OneIndexedFGs
  * v1.8, 201004
@@ -174,6 +175,8 @@ namespace Idmr.Yogeme
 			cboMiddleClickAction.SelectedIndex = (int)_config.MapMiddleClickActionNoneSelected;
 
 			chkOneIndexedFG.Checked = _config.OneIndexedFGs;
+
+			chkRememberOrder.Checked = _config.RememberSelectedOrder;
 
 			_closeCallback = callback;
 		}
@@ -372,6 +375,8 @@ namespace Idmr.Yogeme
 
 			_config.OneIndexedFGs = chkOneIndexedFG.Checked;
 
+			_config.RememberSelectedOrder = chkRememberOrder.Checked;
+
 			_closeCallback?.Invoke(0, new EventArgs());
 			Close();
 		}
@@ -520,5 +525,5 @@ namespace Idmr.Yogeme
 					MessageBox.Show(result, "Failed to save file.", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
 		}
-	}
+    }
 }

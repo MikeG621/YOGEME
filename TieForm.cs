@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2022 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.13.11
+ * VERSION: 1.13.11+
  */
 
 /* CHANGELOG
+ * [NEW] RememberSelectedOrder option functionality
  * v1.13.11, 221030
  * [FIX] Open dialog not following current directory after switching paltforms via "Open Recent"
  * v1.13.10, 221018
@@ -1266,8 +1267,7 @@ namespace Idmr.Yogeme
 		}
 		void menuLibrary_Click(object sender, EventArgs e)
 		{
-			if (_fLibrary != null)
-				_fLibrary.Close();
+			_fLibrary?.Close();
 			_fLibrary = new FlightGroupLibraryForm(Settings.Platform.TIE, _mission.FlightGroups, flightGroupLibraryCallback);
 		}
 		void flightGroupLibraryCallback(object sender, EventArgs e)
@@ -1716,10 +1716,9 @@ namespace Idmr.Yogeme
 		}
 		void deleteFG()
 		{
-			if (_fBrief != null)  //Close (which also saves) the briefing before accessing it.  Don't call save directly since this may cause FG index corruption if multiple FGs are deleted.
-				_fBrief.Close();
+			_fBrief?.Close(); //Close (which also saves) the briefing before accessing it.  Don't call save directly since this may cause FG index corruption if multiple FGs are deleted.
 
-			List<int> selection = Common.GetSelectedIndices(lstFG);
+            List<int> selection = Common.GetSelectedIndices(lstFG);
 			int startFG = _activeFG;
 			for (int si = selection.Count - 1; si >= 0; si--)  // Delete from end so prior indices remain intact.
 			{
@@ -1937,7 +1936,7 @@ namespace Idmr.Yogeme
 			}
 			Common.SetSelectedIndices(lstFG, selection, ref _noRefresh);  // Apply adjusted indices
 
-			if (_fBrief != null) _fBrief.Close();
+			_fBrief?.Close();
 			refreshMap(-1);
 			updateFGList();
 			Common.Title(this, false);
@@ -2207,6 +2206,7 @@ namespace Idmr.Yogeme
 		{
 			if (lstFG.SelectedIndex == -1 || _noRefresh) return;
 			_activeFG = lstFG.SelectedIndex;
+			byte order = _activeOrder;
 			lblFG.Text = "Flight Group #" + (_activeFG + (_config.OneIndexedFGs ? 1 : 0)).ToString() + " of " + _mission.FlightGroups.Count.ToString();
 			bool btemp = _loading;
 			_loading = true;
@@ -2269,7 +2269,7 @@ namespace Idmr.Yogeme
 			numBonGoalP.Value = _mission.FlightGroups[_activeFG].Goals.BonusPoints;
 			refreshWaypointTab();  //[JB] Code moved to separate function so that the map callback can refresh it too.
 			for (_activeOrder = 0; _activeOrder < 3; _activeOrder++) orderLabelRefresh();
-			lblOrderArr_Click(lblOrder[0], new EventArgs());
+			lblOrderArr_Click(lblOrder[_config.RememberSelectedOrder ? order : 0], new EventArgs());
 			chkPermaDeath.Checked = _mission.FlightGroups[_activeFG].PermaDeathEnabled;
 			numPermaDeathID.Value = _mission.FlightGroups[_activeFG].PermaDeathID;
 			for (int i = 0; i < 7; i++) numUnk[i].Value = _mission.FlightGroups[_activeFG].Unknowns[i];
@@ -3222,10 +3222,9 @@ namespace Idmr.Yogeme
 		{
 			txtAnswer_Leave("cmdPreview", new EventArgs());
 			txtQuestion_Leave("cmdPreview", new EventArgs());
-			if (_fOfficers != null)  //[JB] Prevent opening multiple dialogs.
-				_fOfficers.Close();
+			_fOfficers?.Close(); //[JB] Prevent opening multiple dialogs.
 
-			_fOfficers = new OfficerPreviewForm(_mission.BriefingQuestions, cboOfficer.SelectedIndex, cboQuestion.SelectedIndex, _config);
+            _fOfficers = new OfficerPreviewForm(_mission.BriefingQuestions, cboOfficer.SelectedIndex, cboQuestion.SelectedIndex, _config);
 			_fOfficers.Show();
 		}
 

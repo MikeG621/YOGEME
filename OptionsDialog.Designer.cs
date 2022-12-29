@@ -25,6 +25,7 @@ namespace Idmr.Yogeme
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(OptionsDialog));
             this.tabOptions = new System.Windows.Forms.TabControl();
             this.tabOpt1 = new System.Windows.Forms.TabPage();
+            this.chkOneIndexedFG = new System.Windows.Forms.CheckBox();
             this.chkConfirmFGDelete = new System.Windows.Forms.CheckBox();
             this.chkRememberPlatformFolder = new System.Windows.Forms.CheckBox();
             this.label7 = new System.Windows.Forms.Label();
@@ -163,7 +164,7 @@ namespace Idmr.Yogeme
             this.opnVerify = new System.Windows.Forms.OpenFileDialog();
             this.dirPlatform = new System.Windows.Forms.FolderBrowserDialog();
             this.colorSelector = new System.Windows.Forms.ColorDialog();
-            this.chkOneIndexedFG = new System.Windows.Forms.CheckBox();
+            this.chkRememberOrder = new System.Windows.Forms.CheckBox();
             this.tabOptions.SuspendLayout();
             this.tabOpt1.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -204,6 +205,7 @@ namespace Idmr.Yogeme
             // 
             // tabOpt1
             // 
+            this.tabOpt1.Controls.Add(this.chkRememberOrder);
             this.tabOpt1.Controls.Add(this.chkOneIndexedFG);
             this.tabOpt1.Controls.Add(this.chkConfirmFGDelete);
             this.tabOpt1.Controls.Add(this.chkRememberPlatformFolder);
@@ -223,6 +225,18 @@ namespace Idmr.Yogeme
             this.tabOpt1.Size = new System.Drawing.Size(397, 238);
             this.tabOpt1.TabIndex = 0;
             this.tabOpt1.Text = "Overall";
+            // 
+            // chkOneIndexedFG
+            // 
+            this.chkOneIndexedFG.AutoSize = true;
+            this.chkOneIndexedFG.Checked = true;
+            this.chkOneIndexedFG.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkOneIndexedFG.Location = new System.Drawing.Point(157, 180);
+            this.chkOneIndexedFG.Name = "chkOneIndexedFG";
+            this.chkOneIndexedFG.Size = new System.Drawing.Size(146, 17);
+            this.chkOneIndexedFG.TabIndex = 15;
+            this.chkOneIndexedFG.Text = "Display FGs as 1-Indexed";
+            this.chkOneIndexedFG.UseVisualStyleBackColor = true;
             // 
             // chkConfirmFGDelete
             // 
@@ -1663,17 +1677,15 @@ namespace Idmr.Yogeme
             // 
             this.dirPlatform.Description = "Select the root install directory of the platform";
             // 
-            // chkOneIndexedFG
+            // chkRememberOrder
             // 
-            this.chkOneIndexedFG.AutoSize = true;
-            this.chkOneIndexedFG.Checked = true;
-            this.chkOneIndexedFG.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkOneIndexedFG.Location = new System.Drawing.Point(157, 180);
-            this.chkOneIndexedFG.Name = "chkOneIndexedFG";
-            this.chkOneIndexedFG.Size = new System.Drawing.Size(146, 17);
-            this.chkOneIndexedFG.TabIndex = 15;
-            this.chkOneIndexedFG.Text = "Display FGs as 1-Indexed";
-            this.chkOneIndexedFG.UseVisualStyleBackColor = true;
+            this.chkRememberOrder.AutoSize = true;
+            this.chkRememberOrder.Location = new System.Drawing.Point(16, 118);
+            this.chkRememberOrder.Name = "chkRememberOrder";
+            this.chkRememberOrder.Size = new System.Drawing.Size(125, 17);
+            this.chkRememberOrder.TabIndex = 16;
+            this.chkRememberOrder.Text = "Keep Selected Order";
+            this.chkRememberOrder.UseVisualStyleBackColor = true;
             // 
             // OptionsDialog
             // 
@@ -1868,5 +1880,6 @@ namespace Idmr.Yogeme
 		private ComboBox cboMiddleClickAction;
 		private Label label17;
         private CheckBox chkOneIndexedFG;
+        private CheckBox chkRememberOrder;
     }
 }
