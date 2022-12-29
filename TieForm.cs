@@ -1368,10 +1368,7 @@ namespace Idmr.Yogeme
 		{
 			System.Runtime.Serialization.IFormatter formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
 			if (!(Clipboard.GetDataObject() is DataObject data)) return;
-#if DEBUG
-			string[] formats = data.GetFormats();
-			foreach(string s in formats) System.Diagnostics.Debug.WriteLine(s);
-#endif
+
 			object obj;
 			if (data.GetData("yogeme", false) is MemoryStream stream)
 			{
