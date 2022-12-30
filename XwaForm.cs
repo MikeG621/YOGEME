@@ -3256,7 +3256,6 @@ namespace Idmr.Yogeme
 		}
 		void lstFG_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			System.Diagnostics.Debug.WriteLine("lstFG_SI: " + _activeOrder);
 			if (lstFG.SelectedIndex == -1 || _noRefresh) return;
 			_activeFG = lstFG.SelectedIndex;
             byte order = _activeOrder;
@@ -3400,7 +3399,6 @@ namespace Idmr.Yogeme
 			_loading = btemp;
 			Common.UpdateMoveButtons(cmdMoveFGUp, cmdMoveFGDown, lstFG);
 			if (!lstFG.Focused) lstFG.Focus();  //[JB] Return control back to the list (helpful to maintain navigation using the arrow keys when certain tabs are open)
-            System.Diagnostics.Debug.WriteLine("lstFG_SI exit: " + _activeOrder);
         }
 
 		void cmdMoveFGUp_Click(object sender, EventArgs e)

@@ -7,6 +7,8 @@
  */
 
 /* CHANGELOG
+ * [FIX] Can select disabled XWA SP1, since they're shown
+ * [FIX] Selection corners X location
  * [FIX] Removed a leftover debug bypass from the 1.13.10 testing
  * [FIX] XWA Enabled Order Waypoints are no longer displayed if the craft never visits that Region
  * v1.13.11, 221030
@@ -988,7 +990,7 @@ namespace Idmr.Yogeme
 
 				for (int wp = 0; wp < _mapData[i].WPs[0].Length; wp++)
 				{
-					if (!chkWP[wp].Checked || !_mapData[i].WPs[0][wp].Enabled) continue;
+					if (!chkWP[wp].Checked || (!_mapData[i].WPs[0][wp].Enabled && _platform != Settings.Platform.XWA && wp != 0)) continue;
 					if (_platform == Settings.Platform.XWA)
 					{
 						Platform.Xwa.FlightGroup.Waypoint cwp = (Platform.Xwa.FlightGroup.Waypoint)_mapData[i].WPs[0][wp];
@@ -1920,26 +1922,40 @@ namespace Idmr.Yogeme
 					_mapData[i].WPs[17][r].Enabled = false;
 					_mapData[i].WPs[18][r].Enabled = false;
 					var exitBuoySP = new Platform.Xwa.FlightGroup.Waypoint();
+					exitBuoySP.RawZ = 621;	// just using as a flag
 					for (int o = 0; o < 16; o++)
 					{
-						if (fg.Orders[o / 4, o % 4].Command == 50 && fg.Orders[o / 4, o % 4].Variable1 == r)
+                        int reg = o / 4;
+                        int ord = o % 4;
+                        if (fg.Orders[reg, ord].Command == 50 && fg.Orders[reg, ord].Variable1 == r)
 						{
-							int fromRegion = o / 4;
 							for (int b = 0; b < numCraft; b++)
 							{
 								var buoy = (Platform.Xwa.FlightGroup)_mapData[b].FlightGroup;
-                                if (buoy.CraftType == 85 && buoy.Waypoints[0][4] == r && buoy.Designation1 == fromRegion + 12)   // From are #12-15
+                                if (buoy.CraftType == 85 && buoy.Waypoints[0][4] == r && buoy.Designation1 == reg + 12)   // From are #12-15
 								{
 									exitBuoySP = buoy.Waypoints[0];
-									System.Diagnostics.Debug.WriteLine(fg.ToString() + " enters Region " + (r + 1) + " from " + (fromRegion + 1) + " via " + buoy.ToString());
+									System.Diagnostics.Debug.WriteLine(fg.ToString() + " enters Region " + (r + 1) + " from " + (reg + 1) + " via " + buoy.ToString());
 									break;
 								}
 							}
-							break;
 						}
 					}
 
 					var o1w1 = _mapData[i].WPs[r * 4 + 1][0];
+					// if returning to the starting region, grab the first order after the Hyper order
+					if (exitBuoySP.RawZ != 621 && r == _mapData[i].WPs[0][0][4])
+					{
+						for (int o = 0; o < 3; o++)
+						{
+							if (fg.Orders[r, o].Command == 50)
+							{
+								o1w1 = _mapData[i].WPs[(r * 4 + 1) + (o + 1)][0];
+								System.Diagnostics.Debug.WriteLine("return o1w1 used: " + fg.ToString());
+							}
+						}
+					}
+
 					if (fg.PlayerNumber != 0)
 					{
 						// Player
@@ -1953,7 +1969,7 @@ namespace Idmr.Yogeme
 								for (int c = 0; c < 3; c++) _mapData[i].WPs[17][r][c] = exitPoint[c];
 								_mapData[i].WPs[17][r].Enabled = true;
 								for (int c = 0; c < 3; c++) _mapData[i].WPs[18][r][c] = o1w1[c];
-								_mapData[i].WPs[18][r].Enabled = o1w1.Enabled;
+								_mapData[i].WPs[18][r].Enabled = true;
 							}
 						}
 					}
@@ -1977,7 +1993,6 @@ namespace Idmr.Yogeme
 										break;
 									}
 								}
-								break;
 							}
 						}
 						if (!hyperEntry.Enabled) continue;	// this is the "not found"/"doesn't hyper" check
@@ -2007,7 +2022,6 @@ namespace Idmr.Yogeme
 
         #region public functions
         /// <summary>The down-and-dirty function that handles map display </summary>
-        /// <param name="persistant">When <b>true</b> draws to memory, <b>false</b> draws directly to the image</param>
         public void MapPaint()
 		{
 			if (_isClosing || _isLoading) return;
@@ -2116,7 +2130,24 @@ namespace Idmr.Yogeme
 					bool pointing = false;
                     for (int k = 0; k < 8; k++)
 					{
-                        if (k == 0 && _mapData[i].WPs[18][region].Enabled) offset = true;
+						if (k == 0 && _mapData[i].WPs[18][region].Enabled)
+						{
+							// only trigger the offset in the first order in a new region or the first return order in the starting region
+							if (_mapData[i].WPs[0][0][4] != region && numOrder.Value == 1) offset = true;
+							else
+							{
+								var fg = (Platform.Xwa.FlightGroup)_mapData[i].FlightGroup;
+								for (int o = 0; o < 3; o++)
+								{
+									if (fg.Orders[region, o].Command == 50 && (o + 2) == numOrder.Value)
+									{
+										offset = true;
+										break;
+									}
+								}
+							}
+						}
+						
                         if (chkWP[k + 4].Checked && _mapData[i].WPs[ord][k].Enabled)
 						{
 							var ordPoint = getMapPoint(_mapData[i].WPs[ord][k]);
