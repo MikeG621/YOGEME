@@ -2242,7 +2242,7 @@ namespace Idmr.Yogeme
 				{
                     datPoint = getMapPoint(dat.MapDataRef.WPs[17][region]);
                 }
-				int x = datPoint.X + 1;  //Doesn't seem to line up with icon correctly, push it over.
+				int x = datPoint.X;
 				int y = datPoint.Y;
 							//[JB] Draws a four corner selection box like in-game.
 				g3.DrawLine(pnSel, x - 8, y - 8, x - 4, y - 8); //Horizontal top
