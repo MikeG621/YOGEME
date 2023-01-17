@@ -3,8 +3,8 @@
 
 Author: Michael Gaisser (mjgaisser@gmail.com)
 Contributor: Random Starfighter (JB)
-Version: 1.13.11
-Date: 2022.10.30
+Version: 1.13.12
+Date: 2023.01.16
 
 Thank you for downloading YOGEME, the all-in-one mission editor for the X-Wing
 series, Xwing95 through X-wing Alliance.  This program allows easy mission
@@ -28,11 +28,14 @@ your user settings.
 ==========
 Version History
 
+v1.13.12, 16 Jan 2023
  - Various simple cleanups
+ - (Map) Legacy wireframes now use LfdReader instead of duplicating functionality
  - (All) Added "Keep Selected Order" to the main options page so it doesn't reset to Order 1 when switching FG
  - (XWA) Removed a leftover debug bypass from the 1.13.10 Map testing
  - (XWA) Enabled Order Waypoints are no longer displayed if the craft never visits that Region
  - (XWA) Order Region selection resets during Open/New mission
+ - (XWA) Disabled SP1 WPs can be selected since they're always shown
 
 v1.13.11, 30 Oct 2022
  - (Map) Implemented usage of LfdReader for "classic" wireframe models

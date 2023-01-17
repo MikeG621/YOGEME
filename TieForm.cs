@@ -1,12 +1,13 @@
 /*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
- * Copyright (C) 2007-2022 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2023 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.13.11+
+ * VERSION: 1.13.12
  */
 
 /* CHANGELOG
+ * v1.13.12, 230116
  * [NEW] RememberSelectedOrder option functionality
  * v1.13.11, 221030
  * [FIX] Open dialog not following current directory after switching paltforms via "Open Recent"

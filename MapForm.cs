@@ -1,12 +1,13 @@
 /*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
- * Copyright (C) 2007-2022 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2023 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.13.11+
+ * VERSION: 1.13.12
  */
 
 /* CHANGELOG
+ * v1.13.12, 230116
  * [FIX] Can select disabled XWA SP1, since they're shown
  * [FIX] Selection corners X location
  * [FIX] Removed a leftover debug bypass from the 1.13.10 testing

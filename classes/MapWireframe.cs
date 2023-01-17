@@ -1,13 +1,14 @@
 ﻿/*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
- * Copyright (C) 2007-2022 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2023 Michael Gaisser (mjgaisser@gmail.com)
  * This file authored by "JB" (Random Starfighter) (randomstarfighter@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.13.10+
+ * VERSION: 1.13.12
  */
 
 /* CHANGELOG
+ * v1.13.12, 230116
  * [UPD] Implemented LfdReader and removed unused code
  * v1.13.10, 221018
  * [UPD] UpdateParams now includes Roll, leaving Matrix3(,) unused
