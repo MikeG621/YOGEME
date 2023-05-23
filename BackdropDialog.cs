@@ -1,12 +1,14 @@
 /*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
- * Copyright (C) 2007-2022 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2023 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.13.9
+ * VERSION: 1.13.9+
  */
 
 /* CHANGELOG
+ * [FIX] Color labels now only show in XWA
+ * [NEW] Extra Color label pointing out that the color is on clipboard
  * v1.13.9, 220907
  * [NEW #71] Ability to skip repeated DAT load failures
  * [NEW #72] Resdata read will ignore lines commented by ; or //
@@ -484,7 +486,10 @@ namespace Idmr.Yogeme
 					label3.Left += size;
 					label4.Left += size;
 					label5.Left += size;
-					lblColor.Left += size;
+					label5.Visible = true;
+                    label6.Left += size;
+					label6.Visible = true;
+                    lblColor.Left += size;
 					lblColor.Visible = true;
 					pctSample.Left += size;
 					pctSample.Visible = true;

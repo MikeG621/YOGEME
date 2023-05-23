@@ -28,6 +28,10 @@ your user settings.
 ==========
 Version History
 
+ - (Backdrop) The "Color:" text now only shows for XWA.
+ - (Backdrop) Added a label pointing out that the selected color is on the clipboard, as it's not applied automatically [Issue #80]
+ - (Briefing) Fixed a crash that would occur if the Caption/Title event was created without a string being selected.
+
 v1.13.12, 16 Jan 2023
  - Various simple cleanups
  - (Map) Legacy wireframes now use LfdReader instead of duplicating functionality
