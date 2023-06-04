@@ -95,6 +95,8 @@ namespace Idmr.Yogeme
             this.dataWaypoints_Raw = new System.Data.DataView();
             this.tabMain = new System.Windows.Forms.TabControl();
             this.tabFG = new System.Windows.Forms.TabPage();
+            this.numFilterRegion = new System.Windows.Forms.NumericUpDown();
+            this.chkRegionFilter = new System.Windows.Forms.CheckBox();
             this.tabFGMinor = new System.Windows.Forms.TabControl();
             this.tabCraft = new System.Windows.Forms.TabPage();
             this.cmdMoveFGDown = new System.Windows.Forms.Button();
@@ -792,12 +794,11 @@ namespace Idmr.Yogeme
             this.dataOrders = new System.Data.DataView();
             this.dataOrders_Raw = new System.Data.DataView();
             this.ttActiveSequence = new System.Windows.Forms.ToolTip(this.components);
-            this.chkRegionFilter = new System.Windows.Forms.CheckBox();
-            this.numFilterRegion = new System.Windows.Forms.NumericUpDown();
             ((System.ComponentModel.ISupportInitialize)(this.dataWaypoints)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataWaypoints_Raw)).BeginInit();
             this.tabMain.SuspendLayout();
             this.tabFG.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numFilterRegion)).BeginInit();
             this.tabFGMinor.SuspendLayout();
             this.tabCraft.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -967,7 +968,6 @@ namespace Idmr.Yogeme
             this.groupBox37.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataOrders)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataOrders_Raw)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numFilterRegion)).BeginInit();
             this.SuspendLayout();
             // 
             // menuXWA
@@ -1526,6 +1526,40 @@ namespace Idmr.Yogeme
             this.tabFG.TabIndex = 0;
             this.tabFG.Text = "Flight Groups";
             this.tabFG.UseVisualStyleBackColor = true;
+            // 
+            // numFilterRegion
+            // 
+            this.numFilterRegion.Location = new System.Drawing.Point(92, 496);
+            this.numFilterRegion.Maximum = new decimal(new int[] {
+            4,
+            0,
+            0,
+            0});
+            this.numFilterRegion.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.numFilterRegion.Name = "numFilterRegion";
+            this.numFilterRegion.Size = new System.Drawing.Size(34, 20);
+            this.numFilterRegion.TabIndex = 7;
+            this.numFilterRegion.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.numFilterRegion.ValueChanged += new System.EventHandler(this.numFilterRegion_ValueChanged);
+            // 
+            // chkRegionFilter
+            // 
+            this.chkRegionFilter.AutoSize = true;
+            this.chkRegionFilter.Location = new System.Drawing.Point(7, 497);
+            this.chkRegionFilter.Name = "chkRegionFilter";
+            this.chkRegionFilter.Size = new System.Drawing.Size(85, 17);
+            this.chkRegionFilter.TabIndex = 6;
+            this.chkRegionFilter.Text = "Filter Region";
+            this.chkRegionFilter.UseVisualStyleBackColor = true;
+            this.chkRegionFilter.CheckedChanged += new System.EventHandler(this.chkRegionFilter_CheckedChanged);
             // 
             // tabFGMinor
             // 
@@ -2363,14 +2397,14 @@ namespace Idmr.Yogeme
             // 
             this.cboADPara.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboADPara.FormattingEnabled = true;
-            this.cboADPara.Location = new System.Drawing.Point(446, 384);
+            this.cboADPara.Location = new System.Drawing.Point(446, 412);
             this.cboADPara.Name = "cboADPara";
             this.cboADPara.Size = new System.Drawing.Size(88, 21);
             this.cboADPara.TabIndex = 42;
             // 
             // numADPara
             // 
-            this.numADPara.Location = new System.Drawing.Point(486, 413);
+            this.numADPara.Location = new System.Drawing.Point(486, 384);
             this.numADPara.Maximum = new decimal(new int[] {
             255,
             0,
@@ -4489,14 +4523,14 @@ namespace Idmr.Yogeme
             // 
             this.cboSkipPara.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboSkipPara.FormattingEnabled = true;
-            this.cboSkipPara.Location = new System.Drawing.Point(378, 120);
+            this.cboSkipPara.Location = new System.Drawing.Point(378, 144);
             this.cboSkipPara.Name = "cboSkipPara";
             this.cboSkipPara.Size = new System.Drawing.Size(110, 21);
             this.cboSkipPara.TabIndex = 55;
             // 
             // numSkipPara
             // 
-            this.numSkipPara.Location = new System.Drawing.Point(440, 145);
+            this.numSkipPara.Location = new System.Drawing.Point(440, 120);
             this.numSkipPara.Maximum = new decimal(new int[] {
             255,
             0,
@@ -6625,7 +6659,7 @@ namespace Idmr.Yogeme
             // 
             this.cboGlobalPara.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboGlobalPara.FormattingEnabled = true;
-            this.cboGlobalPara.Location = new System.Drawing.Point(592, 202);
+            this.cboGlobalPara.Location = new System.Drawing.Point(646, 203);
             this.cboGlobalPara.Name = "cboGlobalPara";
             this.cboGlobalPara.Size = new System.Drawing.Size(106, 21);
             this.cboGlobalPara.TabIndex = 46;
@@ -6787,7 +6821,7 @@ namespace Idmr.Yogeme
             // 
             // numGlobalPara
             // 
-            this.numGlobalPara.Location = new System.Drawing.Point(704, 203);
+            this.numGlobalPara.Location = new System.Drawing.Point(592, 203);
             this.numGlobalPara.Maximum = new decimal(new int[] {
             255,
             0,
@@ -9274,40 +9308,6 @@ namespace Idmr.Yogeme
             // 
             this.ttActiveSequence.ToolTipTitle = "Active Sequence";
             // 
-            // chkRegionFilter
-            // 
-            this.chkRegionFilter.AutoSize = true;
-            this.chkRegionFilter.Location = new System.Drawing.Point(7, 497);
-            this.chkRegionFilter.Name = "chkRegionFilter";
-            this.chkRegionFilter.Size = new System.Drawing.Size(85, 17);
-            this.chkRegionFilter.TabIndex = 6;
-            this.chkRegionFilter.Text = "Filter Region";
-            this.chkRegionFilter.UseVisualStyleBackColor = true;
-            this.chkRegionFilter.CheckedChanged += new System.EventHandler(this.chkRegionFilter_CheckedChanged);
-            // 
-            // numFilterRegion
-            // 
-            this.numFilterRegion.Location = new System.Drawing.Point(92, 496);
-            this.numFilterRegion.Maximum = new decimal(new int[] {
-            4,
-            0,
-            0,
-            0});
-            this.numFilterRegion.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.numFilterRegion.Name = "numFilterRegion";
-            this.numFilterRegion.Size = new System.Drawing.Size(34, 20);
-            this.numFilterRegion.TabIndex = 7;
-            this.numFilterRegion.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.numFilterRegion.ValueChanged += new System.EventHandler(this.numFilterRegion_ValueChanged);
-            // 
             // XwaForm
             // 
             this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
@@ -9332,6 +9332,7 @@ namespace Idmr.Yogeme
             this.tabMain.ResumeLayout(false);
             this.tabFG.ResumeLayout(false);
             this.tabFG.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numFilterRegion)).EndInit();
             this.tabFGMinor.ResumeLayout(false);
             this.tabCraft.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
@@ -9543,7 +9544,6 @@ namespace Idmr.Yogeme
             this.groupBox37.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataOrders)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataOrders_Raw)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numFilterRegion)).EndInit();
             this.ResumeLayout(false);
 
 		}

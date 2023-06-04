@@ -1,12 +1,13 @@
 /*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
- * Copyright (C) 2007-2022 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2023 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.13.6
+ * VERSION: 1.13.6+
  */
 
 /* CHANGELOG
+ * [FIX] Crash if a Caption/Title index was -1
  * v1.13.6, 220619
  * [NEW] Shift All checkbox on Events tab so timing can move together
  * v1.11, 210801
@@ -1050,7 +1051,7 @@ namespace Idmr.Yogeme
 					lblTitle.Text = _strings[_events[i, 2]];
 				}
 			}
-			else if (_events[i, 1] == (int)BaseBriefing.EventType.CaptionText)
+			else if (_events[i, 1] == (int)BaseBriefing.EventType.CaptionText && _events[i, 2] != -1)
 			{
 				if (_strings[_events[i, 2]].StartsWith(">"))
 				{
@@ -3076,7 +3077,7 @@ namespace Idmr.Yogeme
 			if (index == -1) return;
 			string temp = string.Format("{0,-8:0.00}", (decimal)_events[index, 0] / _timerInterval);
 			temp += cboEvent.Items[_events[index, 1] - 3].ToString();
-			if (_events[index, 1] == (int)BaseBriefing.EventType.TitleText || _events[index, 1] == (int)BaseBriefing.EventType.CaptionText)
+			if (_events[index, 1] == (int)BaseBriefing.EventType.TitleText || _events[index, 1] == (int)BaseBriefing.EventType.CaptionText && _events[index, 2] != -1)
 			{
 				if (_strings[_events[index, 2]].Length > 30) temp += ": \"" + _strings[_events[index, 2]].Substring(0, 30) + "...\"";
 				else temp += ": \"" + _strings[_events[index, 2]] + '\"';

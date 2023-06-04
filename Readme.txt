@@ -28,6 +28,8 @@ your user settings.
 ==========
 Version History
 
+ - (XWA) Moved around the Trigger Parameter fields to be more consistent between locations and so it's a bit more natural to
+     select the correct control when adjusting the Region or Proximity target [Issue #82]
  - (Backdrop) The "Color:" text now only shows for XWA.
  - (Backdrop) Added a label pointing out that the selected color is on the clipboard, as it's not applied automatically [Issue #80]
  - (Briefing) Fixed a crash that would occur if the Caption/Title event was created without a string being selected.

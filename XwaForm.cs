@@ -3,10 +3,12 @@
  * Copyright (C) 2007-2023 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.13.12
+ * VERSION: 1.13.12+
  */
 
 /* CHANGELOG
+ * [UPD] Moved around the Para2 and Para1 trigger controls so Para1 is naturally closer to the Target control
+ * [UPD] Region names now appear in trigger text
  * v1.13.12, 230116
  * [NEW] RememberSelectedOrder option functionality
  * [FIX] Order Region selection resets on Open/New
@@ -888,9 +890,9 @@ namespace Idmr.Yogeme
 			while (text.Contains("REG:"))
 			{
 				int reg = Common.ParseIntAfter(text, "REG:");
-				string regName = "#" + (reg + 1);
-				if (reg >= 0 && reg < 4 && !_mission.Regions[reg].ToUpper().StartsWith("REGION"))
-					regName += " (" +_mission.Regions[reg] + ")";
+				string regName = "#" + reg;
+				if (reg > 0 && reg <= 4 && !_mission.Regions[reg].ToUpper().StartsWith("REGION"))
+					regName += " (" +_mission.Regions[reg - 1] + ")";
 				text = text.Replace("REG:" + reg, regName);
 			}
 			return text;
