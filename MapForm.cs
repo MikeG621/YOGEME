@@ -7,6 +7,7 @@
  */
 
 /* CHANGELOG
+ * [FIX] pct.MouseLeave will now clear shiftState
  * v1.13.12, 230116
  * [FIX] Can select disabled XWA SP1, since they're shown
  * [FIX] Selection corners X location
@@ -1922,9 +1923,11 @@ namespace Idmr.Yogeme
 				{
 					_mapData[i].WPs[17][r].Enabled = false;
 					_mapData[i].WPs[18][r].Enabled = false;
-					var exitBuoySP = new Platform.Xwa.FlightGroup.Waypoint();
-					exitBuoySP.RawZ = 621;	// just using as a flag
-					for (int o = 0; o < 16; o++)
+                    var exitBuoySP = new Platform.Xwa.FlightGroup.Waypoint
+                    {
+                        RawZ = 621  // just using as a flag
+                    };
+                    for (int o = 0; o < 16; o++)
 					{
                         int reg = o / 4;
                         int ord = o % 4;
@@ -2613,7 +2616,11 @@ namespace Idmr.Yogeme
 				_mapFocus = true;
 			}
 		}
-		void pctMap_MouseLeave(object sender, EventArgs e) { _mapFocus = false; }
+		void pctMap_MouseLeave(object sender, EventArgs e)
+		{
+			_mapFocus = false;
+			_shiftState = false;
+		}
 		void pctMap_MouseMove(object sender, MouseEventArgs e)
 		{
 			if (_leftButtonDown)
