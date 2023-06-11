@@ -100,6 +100,7 @@ namespace Idmr.Yogeme
             this.dataS = new System.Windows.Forms.DataGrid();
             this.label2 = new System.Windows.Forms.Label();
             this.tabEvents = new System.Windows.Forms.TabPage();
+            this.chkShift = new System.Windows.Forms.CheckBox();
             this.labBriefIndex2 = new System.Windows.Forms.Label();
             this.cboBriefIndex2 = new System.Windows.Forms.ComboBox();
             this.cmdNew = new System.Windows.Forms.Button();
@@ -152,7 +153,7 @@ namespace Idmr.Yogeme
             this.dataStrings = new System.Data.DataView();
             this.tmrPopup = new System.Windows.Forms.Timer(this.components);
             this.tmrMapRedraw = new System.Windows.Forms.Timer(this.components);
-            this.chkShift = new System.Windows.Forms.CheckBox();
+            this.cmdMarker = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pctBrief)).BeginInit();
             this.tabBrief.SuspendLayout();
             this.tabDisplay.SuspendLayout();
@@ -259,6 +260,7 @@ namespace Idmr.Yogeme
             // tabDisplay
             // 
             this.tabDisplay.BackColor = System.Drawing.SystemColors.Control;
+            this.tabDisplay.Controls.Add(this.cmdMarker);
             this.tabDisplay.Controls.Add(this.lblPopupInfo);
             this.tabDisplay.Controls.Add(this.pnlRegion);
             this.tabDisplay.Controls.Add(this.pnlNew);
@@ -1118,6 +1120,17 @@ namespace Idmr.Yogeme
             this.tabEvents.TabIndex = 2;
             this.tabEvents.Text = "Event List";
             // 
+            // chkShift
+            // 
+            this.chkShift.AutoSize = true;
+            this.chkShift.Location = new System.Drawing.Point(320, 172);
+            this.chkShift.Name = "chkShift";
+            this.chkShift.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.chkShift.Size = new System.Drawing.Size(61, 17);
+            this.chkShift.TabIndex = 21;
+            this.chkShift.Text = "Shift All";
+            this.chkShift.UseVisualStyleBackColor = true;
+            // 
             // labBriefIndex2
             // 
             this.labBriefIndex2.AutoSize = true;
@@ -1563,6 +1576,7 @@ namespace Idmr.Yogeme
             // 
             this.cboEvent.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboEvent.Items.AddRange(new object[] {
+            "Skip Marker",
             "Page Break",
             "Title Text",
             "Caption Text",
@@ -1708,16 +1722,15 @@ namespace Idmr.Yogeme
             this.tmrMapRedraw.Interval = 17;
             this.tmrMapRedraw.Tick += new System.EventHandler(this.tmrMapRedraw_Tick);
             // 
-            // chkShift
+            // cmdMarker
             // 
-            this.chkShift.AutoSize = true;
-            this.chkShift.Location = new System.Drawing.Point(320, 172);
-            this.chkShift.Name = "chkShift";
-            this.chkShift.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.chkShift.Size = new System.Drawing.Size(61, 17);
-            this.chkShift.TabIndex = 21;
-            this.chkShift.Text = "Shift All";
-            this.chkShift.UseVisualStyleBackColor = true;
+            this.cmdMarker.Location = new System.Drawing.Point(672, 246);
+            this.cmdMarker.Name = "cmdMarker";
+            this.cmdMarker.Size = new System.Drawing.Size(64, 23);
+            this.cmdMarker.TabIndex = 35;
+            this.cmdMarker.Text = "Marker";
+            this.cmdMarker.UseVisualStyleBackColor = true;
+            this.cmdMarker.Click += new System.EventHandler(this.cmdMarker_Click);
             // 
             // BriefingForm
             // 
@@ -1916,5 +1929,6 @@ namespace Idmr.Yogeme
 		private Timer tmrPopup;
 		private Timer tmrMapRedraw;
         private CheckBox chkShift;
+        private Button cmdMarker;
     }
 }

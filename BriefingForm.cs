@@ -7,6 +7,8 @@
  */
 
 /* CHANGELOG
+ * [NEW] SkipMarker for TIE/XvT
+ * [FIX] Moved page increment to CpaptionText instead of PageBreak
  * [FIX] Crash if a Caption/Title index was -1
  * v1.13.6, 220619
  * [NEW] Shift All checkbox on Events tab so timing can move together
@@ -145,6 +147,7 @@ namespace Idmr.Yogeme
 			Height = 426;
 			Width = 760;
 			tabBrief.Width = 752;
+			cmdMarker.Top = 160;
 			Point loc = new Point(608, 188);
 			pnlShipTag.Location = loc;
 			pnlTextTag.Location = loc;
@@ -228,6 +231,7 @@ namespace Idmr.Yogeme
 			cboColor.Items.Add("Blue");
 			cboColor.Items.Add("Purple");
 			cboColor.Items.Add("Black");
+			cmdMarker.Top = 160;
 			#endregion
 			importIcons(Application.StartupPath + "\\images\\XvT_BRF.bmp", 22);
 			_tags = _xvtBriefing.BriefingTag;
@@ -312,6 +316,7 @@ namespace Idmr.Yogeme
 			lblTitle.Text = "*Defined in .LST file*";
 			lblTitle.Font = new Font("Arial", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
 			cmdTitle.Enabled = false;
+			cmdMarker.Visible = false;
 			lblCaption.BackColor = Color.FromArgb(0x20, 0x30, 0x88);
 			lblCaption.Font = new Font("Arial", 8F, FontStyle.Regular, GraphicsUnit.Point, 0);
 			lblCaption.Size = new Size(510, 40);
@@ -343,6 +348,7 @@ namespace Idmr.Yogeme
 			cboColor.Items.Add("Purple");
 			cboColor.Items.Add("Pink");
 			cboColor.Items.Add("Blue");
+			cboEvent.Items.RemoveAt(0);	// Remove the "Skip Marker" event
 			cboEvent.Items.Add("New Icon");
 			cboEvent.Items.Add("Show Ship Data");
 			cboEvent.Items.Add("Move Icon");
@@ -651,7 +657,7 @@ namespace Idmr.Yogeme
 			int i;
 			for (i = 0; i < _maxEvents; i++)
 			{
-				if (_events[i, 0] <= hsbTimer.Value || _events[i, 1] != 3) continue;    // find next stop point after current position
+				if (_events[i, 0] <= hsbTimer.Value || (_events[i, 1] != 1 && _events[i, 1] != 3)) continue;    // find next stop point after current position
 				break;
 			}
 			if (i == _maxEvents) hsbTimer.Value = hsbTimer.Maximum - 11;    // tmr_Tick takes care of halting
@@ -1033,7 +1039,6 @@ namespace Idmr.Yogeme
 			{
 				if (_platform == Settings.Platform.TIE) lblTitle.Text = "";
 				lblCaption.Text = "";
-				_page++;
 				paint = true;
 			}
 			else if (_events[i, 1] == (int)BaseBriefing.EventType.TitleText && _platform == Settings.Platform.TIE)  // XvT and XWA use .LST files
@@ -1065,7 +1070,8 @@ namespace Idmr.Yogeme
 					lblCaption.ForeColor = _normalColor;
 					lblCaption.Text = _strings[_events[i, 2]].Replace("$", "\r\n");
 				}
-			}
+                _page++;
+            }
 			else if (_events[i, 1] == (int)BaseBriefing.EventType.MoveMap)
 			{
 				_mapX = _events[i, 2];
@@ -1191,12 +1197,12 @@ namespace Idmr.Yogeme
 				}
 				paint = true;
 			}
-			// don't need to account for EndBriefing
+			// don't need to account for EndBriefing or SkipMarker
 			return paint;
 		}
 		void resetBriefing()
 		{
-			_page = 1;
+			_page = 0;
 			_mapX = 0;
 			_mapY = 0;
 			_zoomX = 48;
@@ -2045,7 +2051,6 @@ namespace Idmr.Yogeme
 		void cmdBreak_Click(object sender, EventArgs e)
 		{
 			_eventType = BaseBriefing.EventType.PageBreak;
-			_page++;
 			enableOkCancel(true);
 		}
 		void cmdCancel_Click(object sender, EventArgs e)
@@ -2058,7 +2063,7 @@ namespace Idmr.Yogeme
 			hsbBRF.Visible = false;
 			vsbBRF.Visible = false;
 			lblInstruction.Visible = false;
-			if (_eventType == BaseBriefing.EventType.PageBreak && sender.ToString() != "OK") { _page--; }
+			if (_eventType == BaseBriefing.EventType.CaptionText && sender.ToString() != "OK") { _page--; }
 			else if (_eventType == BaseBriefing.EventType.TextTag1 && sender.ToString() != "OK") { _textTags = _tempTags; }
 			else if (_eventType == BaseBriefing.EventType.MoveMap && sender.ToString() != "OK")
 			{
@@ -2092,7 +2097,8 @@ namespace Idmr.Yogeme
 		{
 			cboText.Enabled = true;
 			_eventType = BaseBriefing.EventType.CaptionText;
-			enableOkCancel(true);
+            _page++;
+            enableOkCancel(true);
 		}
 		void cmdClear_Click(object sender, EventArgs e)
 		{
@@ -2121,10 +2127,34 @@ namespace Idmr.Yogeme
 			int i = -1;
 			switch (_eventType)
 			{
+				case BaseBriefing.EventType.SkipMarker:
+                    #region skip marker
+                    i = findExisting(_eventType);
+                    if (i < 10000) { break; }  // no further action, existing found
+                    i -= 10000;
+                    try
+                    {
+                        lstEvents.SelectedIndex = i;    // this will throw for last event
+                        insertEvent();
+                    }
+                    catch (ArgumentOutOfRangeException)
+                    {
+                        lstEvents.Items.Add("");
+                        for (int n = i + 2; n > i; n--)
+                        {
+                            if (_events[n - 1, 1] == 0) continue;
+                            for (int h = 0; h < 6; h++) _events[n, h] = _events[n - 1, h];
+                        }
+                    }
+                    _events[i, 0] = (short)hsbTimer.Value;
+                    _events[i, 1] = (short)_eventType;
+                    for (int n = 2; n < 6; n++) _events[i, n] = 0;
+                    break;
+                    #endregion
 				case BaseBriefing.EventType.PageBreak:
 					#region page break
 					i = findExisting(_eventType);
-					if (i < 10000) { _page--; break; }  // no further action, existing break found
+					if (i < 10000) { break; }  // no further action, existing break found
 					i -= 10000;
 					try
 					{
@@ -2223,7 +2253,7 @@ namespace Idmr.Yogeme
 						lblCaption.ForeColor = _normalColor;
 						lblCaption.Text = _strings[_events[i, 2]];
 					}
-					break;
+                    break;
 				#endregion
 				case BaseBriefing.EventType.MoveMap:
 					#region move
@@ -2626,7 +2656,12 @@ namespace Idmr.Yogeme
 			onModified?.Invoke("EventAdd", new EventArgs());
 			cmdCancel_Click("OK", new EventArgs());
 		}
-		void cmdMove_Click(object sender, EventArgs e)
+        void cmdMarker_Click(object sender, EventArgs e)
+        {
+			_eventType = BaseBriefing.EventType.SkipMarker;
+			enableOkCancel(true);
+        }
+        void cmdMove_Click(object sender, EventArgs e)
 		{
 			lblTitle.Visible = false;
 			lblCaption.Visible = false;
@@ -3008,6 +3043,28 @@ namespace Idmr.Yogeme
 		#endregion	tabStrings
 		#region tabEvents
 
+		int convertEventToCboEventIndex(short eventValue)
+		{
+			int index;
+            if (cboEvent.Items[0].ToString() == "Skip Marker")
+            {
+                if (eventValue == 1) index = 0;
+                else index = eventValue - 2;
+            }
+            else index = eventValue - 3;
+			return index;
+        }
+		short convertCboEventIndexToEvent(int index)
+		{
+			short eventValue;
+            if (cboEvent.Items[0].ToString() == "Skip Marker")
+            {
+                if (index == 0) eventValue = 1;
+                else eventValue = (short)(index + 2);
+            }
+            else eventValue = (short)(index + 3);
+			return eventValue;
+        }
 		/// <summary>Tally briefing events and make sure there's enough space in the raw briefing array.</summary>
 		bool hasAvailableEventSpace(int requestedParams)
 		{
@@ -3076,7 +3133,7 @@ namespace Idmr.Yogeme
 		{
 			if (index == -1) return;
 			string temp = string.Format("{0,-8:0.00}", (decimal)_events[index, 0] / _timerInterval);
-			temp += cboEvent.Items[_events[index, 1] - 3].ToString();
+			temp += cboEvent.Items[convertEventToCboEventIndex(_events[index, 1])].ToString();
 			if (_events[index, 1] == (int)BaseBriefing.EventType.TitleText || _events[index, 1] == (int)BaseBriefing.EventType.CaptionText && _events[index, 2] != -1)
 			{
 				if (_strings[_events[index, 2]].Length > 30) temp += ": \"" + _strings[_events[index, 2]].Substring(0, 30) + "...\"";
@@ -3262,16 +3319,16 @@ namespace Idmr.Yogeme
 			int i = lstEvents.SelectedIndex;
 			if (_loading || i == -1 || cboEvent.SelectedIndex == -1) return;
 
-			BaseBriefing brief = (_platform == Settings.Platform.TIE ? _tieBriefing : (_platform == Settings.Platform.XvT ? _xvtBriefing : (BaseBriefing)_xwaBriefing));
+            BaseBriefing brief = (_platform == Settings.Platform.TIE ? _tieBriefing : (_platform == Settings.Platform.XvT ? _xvtBriefing : (BaseBriefing)_xwaBriefing));
 			int oldEventSize = 2 + brief.EventParameterCount(_events[i, 1]);
-			int newEventSize = 2 + brief.EventParameterCount((short)(cboEvent.SelectedIndex + 3));
+			int newEventSize = 2 + brief.EventParameterCount(convertCboEventIndexToEvent(cboEvent.SelectedIndex));
 			if (hasAvailableEventSpace(newEventSize - oldEventSize) == false)
 			{
 				MessageBox.Show("Cannot change Event Type because the briefing list is full and the replaced event needs more space than is available.", "Error");
 				return;
 			}
 			onModified?.Invoke("ChangeEvent", new EventArgs());
-			_events[i, 1] = (short)(cboEvent.SelectedIndex + 3);
+			_events[i, 1] = convertCboEventIndexToEvent(cboEvent.SelectedIndex);
 			updateParameters();
 			updateList(i);
 		}
@@ -3409,7 +3466,7 @@ namespace Idmr.Yogeme
 			if (i == -1 || _loading) return;
 			_loading = true;
 			numTime.Value = _events[i, 0];
-			cboEvent.SelectedIndex = _events[i, 1] - 3;
+			cboEvent.SelectedIndex = convertEventToCboEventIndex(_events[i, 1]);
 			_loading = false;
 			updateParameters();
 			try
@@ -3690,7 +3747,8 @@ namespace Idmr.Yogeme
 
 			changeBriefingIndex(cboBriefIndex1.SelectedIndex);
 		}
-		void cboBriefIndex2_SelectedIndexChanged(object sender, EventArgs e)
+
+        void cboBriefIndex2_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (_loading) return;
 			_loading = true;

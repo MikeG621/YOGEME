@@ -33,6 +33,9 @@ Version History
  - (Backdrop) The "Color:" text now only shows for XWA.
  - (Backdrop) Added a label pointing out that the selected color is on the clipboard, as it's not applied automatically [Issue #80]
  - (Briefing) Fixed a crash that would occur if the Caption/Title event was created without a string being selected.
+ - (Briefing) Page number correctly increments on CaptionText instead of PageBreak
+ - (Briefing) ** NEW COMMAND ** For TIE and XvT, there is now a "Marker" button which adds a breakpoint for the Skip button in-game, without clearing the Text and Caption text.
+ - (Map) Moving the mouse off of the map will now clear the Shift state so it doesn't get stuck.
 
 v1.13.12, 16 Jan 2023
  - Various simple cleanups
