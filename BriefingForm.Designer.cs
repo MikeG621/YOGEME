@@ -28,6 +28,7 @@ namespace Idmr.Yogeme
             this.pctBrief = new System.Windows.Forms.PictureBox();
             this.tabBrief = new System.Windows.Forms.TabControl();
             this.tabDisplay = new System.Windows.Forms.TabPage();
+            this.cmdMarker = new System.Windows.Forms.Button();
             this.lblPopupInfo = new System.Windows.Forms.Label();
             this.pnlRegion = new System.Windows.Forms.Panel();
             this.numNewRegion = new System.Windows.Forms.NumericUpDown();
@@ -106,7 +107,6 @@ namespace Idmr.Yogeme
             this.cmdNew = new System.Windows.Forms.Button();
             this.grpUnknown = new System.Windows.Forms.GroupBox();
             this.label12 = new System.Windows.Forms.Label();
-            this.numUnk1 = new System.Windows.Forms.NumericUpDown();
             this.label13 = new System.Windows.Forms.Label();
             this.numUnk3 = new System.Windows.Forms.NumericUpDown();
             this.label14 = new System.Windows.Forms.Label();
@@ -153,7 +153,6 @@ namespace Idmr.Yogeme
             this.dataStrings = new System.Data.DataView();
             this.tmrPopup = new System.Windows.Forms.Timer(this.components);
             this.tmrMapRedraw = new System.Windows.Forms.Timer(this.components);
-            this.cmdMarker = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pctBrief)).BeginInit();
             this.tabBrief.SuspendLayout();
             this.tabDisplay.SuspendLayout();
@@ -175,7 +174,6 @@ namespace Idmr.Yogeme
             ((System.ComponentModel.ISupportInitialize)(this.dataS)).BeginInit();
             this.tabEvents.SuspendLayout();
             this.grpUnknown.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numUnk1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numUnk3)).BeginInit();
             this.grpParameters.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numRegion)).BeginInit();
@@ -298,6 +296,16 @@ namespace Idmr.Yogeme
             this.tabDisplay.Size = new System.Drawing.Size(1053, 358);
             this.tabDisplay.TabIndex = 0;
             this.tabDisplay.Text = "Briefing";
+            // 
+            // cmdMarker
+            // 
+            this.cmdMarker.Location = new System.Drawing.Point(672, 246);
+            this.cmdMarker.Name = "cmdMarker";
+            this.cmdMarker.Size = new System.Drawing.Size(64, 23);
+            this.cmdMarker.TabIndex = 35;
+            this.cmdMarker.Text = "Marker";
+            this.cmdMarker.UseVisualStyleBackColor = true;
+            this.cmdMarker.Click += new System.EventHandler(this.cmdMarker_Click);
             // 
             // lblPopupInfo
             // 
@@ -1162,7 +1170,6 @@ namespace Idmr.Yogeme
             // grpUnknown
             // 
             this.grpUnknown.Controls.Add(this.label12);
-            this.grpUnknown.Controls.Add(this.numUnk1);
             this.grpUnknown.Controls.Add(this.label13);
             this.grpUnknown.Controls.Add(this.numUnk3);
             this.grpUnknown.Controls.Add(this.label14);
@@ -1178,22 +1185,10 @@ namespace Idmr.Yogeme
             this.label12.AutoSize = true;
             this.label12.Location = new System.Drawing.Point(18, 25);
             this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(13, 13);
+            this.label12.Size = new System.Drawing.Size(82, 13);
             this.label12.TabIndex = 1;
-            this.label12.Text = "1";
+            this.label12.Text = "1 (Current Time)";
             this.label12.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
-            // 
-            // numUnk1
-            // 
-            this.numUnk1.Location = new System.Drawing.Point(35, 25);
-            this.numUnk1.Maximum = new decimal(new int[] {
-            65535,
-            0,
-            0,
-            0});
-            this.numUnk1.Name = "numUnk1";
-            this.numUnk1.Size = new System.Drawing.Size(56, 20);
-            this.numUnk1.TabIndex = 21;
             // 
             // label13
             // 
@@ -1722,16 +1717,6 @@ namespace Idmr.Yogeme
             this.tmrMapRedraw.Interval = 17;
             this.tmrMapRedraw.Tick += new System.EventHandler(this.tmrMapRedraw_Tick);
             // 
-            // cmdMarker
-            // 
-            this.cmdMarker.Location = new System.Drawing.Point(672, 246);
-            this.cmdMarker.Name = "cmdMarker";
-            this.cmdMarker.Size = new System.Drawing.Size(64, 23);
-            this.cmdMarker.TabIndex = 35;
-            this.cmdMarker.Text = "Marker";
-            this.cmdMarker.UseVisualStyleBackColor = true;
-            this.cmdMarker.Click += new System.EventHandler(this.cmdMarker_Click);
-            // 
             // BriefingForm
             // 
             this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
@@ -1779,7 +1764,6 @@ namespace Idmr.Yogeme
             this.tabEvents.PerformLayout();
             this.grpUnknown.ResumeLayout(false);
             this.grpUnknown.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numUnk1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numUnk3)).EndInit();
             this.grpParameters.ResumeLayout(false);
             this.grpParameters.PerformLayout();
@@ -1842,7 +1826,6 @@ namespace Idmr.Yogeme
 		Button cmdDown;
 		GroupBox grpParameters;
 		GroupBox grpUnknown;
-		NumericUpDown numUnk1;
 		Label label12;
 		Label label13;
 		NumericUpDown numUnk3;

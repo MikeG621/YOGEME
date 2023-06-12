@@ -8,6 +8,7 @@
 
 /* CHANGELOG
  * [NEW] SkipMarker for TIE/XvT
+ * [UPD] Replaced Unk1 field with label
  * [FIX] Moved page increment to CpaptionText instead of PageBreak
  * [FIX] Crash if a Caption/Title index was -1
  * v1.13.6, 220619
@@ -165,7 +166,6 @@ namespace Idmr.Yogeme
 			lstEvents.Items.Clear();
 			importEvents(_tieBriefing.Events);
 			hsbTimer.Value = 0;
-			numUnk1.Value = _tieBriefing.Unknown1;
 			numUnk3.Enabled = false;
 			cboText.SelectedIndex = 0;
 			cboFGTag.SelectedIndex = 0;
@@ -245,7 +245,6 @@ namespace Idmr.Yogeme
 			lstEvents.Items.Clear();
 			importEvents(_xvtBriefing.Events);
 			hsbTimer.Value = 0;
-			numUnk1.Value = _xvtBriefing.Unknown1;
 			numUnk3.Value = _xvtBriefing.Unknown3;
 			cboText.SelectedIndex = 0;
 			cboFGTag.SelectedIndex = 0;
@@ -380,7 +379,6 @@ namespace Idmr.Yogeme
 			cboNewIcon.Items.AddRange(names);
 			importEvents(_xwaBriefing.Events);
 			hsbTimer.Value = 0;
-			numUnk1.Value = _xwaBriefing.Unknown1;
 			numUnk3.Enabled = false;
 			txtNotes.Enabled = true;
 			txtNotes.Text = _xwaBriefing.BriefingStringsNotes[0];
@@ -577,7 +575,6 @@ namespace Idmr.Yogeme
 		{
 			BaseBriefing brief = (_platform == Settings.Platform.TIE ? _tieBriefing : (_platform == Settings.Platform.XvT ? _xvtBriefing : (BaseBriefing)_xwaBriefing));
 			int offset = 0;
-			brief.Unknown1 = (short)numUnk1.Value;
 			for (int evnt = 0; evnt < _maxEvents; evnt++)
 			{
 				for (int i = 0; i < 2; i++, offset++) brief.Events[offset] = _events[evnt, i];
@@ -3630,7 +3627,6 @@ namespace Idmr.Yogeme
 				txtLength.Text = Convert.ToString(Math.Round(((decimal)_xvtBriefing.Length / _timerInterval), 2));
 				lstEvents.Items.Clear();
 				importEvents(_xvtBriefing.Events);
-				numUnk1.Value = _xvtBriefing.Unknown1;
 				numUnk3.Value = _xvtBriefing.Unknown3;
 				cboText.SelectedIndex = 0;
 				cboFGTag.SelectedIndex = 0;
@@ -3648,7 +3644,6 @@ namespace Idmr.Yogeme
 				txtLength.Text = Convert.ToString(Math.Round(((decimal)_xwaBriefing.Length / _timerInterval), 2));
 				lstEvents.Items.Clear();
 				importEvents(_xwaBriefing.Events);
-				numUnk1.Value = _xwaBriefing.Unknown1;
 				numUnk3.Enabled = false;
 				txtNotes.Enabled = true;
 				txtNotes.Text = _xwaBriefing.BriefingStringsNotes[0];
