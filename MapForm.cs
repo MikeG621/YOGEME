@@ -8,6 +8,7 @@
 
 /* CHANGELOG
  * [FIX] pct.MouseLeave will now clear shiftState
+ * [FIX] buoys also check Des2
  * v1.13.12, 230116
  * [FIX] Can select disabled XWA SP1, since they're shown
  * [FIX] Selection corners X location
@@ -1936,7 +1937,7 @@ namespace Idmr.Yogeme
 							for (int b = 0; b < numCraft; b++)
 							{
 								var buoy = (Platform.Xwa.FlightGroup)_mapData[b].FlightGroup;
-                                if (buoy.CraftType == 85 && buoy.Waypoints[0][4] == r && buoy.Designation1 == reg + 12)   // From are #12-15
+                                if (buoy.CraftType == 85 && buoy.Waypoints[0][4] == r && (buoy.Designation1 == reg + 12 || buoy.Designation2 == reg + 12))   // From are #12-15
 								{
 									exitBuoySP = buoy.Waypoints[0];
 									System.Diagnostics.Debug.WriteLine(fg.ToString() + " enters Region " + (r + 1) + " from " + (reg + 1) + " via " + buoy.ToString());
@@ -2005,7 +2006,7 @@ namespace Idmr.Yogeme
 						for (int b = 0; b < numCraft; b++)
 						{
                             var buoy = (Platform.Xwa.FlightGroup)_mapData[b].FlightGroup;
-                            if (buoy.CraftType == 85 && buoy.Waypoints[0][4] == hyperEntry.Region && buoy.Designation1 == r + 16)  // To are #16-19
+                            if (buoy.CraftType == 85 && buoy.Waypoints[0][4] == hyperEntry.Region && (buoy.Designation1 == r + 16 || buoy.Designation2 == r + 16))  // To are #16-19
 							{
 								enterBuoy = buoy.Waypoints[0];
 								System.Diagnostics.Debug.WriteLine(fg.ToString() + " leaves Region " + (hyperEntry.Region + 1) + " to " + (r + 1) + " via " + buoy.ToString());
