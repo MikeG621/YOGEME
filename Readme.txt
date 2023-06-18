@@ -36,6 +36,7 @@ Version History
  - (Briefing) Page number correctly increments on CaptionText instead of PageBreak
  - (Briefing) ** NEW COMMAND ** For TIE and XvT, there is now a "Marker" button which adds a breakpoint for the Skip button in-game, without clearing the Text and Caption text.
  - (Map) Moving the mouse off of the map will now clear the Shift state so it doesn't get stuck.
+ - (Map, XWA) Virtual hyper waypoints will check secondary Designation for buoys, and multiple related selection issues were fixed. [Issue #83]
 
 v1.13.12, 16 Jan 2023
  - Various simple cleanups

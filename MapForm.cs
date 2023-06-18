@@ -8,7 +8,8 @@
 
 /* CHANGELOG
  * [FIX] pct.MouseLeave will now clear shiftState
- * [FIX] buoys also check Des2
+ * [FIX] buoys also check Des2 [#83]
+ * [FIX] virtual exit points now only selectable when visible [#83]
  * v1.13.12, 230116
  * [FIX] Can select disabled XWA SP1, since they're shown
  * [FIX] Selection corners X location
@@ -997,7 +998,7 @@ namespace Idmr.Yogeme
 					if (_platform == Settings.Platform.XWA)
 					{
 						Platform.Xwa.FlightGroup.Waypoint cwp = (Platform.Xwa.FlightGroup.Waypoint)_mapData[i].WPs[0][wp];
-						if (cwp.Region != numRegion.Value - 1) continue;
+						if (cwp.Region != reg) continue;
 					}
 					if (waypointInside(_mapData[i].WPs[0][wp], ref m1, ref m2))
 					{
@@ -1009,21 +1010,32 @@ namespace Idmr.Yogeme
 					for (int wp = 0; wp < _mapData[i].WPs[ord].Length; wp++)
 					{
 						if (!chkWP[4 + wp].Checked || !_mapData[i].WPs[ord][wp].Enabled) continue;
-						if (_platform == Settings.Platform.XWA && _mapData[i].WPs[18][reg].Enabled && wp == 0) continue;
+						if (wp == 0 && _mapData[i].WPs[18][reg].Enabled && _mapData[i].WPs[0][0][4] != reg) continue;
 						if (waypointInside(_mapData[i].WPs[ord][wp], ref m1, ref m2))
 						{
 							output.Add(new SelectionData(i, _mapData[i], ord, wp));
 						}
 					}
-				}
-				if (_platform == Settings.Platform.XWA)
-				{
-					var hyp = (Platform.Xwa.FlightGroup.Waypoint)_mapData[i].WPs[17][reg];
-					if (hyp.Enabled && waypointInside(hyp, ref m1, ref m2))
-						output.Add(new SelectionData(i, _mapData[i], 17, reg));
+
+                    var hyp = (Platform.Xwa.FlightGroup.Waypoint)_mapData[i].WPs[17][reg];
+                    if (hyp.Enabled && waypointInside(hyp, ref m1, ref m2))
+                        output.Add(new SelectionData(i, _mapData[i], 17, reg));
 					var exit = (Platform.Xwa.FlightGroup.Waypoint)_mapData[i].WPs[18][reg];
-                    if (exit.Enabled && waypointInside(exit, ref m1, ref m2))
-                        output.Add(new SelectionData(i, _mapData[i], 18, reg));
+					if (exit.Enabled && waypointInside(exit, ref m1, ref m2))
+					{
+						if (_mapData[i].WPs[0][0][4] != reg && numOrder.Value == 1)
+							output.Add(new SelectionData(i, _mapData[i], 18, reg));
+						else
+						{
+							var fg = (Platform.Xwa.FlightGroup)_mapData[i].FlightGroup;
+							for (int o = 0; o < 4; o++)
+								if (fg.Orders[reg, o].Command == 50 && (o + 1) == numOrder.Value)
+								{
+                                    output.Add(new SelectionData(i, _mapData[i], 18, reg));
+									break;
+                                }
+						}
+					}
                 }
 			}
 		}
