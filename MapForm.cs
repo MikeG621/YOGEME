@@ -10,6 +10,7 @@
  * [FIX] pct.MouseLeave will now clear shiftState
  * [FIX] buoys also check Des2 [#83]
  * [FIX] virtual exit points now only selectable when visible [#83]
+ * [FIX] virtual aim points now only selectable when visible [#83]
  * v1.13.12, 230116
  * [FIX] Can select disabled XWA SP1, since they're shown
  * [FIX] Selection corners X location
@@ -1018,8 +1019,12 @@ namespace Idmr.Yogeme
 					}
 
                     var hyp = (Platform.Xwa.FlightGroup.Waypoint)_mapData[i].WPs[17][reg];
-                    if (hyp.Enabled && waypointInside(hyp, ref m1, ref m2))
-                        output.Add(new SelectionData(i, _mapData[i], 17, reg));
+					if (hyp.Enabled && waypointInside(hyp, ref m1, ref m2))
+					{
+						output.Add(new SelectionData(i, _mapData[i], 17, reg));
+                    }
+					//TODO: need to add the order check here ^ since it's grabbing hidden WPs
+					// I think what would be better is to completely overhaul this; centralize the visibility, use that for selection and display
 					var exit = (Platform.Xwa.FlightGroup.Waypoint)_mapData[i].WPs[18][reg];
 					if (exit.Enabled && waypointInside(exit, ref m1, ref m2))
 					{
