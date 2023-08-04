@@ -3,13 +3,14 @@
  * Copyright (C) 2007-2023 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.13.6+
+ * VERSION: 1.14
  */
 
 /* CHANGELOG
+ * v1.14, 230804
  * [NEW] SkipMarker for TIE/XvT
  * [UPD] Replaced Unk1 field with label
- * [FIX] Moved page increment to CpaptionText instead of PageBreak
+ * [FIX] Moved page increment to CaptionText instead of PageBreak
  * [FIX] Crash if a Caption/Title index was -1
  * v1.13.6, 220619
  * [NEW] Shift All checkbox on Events tab so timing can move together

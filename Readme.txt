@@ -3,8 +3,8 @@
 
 Author: Michael Gaisser (mjgaisser@gmail.com)
 Contributor: Random Starfighter (JB)
-Version: 1.13.12
-Date: 2023.01.16
+Version: 1.14
+Date: 2023.08.04
 
 Thank you for downloading YOGEME, the all-in-one mission editor for the X-Wing
 series, Xwing95 through X-wing Alliance.  This program allows easy mission
@@ -28,6 +28,8 @@ your user settings.
 ==========
 Version History
 
+v1.14, 04 Aug 2023
+ - (XWA) Wav form now supports mission names that start with "8" to support the MP hook [Issue #84]
  - (XWA) Moved around the Trigger Parameter fields to be more consistent between locations and so it's a bit more natural to
      select the correct control when adjusting the Region or Proximity target [Issue #82]
  - (Backdrop) The "Color:" text now only shows for XWA.
@@ -36,7 +38,7 @@ Version History
  - (Briefing) Page number correctly increments on CaptionText instead of PageBreak
  - (Briefing) ** NEW COMMAND ** For TIE and XvT, there is now a "Marker" button which adds a breakpoint for the Skip button in-game, without clearing the Text and Caption text.
  - (Map) Moving the mouse off of the map will now clear the Shift state so it doesn't get stuck.
- - (Map, XWA) Virtual hyper waypoints will check secondary Designation for buoys, and multiple related selection issues were fixed. [Issue #83]
+ - (Map, XWA) Virtual hyper waypoints will check secondary Designation for buoys, and multiple related selection issues were fixed. Likely still needs some more work. [Issue #83]
 
 v1.13.12, 16 Jan 2023
  - Various simple cleanups

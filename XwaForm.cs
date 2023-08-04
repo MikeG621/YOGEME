@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2023 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.13.12+
+ * VERSION: 1.14
  */
 
 /* CHANGELOG
+ * v1.14, 230804
  * [UPD] Moved around the Para2 and Para1 trigger controls so Para1 is naturally closer to the Target control
  * [UPD] Region names now appear in trigger text
  * v1.13.12, 230116

@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2023 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.13.12
+ * VERSION: 1.14
  */
 
 /* CHANGELOG
+ * v1.14, 230804
  * [FIX] pct.MouseLeave will now clear shiftState
  * [FIX] buoys also check Des2 [#83]
  * [FIX] virtual exit points now only selectable when visible [#83]

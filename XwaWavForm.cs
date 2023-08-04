@@ -1,12 +1,15 @@
 ﻿/*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
- * Copyright (C) 2007-2022 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2023 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.12+
+ * VERSION: 1.14
  */
 
 /* CHANGELOG
+ * v1.14, 230804
+ * [FIX] Support for "8B" co-op missions [#84]
+ * v1.13.12, 220319
  * [FIX] LST wasn't closing during read
  * [NEW] Failed/Hints audio
  * v1.12, 220103
@@ -54,11 +57,11 @@ namespace Idmr.Yogeme
 			_mission = mission;
 			_wave = _config.XwaPath + "\\Wave\\";
 			_lstFile = _wave + "MissionVoice\\" + Path.GetFileNameWithoutExtension(_mission.MissionFileName) + ".LST";
-			Regex rx = new Regex(@"1B(\d+)M(\d+)\D\w*", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+			Regex rx = new Regex(@"(1|8)B(\d+)M(\d+)\D\w*", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 			Match match = rx.Match(Path.GetFileNameWithoutExtension(_mission.MissionFileName));
 			if (!match.Success)
 			{
-				MessageBox.Show("Mission is not named correctly. Must start with \"1B#M#\".");
+				MessageBox.Show("Mission is not named correctly. Must start with \"1B#M#\" or \"8B#M#\".");
 				Close();
 				return;
 			}
