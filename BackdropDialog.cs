@@ -9,7 +9,7 @@
 /* CHANGELOG
  * v1.14, 230804
  * [FIX] Color labels now only show in XWA
- * [NEW] Extra Color label pointing out that the color is on clipboard
+ * [NEW #80] Extra Color label pointing out that the color is on clipboard
  * v1.13.9, 220907
  * [NEW #71] Ability to skip repeated DAT load failures
  * [NEW #72] Resdata read will ignore lines commented by ; or //
