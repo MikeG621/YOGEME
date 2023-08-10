@@ -3,7 +3,7 @@
  * Copyright (C) 2007-2023 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.1
+ * VERSION: 1.14
  */
 
 /* CHANGELOG
