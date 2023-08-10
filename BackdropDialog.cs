@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2023 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.13.9+
+ * VERSION: 1.1
  */
 
 /* CHANGELOG
+ * v1.14, 230804
  * [FIX] Color labels now only show in XWA
  * [NEW] Extra Color label pointing out that the color is on clipboard
  * v1.13.9, 220907
