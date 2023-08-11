@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2023 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.14
+ * VERSION: 1.14+
  */
 
 /* CHANGELOG
+ * [FIX #85] Call to Backdrops for hook now uses full path
  * v1.14, 230804
  * [UPD] Moved around the Para2 and Para1 trigger controls so Para1 is naturally closer to the Target control
  * [UPD] Region names now appear in trigger text
@@ -3522,7 +3523,7 @@ namespace Idmr.Yogeme
 			{
 				BackdropDialog dlg = null;
 				// HACK: backdrop index fix
-				if (_hookBackdropInstalled) dlg = new BackdropDialog(_mission.FlightGroups[_activeFG].Backdrop, _mission.FlightGroups[_activeFG].GlobalCargo - 1, _mission.MissionFileName, _config);
+				if (_hookBackdropInstalled) dlg = new BackdropDialog(_mission.FlightGroups[_activeFG].Backdrop, _mission.FlightGroups[_activeFG].GlobalCargo - 1, _mission.MissionPath, _config);
 				else dlg = new BackdropDialog(_mission.FlightGroups[_activeFG].Backdrop, _mission.FlightGroups[_activeFG].GlobalCargo - 1, _config);
 				if (dlg.ShowDialog() == DialogResult.OK)
 				{

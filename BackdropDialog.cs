@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2023 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.14
+ * VERSION: 1.14+
  */
 
 /* CHANGELOG
+ * [FIX #85] Now looks for hook INI or TXT at mission location
  * v1.14, 230804
  * [FIX] Color labels now only show in XWA
  * [NEW #80] Extra Color label pointing out that the color is on clipboard
@@ -145,9 +146,9 @@ namespace Idmr.Yogeme
 		/// <summary>Constructor for XWA, Backdrop hook enabled</summary>
 		/// <param name="index">Backdrop index, set to 0 if out of range</param>
 		/// <param name="shadow">Shadow or backdrop variant, set to 0 if out of range</param>
-		/// <param name="fileName">Name of mission for hook implementation</param>
+		/// <param name="filePath">Full path of mission for hook implementation</param>
 		/// <exception cref="ApplicationException">Platform installation not found.</exception>
-		public BackdropDialog(int index, int shadow, string fileName, Settings config)
+		public BackdropDialog(int index, int shadow, string filePath, Settings config)
 		{
 			_platform = MissionFile.Platform.XWA;
 			_hookInstalled = true;
@@ -157,9 +158,8 @@ namespace Idmr.Yogeme
 			if (_shadow < 0 || _shadow > 6) _shadow = 0;
 			InitializeComponent();
 			if (!platformInstalled(config)) throw new ApplicationException("Platform installation not found, feature unavailable.");
-			_fileName = Path.GetFileNameWithoutExtension(fileName);
-			if (File.Exists(_installDirectory + "\\Missions\\" + _fileName + "_Resdata.txt")) _fileName = _installDirectory + "\\Missions\\" + _fileName + "_Resdata.txt";
-			else _fileName = _installDirectory + "\\Missions\\" + _fileName + ".ini";
+			if (File.Exists(filePath.ToLower().Replace(".tie", "_Resdata.txt"))) _fileName = filePath.ToLower().Replace(".tie", "_Resdata.txt");
+			else _fileName = filePath.ToLower().Replace(".tie", ".ini");
 			createThumbnails();
 			vsbThumbs.Enabled = true;
 			numBackdrop.Maximum = _numBackdrops - 1;
