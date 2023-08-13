@@ -1,12 +1,13 @@
 ﻿/*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
- * Copyright (C) 2007-2021 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2023 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.11.2
+ * VERSION: 1.11.2+
  */
 
 /* CHANGELOG
+ * [NEW] Hyperspace hook support
  * v1.11.2, 2101005
  * [UPD] Redid the layout so lst's less likely to be cutoff.
  * v1.10, 210520
@@ -67,12 +68,13 @@ namespace Idmr.Yogeme
 		readonly string _famHangarMapFile = "";
 		readonly string _32bppFile = "";
 		readonly string _shieldFile = "";
+		readonly string _hyperFile = "";
 		readonly string _installDirectory = "";
 		readonly string _mis = "Missions\\";
 		readonly string _res = "Resdata\\";
 		readonly string _wave = "Wave\\";
 		readonly string _fm = "FlightModels\\";
-		enum ReadMode { None = -1, Backdrop, Mission, Sounds, Objects, HangarObjects, HangarCamera, FamilyHangarCamera, HangarMap, FamilyHangarMap, Skins, Shield }
+		enum ReadMode { None = -1, Backdrop, Mission, Sounds, Objects, HangarObjects, HangarCamera, FamilyHangarCamera, HangarMap, FamilyHangarMap, Skins, Shield, Hyper }
 		bool _loading = false;
 		readonly int[,] _cameras = new int[5, 3];
 		readonly int[,] _defaultCameras = new int[5, 3];
@@ -166,6 +168,7 @@ namespace Idmr.Yogeme
 				chkSkins.Enabled = File.Exists(_installDirectory + "Hook_32bpp.dll");
 				chkShield.Enabled = File.Exists(_installDirectory + "Hook_Shield.dll");
 				chkSFoils.Enabled = File.Exists(_installDirectory + "Hook_SFoils.dll");
+				chkHyper.Enabled = File.Exists(_installDirectory + "Hook_hyperspace.dll");
 
 				_bdFile = checkFile("_Resdata.txt");
 				_soundFile = checkFile("_Sounds.txt");
@@ -178,6 +181,7 @@ namespace Idmr.Yogeme
 				_famHangarMapFile = checkFile("_FamHangarMap.txt");
 				_32bppFile = checkFile("_Skins.txt");
 				_shieldFile = checkFile("_Shield.txt");
+				_hyperFile = checkFile("_Hyperspace.txt");
 			}
 			StreamReader srMission = null;
 			string line;
@@ -322,6 +326,19 @@ namespace Idmr.Yogeme
 				}
 				srShield.Close();
 			}
+			if (_hyperFile != "")
+			{
+				using (StreamReader sr = new StreamReader(_hyperFile))
+				{
+                    while ((line = sr.ReadLine()) != null)
+                    {
+                        line = removeComment(line);
+                        if (line == "") continue;
+
+                        parseHyper(line);
+                    }
+                }
+			}
 			#endregion
 
 			if (srMission != null)
@@ -348,6 +365,7 @@ namespace Idmr.Yogeme
 						else if (lineLower == "[famhangarmap]") readMode = ReadMode.FamilyHangarMap;
 						else if (lineLower == "[skins]") readMode = ReadMode.Skins;
 						else if (lineLower == "[shield]") readMode = ReadMode.Shield;
+						else if (lineLower == "[hyperspace]") readMode = ReadMode.Hyper;
 					}
 					else if (readMode == ReadMode.Backdrop) lstBackdrops.Items.Add(line);
 					else if (readMode == ReadMode.Mission) parseMission(line);
@@ -370,6 +388,7 @@ namespace Idmr.Yogeme
 					}
 					else if (readMode == ReadMode.Skins) lstSkins.Items.Add(line);
 					else if (readMode == ReadMode.Shield) parseShield(line);
+					else if (readMode == ReadMode.Hyper) parseHyper(line);
 				}
 				#endregion
 				srMission.Close();
@@ -382,6 +401,7 @@ namespace Idmr.Yogeme
 			chkHangars.Checked = useHangarObjects | useHangarCamera | useFamilyHangarCamera | useHangarMap;
 			chkSkins.Checked = (lstSkins.Items.Count > 0);
 			chkShield.Checked = (lstShield.Items.Count > 0);
+			chkHyper.Checked = !optHypGlobal.Checked;
 		}
 
 		string checkFile(string extension)
@@ -1100,9 +1120,29 @@ namespace Idmr.Yogeme
 		{
 			if (lstShield.SelectedIndex != -1) lstShield.Items.RemoveAt(lstShield.SelectedIndex);
 		}
-		#endregion
+        #endregion
 
-		private void cmdCancel_Click(object sender, EventArgs e)
+        #region Hyper
+		void parseHyper(string line)
+		{
+            string[] parts = line.ToLower().Replace(" ", "").Split('=');
+			if (parts[0] == "shorthyperspaceeffect" && parts.Length == 2)
+			{
+				int value = int.Parse(parts[1]);
+				if (value == -1) optHypGlobal.Checked = true;
+				else if (value == 0) optHypNormal.Checked = true;
+				else if (value == 1) optHypEnabled.Checked = true;
+			}
+        }
+        private void chkHyper_CheckedChanged(object sender, EventArgs e)
+        {
+			optHypEnabled.Enabled = chkHyper.Checked;
+			optHypGlobal.Enabled = chkHyper.Checked;
+			optHypNormal.Enabled = chkHyper.Checked;
+        }
+        #endregion
+
+        private void cmdCancel_Click(object sender, EventArgs e)
 		{
 			Close();
 		}
@@ -1134,6 +1174,7 @@ namespace Idmr.Yogeme
 
 			if (!chkSkins.Checked && _32bppFile != "") File.Delete(_32bppFile);
 			if (!chkShield.Checked && _shieldFile != "") File.Delete(_shieldFile);
+			if (!chkHyper.Checked && _hyperFile != "") File.Delete(_hyperFile);
 
 			if (!chkBackdrops.Checked && !chkMission.Checked && !chkSounds.Checked && !chkObjects.Checked && !useHangarObjects && !useHangarCamera && !useFamilyHangarCamera && !useHangarMap && !useFamilyHangarMap && !chkSFoils.Checked && !chkShield.Checked)
 			{
@@ -1349,6 +1390,11 @@ namespace Idmr.Yogeme
 					}
 					sw.WriteLine("");
 				}
+				if (chkHyper.Checked && !optHypGlobal.Checked)
+				{
+					sw.WriteLine("[Hyperspace]");
+					sw.WriteLine("ShortHyperspaceEffect=" + (optHypNormal.Checked ? "0" : "1"));
+				}
 				sw.Flush();
 				sw.Close();
 				if (_bdFile != "") File.Delete(_bdFile);
@@ -1440,5 +1486,5 @@ namespace Idmr.Yogeme
 				return result;
 			}
 		}
-	}
+    }
 }

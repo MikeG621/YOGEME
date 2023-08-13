@@ -29,6 +29,8 @@ your user settings.
 Version History
 
  - (XWA) Backdrop hook now loads the Resdata.txt or INI based on mission location, not just "\Missions\" [Issue #85]
+ - (XWA) Hyperspace hook support added
+
 v1.14, 04 Aug 2023
  - (XWA) Wav form now supports mission names that start with "8" to support the MP hook [Issue #84]
  - (XWA) Moved around the Trigger Parameter fields to be more consistent between locations and so it's a bit more natural to
