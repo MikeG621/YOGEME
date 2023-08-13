@@ -7,7 +7,8 @@
  */
 
 /* CHANGELOG
- * [NEW] Hyperspace hook support
+ * [ADD] Hyperspace hook support
+ * [ADD] Object profile per model
  * v1.11.2, 2101005
  * [UPD] Redid the layout so lst's less likely to be cutoff.
  * v1.10, 210520
@@ -560,10 +561,13 @@ namespace Idmr.Yogeme
 			cmdAddObjects.Enabled = chkObjects.Checked;
 			cmdRemoveObjects.Enabled = chkObjects.Checked;
 			optCraft.Enabled = chkObjects.Checked;
-			optProfile.Enabled = chkObjects.Checked;
-			cboProfileFG.Enabled = chkObjects.Checked && optProfile.Checked;
-			txtProfile.Enabled = chkObjects.Checked && optProfile.Checked;
-		}
+			optFGProfile.Enabled = chkObjects.Checked;
+			optCraftProfile.Enabled = chkObjects.Checked;
+			cboProfileFG.Enabled = chkObjects.Checked && optFGProfile.Checked;
+			txtProfile.Enabled = chkObjects.Checked && (optFGProfile.Checked | optCraftProfile.Checked);
+        }
+		// TODO: still need ObjectProfile_[craft]_[weaponindex] = [Profile]
+		// problem is I want the weapon indexes to be intelligent
 
 		private void cmdAddObjects_Click(object sender, EventArgs e)
 		{
@@ -581,21 +585,37 @@ namespace Idmr.Yogeme
 						lstObjects.Items.Add(line + opnObjects.FileName.Substring(opnObjects.FileName.IndexOf(_fm)));
 				}
 			}
-			else if (optProfile.Checked && txtProfile.Text != "" && txtProfile.Text.ToLower() != "default")
+			else if (optFGProfile.Checked && txtProfile.Text != "" && txtProfile.Text.ToLower() != "default")
 			{
-				string line = "ObjectProfile_fg_" + cboProfileFG.SelectedIndex + "=" + txtProfile.Text;
+				string line = "ObjectProfile_fg_" + cboProfileFG.SelectedIndex + " = " + txtProfile.Text;
 				lstObjects.Items.Add(line);
 			}
+			else if (optCraftProfile.Checked && txtProfile.Text != "" && txtProfile.Text.ToLower() != "default")
+			{
+                if (_installDirectory != "") opnObjects.InitialDirectory = _installDirectory + _fm;
+                opnObjects.Title = "Select object...";
+                DialogResult res = opnObjects.ShowDialog();
+                if (res == DialogResult.OK)
+                {
+                    string line = "ObjectProfile_" + Path.GetFileNameWithoutExtension(opnObjects.FileName) + " = " + txtProfile.Text;
+					lstObjects.Items.Add(line);
+                }
+            }
 		}
 		private void cmdRemoveObjects_Click(object sender, EventArgs e)
 		{
 			if (lstObjects.SelectedIndex != -1) lstObjects.Items.RemoveAt(lstObjects.SelectedIndex);
 		}
 
-		private void optProfile_CheckedChanged(object sender, EventArgs e)
+        private void optCraftProfile_CheckedChanged(object sender, EventArgs e)
+        {
+            //cboProfileFG.Enabled = optFGProfile.Checked;
+            txtProfile.Enabled = (optFGProfile.Checked | optCraftProfile.Checked);
+        }
+        private void optFGProfile_CheckedChanged(object sender, EventArgs e)
 		{
-			cboProfileFG.Enabled = optProfile.Checked;
-			txtProfile.Enabled = optProfile.Checked;
+			cboProfileFG.Enabled = optFGProfile.Checked;
+			txtProfile.Enabled = (optFGProfile.Checked | optCraftProfile.Checked);
 		}
 		#endregion
 

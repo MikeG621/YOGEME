@@ -53,7 +53,7 @@
             this.chkSounds = new System.Windows.Forms.CheckBox();
             this.opnSounds = new System.Windows.Forms.OpenFileDialog();
             this.cboProfileFG = new System.Windows.Forms.ComboBox();
-            this.optProfile = new System.Windows.Forms.RadioButton();
+            this.optFGProfile = new System.Windows.Forms.RadioButton();
             this.optCraft = new System.Windows.Forms.RadioButton();
             this.txtProfile = new System.Windows.Forms.TextBox();
             this.cmdRemoveObjects = new System.Windows.Forms.Button();
@@ -237,12 +237,13 @@
             this.lstShield = new System.Windows.Forms.ListBox();
             this.chkShield = new System.Windows.Forms.CheckBox();
             this.tabHyper = new System.Windows.Forms.TabPage();
-            this.chkHyper = new System.Windows.Forms.CheckBox();
-            this.label53 = new System.Windows.Forms.Label();
-            this.optHypNormal = new System.Windows.Forms.RadioButton();
-            this.optHypGlobal = new System.Windows.Forms.RadioButton();
-            this.optHypEnabled = new System.Windows.Forms.RadioButton();
             this.label54 = new System.Windows.Forms.Label();
+            this.optHypEnabled = new System.Windows.Forms.RadioButton();
+            this.optHypGlobal = new System.Windows.Forms.RadioButton();
+            this.optHypNormal = new System.Windows.Forms.RadioButton();
+            this.label53 = new System.Windows.Forms.Label();
+            this.chkHyper = new System.Windows.Forms.CheckBox();
+            this.optCraftProfile = new System.Windows.Forms.RadioButton();
             ((System.ComponentModel.ISupportInitialize)(this.numFamHeadingZ)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numFamPosZ)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numFamHeadingXY)).BeginInit();
@@ -538,17 +539,17 @@
             this.cboProfileFG.Size = new System.Drawing.Size(186, 21);
             this.cboProfileFG.TabIndex = 4;
             // 
-            // optProfile
+            // optFGProfile
             // 
-            this.optProfile.AutoSize = true;
-            this.optProfile.Enabled = false;
-            this.optProfile.Location = new System.Drawing.Point(6, 173);
-            this.optProfile.Name = "optProfile";
-            this.optProfile.Size = new System.Drawing.Size(54, 17);
-            this.optProfile.TabIndex = 3;
-            this.optProfile.Text = "Profile";
-            this.optProfile.UseVisualStyleBackColor = true;
-            this.optProfile.CheckedChanged += new System.EventHandler(this.optProfile_CheckedChanged);
+            this.optFGProfile.AutoSize = true;
+            this.optFGProfile.Enabled = false;
+            this.optFGProfile.Location = new System.Drawing.Point(6, 173);
+            this.optFGProfile.Name = "optFGProfile";
+            this.optFGProfile.Size = new System.Drawing.Size(71, 17);
+            this.optFGProfile.TabIndex = 3;
+            this.optFGProfile.Text = "FG Profile";
+            this.optFGProfile.UseVisualStyleBackColor = true;
+            this.optFGProfile.CheckedChanged += new System.EventHandler(this.optFGProfile_CheckedChanged);
             // 
             // optCraft
             // 
@@ -1700,9 +1701,10 @@
             // 
             // tabObjects
             // 
+            this.tabObjects.Controls.Add(this.optCraftProfile);
             this.tabObjects.Controls.Add(this.label47);
             this.tabObjects.Controls.Add(this.cboProfileFG);
-            this.tabObjects.Controls.Add(this.optProfile);
+            this.tabObjects.Controls.Add(this.optFGProfile);
             this.tabObjects.Controls.Add(this.chkObjects);
             this.tabObjects.Controls.Add(this.optCraft);
             this.tabObjects.Controls.Add(this.lstObjects);
@@ -2830,35 +2832,25 @@
             this.tabHyper.Text = "Hyper";
             this.tabHyper.UseVisualStyleBackColor = true;
             // 
-            // chkHyper
+            // label54
             // 
-            this.chkHyper.AutoSize = true;
-            this.chkHyper.Location = new System.Drawing.Point(6, 6);
-            this.chkHyper.Name = "chkHyper";
-            this.chkHyper.Size = new System.Drawing.Size(76, 17);
-            this.chkHyper.TabIndex = 0;
-            this.chkHyper.Text = "Use Hyper";
-            this.chkHyper.UseVisualStyleBackColor = true;
-            this.chkHyper.CheckedChanged += new System.EventHandler(this.chkHyper_CheckedChanged);
+            this.label54.AutoSize = true;
+            this.label54.Location = new System.Drawing.Point(16, 121);
+            this.label54.Name = "label54";
+            this.label54.Size = new System.Drawing.Size(174, 52);
+            this.label54.TabIndex = 3;
+            this.label54.Text = "Hyper sound effects will use\r\n    \\Wave\\Sfx_EnterHyperspace.lst\r\n    \\Wave\\Sfx_Ex" +
+    "itHyperspace.lst\r\nif they exist.";
             // 
-            // label53
+            // optHypEnabled
             // 
-            this.label53.AutoSize = true;
-            this.label53.Location = new System.Drawing.Point(16, 26);
-            this.label53.Name = "label53";
-            this.label53.Size = new System.Drawing.Size(126, 13);
-            this.label53.TabIndex = 1;
-            this.label53.Text = "Short Hyperspace Effect:";
-            // 
-            // optHypNormal
-            // 
-            this.optHypNormal.AutoSize = true;
-            this.optHypNormal.Location = new System.Drawing.Point(57, 65);
-            this.optHypNormal.Name = "optHypNormal";
-            this.optHypNormal.Size = new System.Drawing.Size(58, 17);
-            this.optHypNormal.TabIndex = 2;
-            this.optHypNormal.Text = "Normal";
-            this.optHypNormal.UseVisualStyleBackColor = true;
+            this.optHypEnabled.AutoSize = true;
+            this.optHypEnabled.Location = new System.Drawing.Point(57, 88);
+            this.optHypEnabled.Name = "optHypEnabled";
+            this.optHypEnabled.Size = new System.Drawing.Size(64, 17);
+            this.optHypEnabled.TabIndex = 2;
+            this.optHypEnabled.Text = "Enabled";
+            this.optHypEnabled.UseVisualStyleBackColor = true;
             // 
             // optHypGlobal
             // 
@@ -2872,25 +2864,47 @@
             this.optHypGlobal.Text = "Global Setting";
             this.optHypGlobal.UseVisualStyleBackColor = true;
             // 
-            // optHypEnabled
+            // optHypNormal
             // 
-            this.optHypEnabled.AutoSize = true;
-            this.optHypEnabled.Location = new System.Drawing.Point(57, 88);
-            this.optHypEnabled.Name = "optHypEnabled";
-            this.optHypEnabled.Size = new System.Drawing.Size(64, 17);
-            this.optHypEnabled.TabIndex = 2;
-            this.optHypEnabled.Text = "Enabled";
-            this.optHypEnabled.UseVisualStyleBackColor = true;
+            this.optHypNormal.AutoSize = true;
+            this.optHypNormal.Location = new System.Drawing.Point(57, 65);
+            this.optHypNormal.Name = "optHypNormal";
+            this.optHypNormal.Size = new System.Drawing.Size(58, 17);
+            this.optHypNormal.TabIndex = 2;
+            this.optHypNormal.Text = "Normal";
+            this.optHypNormal.UseVisualStyleBackColor = true;
             // 
-            // label54
+            // label53
             // 
-            this.label54.AutoSize = true;
-            this.label54.Location = new System.Drawing.Point(16, 121);
-            this.label54.Name = "label54";
-            this.label54.Size = new System.Drawing.Size(174, 52);
-            this.label54.TabIndex = 3;
-            this.label54.Text = "Hyper sound effects will use\r\n    \\Wave\\Sfx_EnterHyperspace.lst\r\n    \\Wave\\Sfx_Ex" +
-    "itHyperspace.lst\r\nif they exist.";
+            this.label53.AutoSize = true;
+            this.label53.Location = new System.Drawing.Point(16, 26);
+            this.label53.Name = "label53";
+            this.label53.Size = new System.Drawing.Size(126, 13);
+            this.label53.TabIndex = 1;
+            this.label53.Text = "Short Hyperspace Effect:";
+            // 
+            // chkHyper
+            // 
+            this.chkHyper.AutoSize = true;
+            this.chkHyper.Location = new System.Drawing.Point(6, 6);
+            this.chkHyper.Name = "chkHyper";
+            this.chkHyper.Size = new System.Drawing.Size(76, 17);
+            this.chkHyper.TabIndex = 0;
+            this.chkHyper.Text = "Use Hyper";
+            this.chkHyper.UseVisualStyleBackColor = true;
+            this.chkHyper.CheckedChanged += new System.EventHandler(this.chkHyper_CheckedChanged);
+            // 
+            // optCraftProfile
+            // 
+            this.optCraftProfile.AutoSize = true;
+            this.optCraftProfile.Location = new System.Drawing.Point(83, 173);
+            this.optCraftProfile.Name = "optCraftProfile";
+            this.optCraftProfile.Size = new System.Drawing.Size(79, 17);
+            this.optCraftProfile.TabIndex = 9;
+            this.optCraftProfile.TabStop = true;
+            this.optCraftProfile.Text = "Craft Profile";
+            this.optCraftProfile.UseVisualStyleBackColor = true;
+            this.optCraftProfile.CheckedChanged += new System.EventHandler(this.optCraftProfile_CheckedChanged);
             // 
             // XwaHookDialog
             // 
@@ -3092,7 +3106,7 @@
 		private System.Windows.Forms.NumericUpDown numShuttleOrientation;
 		private System.Windows.Forms.Label label39;
 		private System.Windows.Forms.CheckBox chkShuttleFloor;
-		private System.Windows.Forms.RadioButton optProfile;
+		private System.Windows.Forms.RadioButton optFGProfile;
 		private System.Windows.Forms.RadioButton optCraft;
 		private System.Windows.Forms.TextBox txtProfile;
 		private System.Windows.Forms.ComboBox cboProfileFG;
@@ -3198,5 +3212,6 @@
         private System.Windows.Forms.RadioButton optHypEnabled;
         private System.Windows.Forms.RadioButton optHypGlobal;
         private System.Windows.Forms.RadioButton optHypNormal;
+        private System.Windows.Forms.RadioButton optCraftProfile;
     }
 }
