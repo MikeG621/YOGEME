@@ -127,7 +127,7 @@
     <value>297, 17</value>
   </metadata>
   <data name="label47.Text" xml:space="preserve">
-    <value>To replace an OPT within the mission, select "Craft" and then "Add" to select the original and new OPT files. To define a profile, select "Profile", then choose the FlightGroup and type the profile name, then "Add".</value>
+    <value>To replace an OPT within the mission, select "Craft" and then "Add" to select the original and new OPT files. To define a profile, select "Profile", type the profile name, then for a FG select the FlightGroup then "Add", and for a Craft hit "Add" and select the OPT.</value>
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">

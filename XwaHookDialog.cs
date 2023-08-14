@@ -5,7 +5,14 @@
  * 
  * VERSION: 1.11.2+
  */
-
+// TODO: Overhaul
+/* Need a better way to add new hooks without just creating a million tabs
+ * ComboBox with each hook, always shown, although if not detected add '*' to the entry, to be used as a flag if needed
+ * First entry should be the raw text, constantly updated per hook, Textbox, editable
+ * Each hook to be built on their own Panel, moved to 0,0 and set visible when selected. Non-selected should be invisible.
+ * This allows for large editing at once, then resize the window on launch, and can resize accordingly
+ * Each hook needs a function to gather everything into the text output so the Raw can be collated.
+ */
 /* CHANGELOG
  * [ADD] Hyperspace hook support
  * [ADD] Object profile per model
