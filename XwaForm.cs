@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2023 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.14+
+ * VERSION: 1.14.1
  */
 
 /* CHANGELOG
+ * v1.14.1, 230814
  * [FIX #85] Call to Backdrops for hook now uses full path
  * v1.14, 230804
  * [UPD] Moved around the Para2 and Para1 trigger controls so Para1 is naturally closer to the Target control

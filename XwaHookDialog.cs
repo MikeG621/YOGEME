@@ -3,7 +3,7 @@
  * Copyright (C) 2007-2023 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.11.2+
+ * VERSION: 1.14.1
  */
 // TODO: Overhaul
 /* Need a better way to add new hooks without just creating a million tabs
@@ -14,6 +14,7 @@
  * Each hook needs a function to gather everything into the text output so the Raw can be collated.
  */
 /* CHANGELOG
+ * v1.14.1, 230814
  * [ADD] Hyperspace hook support
  * [ADD] Object profile per model
  * v1.11.2, 2101005

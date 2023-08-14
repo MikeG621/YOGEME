@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2023 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.14+
+ * VERSION: 1.14.1
  */
 
 /* CHANGELOG
+ * v1.14.1, 230814
  * [FIX #85] Now looks for hook INI or TXT at mission location
  * v1.14, 230804
  * [FIX] Color labels now only show in XWA

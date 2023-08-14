@@ -3,8 +3,8 @@
 
 Author: Michael Gaisser (mjgaisser@gmail.com)
 Contributor: Random Starfighter (JB)
-Version: 1.14
-Date: 2023.08.04
+Version: 1.14.1
+Date: 2023.08.14
 
 Thank you for downloading YOGEME, the all-in-one mission editor for the X-Wing
 series, Xwing95 through X-wing Alliance.  This program allows easy mission
@@ -28,6 +28,7 @@ your user settings.
 ==========
 Version History
 
+v1.14.1, 14 Aug 2023
  - (XWA) Backdrop hook now loads the Resdata.txt or INI based on mission location, not just "\Missions\" [Issue #85]
  - (XWA) Hyperspace hook support added
  - (XWA) Object hook profile per model added
