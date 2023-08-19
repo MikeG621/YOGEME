@@ -92,6 +92,8 @@ namespace Idmr.Yogeme
 		enum ShuttleAnimation { Right, Top, Bottom }
 		readonly int[] _defaultShuttlePosition = new int[4] { 1127, 959, 0, 43136 };
 		readonly int[] _defaultRoofCranePosition = new int[3] { -1400, 786, -282 };
+		readonly Panel[] _panels = new Panel[9];
+		string _endComments = "";
 
 		public XwaHookDialog(Mission mission, Settings config)
 		{
@@ -106,6 +108,23 @@ namespace Idmr.Yogeme
 			_fileName = mission.MissionPath.ToLower().Replace(".tie", ".ini");
 
 			#region initialize
+			Width = 780;
+			Height = 620;
+			_panels[0] = pnlBackdrops;
+			_panels[1] = pnlMission;
+			_panels[2] = pnlSounds;
+			_panels[3] = pnlObjects;
+			_panels[4] = pnlHangar;
+			_panels[5] = pnlSFoils;
+			_panels[6] = pnlSkins;
+			_panels[7] = pnlShield;
+			_panels[8] = pnlHyper;
+			for (int i = 0; i < _panels.Length; i++)
+			{
+				_panels[i].Left = 395;
+				_panels[i].Top = 45;
+			}
+			cboHook.SelectedIndex = 0;
 			cboIff.Items.AddRange(Strings.IFF);
 			cboHangarIff.Items.AddRange(Strings.IFF);
 			for (int i = cboIff.Items.Count; i < 256; i++)
@@ -169,15 +188,19 @@ namespace Idmr.Yogeme
 			if (config.XwaInstalled)
 			{
 				_installDirectory = config.XwaPath + "\\";
+				for (int i = 0; i < cboHook.Items.Count; i++)
+				{
+					string hook = "Hook_" + cboHook.Items[i].ToString() + ".dll";
+					if (!File.Exists(_installDirectory + hook)) cboHook.Items[i] = "*" + cboHook.Items[i];
+                }
 				chkBackdrops.Enabled = File.Exists(_installDirectory + "Hook_Backdrops.dll");
-				chkMission.Enabled = File.Exists(_installDirectory + "Hook_Mission_Tie.dll");
-				chkSounds.Enabled = File.Exists(_installDirectory + "Hook_Engine_Sound.dll");
-				chkObjects.Enabled = File.Exists(_installDirectory + "Hook_Mission_Objects.dll");
-				chkHangars.Enabled = File.Exists(_installDirectory + "Hook_Hangars.dll");
-				chkSkins.Enabled = File.Exists(_installDirectory + "Hook_32bpp.dll");
-				chkShield.Enabled = File.Exists(_installDirectory + "Hook_Shield.dll");
-				chkSFoils.Enabled = File.Exists(_installDirectory + "Hook_SFoils.dll");
-				chkHyper.Enabled = File.Exists(_installDirectory + "Hook_hyperspace.dll");
+                chkMission.Enabled = File.Exists(_installDirectory + "Hook_Mission_Tie.dll");
+                chkSounds.Enabled = File.Exists(_installDirectory + "Hook_Engine_Sound.dll");
+                chkObjects.Enabled = File.Exists(_installDirectory + "Hook_Mission_Objects.dll");
+                chkHangars.Enabled = File.Exists(_installDirectory + "Hook_Hangars.dll");
+                chkSFoils.Enabled = File.Exists(_installDirectory + "Hook_SFoils.dll");
+                chkSkins.Enabled = File.Exists(_installDirectory + "Hook_32bpp.dll");
+                chkShield.Enabled = File.Exists(_installDirectory + "Hook_Shield.dll");
 
 				_bdFile = checkFile("_Resdata.txt");
 				_soundFile = checkFile("_Sounds.txt");
@@ -192,153 +215,141 @@ namespace Idmr.Yogeme
 				_shieldFile = checkFile("_Shield.txt");
 				_hyperFile = checkFile("_Hyperspace.txt");
 			}
-			StreamReader srMission = null;
 			string line;
-			string lineLower;
-			if (File.Exists(_fileName)) srMission = new StreamReader(_fileName);
-			ReadMode readMode = ReadMode.None;
 
 			#region individual files
 			if (_bdFile != "")
 			{
-				StreamReader srBD = new StreamReader(_bdFile);
-				while ((line = srBD.ReadLine()) != null)
-				{
-					line = removeComment(line);
-					if (line == "") continue;
+				using (var sr = new StreamReader(_bdFile))
+					while ((line = sr.ReadLine()) != null)
+					{
+						line = removeComment(line);
+						if (line == "") continue;
 
-					lstBackdrops.Items.Add(line);
-				}
-				srBD.Close();
+						lstBackdrops.Items.Add(line);
+					}
 			}
 			if (_missionTxtFile != "")
 			{
-				StreamReader srMiss = new StreamReader(_missionTxtFile);
-				while((line = srMiss.ReadLine()) != null)
-				{
-					line = removeComment(line);
-					if (line == "") continue;
+				using (var sr = new StreamReader(_missionTxtFile))
+					while ((line = sr.ReadLine()) != null)
+					{
+						line = removeComment(line);
+						if (line == "") continue;
 
-					parseMission(line);
-				}
-				srMiss.Close();
+						parseMission(line);
+					}
 			}
 			if (_soundFile != "")
 			{
-				StreamReader srSounds = new StreamReader(_soundFile);
-				while ((line = srSounds.ReadLine()) != null)
-				{
-					line = removeComment(line);
-					if (line == "") continue;
+				using (var sr = new StreamReader(_soundFile))
+					while ((line = sr.ReadLine()) != null)
+					{
+						line = removeComment(line);
+						if (line == "") continue;
 
-					lstSounds.Items.Add(line);
-				}
-				srSounds.Close();
+						lstSounds.Items.Add(line);
+					}
 			}
 			if (_objFile != "")
 			{
-				StreamReader srObjects = new StreamReader(_objFile);
-				while ((line = srObjects.ReadLine()) != null)
-				{
-					line = removeComment(line);
-					if (line == "") continue;
+				using (var sr = new StreamReader(_objFile))
+					while ((line = sr.ReadLine()) != null)
+					{
+						line = removeComment(line);
+						if (line == "") continue;
 
-					lstObjects.Items.Add(line);
-				}
-				srObjects.Close();
+						lstObjects.Items.Add(line);
+					}
 			}
 			if (_hangarObjectsFile != "")
 			{
-				StreamReader srHangarObjects = new StreamReader(_hangarObjectsFile);
-				while ((line = srHangarObjects.ReadLine()) != null)
-				{
-					line = removeComment(line);
-					if (line == "") continue;
+				using (var sr = new StreamReader(_hangarObjectsFile))
+					while ((line = sr.ReadLine()) != null)
+					{
+						line = removeComment(line);
+						if (line == "") continue;
 
-					parseHangarObjects(line);
-				}
-				srHangarObjects.Close();
+						parseHangarObjects(line);
+					}
 			}
 			if (_hangarCameraFile != "")
 			{
-				StreamReader srHangarCamera = new StreamReader(_hangarCameraFile);
-				while((line = srHangarCamera.ReadLine()) != null)
-				{
-					line = removeComment(line);
-					if (line == "") continue;
+				using (var sr = new StreamReader(_hangarCameraFile))
+					while ((line = sr.ReadLine()) != null)
+					{
+						line = removeComment(line);
+						if (line == "") continue;
 
-					parseHangarCamera(line);
-				}
-				srHangarCamera.Close();
+						parseHangarCamera(line);
+					}
 			}
 			if (_famHangarCameraFile != "")
 			{
-				StreamReader srFamilyHangarCamera = new StreamReader(_famHangarCameraFile);
-				while ((line = srFamilyHangarCamera.ReadLine()) != null)
-				{
-					line = removeComment(line);
-					if (line == "") continue;
+				using (var sr = new StreamReader(_famHangarCameraFile))
+					while ((line = sr.ReadLine()) != null)
+					{
+						line = removeComment(line);
+						if (line == "") continue;
 
-					parseFamilyHangarCamera(line);
-				}
-				srFamilyHangarCamera.Close();
+						parseFamilyHangarCamera(line);
+					}
 			}
 			if (_hangarMapFile != "")
 			{
-				StreamReader srMap = new StreamReader(_hangarMapFile);
-				MapEntry entry = new MapEntry();
-				while((line = srMap.ReadLine()) != null)
+				using (var sr = new StreamReader(_hangarMapFile))
 				{
-					line = removeComment(line);
-					if (line == "") continue;
+					MapEntry entry = new MapEntry();
+					while ((line = sr.ReadLine()) != null)
+					{
+						line = removeComment(line);
+						if (line == "") continue;
 
-					if (entry.Parse(line))
-						lstMap.Items.Add(entry.ToString());
+						if (entry.Parse(line))
+							lstMap.Items.Add(entry.ToString());
+					}
 				}
-				srMap.Close();
 			}
 			if (_famHangarMapFile != "")
 			{
-				StreamReader srFamMap = new StreamReader(_famHangarMapFile);
-				MapEntry entry = new MapEntry();
-				while ((line = srFamMap.ReadLine()) != null)
+				using (var sr = new StreamReader(_famHangarMapFile))
 				{
-					line = removeComment(line);
-					if (line == "") continue;
+					MapEntry entry = new MapEntry();
+					while ((line = sr.ReadLine()) != null)
+					{
+						line = removeComment(line);
+						if (line == "") continue;
 
-					if (entry.Parse(line))
-						lstFamilyMap.Items.Add(entry.ToString());
+						if (entry.Parse(line))
+							lstFamilyMap.Items.Add(entry.ToString());
+					}
 				}
-				srFamMap.Close();
 			}
 			if (_32bppFile != "")
 			{
-				StreamReader sr32bpp = new StreamReader(_32bppFile);
-				while ((line = sr32bpp.ReadLine()) != null)
-				{
-					line = removeComment(line);
-					if (line == "") continue;
+				using (var sr = new StreamReader(_32bppFile))
+					while ((line = sr.ReadLine()) != null)
+					{
+						line = removeComment(line);
+						if (line == "") continue;
 
-					lstSkins.Items.Add(line);
-				}
-				sr32bpp.Close();
+						lstSkins.Items.Add(line);
+					}
 			}
 			if (_shieldFile != "")
 			{
-				StreamReader srShield = new StreamReader(_shieldFile);
-				while ((line = srShield.ReadLine()) != null)
-				{
-					line = removeComment(line);
-					if (line == "") continue;
+				using (var sr = new StreamReader(_shieldFile))
+					while ((line = sr.ReadLine()) != null)
+					{
+						line = removeComment(line);
+						if (line == "") continue;
 
-					parseShield(line);
-				}
-				srShield.Close();
+						parseShield(line);
+					}
 			}
 			if (_hyperFile != "")
 			{
-				using (StreamReader sr = new StreamReader(_hyperFile))
-				{
+				using (var sr = new StreamReader(_hyperFile))
                     while ((line = sr.ReadLine()) != null)
                     {
                         line = removeComment(line);
@@ -346,62 +357,19 @@ namespace Idmr.Yogeme
 
                         parseHyper(line);
                     }
-                }
 			}
 			#endregion
 
-			if (srMission != null)
+			if (File.Exists(_fileName))
 			{
-				#region read
-				while ((line = srMission.ReadLine()) != null)
+				using (var sr = new StreamReader(_fileName))
 				{
-					line = removeComment(line);
-					if (line == "") continue;
-
-					lineLower = line.ToLower();
-
-					if (line.StartsWith("["))
-					{
-						readMode = ReadMode.None;
-						if (lineLower == "[resdata]") readMode = ReadMode.Backdrop;
-						else if (lineLower == "[mission_tie]") readMode = ReadMode.Mission;
-						else if (lineLower == "[sounds]") readMode = ReadMode.Sounds;
-						else if (lineLower == "[objects]") readMode = ReadMode.Objects;
-						else if (lineLower == "[hangarobjects]") readMode = ReadMode.HangarObjects;
-						else if (lineLower == "[hangarcamera]") readMode = ReadMode.HangarCamera;
-						else if (lineLower == "[famhangarcamera]") readMode = ReadMode.FamilyHangarCamera;
-						else if (lineLower == "[hangarmap]") readMode = ReadMode.HangarMap;
-						else if (lineLower == "[famhangarmap]") readMode = ReadMode.FamilyHangarMap;
-						else if (lineLower == "[skins]") readMode = ReadMode.Skins;
-						else if (lineLower == "[shield]") readMode = ReadMode.Shield;
-						else if (lineLower == "[hyperspace]") readMode = ReadMode.Hyper;
-					}
-					else if (readMode == ReadMode.Backdrop) lstBackdrops.Items.Add(line);
-					else if (readMode == ReadMode.Mission) parseMission(line);
-					else if (readMode == ReadMode.Sounds) lstSounds.Items.Add(line);
-					else if (readMode == ReadMode.Objects) lstObjects.Items.Add(line);
-					else if (readMode == ReadMode.HangarObjects) parseHangarObjects(line);
-					else if (readMode == ReadMode.HangarCamera) parseHangarCamera(line);
-					else if (readMode == ReadMode.FamilyHangarCamera) parseFamilyHangarCamera(line);
-					else if (readMode == ReadMode.HangarMap)
-					{
-						MapEntry entry = new MapEntry();
-						if (entry.Parse(line))
-							lstMap.Items.Add(entry.ToString());
-					}
-					else if (readMode == ReadMode.FamilyHangarMap)
-					{
-						MapEntry entry = new MapEntry();
-						if (entry.Parse(line))
-							lstFamilyMap.Items.Add(entry.ToString());
-					}
-					else if (readMode == ReadMode.Skins) lstSkins.Items.Add(line);
-					else if (readMode == ReadMode.Shield) parseShield(line);
-					else if (readMode == ReadMode.Hyper) parseHyper(line);
+					txtHook.Text = sr.ReadToEnd();
 				}
-				#endregion
-				srMission.Close();
-			}
+                parseContents();
+            }
+
+			createContents();	// to mix in any TXT files
 
 			chkBackdrops.Checked = (lstBackdrops.Items.Count > 0);
 			chkMission.Checked = (lstMission.Items.Count > 0);
@@ -410,7 +378,6 @@ namespace Idmr.Yogeme
 			chkHangars.Checked = useHangarObjects | useHangarCamera | useFamilyHangarCamera | useHangarMap;
 			chkSkins.Checked = (lstSkins.Items.Count > 0);
 			chkShield.Checked = (lstShield.Items.Count > 0);
-			chkHyper.Checked = !optHypGlobal.Checked;
 		}
 
 		string checkFile(string extension)
@@ -419,8 +386,360 @@ namespace Idmr.Yogeme
 			return "";
 		}
 
-		#region Backdrops
-		private void chkBackdrops_CheckedChanged(object sender, EventArgs e)
+		void createContents()
+		{
+            string title = "";
+            if (_installDirectory != "") using (var sr = new StreamReader(_installDirectory + "\\Missions\\MISSION.LST"))
+                {
+                    string line = "";
+                    while ((line = sr.ReadLine()) != null)
+                    {
+                        line = removeComment(line);
+                        if (line == "" || line.StartsWith("!")) continue;
+
+                        while (line.Length > 5 && line[1] != 'b' && line[1] != 'B')
+                        {
+                            // skips comment lines, battle headers, mission desc, index number
+                            line = line.Substring(1);
+                            // removes first char until it meets #B#M... in case lines starts with "* "
+                        }
+                        if (line.ToLower() == _mission.ToLower() + ".tie")
+                        {
+                            title = sr.ReadLine();
+                            title = title.Substring(title.IndexOf("DESC!") + 5);
+                            break;
+                        }
+                    }
+                }
+
+            string contents = ";" + _mission + ".ini" + (title != "" ? " - " + title : "") + "\r\n\r\n";
+            if (chkBackdrops.Checked && lstBackdrops.Items.Count > 0)
+            {
+                contents += "[Resdata]\r\n";
+                for (int i = 0; i < lstBackdrops.Items.Count; i++) contents += lstBackdrops.Items[i] + "\r\n";
+				contents += "\r\n";
+            }
+            if ((chkMission.Checked && lstMission.Items.Count > 0) || (chkSFoils.Checked && useSFoils))
+            {
+                contents += "[Mission_Tie]\r\n";
+                if (chkMission.Checked)
+                {
+                    for (int i = 0; i < lstMission.Items.Count; i++)
+                    {
+                        string[] parts = lstMission.Items[i].ToString().Split(',');
+                        int fg;
+                        for (fg = 0; fg < cboFG.Items.Count; fg++) if (cboFG.Items[fg].ToString() == parts[0]) break;
+                        if (parts[1] == "marks")
+                        {
+                            for (int m = 0; m < cboMarkings.Items.Count; m++)
+                                if (cboMarkings.Items[m].ToString() == parts[2])
+                                {
+                                    contents += "fg, " + fg + ", markings, " + m + "\r\n";
+                                    break;
+                                }
+                        }
+                        else if (parts[1] == "wing")
+                        {
+                            for (int m = 0; m < cboMarkings.Items.Count; m++)
+                                if (cboMarkings.Items[m].ToString() == parts[3])
+                                {
+                                    contents += "fg, " + fg + ", index, " + parts[2] + ", markings, " + m + "\r\n";
+                                    break;
+                                }
+                        }
+                        else if (parts[1] == "iff")
+                        {
+                            for (int iff = 0; iff < cboIff.Items.Count; iff++)
+                                if (cboIff.Items[iff].ToString() == parts[2])
+                                {
+                                    contents += "fg, " + fg + ", iff, " + iff + "\r\n";
+                                    break;
+                                }
+                        }
+                        else if (parts[1] == "pilot")
+                            contents += "fg, " + fg + ", pilotvoice, " + parts[2] + "\r\n";
+                    }
+                }
+                if (chkSFoils.Checked)
+                {
+                    for (int i = 0; i < lstSFoils.Items.Count; i++)
+                    {
+                        string[] parts = lstSFoils.Items[i].ToString().Split(',');
+                        int fg;
+                        for (fg = 0; fg < cboSFoilFG.Items.Count; fg++) if (cboSFoilFG.Items[fg].ToString() == parts[0]) break;
+                        if (parts[1] == "closed")
+                            contents += "fg, " + fg + ", close_SFoils, 1\r\n";
+                        else if (parts[1] == "open")
+                            contents += "fg, " + fg + ", open_LandingGears, 1\r\n";
+                    }
+                    if (chkForceHangarSF.Checked)
+                        contents += "CloseSFoilsAndOpenLandingGearsBeforeEnterHangar = 1\r\n";
+                    if (chkForceHyperLG.Checked)
+                        contents += "CloseLandingGearsBeforeEnterHyperspace = 1\r\n";
+                    if (chkManualSF.Checked)
+                        contents += "AutoCloseSFoils = 0\r\n";
+                }
+				contents += "\r\n";
+            }
+            if (chkSounds.Checked && lstSounds.Items.Count > 0)
+            {
+                contents += "[Sounds]\r\n";
+                for (int i = 0; i < lstSounds.Items.Count; i++) contents += lstSounds.Items[i] + "\r\n";
+                contents += "\r\n";
+            }
+            if (chkObjects.Checked && lstObjects.Items.Count > 0)
+            {
+                contents += "[Objects]\r\n";
+                for (int i = 0; i < lstObjects.Items.Count; i++) contents += lstObjects.Items[i] + "\r\n";
+                contents += "\r\n";
+            }
+            if (chkHangars.Checked)
+            {
+                if (useHangarObjects)
+                {
+                    contents += "[HangarObjects]\r\n";
+                    if (!chkShuttle.Checked) contents += "LoadShuttle = 0\r\n";
+                    if (cboShuttleModel.SelectedIndex != 50) contents += "ShuttleModelIndex = " + cboShuttleModel.SelectedIndex + "\r\n";
+                    if (cboShuttleMarks.SelectedIndex != 0) contents += "ShuttleMarkings = " + cboShuttleMarks.SelectedIndex +"\r\n";
+                    if (numShuttlePositionX.Value != _defaultShuttlePosition[0]) contents += "ShuttlePositionX = " + (int)numShuttlePositionX.Value + "\r\n";
+                    if (numShuttlePositionY.Value != _defaultShuttlePosition[1]) contents += "ShuttlePositionY = " + (int)numShuttlePositionY.Value + "\r\n";
+                    if (numShuttlePositionZ.Value != _defaultShuttlePosition[2]) contents += "ShuttlePositionZ = " + (int)numShuttlePositionZ.Value + "\r\n";
+                    if (numShuttleOrientation.Value != _defaultShuttlePosition[3]) contents += "ShuttleOrientation = " + (int)numShuttleOrientation.Value + "\r\n";
+                    if (chkShuttleFloor.Checked) contents += "IsShuttleFloorInverted = 1\r\n";
+                    if (cboShuAnimation.SelectedIndex != 0) contents += "ShuttleAnimation = " + cboShuAnimation.Text + "\r\n";
+                    if (numShuDistance.Value != 0) contents += "ShuttleAnimationStraightLine = " + (int)numShuDistance.Value + "\r\n";
+
+                    if (!chkDroids.Checked) contents += "LoadDroids = 0\r\n";
+                    if (numDroidsZ.Value != 0) contents += "DroidsPositionZ = " + (int)numDroidsZ.Value + "\r\n";
+                    if (chkDroid1.Checked && numDroid1Z.Value != numDroidsZ.Value) contents += "Droid1PositionZ = " + (int)numDroid1Z.Value + "\r\n";
+                    if (chkDroid2.Checked && numDroid2Z.Value != numDroidsZ.Value) contents += "Droid2PositionZ = " + (int)numDroid2Z.Value + "\r\n";
+                    if (chkDroidsFloor.Checked) contents += "IsDroidsFloorInverted = 1\r\n";
+                    if (!chkDroid1Update.Checked) contents += "Droid1Update = 0\r\n";
+                    if (!chkDroid2Update.Checked) contents += "Droid2Update = 0\r\n";
+
+                    if (numRoofCranePositionX.Value != _defaultRoofCranePosition[0]) contents += "HangarRoofCranePositionX = " + (int)numRoofCranePositionX.Value + "\r\n";
+                    if (numRoofCranePositionY.Value != _defaultRoofCranePosition[1]) contents += "HangarRoofCranePositionY = " + (int)numRoofCranePositionY.Value + "\r\n";
+                    if (numRoofCranePositionZ.Value != _defaultRoofCranePosition[2]) contents += "HangarRoofCranePositionZ = " + (int)numRoofCranePositionZ.Value + "\r\n";
+                    if (optRoofCraneAxisY.Checked) contents += "HangarRoofCraneAxis = 1\r\n";
+                    else if (optRoofCraneAxisZ.Checked) contents += "HangarRoofCraneAxis = 2\r\n";
+                    if (numRoofCraneLowOffset.Value != 0) contents += "HangarRoofCraneLowOffset = " + (int)numRoofCraneLowOffset.Value + "\r\n";
+                    if (numRoofCraneHighOffset.Value != 0) contents += "HangarRoofCraneHighOffset = " + (int)numRoofCraneHighOffset.Value + "\r\n";
+                    if (chkFloor.Checked) contents += "IsHangarFloorInverted = 1\r\n";
+                    if (chkHangarIff.Checked) contents += "HangarIff = " + cboHangarIff.SelectedIndex + "\r\n";
+
+                    if (numPlayerAnimationElevation.Value != 0) contents += "PlayerAnimationElevation = " + (int)numPlayerAnimationElevation.Value + "\r\n";
+                    if (numPlayerX.Value != 0) contents += "PlayerOffsetX = " + (int)numPlayerX.Value + "\r\n";
+                    if (numPlayerY.Value != 0) contents += "PlayerOffsetY = " + (int)numPlayerY.Value + "\r\n";
+                    if (numPlayerZ.Value != 0) contents += "PlayerOffsetZ = " + (int)numPlayerZ.Value + "\r\n";
+                    if (chkPlayerFloor.Checked) contents += "IsPlayerFloorInverted = 1\r\n";
+                    if (chkHangarFold.Checked) contents += "FoldOutside = 1\r\n";
+
+                    for (int i = 0; i < lstHangarObjects.Items.Count; i++) contents += lstHangarObjects.Items[i] + "\r\n";
+					contents += "\r\n";
+                }
+                if (useHangarCamera)
+                {
+                    contents += "[HangarCamera]\r\n";
+                    string[] keys = { "1", "2", "3", "6", "9" };
+                    for (int i = 0; i < 5; i++)
+                    {
+                        bool use = false;
+                        for (int j = 0; j < 3; j++) use |= (_cameras[i, j] != _defaultCameras[i, j]);
+                        if (use)
+                        {
+                            contents += "Key" + keys[i] + "_X = " + _cameras[i, 0] + "\r\n";
+                            contents += "Key" + keys[i] + "_Y = " + _cameras[i, 1] + "\r\n";
+                            contents += "Key" + keys[i] + "_Z = " + _cameras[i, 2] + "\r\n\r\n";
+                        }
+                    }
+                }
+                if (useFamilyHangarCamera)
+                {
+                    contents += "[FamHangarCamera]\r\n";
+                    string[] keys = { "1", "2", "3", "6", "7", "8", "9" };
+                    for (int i = 0; i < 7; i++)
+                    {
+                        bool use = false;
+                        for (int j = 0; j < 3; j++) use |= (_familyCameras[i, j] != _defaultFamilyCameras[i, j]);
+                        if (use)
+                        {
+                            contents += "Key" + keys[i] + "_X = " + _familyCameras[i, 0] + "\r\n";
+                            contents += "Key" + keys[i] + "_Y = " + _familyCameras[i, 1] + "\r\n";
+                            contents += "Key" + keys[i] + "_Z = " + _familyCameras[i, 2] + "\r\n\r\n";
+                        }
+                    }
+                }
+                if (useHangarMap)
+                {
+                    contents += "[HangarMap]\r\n";
+                    for (int i = 0; i < lstMap.Items.Count; i++) contents += lstMap.Items[i].ToString() + "\r\n";
+					contents += "\r\n";
+                }
+                if (useFamilyHangarMap)
+                {
+                    contents += "[FamHangarMap]\r\n";
+                    for (int i = 0; i < lstFamilyMap.Items.Count; i++) contents += lstFamilyMap.Items[i].ToString() + "\r\n";
+					contents += "\r\n";
+                }
+            }
+            if (chkSkins.Checked && lstSkins.Items.Count > 0)
+            {
+                contents += "[Skins]\r\n";
+                for (int i = 0; i < lstSkins.Items.Count; i++) contents += lstSkins.Items[i] + "\r\n";
+				contents += "\r\n";
+            }
+            if (chkShield.Checked && lstShield.Items.Count > 0)
+            {
+                contents += "[Shield]\r\n";
+                for (int i = 0; i < lstShield.Items.Count; i++)
+                {
+                    string[] parts = lstShield.Items[i].ToString().Split('=');
+                    parts[0] = parts[0].Trim();
+                    int craft;
+                    for (craft = 0; craft < Strings.CraftType.Length; craft++)
+                        if (parts[0] == Strings.CraftType[craft]) break;
+                    parts = parts[1].Trim().Split(' ');
+                    bool perGen = (parts.Length > 1);
+                    int rate = int.Parse(parts[0]);
+                    contents += craft + ", " + (perGen ? "1, " + rate + ", 0" : "0, 0, " + rate) + "\r\n";
+                }
+				contents += "\r\n";
+            }
+            if (!optHypGlobal.Checked)
+            {
+				contents += "[Hyperspace]\r\nShortHyperspaceEffect = " + (optHypNormal.Checked ? "0" : "1") + "\r\n";
+            }
+
+			contents += "\r\n" + _endComments;
+
+			txtHook.Text = contents;
+        }
+
+        void parseContents()
+        {
+            string line;
+            string lineLower;
+            ReadMode readMode = ReadMode.None;
+
+            for (int i = 0; i < txtHook.Lines.Length; i++)
+            {
+                line = txtHook.Lines[i];
+                if (line.StartsWith(";")) _endComments += (_endComments.Length != 0 ? "\r\n" : "") + line;
+                line = removeComment(line);
+                if (line == "") continue;
+
+                lineLower = line.ToLower();
+
+                if (line.StartsWith("["))
+                {
+                    readMode = ReadMode.None;
+                    if (lineLower == "[resdata]") readMode = ReadMode.Backdrop;
+                    else if (lineLower == "[mission_tie]") readMode = ReadMode.Mission;
+                    else if (lineLower == "[sounds]") readMode = ReadMode.Sounds;
+                    else if (lineLower == "[objects]") readMode = ReadMode.Objects;
+                    else if (lineLower == "[hangarobjects]") readMode = ReadMode.HangarObjects;
+                    else if (lineLower == "[hangarcamera]") readMode = ReadMode.HangarCamera;
+                    else if (lineLower == "[famhangarcamera]") readMode = ReadMode.FamilyHangarCamera;
+                    else if (lineLower == "[hangarmap]") readMode = ReadMode.HangarMap;
+                    else if (lineLower == "[famhangarmap]") readMode = ReadMode.FamilyHangarMap;
+                    else if (lineLower == "[skins]") readMode = ReadMode.Skins;
+                    else if (lineLower == "[shield]") readMode = ReadMode.Shield;
+                    else if (lineLower == "[hyperspace]") readMode = ReadMode.Hyper;
+
+                    _endComments = "";
+                }
+                else if (readMode == ReadMode.Backdrop) lstBackdrops.Items.Add(line);
+                else if (readMode == ReadMode.Mission) parseMission(line);
+                else if (readMode == ReadMode.Sounds) lstSounds.Items.Add(line);
+                else if (readMode == ReadMode.Objects) lstObjects.Items.Add(line);
+                else if (readMode == ReadMode.HangarObjects) parseHangarObjects(line);
+                else if (readMode == ReadMode.HangarCamera) parseHangarCamera(line);
+                else if (readMode == ReadMode.FamilyHangarCamera) parseFamilyHangarCamera(line);
+                else if (readMode == ReadMode.HangarMap)
+                {
+                    MapEntry entry = new MapEntry();
+                    if (entry.Parse(line))
+                        lstMap.Items.Add(entry.ToString());
+                }
+                else if (readMode == ReadMode.FamilyHangarMap)
+                {
+                    MapEntry entry = new MapEntry();
+                    if (entry.Parse(line))
+                        lstFamilyMap.Items.Add(entry.ToString());
+                }
+                else if (readMode == ReadMode.Skins) lstSkins.Items.Add(line);
+                else if (readMode == ReadMode.Shield) parseShield(line);
+                else if (readMode == ReadMode.Hyper) parseHyper(line);
+            }
+
+            chkBackdrops.Checked = (lstBackdrops.Items.Count > 0);
+            chkMission.Checked = (lstMission.Items.Count > 0);
+            chkSounds.Checked = (lstSounds.Items.Count > 0);
+            chkObjects.Checked = (lstObjects.Items.Count > 0);
+            chkHangars.Checked = useHangarObjects | useHangarCamera | useFamilyHangarCamera | useHangarMap;
+            chkSkins.Checked = (lstSkins.Items.Count > 0);
+            chkShield.Checked = (lstShield.Items.Count > 0);
+        }
+
+        string removeComment(string line)
+        {
+            if (line.IndexOf(";") != -1)
+                line = line.Substring(0, line.IndexOf(";"));
+            if (line.IndexOf("#") != -1)
+                line = line.Substring(0, line.IndexOf("#"));
+            if (line.IndexOf("//") != -1)
+                line = line.Substring(0, line.IndexOf("//"));
+            return line.Trim();
+        }
+
+        void reset()
+        {
+			lstBackdrops.Items.Clear();
+			lstMission.Items.Clear();
+			lstSounds.Items.Clear();
+			lstObjects.Items.Clear();
+			lstSFoils.Items.Clear();
+			chkForceHangarSF.Checked = false;
+			chkForceHyperLG.Checked = false;
+			chkManualSF.Checked = false;
+			lstSkins.Items.Clear();
+			lstShield.Items.Clear();
+			optHypGlobal.Checked = true;
+			lstHangarObjects.Items.Clear();
+			chkShuttle.Checked = true;
+			chkShuttleFloor.Checked = false;
+            cboShuttleModel.SelectedIndex = 50;
+			cboShuAnimation.SelectedIndex = 0;
+			numShuDistance.Value = 0;
+			cboShuttleMarks.SelectedIndex = 0;
+			cmdShuttleReset_Click("reset", new EventArgs());
+			chkHangarIff.Checked = false;
+			chkDroids.Checked = true;
+			chkDroidsFloor.Checked = false;
+			numDroidsZ.Value = 0;
+			chkDroid1.Checked = false;
+			numDroid1Z.Value = 0;
+			chkDroid2.Checked = false;
+			numDroid2Z.Value = 0;
+			chkDroid1Update.Checked = true;
+			chkDroid2Update.Checked = true;
+			cmdCraneReset_Click("reset", new EventArgs());
+			optRoofCraneAxisX.Checked = true;
+			numRoofCraneHighOffset.Value = 0;
+			numRoofCraneLowOffset.Value = 0;
+			cmdPlayerReset_Click("reset", new EventArgs());
+			chkPlayerFloor.Checked = false;
+			chkFloor.Checked = false;
+			chkHangarFold.Checked = false;
+			numPlayerAnimationElevation.Value = 0;
+			lstMap.Items.Clear();
+			lstFamilyMap.Items.Clear();
+			cmdDefaultCamera_Click("reset", new EventArgs());
+			cmdDefaultFamilyCamera_Click("reset", new EventArgs());
+        }
+
+        #region Backdrops
+        private void chkBackdrops_CheckedChanged(object sender, EventArgs e)
 		{
 			lstBackdrops.Enabled = chkBackdrops.Checked;
 			cmdAddBD.Enabled = chkBackdrops.Checked;
@@ -617,7 +936,6 @@ namespace Idmr.Yogeme
 
         private void optCraftProfile_CheckedChanged(object sender, EventArgs e)
         {
-            //cboProfileFG.Enabled = optFGProfile.Checked;
             txtProfile.Enabled = (optFGProfile.Checked | optCraftProfile.Checked);
         }
         private void optFGProfile_CheckedChanged(object sender, EventArgs e)
@@ -1162,13 +1480,14 @@ namespace Idmr.Yogeme
 				else if (value == 1) optHypEnabled.Checked = true;
 			}
         }
-        private void chkHyper_CheckedChanged(object sender, EventArgs e)
-        {
-			optHypEnabled.Enabled = chkHyper.Checked;
-			optHypGlobal.Enabled = chkHyper.Checked;
-			optHypNormal.Enabled = chkHyper.Checked;
-        }
         #endregion
+        
+		private void cboHook_SelectedIndexChanged(object sender, EventArgs e)
+        {
+			if (cboHook.SelectedIndex == -1) return;
+
+			for (int i = 0; i < _panels.Length; i++) _panels[i].Visible = (i == cboHook.SelectedIndex);
+        }
 
         private void cmdCancel_Click(object sender, EventArgs e)
 		{
@@ -1202,9 +1521,9 @@ namespace Idmr.Yogeme
 
 			if (!chkSkins.Checked && _32bppFile != "") File.Delete(_32bppFile);
 			if (!chkShield.Checked && _shieldFile != "") File.Delete(_shieldFile);
-			if (!chkHyper.Checked && _hyperFile != "") File.Delete(_hyperFile);
+			if (optHypGlobal.Checked && _hyperFile != "") File.Delete(_hyperFile);
 
-			if (!chkBackdrops.Checked && !chkMission.Checked && !chkSounds.Checked && !chkObjects.Checked && !useHangarObjects && !useHangarCamera && !useFamilyHangarCamera && !useHangarMap && !useFamilyHangarMap && !chkSFoils.Checked && !chkShield.Checked)
+			if (!chkBackdrops.Checked && !chkMission.Checked && !chkSounds.Checked && !chkObjects.Checked && !useHangarObjects && !useHangarCamera && !useFamilyHangarCamera && !useHangarMap && !useFamilyHangarMap && !chkSFoils.Checked && !chkShield.Checked && optHypGlobal.Checked)
 			{
 				File.Delete(_fileName);
 				Close();
@@ -1221,210 +1540,11 @@ namespace Idmr.Yogeme
 			try
 			{
 				sw = new StreamWriter(_fileName);
-				sw.WriteLine(";" + _mission + ".ini");
-				sw.WriteLine("");
-
-				if (chkBackdrops.Checked && lstBackdrops.Items.Count > 0)
-				{
-					sw.WriteLine("[Resdata]");
-					for (int i = 0; i < lstBackdrops.Items.Count; i++) sw.WriteLine(lstBackdrops.Items[i]);
-					sw.WriteLine("");
-				}
-				if ((chkMission.Checked && lstMission.Items.Count > 0) || (chkSFoils.Checked && useSFoils))
-				{
-					sw.WriteLine("[Mission_Tie]");
-					if (chkMission.Checked)
-					{
-						for (int i = 0; i < lstMission.Items.Count; i++)
-						{
-							string[] parts = lstMission.Items[i].ToString().Split(',');
-							int fg;
-							for (fg = 0; fg < cboFG.Items.Count; fg++) if (cboFG.Items[fg].ToString() == parts[0]) break;
-							if (parts[1] == "marks")
-							{
-								for (int m = 0; m < cboMarkings.Items.Count; m++)
-									if (cboMarkings.Items[m].ToString() == parts[2])
-									{
-										sw.WriteLine("fg, " + fg + ", markings, " + m);
-										break;
-									}
-							}
-							else if (parts[1] == "wing")
-							{
-								for (int m = 0; m < cboMarkings.Items.Count; m++)
-									if (cboMarkings.Items[m].ToString() == parts[3])
-									{
-										sw.WriteLine("fg, " + fg + ", index, " + parts[2] + ", markings, " + m);
-										break;
-									}
-							}
-							else if (parts[1] == "iff")
-							{
-								for (int iff = 0; iff < cboIff.Items.Count; iff++)
-									if (cboIff.Items[iff].ToString() == parts[2])
-									{
-										sw.WriteLine("fg, " + fg + ", iff, " + iff);
-										break;
-									}
-							}
-							else if (parts[1] == "pilot")
-								sw.WriteLine("fg, " + fg + ", pilotvoice, " + parts[2]);
-						}
-					}
-					if (chkSFoils.Checked)
-					{
-						for (int i = 0; i < lstSFoils.Items.Count; i++)
-						{
-							string[] parts = lstSFoils.Items[i].ToString().Split(',');
-							int fg;
-							for (fg = 0; fg < cboSFoilFG.Items.Count; fg++) if (cboSFoilFG.Items[fg].ToString() == parts[0]) break;
-							if (parts[1] == "closed")
-								sw.WriteLine("fg, " + fg + ", close_SFoils, 1");
-							else if (parts[1] == "open")
-								sw.WriteLine("fg, " + fg + ", open_LandingGears, 1");
-						}
-						if (chkForceHangarSF.Checked)
-							sw.WriteLine("CloseSFoilsAndOpenLandingGearsBeforeEnterHangar = 1");
-						if (chkForceHyperLG.Checked)
-							sw.WriteLine("CloseLandingGearsBeforeEnterHyperspace = 1");
-						if (chkManualSF.Checked)
-							sw.WriteLine("AutoCloseSFoils = 0");
-					}
-					sw.WriteLine("");
-				}
-				if (chkSounds.Checked && lstSounds.Items.Count > 0)
-				{
-					sw.WriteLine("[Sounds]");
-					for (int i = 0; i < lstSounds.Items.Count; i++) sw.WriteLine(lstSounds.Items[i]);
-					sw.WriteLine("");
-				}
-				if (chkObjects.Checked && lstObjects.Items.Count > 0)
-				{
-					sw.WriteLine("[Objects]");
-					for (int i = 0; i < lstObjects.Items.Count; i++) sw.WriteLine(lstObjects.Items[i]);
-					sw.WriteLine("");
-				}
-				if (chkHangars.Checked)
-				{
-					if (useHangarObjects)
-					{
-						sw.WriteLine("[HangarObjects]");
-						if (!chkShuttle.Checked) sw.WriteLine("LoadShuttle = 0");
-						if (cboShuttleModel.SelectedIndex != 50) sw.WriteLine("ShuttleModelIndex = " + cboShuttleModel.SelectedIndex);
-						if (cboShuttleMarks.SelectedIndex != 0) sw.WriteLine("ShuttleMarkings = " + cboShuttleMarks.SelectedIndex);
-						if (numShuttlePositionX.Value != _defaultShuttlePosition[0]) sw.WriteLine("ShuttlePositionX = " + (int)numShuttlePositionX.Value);
-						if (numShuttlePositionY.Value != _defaultShuttlePosition[1]) sw.WriteLine("ShuttlePositionY = " + (int)numShuttlePositionY.Value);
-						if (numShuttlePositionZ.Value != _defaultShuttlePosition[2]) sw.WriteLine("ShuttlePositionZ = " + (int)numShuttlePositionZ.Value);
-						if (numShuttleOrientation.Value != _defaultShuttlePosition[3]) sw.WriteLine("ShuttleOrientation = " + (int)numShuttleOrientation.Value);
-						if (chkShuttleFloor.Checked) sw.WriteLine("IsShuttleFloorInverted = 1");
-						if (cboShuAnimation.SelectedIndex != 0) sw.WriteLine("ShuttleAnimation = " + cboShuAnimation.Text);
-						if (numShuDistance.Value != 0) sw.WriteLine("ShuttleAnimationStraightLine = " + (int)numShuDistance.Value);
-
-						if (!chkDroids.Checked) sw.WriteLine("LoadDroids = 0");
-						if (numDroidsZ.Value != 0) sw.WriteLine("DroidsPositionZ = " + (int)numDroidsZ.Value);
-						if (chkDroid1.Checked && numDroid1Z.Value != numDroidsZ.Value) sw.WriteLine("Droid1PositionZ = " + (int)numDroid1Z.Value);
-						if (chkDroid2.Checked && numDroid2Z.Value != numDroidsZ.Value) sw.WriteLine("Droid2PositionZ = " + (int)numDroid2Z.Value);
-						if (chkDroidsFloor.Checked) sw.WriteLine("IsDroidsFloorInverted = 1");
-						if (!chkDroid1Update.Checked) sw.WriteLine("Droid1Update = 0");
-						if (!chkDroid2Update.Checked) sw.WriteLine("Droid2Update = 0");
-
-						if (numRoofCranePositionX.Value != _defaultRoofCranePosition[0]) sw.WriteLine("HangarRoofCranePositionX = " + (int)numRoofCranePositionX.Value);
-						if (numRoofCranePositionY.Value != _defaultRoofCranePosition[1]) sw.WriteLine("HangarRoofCranePositionY = " + (int)numRoofCranePositionY.Value);
-						if (numRoofCranePositionZ.Value != _defaultRoofCranePosition[2]) sw.WriteLine("HangarRoofCranePositionZ = " + (int)numRoofCranePositionZ.Value);
-						if (optRoofCraneAxisY.Checked) sw.WriteLine("HangarRoofCraneAxis = 1");
-						else if (optRoofCraneAxisZ.Checked) sw.WriteLine("HangarRoofCraneAxis = 2");
-						if (numRoofCraneLowOffset.Value != 0) sw.WriteLine("HangarRoofCraneLowOffset = " + (int)numRoofCraneLowOffset.Value);
-						if (numRoofCraneHighOffset.Value != 0) sw.WriteLine("HangarRoofCraneHighOffset = " + (int)numRoofCraneHighOffset.Value);
-						if (chkFloor.Checked) sw.WriteLine("IsHangarFloorInverted = 1");
-						if (chkHangarIff.Checked) sw.WriteLine("HangarIff = " + cboHangarIff.SelectedIndex);
-
-						if (numPlayerAnimationElevation.Value != 0) sw.WriteLine("PlayerAnimationElevation = " + (int)numPlayerAnimationElevation.Value);
-						if (numPlayerX.Value != 0) sw.WriteLine("PlayerOffsetX = " + (int)numPlayerX.Value);
-						if (numPlayerY.Value != 0) sw.WriteLine("PlayerOffsetY = " + (int)numPlayerY.Value);
-						if (numPlayerZ.Value != 0) sw.WriteLine("PlayerOffsetZ = " + (int)numPlayerZ.Value);
-						if (chkPlayerFloor.Checked) sw.WriteLine("IsPlayerFloorInverted = 1");
-						if (chkHangarFold.Checked) sw.WriteLine("FoldOutside = 1");
-
-						for (int i = 0; i < lstHangarObjects.Items.Count; i++) sw.WriteLine(lstHangarObjects.Items[i]);
-						sw.WriteLine("");
-					}
-					if (useHangarCamera)
-					{
-						sw.WriteLine("[HangarCamera]");
-						string[] keys = { "1", "2", "3", "6", "9" };
-						for (int i = 0; i < 5; i++)
-						{
-							bool use = false;
-							for (int j = 0; j < 3; j++) use |= (_cameras[i, j] != _defaultCameras[i, j]);
-							if (use)
-							{
-								sw.WriteLine("Key" + keys[i] + "_X = " + _cameras[i, 0]);
-								sw.WriteLine("Key" + keys[i] + "_Y = " + _cameras[i, 1]);
-								sw.WriteLine("Key" + keys[i] + "_Z = " + _cameras[i, 2]);
-								sw.WriteLine("");
-							}
-						}
-					}
-					if (useFamilyHangarCamera)
-					{
-						sw.WriteLine("[FamHangarCamera]");
-						string[] keys = { "1", "2", "3", "6", "7", "8", "9" };
-						for (int i = 0; i < 7; i++)
-						{
-							bool use = false;
-							for (int j = 0; j < 3; j++) use |= (_familyCameras[i, j] != _defaultFamilyCameras[i, j]);
-							if (use)
-							{
-								sw.WriteLine("Key" + keys[i] + "_X = " + _familyCameras[i, 0]);
-								sw.WriteLine("Key" + keys[i] + "_Y = " + _familyCameras[i, 1]);
-								sw.WriteLine("Key" + keys[i] + "_Z = " + _familyCameras[i, 2]);
-								sw.WriteLine("");
-							}
-						}
-					}
-					if (useHangarMap)
-					{
-						sw.WriteLine("[HangarMap]");
-						for (int i = 0; i < lstMap.Items.Count; i++) sw.WriteLine(lstMap.Items[i].ToString());
-						sw.WriteLine("");
-					}
-					if (useFamilyHangarMap)
-					{
-						sw.WriteLine("[FamHangarMap]");
-						for (int i = 0; i < lstFamilyMap.Items.Count; i++) sw.WriteLine(lstFamilyMap.Items[i].ToString());
-						sw.WriteLine("");
-					}
-				}
-				if (chkSkins.Checked && lstSkins.Items.Count > 0)
-				{
-					sw.WriteLine("[Skins]");
-					for (int i = 0; i < lstSkins.Items.Count; i++) sw.WriteLine(lstSkins.Items[i]);
-					sw.WriteLine("");
-				}
-				if (chkShield.Checked && lstShield.Items.Count > 0)
-				{
-					sw.WriteLine("[Shield]");
-					for (int i = 0; i < lstShield.Items.Count; i++)
-					{
-						string[] parts = lstShield.Items[i].ToString().Split('=');
-						parts[0] = parts[0].Trim();
-						int craft;
-						for (craft = 0; craft < Strings.CraftType.Length; craft++)
-							if (parts[0] == Strings.CraftType[craft]) break;
-						parts = parts[1].Trim().Split(' ');
-						bool perGen = (parts.Length > 1);
-						int rate = int.Parse(parts[0]);
-						sw.WriteLine(craft + ", " + (perGen ? "1, " + rate + ", 0" : "0, 0, " + rate));
-					}
-					sw.WriteLine("");
-				}
-				if (chkHyper.Checked && !optHypGlobal.Checked)
-				{
-					sw.WriteLine("[Hyperspace]");
-					sw.WriteLine("ShortHyperspaceEffect=" + (optHypNormal.Checked ? "0" : "1"));
-				}
-				sw.Flush();
+                createContents();
+                sw.Write(txtHook.Text);
+                sw.Flush();
 				sw.Close();
+
 				if (_bdFile != "") File.Delete(_bdFile);
 				if (_missionTxtFile != "") File.Delete(_missionTxtFile);
 				if (_soundFile != "") File.Delete(_soundFile);
@@ -1439,7 +1559,7 @@ namespace Idmr.Yogeme
 			}
 			catch
 			{
-				if (sw != null) sw.Close();
+				sw?.Close();
 				if (File.Exists(backup))
 				{
 					File.Delete(_fileName);
@@ -1450,18 +1570,13 @@ namespace Idmr.Yogeme
 			Close();
 		}
 
-		string removeComment(string line)
-		{
-			if (line.IndexOf(";") != -1)
-				line = line.Substring(0, line.IndexOf(";"));
-			if (line.IndexOf("#") != -1)
-				line = line.Substring(0, line.IndexOf("#"));
-			if (line.IndexOf("////") != -1)
-				line = line.Substring(0, line.IndexOf("////"));
-			return line.Trim();
-		}
+        private void txtHook_Leave(object sender, EventArgs e)
+        {
+            reset();
+            parseContents();
+        }
 
-		struct MapEntry
+        struct MapEntry
 		{
 			// doing it this way so the output processing is in only one spot
 			public int ModelIndex;
@@ -1505,10 +1620,9 @@ namespace Idmr.Yogeme
 			{
 				// Using this because Convert.ToInt32 was throwing an exception on signed integers.
 				token = token.Trim();
-				int result;
-				if (token.StartsWith("0x") && int.TryParse(token.Substring(2), System.Globalization.NumberStyles.HexNumber, null, out result))
-					return result;
-				if (int.TryParse(token, System.Globalization.NumberStyles.Integer, null, out result))
+                if (token.StartsWith("0x") && int.TryParse(token.Substring(2), System.Globalization.NumberStyles.HexNumber, null, out int result))
+                    return result;
+                if (int.TryParse(token, System.Globalization.NumberStyles.Integer, null, out result))
 					return result;
 				int.TryParse(token, System.Globalization.NumberStyles.HexNumber, null, out result);
 				return result;
