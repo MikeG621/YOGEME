@@ -193,14 +193,6 @@ namespace Idmr.Yogeme
 					string hook = "Hook_" + cboHook.Items[i].ToString() + ".dll";
 					if (!File.Exists(_installDirectory + hook)) cboHook.Items[i] = "*" + cboHook.Items[i];
                 }
-				chkBackdrops.Enabled = File.Exists(_installDirectory + "Hook_Backdrops.dll");
-                chkMission.Enabled = File.Exists(_installDirectory + "Hook_Mission_Tie.dll");
-                chkSounds.Enabled = File.Exists(_installDirectory + "Hook_Engine_Sound.dll");
-                chkObjects.Enabled = File.Exists(_installDirectory + "Hook_Mission_Objects.dll");
-                chkHangars.Enabled = File.Exists(_installDirectory + "Hook_Hangars.dll");
-                chkSFoils.Enabled = File.Exists(_installDirectory + "Hook_SFoils.dll");
-                chkSkins.Enabled = File.Exists(_installDirectory + "Hook_32bpp.dll");
-                chkShield.Enabled = File.Exists(_installDirectory + "Hook_Shield.dll");
 
 				_bdFile = checkFile("_Resdata.txt");
 				_soundFile = checkFile("_Sounds.txt");
@@ -370,14 +362,6 @@ namespace Idmr.Yogeme
             }
 
 			createContents();	// to mix in any TXT files
-
-			chkBackdrops.Checked = (lstBackdrops.Items.Count > 0);
-			chkMission.Checked = (lstMission.Items.Count > 0);
-			chkSounds.Checked = (lstSounds.Items.Count > 0);
-			chkObjects.Checked = (lstObjects.Items.Count > 0);
-			chkHangars.Checked = useHangarObjects | useHangarCamera | useFamilyHangarCamera | useHangarMap;
-			chkSkins.Checked = (lstSkins.Items.Count > 0);
-			chkShield.Checked = (lstShield.Items.Count > 0);
 		}
 
 		string checkFile(string extension)
@@ -413,16 +397,16 @@ namespace Idmr.Yogeme
                 }
 
             string contents = ";" + _mission + ".ini" + (title != "" ? " - " + title : "") + "\r\n\r\n";
-            if (chkBackdrops.Checked && lstBackdrops.Items.Count > 0)
+            if (lstBackdrops.Items.Count > 0)
             {
                 contents += "[Resdata]\r\n";
                 for (int i = 0; i < lstBackdrops.Items.Count; i++) contents += lstBackdrops.Items[i] + "\r\n";
 				contents += "\r\n";
             }
-            if ((chkMission.Checked && lstMission.Items.Count > 0) || (chkSFoils.Checked && useSFoils))
+            if (lstMission.Items.Count > 0 || useSFoils)
             {
                 contents += "[Mission_Tie]\r\n";
-                if (chkMission.Checked)
+                if (lstMission.Items.Count > 0)
                 {
                     for (int i = 0; i < lstMission.Items.Count; i++)
                     {
@@ -460,7 +444,7 @@ namespace Idmr.Yogeme
                             contents += "fg, " + fg + ", pilotvoice, " + parts[2] + "\r\n";
                     }
                 }
-                if (chkSFoils.Checked)
+                if (useSFoils)
                 {
                     for (int i = 0; i < lstSFoils.Items.Count; i++)
                     {
@@ -481,114 +465,112 @@ namespace Idmr.Yogeme
                 }
 				contents += "\r\n";
             }
-            if (chkSounds.Checked && lstSounds.Items.Count > 0)
+            if (lstSounds.Items.Count > 0)
             {
                 contents += "[Sounds]\r\n";
                 for (int i = 0; i < lstSounds.Items.Count; i++) contents += lstSounds.Items[i] + "\r\n";
                 contents += "\r\n";
             }
-            if (chkObjects.Checked && lstObjects.Items.Count > 0)
+            if (lstObjects.Items.Count > 0)
             {
                 contents += "[Objects]\r\n";
                 for (int i = 0; i < lstObjects.Items.Count; i++) contents += lstObjects.Items[i] + "\r\n";
                 contents += "\r\n";
             }
-            if (chkHangars.Checked)
-            {
-                if (useHangarObjects)
-                {
-                    contents += "[HangarObjects]\r\n";
-                    if (!chkShuttle.Checked) contents += "LoadShuttle = 0\r\n";
-                    if (cboShuttleModel.SelectedIndex != 50) contents += "ShuttleModelIndex = " + cboShuttleModel.SelectedIndex + "\r\n";
-                    if (cboShuttleMarks.SelectedIndex != 0) contents += "ShuttleMarkings = " + cboShuttleMarks.SelectedIndex +"\r\n";
-                    if (numShuttlePositionX.Value != _defaultShuttlePosition[0]) contents += "ShuttlePositionX = " + (int)numShuttlePositionX.Value + "\r\n";
-                    if (numShuttlePositionY.Value != _defaultShuttlePosition[1]) contents += "ShuttlePositionY = " + (int)numShuttlePositionY.Value + "\r\n";
-                    if (numShuttlePositionZ.Value != _defaultShuttlePosition[2]) contents += "ShuttlePositionZ = " + (int)numShuttlePositionZ.Value + "\r\n";
-                    if (numShuttleOrientation.Value != _defaultShuttlePosition[3]) contents += "ShuttleOrientation = " + (int)numShuttleOrientation.Value + "\r\n";
-                    if (chkShuttleFloor.Checked) contents += "IsShuttleFloorInverted = 1\r\n";
-                    if (cboShuAnimation.SelectedIndex != 0) contents += "ShuttleAnimation = " + cboShuAnimation.Text + "\r\n";
-                    if (numShuDistance.Value != 0) contents += "ShuttleAnimationStraightLine = " + (int)numShuDistance.Value + "\r\n";
 
-                    if (!chkDroids.Checked) contents += "LoadDroids = 0\r\n";
-                    if (numDroidsZ.Value != 0) contents += "DroidsPositionZ = " + (int)numDroidsZ.Value + "\r\n";
-                    if (chkDroid1.Checked && numDroid1Z.Value != numDroidsZ.Value) contents += "Droid1PositionZ = " + (int)numDroid1Z.Value + "\r\n";
-                    if (chkDroid2.Checked && numDroid2Z.Value != numDroidsZ.Value) contents += "Droid2PositionZ = " + (int)numDroid2Z.Value + "\r\n";
-                    if (chkDroidsFloor.Checked) contents += "IsDroidsFloorInverted = 1\r\n";
-                    if (!chkDroid1Update.Checked) contents += "Droid1Update = 0\r\n";
-                    if (!chkDroid2Update.Checked) contents += "Droid2Update = 0\r\n";
+			if (useHangarObjects)
+			{
+				contents += "[HangarObjects]\r\n";
+				if (!chkShuttle.Checked) contents += "LoadShuttle = 0\r\n";
+				if (cboShuttleModel.SelectedIndex != 50) contents += "ShuttleModelIndex = " + cboShuttleModel.SelectedIndex + "\r\n";
+				if (cboShuttleMarks.SelectedIndex != 0) contents += "ShuttleMarkings = " + cboShuttleMarks.SelectedIndex + "\r\n";
+				if (numShuttlePositionX.Value != _defaultShuttlePosition[0]) contents += "ShuttlePositionX = " + (int)numShuttlePositionX.Value + "\r\n";
+				if (numShuttlePositionY.Value != _defaultShuttlePosition[1]) contents += "ShuttlePositionY = " + (int)numShuttlePositionY.Value + "\r\n";
+				if (numShuttlePositionZ.Value != _defaultShuttlePosition[2]) contents += "ShuttlePositionZ = " + (int)numShuttlePositionZ.Value + "\r\n";
+				if (numShuttleOrientation.Value != _defaultShuttlePosition[3]) contents += "ShuttleOrientation = " + (int)numShuttleOrientation.Value + "\r\n";
+				if (chkShuttleFloor.Checked) contents += "IsShuttleFloorInverted = 1\r\n";
+				if (cboShuAnimation.SelectedIndex != 0) contents += "ShuttleAnimation = " + cboShuAnimation.Text + "\r\n";
+				if (numShuDistance.Value != 0) contents += "ShuttleAnimationStraightLine = " + (int)numShuDistance.Value + "\r\n";
 
-                    if (numRoofCranePositionX.Value != _defaultRoofCranePosition[0]) contents += "HangarRoofCranePositionX = " + (int)numRoofCranePositionX.Value + "\r\n";
-                    if (numRoofCranePositionY.Value != _defaultRoofCranePosition[1]) contents += "HangarRoofCranePositionY = " + (int)numRoofCranePositionY.Value + "\r\n";
-                    if (numRoofCranePositionZ.Value != _defaultRoofCranePosition[2]) contents += "HangarRoofCranePositionZ = " + (int)numRoofCranePositionZ.Value + "\r\n";
-                    if (optRoofCraneAxisY.Checked) contents += "HangarRoofCraneAxis = 1\r\n";
-                    else if (optRoofCraneAxisZ.Checked) contents += "HangarRoofCraneAxis = 2\r\n";
-                    if (numRoofCraneLowOffset.Value != 0) contents += "HangarRoofCraneLowOffset = " + (int)numRoofCraneLowOffset.Value + "\r\n";
-                    if (numRoofCraneHighOffset.Value != 0) contents += "HangarRoofCraneHighOffset = " + (int)numRoofCraneHighOffset.Value + "\r\n";
-                    if (chkFloor.Checked) contents += "IsHangarFloorInverted = 1\r\n";
-                    if (chkHangarIff.Checked) contents += "HangarIff = " + cboHangarIff.SelectedIndex + "\r\n";
+				if (!chkDroids.Checked) contents += "LoadDroids = 0\r\n";
+				if (numDroidsZ.Value != 0) contents += "DroidsPositionZ = " + (int)numDroidsZ.Value + "\r\n";
+				if (chkDroid1.Checked && numDroid1Z.Value != numDroidsZ.Value) contents += "Droid1PositionZ = " + (int)numDroid1Z.Value + "\r\n";
+				if (chkDroid2.Checked && numDroid2Z.Value != numDroidsZ.Value) contents += "Droid2PositionZ = " + (int)numDroid2Z.Value + "\r\n";
+				if (chkDroidsFloor.Checked) contents += "IsDroidsFloorInverted = 1\r\n";
+				if (!chkDroid1Update.Checked) contents += "Droid1Update = 0\r\n";
+				if (!chkDroid2Update.Checked) contents += "Droid2Update = 0\r\n";
 
-                    if (numPlayerAnimationElevation.Value != 0) contents += "PlayerAnimationElevation = " + (int)numPlayerAnimationElevation.Value + "\r\n";
-                    if (numPlayerX.Value != 0) contents += "PlayerOffsetX = " + (int)numPlayerX.Value + "\r\n";
-                    if (numPlayerY.Value != 0) contents += "PlayerOffsetY = " + (int)numPlayerY.Value + "\r\n";
-                    if (numPlayerZ.Value != 0) contents += "PlayerOffsetZ = " + (int)numPlayerZ.Value + "\r\n";
-                    if (chkPlayerFloor.Checked) contents += "IsPlayerFloorInverted = 1\r\n";
-                    if (chkHangarFold.Checked) contents += "FoldOutside = 1\r\n";
+				if (numRoofCranePositionX.Value != _defaultRoofCranePosition[0]) contents += "HangarRoofCranePositionX = " + (int)numRoofCranePositionX.Value + "\r\n";
+				if (numRoofCranePositionY.Value != _defaultRoofCranePosition[1]) contents += "HangarRoofCranePositionY = " + (int)numRoofCranePositionY.Value + "\r\n";
+				if (numRoofCranePositionZ.Value != _defaultRoofCranePosition[2]) contents += "HangarRoofCranePositionZ = " + (int)numRoofCranePositionZ.Value + "\r\n";
+				if (optRoofCraneAxisY.Checked) contents += "HangarRoofCraneAxis = 1\r\n";
+				else if (optRoofCraneAxisZ.Checked) contents += "HangarRoofCraneAxis = 2\r\n";
+				if (numRoofCraneLowOffset.Value != 0) contents += "HangarRoofCraneLowOffset = " + (int)numRoofCraneLowOffset.Value + "\r\n";
+				if (numRoofCraneHighOffset.Value != 0) contents += "HangarRoofCraneHighOffset = " + (int)numRoofCraneHighOffset.Value + "\r\n";
+				if (chkFloor.Checked) contents += "IsHangarFloorInverted = 1\r\n";
+				if (chkHangarIff.Checked) contents += "HangarIff = " + cboHangarIff.SelectedIndex + "\r\n";
 
-                    for (int i = 0; i < lstHangarObjects.Items.Count; i++) contents += lstHangarObjects.Items[i] + "\r\n";
-					contents += "\r\n";
-                }
-                if (useHangarCamera)
-                {
-                    contents += "[HangarCamera]\r\n";
-                    string[] keys = { "1", "2", "3", "6", "9" };
-                    for (int i = 0; i < 5; i++)
-                    {
-                        bool use = false;
-                        for (int j = 0; j < 3; j++) use |= (_cameras[i, j] != _defaultCameras[i, j]);
-                        if (use)
-                        {
-                            contents += "Key" + keys[i] + "_X = " + _cameras[i, 0] + "\r\n";
-                            contents += "Key" + keys[i] + "_Y = " + _cameras[i, 1] + "\r\n";
-                            contents += "Key" + keys[i] + "_Z = " + _cameras[i, 2] + "\r\n\r\n";
-                        }
-                    }
-                }
-                if (useFamilyHangarCamera)
-                {
-                    contents += "[FamHangarCamera]\r\n";
-                    string[] keys = { "1", "2", "3", "6", "7", "8", "9" };
-                    for (int i = 0; i < 7; i++)
-                    {
-                        bool use = false;
-                        for (int j = 0; j < 3; j++) use |= (_familyCameras[i, j] != _defaultFamilyCameras[i, j]);
-                        if (use)
-                        {
-                            contents += "Key" + keys[i] + "_X = " + _familyCameras[i, 0] + "\r\n";
-                            contents += "Key" + keys[i] + "_Y = " + _familyCameras[i, 1] + "\r\n";
-                            contents += "Key" + keys[i] + "_Z = " + _familyCameras[i, 2] + "\r\n\r\n";
-                        }
-                    }
-                }
-                if (useHangarMap)
-                {
-                    contents += "[HangarMap]\r\n";
-                    for (int i = 0; i < lstMap.Items.Count; i++) contents += lstMap.Items[i].ToString() + "\r\n";
-					contents += "\r\n";
-                }
-                if (useFamilyHangarMap)
-                {
-                    contents += "[FamHangarMap]\r\n";
-                    for (int i = 0; i < lstFamilyMap.Items.Count; i++) contents += lstFamilyMap.Items[i].ToString() + "\r\n";
-					contents += "\r\n";
-                }
-            }
-            if (chkSkins.Checked && lstSkins.Items.Count > 0)
+				if (numPlayerAnimationElevation.Value != 0) contents += "PlayerAnimationElevation = " + (int)numPlayerAnimationElevation.Value + "\r\n";
+				if (numPlayerX.Value != 0) contents += "PlayerOffsetX = " + (int)numPlayerX.Value + "\r\n";
+				if (numPlayerY.Value != 0) contents += "PlayerOffsetY = " + (int)numPlayerY.Value + "\r\n";
+				if (numPlayerZ.Value != 0) contents += "PlayerOffsetZ = " + (int)numPlayerZ.Value + "\r\n";
+				if (chkPlayerFloor.Checked) contents += "IsPlayerFloorInverted = 1\r\n";
+				if (chkHangarFold.Checked) contents += "FoldOutside = 1\r\n";
+
+				for (int i = 0; i < lstHangarObjects.Items.Count; i++) contents += lstHangarObjects.Items[i] + "\r\n";
+				contents += "\r\n";
+			}
+			if (useHangarCamera)
+			{
+				contents += "[HangarCamera]\r\n";
+				string[] keys = { "1", "2", "3", "6", "9" };
+				for (int i = 0; i < 5; i++)
+				{
+					bool use = false;
+					for (int j = 0; j < 3; j++) use |= (_cameras[i, j] != _defaultCameras[i, j]);
+					if (use)
+					{
+						contents += "Key" + keys[i] + "_X = " + _cameras[i, 0] + "\r\n";
+						contents += "Key" + keys[i] + "_Y = " + _cameras[i, 1] + "\r\n";
+						contents += "Key" + keys[i] + "_Z = " + _cameras[i, 2] + "\r\n\r\n";
+					}
+				}
+			}
+			if (useFamilyHangarCamera)
+			{
+				contents += "[FamHangarCamera]\r\n";
+				string[] keys = { "1", "2", "3", "6", "7", "8", "9" };
+				for (int i = 0; i < 7; i++)
+				{
+					bool use = false;
+					for (int j = 0; j < 3; j++) use |= (_familyCameras[i, j] != _defaultFamilyCameras[i, j]);
+					if (use)
+					{
+						contents += "Key" + keys[i] + "_X = " + _familyCameras[i, 0] + "\r\n";
+						contents += "Key" + keys[i] + "_Y = " + _familyCameras[i, 1] + "\r\n";
+						contents += "Key" + keys[i] + "_Z = " + _familyCameras[i, 2] + "\r\n\r\n";
+					}
+				}
+			}
+			if (useHangarMap)
+			{
+				contents += "[HangarMap]\r\n";
+				for (int i = 0; i < lstMap.Items.Count; i++) contents += lstMap.Items[i].ToString() + "\r\n";
+				contents += "\r\n";
+			}
+			if (useFamilyHangarMap)
+			{
+				contents += "[FamHangarMap]\r\n";
+				for (int i = 0; i < lstFamilyMap.Items.Count; i++) contents += lstFamilyMap.Items[i].ToString() + "\r\n";
+				contents += "\r\n";
+			}
+            if (lstSkins.Items.Count > 0)
             {
                 contents += "[Skins]\r\n";
                 for (int i = 0; i < lstSkins.Items.Count; i++) contents += lstSkins.Items[i] + "\r\n";
 				contents += "\r\n";
             }
-            if (chkShield.Checked && lstShield.Items.Count > 0)
+            if (lstShield.Items.Count > 0)
             {
                 contents += "[Shield]\r\n";
                 for (int i = 0; i < lstShield.Items.Count; i++)
@@ -671,14 +653,6 @@ namespace Idmr.Yogeme
                 else if (readMode == ReadMode.Shield) parseShield(line);
                 else if (readMode == ReadMode.Hyper) parseHyper(line);
             }
-
-            chkBackdrops.Checked = (lstBackdrops.Items.Count > 0);
-            chkMission.Checked = (lstMission.Items.Count > 0);
-            chkSounds.Checked = (lstSounds.Items.Count > 0);
-            chkObjects.Checked = (lstObjects.Items.Count > 0);
-            chkHangars.Checked = useHangarObjects | useHangarCamera | useFamilyHangarCamera | useHangarMap;
-            chkSkins.Checked = (lstSkins.Items.Count > 0);
-            chkShield.Checked = (lstShield.Items.Count > 0);
         }
 
         string removeComment(string line)
@@ -739,13 +713,6 @@ namespace Idmr.Yogeme
         }
 
         #region Backdrops
-        private void chkBackdrops_CheckedChanged(object sender, EventArgs e)
-		{
-			lstBackdrops.Enabled = chkBackdrops.Checked;
-			cmdAddBD.Enabled = chkBackdrops.Checked;
-			cmdRemoveBD.Enabled = chkBackdrops.Checked;
-		}
-
 		private void cmdAddBD_Click(object sender, EventArgs e)
 		{
 			if (_installDirectory != "") opnBackdrop.InitialDirectory = _installDirectory + _res;
@@ -780,32 +747,17 @@ namespace Idmr.Yogeme
 				else if (parts[2] == "pilotvoice")
 					lstMission.Items.Add(cboFG.Items[fg].ToString() + ",pilot," + parts[3]);
 				else if (parts[2] == "close_sfoils")
-				{
-					chkSFoils.Checked = true;
 					lstSFoils.Items.Add(cboSFoilFG.Items[fg].ToString() + ",closed");
-				}
 				else if (parts[2] == "open_landinggears")
-				{
-					chkSFoils.Checked = true;
 					lstSFoils.Items.Add(cboSFoilFG.Items[fg].ToString() + ",open");
-				}
 			}
 			parts = parts[0].Split('=');
 			if (parts[0] == "closesfoilsandopenlandinggearsbeforeenterhangar" && parts[1] == "1")
-			{
-				chkSFoils.Checked = true;
 				chkForceHangarSF.Checked = true;
-			}
 			else if (parts[0] == "closelandinggearsbeforeenterhyperspace" && parts[1] == "1")
-			{
-				chkSFoils.Checked = true;
 				chkForceHyperLG.Checked = true;
-			}
 			else if (parts[0] == "autoclosesfoils" && parts[1] == "0")
-			{
-				chkSFoils.Checked = true;
 				chkManualSF.Checked = true;
-			}
 		}
 
 		void cboMission_CheckedChanged(object sender, EventArgs e)
@@ -814,26 +766,6 @@ namespace Idmr.Yogeme
 			numWingman.Enabled = optWingman.Checked;
 			cboIff.Enabled = optIff.Checked;
 			txtPilot.Enabled = optPilot.Checked;
-		}
-
-		private void chkMission_CheckedChanged(object sender, EventArgs e)
-		{
-			lstMission.Enabled = chkMission.Checked;
-			cmdAddMiss.Enabled = chkMission.Checked;
-			cmdRemoveMiss.Enabled = chkMission.Checked;
-			cboFG.Enabled = chkMission.Checked;
-			optMarkings.Enabled = chkMission.Checked;
-			optWingman.Enabled = chkMission.Checked;
-			optIff.Enabled = chkMission.Checked;
-			optPilot.Enabled = chkMission.Checked;
-			if (chkMission.Checked) cboMission_CheckedChanged("chkMission", new EventArgs());
-			else
-			{
-				cboMarkings.Enabled = false;
-				numWingman.Enabled = false;
-				cboIff.Enabled = false;
-				txtPilot.Enabled = false;
-			}
 		}
 
 		private void cmdAddMiss_Click(object sender, EventArgs e)
@@ -854,13 +786,6 @@ namespace Idmr.Yogeme
 		#endregion
 
 		#region Sounds
-		private void chkSounds_CheckedChanged(object sender, EventArgs e)
-		{
-			lstSounds.Enabled = chkSounds.Checked;
-			cmdAddSounds.Enabled = chkSounds.Checked;
-			cmdRemoveSounds.Enabled = chkSounds.Checked;
-		}
-
 		private void cmdAddSounds_Click(object sender, EventArgs e)
 		{
 			if (_installDirectory != "") opnSounds.InitialDirectory = _installDirectory + _wave;
@@ -882,17 +807,6 @@ namespace Idmr.Yogeme
 		#endregion
 
 		#region Objects
-		private void chkObjects_CheckedChanged(object sender, EventArgs e)
-		{
-			lstObjects.Enabled = chkObjects.Checked;
-			cmdAddObjects.Enabled = chkObjects.Checked;
-			cmdRemoveObjects.Enabled = chkObjects.Checked;
-			optCraft.Enabled = chkObjects.Checked;
-			optFGProfile.Enabled = chkObjects.Checked;
-			optCraftProfile.Enabled = chkObjects.Checked;
-			cboProfileFG.Enabled = chkObjects.Checked && optFGProfile.Checked;
-			txtProfile.Enabled = chkObjects.Checked && (optFGProfile.Checked | optCraftProfile.Checked);
-        }
 		// TODO: still need ObjectProfile_[craft]_[weaponindex] = [Profile]
 		// problem is I want the weapon indexes to be intelligent
 
@@ -1106,10 +1020,6 @@ namespace Idmr.Yogeme
 		private void chkGrounded_CheckedChanged(object sender, EventArgs e)
 		{
 			numPosZ.Enabled = !chkGrounded.Checked;
-		}
-		private void chkHangars_CheckedChanged(object sender, EventArgs e)
-		{
-			tcHangar.Enabled = chkHangars.Checked;
 		}
 		private void chkHangarIff_CheckedChanged(object sender, EventArgs e)
 		{
@@ -1354,19 +1264,6 @@ namespace Idmr.Yogeme
 		#endregion
 
 		#region S-Foils
-		private void chkSFoils_CheckedChanged(object sender, EventArgs e)
-		{
-			lstSFoils.Enabled = chkSFoils.Checked;
-			cboSFoilFG.Enabled = chkSFoils.Checked;
-			cmdAddSFoils.Enabled = chkSFoils.Checked;
-			cmdRemoveSFoils.Enabled = chkSFoils.Checked;
-			chkCloseSF.Enabled = chkSFoils.Checked;
-			chkOpenLG.Enabled = chkSFoils.Checked;
-			chkForceHangarSF.Enabled = chkSFoils.Checked;
-			chkForceHyperLG.Enabled = chkSFoils.Checked;
-			chkManualSF.Enabled = chkSFoils.Checked;
-		}
-
 		private void cmdAddSFoils_Click(object sender, EventArgs e)
 		{
 			if (cboSFoilFG.SelectedIndex == -1) return;
@@ -1392,22 +1289,11 @@ namespace Idmr.Yogeme
 		#region Skins
 		private void chkDefaultSkin_CheckedChanged(object sender, EventArgs e)
 		{
-			txtSkin.Enabled = (!chkDefaultSkin.Checked && chkSkins.Checked);
-		}
-		private void chkSkins_CheckedChanged(object sender, EventArgs e)
-		{
-			lstSkins.Enabled = chkSkins.Checked;
-			cmdAddSkin.Enabled = chkSkins.Checked;
-			cmdAppendSkin.Enabled = chkSkins.Checked;
-			cmdRemoveSkin.Enabled = chkSkins.Checked;
-			chkSkinMarks.Enabled = chkSkins.Checked;
-			chkDefaultSkin.Enabled = chkSkins.Checked;
-			chkSkinMarks_CheckedChanged("chkSkins", new EventArgs());
-			chkDefaultSkin_CheckedChanged("chkSkins", new EventArgs());
+			txtSkin.Enabled = !chkDefaultSkin.Checked;
 		}
 		private void chkSkinMarks_CheckedChanged(object sender, EventArgs e)
 		{
-			cboSkinMarks.Enabled = (chkSkinMarks.Checked && chkSkins.Checked);
+			cboSkinMarks.Enabled = chkSkinMarks.Checked;
 		}
 
 		private void cmdAddSkin_Click(object sender, EventArgs e)
@@ -1445,15 +1331,6 @@ namespace Idmr.Yogeme
 			bool perGen = (parts[1] == "1");
 			int rate = (perGen ? int.Parse(parts[2]) : int.Parse(parts[3]));
 			lstShield.Items.Add(Strings.CraftType[int.Parse(parts[0])] + " = " + rate + (perGen ? " per" : ""));
-		}
-		private void chkShield_CheckedChanged(object sender, EventArgs e)
-		{
-			lstShield.Enabled = chkShield.Checked;
-			cmdAddShield.Enabled = chkShield.Checked;
-			cmdRemoveShield.Enabled = chkShield.Checked;
-			chkShieldGen.Enabled = chkShield.Checked;
-			cboShield.Enabled = chkShield.Checked;
-			numShieldRate.Enabled = chkShield.Checked;
 		}
 
 		private void cmdAddShield_Click(object sender, EventArgs e)
@@ -1495,23 +1372,23 @@ namespace Idmr.Yogeme
 		}
 		private void cmdOK_Click(object sender, EventArgs e)
 		{
-			if (chkHangars.Checked && lstMap.Items.Count > 0 && lstMap.Items.Count < 4)
+			if (lstMap.Items.Count > 0 && lstMap.Items.Count < 4)
 			{
 				DialogResult res = MessageBox.Show("Hangar Map must have at least 4 entries to be used. Continue without it?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
 				if (res == DialogResult.No) return;
 			}
-			if (chkHangars.Checked && lstFamilyMap.Items.Count > 0 && lstFamilyMap.Items.Count < 4)
+			if (lstFamilyMap.Items.Count > 0 && lstFamilyMap.Items.Count < 4)
 			{
 				DialogResult res = MessageBox.Show("Family Hangar Map must have at least 4 entries to be used. Continue without it?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
 				if (res == DialogResult.No) return;
 			}
 
-			if (!chkBackdrops.Checked && _bdFile != "") File.Delete(_bdFile);
+			if (lstBackdrops.Items.Count == 0 && _bdFile != "") File.Delete(_bdFile);
 
-			if (!chkMission.Checked && !chkSFoils.Checked && _missionTxtFile != "") File.Delete(_missionTxtFile);
+			if (lstMission.Items.Count == 0 && !useSFoils && _missionTxtFile != "") File.Delete(_missionTxtFile);
 
-			if (!chkSounds.Checked && _soundFile != "") File.Delete(_soundFile);
-			if (!chkObjects.Checked && _objFile != "") File.Delete(_objFile);
+			if (lstSounds.Items.Count == 0 && _soundFile != "") File.Delete(_soundFile);
+			if (lstObjects.Items.Count == 0 && _objFile != "") File.Delete(_objFile);
 
 			if (!useHangarObjects && _hangarObjectsFile != "") File.Delete(_hangarObjectsFile);
 			if (!useHangarCamera && _hangarCameraFile != "") File.Delete(_hangarCameraFile);
@@ -1519,11 +1396,19 @@ namespace Idmr.Yogeme
 			if (!useHangarMap && _hangarMapFile != "") File.Delete(_hangarMapFile);
 			if (!useFamilyHangarMap && _famHangarMapFile != "") File.Delete(_famHangarMapFile);
 
-			if (!chkSkins.Checked && _32bppFile != "") File.Delete(_32bppFile);
-			if (!chkShield.Checked && _shieldFile != "") File.Delete(_shieldFile);
+			if (lstSkins.Items.Count == 0 && _32bppFile != "") File.Delete(_32bppFile);
+			if (lstShield.Items.Count == 0 && _shieldFile != "") File.Delete(_shieldFile);
 			if (optHypGlobal.Checked && _hyperFile != "") File.Delete(_hyperFile);
 
-			if (!chkBackdrops.Checked && !chkMission.Checked && !chkSounds.Checked && !chkObjects.Checked && !useHangarObjects && !useHangarCamera && !useFamilyHangarCamera && !useHangarMap && !useFamilyHangarMap && !chkSFoils.Checked && !chkShield.Checked && optHypGlobal.Checked)
+			if (lstBackdrops.Items.Count == 0
+				&& lstMission.Items.Count == 0
+                && lstSounds.Items.Count == 0
+				&& lstObjects.Items.Count == 0
+                && !useHangarObjects && !useHangarCamera && !useFamilyHangarCamera && !useHangarMap && !useFamilyHangarMap
+				&& !useSFoils
+                && lstSkins.Items.Count == 0
+                && lstShield.Items.Count == 0
+                && optHypGlobal.Checked)
 			{
 				File.Delete(_fileName);
 				Close();

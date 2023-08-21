@@ -34,7 +34,6 @@
             this.cmdRemoveBD = new System.Windows.Forms.Button();
             this.cmdAddBD = new System.Windows.Forms.Button();
             this.lstBackdrops = new System.Windows.Forms.ListBox();
-            this.chkBackdrops = new System.Windows.Forms.CheckBox();
             this.opnBackdrop = new System.Windows.Forms.OpenFileDialog();
             this.txtPilot = new System.Windows.Forms.TextBox();
             this.lstMission = new System.Windows.Forms.ListBox();
@@ -46,11 +45,9 @@
             this.cboIff = new System.Windows.Forms.ComboBox();
             this.cboMarkings = new System.Windows.Forms.ComboBox();
             this.cboFG = new System.Windows.Forms.ComboBox();
-            this.chkMission = new System.Windows.Forms.CheckBox();
             this.cmdRemoveSounds = new System.Windows.Forms.Button();
             this.cmdAddSounds = new System.Windows.Forms.Button();
             this.lstSounds = new System.Windows.Forms.ListBox();
-            this.chkSounds = new System.Windows.Forms.CheckBox();
             this.opnSounds = new System.Windows.Forms.OpenFileDialog();
             this.cboProfileFG = new System.Windows.Forms.ComboBox();
             this.optFGProfile = new System.Windows.Forms.RadioButton();
@@ -59,7 +56,6 @@
             this.cmdRemoveObjects = new System.Windows.Forms.Button();
             this.cmdAddObjects = new System.Windows.Forms.Button();
             this.lstObjects = new System.Windows.Forms.ListBox();
-            this.chkObjects = new System.Windows.Forms.CheckBox();
             this.opnObjects = new System.Windows.Forms.OpenFileDialog();
             this.chkFamMarks = new System.Windows.Forms.CheckBox();
             this.cboFamMapMarkings = new System.Windows.Forms.ComboBox();
@@ -140,7 +136,6 @@
             this.cmdAddHangar = new System.Windows.Forms.Button();
             this.cmdRemoveHangar = new System.Windows.Forms.Button();
             this.lstHangarObjects = new System.Windows.Forms.ListBox();
-            this.chkHangars = new System.Windows.Forms.CheckBox();
             this.label45 = new System.Windows.Forms.Label();
             this.numWingman = new System.Windows.Forms.NumericUpDown();
             this.label48 = new System.Windows.Forms.Label();
@@ -208,7 +203,6 @@
             this.cboSFoilFG = new System.Windows.Forms.ComboBox();
             this.cmdRemoveSFoils = new System.Windows.Forms.Button();
             this.cmdAddSFoils = new System.Windows.Forms.Button();
-            this.chkSFoils = new System.Windows.Forms.CheckBox();
             this.label50 = new System.Windows.Forms.Label();
             this.txtSkin = new System.Windows.Forms.TextBox();
             this.chkDefaultSkin = new System.Windows.Forms.CheckBox();
@@ -218,7 +212,6 @@
             this.cmdAppendSkin = new System.Windows.Forms.Button();
             this.cmdAddSkin = new System.Windows.Forms.Button();
             this.lstSkins = new System.Windows.Forms.ListBox();
-            this.chkSkins = new System.Windows.Forms.CheckBox();
             this.label52 = new System.Windows.Forms.Label();
             this.cboShield = new System.Windows.Forms.ComboBox();
             this.cmdRemoveShield = new System.Windows.Forms.Button();
@@ -227,7 +220,6 @@
             this.label51 = new System.Windows.Forms.Label();
             this.chkShieldGen = new System.Windows.Forms.CheckBox();
             this.lstShield = new System.Windows.Forms.ListBox();
-            this.chkShield = new System.Windows.Forms.CheckBox();
             this.label54 = new System.Windows.Forms.Label();
             this.optHypEnabled = new System.Windows.Forms.RadioButton();
             this.optHypGlobal = new System.Windows.Forms.RadioButton();
@@ -323,8 +315,7 @@
             // 
             // cmdRemoveBD
             // 
-            this.cmdRemoveBD.Enabled = false;
-            this.cmdRemoveBD.Location = new System.Drawing.Point(69, 140);
+            this.cmdRemoveBD.Location = new System.Drawing.Point(69, 117);
             this.cmdRemoveBD.Name = "cmdRemoveBD";
             this.cmdRemoveBD.Size = new System.Drawing.Size(60, 23);
             this.cmdRemoveBD.TabIndex = 3;
@@ -334,8 +325,7 @@
             // 
             // cmdAddBD
             // 
-            this.cmdAddBD.Enabled = false;
-            this.cmdAddBD.Location = new System.Drawing.Point(3, 140);
+            this.cmdAddBD.Location = new System.Drawing.Point(3, 117);
             this.cmdAddBD.Name = "cmdAddBD";
             this.cmdAddBD.Size = new System.Drawing.Size(60, 23);
             this.cmdAddBD.TabIndex = 2;
@@ -345,23 +335,12 @@
             // 
             // lstBackdrops
             // 
-            this.lstBackdrops.Enabled = false;
             this.lstBackdrops.FormattingEnabled = true;
-            this.lstBackdrops.Location = new System.Drawing.Point(3, 26);
+            this.lstBackdrops.HorizontalScrollbar = true;
+            this.lstBackdrops.Location = new System.Drawing.Point(3, 3);
             this.lstBackdrops.Name = "lstBackdrops";
             this.lstBackdrops.Size = new System.Drawing.Size(366, 108);
             this.lstBackdrops.TabIndex = 4;
-            // 
-            // chkBackdrops
-            // 
-            this.chkBackdrops.AutoSize = true;
-            this.chkBackdrops.Location = new System.Drawing.Point(3, 3);
-            this.chkBackdrops.Name = "chkBackdrops";
-            this.chkBackdrops.Size = new System.Drawing.Size(99, 17);
-            this.chkBackdrops.TabIndex = 1;
-            this.chkBackdrops.Text = "Use Backdrops";
-            this.chkBackdrops.UseVisualStyleBackColor = true;
-            this.chkBackdrops.CheckedChanged += new System.EventHandler(this.chkBackdrops_CheckedChanged);
             // 
             // opnBackdrop
             // 
@@ -369,8 +348,7 @@
             // 
             // txtPilot
             // 
-            this.txtPilot.Enabled = false;
-            this.txtPilot.Location = new System.Drawing.Point(276, 162);
+            this.txtPilot.Location = new System.Drawing.Point(277, 139);
             this.txtPilot.MaxLength = 15;
             this.txtPilot.Name = "txtPilot";
             this.txtPilot.Size = new System.Drawing.Size(97, 20);
@@ -378,9 +356,9 @@
             // 
             // lstMission
             // 
-            this.lstMission.Enabled = false;
             this.lstMission.FormattingEnabled = true;
-            this.lstMission.Location = new System.Drawing.Point(3, 26);
+            this.lstMission.HorizontalScrollbar = true;
+            this.lstMission.Location = new System.Drawing.Point(4, 3);
             this.lstMission.Name = "lstMission";
             this.lstMission.Size = new System.Drawing.Size(207, 134);
             this.lstMission.TabIndex = 42;
@@ -388,8 +366,7 @@
             // optPilot
             // 
             this.optPilot.AutoSize = true;
-            this.optPilot.Enabled = false;
-            this.optPilot.Location = new System.Drawing.Point(216, 163);
+            this.optPilot.Location = new System.Drawing.Point(217, 140);
             this.optPilot.Name = "optPilot";
             this.optPilot.Size = new System.Drawing.Size(45, 17);
             this.optPilot.TabIndex = 5;
@@ -400,8 +377,7 @@
             // optIff
             // 
             this.optIff.AutoSize = true;
-            this.optIff.Enabled = false;
-            this.optIff.Location = new System.Drawing.Point(216, 136);
+            this.optIff.Location = new System.Drawing.Point(217, 113);
             this.optIff.Name = "optIff";
             this.optIff.Size = new System.Drawing.Size(40, 17);
             this.optIff.TabIndex = 4;
@@ -413,8 +389,7 @@
             // 
             this.optMarkings.AutoSize = true;
             this.optMarkings.Checked = true;
-            this.optMarkings.Enabled = false;
-            this.optMarkings.Location = new System.Drawing.Point(216, 82);
+            this.optMarkings.Location = new System.Drawing.Point(217, 59);
             this.optMarkings.Name = "optMarkings";
             this.optMarkings.Size = new System.Drawing.Size(54, 17);
             this.optMarkings.TabIndex = 2;
@@ -425,8 +400,7 @@
             // 
             // cmdRemoveMiss
             // 
-            this.cmdRemoveMiss.Enabled = false;
-            this.cmdRemoveMiss.Location = new System.Drawing.Point(313, 53);
+            this.cmdRemoveMiss.Location = new System.Drawing.Point(314, 30);
             this.cmdRemoveMiss.Name = "cmdRemoveMiss";
             this.cmdRemoveMiss.Size = new System.Drawing.Size(60, 23);
             this.cmdRemoveMiss.TabIndex = 41;
@@ -436,8 +410,7 @@
             // 
             // cmdAddMiss
             // 
-            this.cmdAddMiss.Enabled = false;
-            this.cmdAddMiss.Location = new System.Drawing.Point(216, 53);
+            this.cmdAddMiss.Location = new System.Drawing.Point(217, 30);
             this.cmdAddMiss.Name = "cmdAddMiss";
             this.cmdAddMiss.Size = new System.Drawing.Size(60, 23);
             this.cmdAddMiss.TabIndex = 40;
@@ -447,46 +420,31 @@
             // 
             // cboIff
             // 
-            this.cboIff.Enabled = false;
             this.cboIff.FormattingEnabled = true;
-            this.cboIff.Location = new System.Drawing.Point(276, 135);
+            this.cboIff.Location = new System.Drawing.Point(277, 112);
             this.cboIff.Name = "cboIff";
             this.cboIff.Size = new System.Drawing.Size(97, 21);
             this.cboIff.TabIndex = 9;
             // 
             // cboMarkings
             // 
-            this.cboMarkings.Enabled = false;
             this.cboMarkings.FormattingEnabled = true;
-            this.cboMarkings.Location = new System.Drawing.Point(276, 81);
+            this.cboMarkings.Location = new System.Drawing.Point(277, 58);
             this.cboMarkings.Name = "cboMarkings";
             this.cboMarkings.Size = new System.Drawing.Size(97, 21);
             this.cboMarkings.TabIndex = 7;
             // 
             // cboFG
             // 
-            this.cboFG.Enabled = false;
             this.cboFG.FormattingEnabled = true;
-            this.cboFG.Location = new System.Drawing.Point(216, 26);
+            this.cboFG.Location = new System.Drawing.Point(217, 3);
             this.cboFG.Name = "cboFG";
             this.cboFG.Size = new System.Drawing.Size(157, 21);
             this.cboFG.TabIndex = 6;
             // 
-            // chkMission
-            // 
-            this.chkMission.AutoSize = true;
-            this.chkMission.Location = new System.Drawing.Point(3, 3);
-            this.chkMission.Name = "chkMission";
-            this.chkMission.Size = new System.Drawing.Size(101, 17);
-            this.chkMission.TabIndex = 1;
-            this.chkMission.Text = "Use Mission Tie";
-            this.chkMission.UseVisualStyleBackColor = true;
-            this.chkMission.CheckedChanged += new System.EventHandler(this.chkMission_CheckedChanged);
-            // 
             // cmdRemoveSounds
             // 
-            this.cmdRemoveSounds.Enabled = false;
-            this.cmdRemoveSounds.Location = new System.Drawing.Point(69, 140);
+            this.cmdRemoveSounds.Location = new System.Drawing.Point(69, 117);
             this.cmdRemoveSounds.Name = "cmdRemoveSounds";
             this.cmdRemoveSounds.Size = new System.Drawing.Size(60, 23);
             this.cmdRemoveSounds.TabIndex = 3;
@@ -496,8 +454,7 @@
             // 
             // cmdAddSounds
             // 
-            this.cmdAddSounds.Enabled = false;
-            this.cmdAddSounds.Location = new System.Drawing.Point(3, 140);
+            this.cmdAddSounds.Location = new System.Drawing.Point(3, 117);
             this.cmdAddSounds.Name = "cmdAddSounds";
             this.cmdAddSounds.Size = new System.Drawing.Size(60, 23);
             this.cmdAddSounds.TabIndex = 2;
@@ -507,23 +464,12 @@
             // 
             // lstSounds
             // 
-            this.lstSounds.Enabled = false;
             this.lstSounds.FormattingEnabled = true;
-            this.lstSounds.Location = new System.Drawing.Point(3, 26);
+            this.lstSounds.HorizontalScrollbar = true;
+            this.lstSounds.Location = new System.Drawing.Point(3, 3);
             this.lstSounds.Name = "lstSounds";
             this.lstSounds.Size = new System.Drawing.Size(366, 108);
             this.lstSounds.TabIndex = 4;
-            // 
-            // chkSounds
-            // 
-            this.chkSounds.AutoSize = true;
-            this.chkSounds.Location = new System.Drawing.Point(3, 3);
-            this.chkSounds.Name = "chkSounds";
-            this.chkSounds.Size = new System.Drawing.Size(84, 17);
-            this.chkSounds.TabIndex = 1;
-            this.chkSounds.Text = "Use Sounds";
-            this.chkSounds.UseVisualStyleBackColor = true;
-            this.chkSounds.CheckedChanged += new System.EventHandler(this.chkSounds_CheckedChanged);
             // 
             // opnSounds
             // 
@@ -533,7 +479,7 @@
             // 
             this.cboProfileFG.Enabled = false;
             this.cboProfileFG.FormattingEnabled = true;
-            this.cboProfileFG.Location = new System.Drawing.Point(3, 193);
+            this.cboProfileFG.Location = new System.Drawing.Point(3, 170);
             this.cboProfileFG.Name = "cboProfileFG";
             this.cboProfileFG.Size = new System.Drawing.Size(186, 21);
             this.cboProfileFG.TabIndex = 4;
@@ -541,8 +487,7 @@
             // optFGProfile
             // 
             this.optFGProfile.AutoSize = true;
-            this.optFGProfile.Enabled = false;
-            this.optFGProfile.Location = new System.Drawing.Point(3, 170);
+            this.optFGProfile.Location = new System.Drawing.Point(3, 147);
             this.optFGProfile.Name = "optFGProfile";
             this.optFGProfile.Size = new System.Drawing.Size(71, 17);
             this.optFGProfile.TabIndex = 3;
@@ -554,8 +499,7 @@
             // 
             this.optCraft.AutoSize = true;
             this.optCraft.Checked = true;
-            this.optCraft.Enabled = false;
-            this.optCraft.Location = new System.Drawing.Point(3, 147);
+            this.optCraft.Location = new System.Drawing.Point(3, 124);
             this.optCraft.Name = "optCraft";
             this.optCraft.Size = new System.Drawing.Size(72, 17);
             this.optCraft.TabIndex = 2;
@@ -566,7 +510,7 @@
             // txtProfile
             // 
             this.txtProfile.Enabled = false;
-            this.txtProfile.Location = new System.Drawing.Point(195, 194);
+            this.txtProfile.Location = new System.Drawing.Point(195, 171);
             this.txtProfile.Name = "txtProfile";
             this.txtProfile.Size = new System.Drawing.Size(126, 20);
             this.txtProfile.TabIndex = 5;
@@ -574,8 +518,7 @@
             // 
             // cmdRemoveObjects
             // 
-            this.cmdRemoveObjects.Enabled = false;
-            this.cmdRemoveObjects.Location = new System.Drawing.Point(261, 144);
+            this.cmdRemoveObjects.Location = new System.Drawing.Point(261, 121);
             this.cmdRemoveObjects.Name = "cmdRemoveObjects";
             this.cmdRemoveObjects.Size = new System.Drawing.Size(60, 23);
             this.cmdRemoveObjects.TabIndex = 7;
@@ -585,8 +528,7 @@
             // 
             // cmdAddObjects
             // 
-            this.cmdAddObjects.Enabled = false;
-            this.cmdAddObjects.Location = new System.Drawing.Point(195, 144);
+            this.cmdAddObjects.Location = new System.Drawing.Point(195, 121);
             this.cmdAddObjects.Name = "cmdAddObjects";
             this.cmdAddObjects.Size = new System.Drawing.Size(60, 23);
             this.cmdAddObjects.TabIndex = 6;
@@ -596,23 +538,12 @@
             // 
             // lstObjects
             // 
-            this.lstObjects.Enabled = false;
             this.lstObjects.FormattingEnabled = true;
-            this.lstObjects.Location = new System.Drawing.Point(3, 26);
+            this.lstObjects.HorizontalScrollbar = true;
+            this.lstObjects.Location = new System.Drawing.Point(3, 3);
             this.lstObjects.Name = "lstObjects";
             this.lstObjects.Size = new System.Drawing.Size(366, 108);
             this.lstObjects.TabIndex = 8;
-            // 
-            // chkObjects
-            // 
-            this.chkObjects.AutoSize = true;
-            this.chkObjects.Location = new System.Drawing.Point(3, 3);
-            this.chkObjects.Name = "chkObjects";
-            this.chkObjects.Size = new System.Drawing.Size(84, 17);
-            this.chkObjects.TabIndex = 1;
-            this.chkObjects.Text = "Use Objects";
-            this.chkObjects.UseVisualStyleBackColor = true;
-            this.chkObjects.CheckedChanged += new System.EventHandler(this.chkObjects_CheckedChanged);
             // 
             // opnObjects
             // 
@@ -823,7 +754,7 @@
             this.lstFamilyMap.FormattingEnabled = true;
             this.lstFamilyMap.Location = new System.Drawing.Point(6, 6);
             this.lstFamilyMap.Name = "lstFamilyMap";
-            this.lstFamilyMap.Size = new System.Drawing.Size(405, 121);
+            this.lstFamilyMap.Size = new System.Drawing.Size(345, 121);
             this.lstFamilyMap.TabIndex = 22;
             // 
             // cmdAddFamMap
@@ -1051,7 +982,7 @@
             this.lstMap.FormattingEnabled = true;
             this.lstMap.Location = new System.Drawing.Point(6, 6);
             this.lstMap.Name = "lstMap";
-            this.lstMap.Size = new System.Drawing.Size(402, 121);
+            this.lstMap.Size = new System.Drawing.Size(345, 121);
             this.lstMap.TabIndex = 22;
             // 
             // cmdAddMap
@@ -1292,7 +1223,7 @@
             // 
             // cmdShuttleReset
             // 
-            this.cmdShuttleReset.Location = new System.Drawing.Point(178, 188);
+            this.cmdShuttleReset.Location = new System.Drawing.Point(225, 183);
             this.cmdShuttleReset.Name = "cmdShuttleReset";
             this.cmdShuttleReset.Size = new System.Drawing.Size(104, 23);
             this.cmdShuttleReset.TabIndex = 13;
@@ -1303,7 +1234,7 @@
             // label38
             // 
             this.label38.AutoSize = true;
-            this.label38.Location = new System.Drawing.Point(303, 167);
+            this.label38.Location = new System.Drawing.Point(77, 221);
             this.label38.Name = "label38";
             this.label38.Size = new System.Drawing.Size(14, 13);
             this.label38.TabIndex = 19;
@@ -1312,7 +1243,7 @@
             // label37
             // 
             this.label37.AutoSize = true;
-            this.label37.Location = new System.Drawing.Point(303, 193);
+            this.label37.Location = new System.Drawing.Point(163, 221);
             this.label37.Name = "label37";
             this.label37.Size = new System.Drawing.Size(14, 13);
             this.label37.TabIndex = 19;
@@ -1320,7 +1251,7 @@
             // 
             // numShuttlePositionZ
             // 
-            this.numShuttlePositionZ.Location = new System.Drawing.Point(323, 217);
+            this.numShuttlePositionZ.Location = new System.Drawing.Point(269, 219);
             this.numShuttlePositionZ.Maximum = new decimal(new int[] {
             65535,
             0,
@@ -1338,7 +1269,7 @@
             // label36
             // 
             this.label36.AutoSize = true;
-            this.label36.Location = new System.Drawing.Point(303, 219);
+            this.label36.Location = new System.Drawing.Point(249, 221);
             this.label36.Name = "label36";
             this.label36.Size = new System.Drawing.Size(14, 13);
             this.label36.TabIndex = 17;
@@ -1368,7 +1299,7 @@
             // 
             // numShuttlePositionX
             // 
-            this.numShuttlePositionX.Location = new System.Drawing.Point(323, 165);
+            this.numShuttlePositionX.Location = new System.Drawing.Point(97, 219);
             this.numShuttlePositionX.Maximum = new decimal(new int[] {
             65535,
             0,
@@ -1390,7 +1321,7 @@
             // 
             // numShuttlePositionY
             // 
-            this.numShuttlePositionY.Location = new System.Drawing.Point(323, 191);
+            this.numShuttlePositionY.Location = new System.Drawing.Point(183, 219);
             this.numShuttlePositionY.Maximum = new decimal(new int[] {
             65535,
             0,
@@ -1422,7 +1353,7 @@
             // label35
             // 
             this.label35.AutoSize = true;
-            this.label35.Location = new System.Drawing.Point(233, 167);
+            this.label35.Location = new System.Drawing.Point(7, 221);
             this.label35.Name = "label35";
             this.label35.Size = new System.Drawing.Size(70, 13);
             this.label35.TabIndex = 15;
@@ -1557,23 +1488,12 @@
             this.lstHangarObjects.FormattingEnabled = true;
             this.lstHangarObjects.Location = new System.Drawing.Point(6, 6);
             this.lstHangarObjects.Name = "lstHangarObjects";
-            this.lstHangarObjects.Size = new System.Drawing.Size(402, 69);
+            this.lstHangarObjects.Size = new System.Drawing.Size(345, 69);
             this.lstHangarObjects.TabIndex = 42;
-            // 
-            // chkHangars
-            // 
-            this.chkHangars.AutoSize = true;
-            this.chkHangars.Location = new System.Drawing.Point(3, 3);
-            this.chkHangars.Name = "chkHangars";
-            this.chkHangars.Size = new System.Drawing.Size(88, 17);
-            this.chkHangars.TabIndex = 1;
-            this.chkHangars.Text = "Use Hangars";
-            this.chkHangars.UseVisualStyleBackColor = true;
-            this.chkHangars.CheckedChanged += new System.EventHandler(this.chkHangars_CheckedChanged);
             // 
             // label45
             // 
-            this.label45.Location = new System.Drawing.Point(3, 181);
+            this.label45.Location = new System.Drawing.Point(3, 158);
             this.label45.Name = "label45";
             this.label45.Size = new System.Drawing.Size(363, 33);
             this.label45.TabIndex = 3;
@@ -1582,8 +1502,7 @@
             // 
             // numWingman
             // 
-            this.numWingman.Enabled = false;
-            this.numWingman.Location = new System.Drawing.Point(313, 109);
+            this.numWingman.Location = new System.Drawing.Point(314, 86);
             this.numWingman.Maximum = new decimal(new int[] {
             255,
             0,
@@ -1600,7 +1519,7 @@
             // 
             // label48
             // 
-            this.label48.Location = new System.Drawing.Point(3, 163);
+            this.label48.Location = new System.Drawing.Point(4, 140);
             this.label48.Name = "label48";
             this.label48.Size = new System.Drawing.Size(207, 61);
             this.label48.TabIndex = 12;
@@ -1610,8 +1529,7 @@
             // optWingman
             // 
             this.optWingman.AutoSize = true;
-            this.optWingman.Enabled = false;
-            this.optWingman.Location = new System.Drawing.Point(216, 109);
+            this.optWingman.Location = new System.Drawing.Point(217, 86);
             this.optWingman.Name = "optWingman";
             this.optWingman.Size = new System.Drawing.Size(70, 17);
             this.optWingman.TabIndex = 3;
@@ -1621,7 +1539,7 @@
             // 
             // label46
             // 
-            this.label46.Location = new System.Drawing.Point(3, 166);
+            this.label46.Location = new System.Drawing.Point(3, 143);
             this.label46.Name = "label46";
             this.label46.Size = new System.Drawing.Size(366, 35);
             this.label46.TabIndex = 4;
@@ -1631,7 +1549,7 @@
             // optCraftProfile
             // 
             this.optCraftProfile.AutoSize = true;
-            this.optCraftProfile.Location = new System.Drawing.Point(80, 170);
+            this.optCraftProfile.Location = new System.Drawing.Point(80, 147);
             this.optCraftProfile.Name = "optCraftProfile";
             this.optCraftProfile.Size = new System.Drawing.Size(79, 17);
             this.optCraftProfile.TabIndex = 9;
@@ -1642,7 +1560,7 @@
             // 
             // label47
             // 
-            this.label47.Location = new System.Drawing.Point(3, 217);
+            this.label47.Location = new System.Drawing.Point(3, 194);
             this.label47.Name = "label47";
             this.label47.Size = new System.Drawing.Size(321, 68);
             this.label47.TabIndex = 8;
@@ -1656,11 +1574,10 @@
             this.tcHangar.Controls.Add(this.tabHangarFamilyMap);
             this.tcHangar.Controls.Add(this.tabHangarCamera);
             this.tcHangar.Controls.Add(this.tabHangarFamilyCamera);
-            this.tcHangar.Enabled = false;
-            this.tcHangar.Location = new System.Drawing.Point(3, 25);
+            this.tcHangar.Location = new System.Drawing.Point(3, 3);
             this.tcHangar.Name = "tcHangar";
             this.tcHangar.SelectedIndex = 0;
-            this.tcHangar.Size = new System.Drawing.Size(422, 276);
+            this.tcHangar.Size = new System.Drawing.Size(371, 302);
             this.tcHangar.TabIndex = 2;
             // 
             // tabHangarObjects
@@ -1693,7 +1610,7 @@
             this.tabHangarObjects.Location = new System.Drawing.Point(4, 22);
             this.tabHangarObjects.Name = "tabHangarObjects";
             this.tabHangarObjects.Padding = new System.Windows.Forms.Padding(3);
-            this.tabHangarObjects.Size = new System.Drawing.Size(414, 250);
+            this.tabHangarObjects.Size = new System.Drawing.Size(363, 276);
             this.tabHangarObjects.TabIndex = 0;
             this.tabHangarObjects.Text = "Objects";
             this.tabHangarObjects.UseVisualStyleBackColor = true;
@@ -1702,7 +1619,7 @@
             // 
             this.cboHangarIff.Enabled = false;
             this.cboHangarIff.FormattingEnabled = true;
-            this.cboHangarIff.Location = new System.Drawing.Point(75, 218);
+            this.cboHangarIff.Location = new System.Drawing.Point(73, 245);
             this.cboHangarIff.Name = "cboHangarIff";
             this.cboHangarIff.Size = new System.Drawing.Size(121, 21);
             this.cboHangarIff.TabIndex = 45;
@@ -1710,7 +1627,7 @@
             // chkHangarIff
             // 
             this.chkHangarIff.AutoSize = true;
-            this.chkHangarIff.Location = new System.Drawing.Point(6, 220);
+            this.chkHangarIff.Location = new System.Drawing.Point(4, 247);
             this.chkHangarIff.Name = "chkHangarIff";
             this.chkHangarIff.Size = new System.Drawing.Size(63, 17);
             this.chkHangarIff.TabIndex = 44;
@@ -1759,7 +1676,7 @@
             this.tabObjects2.Controls.Add(this.label31);
             this.tabObjects2.Location = new System.Drawing.Point(4, 22);
             this.tabObjects2.Name = "tabObjects2";
-            this.tabObjects2.Size = new System.Drawing.Size(414, 250);
+            this.tabObjects2.Size = new System.Drawing.Size(363, 276);
             this.tabObjects2.TabIndex = 5;
             this.tabObjects2.Text = "Objects2";
             this.tabObjects2.UseVisualStyleBackColor = true;
@@ -1767,7 +1684,7 @@
             // chkFloor
             // 
             this.chkFloor.AutoSize = true;
-            this.chkFloor.Location = new System.Drawing.Point(14, 208);
+            this.chkFloor.Location = new System.Drawing.Point(6, 176);
             this.chkFloor.Name = "chkFloor";
             this.chkFloor.Size = new System.Drawing.Size(117, 17);
             this.chkFloor.TabIndex = 62;
@@ -1777,7 +1694,7 @@
             // label44
             // 
             this.label44.AutoSize = true;
-            this.label44.Location = new System.Drawing.Point(331, 105);
+            this.label44.Location = new System.Drawing.Point(72, 201);
             this.label44.Name = "label44";
             this.label44.Size = new System.Drawing.Size(14, 13);
             this.label44.TabIndex = 42;
@@ -1788,7 +1705,7 @@
             this.chkDroid2Update.AutoSize = true;
             this.chkDroid2Update.Checked = true;
             this.chkDroid2Update.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkDroid2Update.Location = new System.Drawing.Point(256, 52);
+            this.chkDroid2Update.Location = new System.Drawing.Point(210, 52);
             this.chkDroid2Update.Name = "chkDroid2Update";
             this.chkDroid2Update.Size = new System.Drawing.Size(98, 17);
             this.chkDroid2Update.TabIndex = 61;
@@ -1810,7 +1727,7 @@
             // chkDroid2
             // 
             this.chkDroid2.AutoSize = true;
-            this.chkDroid2.Location = new System.Drawing.Point(256, 29);
+            this.chkDroid2.Location = new System.Drawing.Point(210, 29);
             this.chkDroid2.Name = "chkDroid2";
             this.chkDroid2.Size = new System.Drawing.Size(89, 17);
             this.chkDroid2.TabIndex = 58;
@@ -1867,7 +1784,7 @@
             // numDroid2Z
             // 
             this.numDroid2Z.Enabled = false;
-            this.numDroid2Z.Location = new System.Drawing.Point(351, 28);
+            this.numDroid2Z.Location = new System.Drawing.Point(305, 28);
             this.numDroid2Z.Maximum = new decimal(new int[] {
             65535,
             0,
@@ -1916,7 +1833,7 @@
             // chkHangarFold
             // 
             this.chkHangarFold.AutoSize = true;
-            this.chkHangarFold.Location = new System.Drawing.Point(14, 230);
+            this.chkHangarFold.Location = new System.Drawing.Point(129, 176);
             this.chkHangarFold.Name = "chkHangarFold";
             this.chkHangarFold.Size = new System.Drawing.Size(153, 17);
             this.chkHangarFold.TabIndex = 21;
@@ -1925,7 +1842,7 @@
             // 
             // cmdPlayerReset
             // 
-            this.cmdPlayerReset.Location = new System.Drawing.Point(222, 126);
+            this.cmdPlayerReset.Location = new System.Drawing.Point(248, 225);
             this.cmdPlayerReset.Name = "cmdPlayerReset";
             this.cmdPlayerReset.Size = new System.Drawing.Size(104, 23);
             this.cmdPlayerReset.TabIndex = 20;
@@ -1935,7 +1852,7 @@
             // 
             // cmdCraneReset
             // 
-            this.cmdCraneReset.Location = new System.Drawing.Point(14, 179);
+            this.cmdCraneReset.Location = new System.Drawing.Point(248, 101);
             this.cmdCraneReset.Name = "cmdCraneReset";
             this.cmdCraneReset.Size = new System.Drawing.Size(104, 23);
             this.cmdCraneReset.TabIndex = 19;
@@ -1945,7 +1862,7 @@
             // 
             // numPlayerX
             // 
-            this.numPlayerX.Location = new System.Drawing.Point(351, 103);
+            this.numPlayerX.Location = new System.Drawing.Point(92, 199);
             this.numPlayerX.Maximum = new decimal(new int[] {
             65535,
             0,
@@ -1984,7 +1901,7 @@
             // 
             // numPlayerY
             // 
-            this.numPlayerY.Location = new System.Drawing.Point(351, 129);
+            this.numPlayerY.Location = new System.Drawing.Point(179, 199);
             this.numPlayerY.Maximum = new decimal(new int[] {
             65535,
             0,
@@ -2051,7 +1968,7 @@
             // label42
             // 
             this.label42.AutoSize = true;
-            this.label42.Location = new System.Drawing.Point(331, 157);
+            this.label42.Location = new System.Drawing.Point(250, 201);
             this.label42.Name = "label42";
             this.label42.Size = new System.Drawing.Size(14, 13);
             this.label42.TabIndex = 37;
@@ -2069,7 +1986,7 @@
             // label41
             // 
             this.label41.AutoSize = true;
-            this.label41.Location = new System.Drawing.Point(266, 105);
+            this.label41.Location = new System.Drawing.Point(7, 201);
             this.label41.Name = "label41";
             this.label41.Size = new System.Drawing.Size(60, 13);
             this.label41.TabIndex = 30;
@@ -2167,7 +2084,7 @@
             // 
             // numPlayerZ
             // 
-            this.numPlayerZ.Location = new System.Drawing.Point(351, 155);
+            this.numPlayerZ.Location = new System.Drawing.Point(270, 199);
             this.numPlayerZ.Maximum = new decimal(new int[] {
             65535,
             0,
@@ -2201,7 +2118,7 @@
             // 
             // numPlayerAnimationElevation
             // 
-            this.numPlayerAnimationElevation.Location = new System.Drawing.Point(351, 202);
+            this.numPlayerAnimationElevation.Location = new System.Drawing.Point(128, 243);
             this.numPlayerAnimationElevation.Maximum = new decimal(new int[] {
             65535,
             0,
@@ -2228,7 +2145,7 @@
             // chkPlayerFloor
             // 
             this.chkPlayerFloor.AutoSize = true;
-            this.chkPlayerFloor.Location = new System.Drawing.Point(300, 179);
+            this.chkPlayerFloor.Location = new System.Drawing.Point(6, 225);
             this.chkPlayerFloor.Name = "chkPlayerFloor";
             this.chkPlayerFloor.Size = new System.Drawing.Size(111, 17);
             this.chkPlayerFloor.TabIndex = 18;
@@ -2238,7 +2155,7 @@
             // label30
             // 
             this.label30.AutoSize = true;
-            this.label30.Location = new System.Drawing.Point(230, 204);
+            this.label30.Location = new System.Drawing.Point(7, 245);
             this.label30.Name = "label30";
             this.label30.Size = new System.Drawing.Size(112, 13);
             this.label30.TabIndex = 44;
@@ -2247,7 +2164,7 @@
             // label43
             // 
             this.label43.AutoSize = true;
-            this.label43.Location = new System.Drawing.Point(331, 131);
+            this.label43.Location = new System.Drawing.Point(159, 201);
             this.label43.Name = "label43";
             this.label43.Size = new System.Drawing.Size(14, 13);
             this.label43.TabIndex = 41;
@@ -2287,7 +2204,7 @@
             this.tabHangarMap.Location = new System.Drawing.Point(4, 22);
             this.tabHangarMap.Name = "tabHangarMap";
             this.tabHangarMap.Padding = new System.Windows.Forms.Padding(3);
-            this.tabHangarMap.Size = new System.Drawing.Size(414, 250);
+            this.tabHangarMap.Size = new System.Drawing.Size(372, 276);
             this.tabHangarMap.TabIndex = 1;
             this.tabHangarMap.Text = "Map";
             this.tabHangarMap.UseVisualStyleBackColor = true;
@@ -2316,7 +2233,7 @@
             this.tabHangarFamilyMap.Controls.Add(this.numFamPosZ);
             this.tabHangarFamilyMap.Location = new System.Drawing.Point(4, 22);
             this.tabHangarFamilyMap.Name = "tabHangarFamilyMap";
-            this.tabHangarFamilyMap.Size = new System.Drawing.Size(414, 250);
+            this.tabHangarFamilyMap.Size = new System.Drawing.Size(363, 276);
             this.tabHangarFamilyMap.TabIndex = 2;
             this.tabHangarFamilyMap.Text = "Family Map";
             this.tabHangarFamilyMap.UseVisualStyleBackColor = true;
@@ -2333,7 +2250,7 @@
             this.tabHangarCamera.Controls.Add(this.numCameraY);
             this.tabHangarCamera.Location = new System.Drawing.Point(4, 22);
             this.tabHangarCamera.Name = "tabHangarCamera";
-            this.tabHangarCamera.Size = new System.Drawing.Size(414, 250);
+            this.tabHangarCamera.Size = new System.Drawing.Size(372, 276);
             this.tabHangarCamera.TabIndex = 3;
             this.tabHangarCamera.Text = "Camera";
             this.tabHangarCamera.UseVisualStyleBackColor = true;
@@ -2350,7 +2267,7 @@
             this.tabHangarFamilyCamera.Controls.Add(this.numFamilyCameraY);
             this.tabHangarFamilyCamera.Location = new System.Drawing.Point(4, 22);
             this.tabHangarFamilyCamera.Name = "tabHangarFamilyCamera";
-            this.tabHangarFamilyCamera.Size = new System.Drawing.Size(414, 250);
+            this.tabHangarFamilyCamera.Size = new System.Drawing.Size(414, 342);
             this.tabHangarFamilyCamera.TabIndex = 4;
             this.tabHangarFamilyCamera.Text = "Family Camera";
             this.tabHangarFamilyCamera.UseVisualStyleBackColor = true;
@@ -2359,7 +2276,7 @@
             // 
             this.grpSFoils.Controls.Add(this.chkCloseSF);
             this.grpSFoils.Controls.Add(this.chkOpenLG);
-            this.grpSFoils.Location = new System.Drawing.Point(208, 82);
+            this.grpSFoils.Location = new System.Drawing.Point(208, 59);
             this.grpSFoils.Name = "grpSFoils";
             this.grpSFoils.Size = new System.Drawing.Size(168, 65);
             this.grpSFoils.TabIndex = 25;
@@ -2369,7 +2286,6 @@
             // chkCloseSF
             // 
             this.chkCloseSF.AutoSize = true;
-            this.chkCloseSF.Enabled = false;
             this.chkCloseSF.Location = new System.Drawing.Point(13, 19);
             this.chkCloseSF.Name = "chkCloseSF";
             this.chkCloseSF.Size = new System.Drawing.Size(122, 17);
@@ -2380,7 +2296,6 @@
             // chkOpenLG
             // 
             this.chkOpenLG.AutoSize = true;
-            this.chkOpenLG.Enabled = false;
             this.chkOpenLG.Location = new System.Drawing.Point(13, 42);
             this.chkOpenLG.Name = "chkOpenLG";
             this.chkOpenLG.Size = new System.Drawing.Size(149, 17);
@@ -2390,7 +2305,7 @@
             // 
             // label49
             // 
-            this.label49.Location = new System.Drawing.Point(3, 163);
+            this.label49.Location = new System.Drawing.Point(3, 140);
             this.label49.Name = "label49";
             this.label49.Size = new System.Drawing.Size(168, 84);
             this.label49.TabIndex = 24;
@@ -2400,8 +2315,7 @@
             // chkManualSF
             // 
             this.chkManualSF.AutoSize = true;
-            this.chkManualSF.Enabled = false;
-            this.chkManualSF.Location = new System.Drawing.Point(177, 212);
+            this.chkManualSF.Location = new System.Drawing.Point(177, 189);
             this.chkManualSF.Name = "chkManualSF";
             this.chkManualSF.Size = new System.Drawing.Size(162, 17);
             this.chkManualSF.TabIndex = 23;
@@ -2411,8 +2325,7 @@
             // chkForceHyperLG
             // 
             this.chkForceHyperLG.AutoSize = true;
-            this.chkForceHyperLG.Enabled = false;
-            this.chkForceHyperLG.Location = new System.Drawing.Point(177, 189);
+            this.chkForceHyperLG.Location = new System.Drawing.Point(177, 166);
             this.chkForceHyperLG.Name = "chkForceHyperLG";
             this.chkForceHyperLG.Size = new System.Drawing.Size(175, 17);
             this.chkForceHyperLG.TabIndex = 23;
@@ -2422,8 +2335,7 @@
             // chkForceHangarSF
             // 
             this.chkForceHangarSF.AutoSize = true;
-            this.chkForceHangarSF.Enabled = false;
-            this.chkForceHangarSF.Location = new System.Drawing.Point(177, 166);
+            this.chkForceHangarSF.Location = new System.Drawing.Point(177, 143);
             this.chkForceHangarSF.Name = "chkForceHangarSF";
             this.chkForceHangarSF.Size = new System.Drawing.Size(199, 17);
             this.chkForceHangarSF.TabIndex = 23;
@@ -2432,26 +2344,24 @@
             // 
             // lstSFoils
             // 
-            this.lstSFoils.Enabled = false;
             this.lstSFoils.FormattingEnabled = true;
-            this.lstSFoils.Location = new System.Drawing.Point(3, 26);
+            this.lstSFoils.HorizontalScrollbar = true;
+            this.lstSFoils.Location = new System.Drawing.Point(3, 3);
             this.lstSFoils.Name = "lstSFoils";
             this.lstSFoils.Size = new System.Drawing.Size(199, 134);
             this.lstSFoils.TabIndex = 22;
             // 
             // cboSFoilFG
             // 
-            this.cboSFoilFG.Enabled = false;
             this.cboSFoilFG.FormattingEnabled = true;
-            this.cboSFoilFG.Location = new System.Drawing.Point(208, 26);
+            this.cboSFoilFG.Location = new System.Drawing.Point(208, 3);
             this.cboSFoilFG.Name = "cboSFoilFG";
             this.cboSFoilFG.Size = new System.Drawing.Size(157, 21);
             this.cboSFoilFG.TabIndex = 3;
             // 
             // cmdRemoveSFoils
             // 
-            this.cmdRemoveSFoils.Enabled = false;
-            this.cmdRemoveSFoils.Location = new System.Drawing.Point(305, 53);
+            this.cmdRemoveSFoils.Location = new System.Drawing.Point(305, 30);
             this.cmdRemoveSFoils.Name = "cmdRemoveSFoils";
             this.cmdRemoveSFoils.Size = new System.Drawing.Size(60, 23);
             this.cmdRemoveSFoils.TabIndex = 21;
@@ -2461,8 +2371,7 @@
             // 
             // cmdAddSFoils
             // 
-            this.cmdAddSFoils.Enabled = false;
-            this.cmdAddSFoils.Location = new System.Drawing.Point(208, 53);
+            this.cmdAddSFoils.Location = new System.Drawing.Point(208, 30);
             this.cmdAddSFoils.Name = "cmdAddSFoils";
             this.cmdAddSFoils.Size = new System.Drawing.Size(60, 23);
             this.cmdAddSFoils.TabIndex = 20;
@@ -2470,20 +2379,9 @@
             this.cmdAddSFoils.UseVisualStyleBackColor = true;
             this.cmdAddSFoils.Click += new System.EventHandler(this.cmdAddSFoils_Click);
             // 
-            // chkSFoils
-            // 
-            this.chkSFoils.AutoSize = true;
-            this.chkSFoils.Location = new System.Drawing.Point(3, 3);
-            this.chkSFoils.Name = "chkSFoils";
-            this.chkSFoils.Size = new System.Drawing.Size(79, 17);
-            this.chkSFoils.TabIndex = 2;
-            this.chkSFoils.Text = "Use S-Foils";
-            this.chkSFoils.UseVisualStyleBackColor = true;
-            this.chkSFoils.CheckedChanged += new System.EventHandler(this.chkSFoils_CheckedChanged);
-            // 
             // label50
             // 
-            this.label50.Location = new System.Drawing.Point(203, 132);
+            this.label50.Location = new System.Drawing.Point(203, 109);
             this.label50.Name = "label50";
             this.label50.Size = new System.Drawing.Size(166, 84);
             this.label50.TabIndex = 28;
@@ -2493,8 +2391,7 @@
             // 
             // txtSkin
             // 
-            this.txtSkin.Enabled = false;
-            this.txtSkin.Location = new System.Drawing.Point(69, 179);
+            this.txtSkin.Location = new System.Drawing.Point(69, 156);
             this.txtSkin.Name = "txtSkin";
             this.txtSkin.Size = new System.Drawing.Size(128, 20);
             this.txtSkin.TabIndex = 27;
@@ -2503,8 +2400,7 @@
             // chkDefaultSkin
             // 
             this.chkDefaultSkin.AutoSize = true;
-            this.chkDefaultSkin.Enabled = false;
-            this.chkDefaultSkin.Location = new System.Drawing.Point(3, 181);
+            this.chkDefaultSkin.Location = new System.Drawing.Point(3, 158);
             this.chkDefaultSkin.Name = "chkDefaultSkin";
             this.chkDefaultSkin.Size = new System.Drawing.Size(60, 17);
             this.chkDefaultSkin.TabIndex = 26;
@@ -2516,7 +2412,7 @@
             // 
             this.cboSkinMarks.Enabled = false;
             this.cboSkinMarks.FormattingEnabled = true;
-            this.cboSkinMarks.Location = new System.Drawing.Point(61, 154);
+            this.cboSkinMarks.Location = new System.Drawing.Point(61, 131);
             this.cboSkinMarks.Name = "cboSkinMarks";
             this.cboSkinMarks.Size = new System.Drawing.Size(136, 21);
             this.cboSkinMarks.TabIndex = 25;
@@ -2524,8 +2420,7 @@
             // chkSkinMarks
             // 
             this.chkSkinMarks.AutoSize = true;
-            this.chkSkinMarks.Enabled = false;
-            this.chkSkinMarks.Location = new System.Drawing.Point(3, 156);
+            this.chkSkinMarks.Location = new System.Drawing.Point(3, 133);
             this.chkSkinMarks.Name = "chkSkinMarks";
             this.chkSkinMarks.Size = new System.Drawing.Size(55, 17);
             this.chkSkinMarks.TabIndex = 24;
@@ -2535,8 +2430,7 @@
             // 
             // cmdRemoveSkin
             // 
-            this.cmdRemoveSkin.Enabled = false;
-            this.cmdRemoveSkin.Location = new System.Drawing.Point(137, 127);
+            this.cmdRemoveSkin.Location = new System.Drawing.Point(137, 104);
             this.cmdRemoveSkin.Name = "cmdRemoveSkin";
             this.cmdRemoveSkin.Size = new System.Drawing.Size(60, 23);
             this.cmdRemoveSkin.TabIndex = 22;
@@ -2546,8 +2440,7 @@
             // 
             // cmdAppendSkin
             // 
-            this.cmdAppendSkin.Enabled = false;
-            this.cmdAppendSkin.Location = new System.Drawing.Point(71, 127);
+            this.cmdAppendSkin.Location = new System.Drawing.Point(71, 104);
             this.cmdAppendSkin.Name = "cmdAppendSkin";
             this.cmdAppendSkin.Size = new System.Drawing.Size(60, 23);
             this.cmdAppendSkin.TabIndex = 21;
@@ -2557,8 +2450,7 @@
             // 
             // cmdAddSkin
             // 
-            this.cmdAddSkin.Enabled = false;
-            this.cmdAddSkin.Location = new System.Drawing.Point(3, 127);
+            this.cmdAddSkin.Location = new System.Drawing.Point(3, 104);
             this.cmdAddSkin.Name = "cmdAddSkin";
             this.cmdAddSkin.Size = new System.Drawing.Size(60, 23);
             this.cmdAddSkin.TabIndex = 20;
@@ -2568,27 +2460,16 @@
             // 
             // lstSkins
             // 
-            this.lstSkins.Enabled = false;
             this.lstSkins.FormattingEnabled = true;
-            this.lstSkins.Location = new System.Drawing.Point(3, 26);
+            this.lstSkins.HorizontalScrollbar = true;
+            this.lstSkins.Location = new System.Drawing.Point(3, 3);
             this.lstSkins.Name = "lstSkins";
             this.lstSkins.Size = new System.Drawing.Size(366, 95);
             this.lstSkins.TabIndex = 23;
             // 
-            // chkSkins
-            // 
-            this.chkSkins.AutoSize = true;
-            this.chkSkins.Location = new System.Drawing.Point(3, 3);
-            this.chkSkins.Name = "chkSkins";
-            this.chkSkins.Size = new System.Drawing.Size(74, 17);
-            this.chkSkins.TabIndex = 1;
-            this.chkSkins.Text = "Use Skins";
-            this.chkSkins.UseVisualStyleBackColor = true;
-            this.chkSkins.CheckedChanged += new System.EventHandler(this.chkSkins_CheckedChanged);
-            // 
             // label52
             // 
-            this.label52.Location = new System.Drawing.Point(179, 143);
+            this.label52.Location = new System.Drawing.Point(179, 120);
             this.label52.Name = "label52";
             this.label52.Size = new System.Drawing.Size(190, 97);
             this.label52.TabIndex = 45;
@@ -2598,17 +2479,15 @@
             // 
             // cboShield
             // 
-            this.cboShield.Enabled = false;
             this.cboShield.FormattingEnabled = true;
-            this.cboShield.Location = new System.Drawing.Point(3, 140);
+            this.cboShield.Location = new System.Drawing.Point(3, 117);
             this.cboShield.Name = "cboShield";
             this.cboShield.Size = new System.Drawing.Size(157, 21);
             this.cboShield.TabIndex = 42;
             // 
             // cmdRemoveShield
             // 
-            this.cmdRemoveShield.Enabled = false;
-            this.cmdRemoveShield.Location = new System.Drawing.Point(100, 167);
+            this.cmdRemoveShield.Location = new System.Drawing.Point(100, 144);
             this.cmdRemoveShield.Name = "cmdRemoveShield";
             this.cmdRemoveShield.Size = new System.Drawing.Size(60, 23);
             this.cmdRemoveShield.TabIndex = 44;
@@ -2618,8 +2497,7 @@
             // 
             // cmdAddShield
             // 
-            this.cmdAddShield.Enabled = false;
-            this.cmdAddShield.Location = new System.Drawing.Point(3, 167);
+            this.cmdAddShield.Location = new System.Drawing.Point(3, 144);
             this.cmdAddShield.Name = "cmdAddShield";
             this.cmdAddShield.Size = new System.Drawing.Size(60, 23);
             this.cmdAddShield.TabIndex = 43;
@@ -2629,7 +2507,7 @@
             // 
             // numShieldRate
             // 
-            this.numShieldRate.Location = new System.Drawing.Point(86, 219);
+            this.numShieldRate.Location = new System.Drawing.Point(86, 196);
             this.numShieldRate.Name = "numShieldRate";
             this.numShieldRate.Size = new System.Drawing.Size(72, 20);
             this.numShieldRate.TabIndex = 5;
@@ -2637,7 +2515,7 @@
             // label51
             // 
             this.label51.AutoSize = true;
-            this.label51.Location = new System.Drawing.Point(0, 221);
+            this.label51.Location = new System.Drawing.Point(3, 198);
             this.label51.Name = "label51";
             this.label51.Size = new System.Drawing.Size(80, 13);
             this.label51.TabIndex = 4;
@@ -2646,7 +2524,7 @@
             // chkShieldGen
             // 
             this.chkShieldGen.AutoSize = true;
-            this.chkShieldGen.Location = new System.Drawing.Point(3, 196);
+            this.chkShieldGen.Location = new System.Drawing.Point(3, 173);
             this.chkShieldGen.Name = "chkShieldGen";
             this.chkShieldGen.Size = new System.Drawing.Size(155, 17);
             this.chkShieldGen.TabIndex = 3;
@@ -2656,21 +2534,11 @@
             // lstShield
             // 
             this.lstShield.FormattingEnabled = true;
-            this.lstShield.Location = new System.Drawing.Point(3, 26);
+            this.lstShield.HorizontalScrollbar = true;
+            this.lstShield.Location = new System.Drawing.Point(3, 3);
             this.lstShield.Name = "lstShield";
             this.lstShield.Size = new System.Drawing.Size(366, 108);
             this.lstShield.TabIndex = 2;
-            // 
-            // chkShield
-            // 
-            this.chkShield.AutoSize = true;
-            this.chkShield.Location = new System.Drawing.Point(3, 3);
-            this.chkShield.Name = "chkShield";
-            this.chkShield.Size = new System.Drawing.Size(77, 17);
-            this.chkShield.TabIndex = 1;
-            this.chkShield.Text = "Use Shield";
-            this.chkShield.UseVisualStyleBackColor = true;
-            this.chkShield.CheckedChanged += new System.EventHandler(this.chkShield_CheckedChanged);
             // 
             // label54
             // 
@@ -2749,20 +2617,18 @@
             // pnlBackdrops
             // 
             this.pnlBackdrops.Controls.Add(this.label45);
-            this.pnlBackdrops.Controls.Add(this.chkBackdrops);
             this.pnlBackdrops.Controls.Add(this.cmdRemoveBD);
             this.pnlBackdrops.Controls.Add(this.lstBackdrops);
             this.pnlBackdrops.Controls.Add(this.cmdAddBD);
             this.pnlBackdrops.Location = new System.Drawing.Point(399, 42);
             this.pnlBackdrops.Name = "pnlBackdrops";
-            this.pnlBackdrops.Size = new System.Drawing.Size(378, 224);
+            this.pnlBackdrops.Size = new System.Drawing.Size(378, 201);
             this.pnlBackdrops.TabIndex = 53;
             this.pnlBackdrops.Visible = false;
             // 
             // pnlMission
             // 
             this.pnlMission.Controls.Add(this.numWingman);
-            this.pnlMission.Controls.Add(this.chkMission);
             this.pnlMission.Controls.Add(this.label48);
             this.pnlMission.Controls.Add(this.cmdAddMiss);
             this.pnlMission.Controls.Add(this.txtPilot);
@@ -2777,27 +2643,25 @@
             this.pnlMission.Controls.Add(this.cboFG);
             this.pnlMission.Location = new System.Drawing.Point(783, 42);
             this.pnlMission.Name = "pnlMission";
-            this.pnlMission.Size = new System.Drawing.Size(383, 229);
+            this.pnlMission.Size = new System.Drawing.Size(383, 208);
             this.pnlMission.TabIndex = 54;
             this.pnlMission.Visible = false;
             // 
             // pnlSounds
             // 
             this.pnlSounds.Controls.Add(this.label46);
-            this.pnlSounds.Controls.Add(this.chkSounds);
             this.pnlSounds.Controls.Add(this.cmdRemoveSounds);
             this.pnlSounds.Controls.Add(this.lstSounds);
             this.pnlSounds.Controls.Add(this.cmdAddSounds);
             this.pnlSounds.Location = new System.Drawing.Point(1172, 42);
             this.pnlSounds.Name = "pnlSounds";
-            this.pnlSounds.Size = new System.Drawing.Size(377, 214);
+            this.pnlSounds.Size = new System.Drawing.Size(377, 191);
             this.pnlSounds.TabIndex = 55;
             this.pnlSounds.Visible = false;
             // 
             // pnlObjects
             // 
             this.pnlObjects.Controls.Add(this.optCraftProfile);
-            this.pnlObjects.Controls.Add(this.chkObjects);
             this.pnlObjects.Controls.Add(this.label47);
             this.pnlObjects.Controls.Add(this.cmdRemoveObjects);
             this.pnlObjects.Controls.Add(this.cboProfileFG);
@@ -2806,26 +2670,24 @@
             this.pnlObjects.Controls.Add(this.txtProfile);
             this.pnlObjects.Controls.Add(this.lstObjects);
             this.pnlObjects.Controls.Add(this.optCraft);
-            this.pnlObjects.Location = new System.Drawing.Point(399, 281);
+            this.pnlObjects.Location = new System.Drawing.Point(399, 249);
             this.pnlObjects.Name = "pnlObjects";
-            this.pnlObjects.Size = new System.Drawing.Size(378, 296);
+            this.pnlObjects.Size = new System.Drawing.Size(378, 268);
             this.pnlObjects.TabIndex = 56;
             this.pnlObjects.Visible = false;
             // 
             // pnlHangar
             // 
-            this.pnlHangar.Controls.Add(this.chkHangars);
             this.pnlHangar.Controls.Add(this.tcHangar);
-            this.pnlHangar.Location = new System.Drawing.Point(784, 281);
+            this.pnlHangar.Location = new System.Drawing.Point(783, 256);
             this.pnlHangar.Name = "pnlHangar";
-            this.pnlHangar.Size = new System.Drawing.Size(431, 306);
+            this.pnlHangar.Size = new System.Drawing.Size(383, 322);
             this.pnlHangar.TabIndex = 57;
             this.pnlHangar.Visible = false;
             // 
             // pnlSFoils
             // 
             this.pnlSFoils.Controls.Add(this.grpSFoils);
-            this.pnlSFoils.Controls.Add(this.chkSFoils);
             this.pnlSFoils.Controls.Add(this.label49);
             this.pnlSFoils.Controls.Add(this.cmdAddSFoils);
             this.pnlSFoils.Controls.Add(this.chkManualSF);
@@ -2834,16 +2696,15 @@
             this.pnlSFoils.Controls.Add(this.cboSFoilFG);
             this.pnlSFoils.Controls.Add(this.chkForceHangarSF);
             this.pnlSFoils.Controls.Add(this.lstSFoils);
-            this.pnlSFoils.Location = new System.Drawing.Point(1224, 281);
+            this.pnlSFoils.Location = new System.Drawing.Point(1172, 239);
             this.pnlSFoils.Name = "pnlSFoils";
-            this.pnlSFoils.Size = new System.Drawing.Size(386, 253);
+            this.pnlSFoils.Size = new System.Drawing.Size(386, 227);
             this.pnlSFoils.TabIndex = 58;
             this.pnlSFoils.Visible = false;
             // 
             // pnlSkins
             // 
             this.pnlSkins.Controls.Add(this.label50);
-            this.pnlSkins.Controls.Add(this.chkSkins);
             this.pnlSkins.Controls.Add(this.txtSkin);
             this.pnlSkins.Controls.Add(this.lstSkins);
             this.pnlSkins.Controls.Add(this.chkDefaultSkin);
@@ -2854,14 +2715,13 @@
             this.pnlSkins.Controls.Add(this.cmdRemoveSkin);
             this.pnlSkins.Location = new System.Drawing.Point(12, 595);
             this.pnlSkins.Name = "pnlSkins";
-            this.pnlSkins.Size = new System.Drawing.Size(378, 219);
+            this.pnlSkins.Size = new System.Drawing.Size(378, 214);
             this.pnlSkins.TabIndex = 59;
             this.pnlSkins.Visible = false;
             // 
             // pnlShield
             // 
             this.pnlShield.Controls.Add(this.label52);
-            this.pnlShield.Controls.Add(this.chkShield);
             this.pnlShield.Controls.Add(this.cboShield);
             this.pnlShield.Controls.Add(this.lstShield);
             this.pnlShield.Controls.Add(this.cmdRemoveShield);
@@ -2869,9 +2729,9 @@
             this.pnlShield.Controls.Add(this.cmdAddShield);
             this.pnlShield.Controls.Add(this.label51);
             this.pnlShield.Controls.Add(this.numShieldRate);
-            this.pnlShield.Location = new System.Drawing.Point(396, 598);
+            this.pnlShield.Location = new System.Drawing.Point(399, 519);
             this.pnlShield.Name = "pnlShield";
-            this.pnlShield.Size = new System.Drawing.Size(383, 247);
+            this.pnlShield.Size = new System.Drawing.Size(383, 224);
             this.pnlShield.TabIndex = 60;
             this.pnlShield.Visible = false;
             // 
@@ -2882,7 +2742,7 @@
             this.pnlHyper.Controls.Add(this.label53);
             this.pnlHyper.Controls.Add(this.optHypGlobal);
             this.pnlHyper.Controls.Add(this.optHypNormal);
-            this.pnlHyper.Location = new System.Drawing.Point(800, 595);
+            this.pnlHyper.Location = new System.Drawing.Point(1172, 472);
             this.pnlHyper.Name = "pnlHyper";
             this.pnlHyper.Size = new System.Drawing.Size(223, 175);
             this.pnlHyper.TabIndex = 61;
@@ -2978,15 +2838,12 @@
             this.grpSFoils.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numShieldRate)).EndInit();
             this.pnlBackdrops.ResumeLayout(false);
-            this.pnlBackdrops.PerformLayout();
             this.pnlMission.ResumeLayout(false);
             this.pnlMission.PerformLayout();
             this.pnlSounds.ResumeLayout(false);
-            this.pnlSounds.PerformLayout();
             this.pnlObjects.ResumeLayout(false);
             this.pnlObjects.PerformLayout();
             this.pnlHangar.ResumeLayout(false);
-            this.pnlHangar.PerformLayout();
             this.pnlSFoils.ResumeLayout(false);
             this.pnlSFoils.PerformLayout();
             this.pnlSkins.ResumeLayout(false);
@@ -3007,9 +2864,7 @@
 		private System.Windows.Forms.Button cmdRemoveBD;
 		private System.Windows.Forms.Button cmdAddBD;
 		private System.Windows.Forms.ListBox lstBackdrops;
-		private System.Windows.Forms.CheckBox chkBackdrops;
 		private System.Windows.Forms.OpenFileDialog opnBackdrop;
-		private System.Windows.Forms.CheckBox chkMission;
 		private System.Windows.Forms.ListBox lstMission;
 		private System.Windows.Forms.RadioButton optPilot;
 		private System.Windows.Forms.RadioButton optIff;
@@ -3023,12 +2878,10 @@
 		private System.Windows.Forms.Button cmdRemoveSounds;
 		private System.Windows.Forms.Button cmdAddSounds;
 		private System.Windows.Forms.ListBox lstSounds;
-		private System.Windows.Forms.CheckBox chkSounds;
 		private System.Windows.Forms.OpenFileDialog opnSounds;
 		private System.Windows.Forms.Button cmdRemoveObjects;
 		private System.Windows.Forms.Button cmdAddObjects;
 		private System.Windows.Forms.ListBox lstObjects;
-		private System.Windows.Forms.CheckBox chkObjects;
 		private System.Windows.Forms.OpenFileDialog opnObjects;
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.ComboBox cboShuttleMarks;
@@ -3038,7 +2891,6 @@
 		private System.Windows.Forms.Button cmdAddHangar;
 		private System.Windows.Forms.Button cmdRemoveHangar;
 		private System.Windows.Forms.ListBox lstHangarObjects;
-		private System.Windows.Forms.CheckBox chkHangars;
 		private System.Windows.Forms.ComboBox cboCamera;
 		private System.Windows.Forms.Button cmdDefaultCamera;
 		private System.Windows.Forms.Label label6;
@@ -3121,8 +2973,6 @@
 		private System.Windows.Forms.TabPage tabHangarCamera;
 		private System.Windows.Forms.TabPage tabHangarFamilyCamera;
 		private System.Windows.Forms.Label label45;
-		private System.Windows.Forms.CheckBox chkSkins;
-		private System.Windows.Forms.CheckBox chkShield;
 		private System.Windows.Forms.Label label46;
 		private System.Windows.Forms.TabPage tabObjects2;
 		private System.Windows.Forms.Button cmdPlayerReset;
@@ -3157,7 +3007,6 @@
 		private System.Windows.Forms.Label label48;
 		private System.Windows.Forms.RadioButton optWingman;
 		private System.Windows.Forms.NumericUpDown numWingman;
-		private System.Windows.Forms.CheckBox chkSFoils;
 		private System.Windows.Forms.CheckBox chkHangarFold;
 		private System.Windows.Forms.Label label49;
 		private System.Windows.Forms.CheckBox chkManualSF;
