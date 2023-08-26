@@ -2782,6 +2782,7 @@
             this.txtHook.Size = new System.Drawing.Size(378, 533);
             this.txtHook.TabIndex = 62;
             this.txtHook.WordWrap = false;
+            this.txtHook.Enter += new System.EventHandler(this.txtHook_Enter);
             this.txtHook.Leave += new System.EventHandler(this.txtHook_Leave);
             // 
             // pnlConcourse
@@ -2871,7 +2872,6 @@
             // 
             // XwaHookDialog
             // 
-            this.AcceptButton = this.cmdOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.cmdCancel;

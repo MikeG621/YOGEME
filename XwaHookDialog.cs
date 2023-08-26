@@ -52,6 +52,7 @@
 
 using Idmr.Platform.Xwa;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
 
@@ -90,7 +91,10 @@ namespace Idmr.Yogeme
 		readonly int[] _defaultShuttlePosition = new int[4] { 1127, 959, 0, 43136 };
 		readonly int[] _defaultRoofCranePosition = new int[3] { -1400, 786, -282 };
 		readonly Panel[] _panels = new Panel[10];
-		string _endComments = "";
+		readonly List<string> _unknown = new List<string>();
+        readonly List<string>[] _comments = new List<string>[13];
+        string _endComments = "";
+		string _preComments = "";
 
 		public XwaHookDialog(Mission mission, Settings config)
 		{
@@ -181,6 +185,7 @@ namespace Idmr.Yogeme
 					_defaultFamilyCameras[i, j] = _familyCameras[i, j];
 			cboShield.Items.AddRange(Strings.CraftType);
 			cboShield.SelectedIndex = 0;
+			for (int i = 0; i < _comments.Length; i++) _comments[i] = new List<string>();
 			#endregion
 
 			if (config.XwaInstalled)
@@ -407,6 +412,7 @@ namespace Idmr.Yogeme
                 }
 
             string contents = ";" + _mission + ".ini" + (title != "" ? " - " + title : "") + "\r\n\r\n";
+			contents += _preComments + "\r\n";
             if (lstBackdrops.Items.Count > 0)
             {
                 contents += "[Resdata]\r\n";
@@ -612,6 +618,8 @@ namespace Idmr.Yogeme
 				contents += "\r\n";
 			}
 
+			for (int i = 0; i < _unknown.Count; i++) contents += _unknown[i] + "\r\n";
+
 			contents += "\r\n" + _endComments;
 
 			txtHook.Text = contents;
@@ -622,18 +630,31 @@ namespace Idmr.Yogeme
             string line;
             string lineLower;
             ReadMode readMode = ReadMode.None;
+			bool isPre = true;
+
+			_preComments = "";
+			_endComments = "";
+			_unknown.Clear();
 
             for (int i = 0; i < txtHook.Lines.Length; i++)
             {
-                line = txtHook.Lines[i];
-                if (line.StartsWith(";")) _endComments += (_endComments.Length != 0 ? "\r\n" : "") + line;
+                if (txtHook.Lines[i].Trim() == "") continue;
+                
+				line = txtHook.Lines[i];
                 line = removeComment(line);
-                if (line == "") continue;
+				if (line == "")
+				{
+					if (isPre && !txtHook.Lines[i].StartsWith(";" + _mission + ".ini")) _preComments += txtHook.Lines[i] + "\r\n";
+                    else if (!isPre) _endComments += txtHook.Lines[i] + "\r\n";
+					//TODO: capture comments in their appropriate section. _endComments will be attached to the last section
+					continue;
+				}
 
                 lineLower = line.ToLower();
 
 				if (line.StartsWith("["))
 				{
+					isPre = false;
 					readMode = ReadMode.None;
 					if (lineLower == "[resdata]") readMode = ReadMode.Backdrop;
 					else if (lineLower == "[mission_tie]") readMode = ReadMode.Mission;
@@ -648,6 +669,7 @@ namespace Idmr.Yogeme
 					else if (lineLower == "[shield]") readMode = ReadMode.Shield;
 					else if (lineLower == "[hyperspace]") readMode = ReadMode.Hyper;
 					else if (lineLower == "[concourse]") readMode = ReadMode.Concourse;
+					else _unknown.Add(txtHook.Lines[i]);
 
 					_endComments = "";
 				}
@@ -663,17 +685,20 @@ namespace Idmr.Yogeme
 					MapEntry entry = new MapEntry();
 					if (entry.Parse(line))
 						lstMap.Items.Add(entry.ToString());
+					//else _unknown[(int)readMode].Add(txtHook.Lines[i]);
 				}
 				else if (readMode == ReadMode.FamilyHangarMap)
 				{
 					MapEntry entry = new MapEntry();
 					if (entry.Parse(line))
 						lstFamilyMap.Items.Add(entry.ToString());
+					//else _unknown[(int)readMode].Add(txtHook.Lines[i]);
 				}
 				else if (readMode == ReadMode.Skins) lstSkins.Items.Add(line);
 				else if (readMode == ReadMode.Shield) parseShield(line);
 				else if (readMode == ReadMode.Hyper) parseHyper(line);
 				else if (readMode == ReadMode.Concourse) parseConcourse(line);
+				else if (readMode == ReadMode.None && !isPre) _unknown.Add(txtHook.Lines[i]);
             }
         }
 
@@ -733,6 +758,9 @@ namespace Idmr.Yogeme
 			lstFamilyMap.Items.Clear();
 			cmdDefaultCamera_Click("reset", new EventArgs());
 			cmdDefaultFamilyCamera_Click("reset", new EventArgs());
+			chkConcoursePlanetIndex.Checked = false;
+			chkConcoursePlanetX.Checked = false;
+			chkConcoursePlanetY.Checked = false;
         }
 
         #region Backdrops
@@ -1616,6 +1644,12 @@ namespace Idmr.Yogeme
 			Close();
 		}
 
+        private void txtHook_Enter(object sender, EventArgs e)
+        {
+			createContents();
+			reset();
+			parseContents();
+        }
         private void txtHook_Leave(object sender, EventArgs e)
         {
             reset();
@@ -1641,8 +1675,7 @@ namespace Idmr.Yogeme
 
 			public bool Parse(string line)
 			{
-				if (line.IndexOf(";") != -1)
-					line = line.Substring(0, line.IndexOf(";"));
+				// line should aleady have comments removed
 
 				int offset = 0;
 				string[] parts = line.Replace(" ", "").Split(',');
