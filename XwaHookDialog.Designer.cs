@@ -234,8 +234,16 @@
             this.pnlSFoils = new System.Windows.Forms.Panel();
             this.pnlSkins = new System.Windows.Forms.Panel();
             this.pnlShield = new System.Windows.Forms.Panel();
+            this.chkSSRecharge = new System.Windows.Forms.CheckBox();
             this.pnlHyper = new System.Windows.Forms.Panel();
             this.txtHook = new System.Windows.Forms.TextBox();
+            this.pnlConcourse = new System.Windows.Forms.Panel();
+            this.chkConcoursePlanetIndex = new System.Windows.Forms.CheckBox();
+            this.chkConcoursePlanetY = new System.Windows.Forms.CheckBox();
+            this.chkConcoursePlanetX = new System.Windows.Forms.CheckBox();
+            this.numConcoursePlanetY = new System.Windows.Forms.NumericUpDown();
+            this.numConcoursePlanetX = new System.Windows.Forms.NumericUpDown();
+            this.numConcoursePlanetIndex = new System.Windows.Forms.NumericUpDown();
             ((System.ComponentModel.ISupportInitialize)(this.numFamHeadingZ)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numFamPosZ)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numFamHeadingXY)).BeginInit();
@@ -289,6 +297,10 @@
             this.pnlSkins.SuspendLayout();
             this.pnlShield.SuspendLayout();
             this.pnlHyper.SuspendLayout();
+            this.pnlConcourse.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numConcoursePlanetY)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numConcoursePlanetX)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numConcoursePlanetIndex)).BeginInit();
             this.SuspendLayout();
             // 
             // cmdOK
@@ -2204,7 +2216,7 @@
             this.tabHangarMap.Location = new System.Drawing.Point(4, 22);
             this.tabHangarMap.Name = "tabHangarMap";
             this.tabHangarMap.Padding = new System.Windows.Forms.Padding(3);
-            this.tabHangarMap.Size = new System.Drawing.Size(372, 276);
+            this.tabHangarMap.Size = new System.Drawing.Size(363, 276);
             this.tabHangarMap.TabIndex = 1;
             this.tabHangarMap.Text = "Map";
             this.tabHangarMap.UseVisualStyleBackColor = true;
@@ -2250,7 +2262,7 @@
             this.tabHangarCamera.Controls.Add(this.numCameraY);
             this.tabHangarCamera.Location = new System.Drawing.Point(4, 22);
             this.tabHangarCamera.Name = "tabHangarCamera";
-            this.tabHangarCamera.Size = new System.Drawing.Size(372, 276);
+            this.tabHangarCamera.Size = new System.Drawing.Size(363, 276);
             this.tabHangarCamera.TabIndex = 3;
             this.tabHangarCamera.Text = "Camera";
             this.tabHangarCamera.UseVisualStyleBackColor = true;
@@ -2267,7 +2279,7 @@
             this.tabHangarFamilyCamera.Controls.Add(this.numFamilyCameraY);
             this.tabHangarFamilyCamera.Location = new System.Drawing.Point(4, 22);
             this.tabHangarFamilyCamera.Name = "tabHangarFamilyCamera";
-            this.tabHangarFamilyCamera.Size = new System.Drawing.Size(414, 342);
+            this.tabHangarFamilyCamera.Size = new System.Drawing.Size(363, 276);
             this.tabHangarFamilyCamera.TabIndex = 4;
             this.tabHangarFamilyCamera.Text = "Family Camera";
             this.tabHangarFamilyCamera.UseVisualStyleBackColor = true;
@@ -2721,6 +2733,7 @@
             // 
             // pnlShield
             // 
+            this.pnlShield.Controls.Add(this.chkSSRecharge);
             this.pnlShield.Controls.Add(this.label52);
             this.pnlShield.Controls.Add(this.cboShield);
             this.pnlShield.Controls.Add(this.lstShield);
@@ -2731,9 +2744,21 @@
             this.pnlShield.Controls.Add(this.numShieldRate);
             this.pnlShield.Location = new System.Drawing.Point(399, 519);
             this.pnlShield.Name = "pnlShield";
-            this.pnlShield.Size = new System.Drawing.Size(383, 224);
+            this.pnlShield.Size = new System.Drawing.Size(383, 252);
             this.pnlShield.TabIndex = 60;
             this.pnlShield.Visible = false;
+            // 
+            // chkSSRecharge
+            // 
+            this.chkSSRecharge.AutoSize = true;
+            this.chkSSRecharge.Checked = true;
+            this.chkSSRecharge.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkSSRecharge.Location = new System.Drawing.Point(6, 222);
+            this.chkSSRecharge.Name = "chkSSRecharge";
+            this.chkSSRecharge.Size = new System.Drawing.Size(156, 17);
+            this.chkSSRecharge.TabIndex = 46;
+            this.chkSSRecharge.Text = "Starship Recharge Enabled";
+            this.chkSSRecharge.UseVisualStyleBackColor = true;
             // 
             // pnlHyper
             // 
@@ -2759,6 +2784,91 @@
             this.txtHook.WordWrap = false;
             this.txtHook.Leave += new System.EventHandler(this.txtHook_Leave);
             // 
+            // pnlConcourse
+            // 
+            this.pnlConcourse.Controls.Add(this.chkConcoursePlanetIndex);
+            this.pnlConcourse.Controls.Add(this.chkConcoursePlanetY);
+            this.pnlConcourse.Controls.Add(this.chkConcoursePlanetX);
+            this.pnlConcourse.Controls.Add(this.numConcoursePlanetY);
+            this.pnlConcourse.Controls.Add(this.numConcoursePlanetX);
+            this.pnlConcourse.Controls.Add(this.numConcoursePlanetIndex);
+            this.pnlConcourse.Location = new System.Drawing.Point(783, 581);
+            this.pnlConcourse.Name = "pnlConcourse";
+            this.pnlConcourse.Size = new System.Drawing.Size(383, 90);
+            this.pnlConcourse.TabIndex = 63;
+            // 
+            // chkConcoursePlanetIndex
+            // 
+            this.chkConcoursePlanetIndex.AutoSize = true;
+            this.chkConcoursePlanetIndex.Location = new System.Drawing.Point(7, 4);
+            this.chkConcoursePlanetIndex.Name = "chkConcoursePlanetIndex";
+            this.chkConcoursePlanetIndex.Size = new System.Drawing.Size(127, 17);
+            this.chkConcoursePlanetIndex.TabIndex = 3;
+            this.chkConcoursePlanetIndex.Text = "Override with DAT ID";
+            this.chkConcoursePlanetIndex.UseVisualStyleBackColor = true;
+            this.chkConcoursePlanetIndex.CheckedChanged += new System.EventHandler(this.chkConcoursePlanetIndex_CheckedChanged);
+            // 
+            // chkConcoursePlanetY
+            // 
+            this.chkConcoursePlanetY.AutoSize = true;
+            this.chkConcoursePlanetY.Location = new System.Drawing.Point(7, 57);
+            this.chkConcoursePlanetY.Name = "chkConcoursePlanetY";
+            this.chkConcoursePlanetY.Size = new System.Drawing.Size(100, 17);
+            this.chkConcoursePlanetY.TabIndex = 2;
+            this.chkConcoursePlanetY.Text = "Define Planet Y";
+            this.chkConcoursePlanetY.UseVisualStyleBackColor = true;
+            this.chkConcoursePlanetY.CheckedChanged += new System.EventHandler(this.chkConcoursePlanetY_CheckedChanged);
+            // 
+            // chkConcoursePlanetX
+            // 
+            this.chkConcoursePlanetX.AutoSize = true;
+            this.chkConcoursePlanetX.Location = new System.Drawing.Point(7, 31);
+            this.chkConcoursePlanetX.Name = "chkConcoursePlanetX";
+            this.chkConcoursePlanetX.Size = new System.Drawing.Size(100, 17);
+            this.chkConcoursePlanetX.TabIndex = 2;
+            this.chkConcoursePlanetX.Text = "Define Planet X";
+            this.chkConcoursePlanetX.UseVisualStyleBackColor = true;
+            this.chkConcoursePlanetX.CheckedChanged += new System.EventHandler(this.chkConcoursePlanetX_CheckedChanged);
+            // 
+            // numConcoursePlanetY
+            // 
+            this.numConcoursePlanetY.Enabled = false;
+            this.numConcoursePlanetY.Location = new System.Drawing.Point(140, 56);
+            this.numConcoursePlanetY.Maximum = new decimal(new int[] {
+            65536,
+            0,
+            0,
+            0});
+            this.numConcoursePlanetY.Name = "numConcoursePlanetY";
+            this.numConcoursePlanetY.Size = new System.Drawing.Size(69, 20);
+            this.numConcoursePlanetY.TabIndex = 0;
+            // 
+            // numConcoursePlanetX
+            // 
+            this.numConcoursePlanetX.Enabled = false;
+            this.numConcoursePlanetX.Location = new System.Drawing.Point(140, 30);
+            this.numConcoursePlanetX.Maximum = new decimal(new int[] {
+            65536,
+            0,
+            0,
+            0});
+            this.numConcoursePlanetX.Name = "numConcoursePlanetX";
+            this.numConcoursePlanetX.Size = new System.Drawing.Size(69, 20);
+            this.numConcoursePlanetX.TabIndex = 0;
+            // 
+            // numConcoursePlanetIndex
+            // 
+            this.numConcoursePlanetIndex.Enabled = false;
+            this.numConcoursePlanetIndex.Location = new System.Drawing.Point(140, 4);
+            this.numConcoursePlanetIndex.Maximum = new decimal(new int[] {
+            100000,
+            0,
+            0,
+            0});
+            this.numConcoursePlanetIndex.Name = "numConcoursePlanetIndex";
+            this.numConcoursePlanetIndex.Size = new System.Drawing.Size(69, 20);
+            this.numConcoursePlanetIndex.TabIndex = 0;
+            // 
             // XwaHookDialog
             // 
             this.AcceptButton = this.cmdOK;
@@ -2766,6 +2876,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.cmdCancel;
             this.ClientSize = new System.Drawing.Size(1671, 849);
+            this.Controls.Add(this.pnlConcourse);
             this.Controls.Add(this.txtHook);
             this.Controls.Add(this.pnlHyper);
             this.Controls.Add(this.pnlShield);
@@ -2852,6 +2963,11 @@
             this.pnlShield.PerformLayout();
             this.pnlHyper.ResumeLayout(false);
             this.pnlHyper.PerformLayout();
+            this.pnlConcourse.ResumeLayout(false);
+            this.pnlConcourse.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numConcoursePlanetY)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numConcoursePlanetX)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numConcoursePlanetIndex)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -3066,5 +3182,13 @@
         private System.Windows.Forms.Panel pnlShield;
         private System.Windows.Forms.Panel pnlHyper;
         private System.Windows.Forms.TextBox txtHook;
+        private System.Windows.Forms.CheckBox chkSSRecharge;
+        private System.Windows.Forms.Panel pnlConcourse;
+        private System.Windows.Forms.NumericUpDown numConcoursePlanetIndex;
+        private System.Windows.Forms.CheckBox chkConcoursePlanetY;
+        private System.Windows.Forms.CheckBox chkConcoursePlanetX;
+        private System.Windows.Forms.NumericUpDown numConcoursePlanetY;
+        private System.Windows.Forms.NumericUpDown numConcoursePlanetX;
+        private System.Windows.Forms.CheckBox chkConcoursePlanetIndex;
     }
 }

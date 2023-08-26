@@ -3,17 +3,13 @@
  * Copyright (C) 2007-2023 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.14.1
+ * VERSION: 1.14.1+
  */
-// TODO: Overhaul
-/* Need a better way to add new hooks without just creating a million tabs
- * ComboBox with each hook, always shown, although if not detected add '*' to the entry, to be used as a flag if needed
- * First entry should be the raw text, constantly updated per hook, Textbox, editable
- * Each hook to be built on their own Panel, moved to 0,0 and set visible when selected. Non-selected should be invisible.
- * This allows for large editing at once, then resize the window on launch, and can resize accordingly
- * Each hook needs a function to gather everything into the text output so the Raw can be collated.
- */
+
 /* CHANGELOG
+ * [ADD] Concourse hook support
+ * [UPD] Redid GUI
+ * [UPD] No longer restricted by hook presence, added "*" to cbo as flag
  * v1.14.1, 230814
  * [ADD] Hyperspace hook support
  * [ADD] Object profile per model
@@ -78,12 +74,13 @@ namespace Idmr.Yogeme
 		readonly string _32bppFile = "";
 		readonly string _shieldFile = "";
 		readonly string _hyperFile = "";
+		readonly string _concourseFile = "";
 		readonly string _installDirectory = "";
 		readonly string _mis = "Missions\\";
 		readonly string _res = "Resdata\\";
 		readonly string _wave = "Wave\\";
 		readonly string _fm = "FlightModels\\";
-		enum ReadMode { None = -1, Backdrop, Mission, Sounds, Objects, HangarObjects, HangarCamera, FamilyHangarCamera, HangarMap, FamilyHangarMap, Skins, Shield, Hyper }
+		enum ReadMode { None = -1, Backdrop, Mission, Sounds, Objects, HangarObjects, HangarCamera, FamilyHangarCamera, HangarMap, FamilyHangarMap, Skins, Shield, Hyper, Concourse }
 		bool _loading = false;
 		readonly int[,] _cameras = new int[5, 3];
 		readonly int[,] _defaultCameras = new int[5, 3];
@@ -92,7 +89,7 @@ namespace Idmr.Yogeme
 		enum ShuttleAnimation { Right, Top, Bottom }
 		readonly int[] _defaultShuttlePosition = new int[4] { 1127, 959, 0, 43136 };
 		readonly int[] _defaultRoofCranePosition = new int[3] { -1400, 786, -282 };
-		readonly Panel[] _panels = new Panel[9];
+		readonly Panel[] _panels = new Panel[10];
 		string _endComments = "";
 
 		public XwaHookDialog(Mission mission, Settings config)
@@ -119,6 +116,7 @@ namespace Idmr.Yogeme
 			_panels[6] = pnlSkins;
 			_panels[7] = pnlShield;
 			_panels[8] = pnlHyper;
+			_panels[9] = pnlConcourse;
 			for (int i = 0; i < _panels.Length; i++)
 			{
 				_panels[i].Left = 395;
@@ -206,6 +204,7 @@ namespace Idmr.Yogeme
 				_32bppFile = checkFile("_Skins.txt");
 				_shieldFile = checkFile("_Shield.txt");
 				_hyperFile = checkFile("_Hyperspace.txt");
+				_concourseFile = checkFile("_Concourse.txt");
 			}
 			string line;
 
@@ -350,6 +349,17 @@ namespace Idmr.Yogeme
                         parseHyper(line);
                     }
 			}
+			if (_concourseFile != "")
+			{
+				using (var sr = new StreamReader (_concourseFile))
+					while ((line = sr.ReadLine()) != null)
+					{
+                        line = removeComment(line);
+                        if (line == "") continue;
+
+                        parseConcourse(line);
+                    }
+			}
 			#endregion
 
 			if (File.Exists(_fileName))
@@ -477,7 +487,6 @@ namespace Idmr.Yogeme
                 for (int i = 0; i < lstObjects.Items.Count; i++) contents += lstObjects.Items[i] + "\r\n";
                 contents += "\r\n";
             }
-
 			if (useHangarObjects)
 			{
 				contents += "[HangarObjects]\r\n";
@@ -532,9 +541,10 @@ namespace Idmr.Yogeme
 					{
 						contents += "Key" + keys[i] + "_X = " + _cameras[i, 0] + "\r\n";
 						contents += "Key" + keys[i] + "_Y = " + _cameras[i, 1] + "\r\n";
-						contents += "Key" + keys[i] + "_Z = " + _cameras[i, 2] + "\r\n\r\n";
+						contents += "Key" + keys[i] + "_Z = " + _cameras[i, 2] + "\r\n";
 					}
 				}
+				contents += "\r\n";
 			}
 			if (useFamilyHangarCamera)
 			{
@@ -548,9 +558,10 @@ namespace Idmr.Yogeme
 					{
 						contents += "Key" + keys[i] + "_X = " + _familyCameras[i, 0] + "\r\n";
 						contents += "Key" + keys[i] + "_Y = " + _familyCameras[i, 1] + "\r\n";
-						contents += "Key" + keys[i] + "_Z = " + _familyCameras[i, 2] + "\r\n\r\n";
+						contents += "Key" + keys[i] + "_Z = " + _familyCameras[i, 2] + "\r\n";
 					}
 				}
+				contents += "\r\n";
 			}
 			if (useHangarMap)
 			{
@@ -570,7 +581,7 @@ namespace Idmr.Yogeme
                 for (int i = 0; i < lstSkins.Items.Count; i++) contents += lstSkins.Items[i] + "\r\n";
 				contents += "\r\n";
             }
-            if (lstShield.Items.Count > 0)
+            if (lstShield.Items.Count > 0 || !chkSSRecharge.Checked)
             {
                 contents += "[Shield]\r\n";
                 for (int i = 0; i < lstShield.Items.Count; i++)
@@ -585,12 +596,21 @@ namespace Idmr.Yogeme
                     int rate = int.Parse(parts[0]);
                     contents += craft + ", " + (perGen ? "1, " + rate + ", 0" : "0, 0, " + rate) + "\r\n";
                 }
+				if (!chkSSRecharge.Checked) contents += "IsShieldRechargeForStarshipsEnabled = 0\r\n";
 				contents += "\r\n";
             }
             if (!optHypGlobal.Checked)
             {
-				contents += "[Hyperspace]\r\nShortHyperspaceEffect = " + (optHypNormal.Checked ? "0" : "1") + "\r\n";
+				contents += "[Hyperspace]\r\nShortHyperspaceEffect = " + (optHypNormal.Checked ? "0" : "1") + "\r\n\r\n";
             }
+			if (chkConcoursePlanetIndex.Checked || chkConcoursePlanetX.Checked || chkConcoursePlanetY.Checked)
+			{
+				contents += "[Concourse]\r\n";
+				if (chkConcoursePlanetIndex.Checked) contents += "FrontPlanetIndex = " + numConcoursePlanetIndex.Value + "\r\n";
+				if (chkConcoursePlanetX.Checked) contents += "FrontPlanetPositionX = " + numConcoursePlanetX.Value + "\r\n";
+				if (chkConcoursePlanetY.Checked) contents += "FontPlanetPositionY = " + numConcoursePlanetY.Value + "\r\n";
+				contents += "\r\n";
+			}
 
 			contents += "\r\n" + _endComments;
 
@@ -612,46 +632,48 @@ namespace Idmr.Yogeme
 
                 lineLower = line.ToLower();
 
-                if (line.StartsWith("["))
-                {
-                    readMode = ReadMode.None;
-                    if (lineLower == "[resdata]") readMode = ReadMode.Backdrop;
-                    else if (lineLower == "[mission_tie]") readMode = ReadMode.Mission;
-                    else if (lineLower == "[sounds]") readMode = ReadMode.Sounds;
-                    else if (lineLower == "[objects]") readMode = ReadMode.Objects;
-                    else if (lineLower == "[hangarobjects]") readMode = ReadMode.HangarObjects;
-                    else if (lineLower == "[hangarcamera]") readMode = ReadMode.HangarCamera;
-                    else if (lineLower == "[famhangarcamera]") readMode = ReadMode.FamilyHangarCamera;
-                    else if (lineLower == "[hangarmap]") readMode = ReadMode.HangarMap;
-                    else if (lineLower == "[famhangarmap]") readMode = ReadMode.FamilyHangarMap;
-                    else if (lineLower == "[skins]") readMode = ReadMode.Skins;
-                    else if (lineLower == "[shield]") readMode = ReadMode.Shield;
-                    else if (lineLower == "[hyperspace]") readMode = ReadMode.Hyper;
+				if (line.StartsWith("["))
+				{
+					readMode = ReadMode.None;
+					if (lineLower == "[resdata]") readMode = ReadMode.Backdrop;
+					else if (lineLower == "[mission_tie]") readMode = ReadMode.Mission;
+					else if (lineLower == "[sounds]") readMode = ReadMode.Sounds;
+					else if (lineLower == "[objects]") readMode = ReadMode.Objects;
+					else if (lineLower == "[hangarobjects]") readMode = ReadMode.HangarObjects;
+					else if (lineLower == "[hangarcamera]") readMode = ReadMode.HangarCamera;
+					else if (lineLower == "[famhangarcamera]") readMode = ReadMode.FamilyHangarCamera;
+					else if (lineLower == "[hangarmap]") readMode = ReadMode.HangarMap;
+					else if (lineLower == "[famhangarmap]") readMode = ReadMode.FamilyHangarMap;
+					else if (lineLower == "[skins]") readMode = ReadMode.Skins;
+					else if (lineLower == "[shield]") readMode = ReadMode.Shield;
+					else if (lineLower == "[hyperspace]") readMode = ReadMode.Hyper;
+					else if (lineLower == "[concourse]") readMode = ReadMode.Concourse;
 
-                    _endComments = "";
-                }
-                else if (readMode == ReadMode.Backdrop) lstBackdrops.Items.Add(line);
-                else if (readMode == ReadMode.Mission) parseMission(line);
-                else if (readMode == ReadMode.Sounds) lstSounds.Items.Add(line);
-                else if (readMode == ReadMode.Objects) lstObjects.Items.Add(line);
-                else if (readMode == ReadMode.HangarObjects) parseHangarObjects(line);
-                else if (readMode == ReadMode.HangarCamera) parseHangarCamera(line);
-                else if (readMode == ReadMode.FamilyHangarCamera) parseFamilyHangarCamera(line);
-                else if (readMode == ReadMode.HangarMap)
-                {
-                    MapEntry entry = new MapEntry();
-                    if (entry.Parse(line))
-                        lstMap.Items.Add(entry.ToString());
-                }
-                else if (readMode == ReadMode.FamilyHangarMap)
-                {
-                    MapEntry entry = new MapEntry();
-                    if (entry.Parse(line))
-                        lstFamilyMap.Items.Add(entry.ToString());
-                }
-                else if (readMode == ReadMode.Skins) lstSkins.Items.Add(line);
-                else if (readMode == ReadMode.Shield) parseShield(line);
-                else if (readMode == ReadMode.Hyper) parseHyper(line);
+					_endComments = "";
+				}
+				else if (readMode == ReadMode.Backdrop) lstBackdrops.Items.Add(line);
+				else if (readMode == ReadMode.Mission) parseMission(line);
+				else if (readMode == ReadMode.Sounds) lstSounds.Items.Add(line);
+				else if (readMode == ReadMode.Objects) lstObjects.Items.Add(line);
+				else if (readMode == ReadMode.HangarObjects) parseHangarObjects(line);
+				else if (readMode == ReadMode.HangarCamera) parseHangarCamera(line);
+				else if (readMode == ReadMode.FamilyHangarCamera) parseFamilyHangarCamera(line);
+				else if (readMode == ReadMode.HangarMap)
+				{
+					MapEntry entry = new MapEntry();
+					if (entry.Parse(line))
+						lstMap.Items.Add(entry.ToString());
+				}
+				else if (readMode == ReadMode.FamilyHangarMap)
+				{
+					MapEntry entry = new MapEntry();
+					if (entry.Parse(line))
+						lstFamilyMap.Items.Add(entry.ToString());
+				}
+				else if (readMode == ReadMode.Skins) lstSkins.Items.Add(line);
+				else if (readMode == ReadMode.Shield) parseShield(line);
+				else if (readMode == ReadMode.Hyper) parseHyper(line);
+				else if (readMode == ReadMode.Concourse) parseConcourse(line);
             }
         }
 
@@ -678,6 +700,7 @@ namespace Idmr.Yogeme
 			chkManualSF.Checked = false;
 			lstSkins.Items.Clear();
 			lstShield.Items.Clear();
+			chkSSRecharge.Checked = true;
 			optHypGlobal.Checked = true;
 			lstHangarObjects.Items.Clear();
 			chkShuttle.Checked = true;
@@ -724,12 +747,87 @@ namespace Idmr.Yogeme
 		{
 			if (lstBackdrops.SelectedIndex != -1) lstBackdrops.Items.RemoveAt(lstBackdrops.SelectedIndex);
 		}
-		#endregion Backdrops
+        #endregion Backdrops
 
-		#region MissionTie
-		// TODO: craft stats
-		/// <remarks>This also parses S-Foils</remarks>
-		void parseMission(string line)
+        #region MissionTie
+        /* TODO: shiplist and STRINGS update
+			craft, [craftindex], name, [name]
+			craft, [craftindex], specname, [speciesName]
+			craft, [craftindex], pluralname, [plural]
+			craft, [craftindex], shortname, [abbrv]
+		*/
+        /* TODO: other mission stuff
+			IsRedAlertEnabled = 1 (see mission 20)
+			SkipHyperspacedMessages = 1 (see mission 49)
+			SkipObjectsMessagesIff = [IFF] (-1 is "none", 255 is "all", see missions 49-52)
+			ForcePlayerInTurret = 1 (see mission 1)
+			ForcePlayerInTurretHours = [value] (default 0)
+			ForcePlayerInTurretMinutes = [value] (default 0)
+			ForcePlayerInTurretSeconds = [value] (default 8)
+			DisablePlayerLaserShoot = 1
+			DisablePlayerWarheadShoot = 1
+			IsWarheadCollisionDamagesEnabled = 0
+		*/
+        /* TODO: Craft stats by FG:
+			To define a stats profile for a craft, create a file named "[MissionDir]\[Mission]_StatsProfiles.txt" or create a section named "[StatsProfiles]" in "[MissionDir]\[Mission].ini".
+			Or create a file named "FlightModels\StatsProfiles.txt" or create a section named "[StatsProfiles]" in "FlightModels\default.ini".
+			The format is
+			CraftOptName_fgc_# = ProfileName
+			PlayerSpeedPercent = integer
+			PlayerAccelerationPercent = integer
+			PlayerDecelerationPercent = integer
+			PlayerPitchPercent = integer
+			PlayerRollPercent = integer
+			PlayerYawPercent = integer
+			PlayerExplosionStrengthPercent = integer
+			PlayerHullStrengthPercent = integer
+			PlayerSystemStrengthPercent = integer
+			PlayerShieldStrengthPercent = integer
+			SpeedPercent = integer
+			AccelerationPercent = integer
+			DecelerationPercent = integer
+			PitchPercent = integer
+			RollPercent = integer
+			YawPercent = integer
+			ExplosionStrengthPercent = integer
+			HullStrengthPercent = integer
+			SystemStrengthPercent = integer
+			ShieldStrengthPercent = integer
+			# in CraftOptName_fgc_# is an integer for the opt color marking index, starting at 0.
+			To define a profile for the player craft, set "CraftOptName_fg_player = ProfileName".
+			The default ProfileName is "Default".
+			Player*Percent applies to the player craft.
+			*Percent applies to all crafts.
+			See "StatsProfiles.txt"
+
+			The raw values are calculated as follow:
+
+			stats.Speed = (int)(stats.Speed * 2.25f + 0.5f);
+			stats.Acceleration = (int)(stats.Acceleration * 2.25f + 0.5f);
+			stats.Deceleration = (int)(stats.Deceleration * 2.25f + 0.5f);
+			stats.Pitch = stats.Pitch * 256;
+			stats.Roll = stats.Roll * 256;
+			stats.Yaw = stats.Yaw * 256;
+			stats.ExplosionStrength = stats.ExplosionStrength * 105;
+			stats.HullStrength = stats.HullStrength * 105;
+			stats.ShieldStrength = stats.ShieldStrength * 50;
+
+			if( ShipCategory == ShipCategory_Starship || ShipCategory == ShipCategory_Platform )
+			{
+				HullStrength /= 16;
+				ShieldStrength /= 16;
+				ExplosionStrength /= 16
+			}
+
+			if( ShipCategory == ShipCategory_Freighter || ShipCategory == ShipCategory_Container )
+			{
+				HullStrength /= 4;
+				ShieldStrength /= 4;
+				ExplosionStrength /= 4
+			}
+		*/
+        /// <remarks>This also parses S-Foils</remarks>
+        void parseMission(string line)
 		{
 			if (line.IndexOf(";") != -1)
 				line = line.Substring(0, line.IndexOf(";"));
@@ -807,8 +905,10 @@ namespace Idmr.Yogeme
 		#endregion
 
 		#region Objects
-		// TODO: still need ObjectProfile_[craft]_[weaponindex] = [Profile]
+		// TODO: need ObjectProfile_[craft]_[weaponindex] = [Profile]
+		// need FlightModels\[Model]_CockpitPOVProfile = [Profile]
 		// problem is I want the weapon indexes to be intelligent
+		// also, need to separate out the HullIcon content that lives here
 
 		private void cmdAddObjects_Click(object sender, EventArgs e)
 		{
@@ -861,6 +961,7 @@ namespace Idmr.Yogeme
 
 		#region Hangars
 		// TODO: need a top-level IFF selector, and clone all Hangar values X times, including read/write all of the IFF-specific hangar files
+		// go through and figure out what else I'm missing
 		void parseHangarCamera(string line)
 		{
 			if (line.IndexOf(";") != -1)
@@ -1304,7 +1405,7 @@ namespace Idmr.Yogeme
 			if (res == DialogResult.OK)
 			{
 				string line = Path.GetFileNameWithoutExtension(opnObjects.FileName) + (chkSkinMarks.Checked ? "_fgc_" + cboSkinMarks.SelectedIndex : "") + " = "
-					+ (chkDefaultSkin.Checked ? "Default" : txtSkin.Text);
+					+ (chkDefaultSkin.Checked ? "Default" + (chkSkinMarks.Checked ? "_" + cboSkinMarks.SelectedIndex : "") : txtSkin.Text);
 				lstSkins.Items.Add(line);
 			}
 		}
@@ -1312,7 +1413,7 @@ namespace Idmr.Yogeme
 		{
 			if (lstSkins.SelectedIndex == -1) return;
 			string line = lstSkins.SelectedItem.ToString();
-			line += ", " + (chkDefaultSkin.Checked ? "Default" : txtSkin.Text);
+			line += ", " + (chkDefaultSkin.Checked ? "Default" + (chkSkinMarks.Checked ? "_" + cboSkinMarks.SelectedIndex : "") : txtSkin.Text);
 			lstSkins.Items[lstSkins.SelectedIndex] = line;
 		}
 		private void cmdRemoveSkin_Click(object sender, EventArgs e)
@@ -1325,9 +1426,16 @@ namespace Idmr.Yogeme
 		void parseShield(string line)
 		{
 			if (line.IndexOf(";") != -1)
-				line = line.Substring(0, line.IndexOf(";"));
+				line = line.Substring(0, line.IndexOf(";")).Replace(" ", "");
 
-			string[] parts = line.ToLower().Replace(" ", "").Split(',');
+			string[] parts;
+			if (line.StartsWith("IsShieldRechargeForStarshipsEnabled", StringComparison.InvariantCultureIgnoreCase))
+			{
+				parts = line.Split('=');
+				if (parts.Length > 1 && int.Parse(parts[1]) == 0) chkSSRecharge.Checked = false;
+				return;
+			}
+			parts = line.ToLower().Split(',');
 			bool perGen = (parts[1] == "1");
 			int rate = (perGen ? int.Parse(parts[2]) : int.Parse(parts[3]));
 			lstShield.Items.Add(Strings.CraftType[int.Parse(parts[0])] + " = " + rate + (perGen ? " per" : ""));
@@ -1358,8 +1466,61 @@ namespace Idmr.Yogeme
 			}
         }
         #endregion
-        
-		private void cboHook_SelectedIndexChanged(object sender, EventArgs e)
+
+        #region Concourse
+		void parseConcourse(string line)
+		{
+            string[] parts = line.ToLower().Replace(" ", "").Split('=');
+			if (parts.Length < 2) return;
+
+			if (parts[0] == "frontplanetindex")
+			{
+                int value = int.Parse(parts[1]);
+                chkConcoursePlanetIndex.Checked = (value != -1);
+                if (chkConcoursePlanetIndex.Checked) numConcoursePlanetIndex.Value = value;
+            }
+			else if (parts[0] == "frontplanetpositionx")
+			{
+				int value = int.Parse(parts[1]);
+				chkConcoursePlanetX.Checked = (value != -1);
+				if (chkConcoursePlanetX.Checked) numConcoursePlanetX.Value = value;
+			}
+			else if (parts[0] == "frontplanetpositiony")
+			{
+				int value = int.Parse(parts[1]);
+				chkConcoursePlanetY.Checked = (value != -1);
+				if (chkConcoursePlanetY.Checked) numConcoursePlanetY.Value = value;
+			}
+        }
+
+        private void chkConcoursePlanetIndex_CheckedChanged(object sender, EventArgs e)
+        {
+            numConcoursePlanetIndex.Enabled = chkConcoursePlanetIndex.Checked;
+        }
+        private void chkConcoursePlanetX_CheckedChanged(object sender, EventArgs e)
+        {
+            numConcoursePlanetX.Enabled = chkConcoursePlanetX.Checked;
+        }
+        private void chkConcoursePlanetY_CheckedChanged(object sender, EventArgs e)
+        {
+            numConcoursePlanetY.Enabled = chkConcoursePlanetY.Checked;
+        }
+        #endregion
+
+        #region HullIcon
+        //TODO: create HullIcon
+        /*
+		 * for the player, "[MissionDir]\[Mission]_HullIcon.txt" or section "[HullIcon]" in "[MissionDir]\[Mission].ini".
+			The format is:
+			PlayerHullIcon = value
+			If the value is 0, then no icon is replaced.
+		 * for other craft, "[MissionDir]\[Mission]_Objects.txt" or section "[Objects]" in "[MissionDir]\[Mission].ini".
+			"FlightModels\ObjectA_HullIcon = value"
+			If the value is 0, then no icon is replaced.
+		*/
+        #endregion
+
+        private void cboHook_SelectedIndexChanged(object sender, EventArgs e)
         {
 			if (cboHook.SelectedIndex == -1) return;
 
@@ -1397,7 +1558,7 @@ namespace Idmr.Yogeme
 			if (!useFamilyHangarMap && _famHangarMapFile != "") File.Delete(_famHangarMapFile);
 
 			if (lstSkins.Items.Count == 0 && _32bppFile != "") File.Delete(_32bppFile);
-			if (lstShield.Items.Count == 0 && _shieldFile != "") File.Delete(_shieldFile);
+			if (lstShield.Items.Count == 0 && chkSSRecharge.Checked && _shieldFile != "") File.Delete(_shieldFile);
 			if (optHypGlobal.Checked && _hyperFile != "") File.Delete(_hyperFile);
 
 			if (lstBackdrops.Items.Count == 0
@@ -1407,7 +1568,7 @@ namespace Idmr.Yogeme
                 && !useHangarObjects && !useHangarCamera && !useFamilyHangarCamera && !useHangarMap && !useFamilyHangarMap
 				&& !useSFoils
                 && lstSkins.Items.Count == 0
-                && lstShield.Items.Count == 0
+                && lstShield.Items.Count == 0 && chkSSRecharge.Checked
                 && optHypGlobal.Checked)
 			{
 				File.Delete(_fileName);
