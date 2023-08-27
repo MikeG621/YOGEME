@@ -54,6 +54,7 @@ using Idmr.Platform.Xwa;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.Remoting.Contexts;
 using System.Windows.Forms;
 
 namespace Idmr.Yogeme
@@ -93,7 +94,6 @@ namespace Idmr.Yogeme
 		readonly Panel[] _panels = new Panel[10];
 		readonly List<string> _unknown = new List<string>();
         readonly List<string>[] _comments = new List<string>[13];
-        string _endComments = "";
 		string _preComments = "";
 
 		public XwaHookDialog(Mission mission, Settings config)
@@ -419,6 +419,7 @@ namespace Idmr.Yogeme
                 for (int i = 0; i < lstBackdrops.Items.Count; i++) contents += lstBackdrops.Items[i] + "\r\n";
 				contents += "\r\n";
             }
+			if (_comments[(int)ReadMode.Backdrop].Count > 0) insertComments(ref contents, (int)ReadMode.Backdrop);
             if (lstMission.Items.Count > 0 || useSFoils)
             {
                 contents += "[Mission_Tie]\r\n";
@@ -481,19 +482,22 @@ namespace Idmr.Yogeme
                 }
 				contents += "\r\n";
             }
+            if (_comments[(int)ReadMode.Mission].Count > 0) insertComments(ref contents, (int)ReadMode.Mission);
             if (lstSounds.Items.Count > 0)
             {
                 contents += "[Sounds]\r\n";
                 for (int i = 0; i < lstSounds.Items.Count; i++) contents += lstSounds.Items[i] + "\r\n";
                 contents += "\r\n";
             }
+            if (_comments[(int)ReadMode.Sounds].Count > 0) insertComments(ref contents, (int)ReadMode.Sounds);
             if (lstObjects.Items.Count > 0)
             {
                 contents += "[Objects]\r\n";
                 for (int i = 0; i < lstObjects.Items.Count; i++) contents += lstObjects.Items[i] + "\r\n";
                 contents += "\r\n";
             }
-			if (useHangarObjects)
+            if (_comments[(int)ReadMode.Objects].Count > 0) insertComments(ref contents, (int)ReadMode.Objects);
+            if (useHangarObjects)
 			{
 				contents += "[HangarObjects]\r\n";
 				if (!chkShuttle.Checked) contents += "LoadShuttle = 0\r\n";
@@ -535,7 +539,8 @@ namespace Idmr.Yogeme
 				for (int i = 0; i < lstHangarObjects.Items.Count; i++) contents += lstHangarObjects.Items[i] + "\r\n";
 				contents += "\r\n";
 			}
-			if (useHangarCamera)
+            if (_comments[(int)ReadMode.HangarObjects].Count > 0) insertComments(ref contents, (int)ReadMode.HangarObjects);
+            if (useHangarCamera)
 			{
 				contents += "[HangarCamera]\r\n";
 				string[] keys = { "1", "2", "3", "6", "9" };
@@ -552,7 +557,8 @@ namespace Idmr.Yogeme
 				}
 				contents += "\r\n";
 			}
-			if (useFamilyHangarCamera)
+            if (_comments[(int)ReadMode.HangarCamera].Count > 0) insertComments(ref contents, (int)ReadMode.HangarCamera);
+            if (useFamilyHangarCamera)
 			{
 				contents += "[FamHangarCamera]\r\n";
 				string[] keys = { "1", "2", "3", "6", "7", "8", "9" };
@@ -569,24 +575,28 @@ namespace Idmr.Yogeme
 				}
 				contents += "\r\n";
 			}
-			if (useHangarMap)
+            if (_comments[(int)ReadMode.FamilyHangarCamera].Count > 0) insertComments(ref contents, (int)ReadMode.FamilyHangarCamera);
+            if (useHangarMap)
 			{
 				contents += "[HangarMap]\r\n";
 				for (int i = 0; i < lstMap.Items.Count; i++) contents += lstMap.Items[i].ToString() + "\r\n";
 				contents += "\r\n";
 			}
-			if (useFamilyHangarMap)
+            if (_comments[(int)ReadMode.HangarMap].Count > 0) insertComments(ref contents, (int)ReadMode.HangarMap);
+            if (useFamilyHangarMap)
 			{
 				contents += "[FamHangarMap]\r\n";
 				for (int i = 0; i < lstFamilyMap.Items.Count; i++) contents += lstFamilyMap.Items[i].ToString() + "\r\n";
 				contents += "\r\n";
 			}
+            if (_comments[(int)ReadMode.FamilyHangarMap].Count > 0) insertComments(ref contents, (int)ReadMode.FamilyHangarMap);
             if (lstSkins.Items.Count > 0)
             {
                 contents += "[Skins]\r\n";
                 for (int i = 0; i < lstSkins.Items.Count; i++) contents += lstSkins.Items[i] + "\r\n";
 				contents += "\r\n";
             }
+            if (_comments[(int)ReadMode.Skins].Count > 0) insertComments(ref contents, (int)ReadMode.Skins);
             if (lstShield.Items.Count > 0 || !chkSSRecharge.Checked)
             {
                 contents += "[Shield]\r\n";
@@ -605,11 +615,13 @@ namespace Idmr.Yogeme
 				if (!chkSSRecharge.Checked) contents += "IsShieldRechargeForStarshipsEnabled = 0\r\n";
 				contents += "\r\n";
             }
+            if (_comments[(int)ReadMode.Shield].Count > 0) insertComments(ref contents, (int)ReadMode.Shield);
             if (!optHypGlobal.Checked)
             {
 				contents += "[Hyperspace]\r\nShortHyperspaceEffect = " + (optHypNormal.Checked ? "0" : "1") + "\r\n\r\n";
             }
-			if (chkConcoursePlanetIndex.Checked || chkConcoursePlanetX.Checked || chkConcoursePlanetY.Checked)
+            if (_comments[(int)ReadMode.Hyper].Count > 0) insertComments(ref contents, (int)ReadMode.Hyper);
+            if (chkConcoursePlanetIndex.Checked || chkConcoursePlanetX.Checked || chkConcoursePlanetY.Checked)
 			{
 				contents += "[Concourse]\r\n";
 				if (chkConcoursePlanetIndex.Checked) contents += "FrontPlanetIndex = " + numConcoursePlanetIndex.Value + "\r\n";
@@ -617,12 +629,21 @@ namespace Idmr.Yogeme
 				if (chkConcoursePlanetY.Checked) contents += "FontPlanetPositionY = " + numConcoursePlanetY.Value + "\r\n";
 				contents += "\r\n";
 			}
+            if (_comments[(int)ReadMode.Concourse].Count > 0) insertComments(ref contents, (int)ReadMode.Concourse);
 
-			for (int i = 0; i < _unknown.Count; i++) contents += _unknown[i] + "\r\n";
-
-			contents += "\r\n" + _endComments;
+            for (int i = 0; i < _unknown.Count; i++) contents += _unknown[i] + "\r\n";
 
 			txtHook.Text = contents;
+        }
+
+		void insertComments(ref string text, int index)
+		{
+            if (_comments[index].Count > 0)
+            {
+                text = text.Substring(0, text.Length - 2);
+                for (int i = 0; i < _comments[index].Count; i++) text += _comments[index][i] + "\r\n";
+                text += "\r\n";
+            }
         }
 
         void parseContents()
@@ -633,8 +654,8 @@ namespace Idmr.Yogeme
 			bool isPre = true;
 
 			_preComments = "";
-			_endComments = "";
 			_unknown.Clear();
+			for (int i = 0; i < _comments.Length; i++) _comments[i].Clear();
 
             for (int i = 0; i < txtHook.Lines.Length; i++)
             {
@@ -645,8 +666,11 @@ namespace Idmr.Yogeme
 				if (line == "")
 				{
 					if (isPre && !txtHook.Lines[i].StartsWith(";" + _mission + ".ini")) _preComments += txtHook.Lines[i] + "\r\n";
-                    else if (!isPre) _endComments += txtHook.Lines[i] + "\r\n";
-					//TODO: capture comments in their appropriate section. _endComments will be attached to the last section
+					else if (!isPre)
+					{
+						if (readMode == ReadMode.None) _unknown.Add(txtHook.Lines[i]);
+						else _comments[(int)readMode].Add(txtHook.Lines[i]);
+					}
 					continue;
 				}
 
@@ -670,8 +694,6 @@ namespace Idmr.Yogeme
 					else if (lineLower == "[hyperspace]") readMode = ReadMode.Hyper;
 					else if (lineLower == "[concourse]") readMode = ReadMode.Concourse;
 					else _unknown.Add(txtHook.Lines[i]);
-
-					_endComments = "";
 				}
 				else if (readMode == ReadMode.Backdrop) lstBackdrops.Items.Add(line);
 				else if (readMode == ReadMode.Mission) parseMission(line);
@@ -685,14 +707,14 @@ namespace Idmr.Yogeme
 					MapEntry entry = new MapEntry();
 					if (entry.Parse(line))
 						lstMap.Items.Add(entry.ToString());
-					//else _unknown[(int)readMode].Add(txtHook.Lines[i]);
+					else _comments[(int)readMode].Add(txtHook.Lines[i]);
 				}
 				else if (readMode == ReadMode.FamilyHangarMap)
 				{
 					MapEntry entry = new MapEntry();
 					if (entry.Parse(line))
 						lstFamilyMap.Items.Add(entry.ToString());
-					//else _unknown[(int)readMode].Add(txtHook.Lines[i]);
+					else _comments[(int)readMode].Add(txtHook.Lines[i]);
 				}
 				else if (readMode == ReadMode.Skins) lstSkins.Items.Add(line);
 				else if (readMode == ReadMode.Shield) parseShield(line);
