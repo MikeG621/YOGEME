@@ -85,9 +85,9 @@ namespace Idmr.Yogeme
 		enum ReadMode { None = -1, Backdrop, Mission, Sounds, Objects, HangarObjects, HangarCamera, FamilyHangarCamera, HangarMap, FamilyHangarMap, Skins, Shield, Hyper, Concourse }
 		bool _loading = false;
 		readonly int[,] _cameras = new int[5, 3];
-		readonly int[,] _defaultCameras = new int[5, 3];
+		readonly int[,] _defaultCameras = new int[5, 3] { { 1130, -2320, -300 }, { 1240, -330, -700 }, { -1120, 1360, -790 }, { -1200, -1530, -850 }, { 1070, 4640, -130 } };
 		readonly int[,] _familyCameras = new int[7, 3];
-		readonly int[,] _defaultFamilyCameras = new int[7, 3];
+		readonly int[,] _defaultFamilyCameras = new int[7, 3] { { 780, -6471, -4977 }, { -1970, -8810, -4707 }, { 2510, -5391, -5067 }, { 1740, -8461, -5047 }, { 3180, 2629, -3777 }, { 8242, 6500, 10 }, { -13360, 35019, -6537 } };
 		enum ShuttleAnimation { Right, Top, Bottom }
 		readonly int[] _defaultShuttlePosition = new int[4] { 1127, 959, 0, 43136 };
 		readonly int[] _defaultRoofCranePosition = new int[3] { -1400, 786, -282 };
@@ -167,23 +167,15 @@ namespace Idmr.Yogeme
 			cboShuttleModel.SelectedIndex = 50;
 			cboMapIndex.SelectedIndex = 0;
 			cboFamMapIndex.SelectedIndex = 0;
-			for (int i = 4; i >= 0; i--)
-			{
-				cboCamera.SelectedIndex = i;
-				cmdDefaultCamera_Click("startup", new EventArgs());
-			}
 			for (int i = 0; i < 5; i++)
 				for (int j = 0; j < 3; j++)
-					_defaultCameras[i, j] = _cameras[i, j];
-			for (int i = 6; i >= 0; i--)
-			{
-				cboFamilyCamera.SelectedIndex = i;
-				cmdDefaultFamilyCamera_Click("startup", new EventArgs());
-			}
+					_cameras[i, j] = _defaultCameras[i, j];
+            cboCamera.SelectedIndex = 0;
 			for (int i = 0; i < 7; i++)
 				for (int j = 0; j < 3; j++)
-					_defaultFamilyCameras[i, j] = _familyCameras[i, j];
-			cboShield.Items.AddRange(Strings.CraftType);
+					_familyCameras[i, j] = _defaultFamilyCameras[i, j];
+            cboFamilyCamera.SelectedIndex = 0;
+            cboShield.Items.AddRange(Strings.CraftType);
 			cboShield.SelectedIndex = 0;
 			for (int i = 0; i < _comments.Length; i++) _comments[i] = new List<string>();
 			#endregion
@@ -879,9 +871,6 @@ namespace Idmr.Yogeme
         /// <remarks>This also parses S-Foils</remarks>
         void parseMission(string line)
 		{
-			if (line.IndexOf(";") != -1)
-				line = line.Substring(0, line.IndexOf(";"));
-
 			string[] parts = line.ToLower().Replace(" ", "").Split(',');
 			if (parts[0] == "fg")
 			{
@@ -898,14 +887,19 @@ namespace Idmr.Yogeme
 					lstSFoils.Items.Add(cboSFoilFG.Items[fg].ToString() + ",closed");
 				else if (parts[2] == "open_landinggears")
 					lstSFoils.Items.Add(cboSFoilFG.Items[fg].ToString() + ",open");
+				else _comments[(int)ReadMode.Mission].Add(line);
 			}
-			parts = parts[0].Split('=');
-			if (parts[0] == "closesfoilsandopenlandinggearsbeforeenterhangar" && parts[1] == "1")
-				chkForceHangarSF.Checked = true;
-			else if (parts[0] == "closelandinggearsbeforeenterhyperspace" && parts[1] == "1")
-				chkForceHyperLG.Checked = true;
-			else if (parts[0] == "autoclosesfoils" && parts[1] == "0")
-				chkManualSF.Checked = true;
+			else
+			{
+				parts = parts[0].Split('=');
+				if (parts[0] == "closesfoilsandopenlandinggearsbeforeenterhangar" && parts[1] == "1")
+					chkForceHangarSF.Checked = true;
+				else if (parts[0] == "closelandinggearsbeforeenterhyperspace" && parts[1] == "1")
+					chkForceHyperLG.Checked = true;
+				else if (parts[0] == "autoclosesfoils" && parts[1] == "0")
+					chkManualSF.Checked = true;
+                else _comments[(int)ReadMode.Mission].Add(line);
+            }
 		}
 
 		void cboMission_CheckedChanged(object sender, EventArgs e)
@@ -1014,9 +1008,6 @@ namespace Idmr.Yogeme
 		// go through and figure out what else I'm missing
 		void parseHangarCamera(string line)
 		{
-			if (line.IndexOf(";") != -1)
-				line = line.Substring(0, line.IndexOf(";"));
-
 			int view = 0;
 			int camera = 0;
 			string[] parts = line.ToLower().Replace(" ", "").Split('=');
@@ -1034,12 +1025,10 @@ namespace Idmr.Yogeme
 
 				_cameras[view, camera] = int.Parse(parts[1]);
 			}
-		}
+            else _comments[(int)ReadMode.HangarCamera].Add(line);
+        }
 		void parseFamilyHangarCamera(string line)
 		{
-			if (line.IndexOf(";") != -1)
-				line = line.Substring(0, line.IndexOf(";"));
-
 			int view = 0;
 			int camera = 0;
 			string[] parts = line.ToLower().Replace(" ", "").Split('=');
@@ -1059,12 +1048,10 @@ namespace Idmr.Yogeme
 
 				_familyCameras[view, camera] = int.Parse(parts[1]);
 			}
-		}
+            else _comments[(int)ReadMode.FamilyHangarCamera].Add(line);
+        }
 		void parseHangarObjects(string line)
 		{
-			if (line.IndexOf(";") != -1)
-				line = line.Substring(0, line.IndexOf(";"));
-
 			string[] parts = line.ToLower().Replace(" ", "").Split('=');
 			if (parts.Length == 2)
 			{
@@ -1122,7 +1109,6 @@ namespace Idmr.Yogeme
 						}
 					}
 				}
-
 				else if (parts[0] == "playeranimationelevation") numPlayerAnimationElevation.Value = int.Parse(parts[1]);
 				else if (parts[0] == "playeroffsetx") numPlayerX.Value = int.Parse(parts[1]);
 				else if (parts[0] == "playeroffsety") numPlayerY.Value = int.Parse(parts[1]);
@@ -1131,7 +1117,8 @@ namespace Idmr.Yogeme
 				else if (parts[0] == "foldoutside") chkHangarFold.Checked = (parts[1] != "0");
 				else lstHangarObjects.Items.Add(line);
 			}
-		}
+            else _comments[(int)ReadMode.HangarObjects].Add(line);
+        }
 
 		private void cboCamera_SelectedIndexChanged(object sender, EventArgs e)
 		{
@@ -1234,75 +1221,15 @@ namespace Idmr.Yogeme
 		}
 		private void cmdDefaultCamera_Click(object sender, EventArgs e)
 		{
-			switch(cboCamera.SelectedIndex)
-			{
-				case 0:	// View 1
-					numCameraX.Value = 1130;
-					numCameraY.Value = -2320;
-					numCameraZ.Value = -300;
-					break;
-				case 1:	// View 2
-					numCameraX.Value = 1240;
-					numCameraY.Value = -330;
-					numCameraZ.Value = -700;
-					break;
-				case 2:	// View 3
-					numCameraX.Value = -1120;
-					numCameraY.Value = 1360;
-					numCameraZ.Value = -790;
-					break;
-				case 3:	// View 6
-					numCameraX.Value = -1200;
-					numCameraY.Value = -1530;
-					numCameraZ.Value = -850;
-					break;
-				case 4:	// View 9
-					numCameraX.Value = 1070;
-					numCameraY.Value = 4640;
-					numCameraZ.Value = -130;
-					break;
-			}
-		}
+			numCameraX.Value = _defaultCameras[cboCamera.SelectedIndex, 0];
+            numCameraY.Value = _defaultCameras[cboCamera.SelectedIndex, 1];
+            numCameraZ.Value = _defaultCameras[cboCamera.SelectedIndex, 2];
+        }
 		private void cmdDefaultFamilyCamera_Click(object sender, EventArgs e)
 		{
-			switch (cboFamilyCamera.SelectedIndex)
-			{
-				case 0: // View 1
-					numFamilyCameraX.Value = 780;
-					numFamilyCameraY.Value = -6471;
-					numFamilyCameraZ.Value = -4977;
-					break;
-				case 1: // View 2
-					numFamilyCameraX.Value = -1970;
-					numFamilyCameraY.Value = -8810;
-					numFamilyCameraZ.Value = -4707;
-					break;
-				case 2: // View 3
-					numFamilyCameraX.Value = 2510;
-					numFamilyCameraY.Value = -5391;
-					numFamilyCameraZ.Value = -5067;
-					break;
-				case 3: // View 6
-					numFamilyCameraX.Value = 1740;
-					numFamilyCameraY.Value = -8461;
-					numFamilyCameraZ.Value = -5047;
-					break;
-				case 4: // View 7
-					numFamilyCameraX.Value = 3180;
-					numFamilyCameraY.Value = 2629;
-					numFamilyCameraZ.Value = -3777;
-					break;
-				case 5: // View 8
-					numFamilyCameraX.Value = 8242;
-					numFamilyCameraY.Value = 6500;
-					numFamilyCameraZ.Value = 10;
-					break;
-				case 6: // View 9
-					numFamilyCameraX.Value = -13360;
-					numFamilyCameraY.Value = 35019;
-					numFamilyCameraZ.Value = -6537;
-					break;
-			}
+            numFamilyCameraX.Value = _defaultFamilyCameras[cboFamilyCamera.SelectedIndex, 0];
+            numFamilyCameraY.Value = _defaultFamilyCameras[cboFamilyCamera.SelectedIndex, 1];
+            numFamilyCameraZ.Value = _defaultFamilyCameras[cboFamilyCamera.SelectedIndex, 2];
 		}
 		private void cmdPlayerReset_Click(object sender, EventArgs e)
 		{
@@ -1428,17 +1355,11 @@ namespace Idmr.Yogeme
 			lstSFoils.Items.RemoveAt(lstSFoils.SelectedIndex);
 		}
 
-		bool useSFoils
-		{
-			get
-			{
-				return (lstSFoils.Items.Count > 0 || chkForceHangarSF.Checked || chkForceHyperLG.Checked || chkManualSF.Checked);
-			}
-		}
-		#endregion
+        bool useSFoils => (lstSFoils.Items.Count > 0 || chkForceHangarSF.Checked || chkForceHyperLG.Checked || chkManualSF.Checked);
+        #endregion
 
-		#region Skins
-		private void chkDefaultSkin_CheckedChanged(object sender, EventArgs e)
+        #region Skins
+        private void chkDefaultSkin_CheckedChanged(object sender, EventArgs e)
 		{
 			txtSkin.Enabled = !chkDefaultSkin.Checked;
 		}
@@ -1475,9 +1396,6 @@ namespace Idmr.Yogeme
 		#region Shield
 		void parseShield(string line)
 		{
-			if (line.IndexOf(";") != -1)
-				line = line.Substring(0, line.IndexOf(";")).Replace(" ", "");
-
 			string[] parts;
 			if (line.StartsWith("IsShieldRechargeForStarshipsEnabled", StringComparison.InvariantCultureIgnoreCase))
 			{
@@ -1485,10 +1403,14 @@ namespace Idmr.Yogeme
 				if (parts.Length > 1 && int.Parse(parts[1]) == 0) chkSSRecharge.Checked = false;
 				return;
 			}
-			parts = line.ToLower().Split(',');
-			bool perGen = (parts[1] == "1");
-			int rate = (perGen ? int.Parse(parts[2]) : int.Parse(parts[3]));
-			lstShield.Items.Add(Strings.CraftType[int.Parse(parts[0])] + " = " + rate + (perGen ? " per" : ""));
+			try
+			{
+				parts = line.ToLower().Split(',');
+				bool perGen = (parts[1] == "1");
+				int rate = (perGen ? int.Parse(parts[2]) : int.Parse(parts[3]));
+				lstShield.Items.Add(Strings.CraftType[int.Parse(parts[0])] + " = " + rate + (perGen ? " per" : ""));
+			}
+			catch { _comments[(int)ReadMode.Shield].Add(line); }
 		}
 
 		private void cmdAddShield_Click(object sender, EventArgs e)
@@ -1513,7 +1435,9 @@ namespace Idmr.Yogeme
 				if (value == -1) optHypGlobal.Checked = true;
 				else if (value == 0) optHypNormal.Checked = true;
 				else if (value == 1) optHypEnabled.Checked = true;
-			}
+                else _comments[(int)ReadMode.Hyper].Add(line);
+            }
+			else _comments[(int)ReadMode.Hyper].Add(line);
         }
         #endregion
 
@@ -1521,7 +1445,11 @@ namespace Idmr.Yogeme
 		void parseConcourse(string line)
 		{
             string[] parts = line.ToLower().Replace(" ", "").Split('=');
-			if (parts.Length < 2) return;
+			if (parts.Length < 2)
+			{
+                _comments[(int)ReadMode.Concourse].Add(line);
+                return;
+			}
 
 			if (parts[0] == "frontplanetindex")
 			{
@@ -1541,6 +1469,7 @@ namespace Idmr.Yogeme
 				chkConcoursePlanetY.Checked = (value != -1);
 				if (chkConcoursePlanetY.Checked) numConcoursePlanetY.Value = value;
 			}
+			else _comments[(int)ReadMode.Concourse].Add(line);
         }
 
         private void chkConcoursePlanetIndex_CheckedChanged(object sender, EventArgs e)
