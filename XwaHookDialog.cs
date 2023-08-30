@@ -10,6 +10,7 @@
  * [ADD] Concourse hook support
  * [UPD] Redid GUI
  * [UPD] No longer restricted by hook presence, added "*" to cbo as flag
+ * [UPD] Unrecognized sections and comments are kept
  * v1.14.1, 230814
  * [ADD] Hyperspace hook support
  * [ADD] Object profile per model
@@ -77,12 +78,13 @@ namespace Idmr.Yogeme
 		readonly string _shieldFile = "";
 		readonly string _hyperFile = "";
 		readonly string _concourseFile = "";
+		readonly string _hullIconFile = "";
 		readonly string _installDirectory = "";
 		readonly string _mis = "Missions\\";
 		readonly string _res = "Resdata\\";
 		readonly string _wave = "Wave\\";
 		readonly string _fm = "FlightModels\\";
-		enum ReadMode { None = -1, Backdrop, Mission, Sounds, Objects, HangarObjects, HangarCamera, FamilyHangarCamera, HangarMap, FamilyHangarMap, Skins, Shield, Hyper, Concourse }
+		enum ReadMode { None = -1, Backdrop, Mission, Sounds, Objects, HangarObjects, HangarCamera, FamilyHangarCamera, HangarMap, FamilyHangarMap, Skins, Shield, Hyper, Concourse, HullIcon }
 		bool _loading = false;
 		readonly int[,] _cameras = new int[5, 3];
 		readonly int[,] _defaultCameras = new int[5, 3] { { 1130, -2320, -300 }, { 1240, -330, -700 }, { -1120, 1360, -790 }, { -1200, -1530, -850 }, { 1070, 4640, -130 } };
@@ -91,9 +93,9 @@ namespace Idmr.Yogeme
 		enum ShuttleAnimation { Right, Top, Bottom }
 		readonly int[] _defaultShuttlePosition = new int[4] { 1127, 959, 0, 43136 };
 		readonly int[] _defaultRoofCranePosition = new int[3] { -1400, 786, -282 };
-		readonly Panel[] _panels = new Panel[10];
+		readonly Panel[] _panels = new Panel[11];
 		readonly List<string> _unknown = new List<string>();
-        readonly List<string>[] _comments = new List<string>[13];
+        readonly List<string>[] _comments = new List<string>[14];
 		string _preComments = "";
 
 		public XwaHookDialog(Mission mission, Settings config)
@@ -121,6 +123,7 @@ namespace Idmr.Yogeme
 			_panels[7] = pnlShield;
 			_panels[8] = pnlHyper;
 			_panels[9] = pnlConcourse;
+			_panels[10] = pnlHullIcon;
 			for (int i = 0; i < _panels.Length; i++)
 			{
 				_panels[i].Left = 395;
@@ -202,6 +205,7 @@ namespace Idmr.Yogeme
 				_shieldFile = checkFile("_Shield.txt");
 				_hyperFile = checkFile("_Hyperspace.txt");
 				_concourseFile = checkFile("_Concourse.txt");
+				_hullIconFile = checkFile("_HullIcon.txt");
 			}
 			string line;
 
@@ -247,7 +251,8 @@ namespace Idmr.Yogeme
 						line = removeComment(line);
 						if (line == "") continue;
 
-						lstObjects.Items.Add(line);
+						if (line.ToLower().Contains("_hullicon")) parseHullIcon(line);
+						else lstObjects.Items.Add(line);
 					}
 			}
 			if (_hangarObjectsFile != "")
@@ -356,6 +361,19 @@ namespace Idmr.Yogeme
 
                         parseConcourse(line);
                     }
+			}
+			if (_hullIconFile != "")
+			{
+				using (var sr = new StreamReader (_hullIconFile))
+				{
+					while ((line = sr.ReadLine()) != null)
+					{
+						line = removeComment(line);
+						if (line == "") continue;
+
+						parseHullIcon(line);
+					}
+				}
 			}
 			#endregion
 
@@ -482,10 +500,11 @@ namespace Idmr.Yogeme
                 contents += "\r\n";
             }
             if (_comments[(int)ReadMode.Sounds].Count > 0) insertComments(ref contents, (int)ReadMode.Sounds);
-            if (lstObjects.Items.Count > 0)
+            if (lstObjects.Items.Count > 0 || lstHullIcon.Items.Count > 0)
             {
                 contents += "[Objects]\r\n";
                 for (int i = 0; i < lstObjects.Items.Count; i++) contents += lstObjects.Items[i] + "\r\n";
+                for (int i = 0; i < lstHullIcon.Items.Count; i++) contents += lstHullIcon.Items[i] + "\r\n";
                 contents += "\r\n";
             }
             if (_comments[(int)ReadMode.Objects].Count > 0) insertComments(ref contents, (int)ReadMode.Objects);
@@ -622,6 +641,11 @@ namespace Idmr.Yogeme
 				contents += "\r\n";
 			}
             if (_comments[(int)ReadMode.Concourse].Count > 0) insertComments(ref contents, (int)ReadMode.Concourse);
+			if (chkPlayerHull.Checked && numPlayerHull.Value > 0)
+			{
+				contents += "[HullIcon]\r\nPlayerHullIcon = " + numPlayerHull.Value + "\r\n\r\n";
+			}
+			if (_comments[(int)ReadMode.HullIcon].Count > 0) insertComments(ref contents, (int)(ReadMode.HullIcon));
 
             for (int i = 0; i < _unknown.Count; i++) contents += _unknown[i] + "\r\n";
 
@@ -685,12 +709,17 @@ namespace Idmr.Yogeme
 					else if (lineLower == "[shield]") readMode = ReadMode.Shield;
 					else if (lineLower == "[hyperspace]") readMode = ReadMode.Hyper;
 					else if (lineLower == "[concourse]") readMode = ReadMode.Concourse;
+					else if (lineLower == "[hullicon]") readMode = ReadMode.HullIcon;
 					else _unknown.Add(txtHook.Lines[i]);
 				}
 				else if (readMode == ReadMode.Backdrop) lstBackdrops.Items.Add(line);
 				else if (readMode == ReadMode.Mission) parseMission(line);
 				else if (readMode == ReadMode.Sounds) lstSounds.Items.Add(line);
-				else if (readMode == ReadMode.Objects) lstObjects.Items.Add(line);
+				else if (readMode == ReadMode.Objects)
+				{
+					if (lineLower.Contains("_hullicon")) parseHullIcon(line);
+					else lstObjects.Items.Add(line);
+				}
 				else if (readMode == ReadMode.HangarObjects) parseHangarObjects(line);
 				else if (readMode == ReadMode.HangarCamera) parseHangarCamera(line);
 				else if (readMode == ReadMode.FamilyHangarCamera) parseFamilyHangarCamera(line);
@@ -712,6 +741,7 @@ namespace Idmr.Yogeme
 				else if (readMode == ReadMode.Shield) parseShield(line);
 				else if (readMode == ReadMode.Hyper) parseHyper(line);
 				else if (readMode == ReadMode.Concourse) parseConcourse(line);
+				else if (readMode == ReadMode.HullIcon) parseHullIcon(line);
 				else if (readMode == ReadMode.None && !isPre) _unknown.Add(txtHook.Lines[i]);
             }
         }
@@ -775,6 +805,8 @@ namespace Idmr.Yogeme
 			chkConcoursePlanetIndex.Checked = false;
 			chkConcoursePlanetX.Checked = false;
 			chkConcoursePlanetY.Checked = false;
+			lstHullIcon.Items.Clear();
+			chkPlayerHull.Checked = false;
         }
 
         #region Backdrops
@@ -1487,16 +1519,50 @@ namespace Idmr.Yogeme
         #endregion
 
         #region HullIcon
-        //TODO: create HullIcon
-        /*
-		 * for the player, "[MissionDir]\[Mission]_HullIcon.txt" or section "[HullIcon]" in "[MissionDir]\[Mission].ini".
-			The format is:
-			PlayerHullIcon = value
-			If the value is 0, then no icon is replaced.
-		 * for other craft, "[MissionDir]\[Mission]_Objects.txt" or section "[Objects]" in "[MissionDir]\[Mission].ini".
-			"FlightModels\ObjectA_HullIcon = value"
-			If the value is 0, then no icon is replaced.
-		*/
+		void parseHullIcon(string line)
+		{
+            string[] parts = line.ToLower().Replace(" ", "").Split('=');
+            if (parts.Length < 2)
+            {
+                _comments[(int)ReadMode.HullIcon].Add(line);
+                return;
+            }
+
+			if (parts[0] == "playerhullicon")
+			{
+				int value = int.Parse(parts[1]);
+				chkPlayerHull.Checked = value > 0;
+				if (chkPlayerHull.Checked) numPlayerHull.Value = value;
+			}
+			else lstHullIcon.Items.Add(line);
+        }
+
+        private void chkPlayerHull_CheckedChanged(object sender, EventArgs e)
+        {
+            numPlayerHull.Enabled = chkPlayerHull.Checked;
+        }
+
+        private void cmdHullAdd_Click(object sender, EventArgs e)
+        {
+			if (numHullIcon.Value == 0)
+			{
+				MessageBox.Show("No Hull Icon ID set.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return;
+			}
+
+            if (_installDirectory != "") opnObjects.InitialDirectory = _installDirectory + _fm;
+            opnObjects.Title = "Select object...";
+            DialogResult res = opnObjects.ShowDialog();
+            if (res == DialogResult.OK)
+            {
+                string line = "FlightModels\\" + Path.GetFileNameWithoutExtension(opnObjects.FileName) + "_HullIcon = " + numHullIcon.Value;
+                lstHullIcon.Items.Add(line);
+            }
+        }
+        private void cmdHullRemove_Click(object sender, EventArgs e)
+        {
+            if (lstHullIcon.SelectedIndex != -1) lstHullIcon.Items.RemoveAt(lstHullIcon.SelectedIndex);
+        }
         #endregion
 
         private void cboHook_SelectedIndexChanged(object sender, EventArgs e)
@@ -1504,6 +1570,7 @@ namespace Idmr.Yogeme
 			if (cboHook.SelectedIndex == -1) return;
 
 			for (int i = 0; i < _panels.Length; i++) _panels[i].Visible = (i == cboHook.SelectedIndex);
+			lblNotFound.Visible = cboHook.SelectedItem.ToString().StartsWith("*"); 
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
@@ -1528,7 +1595,8 @@ namespace Idmr.Yogeme
 			if (lstMission.Items.Count == 0 && !useSFoils && _missionTxtFile != "") File.Delete(_missionTxtFile);
 
 			if (lstSounds.Items.Count == 0 && _soundFile != "") File.Delete(_soundFile);
-			if (lstObjects.Items.Count == 0 && _objFile != "") File.Delete(_objFile);
+
+			if (lstObjects.Items.Count == 0 && lstHullIcon.Items.Count == 0 && _objFile != "") File.Delete(_objFile);
 
 			if (!useHangarObjects && _hangarObjectsFile != "") File.Delete(_hangarObjectsFile);
 			if (!useHangarCamera && _hangarCameraFile != "") File.Delete(_hangarCameraFile);
@@ -1537,18 +1605,26 @@ namespace Idmr.Yogeme
 			if (!useFamilyHangarMap && _famHangarMapFile != "") File.Delete(_famHangarMapFile);
 
 			if (lstSkins.Items.Count == 0 && _32bppFile != "") File.Delete(_32bppFile);
+
 			if (lstShield.Items.Count == 0 && chkSSRecharge.Checked && _shieldFile != "") File.Delete(_shieldFile);
+
 			if (optHypGlobal.Checked && _hyperFile != "") File.Delete(_hyperFile);
+
+			if (!chkConcoursePlanetIndex.Checked && !chkConcoursePlanetX.Checked && !chkConcoursePlanetY.Checked && _concourseFile != "") File.Delete(_concourseFile);
+
+			if (!chkPlayerHull.Checked && _hullIconFile != "") File.Delete(_hullIconFile);
 
 			if (lstBackdrops.Items.Count == 0
 				&& lstMission.Items.Count == 0
                 && lstSounds.Items.Count == 0
-				&& lstObjects.Items.Count == 0
+				&& lstObjects.Items.Count == 0 && lstHullIcon.Items.Count == 0
                 && !useHangarObjects && !useHangarCamera && !useFamilyHangarCamera && !useHangarMap && !useFamilyHangarMap
 				&& !useSFoils
                 && lstSkins.Items.Count == 0
                 && lstShield.Items.Count == 0 && chkSSRecharge.Checked
-                && optHypGlobal.Checked)
+                && optHypGlobal.Checked
+				&& !chkConcoursePlanetIndex.Checked && !chkConcoursePlanetX.Checked && !chkConcoursePlanetY.Checked
+                && !chkPlayerHull.Checked)
 			{
 				File.Delete(_fileName);
 				Close();
@@ -1581,6 +1657,9 @@ namespace Idmr.Yogeme
 				if (_famHangarMapFile != "") File.Delete(_famHangarMapFile);
 				if (_32bppFile != "") File.Delete(_32bppFile);
 				if (_shieldFile != "") File.Delete(_shieldFile);
+				if (_hyperFile != "") File.Delete(_hyperFile);
+				if (_concourseFile != "") File.Delete(_concourseFile);
+				if (_hullIconFile != "") File.Delete(_hullIconFile);
 			}
 			catch
 			{

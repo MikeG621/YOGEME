@@ -244,6 +244,15 @@
             this.numConcoursePlanetY = new System.Windows.Forms.NumericUpDown();
             this.numConcoursePlanetX = new System.Windows.Forms.NumericUpDown();
             this.numConcoursePlanetIndex = new System.Windows.Forms.NumericUpDown();
+            this.lblNotFound = new System.Windows.Forms.Label();
+            this.pnlHullIcon = new System.Windows.Forms.Panel();
+            this.lstHullIcon = new System.Windows.Forms.ListBox();
+            this.cmdHullAdd = new System.Windows.Forms.Button();
+            this.cmdHullRemove = new System.Windows.Forms.Button();
+            this.chkPlayerHull = new System.Windows.Forms.CheckBox();
+            this.numPlayerHull = new System.Windows.Forms.NumericUpDown();
+            this.numHullIcon = new System.Windows.Forms.NumericUpDown();
+            this.label55 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.numFamHeadingZ)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numFamPosZ)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numFamHeadingXY)).BeginInit();
@@ -301,6 +310,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.numConcoursePlanetY)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numConcoursePlanetX)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numConcoursePlanetIndex)).BeginInit();
+            this.pnlHullIcon.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numPlayerHull)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numHullIcon)).BeginInit();
             this.SuspendLayout();
             // 
             // cmdOK
@@ -2870,12 +2882,112 @@
             this.numConcoursePlanetIndex.Size = new System.Drawing.Size(69, 20);
             this.numConcoursePlanetIndex.TabIndex = 0;
             // 
+            // lblNotFound
+            // 
+            this.lblNotFound.AutoSize = true;
+            this.lblNotFound.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblNotFound.Location = new System.Drawing.Point(68, 32);
+            this.lblNotFound.Name = "lblNotFound";
+            this.lblNotFound.Size = new System.Drawing.Size(66, 12);
+            this.lblNotFound.TabIndex = 64;
+            this.lblNotFound.Text = "*DLL not found";
+            this.lblNotFound.Visible = false;
+            // 
+            // pnlHullIcon
+            // 
+            this.pnlHullIcon.Controls.Add(this.label55);
+            this.pnlHullIcon.Controls.Add(this.numHullIcon);
+            this.pnlHullIcon.Controls.Add(this.numPlayerHull);
+            this.pnlHullIcon.Controls.Add(this.chkPlayerHull);
+            this.pnlHullIcon.Controls.Add(this.cmdHullRemove);
+            this.pnlHullIcon.Controls.Add(this.cmdHullAdd);
+            this.pnlHullIcon.Controls.Add(this.lstHullIcon);
+            this.pnlHullIcon.Location = new System.Drawing.Point(783, 677);
+            this.pnlHullIcon.Name = "pnlHullIcon";
+            this.pnlHullIcon.Size = new System.Drawing.Size(383, 160);
+            this.pnlHullIcon.TabIndex = 65;
+            // 
+            // lstHullIcon
+            // 
+            this.lstHullIcon.FormattingEnabled = true;
+            this.lstHullIcon.HorizontalScrollbar = true;
+            this.lstHullIcon.Location = new System.Drawing.Point(3, 3);
+            this.lstHullIcon.Name = "lstHullIcon";
+            this.lstHullIcon.Size = new System.Drawing.Size(377, 95);
+            this.lstHullIcon.TabIndex = 0;
+            // 
+            // cmdHullAdd
+            // 
+            this.cmdHullAdd.Location = new System.Drawing.Point(3, 104);
+            this.cmdHullAdd.Name = "cmdHullAdd";
+            this.cmdHullAdd.Size = new System.Drawing.Size(60, 22);
+            this.cmdHullAdd.TabIndex = 1;
+            this.cmdHullAdd.Text = "&Add";
+            this.cmdHullAdd.UseVisualStyleBackColor = true;
+            this.cmdHullAdd.Click += new System.EventHandler(this.cmdHullAdd_Click);
+            // 
+            // cmdHullRemove
+            // 
+            this.cmdHullRemove.Location = new System.Drawing.Point(69, 104);
+            this.cmdHullRemove.Name = "cmdHullRemove";
+            this.cmdHullRemove.Size = new System.Drawing.Size(60, 22);
+            this.cmdHullRemove.TabIndex = 1;
+            this.cmdHullRemove.Text = "&Remove";
+            this.cmdHullRemove.UseVisualStyleBackColor = true;
+            this.cmdHullRemove.Click += new System.EventHandler(this.cmdHullRemove_Click);
+            // 
+            // chkPlayerHull
+            // 
+            this.chkPlayerHull.AutoSize = true;
+            this.chkPlayerHull.Location = new System.Drawing.Point(211, 134);
+            this.chkPlayerHull.Name = "chkPlayerHull";
+            this.chkPlayerHull.Size = new System.Drawing.Size(100, 17);
+            this.chkPlayerHull.TabIndex = 2;
+            this.chkPlayerHull.Text = "Player Hull Icon";
+            this.chkPlayerHull.UseVisualStyleBackColor = true;
+            this.chkPlayerHull.CheckedChanged += new System.EventHandler(this.chkPlayerHull_CheckedChanged);
+            // 
+            // numPlayerHull
+            // 
+            this.numPlayerHull.Enabled = false;
+            this.numPlayerHull.Location = new System.Drawing.Point(311, 133);
+            this.numPlayerHull.Maximum = new decimal(new int[] {
+            100000,
+            0,
+            0,
+            0});
+            this.numPlayerHull.Name = "numPlayerHull";
+            this.numPlayerHull.Size = new System.Drawing.Size(69, 20);
+            this.numPlayerHull.TabIndex = 3;
+            // 
+            // numHullIcon
+            // 
+            this.numHullIcon.Location = new System.Drawing.Point(311, 107);
+            this.numHullIcon.Maximum = new decimal(new int[] {
+            100000,
+            0,
+            0,
+            0});
+            this.numHullIcon.Name = "numHullIcon";
+            this.numHullIcon.Size = new System.Drawing.Size(69, 20);
+            this.numHullIcon.TabIndex = 3;
+            // 
+            // label55
+            // 
+            this.label55.AutoSize = true;
+            this.label55.Location = new System.Drawing.Point(223, 109);
+            this.label55.Name = "label55";
+            this.label55.Size = new System.Drawing.Size(85, 13);
+            this.label55.TabIndex = 4;
+            this.label55.Text = "Hull Icon to add:";
+            // 
             // XwaHookDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.cmdCancel;
             this.ClientSize = new System.Drawing.Size(1671, 849);
+            this.Controls.Add(this.pnlHullIcon);
             this.Controls.Add(this.pnlConcourse);
             this.Controls.Add(this.txtHook);
             this.Controls.Add(this.pnlHyper);
@@ -2890,6 +3002,7 @@
             this.Controls.Add(this.cboHook);
             this.Controls.Add(this.cmdCancel);
             this.Controls.Add(this.cmdOK);
+            this.Controls.Add(this.lblNotFound);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
@@ -2968,6 +3081,10 @@
             ((System.ComponentModel.ISupportInitialize)(this.numConcoursePlanetY)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numConcoursePlanetX)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numConcoursePlanetIndex)).EndInit();
+            this.pnlHullIcon.ResumeLayout(false);
+            this.pnlHullIcon.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numPlayerHull)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numHullIcon)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -3190,5 +3307,14 @@
         private System.Windows.Forms.NumericUpDown numConcoursePlanetY;
         private System.Windows.Forms.NumericUpDown numConcoursePlanetX;
         private System.Windows.Forms.CheckBox chkConcoursePlanetIndex;
+        private System.Windows.Forms.Label lblNotFound;
+        private System.Windows.Forms.Panel pnlHullIcon;
+        private System.Windows.Forms.Button cmdHullRemove;
+        private System.Windows.Forms.Button cmdHullAdd;
+        private System.Windows.Forms.ListBox lstHullIcon;
+        private System.Windows.Forms.Label label55;
+        private System.Windows.Forms.NumericUpDown numHullIcon;
+        private System.Windows.Forms.NumericUpDown numPlayerHull;
+        private System.Windows.Forms.CheckBox chkPlayerHull;
     }
 }
