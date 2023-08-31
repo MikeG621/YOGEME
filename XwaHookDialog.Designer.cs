@@ -230,6 +230,7 @@
             this.pnlMission = new System.Windows.Forms.Panel();
             this.pnlSounds = new System.Windows.Forms.Panel();
             this.pnlObjects = new System.Windows.Forms.Panel();
+            this.optCraftCockpit = new System.Windows.Forms.RadioButton();
             this.pnlHangar = new System.Windows.Forms.Panel();
             this.pnlSFoils = new System.Windows.Forms.Panel();
             this.pnlSkins = new System.Windows.Forms.Panel();
@@ -246,13 +247,14 @@
             this.numConcoursePlanetIndex = new System.Windows.Forms.NumericUpDown();
             this.lblNotFound = new System.Windows.Forms.Label();
             this.pnlHullIcon = new System.Windows.Forms.Panel();
-            this.lstHullIcon = new System.Windows.Forms.ListBox();
-            this.cmdHullAdd = new System.Windows.Forms.Button();
-            this.cmdHullRemove = new System.Windows.Forms.Button();
-            this.chkPlayerHull = new System.Windows.Forms.CheckBox();
-            this.numPlayerHull = new System.Windows.Forms.NumericUpDown();
-            this.numHullIcon = new System.Windows.Forms.NumericUpDown();
             this.label55 = new System.Windows.Forms.Label();
+            this.numHullIcon = new System.Windows.Forms.NumericUpDown();
+            this.numPlayerHull = new System.Windows.Forms.NumericUpDown();
+            this.chkPlayerHull = new System.Windows.Forms.CheckBox();
+            this.cmdHullRemove = new System.Windows.Forms.Button();
+            this.cmdHullAdd = new System.Windows.Forms.Button();
+            this.lstHullIcon = new System.Windows.Forms.ListBox();
+            this.optCockpit = new System.Windows.Forms.RadioButton();
             ((System.ComponentModel.ISupportInitialize)(this.numFamHeadingZ)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numFamPosZ)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numFamHeadingXY)).BeginInit();
@@ -311,8 +313,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.numConcoursePlanetX)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numConcoursePlanetIndex)).BeginInit();
             this.pnlHullIcon.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numPlayerHull)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numHullIcon)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numPlayerHull)).BeginInit();
             this.SuspendLayout();
             // 
             // cmdOK
@@ -517,7 +519,7 @@
             this.optFGProfile.TabIndex = 3;
             this.optFGProfile.Text = "FG Profile";
             this.optFGProfile.UseVisualStyleBackColor = true;
-            this.optFGProfile.CheckedChanged += new System.EventHandler(this.optFGProfile_CheckedChanged);
+            this.optFGProfile.CheckedChanged += new System.EventHandler(this.objectsOpt_CheckedChanged);
             // 
             // optCraft
             // 
@@ -1580,7 +1582,7 @@
             this.optCraftProfile.TabStop = true;
             this.optCraftProfile.Text = "Craft Profile";
             this.optCraftProfile.UseVisualStyleBackColor = true;
-            this.optCraftProfile.CheckedChanged += new System.EventHandler(this.optCraftProfile_CheckedChanged);
+            this.optCraftProfile.CheckedChanged += new System.EventHandler(this.objectsOpt_CheckedChanged);
             // 
             // label47
             // 
@@ -2630,8 +2632,7 @@
             "Shield",
             "Hyperspace",
             "Concourse",
-            "HulIcon",
-            "CockpitPOVProfile"});
+            "HulIcon"});
             this.cboHook.Location = new System.Drawing.Point(12, 12);
             this.cboHook.Name = "cboHook";
             this.cboHook.Size = new System.Drawing.Size(121, 21);
@@ -2685,6 +2686,8 @@
             // 
             // pnlObjects
             // 
+            this.pnlObjects.Controls.Add(this.optCockpit);
+            this.pnlObjects.Controls.Add(this.optCraftCockpit);
             this.pnlObjects.Controls.Add(this.optCraftProfile);
             this.pnlObjects.Controls.Add(this.label47);
             this.pnlObjects.Controls.Add(this.cmdRemoveObjects);
@@ -2699,6 +2702,18 @@
             this.pnlObjects.Size = new System.Drawing.Size(378, 268);
             this.pnlObjects.TabIndex = 56;
             this.pnlObjects.Visible = false;
+            // 
+            // optCraftCockpit
+            // 
+            this.optCraftCockpit.AutoSize = true;
+            this.optCraftCockpit.Location = new System.Drawing.Point(165, 147);
+            this.optCraftCockpit.Name = "optCraftCockpit";
+            this.optCraftCockpit.Size = new System.Drawing.Size(118, 17);
+            this.optCraftCockpit.TabIndex = 10;
+            this.optCraftCockpit.TabStop = true;
+            this.optCraftCockpit.Text = "Craft Cockpit Profile";
+            this.optCraftCockpit.UseVisualStyleBackColor = true;
+            this.optCraftCockpit.CheckedChanged += new System.EventHandler(this.objectsOpt_CheckedChanged);
             // 
             // pnlHangar
             // 
@@ -2907,45 +2922,26 @@
             this.pnlHullIcon.Size = new System.Drawing.Size(383, 160);
             this.pnlHullIcon.TabIndex = 65;
             // 
-            // lstHullIcon
+            // label55
             // 
-            this.lstHullIcon.FormattingEnabled = true;
-            this.lstHullIcon.HorizontalScrollbar = true;
-            this.lstHullIcon.Location = new System.Drawing.Point(3, 3);
-            this.lstHullIcon.Name = "lstHullIcon";
-            this.lstHullIcon.Size = new System.Drawing.Size(377, 95);
-            this.lstHullIcon.TabIndex = 0;
+            this.label55.AutoSize = true;
+            this.label55.Location = new System.Drawing.Point(223, 109);
+            this.label55.Name = "label55";
+            this.label55.Size = new System.Drawing.Size(85, 13);
+            this.label55.TabIndex = 4;
+            this.label55.Text = "Hull Icon to add:";
             // 
-            // cmdHullAdd
+            // numHullIcon
             // 
-            this.cmdHullAdd.Location = new System.Drawing.Point(3, 104);
-            this.cmdHullAdd.Name = "cmdHullAdd";
-            this.cmdHullAdd.Size = new System.Drawing.Size(60, 22);
-            this.cmdHullAdd.TabIndex = 1;
-            this.cmdHullAdd.Text = "&Add";
-            this.cmdHullAdd.UseVisualStyleBackColor = true;
-            this.cmdHullAdd.Click += new System.EventHandler(this.cmdHullAdd_Click);
-            // 
-            // cmdHullRemove
-            // 
-            this.cmdHullRemove.Location = new System.Drawing.Point(69, 104);
-            this.cmdHullRemove.Name = "cmdHullRemove";
-            this.cmdHullRemove.Size = new System.Drawing.Size(60, 22);
-            this.cmdHullRemove.TabIndex = 1;
-            this.cmdHullRemove.Text = "&Remove";
-            this.cmdHullRemove.UseVisualStyleBackColor = true;
-            this.cmdHullRemove.Click += new System.EventHandler(this.cmdHullRemove_Click);
-            // 
-            // chkPlayerHull
-            // 
-            this.chkPlayerHull.AutoSize = true;
-            this.chkPlayerHull.Location = new System.Drawing.Point(211, 134);
-            this.chkPlayerHull.Name = "chkPlayerHull";
-            this.chkPlayerHull.Size = new System.Drawing.Size(100, 17);
-            this.chkPlayerHull.TabIndex = 2;
-            this.chkPlayerHull.Text = "Player Hull Icon";
-            this.chkPlayerHull.UseVisualStyleBackColor = true;
-            this.chkPlayerHull.CheckedChanged += new System.EventHandler(this.chkPlayerHull_CheckedChanged);
+            this.numHullIcon.Location = new System.Drawing.Point(311, 107);
+            this.numHullIcon.Maximum = new decimal(new int[] {
+            100000,
+            0,
+            0,
+            0});
+            this.numHullIcon.Name = "numHullIcon";
+            this.numHullIcon.Size = new System.Drawing.Size(69, 20);
+            this.numHullIcon.TabIndex = 3;
             // 
             // numPlayerHull
             // 
@@ -2960,26 +2956,57 @@
             this.numPlayerHull.Size = new System.Drawing.Size(69, 20);
             this.numPlayerHull.TabIndex = 3;
             // 
-            // numHullIcon
+            // chkPlayerHull
             // 
-            this.numHullIcon.Location = new System.Drawing.Point(311, 107);
-            this.numHullIcon.Maximum = new decimal(new int[] {
-            100000,
-            0,
-            0,
-            0});
-            this.numHullIcon.Name = "numHullIcon";
-            this.numHullIcon.Size = new System.Drawing.Size(69, 20);
-            this.numHullIcon.TabIndex = 3;
+            this.chkPlayerHull.AutoSize = true;
+            this.chkPlayerHull.Location = new System.Drawing.Point(211, 134);
+            this.chkPlayerHull.Name = "chkPlayerHull";
+            this.chkPlayerHull.Size = new System.Drawing.Size(100, 17);
+            this.chkPlayerHull.TabIndex = 2;
+            this.chkPlayerHull.Text = "Player Hull Icon";
+            this.chkPlayerHull.UseVisualStyleBackColor = true;
+            this.chkPlayerHull.CheckedChanged += new System.EventHandler(this.chkPlayerHull_CheckedChanged);
             // 
-            // label55
+            // cmdHullRemove
             // 
-            this.label55.AutoSize = true;
-            this.label55.Location = new System.Drawing.Point(223, 109);
-            this.label55.Name = "label55";
-            this.label55.Size = new System.Drawing.Size(85, 13);
-            this.label55.TabIndex = 4;
-            this.label55.Text = "Hull Icon to add:";
+            this.cmdHullRemove.Location = new System.Drawing.Point(69, 104);
+            this.cmdHullRemove.Name = "cmdHullRemove";
+            this.cmdHullRemove.Size = new System.Drawing.Size(60, 22);
+            this.cmdHullRemove.TabIndex = 1;
+            this.cmdHullRemove.Text = "&Remove";
+            this.cmdHullRemove.UseVisualStyleBackColor = true;
+            this.cmdHullRemove.Click += new System.EventHandler(this.cmdHullRemove_Click);
+            // 
+            // cmdHullAdd
+            // 
+            this.cmdHullAdd.Location = new System.Drawing.Point(3, 104);
+            this.cmdHullAdd.Name = "cmdHullAdd";
+            this.cmdHullAdd.Size = new System.Drawing.Size(60, 22);
+            this.cmdHullAdd.TabIndex = 1;
+            this.cmdHullAdd.Text = "&Add";
+            this.cmdHullAdd.UseVisualStyleBackColor = true;
+            this.cmdHullAdd.Click += new System.EventHandler(this.cmdHullAdd_Click);
+            // 
+            // lstHullIcon
+            // 
+            this.lstHullIcon.FormattingEnabled = true;
+            this.lstHullIcon.HorizontalScrollbar = true;
+            this.lstHullIcon.Location = new System.Drawing.Point(3, 3);
+            this.lstHullIcon.Name = "lstHullIcon";
+            this.lstHullIcon.Size = new System.Drawing.Size(377, 95);
+            this.lstHullIcon.TabIndex = 0;
+            // 
+            // optCockpit
+            // 
+            this.optCockpit.AutoSize = true;
+            this.optCockpit.Location = new System.Drawing.Point(281, 147);
+            this.optCockpit.Name = "optCockpit";
+            this.optCockpit.Size = new System.Drawing.Size(90, 17);
+            this.optCockpit.TabIndex = 11;
+            this.optCockpit.TabStop = true;
+            this.optCockpit.Text = "CockpitProfile";
+            this.optCockpit.UseVisualStyleBackColor = true;
+            this.optCockpit.CheckedChanged += new System.EventHandler(this.objectsOpt_CheckedChanged);
             // 
             // XwaHookDialog
             // 
@@ -3083,8 +3110,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.numConcoursePlanetIndex)).EndInit();
             this.pnlHullIcon.ResumeLayout(false);
             this.pnlHullIcon.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numPlayerHull)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numHullIcon)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numPlayerHull)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -3316,5 +3343,7 @@
         private System.Windows.Forms.NumericUpDown numHullIcon;
         private System.Windows.Forms.NumericUpDown numPlayerHull;
         private System.Windows.Forms.CheckBox chkPlayerHull;
+        private System.Windows.Forms.RadioButton optCraftCockpit;
+        private System.Windows.Forms.RadioButton optCockpit;
     }
 }

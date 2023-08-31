@@ -982,9 +982,7 @@ namespace Idmr.Yogeme
 
 		#region Objects
 		// TODO: need ObjectProfile_[craft]_[weaponindex] = [Profile]
-		// need FlightModels\[Model]_CockpitPOVProfile = [Profile]
 		// problem is I want the weapon indexes to be intelligent
-		// also, need to separate out the HullIcon content that lives here
 
 		private void cmdAddObjects_Click(object sender, EventArgs e)
 		{
@@ -1018,27 +1016,39 @@ namespace Idmr.Yogeme
 					lstObjects.Items.Add(line);
                 }
             }
-		}
+            else if (optCraftCockpit.Checked && txtProfile.Text != "" && txtProfile.Text.ToLower() != "default")
+            {
+                if (_installDirectory != "") opnObjects.InitialDirectory = _installDirectory + _fm;
+                opnObjects.Title = "Select object...";
+                DialogResult res = opnObjects.ShowDialog();
+                if (res == DialogResult.OK)
+                {
+                    string line = "FlightModels\\" + Path.GetFileNameWithoutExtension(opnObjects.FileName) + "_CockpitPovProfile = " + txtProfile.Text;
+                    lstObjects.Items.Add(line);
+                }
+            }
+			else if (optCockpit.Checked && txtProfile.Text != "" && txtProfile.Text.ToLower() != "default")
+			{
+                string line = "CockpitPovProfile = " + txtProfile.Text;
+                lstObjects.Items.Add(line);
+            }
+        }
 		private void cmdRemoveObjects_Click(object sender, EventArgs e)
 		{
 			if (lstObjects.SelectedIndex != -1) lstObjects.Items.RemoveAt(lstObjects.SelectedIndex);
 		}
 
-        private void optCraftProfile_CheckedChanged(object sender, EventArgs e)
-        {
-            txtProfile.Enabled = (optFGProfile.Checked | optCraftProfile.Checked);
-        }
-        private void optFGProfile_CheckedChanged(object sender, EventArgs e)
+        private void objectsOpt_CheckedChanged(object sender, EventArgs e)
 		{
 			cboProfileFG.Enabled = optFGProfile.Checked;
-			txtProfile.Enabled = (optFGProfile.Checked | optCraftProfile.Checked);
+			txtProfile.Enabled = (optFGProfile.Checked | optCraftProfile.Checked | optCraftCockpit.Checked | optCockpit.Checked);
 		}
-		#endregion
+        #endregion
 
-		#region Hangars
-		// TODO: need a top-level IFF selector, and clone all Hangar values X times, including read/write all of the IFF-specific hangar files
-		// go through and figure out what else I'm missing
-		void parseHangarCamera(string line)
+        #region Hangars
+        // TODO: need a top-level IFF selector, and clone all Hangar values X times, including read/write all of the IFF-specific hangar files
+        // go through and figure out what else I'm missing
+        void parseHangarCamera(string line)
 		{
 			int view = 0;
 			int camera = 0;
