@@ -3,8 +3,8 @@
 
 Author: Michael Gaisser (mjgaisser@gmail.com)
 Contributor: Random Starfighter (JB)
-Version: 1.14.1
-Date: 2023.08.14
+Version: 1.14.2
+Date: 2023.09.01
 
 Thank you for downloading YOGEME, the all-in-one mission editor for the X-Wing
 series, Xwing95 through X-wing Alliance.  This program allows easy mission
@@ -27,6 +27,9 @@ your user settings.
 
 ==========
 Version History
+
+v1.14.2, 01 Sep 2023
+ - (XW) Error when changing ship type to B-Wing caused a crash with the Map [Issue #86]
 
 v1.14.1, 14 Aug 2023
  - (XWA) Backdrop hook now loads the Resdata.txt or INI based on mission location, not just "\Missions\" [Issue #85]

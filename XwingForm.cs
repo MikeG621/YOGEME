@@ -1,13 +1,15 @@
 /*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
- * Copyright (C) 2007-2022 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2023 Michael Gaisser (mjgaisser@gmail.com)
  * This file authored by "JB" (Random Starfighter) (randomstarfighter@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.13.11
+ * VERSION: 1.14.2
  */
 
 /* CHANGELOG:
+ * v1.14.2, 230901
+ * [FIX #86] FG.CraftType when changing to B-wing
  * v1.13.11, 221030
  * [FIX] Open dialog not following current directory after switching paltforms via "Open Recent"
  * v1.13.7, 220730
@@ -1551,8 +1553,8 @@ namespace Idmr.Yogeme
 					{
 						if (fg.Status1 >= 10)
 							fg.Status1 = (byte)(fg.Status1 % 10);
-					}
-					fg.CraftType = (byte)craftType;
+                        fg.CraftType = (byte)craftType;
+                    }
 					fg.ObjectType = 0;
 					if (isSwap)
 					{
