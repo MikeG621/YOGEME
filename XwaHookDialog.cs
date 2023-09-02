@@ -7,10 +7,11 @@
  */
 
 /* CHANGELOG
- * [ADD] Concourse hook support
+ * [ADD] Concourse, HullIcon hooks support
  * [UPD] Redid GUI
  * [UPD] No longer restricted by hook presence, added "*" to cbo as flag
  * [UPD] Unrecognized sections and comments are kept
+ * [UPD] Object weapon profiles
  * v1.14.1, 230814
  * [ADD] Hyperspace hook support
  * [ADD] Object profile per model
@@ -166,7 +167,6 @@ namespace Idmr.Yogeme
 				cboMapIndex.Items.Add(i);
 				cboFamMapIndex.Items.Add(i);
 			}
-			// TODO: ShuttleModel really should be using the craft list
 			cboShuttleModel.SelectedIndex = 50;
 			cboMapIndex.SelectedIndex = 0;
 			cboFamMapIndex.SelectedIndex = 0;
@@ -824,13 +824,13 @@ namespace Idmr.Yogeme
         #endregion Backdrops
 
         #region MissionTie
-        /* TODO: shiplist and STRINGS update
+        /* TODO: MissionTIE: shiplist and STRINGS update
 			craft, [craftindex], name, [name]
 			craft, [craftindex], specname, [speciesName]
 			craft, [craftindex], pluralname, [plural]
 			craft, [craftindex], shortname, [abbrv]
 		*/
-        /* TODO: other mission stuff
+        /* TODO: MissionTIE: other mission stuff
 			IsRedAlertEnabled = 1 (see mission 20)
 			SkipHyperspacedMessages = 1 (see mission 49)
 			SkipObjectsMessagesIff = [IFF] (-1 is "none", 255 is "all", see missions 49-52)
@@ -842,7 +842,7 @@ namespace Idmr.Yogeme
 			DisablePlayerWarheadShoot = 1
 			IsWarheadCollisionDamagesEnabled = 0
 		*/
-        /* TODO: Craft stats by FG:
+        /* TODO: MissionTIE: Craft stats by FG:
 			To define a stats profile for a craft, create a file named "[MissionDir]\[Mission]_StatsProfiles.txt" or create a section named "[StatsProfiles]" in "[MissionDir]\[Mission].ini".
 			Or create a file named "FlightModels\StatsProfiles.txt" or create a section named "[StatsProfiles]" in "FlightModels\default.ini".
 			The format is
@@ -978,17 +978,19 @@ namespace Idmr.Yogeme
 		{
 			if (lstSounds.SelectedIndex != -1) lstSounds.Items.RemoveAt(lstSounds.SelectedIndex);
 		}
-		#endregion
+        #endregion
 
-		#region Objects
-		// TODO: need ObjectProfile_[craft]_[weaponindex] = [Profile]
-		// problem is I want the weapon indexes to be intelligent
+        #region Objects
+        private void chkWeaponProfile_CheckedChanged(object sender, EventArgs e)
+        {
+			numWeaponProfileMarking.Enabled = chkWeaponProfile.Checked;
+        }
 
-		private void cmdAddObjects_Click(object sender, EventArgs e)
+        private void cmdAddObjects_Click(object sender, EventArgs e)
 		{
-			if (optCraft.Checked)
+            if (_installDirectory != "") opnObjects.InitialDirectory = _installDirectory + _fm;
+            if (optCraft.Checked)
 			{
-				if (_installDirectory != "") opnObjects.InitialDirectory = _installDirectory + _fm;
 				opnObjects.Title = "Select original object...";
 				DialogResult res = opnObjects.ShowDialog();
 				if (res == DialogResult.OK)
@@ -1007,7 +1009,6 @@ namespace Idmr.Yogeme
 			}
 			else if (optCraftProfile.Checked && txtProfile.Text != "" && txtProfile.Text.ToLower() != "default")
 			{
-                if (_installDirectory != "") opnObjects.InitialDirectory = _installDirectory + _fm;
                 opnObjects.Title = "Select object...";
                 DialogResult res = opnObjects.ShowDialog();
                 if (res == DialogResult.OK)
@@ -1018,7 +1019,6 @@ namespace Idmr.Yogeme
             }
             else if (optCraftCockpit.Checked && txtProfile.Text != "" && txtProfile.Text.ToLower() != "default")
             {
-                if (_installDirectory != "") opnObjects.InitialDirectory = _installDirectory + _fm;
                 opnObjects.Title = "Select object...";
                 DialogResult res = opnObjects.ShowDialog();
                 if (res == DialogResult.OK)
@@ -1032,6 +1032,17 @@ namespace Idmr.Yogeme
                 string line = "CockpitPovProfile = " + txtProfile.Text;
                 lstObjects.Items.Add(line);
             }
+			else if (optWeaponProfile.Checked && txtProfile.Text != "" && (txtProfile.Text.ToLower() != "default" || chkWeaponProfile.Checked))
+			{
+                opnObjects.Title = "Select object...";
+                DialogResult res = opnObjects.ShowDialog();
+                if (res == DialogResult.OK)
+                {
+                    string line = "ObjectProfile_" + Path.GetFileNameWithoutExtension(opnObjects.FileName) + "_" + numWeaponModel.Value
+						+  " = " + txtProfile.Text + (chkWeaponProfile.Checked ? "_" + numWeaponProfileMarking.Value : "");
+                    lstObjects.Items.Add(line);
+                }
+            }
         }
 		private void cmdRemoveObjects_Click(object sender, EventArgs e)
 		{
@@ -1041,13 +1052,15 @@ namespace Idmr.Yogeme
         private void objectsOpt_CheckedChanged(object sender, EventArgs e)
 		{
 			cboProfileFG.Enabled = optFGProfile.Checked;
-			txtProfile.Enabled = (optFGProfile.Checked | optCraftProfile.Checked | optCraftCockpit.Checked | optCockpit.Checked);
+			txtProfile.Enabled = (optFGProfile.Checked | optCraftProfile.Checked | optCraftCockpit.Checked | optCockpit.Checked | optWeaponProfile.Checked);
+			chkWeaponProfile.Enabled = numWeaponModel.Enabled = optWeaponProfile.Checked;
+			numWeaponProfileMarking.Enabled = optWeaponProfile.Checked && chkWeaponProfile.Checked;
 		}
         #endregion
 
         #region Hangars
-        // TODO: need a top-level IFF selector, and clone all Hangar values X times, including read/write all of the IFF-specific hangar files
-        // go through and figure out what else I'm missing
+        // TODO: Hangars: need a top-level IFF selector, and clone all Hangar values X times, including read/write all of the IFF-specific hangar files
+        // TODO: Hngars: go through and figure out what else I'm missing
         void parseHangarCamera(string line)
 		{
 			int view = 0;

@@ -230,6 +230,7 @@
             this.pnlMission = new System.Windows.Forms.Panel();
             this.pnlSounds = new System.Windows.Forms.Panel();
             this.pnlObjects = new System.Windows.Forms.Panel();
+            this.optCockpit = new System.Windows.Forms.RadioButton();
             this.optCraftCockpit = new System.Windows.Forms.RadioButton();
             this.pnlHangar = new System.Windows.Forms.Panel();
             this.pnlSFoils = new System.Windows.Forms.Panel();
@@ -254,7 +255,11 @@
             this.cmdHullRemove = new System.Windows.Forms.Button();
             this.cmdHullAdd = new System.Windows.Forms.Button();
             this.lstHullIcon = new System.Windows.Forms.ListBox();
-            this.optCockpit = new System.Windows.Forms.RadioButton();
+            this.optWeaponProfile = new System.Windows.Forms.RadioButton();
+            this.chkWeaponProfile = new System.Windows.Forms.CheckBox();
+            this.numWeaponProfileMarking = new System.Windows.Forms.NumericUpDown();
+            this.numWeaponModel = new System.Windows.Forms.NumericUpDown();
+            this.label56 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.numFamHeadingZ)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numFamPosZ)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numFamHeadingXY)).BeginInit();
@@ -315,6 +320,8 @@
             this.pnlHullIcon.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numHullIcon)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numPlayerHull)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numWeaponProfileMarking)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numWeaponModel)).BeginInit();
             this.SuspendLayout();
             // 
             // cmdOK
@@ -505,7 +512,7 @@
             // 
             this.cboProfileFG.Enabled = false;
             this.cboProfileFG.FormattingEnabled = true;
-            this.cboProfileFG.Location = new System.Drawing.Point(3, 170);
+            this.cboProfileFG.Location = new System.Drawing.Point(6, 217);
             this.cboProfileFG.Name = "cboProfileFG";
             this.cboProfileFG.Size = new System.Drawing.Size(186, 21);
             this.cboProfileFG.TabIndex = 4;
@@ -536,7 +543,7 @@
             // txtProfile
             // 
             this.txtProfile.Enabled = false;
-            this.txtProfile.Location = new System.Drawing.Point(195, 171);
+            this.txtProfile.Location = new System.Drawing.Point(198, 218);
             this.txtProfile.Name = "txtProfile";
             this.txtProfile.Size = new System.Drawing.Size(126, 20);
             this.txtProfile.TabIndex = 5;
@@ -1586,7 +1593,7 @@
             // 
             // label47
             // 
-            this.label47.Location = new System.Drawing.Point(3, 194);
+            this.label47.Location = new System.Drawing.Point(6, 241);
             this.label47.Name = "label47";
             this.label47.Size = new System.Drawing.Size(321, 68);
             this.label47.TabIndex = 8;
@@ -2686,6 +2693,11 @@
             // 
             // pnlObjects
             // 
+            this.pnlObjects.Controls.Add(this.label56);
+            this.pnlObjects.Controls.Add(this.numWeaponModel);
+            this.pnlObjects.Controls.Add(this.numWeaponProfileMarking);
+            this.pnlObjects.Controls.Add(this.chkWeaponProfile);
+            this.pnlObjects.Controls.Add(this.optWeaponProfile);
             this.pnlObjects.Controls.Add(this.optCockpit);
             this.pnlObjects.Controls.Add(this.optCraftCockpit);
             this.pnlObjects.Controls.Add(this.optCraftProfile);
@@ -2699,14 +2711,26 @@
             this.pnlObjects.Controls.Add(this.optCraft);
             this.pnlObjects.Location = new System.Drawing.Point(399, 249);
             this.pnlObjects.Name = "pnlObjects";
-            this.pnlObjects.Size = new System.Drawing.Size(378, 268);
+            this.pnlObjects.Size = new System.Drawing.Size(378, 343);
             this.pnlObjects.TabIndex = 56;
             this.pnlObjects.Visible = false;
+            // 
+            // optCockpit
+            // 
+            this.optCockpit.AutoSize = true;
+            this.optCockpit.Location = new System.Drawing.Point(119, 170);
+            this.optCockpit.Name = "optCockpit";
+            this.optCockpit.Size = new System.Drawing.Size(90, 17);
+            this.optCockpit.TabIndex = 11;
+            this.optCockpit.TabStop = true;
+            this.optCockpit.Text = "CockpitProfile";
+            this.optCockpit.UseVisualStyleBackColor = true;
+            this.optCockpit.CheckedChanged += new System.EventHandler(this.objectsOpt_CheckedChanged);
             // 
             // optCraftCockpit
             // 
             this.optCraftCockpit.AutoSize = true;
-            this.optCraftCockpit.Location = new System.Drawing.Point(165, 147);
+            this.optCraftCockpit.Location = new System.Drawing.Point(3, 170);
             this.optCraftCockpit.Name = "optCraftCockpit";
             this.optCraftCockpit.Size = new System.Drawing.Size(118, 17);
             this.optCraftCockpit.TabIndex = 10;
@@ -2769,7 +2793,7 @@
             this.pnlShield.Controls.Add(this.cmdAddShield);
             this.pnlShield.Controls.Add(this.label51);
             this.pnlShield.Controls.Add(this.numShieldRate);
-            this.pnlShield.Location = new System.Drawing.Point(399, 519);
+            this.pnlShield.Location = new System.Drawing.Point(397, 598);
             this.pnlShield.Name = "pnlShield";
             this.pnlShield.Size = new System.Drawing.Size(383, 252);
             this.pnlShield.TabIndex = 60;
@@ -2996,24 +3020,71 @@
             this.lstHullIcon.Size = new System.Drawing.Size(377, 95);
             this.lstHullIcon.TabIndex = 0;
             // 
-            // optCockpit
+            // optWeaponProfile
             // 
-            this.optCockpit.AutoSize = true;
-            this.optCockpit.Location = new System.Drawing.Point(281, 147);
-            this.optCockpit.Name = "optCockpit";
-            this.optCockpit.Size = new System.Drawing.Size(90, 17);
-            this.optCockpit.TabIndex = 11;
-            this.optCockpit.TabStop = true;
-            this.optCockpit.Text = "CockpitProfile";
-            this.optCockpit.UseVisualStyleBackColor = true;
-            this.optCockpit.CheckedChanged += new System.EventHandler(this.objectsOpt_CheckedChanged);
+            this.optWeaponProfile.AutoSize = true;
+            this.optWeaponProfile.Location = new System.Drawing.Point(157, 147);
+            this.optWeaponProfile.Name = "optWeaponProfile";
+            this.optWeaponProfile.Size = new System.Drawing.Size(98, 17);
+            this.optWeaponProfile.TabIndex = 12;
+            this.optWeaponProfile.TabStop = true;
+            this.optWeaponProfile.Text = "Weapon Profile";
+            this.optWeaponProfile.UseVisualStyleBackColor = true;
+            this.optWeaponProfile.CheckedChanged += new System.EventHandler(this.objectsOpt_CheckedChanged);
+            // 
+            // chkWeaponProfile
+            // 
+            this.chkWeaponProfile.AutoSize = true;
+            this.chkWeaponProfile.Enabled = false;
+            this.chkWeaponProfile.Location = new System.Drawing.Point(184, 194);
+            this.chkWeaponProfile.Name = "chkWeaponProfile";
+            this.chkWeaponProfile.Size = new System.Drawing.Size(110, 17);
+            this.chkWeaponProfile.TabIndex = 13;
+            this.chkWeaponProfile.Text = "for Marking index:";
+            this.chkWeaponProfile.UseVisualStyleBackColor = true;
+            this.chkWeaponProfile.CheckedChanged += new System.EventHandler(this.chkWeaponProfile_CheckedChanged);
+            // 
+            // numWeaponProfileMarking
+            // 
+            this.numWeaponProfileMarking.Enabled = false;
+            this.numWeaponProfileMarking.Location = new System.Drawing.Point(296, 193);
+            this.numWeaponProfileMarking.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+            this.numWeaponProfileMarking.Name = "numWeaponProfileMarking";
+            this.numWeaponProfileMarking.Size = new System.Drawing.Size(42, 20);
+            this.numWeaponProfileMarking.TabIndex = 14;
+            // 
+            // numWeaponModel
+            // 
+            this.numWeaponModel.Enabled = false;
+            this.numWeaponModel.Location = new System.Drawing.Point(120, 193);
+            this.numWeaponModel.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.numWeaponModel.Name = "numWeaponModel";
+            this.numWeaponModel.Size = new System.Drawing.Size(58, 20);
+            this.numWeaponModel.TabIndex = 14;
+            // 
+            // label56
+            // 
+            this.label56.AutoSize = true;
+            this.label56.Location = new System.Drawing.Point(3, 195);
+            this.label56.Name = "label56";
+            this.label56.Size = new System.Drawing.Size(111, 13);
+            this.label56.TabIndex = 15;
+            this.label56.Text = "Weapon Model index:";
             // 
             // XwaHookDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.cmdCancel;
-            this.ClientSize = new System.Drawing.Size(1671, 849);
+            this.ClientSize = new System.Drawing.Size(1671, 857);
             this.Controls.Add(this.pnlHullIcon);
             this.Controls.Add(this.pnlConcourse);
             this.Controls.Add(this.txtHook);
@@ -3112,6 +3183,8 @@
             this.pnlHullIcon.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numHullIcon)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numPlayerHull)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numWeaponProfileMarking)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numWeaponModel)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -3345,5 +3418,10 @@
         private System.Windows.Forms.CheckBox chkPlayerHull;
         private System.Windows.Forms.RadioButton optCraftCockpit;
         private System.Windows.Forms.RadioButton optCockpit;
+        private System.Windows.Forms.RadioButton optWeaponProfile;
+        private System.Windows.Forms.CheckBox chkWeaponProfile;
+        private System.Windows.Forms.NumericUpDown numWeaponProfileMarking;
+        private System.Windows.Forms.Label label56;
+        private System.Windows.Forms.NumericUpDown numWeaponModel;
     }
 }
