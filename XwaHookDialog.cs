@@ -12,6 +12,7 @@
  * [UPD] No longer restricted by hook presence, added "*" to cbo as flag
  * [UPD] Unrecognized sections and comments are kept
  * [UPD] Object weapon profiles
+ * [UPD] Mission craft text
  * v1.14.1, 230814
  * [ADD] Hyperspace hook support
  * [ADD] Object profile per model
@@ -180,6 +181,8 @@ namespace Idmr.Yogeme
             cboFamilyCamera.SelectedIndex = 0;
             cboShield.Items.AddRange(Strings.CraftType);
 			cboShield.SelectedIndex = 0;
+			cboCraftText.Items.AddRange(Strings.CraftType);
+			cboCraftText.SelectedIndex = 0;
 			for (int i = 0; i < _comments.Length; i++) _comments[i] = new List<string>();
 			#endregion
 
@@ -430,7 +433,7 @@ namespace Idmr.Yogeme
 				contents += "\r\n";
             }
 			if (_comments[(int)ReadMode.Backdrop].Count > 0) insertComments(ref contents, (int)ReadMode.Backdrop);
-            if (lstMission.Items.Count > 0 || useSFoils)
+            if (lstMission.Items.Count > 0 || useSFoils || lstCraftText.Items.Count > 0)
             {
                 contents += "[Mission_Tie]\r\n";
                 if (lstMission.Items.Count > 0)
@@ -490,6 +493,23 @@ namespace Idmr.Yogeme
                     if (chkManualSF.Checked)
                         contents += "AutoCloseSFoils = 0\r\n";
                 }
+				if (lstCraftText.Items.Count > 0)
+				{
+					for (int i = 0; i < lstCraftText.Items.Count; i++)
+					{
+						string[] parts = lstCraftText.Items[i].ToString().Split(',');
+						int craft;
+						for (craft = 0; craft < cboCraftText.Items.Count; craft++) if (cboCraftText.Items[craft].ToString() == parts[0]) break;
+						if (parts[1] == "name")
+							contents += "craft, " + craft + ", name, " + parts[2] + "\r\n";
+						else if (parts[1] == "species")
+							contents += "craft, " + craft + ", specname, " + parts[2] + "\r\n";
+						else if (parts[1] == "plural")
+                            contents += "craft, " + craft + ", pluralname, " + parts[2] + "\r\n";
+						else if (parts[1] == "abbrv")
+                            contents += "craft, " + craft + ", shortname, " + parts[2] + "\r\n";
+					}
+				}
 				contents += "\r\n";
             }
             if (_comments[(int)ReadMode.Mission].Count > 0) insertComments(ref contents, (int)ReadMode.Mission);
@@ -807,6 +827,7 @@ namespace Idmr.Yogeme
 			chkConcoursePlanetY.Checked = false;
 			lstHullIcon.Items.Clear();
 			chkPlayerHull.Checked = false;
+			lstCraftText.Items.Clear();
         }
 
         #region Backdrops
@@ -824,12 +845,6 @@ namespace Idmr.Yogeme
         #endregion Backdrops
 
         #region MissionTie
-        /* TODO: MissionTIE: shiplist and STRINGS update
-			craft, [craftindex], name, [name]
-			craft, [craftindex], specname, [speciesName]
-			craft, [craftindex], pluralname, [plural]
-			craft, [craftindex], shortname, [abbrv]
-		*/
         /* TODO: MissionTIE: other mission stuff
 			IsRedAlertEnabled = 1 (see mission 20)
 			SkipHyperspacedMessages = 1 (see mission 49)
@@ -904,34 +919,51 @@ namespace Idmr.Yogeme
         void parseMission(string line)
 		{
 			string[] parts = line.ToLower().Replace(" ", "").Split(',');
-			if (parts[0] == "fg")
+			try
 			{
-				int fg = int.Parse(parts[1]);
-				if (parts[2] == "markings")
-					lstMission.Items.Add(cboFG.Items[fg].ToString() + ",marks," + cboMarkings.Items[int.Parse(parts[3])].ToString());
-				else if (parts[2] == "index")
-					lstMission.Items.Add(cboFG.Items[fg].ToString() + ",wing," + int.Parse(parts[3]) + "," + cboMarkings.Items[int.Parse(parts[5])].ToString());
-				else if (parts[2] == "iff")
-					lstMission.Items.Add(cboFG.Items[fg].ToString() + ",iff," + cboIff.Items[int.Parse(parts[3])].ToString());
-				else if (parts[2] == "pilotvoice")
-					lstMission.Items.Add(cboFG.Items[fg].ToString() + ",pilot," + parts[3]);
-				else if (parts[2] == "close_sfoils")
-					lstSFoils.Items.Add(cboSFoilFG.Items[fg].ToString() + ",closed");
-				else if (parts[2] == "open_landinggears")
-					lstSFoils.Items.Add(cboSFoilFG.Items[fg].ToString() + ",open");
-				else _comments[(int)ReadMode.Mission].Add(line);
+				if (parts[0] == "fg")
+				{
+					int fg = int.Parse(parts[1]);
+					if (parts[2] == "markings")
+						lstMission.Items.Add(cboFG.Items[fg].ToString() + ",marks," + cboMarkings.Items[int.Parse(parts[3])].ToString());
+					else if (parts[2] == "index")
+						lstMission.Items.Add(cboFG.Items[fg].ToString() + ",wing," + int.Parse(parts[3]) + "," + cboMarkings.Items[int.Parse(parts[5])].ToString());
+					else if (parts[2] == "iff")
+						lstMission.Items.Add(cboFG.Items[fg].ToString() + ",iff," + cboIff.Items[int.Parse(parts[3])].ToString());
+					else if (parts[2] == "pilotvoice")
+						lstMission.Items.Add(cboFG.Items[fg].ToString() + ",pilot," + parts[3]);
+					else if (parts[2] == "close_sfoils")
+						lstSFoils.Items.Add(cboSFoilFG.Items[fg].ToString() + ",closed");
+					else if (parts[2] == "open_landinggears")
+						lstSFoils.Items.Add(cboSFoilFG.Items[fg].ToString() + ",open");
+					else _comments[(int)ReadMode.Mission].Add(line);
+				}
+				else if (parts[0] == "craft")
+				{
+					int craft = int.Parse(parts[1]);
+					if (parts[2] == "name")
+						lstCraftText.Items.Add(cboCraftText.Items[craft].ToString() + ",name," + parts[3]);
+					else if (parts[2] == "specname")
+						lstCraftText.Items.Add(cboCraftText.Items[craft].ToString() + ",species," + parts[3]);
+					else if (parts[2] == "pluralname")
+						lstCraftText.Items.Add(cboCraftText.Items[craft].ToString() + ",plural," + parts[3]);
+					else if (parts[2] == "shortname")
+						lstCraftText.Items.Add(cboCraftText.Items[craft].ToString() + ",abbrv," + parts[3]);
+					else _comments[(int)ReadMode.Mission].Add(line);
+				}
+				else
+				{
+					parts = parts[0].Split('=');
+					if (parts[0] == "closesfoilsandopenlandinggearsbeforeenterhangar" && parts[1] == "1")
+						chkForceHangarSF.Checked = true;
+					else if (parts[0] == "closelandinggearsbeforeenterhyperspace" && parts[1] == "1")
+						chkForceHyperLG.Checked = true;
+					else if (parts[0] == "autoclosesfoils" && parts[1] == "0")
+						chkManualSF.Checked = true;
+					else _comments[(int)ReadMode.Mission].Add(line);
+				}
 			}
-			else
-			{
-				parts = parts[0].Split('=');
-				if (parts[0] == "closesfoilsandopenlandinggearsbeforeenterhangar" && parts[1] == "1")
-					chkForceHangarSF.Checked = true;
-				else if (parts[0] == "closelandinggearsbeforeenterhyperspace" && parts[1] == "1")
-					chkForceHyperLG.Checked = true;
-				else if (parts[0] == "autoclosesfoils" && parts[1] == "0")
-					chkManualSF.Checked = true;
-                else _comments[(int)ReadMode.Mission].Add(line);
-            }
+			catch { _comments[(int)ReadMode.Mission].Add(line); }
 		}
 
 		void cboMission_CheckedChanged(object sender, EventArgs e)
@@ -957,10 +989,25 @@ namespace Idmr.Yogeme
 			if (lstMission.SelectedIndex == -1) return;
 			lstMission.Items.RemoveAt(lstMission.SelectedIndex);
 		}
-		#endregion
+        private void cmdAddCraftText_Click(object sender, EventArgs e)
+        {
+			if (cboCraftText.SelectedIndex == -1 || (!optCraftText.Checked && !optPluralText.Checked && !optAbbrvText.Checked && !optSpeciesText.Checked) || txtCraftText.Text == "") return;
 
-		#region Sounds
-		private void cmdAddSounds_Click(object sender, EventArgs e)
+			if (optCraftText.Checked) lstCraftText.Items.Add(cboCraftText.Text + ",name," + txtCraftText.Text);
+            else if (optPluralText.Checked) lstCraftText.Items.Add(cboCraftText.Text + ",plural," + txtCraftText.Text);
+            else if (optAbbrvText.Checked) lstCraftText.Items.Add(cboCraftText.Text + ",abbrv," + txtCraftText.Text);
+            else if (optSpeciesText.Checked) lstCraftText.Items.Add(cboCraftText.Text + ",species," + txtCraftText.Text);
+        }
+
+        private void cmdRemoveTextCraft_Click(object sender, EventArgs e)
+        {
+			if (lstCraftText.SelectedIndex == -1) return;
+			lstCraftText.Items.RemoveAt(lstCraftText.SelectedIndex);
+        }
+        #endregion
+
+        #region Sounds
+        private void cmdAddSounds_Click(object sender, EventArgs e)
 		{
 			if (_installDirectory != "") opnSounds.InitialDirectory = _installDirectory + _wave;
 			opnSounds.Title = "Select original sound...";
@@ -1056,59 +1103,63 @@ namespace Idmr.Yogeme
 			chkWeaponProfile.Enabled = numWeaponModel.Enabled = optWeaponProfile.Checked;
 			numWeaponProfileMarking.Enabled = optWeaponProfile.Checked && chkWeaponProfile.Checked;
 		}
-        #endregion
+		#endregion
 
-        #region Hangars
-        // TODO: Hangars: need a top-level IFF selector, and clone all Hangar values X times, including read/write all of the IFF-specific hangar files
-        // TODO: Hngars: go through and figure out what else I'm missing
-        void parseHangarCamera(string line)
+		#region Hangars
+		// TODO: Hangars: need a top-level IFF selector, and clone all Hangar values X times, including read/write all of the IFF-specific hangar files
+		// TODO: Hangars: go through and figure out what else I'm missing
+		void parseHangarCamera(string line)
 		{
-			int view = 0;
-			int camera = 0;
-			string[] parts = line.ToLower().Replace(" ", "").Split('=');
-			if (parts.Length == 2)
+            string[] parts = line.ToLower().Replace(" ", "").Split('=');
+            try
 			{
-				if (parts[0].StartsWith("key1")) view = 0;
-				else if (parts[0].StartsWith("key2")) view = 1;
-				else if (parts[0].StartsWith("key3")) view = 2;
-				else if (parts[0].StartsWith("key6")) view = 3;
-				else if (parts[0].StartsWith("key9")) view = 4;
+                int view;
+                if (parts[0].StartsWith("key1")) view = 0;
+                else if (parts[0].StartsWith("key2")) view = 1;
+                else if (parts[0].StartsWith("key3")) view = 2;
+                else if (parts[0].StartsWith("key6")) view = 3;
+                else if (parts[0].StartsWith("key9")) view = 4;
+                else throw new InvalidDataException();
 
-				if (parts[0].IndexOf("_x") != -1) camera = 0;
-				else if (parts[0].IndexOf("_y") != -1) camera = 1;
-				else if (parts[0].IndexOf("_z") != -1) camera = 2;
+                int camera;
+                if (parts[0].IndexOf("_x") != -1) camera = 0;
+                else if (parts[0].IndexOf("_y") != -1) camera = 1;
+                else if (parts[0].IndexOf("_z") != -1) camera = 2;
+                else throw new InvalidDataException();
 
-				_cameras[view, camera] = int.Parse(parts[1]);
+                _cameras[view, camera] = int.Parse(parts[1]);
 			}
-            else _comments[(int)ReadMode.HangarCamera].Add(line);
+			catch { _comments[(int)ReadMode.HangarCamera].Add(line); }
         }
 		void parseFamilyHangarCamera(string line)
 		{
-			int view = 0;
-			int camera = 0;
-			string[] parts = line.ToLower().Replace(" ", "").Split('=');
-			if (parts.Length == 2)
+            string[] parts = line.ToLower().Replace(" ", "").Split('=');
+            try
 			{
-				if (parts[0].StartsWith("key1")) view = 0;
-				else if (parts[0].StartsWith("key2")) view = 1;
-				else if (parts[0].StartsWith("key3")) view = 2;
-				else if (parts[0].StartsWith("key6")) view = 3;
-				else if (parts[0].StartsWith("key7")) view = 4;
-				else if (parts[0].StartsWith("key8")) view = 5;
-				else if (parts[0].StartsWith("key9")) view = 6;
+                int view;
+                if (parts[0].StartsWith("key1")) view = 0;
+                else if (parts[0].StartsWith("key2")) view = 1;
+                else if (parts[0].StartsWith("key3")) view = 2;
+                else if (parts[0].StartsWith("key6")) view = 3;
+                else if (parts[0].StartsWith("key7")) view = 4;
+                else if (parts[0].StartsWith("key8")) view = 5;
+                else if (parts[0].StartsWith("key9")) view = 6;
+                else throw new InvalidDataException();
 
-				if (parts[0].IndexOf("_x") != -1) camera = 0;
-				else if (parts[0].IndexOf("_y") != -1) camera = 1;
-				else if (parts[0].IndexOf("_z") != -1) camera = 2;
+                int camera;
+                if (parts[0].IndexOf("_x") != -1) camera = 0;
+                else if (parts[0].IndexOf("_y") != -1) camera = 1;
+                else if (parts[0].IndexOf("_z") != -1) camera = 2;
+                else throw new InvalidDataException();
 
-				_familyCameras[view, camera] = int.Parse(parts[1]);
+                _familyCameras[view, camera] = int.Parse(parts[1]);
 			}
-            else _comments[(int)ReadMode.FamilyHangarCamera].Add(line);
+			catch { _comments[(int)ReadMode.FamilyHangarCamera].Add(line); }
         }
 		void parseHangarObjects(string line)
 		{
 			string[] parts = line.ToLower().Replace(" ", "").Split('=');
-			if (parts.Length == 2)
+			try
 			{
 				if (parts[0] == "loadshuttle") chkShuttle.Checked = (parts[1] != "0");
 				else if (parts[0] == "shuttlemodelindex") cboShuttleModel.SelectedIndex = int.Parse(parts[1]);
@@ -1170,9 +1221,9 @@ namespace Idmr.Yogeme
 				else if (parts[0] == "playeroffsetz") numPlayerZ.Value = int.Parse(parts[1]);
 				else if (parts[0] == "isplayerfloorinverted") chkPlayerFloor.Checked = (parts[1] != "0");
 				else if (parts[0] == "foldoutside") chkHangarFold.Checked = (parts[1] != "0");
-				else lstHangarObjects.Items.Add(line);
-			}
-            else _comments[(int)ReadMode.HangarObjects].Add(line);
+                else throw new InvalidDataException();
+            }
+			catch { _comments[(int)ReadMode.HangarObjects].Add(line); }
         }
 
 		private void cboCamera_SelectedIndexChanged(object sender, EventArgs e)
@@ -1452,14 +1503,15 @@ namespace Idmr.Yogeme
 		void parseShield(string line)
 		{
 			string[] parts;
-			if (line.StartsWith("IsShieldRechargeForStarshipsEnabled", StringComparison.InvariantCultureIgnoreCase))
-			{
-				parts = line.Split('=');
-				if (parts.Length > 1 && int.Parse(parts[1]) == 0) chkSSRecharge.Checked = false;
-				return;
-			}
 			try
 			{
+				if (line.StartsWith("IsShieldRechargeForStarshipsEnabled", StringComparison.InvariantCultureIgnoreCase))
+				{
+					parts = line.Split('=');
+					if (parts.Length > 1 && int.Parse(parts[1]) == 0) chkSSRecharge.Checked = false;
+					return;
+				}
+
 				parts = line.ToLower().Split(',');
 				bool perGen = (parts[1] == "1");
 				int rate = (perGen ? int.Parse(parts[2]) : int.Parse(parts[3]));
@@ -1484,15 +1536,19 @@ namespace Idmr.Yogeme
 		void parseHyper(string line)
 		{
             string[] parts = line.ToLower().Replace(" ", "").Split('=');
-			if (parts[0] == "shorthyperspaceeffect" && parts.Length == 2)
+			try
 			{
-				int value = int.Parse(parts[1]);
-				if (value == -1) optHypGlobal.Checked = true;
-				else if (value == 0) optHypNormal.Checked = true;
-				else if (value == 1) optHypEnabled.Checked = true;
-                else _comments[(int)ReadMode.Hyper].Add(line);
+				if (parts[0] == "shorthyperspaceeffect" && parts.Length == 2)
+				{
+					int value = int.Parse(parts[1]);
+					if (value == -1) optHypGlobal.Checked = true;
+					else if (value == 0) optHypNormal.Checked = true;
+					else if (value == 1) optHypEnabled.Checked = true;
+					else throw new InvalidDataException();
+				}
+                else throw new InvalidDataException();
             }
-			else _comments[(int)ReadMode.Hyper].Add(line);
+			catch { _comments[(int)ReadMode.Hyper].Add(line);}
         }
         #endregion
 
@@ -1500,31 +1556,32 @@ namespace Idmr.Yogeme
 		void parseConcourse(string line)
 		{
             string[] parts = line.ToLower().Replace(" ", "").Split('=');
-			if (parts.Length < 2)
+			
+			try
 			{
-                _comments[(int)ReadMode.Concourse].Add(line);
-                return;
-			}
+                if (parts.Length < 2) throw new InvalidDataException();
 
-			if (parts[0] == "frontplanetindex")
-			{
-                int value = int.Parse(parts[1]);
-                chkConcoursePlanetIndex.Checked = (value != -1);
-                if (chkConcoursePlanetIndex.Checked) numConcoursePlanetIndex.Value = value;
-            }
-			else if (parts[0] == "frontplanetpositionx")
-			{
-				int value = int.Parse(parts[1]);
-				chkConcoursePlanetX.Checked = (value != -1);
-				if (chkConcoursePlanetX.Checked) numConcoursePlanetX.Value = value;
+                if (parts[0] == "frontplanetindex")
+				{
+					int value = int.Parse(parts[1]);
+					chkConcoursePlanetIndex.Checked = (value != -1);
+					if (chkConcoursePlanetIndex.Checked) numConcoursePlanetIndex.Value = value;
+				}
+				else if (parts[0] == "frontplanetpositionx")
+				{
+					int value = int.Parse(parts[1]);
+					chkConcoursePlanetX.Checked = (value != -1);
+					if (chkConcoursePlanetX.Checked) numConcoursePlanetX.Value = value;
+				}
+				else if (parts[0] == "frontplanetpositiony")
+				{
+					int value = int.Parse(parts[1]);
+					chkConcoursePlanetY.Checked = (value != -1);
+					if (chkConcoursePlanetY.Checked) numConcoursePlanetY.Value = value;
+				}
+				else throw new InvalidDataException();
 			}
-			else if (parts[0] == "frontplanetpositiony")
-			{
-				int value = int.Parse(parts[1]);
-				chkConcoursePlanetY.Checked = (value != -1);
-				if (chkConcoursePlanetY.Checked) numConcoursePlanetY.Value = value;
-			}
-			else _comments[(int)ReadMode.Concourse].Add(line);
+			catch { _comments[(int)ReadMode.Concourse].Add(line); }
         }
 
         private void chkConcoursePlanetIndex_CheckedChanged(object sender, EventArgs e)
@@ -1545,19 +1602,19 @@ namespace Idmr.Yogeme
 		void parseHullIcon(string line)
 		{
             string[] parts = line.ToLower().Replace(" ", "").Split('=');
-            if (parts.Length < 2)
-            {
-                _comments[(int)ReadMode.HullIcon].Add(line);
-                return;
-            }
-
-			if (parts[0] == "playerhullicon")
+			try
 			{
-				int value = int.Parse(parts[1]);
-				chkPlayerHull.Checked = value > 0;
-				if (chkPlayerHull.Checked) numPlayerHull.Value = value;
+				if (parts.Length < 2) throw new InvalidDataException();
+
+				if (parts[0] == "playerhullicon")
+				{
+					int value = int.Parse(parts[1]);
+					chkPlayerHull.Checked = value > 0;
+					if (chkPlayerHull.Checked) numPlayerHull.Value = value;
+				}
+				else lstHullIcon.Items.Add(line);
 			}
-			else lstHullIcon.Items.Add(line);
+			catch { _comments[(int)ReadMode.HullIcon].Add(line); }
         }
 
         private void chkPlayerHull_CheckedChanged(object sender, EventArgs e)
@@ -1593,7 +1650,7 @@ namespace Idmr.Yogeme
 			if (cboHook.SelectedIndex == -1) return;
 
 			for (int i = 0; i < _panels.Length; i++) _panels[i].Visible = (i == cboHook.SelectedIndex);
-			lblNotFound.Visible = cboHook.SelectedItem.ToString().StartsWith("*"); 
+			lblNotFound.Visible = cboHook.Text.StartsWith("*"); 
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
@@ -1615,7 +1672,7 @@ namespace Idmr.Yogeme
 
 			if (lstBackdrops.Items.Count == 0 && _bdFile != "") File.Delete(_bdFile);
 
-			if (lstMission.Items.Count == 0 && !useSFoils && _missionTxtFile != "") File.Delete(_missionTxtFile);
+			if (lstMission.Items.Count == 0 && !useSFoils && lstCraftText.Items.Count == 0 && _missionTxtFile != "") File.Delete(_missionTxtFile);
 
 			if (lstSounds.Items.Count == 0 && _soundFile != "") File.Delete(_soundFile);
 
@@ -1638,7 +1695,7 @@ namespace Idmr.Yogeme
 			if (!chkPlayerHull.Checked && _hullIconFile != "") File.Delete(_hullIconFile);
 
 			if (lstBackdrops.Items.Count == 0
-				&& lstMission.Items.Count == 0
+				&& lstMission.Items.Count == 0 && lstCraftText.Items.Count == 0
                 && lstSounds.Items.Count == 0
 				&& lstObjects.Items.Count == 0 && lstHullIcon.Items.Count == 0
                 && !useHangarObjects && !useHangarCamera && !useFamilyHangarCamera && !useHangarMap && !useFamilyHangarMap
