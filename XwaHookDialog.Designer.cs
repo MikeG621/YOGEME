@@ -228,8 +228,41 @@
             this.cboHook = new System.Windows.Forms.ComboBox();
             this.pnlBackdrops = new System.Windows.Forms.Panel();
             this.pnlMission = new System.Windows.Forms.Panel();
+            this.tcMission = new System.Windows.Forms.TabControl();
+            this.tabMissFG = new System.Windows.Forms.TabPage();
+            this.tabMissText = new System.Windows.Forms.TabPage();
+            this.label59 = new System.Windows.Forms.Label();
+            this.optAbbrvText = new System.Windows.Forms.RadioButton();
+            this.optPluralText = new System.Windows.Forms.RadioButton();
+            this.optSpeciesText = new System.Windows.Forms.RadioButton();
+            this.optCraftText = new System.Windows.Forms.RadioButton();
+            this.cboCraftText = new System.Windows.Forms.ComboBox();
+            this.txtCraftText = new System.Windows.Forms.TextBox();
+            this.cmdRemoveTextCraft = new System.Windows.Forms.Button();
+            this.cmdAddCraftText = new System.Windows.Forms.Button();
+            this.lstCraftText = new System.Windows.Forms.ListBox();
+            this.tabMissSettings = new System.Windows.Forms.TabPage();
+            this.numTurretS = new System.Windows.Forms.NumericUpDown();
+            this.numTurretM = new System.Windows.Forms.NumericUpDown();
+            this.numTurretH = new System.Windows.Forms.NumericUpDown();
+            this.chkSkipIff = new System.Windows.Forms.CheckBox();
+            this.chkSkipAllIff = new System.Windows.Forms.CheckBox();
+            this.cboSkipIff = new System.Windows.Forms.ComboBox();
+            this.chkSkipIffMessages = new System.Windows.Forms.CheckBox();
+            this.chkDisableCollision = new System.Windows.Forms.CheckBox();
+            this.chkDisableWarhead = new System.Windows.Forms.CheckBox();
+            this.chkDisableLaser = new System.Windows.Forms.CheckBox();
+            this.label60 = new System.Windows.Forms.Label();
+            this.chkForceTurret = new System.Windows.Forms.CheckBox();
+            this.chkSkipHyper = new System.Windows.Forms.CheckBox();
+            this.chkRedAlert = new System.Windows.Forms.CheckBox();
             this.pnlSounds = new System.Windows.Forms.Panel();
             this.pnlObjects = new System.Windows.Forms.Panel();
+            this.label56 = new System.Windows.Forms.Label();
+            this.numWeaponModel = new System.Windows.Forms.NumericUpDown();
+            this.numWeaponProfileMarking = new System.Windows.Forms.NumericUpDown();
+            this.chkWeaponProfile = new System.Windows.Forms.CheckBox();
+            this.optWeaponProfile = new System.Windows.Forms.RadioButton();
             this.optCockpit = new System.Windows.Forms.RadioButton();
             this.optCraftCockpit = new System.Windows.Forms.RadioButton();
             this.pnlHangar = new System.Windows.Forms.Panel();
@@ -240,6 +273,7 @@
             this.pnlHyper = new System.Windows.Forms.Panel();
             this.txtHook = new System.Windows.Forms.TextBox();
             this.pnlConcourse = new System.Windows.Forms.Panel();
+            this.label57 = new System.Windows.Forms.Label();
             this.chkConcoursePlanetIndex = new System.Windows.Forms.CheckBox();
             this.chkConcoursePlanetY = new System.Windows.Forms.CheckBox();
             this.chkConcoursePlanetX = new System.Windows.Forms.CheckBox();
@@ -248,6 +282,7 @@
             this.numConcoursePlanetIndex = new System.Windows.Forms.NumericUpDown();
             this.lblNotFound = new System.Windows.Forms.Label();
             this.pnlHullIcon = new System.Windows.Forms.Panel();
+            this.label58 = new System.Windows.Forms.Label();
             this.label55 = new System.Windows.Forms.Label();
             this.numHullIcon = new System.Windows.Forms.NumericUpDown();
             this.numPlayerHull = new System.Windows.Forms.NumericUpDown();
@@ -255,25 +290,6 @@
             this.cmdHullRemove = new System.Windows.Forms.Button();
             this.cmdHullAdd = new System.Windows.Forms.Button();
             this.lstHullIcon = new System.Windows.Forms.ListBox();
-            this.optWeaponProfile = new System.Windows.Forms.RadioButton();
-            this.chkWeaponProfile = new System.Windows.Forms.CheckBox();
-            this.numWeaponProfileMarking = new System.Windows.Forms.NumericUpDown();
-            this.numWeaponModel = new System.Windows.Forms.NumericUpDown();
-            this.label56 = new System.Windows.Forms.Label();
-            this.tcMission = new System.Windows.Forms.TabControl();
-            this.tabMissFG = new System.Windows.Forms.TabPage();
-            this.tabMissText = new System.Windows.Forms.TabPage();
-            this.label57 = new System.Windows.Forms.Label();
-            this.label58 = new System.Windows.Forms.Label();
-            this.lstCraftText = new System.Windows.Forms.ListBox();
-            this.cmdAddCraftText = new System.Windows.Forms.Button();
-            this.cmdRemoveTextCraft = new System.Windows.Forms.Button();
-            this.txtCraftText = new System.Windows.Forms.TextBox();
-            this.cboCraftText = new System.Windows.Forms.ComboBox();
-            this.optCraftText = new System.Windows.Forms.RadioButton();
-            this.optSpeciesText = new System.Windows.Forms.RadioButton();
-            this.optPluralText = new System.Windows.Forms.RadioButton();
-            this.optAbbrvText = new System.Windows.Forms.RadioButton();
             ((System.ComponentModel.ISupportInitialize)(this.numFamHeadingZ)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numFamPosZ)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numFamHeadingXY)).BeginInit();
@@ -320,8 +336,17 @@
             ((System.ComponentModel.ISupportInitialize)(this.numShieldRate)).BeginInit();
             this.pnlBackdrops.SuspendLayout();
             this.pnlMission.SuspendLayout();
+            this.tcMission.SuspendLayout();
+            this.tabMissFG.SuspendLayout();
+            this.tabMissText.SuspendLayout();
+            this.tabMissSettings.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numTurretS)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numTurretM)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numTurretH)).BeginInit();
             this.pnlSounds.SuspendLayout();
             this.pnlObjects.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numWeaponModel)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numWeaponProfileMarking)).BeginInit();
             this.pnlHangar.SuspendLayout();
             this.pnlSFoils.SuspendLayout();
             this.pnlSkins.SuspendLayout();
@@ -334,11 +359,6 @@
             this.pnlHullIcon.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numHullIcon)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numPlayerHull)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numWeaponProfileMarking)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numWeaponModel)).BeginInit();
-            this.tcMission.SuspendLayout();
-            this.tabMissFG.SuspendLayout();
-            this.tabMissText.SuspendLayout();
             this.SuspendLayout();
             // 
             // cmdOK
@@ -422,7 +442,7 @@
             this.optPilot.TabIndex = 5;
             this.optPilot.Text = "Pilot";
             this.optPilot.UseVisualStyleBackColor = true;
-            this.optPilot.CheckedChanged += new System.EventHandler(this.cboMission_CheckedChanged);
+            this.optPilot.CheckedChanged += new System.EventHandler(this.optMission_CheckedChanged);
             // 
             // optIff
             // 
@@ -433,7 +453,7 @@
             this.optIff.TabIndex = 4;
             this.optIff.Text = "IFF";
             this.optIff.UseVisualStyleBackColor = true;
-            this.optIff.CheckedChanged += new System.EventHandler(this.cboMission_CheckedChanged);
+            this.optIff.CheckedChanged += new System.EventHandler(this.optMission_CheckedChanged);
             // 
             // optMarkings
             // 
@@ -446,7 +466,7 @@
             this.optMarkings.TabStop = true;
             this.optMarkings.Text = "Marks";
             this.optMarkings.UseVisualStyleBackColor = true;
-            this.optMarkings.CheckedChanged += new System.EventHandler(this.cboMission_CheckedChanged);
+            this.optMarkings.CheckedChanged += new System.EventHandler(this.optMission_CheckedChanged);
             // 
             // cmdRemoveMiss
             // 
@@ -1589,7 +1609,7 @@
             this.optWingman.TabIndex = 3;
             this.optWingman.Text = "Wingman";
             this.optWingman.UseVisualStyleBackColor = true;
-            this.optWingman.CheckedChanged += new System.EventHandler(this.cboMission_CheckedChanged);
+            this.optWingman.CheckedChanged += new System.EventHandler(this.optMission_CheckedChanged);
             // 
             // label46
             // 
@@ -2691,6 +2711,336 @@
             this.pnlMission.TabIndex = 54;
             this.pnlMission.Visible = false;
             // 
+            // tcMission
+            // 
+            this.tcMission.Controls.Add(this.tabMissFG);
+            this.tcMission.Controls.Add(this.tabMissText);
+            this.tcMission.Controls.Add(this.tabMissSettings);
+            this.tcMission.Location = new System.Drawing.Point(3, 3);
+            this.tcMission.Name = "tcMission";
+            this.tcMission.SelectedIndex = 0;
+            this.tcMission.Size = new System.Drawing.Size(377, 277);
+            this.tcMission.TabIndex = 43;
+            // 
+            // tabMissFG
+            // 
+            this.tabMissFG.Controls.Add(this.lstMission);
+            this.tabMissFG.Controls.Add(this.numWingman);
+            this.tabMissFG.Controls.Add(this.cboFG);
+            this.tabMissFG.Controls.Add(this.label48);
+            this.tabMissFG.Controls.Add(this.optWingman);
+            this.tabMissFG.Controls.Add(this.cmdAddMiss);
+            this.tabMissFG.Controls.Add(this.optIff);
+            this.tabMissFG.Controls.Add(this.txtPilot);
+            this.tabMissFG.Controls.Add(this.optMarkings);
+            this.tabMissFG.Controls.Add(this.cboIff);
+            this.tabMissFG.Controls.Add(this.cboMarkings);
+            this.tabMissFG.Controls.Add(this.optPilot);
+            this.tabMissFG.Controls.Add(this.cmdRemoveMiss);
+            this.tabMissFG.Location = new System.Drawing.Point(4, 22);
+            this.tabMissFG.Name = "tabMissFG";
+            this.tabMissFG.Padding = new System.Windows.Forms.Padding(3);
+            this.tabMissFG.Size = new System.Drawing.Size(369, 251);
+            this.tabMissFG.TabIndex = 0;
+            this.tabMissFG.Text = "FG";
+            this.tabMissFG.UseVisualStyleBackColor = true;
+            // 
+            // tabMissText
+            // 
+            this.tabMissText.Controls.Add(this.label59);
+            this.tabMissText.Controls.Add(this.optAbbrvText);
+            this.tabMissText.Controls.Add(this.optPluralText);
+            this.tabMissText.Controls.Add(this.optSpeciesText);
+            this.tabMissText.Controls.Add(this.optCraftText);
+            this.tabMissText.Controls.Add(this.cboCraftText);
+            this.tabMissText.Controls.Add(this.txtCraftText);
+            this.tabMissText.Controls.Add(this.cmdRemoveTextCraft);
+            this.tabMissText.Controls.Add(this.cmdAddCraftText);
+            this.tabMissText.Controls.Add(this.lstCraftText);
+            this.tabMissText.Location = new System.Drawing.Point(4, 22);
+            this.tabMissText.Name = "tabMissText";
+            this.tabMissText.Padding = new System.Windows.Forms.Padding(3);
+            this.tabMissText.Size = new System.Drawing.Size(369, 251);
+            this.tabMissText.TabIndex = 1;
+            this.tabMissText.Text = "Craft Text";
+            this.tabMissText.UseVisualStyleBackColor = true;
+            // 
+            // label59
+            // 
+            this.label59.Location = new System.Drawing.Point(6, 183);
+            this.label59.Name = "label59";
+            this.label59.Size = new System.Drawing.Size(309, 42);
+            this.label59.TabIndex = 5;
+            this.label59.Text = "Select the Craft type, the type of text to change, the text itself, and then hit " +
+    "\"Add\".";
+            // 
+            // optAbbrvText
+            // 
+            this.optAbbrvText.AutoSize = true;
+            this.optAbbrvText.Location = new System.Drawing.Point(113, 134);
+            this.optAbbrvText.Name = "optAbbrvText";
+            this.optAbbrvText.Size = new System.Drawing.Size(84, 17);
+            this.optAbbrvText.TabIndex = 4;
+            this.optAbbrvText.Text = "Abbreviation";
+            this.optAbbrvText.UseVisualStyleBackColor = true;
+            // 
+            // optPluralText
+            // 
+            this.optPluralText.AutoSize = true;
+            this.optPluralText.Location = new System.Drawing.Point(56, 134);
+            this.optPluralText.Name = "optPluralText";
+            this.optPluralText.Size = new System.Drawing.Size(51, 17);
+            this.optPluralText.TabIndex = 4;
+            this.optPluralText.Text = "Plural";
+            this.optPluralText.UseVisualStyleBackColor = true;
+            // 
+            // optSpeciesText
+            // 
+            this.optSpeciesText.AutoSize = true;
+            this.optSpeciesText.Location = new System.Drawing.Point(203, 134);
+            this.optSpeciesText.Name = "optSpeciesText";
+            this.optSpeciesText.Size = new System.Drawing.Size(63, 17);
+            this.optSpeciesText.TabIndex = 4;
+            this.optSpeciesText.Text = "Species";
+            this.optSpeciesText.UseVisualStyleBackColor = true;
+            // 
+            // optCraftText
+            // 
+            this.optCraftText.AutoSize = true;
+            this.optCraftText.Checked = true;
+            this.optCraftText.Location = new System.Drawing.Point(3, 134);
+            this.optCraftText.Name = "optCraftText";
+            this.optCraftText.Size = new System.Drawing.Size(47, 17);
+            this.optCraftText.TabIndex = 4;
+            this.optCraftText.TabStop = true;
+            this.optCraftText.Text = "Craft";
+            this.optCraftText.UseVisualStyleBackColor = true;
+            // 
+            // cboCraftText
+            // 
+            this.cboCraftText.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboCraftText.FormattingEnabled = true;
+            this.cboCraftText.Location = new System.Drawing.Point(3, 107);
+            this.cboCraftText.Name = "cboCraftText";
+            this.cboCraftText.Size = new System.Drawing.Size(163, 21);
+            this.cboCraftText.TabIndex = 3;
+            // 
+            // txtCraftText
+            // 
+            this.txtCraftText.Location = new System.Drawing.Point(175, 108);
+            this.txtCraftText.Name = "txtCraftText";
+            this.txtCraftText.Size = new System.Drawing.Size(188, 20);
+            this.txtCraftText.TabIndex = 2;
+            // 
+            // cmdRemoveTextCraft
+            // 
+            this.cmdRemoveTextCraft.Location = new System.Drawing.Point(72, 157);
+            this.cmdRemoveTextCraft.Name = "cmdRemoveTextCraft";
+            this.cmdRemoveTextCraft.Size = new System.Drawing.Size(60, 23);
+            this.cmdRemoveTextCraft.TabIndex = 1;
+            this.cmdRemoveTextCraft.Text = "&Remove";
+            this.cmdRemoveTextCraft.UseVisualStyleBackColor = true;
+            this.cmdRemoveTextCraft.Click += new System.EventHandler(this.cmdRemoveTextCraft_Click);
+            // 
+            // cmdAddCraftText
+            // 
+            this.cmdAddCraftText.Location = new System.Drawing.Point(6, 157);
+            this.cmdAddCraftText.Name = "cmdAddCraftText";
+            this.cmdAddCraftText.Size = new System.Drawing.Size(60, 23);
+            this.cmdAddCraftText.TabIndex = 1;
+            this.cmdAddCraftText.Text = "&Add";
+            this.cmdAddCraftText.UseVisualStyleBackColor = true;
+            this.cmdAddCraftText.Click += new System.EventHandler(this.cmdAddCraftText_Click);
+            // 
+            // lstCraftText
+            // 
+            this.lstCraftText.FormattingEnabled = true;
+            this.lstCraftText.HorizontalScrollbar = true;
+            this.lstCraftText.Location = new System.Drawing.Point(2, 6);
+            this.lstCraftText.Name = "lstCraftText";
+            this.lstCraftText.Size = new System.Drawing.Size(364, 95);
+            this.lstCraftText.TabIndex = 0;
+            // 
+            // tabMissSettings
+            // 
+            this.tabMissSettings.Controls.Add(this.numTurretS);
+            this.tabMissSettings.Controls.Add(this.numTurretM);
+            this.tabMissSettings.Controls.Add(this.numTurretH);
+            this.tabMissSettings.Controls.Add(this.chkSkipIff);
+            this.tabMissSettings.Controls.Add(this.chkSkipAllIff);
+            this.tabMissSettings.Controls.Add(this.cboSkipIff);
+            this.tabMissSettings.Controls.Add(this.chkSkipIffMessages);
+            this.tabMissSettings.Controls.Add(this.chkDisableCollision);
+            this.tabMissSettings.Controls.Add(this.chkDisableWarhead);
+            this.tabMissSettings.Controls.Add(this.chkDisableLaser);
+            this.tabMissSettings.Controls.Add(this.label60);
+            this.tabMissSettings.Controls.Add(this.chkForceTurret);
+            this.tabMissSettings.Controls.Add(this.chkSkipHyper);
+            this.tabMissSettings.Controls.Add(this.chkRedAlert);
+            this.tabMissSettings.Location = new System.Drawing.Point(4, 22);
+            this.tabMissSettings.Name = "tabMissSettings";
+            this.tabMissSettings.Size = new System.Drawing.Size(369, 251);
+            this.tabMissSettings.TabIndex = 2;
+            this.tabMissSettings.Text = "Settings";
+            this.tabMissSettings.UseVisualStyleBackColor = true;
+            // 
+            // numTurretS
+            // 
+            this.numTurretS.AutoSize = true;
+            this.numTurretS.Location = new System.Drawing.Point(230, 95);
+            this.numTurretS.Maximum = new decimal(new int[] {
+            59,
+            0,
+            0,
+            0});
+            this.numTurretS.Name = "numTurretS";
+            this.numTurretS.Size = new System.Drawing.Size(41, 20);
+            this.numTurretS.TabIndex = 12;
+            this.numTurretS.Value = new decimal(new int[] {
+            8,
+            0,
+            0,
+            0});
+            // 
+            // numTurretM
+            // 
+            this.numTurretM.AutoSize = true;
+            this.numTurretM.Location = new System.Drawing.Point(183, 95);
+            this.numTurretM.Maximum = new decimal(new int[] {
+            59,
+            0,
+            0,
+            0});
+            this.numTurretM.Name = "numTurretM";
+            this.numTurretM.Size = new System.Drawing.Size(41, 20);
+            this.numTurretM.TabIndex = 11;
+            // 
+            // numTurretH
+            // 
+            this.numTurretH.AutoSize = true;
+            this.numTurretH.Location = new System.Drawing.Point(136, 95);
+            this.numTurretH.Maximum = new decimal(new int[] {
+            24,
+            0,
+            0,
+            0});
+            this.numTurretH.Name = "numTurretH";
+            this.numTurretH.Size = new System.Drawing.Size(41, 20);
+            this.numTurretH.TabIndex = 10;
+            // 
+            // chkSkipIff
+            // 
+            this.chkSkipIff.AutoSize = true;
+            this.chkSkipIff.Enabled = false;
+            this.chkSkipIff.Location = new System.Drawing.Point(290, 52);
+            this.chkSkipIff.Name = "chkSkipIff";
+            this.chkSkipIff.Size = new System.Drawing.Size(15, 14);
+            this.chkSkipIff.TabIndex = 9;
+            this.chkSkipIff.UseVisualStyleBackColor = true;
+            this.chkSkipIff.CheckedChanged += new System.EventHandler(this.chkSkipIff_CheckedChanged);
+            // 
+            // chkSkipAllIff
+            // 
+            this.chkSkipAllIff.AutoSize = true;
+            this.chkSkipAllIff.Enabled = false;
+            this.chkSkipAllIff.Location = new System.Drawing.Point(120, 51);
+            this.chkSkipAllIff.Name = "chkSkipAllIff";
+            this.chkSkipAllIff.Size = new System.Drawing.Size(37, 17);
+            this.chkSkipAllIff.TabIndex = 7;
+            this.chkSkipAllIff.Text = "All";
+            this.chkSkipAllIff.UseVisualStyleBackColor = true;
+            this.chkSkipAllIff.CheckedChanged += new System.EventHandler(this.chkSkipAllIff_CheckedChanged);
+            // 
+            // cboSkipIff
+            // 
+            this.cboSkipIff.Enabled = false;
+            this.cboSkipIff.FormattingEnabled = true;
+            this.cboSkipIff.Location = new System.Drawing.Point(163, 49);
+            this.cboSkipIff.Name = "cboSkipIff";
+            this.cboSkipIff.Size = new System.Drawing.Size(121, 21);
+            this.cboSkipIff.TabIndex = 8;
+            this.cboSkipIff.SelectedIndexChanged += new System.EventHandler(this.cboSkipIff_SelectedIndexChanged);
+            // 
+            // chkSkipIffMessages
+            // 
+            this.chkSkipIffMessages.AutoSize = true;
+            this.chkSkipIffMessages.Location = new System.Drawing.Point(3, 51);
+            this.chkSkipIffMessages.Name = "chkSkipIffMessages";
+            this.chkSkipIffMessages.Size = new System.Drawing.Size(119, 17);
+            this.chkSkipIffMessages.TabIndex = 6;
+            this.chkSkipIffMessages.Text = "Skip IFF Messages:";
+            this.chkSkipIffMessages.UseVisualStyleBackColor = true;
+            this.chkSkipIffMessages.CheckedChanged += new System.EventHandler(this.chkSkipIffMessages_CheckedChanged);
+            // 
+            // chkDisableCollision
+            // 
+            this.chkDisableCollision.AutoSize = true;
+            this.chkDisableCollision.Location = new System.Drawing.Point(3, 164);
+            this.chkDisableCollision.Name = "chkDisableCollision";
+            this.chkDisableCollision.Size = new System.Drawing.Size(149, 17);
+            this.chkDisableCollision.TabIndex = 5;
+            this.chkDisableCollision.Text = "Disable Warhead Collision";
+            this.chkDisableCollision.UseVisualStyleBackColor = true;
+            // 
+            // chkDisableWarhead
+            // 
+            this.chkDisableWarhead.AutoSize = true;
+            this.chkDisableWarhead.Location = new System.Drawing.Point(3, 141);
+            this.chkDisableWarhead.Name = "chkDisableWarhead";
+            this.chkDisableWarhead.Size = new System.Drawing.Size(145, 17);
+            this.chkDisableWarhead.TabIndex = 4;
+            this.chkDisableWarhead.Text = "Disable Player Warheads";
+            this.chkDisableWarhead.UseVisualStyleBackColor = true;
+            // 
+            // chkDisableLaser
+            // 
+            this.chkDisableLaser.AutoSize = true;
+            this.chkDisableLaser.Location = new System.Drawing.Point(3, 118);
+            this.chkDisableLaser.Name = "chkDisableLaser";
+            this.chkDisableLaser.Size = new System.Drawing.Size(127, 17);
+            this.chkDisableLaser.TabIndex = 3;
+            this.chkDisableLaser.Text = "Disable Player Lasers";
+            this.chkDisableLaser.UseVisualStyleBackColor = true;
+            // 
+            // label60
+            // 
+            this.label60.AutoSize = true;
+            this.label60.Location = new System.Drawing.Point(0, 97);
+            this.label60.Name = "label60";
+            this.label60.Size = new System.Drawing.Size(125, 13);
+            this.label60.TabIndex = 3;
+            this.label60.Text = "Force turret time: H, M, S";
+            // 
+            // chkForceTurret
+            // 
+            this.chkForceTurret.AutoSize = true;
+            this.chkForceTurret.Location = new System.Drawing.Point(3, 74);
+            this.chkForceTurret.Name = "chkForceTurret";
+            this.chkForceTurret.Size = new System.Drawing.Size(136, 17);
+            this.chkForceTurret.TabIndex = 2;
+            this.chkForceTurret.Text = "Force Player into Turret";
+            this.chkForceTurret.UseVisualStyleBackColor = true;
+            // 
+            // chkSkipHyper
+            // 
+            this.chkSkipHyper.AutoSize = true;
+            this.chkSkipHyper.Location = new System.Drawing.Point(3, 28);
+            this.chkSkipHyper.Name = "chkSkipHyper";
+            this.chkSkipHyper.Size = new System.Drawing.Size(128, 17);
+            this.chkSkipHyper.TabIndex = 1;
+            this.chkSkipHyper.Text = "Skip Hyper messages";
+            this.chkSkipHyper.UseVisualStyleBackColor = true;
+            // 
+            // chkRedAlert
+            // 
+            this.chkRedAlert.AutoSize = true;
+            this.chkRedAlert.Location = new System.Drawing.Point(3, 5);
+            this.chkRedAlert.Name = "chkRedAlert";
+            this.chkRedAlert.Size = new System.Drawing.Size(70, 17);
+            this.chkRedAlert.TabIndex = 0;
+            this.chkRedAlert.Text = "Red Alert";
+            this.chkRedAlert.UseVisualStyleBackColor = true;
+            // 
             // pnlSounds
             // 
             this.pnlSounds.Controls.Add(this.label46);
@@ -2726,6 +3076,65 @@
             this.pnlObjects.Size = new System.Drawing.Size(378, 343);
             this.pnlObjects.TabIndex = 56;
             this.pnlObjects.Visible = false;
+            // 
+            // label56
+            // 
+            this.label56.AutoSize = true;
+            this.label56.Location = new System.Drawing.Point(3, 195);
+            this.label56.Name = "label56";
+            this.label56.Size = new System.Drawing.Size(111, 13);
+            this.label56.TabIndex = 15;
+            this.label56.Text = "Weapon Model index:";
+            // 
+            // numWeaponModel
+            // 
+            this.numWeaponModel.Enabled = false;
+            this.numWeaponModel.Location = new System.Drawing.Point(120, 193);
+            this.numWeaponModel.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.numWeaponModel.Name = "numWeaponModel";
+            this.numWeaponModel.Size = new System.Drawing.Size(58, 20);
+            this.numWeaponModel.TabIndex = 14;
+            // 
+            // numWeaponProfileMarking
+            // 
+            this.numWeaponProfileMarking.Enabled = false;
+            this.numWeaponProfileMarking.Location = new System.Drawing.Point(296, 193);
+            this.numWeaponProfileMarking.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+            this.numWeaponProfileMarking.Name = "numWeaponProfileMarking";
+            this.numWeaponProfileMarking.Size = new System.Drawing.Size(42, 20);
+            this.numWeaponProfileMarking.TabIndex = 14;
+            // 
+            // chkWeaponProfile
+            // 
+            this.chkWeaponProfile.AutoSize = true;
+            this.chkWeaponProfile.Enabled = false;
+            this.chkWeaponProfile.Location = new System.Drawing.Point(184, 194);
+            this.chkWeaponProfile.Name = "chkWeaponProfile";
+            this.chkWeaponProfile.Size = new System.Drawing.Size(110, 17);
+            this.chkWeaponProfile.TabIndex = 13;
+            this.chkWeaponProfile.Text = "for Marking index:";
+            this.chkWeaponProfile.UseVisualStyleBackColor = true;
+            this.chkWeaponProfile.CheckedChanged += new System.EventHandler(this.chkWeaponProfile_CheckedChanged);
+            // 
+            // optWeaponProfile
+            // 
+            this.optWeaponProfile.AutoSize = true;
+            this.optWeaponProfile.Location = new System.Drawing.Point(157, 147);
+            this.optWeaponProfile.Name = "optWeaponProfile";
+            this.optWeaponProfile.Size = new System.Drawing.Size(98, 17);
+            this.optWeaponProfile.TabIndex = 12;
+            this.optWeaponProfile.TabStop = true;
+            this.optWeaponProfile.Text = "Weapon Profile";
+            this.optWeaponProfile.UseVisualStyleBackColor = true;
+            this.optWeaponProfile.CheckedChanged += new System.EventHandler(this.objectsOpt_CheckedChanged);
             // 
             // optCockpit
             // 
@@ -2862,6 +3271,15 @@
             this.pnlConcourse.Size = new System.Drawing.Size(383, 113);
             this.pnlConcourse.TabIndex = 63;
             // 
+            // label57
+            // 
+            this.label57.AutoSize = true;
+            this.label57.Location = new System.Drawing.Point(3, 82);
+            this.label57.Name = "label57";
+            this.label57.Size = new System.Drawing.Size(321, 13);
+            this.label57.TabIndex = 4;
+            this.label57.Text = "This controls the backdrop visible outside the Concourse windows.";
+            // 
             // chkConcoursePlanetIndex
             // 
             this.chkConcoursePlanetIndex.AutoSize = true;
@@ -2960,6 +3378,15 @@
             this.pnlHullIcon.Size = new System.Drawing.Size(377, 188);
             this.pnlHullIcon.TabIndex = 65;
             // 
+            // label58
+            // 
+            this.label58.Location = new System.Drawing.Point(3, 129);
+            this.label58.Name = "label58";
+            this.label58.Size = new System.Drawing.Size(191, 50);
+            this.label58.TabIndex = 5;
+            this.label58.Text = "Set the icon number, then hit \"Add\" to select the object.\r\nFor the player, simply" +
+    " check the box.";
+            // 
             // label55
             // 
             this.label55.AutoSize = true;
@@ -3033,222 +3460,6 @@
             this.lstHullIcon.Name = "lstHullIcon";
             this.lstHullIcon.Size = new System.Drawing.Size(366, 95);
             this.lstHullIcon.TabIndex = 0;
-            // 
-            // optWeaponProfile
-            // 
-            this.optWeaponProfile.AutoSize = true;
-            this.optWeaponProfile.Location = new System.Drawing.Point(157, 147);
-            this.optWeaponProfile.Name = "optWeaponProfile";
-            this.optWeaponProfile.Size = new System.Drawing.Size(98, 17);
-            this.optWeaponProfile.TabIndex = 12;
-            this.optWeaponProfile.TabStop = true;
-            this.optWeaponProfile.Text = "Weapon Profile";
-            this.optWeaponProfile.UseVisualStyleBackColor = true;
-            this.optWeaponProfile.CheckedChanged += new System.EventHandler(this.objectsOpt_CheckedChanged);
-            // 
-            // chkWeaponProfile
-            // 
-            this.chkWeaponProfile.AutoSize = true;
-            this.chkWeaponProfile.Enabled = false;
-            this.chkWeaponProfile.Location = new System.Drawing.Point(184, 194);
-            this.chkWeaponProfile.Name = "chkWeaponProfile";
-            this.chkWeaponProfile.Size = new System.Drawing.Size(110, 17);
-            this.chkWeaponProfile.TabIndex = 13;
-            this.chkWeaponProfile.Text = "for Marking index:";
-            this.chkWeaponProfile.UseVisualStyleBackColor = true;
-            this.chkWeaponProfile.CheckedChanged += new System.EventHandler(this.chkWeaponProfile_CheckedChanged);
-            // 
-            // numWeaponProfileMarking
-            // 
-            this.numWeaponProfileMarking.Enabled = false;
-            this.numWeaponProfileMarking.Location = new System.Drawing.Point(296, 193);
-            this.numWeaponProfileMarking.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
-            this.numWeaponProfileMarking.Name = "numWeaponProfileMarking";
-            this.numWeaponProfileMarking.Size = new System.Drawing.Size(42, 20);
-            this.numWeaponProfileMarking.TabIndex = 14;
-            // 
-            // numWeaponModel
-            // 
-            this.numWeaponModel.Enabled = false;
-            this.numWeaponModel.Location = new System.Drawing.Point(120, 193);
-            this.numWeaponModel.Maximum = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            0});
-            this.numWeaponModel.Name = "numWeaponModel";
-            this.numWeaponModel.Size = new System.Drawing.Size(58, 20);
-            this.numWeaponModel.TabIndex = 14;
-            // 
-            // label56
-            // 
-            this.label56.AutoSize = true;
-            this.label56.Location = new System.Drawing.Point(3, 195);
-            this.label56.Name = "label56";
-            this.label56.Size = new System.Drawing.Size(111, 13);
-            this.label56.TabIndex = 15;
-            this.label56.Text = "Weapon Model index:";
-            // 
-            // tcMission
-            // 
-            this.tcMission.Controls.Add(this.tabMissFG);
-            this.tcMission.Controls.Add(this.tabMissText);
-            this.tcMission.Location = new System.Drawing.Point(3, 3);
-            this.tcMission.Name = "tcMission";
-            this.tcMission.SelectedIndex = 0;
-            this.tcMission.Size = new System.Drawing.Size(377, 277);
-            this.tcMission.TabIndex = 43;
-            // 
-            // tabMissFG
-            // 
-            this.tabMissFG.Controls.Add(this.lstMission);
-            this.tabMissFG.Controls.Add(this.numWingman);
-            this.tabMissFG.Controls.Add(this.cboFG);
-            this.tabMissFG.Controls.Add(this.label48);
-            this.tabMissFG.Controls.Add(this.optWingman);
-            this.tabMissFG.Controls.Add(this.cmdAddMiss);
-            this.tabMissFG.Controls.Add(this.optIff);
-            this.tabMissFG.Controls.Add(this.txtPilot);
-            this.tabMissFG.Controls.Add(this.optMarkings);
-            this.tabMissFG.Controls.Add(this.cboIff);
-            this.tabMissFG.Controls.Add(this.cboMarkings);
-            this.tabMissFG.Controls.Add(this.optPilot);
-            this.tabMissFG.Controls.Add(this.cmdRemoveMiss);
-            this.tabMissFG.Location = new System.Drawing.Point(4, 22);
-            this.tabMissFG.Name = "tabMissFG";
-            this.tabMissFG.Padding = new System.Windows.Forms.Padding(3);
-            this.tabMissFG.Size = new System.Drawing.Size(369, 251);
-            this.tabMissFG.TabIndex = 0;
-            this.tabMissFG.Text = "FG";
-            this.tabMissFG.UseVisualStyleBackColor = true;
-            // 
-            // tabMissText
-            // 
-            this.tabMissText.Controls.Add(this.optAbbrvText);
-            this.tabMissText.Controls.Add(this.optPluralText);
-            this.tabMissText.Controls.Add(this.optSpeciesText);
-            this.tabMissText.Controls.Add(this.optCraftText);
-            this.tabMissText.Controls.Add(this.cboCraftText);
-            this.tabMissText.Controls.Add(this.txtCraftText);
-            this.tabMissText.Controls.Add(this.cmdRemoveTextCraft);
-            this.tabMissText.Controls.Add(this.cmdAddCraftText);
-            this.tabMissText.Controls.Add(this.lstCraftText);
-            this.tabMissText.Location = new System.Drawing.Point(4, 22);
-            this.tabMissText.Name = "tabMissText";
-            this.tabMissText.Padding = new System.Windows.Forms.Padding(3);
-            this.tabMissText.Size = new System.Drawing.Size(369, 251);
-            this.tabMissText.TabIndex = 1;
-            this.tabMissText.Text = "Craft Text";
-            this.tabMissText.UseVisualStyleBackColor = true;
-            // 
-            // label57
-            // 
-            this.label57.AutoSize = true;
-            this.label57.Location = new System.Drawing.Point(3, 82);
-            this.label57.Name = "label57";
-            this.label57.Size = new System.Drawing.Size(321, 13);
-            this.label57.TabIndex = 4;
-            this.label57.Text = "This controls the backdrop visible outside the Concourse windows.";
-            // 
-            // label58
-            // 
-            this.label58.Location = new System.Drawing.Point(3, 129);
-            this.label58.Name = "label58";
-            this.label58.Size = new System.Drawing.Size(191, 50);
-            this.label58.TabIndex = 5;
-            this.label58.Text = "Set the icon number, then hit \"Add\" to select the object.\r\nFor the player, simply" +
-    " check the box.";
-            // 
-            // lstCraftText
-            // 
-            this.lstCraftText.FormattingEnabled = true;
-            this.lstCraftText.HorizontalScrollbar = true;
-            this.lstCraftText.Location = new System.Drawing.Point(2, 6);
-            this.lstCraftText.Name = "lstCraftText";
-            this.lstCraftText.Size = new System.Drawing.Size(364, 95);
-            this.lstCraftText.TabIndex = 0;
-            // 
-            // cmdAddCraftText
-            // 
-            this.cmdAddCraftText.Location = new System.Drawing.Point(6, 157);
-            this.cmdAddCraftText.Name = "cmdAddCraftText";
-            this.cmdAddCraftText.Size = new System.Drawing.Size(60, 23);
-            this.cmdAddCraftText.TabIndex = 1;
-            this.cmdAddCraftText.Text = "&Add";
-            this.cmdAddCraftText.UseVisualStyleBackColor = true;
-            this.cmdAddCraftText.Click += new System.EventHandler(this.cmdAddCraftText_Click);
-            // 
-            // cmdRemoveTextCraft
-            // 
-            this.cmdRemoveTextCraft.Location = new System.Drawing.Point(72, 157);
-            this.cmdRemoveTextCraft.Name = "cmdRemoveTextCraft";
-            this.cmdRemoveTextCraft.Size = new System.Drawing.Size(60, 23);
-            this.cmdRemoveTextCraft.TabIndex = 1;
-            this.cmdRemoveTextCraft.Text = "&Remove";
-            this.cmdRemoveTextCraft.UseVisualStyleBackColor = true;
-            this.cmdRemoveTextCraft.Click += new System.EventHandler(this.cmdRemoveTextCraft_Click);
-            // 
-            // txtCraftText
-            // 
-            this.txtCraftText.Location = new System.Drawing.Point(175, 108);
-            this.txtCraftText.Name = "txtCraftText";
-            this.txtCraftText.Size = new System.Drawing.Size(145, 20);
-            this.txtCraftText.TabIndex = 2;
-            // 
-            // cboCraftText
-            // 
-            this.cboCraftText.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboCraftText.FormattingEnabled = true;
-            this.cboCraftText.Location = new System.Drawing.Point(3, 107);
-            this.cboCraftText.Name = "cboCraftText";
-            this.cboCraftText.Size = new System.Drawing.Size(163, 21);
-            this.cboCraftText.TabIndex = 3;
-            // 
-            // optCraftText
-            // 
-            this.optCraftText.AutoSize = true;
-            this.optCraftText.Checked = true;
-            this.optCraftText.Location = new System.Drawing.Point(3, 134);
-            this.optCraftText.Name = "optCraftText";
-            this.optCraftText.Size = new System.Drawing.Size(47, 17);
-            this.optCraftText.TabIndex = 4;
-            this.optCraftText.TabStop = true;
-            this.optCraftText.Text = "Craft";
-            this.optCraftText.UseVisualStyleBackColor = true;
-            // 
-            // optSpeciesText
-            // 
-            this.optSpeciesText.AutoSize = true;
-            this.optSpeciesText.Location = new System.Drawing.Point(203, 134);
-            this.optSpeciesText.Name = "optSpeciesText";
-            this.optSpeciesText.Size = new System.Drawing.Size(63, 17);
-            this.optSpeciesText.TabIndex = 4;
-            this.optSpeciesText.Text = "Species";
-            this.optSpeciesText.UseVisualStyleBackColor = true;
-            // 
-            // optPluralText
-            // 
-            this.optPluralText.AutoSize = true;
-            this.optPluralText.Location = new System.Drawing.Point(56, 134);
-            this.optPluralText.Name = "optPluralText";
-            this.optPluralText.Size = new System.Drawing.Size(51, 17);
-            this.optPluralText.TabIndex = 4;
-            this.optPluralText.Text = "Plural";
-            this.optPluralText.UseVisualStyleBackColor = true;
-            // 
-            // optAbbrvText
-            // 
-            this.optAbbrvText.AutoSize = true;
-            this.optAbbrvText.Location = new System.Drawing.Point(113, 134);
-            this.optAbbrvText.Name = "optAbbrvText";
-            this.optAbbrvText.Size = new System.Drawing.Size(84, 17);
-            this.optAbbrvText.TabIndex = 4;
-            this.optAbbrvText.Text = "Abbreviation";
-            this.optAbbrvText.UseVisualStyleBackColor = true;
             // 
             // XwaHookDialog
             // 
@@ -3332,9 +3543,21 @@
             ((System.ComponentModel.ISupportInitialize)(this.numShieldRate)).EndInit();
             this.pnlBackdrops.ResumeLayout(false);
             this.pnlMission.ResumeLayout(false);
+            this.tcMission.ResumeLayout(false);
+            this.tabMissFG.ResumeLayout(false);
+            this.tabMissFG.PerformLayout();
+            this.tabMissText.ResumeLayout(false);
+            this.tabMissText.PerformLayout();
+            this.tabMissSettings.ResumeLayout(false);
+            this.tabMissSettings.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numTurretS)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numTurretM)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numTurretH)).EndInit();
             this.pnlSounds.ResumeLayout(false);
             this.pnlObjects.ResumeLayout(false);
             this.pnlObjects.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numWeaponModel)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numWeaponProfileMarking)).EndInit();
             this.pnlHangar.ResumeLayout(false);
             this.pnlSFoils.ResumeLayout(false);
             this.pnlSFoils.PerformLayout();
@@ -3353,13 +3576,6 @@
             this.pnlHullIcon.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numHullIcon)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numPlayerHull)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numWeaponProfileMarking)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numWeaponModel)).EndInit();
-            this.tcMission.ResumeLayout(false);
-            this.tabMissFG.ResumeLayout(false);
-            this.tabMissFG.PerformLayout();
-            this.tabMissText.ResumeLayout(false);
-            this.tabMissText.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -3612,5 +3828,21 @@
         private System.Windows.Forms.RadioButton optPluralText;
         private System.Windows.Forms.RadioButton optSpeciesText;
         private System.Windows.Forms.RadioButton optCraftText;
+        private System.Windows.Forms.Label label59;
+        private System.Windows.Forms.TabPage tabMissSettings;
+        private System.Windows.Forms.CheckBox chkRedAlert;
+        private System.Windows.Forms.CheckBox chkSkipHyper;
+        private System.Windows.Forms.CheckBox chkForceTurret;
+        private System.Windows.Forms.Label label60;
+        private System.Windows.Forms.CheckBox chkDisableWarhead;
+        private System.Windows.Forms.CheckBox chkDisableLaser;
+        private System.Windows.Forms.CheckBox chkDisableCollision;
+        private System.Windows.Forms.CheckBox chkSkipIffMessages;
+        private System.Windows.Forms.CheckBox chkSkipIff;
+        private System.Windows.Forms.CheckBox chkSkipAllIff;
+        private System.Windows.Forms.ComboBox cboSkipIff;
+        private System.Windows.Forms.NumericUpDown numTurretS;
+        private System.Windows.Forms.NumericUpDown numTurretM;
+        private System.Windows.Forms.NumericUpDown numTurretH;
     }
 }

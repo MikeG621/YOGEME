@@ -99,6 +99,8 @@ namespace Idmr.Yogeme
 		readonly List<string> _unknown = new List<string>();
         readonly List<string>[] _comments = new List<string>[14];
 		string _preComments = "";
+		readonly bool[] _skipIffs = new bool[255];
+        readonly bool _initialLoad = true;
 
 		public XwaHookDialog(Mission mission, Settings config)
 		{
@@ -134,12 +136,16 @@ namespace Idmr.Yogeme
 			cboHook.SelectedIndex = 0;
 			cboIff.Items.AddRange(Strings.IFF);
 			cboHangarIff.Items.AddRange(Strings.IFF);
+			cboSkipIff.Items.AddRange(Strings.IFF);
 			for (int i = cboIff.Items.Count; i < 256; i++)
 			{
 				cboIff.Items.Add("IFF #" + (i + 1));
 				cboHangarIff.Items.Add("IFF #" + (i + 1));
+				cboSkipIff.Items.Add("IFF #" + (i + 1));
 			}
 			cboIff.SelectedIndex = 0;
+			cboSkipIff.Items.RemoveAt(255); // special value
+			cboSkipIff.SelectedIndex = 0;
 			cboMarkings.Items.AddRange(Strings.Color);
 			cboShuttleMarks.Items.AddRange(Strings.Color);
 			cboMapMarkings.Items.AddRange(Strings.Color);
@@ -389,6 +395,8 @@ namespace Idmr.Yogeme
                 parseContents();
             }
 
+			_initialLoad = false;
+
 			createContents();	// to mix in any TXT files
 		}
 
@@ -400,6 +408,7 @@ namespace Idmr.Yogeme
 
 		void createContents()
 		{
+			System.Diagnostics.Debug.WriteLine("create");
             string title = "";
             if (_installDirectory != "") using (var sr = new StreamReader(_installDirectory + "\\Missions\\MISSION.LST"))
                 {
@@ -433,7 +442,7 @@ namespace Idmr.Yogeme
 				contents += "\r\n";
             }
 			if (_comments[(int)ReadMode.Backdrop].Count > 0) insertComments(ref contents, (int)ReadMode.Backdrop);
-            if (lstMission.Items.Count > 0 || useSFoils || lstCraftText.Items.Count > 0)
+            if (lstMission.Items.Count > 0 || useSFoils || lstCraftText.Items.Count > 0 || useMissionSettings)
             {
                 contents += "[Mission_Tie]\r\n";
                 if (lstMission.Items.Count > 0)
@@ -509,6 +518,36 @@ namespace Idmr.Yogeme
 						else if (parts[1] == "abbrv")
                             contents += "craft, " + craft + ", shortname, " + parts[2] + "\r\n";
 					}
+				}
+				if (useMissionSettings)
+				{
+					if (chkRedAlert.Checked)
+						contents += "IsRedAlertEnabled = 1\r\n";
+					if (chkSkipHyper.Checked)
+						contents += "SkipHyperspacedMessages = 1\r\n";
+					if (chkSkipIffMessages.Checked)
+					{
+						if (chkSkipAllIff.Checked)
+							contents += "SkipObjectsMessagesIff = 255\r\n";
+						else
+							for (int i = 0; i < _skipIffs.Length; i++)
+								if (_skipIffs[i])
+									contents += "SkipObjectsMessagesIff = " + i + "\r\n";
+					}
+					if (chkForceTurret.Checked)
+						contents += "ForcePlayerInTurret = 1\r\n";
+					if (numTurretH.Value != 0)
+						contents += "ForcePlayerInTurretHours = " + (int)numTurretH.Value + "\r\n";
+					if (numTurretM.Value != 0)
+						contents += "ForcePlayerInTurretMinutes = " + (int)numTurretM.Value + "\r\n";
+					if (numTurretS.Value != 8)
+						contents += "ForcePlayerInTurretSeconds = " + (int)numTurretS.Value + "\r\n";
+					if (chkDisableLaser.Checked)
+						contents += "DisablePlayerLaserShoot = 1\r\n";
+					if (chkDisableWarhead.Checked)
+						contents += "DisablePlayerWarheadShoot = 1\r\n";
+					if (chkDisableCollision.Checked)
+						contents += "IsWarheadCollisionDamagesEnabled = 0\r\n";
 				}
 				contents += "\r\n";
             }
@@ -684,6 +723,9 @@ namespace Idmr.Yogeme
 
         void parseContents()
         {
+			if (!_initialLoad) reset();
+
+			System.Diagnostics.Debug.WriteLine("parse");
             string line;
             string lineLower;
             ReadMode readMode = ReadMode.None;
@@ -731,6 +773,8 @@ namespace Idmr.Yogeme
 					else if (lineLower == "[concourse]") readMode = ReadMode.Concourse;
 					else if (lineLower == "[hullicon]") readMode = ReadMode.HullIcon;
 					else _unknown.Add(txtHook.Lines[i]);
+
+					System.Diagnostics.Debug.WriteLine(line);
 				}
 				else if (readMode == ReadMode.Backdrop) lstBackdrops.Items.Add(line);
 				else if (readMode == ReadMode.Mission) parseMission(line);
@@ -779,6 +823,7 @@ namespace Idmr.Yogeme
 
         void reset()
         {
+			System.Diagnostics.Debug.WriteLine("reset");
 			lstBackdrops.Items.Clear();
 			lstMission.Items.Clear();
 			lstSounds.Items.Clear();
@@ -828,6 +873,18 @@ namespace Idmr.Yogeme
 			lstHullIcon.Items.Clear();
 			chkPlayerHull.Checked = false;
 			lstCraftText.Items.Clear();
+			chkRedAlert.Checked = false;
+			chkSkipHyper.Checked = false;
+			chkSkipIffMessages.Checked = false;
+			chkSkipAllIff.Checked = false;
+			for (int i = 0; i < _skipIffs.Length; i++) _skipIffs[i] = false;
+			chkForceTurret.Checked = false;
+			numTurretH.Value = 0;
+			numTurretM.Value = 0;
+			numTurretS.Value = 8;
+			chkDisableLaser.Checked = false;
+			chkDisableWarhead.Checked = false;
+			chkDisableCollision.Checked = false;
         }
 
         #region Backdrops
@@ -845,18 +902,6 @@ namespace Idmr.Yogeme
         #endregion Backdrops
 
         #region MissionTie
-        /* TODO: MissionTIE: other mission stuff
-			IsRedAlertEnabled = 1 (see mission 20)
-			SkipHyperspacedMessages = 1 (see mission 49)
-			SkipObjectsMessagesIff = [IFF] (-1 is "none", 255 is "all", see missions 49-52)
-			ForcePlayerInTurret = 1 (see mission 1)
-			ForcePlayerInTurretHours = [value] (default 0)
-			ForcePlayerInTurretMinutes = [value] (default 0)
-			ForcePlayerInTurretSeconds = [value] (default 8)
-			DisablePlayerLaserShoot = 1
-			DisablePlayerWarheadShoot = 1
-			IsWarheadCollisionDamagesEnabled = 0
-		*/
         /* TODO: MissionTIE: Craft stats by FG:
 			To define a stats profile for a craft, create a file named "[MissionDir]\[Mission]_StatsProfiles.txt" or create a section named "[StatsProfiles]" in "[MissionDir]\[Mission].ini".
 			Or create a file named "FlightModels\StatsProfiles.txt" or create a section named "[StatsProfiles]" in "FlightModels\default.ini".
@@ -936,7 +981,7 @@ namespace Idmr.Yogeme
 						lstSFoils.Items.Add(cboSFoilFG.Items[fg].ToString() + ",closed");
 					else if (parts[2] == "open_landinggears")
 						lstSFoils.Items.Add(cboSFoilFG.Items[fg].ToString() + ",open");
-					else _comments[(int)ReadMode.Mission].Add(line);
+					else throw new InvalidDataException();
 				}
 				else if (parts[0] == "craft")
 				{
@@ -949,24 +994,52 @@ namespace Idmr.Yogeme
 						lstCraftText.Items.Add(cboCraftText.Items[craft].ToString() + ",plural," + parts[3]);
 					else if (parts[2] == "shortname")
 						lstCraftText.Items.Add(cboCraftText.Items[craft].ToString() + ",abbrv," + parts[3]);
-					else _comments[(int)ReadMode.Mission].Add(line);
+					else throw new InvalidDataException();
 				}
 				else
 				{
 					parts = parts[0].Split('=');
-					if (parts[0] == "closesfoilsandopenlandinggearsbeforeenterhangar" && parts[1] == "1")
-						chkForceHangarSF.Checked = true;
-					else if (parts[0] == "closelandinggearsbeforeenterhyperspace" && parts[1] == "1")
-						chkForceHyperLG.Checked = true;
-					else if (parts[0] == "autoclosesfoils" && parts[1] == "0")
-						chkManualSF.Checked = true;
-					else _comments[(int)ReadMode.Mission].Add(line);
+					if (parts[0] == "closesfoilsandopenlandinggearsbeforeenterhangar")
+						chkForceHangarSF.Checked = parts[1] == "1";
+					else if (parts[0] == "closelandinggearsbeforeenterhyperspace")
+						chkForceHyperLG.Checked = parts[1] == "1";
+					else if (parts[0] == "autoclosesfoils")
+						chkManualSF.Checked = parts[1] == "0";
+					else if (parts[0] == "isredalertenabled")
+						chkRedAlert.Checked = parts[1] == "1";
+					else if (parts[0] == "skiphyperspacedmessages")
+						chkSkipHyper.Checked = parts[1] == "1";
+					else if (parts[0] == "skipobjectsmessagesiff")
+					{
+						chkSkipIffMessages.Checked = (parts[1] != "-1");
+						if (parts[1] == "255") chkSkipAllIff.Checked = true;
+						else
+						{
+							chkSkipAllIff.Checked = false;
+							_skipIffs[int.Parse(parts[1])] = true;
+						}
+					}
+					else if (parts[0] == "forceplayerinturret")
+						chkForceTurret.Checked = parts[1] == "1";
+					else if (parts[0] == "forceplayerinturrethours")
+						numTurretH.Value = int.Parse(parts[1]);
+					else if (parts[0] == "forceplayerinturretminutes")
+						numTurretM.Value = int.Parse(parts[1]);
+					else if (parts[0] == "forceplayerinturretseconds")
+						numTurretS.Value = int.Parse(parts[1]);
+					else if (parts[0] == "disableplayerlasershoot")
+						chkDisableLaser.Checked = parts[1] == "1";
+					else if (parts[0] == "disableplayerwarheadshoot")
+						chkDisableWarhead.Checked = parts[1] == "1";
+					else if (parts[0] == "iswarheadcollisiondamagesenabled")
+						chkDisableCollision.Checked = parts[1] == "0";
+					else throw new InvalidDataException();
 				}
 			}
 			catch { _comments[(int)ReadMode.Mission].Add(line); }
 		}
 
-		void cboMission_CheckedChanged(object sender, EventArgs e)
+		void optMission_CheckedChanged(object sender, EventArgs e)
 		{
 			cboMarkings.Enabled = optMarkings.Checked | optWingman.Checked;
 			numWingman.Enabled = optWingman.Checked;
@@ -974,7 +1047,39 @@ namespace Idmr.Yogeme
 			txtPilot.Enabled = optPilot.Checked;
 		}
 
-		private void cmdAddMiss_Click(object sender, EventArgs e)
+        private void cboSkipIff_SelectedIndexChanged(object sender, EventArgs e)
+        {
+			if (cboSkipIff.SelectedIndex == -1) return;
+
+			chkSkipIff.Checked = _skipIffs[cboSkipIff.SelectedIndex];
+        }
+
+        private void chkSkipIff_CheckedChanged(object sender, EventArgs e)
+        {
+			if (cboSkipIff.SelectedIndex == -1) return;
+
+            _skipIffs[cboSkipIff.SelectedIndex] = chkSkipIff.Checked;
+        }
+        private void chkSkipIffMessages_CheckedChanged(object sender, EventArgs e)
+        {
+            chkSkipAllIff.Enabled = chkSkipIffMessages.Checked;
+			if (!chkSkipIffMessages.Checked)
+			{
+				chkSkipAllIff.Checked = false;
+				cboSkipIff.Enabled = chkSkipIff.Enabled = false;
+				for (int i = 0; i < _skipIffs.Length; i++) _skipIffs[i] = false;
+			}
+			else cboSkipIff.Enabled = chkSkipIff.Enabled = true;
+        }
+        private void chkSkipAllIff_CheckedChanged(object sender, EventArgs e)
+        {
+            if (chkSkipAllIff.Enabled)
+			{
+				cboSkipIff.Enabled = chkSkipIff.Enabled = !chkSkipAllIff.Checked;
+			}
+        }
+
+        private void cmdAddMiss_Click(object sender, EventArgs e)
 		{
 			if (cboFG.SelectedIndex == -1 || ((optWingman.Checked || optMarkings.Checked) && cboMarkings.SelectedIndex == -1) || (optIff.Checked && cboIff.SelectedIndex == -1)
 				|| (optPilot.Checked && txtPilot.Text == "")) return;
@@ -998,12 +1103,28 @@ namespace Idmr.Yogeme
             else if (optAbbrvText.Checked) lstCraftText.Items.Add(cboCraftText.Text + ",abbrv," + txtCraftText.Text);
             else if (optSpeciesText.Checked) lstCraftText.Items.Add(cboCraftText.Text + ",species," + txtCraftText.Text);
         }
-
         private void cmdRemoveTextCraft_Click(object sender, EventArgs e)
         {
 			if (lstCraftText.SelectedIndex == -1) return;
 			lstCraftText.Items.RemoveAt(lstCraftText.SelectedIndex);
         }
+
+		bool useMissionSettings
+		{
+			get
+			{
+				if (chkSkipIffMessages.Checked)
+				{
+					for (int i = 0; i < _skipIffs.Length; i++) { if (_skipIffs[i]) return true; }
+					if (chkSkipAllIff.Checked) return true;
+					chkSkipIffMessages.Checked = false;
+				}
+                if (chkRedAlert.Checked || chkSkipHyper.Checked
+                    || chkForceTurret.Checked || numTurretH.Value != 0 || numTurretM.Value != 0 || numTurretS.Value != 8
+                    || chkDisableLaser.Checked || chkDisableWarhead.Checked || chkDisableCollision.Checked) return true;
+                return false;
+			}
+		}
         #endregion
 
         #region Sounds
@@ -1672,7 +1793,7 @@ namespace Idmr.Yogeme
 
 			if (lstBackdrops.Items.Count == 0 && _bdFile != "") File.Delete(_bdFile);
 
-			if (lstMission.Items.Count == 0 && !useSFoils && lstCraftText.Items.Count == 0 && _missionTxtFile != "") File.Delete(_missionTxtFile);
+			if (lstMission.Items.Count == 0 && !useSFoils && lstCraftText.Items.Count == 0 && !useMissionSettings && _missionTxtFile != "") File.Delete(_missionTxtFile);
 
 			if (lstSounds.Items.Count == 0 && _soundFile != "") File.Delete(_soundFile);
 
@@ -1695,7 +1816,7 @@ namespace Idmr.Yogeme
 			if (!chkPlayerHull.Checked && _hullIconFile != "") File.Delete(_hullIconFile);
 
 			if (lstBackdrops.Items.Count == 0
-				&& lstMission.Items.Count == 0 && lstCraftText.Items.Count == 0
+				&& lstMission.Items.Count == 0 && lstCraftText.Items.Count == 0 && !useMissionSettings
                 && lstSounds.Items.Count == 0
 				&& lstObjects.Items.Count == 0 && lstHullIcon.Items.Count == 0
                 && !useHangarObjects && !useHangarCamera && !useFamilyHangarCamera && !useHangarMap && !useFamilyHangarMap
@@ -1756,14 +1877,21 @@ namespace Idmr.Yogeme
 
         private void txtHook_Enter(object sender, EventArgs e)
         {
+			System.Diagnostics.Debug.WriteLine("enter");
 			createContents();
-			reset();
 			parseContents();
         }
         private void txtHook_Leave(object sender, EventArgs e)
         {
             reset();
             parseContents();
+
+            /* There is a condition that causes this to skip over the first reset() call and go directly to parse() when the user clicks certain controls while
+             * the focus is currently in the txt box.
+             * It doesn't matter if the only reset is here or in parse(), it'll skip. That causes every ListBox to be filled again without a Clear().
+             * Other times it'll be fine, which means reset runs twice.
+             * Seems to be an issue with controls that toggle Enabled within reset(); toggling chk, first attempt at a cbo won't drop, etc.
+			*/
         }
 
         struct MapEntry
@@ -1817,5 +1945,7 @@ namespace Idmr.Yogeme
 				return result;
 			}
 		}
+
+        
     }
 }
