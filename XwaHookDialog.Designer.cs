@@ -290,6 +290,18 @@
             this.cmdHullRemove = new System.Windows.Forms.Button();
             this.cmdHullAdd = new System.Windows.Forms.Button();
             this.lstHullIcon = new System.Windows.Forms.ListBox();
+            this.tabStats = new System.Windows.Forms.TabPage();
+            this.lstStats = new System.Windows.Forms.ListBox();
+            this.cmdRemoveStat = new System.Windows.Forms.Button();
+            this.cmdAddStat = new System.Windows.Forms.Button();
+            this.cboStatType = new System.Windows.Forms.ComboBox();
+            this.cboStatMarks = new System.Windows.Forms.ComboBox();
+            this.txtStatProfile = new System.Windows.Forms.TextBox();
+            this.numStatPercent = new System.Windows.Forms.NumericUpDown();
+            this.chkStatPlayer = new System.Windows.Forms.CheckBox();
+            this.label61 = new System.Windows.Forms.Label();
+            this.label62 = new System.Windows.Forms.Label();
+            this.label63 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.numFamHeadingZ)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numFamPosZ)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numFamHeadingXY)).BeginInit();
@@ -359,6 +371,8 @@
             this.pnlHullIcon.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numHullIcon)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numPlayerHull)).BeginInit();
+            this.tabStats.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numStatPercent)).BeginInit();
             this.SuspendLayout();
             // 
             // cmdOK
@@ -2715,6 +2729,7 @@
             // 
             this.tcMission.Controls.Add(this.tabMissFG);
             this.tcMission.Controls.Add(this.tabMissText);
+            this.tcMission.Controls.Add(this.tabStats);
             this.tcMission.Controls.Add(this.tabMissSettings);
             this.tcMission.Location = new System.Drawing.Point(3, 3);
             this.tcMission.Name = "tcMission";
@@ -3461,6 +3476,152 @@
             this.lstHullIcon.Size = new System.Drawing.Size(366, 95);
             this.lstHullIcon.TabIndex = 0;
             // 
+            // tabStats
+            // 
+            this.tabStats.Controls.Add(this.label63);
+            this.tabStats.Controls.Add(this.label62);
+            this.tabStats.Controls.Add(this.label61);
+            this.tabStats.Controls.Add(this.chkStatPlayer);
+            this.tabStats.Controls.Add(this.numStatPercent);
+            this.tabStats.Controls.Add(this.txtStatProfile);
+            this.tabStats.Controls.Add(this.cboStatMarks);
+            this.tabStats.Controls.Add(this.cboStatType);
+            this.tabStats.Controls.Add(this.cmdRemoveStat);
+            this.tabStats.Controls.Add(this.cmdAddStat);
+            this.tabStats.Controls.Add(this.lstStats);
+            this.tabStats.Location = new System.Drawing.Point(4, 22);
+            this.tabStats.Name = "tabStats";
+            this.tabStats.Size = new System.Drawing.Size(369, 251);
+            this.tabStats.TabIndex = 3;
+            this.tabStats.Text = "Craft Stats";
+            this.tabStats.UseVisualStyleBackColor = true;
+            // 
+            // lstStats
+            // 
+            this.lstStats.FormattingEnabled = true;
+            this.lstStats.HorizontalScrollbar = true;
+            this.lstStats.Location = new System.Drawing.Point(2, 6);
+            this.lstStats.Name = "lstStats";
+            this.lstStats.Size = new System.Drawing.Size(364, 95);
+            this.lstStats.TabIndex = 1;
+            // 
+            // cmdRemoveStat
+            // 
+            this.cmdRemoveStat.Location = new System.Drawing.Point(291, 143);
+            this.cmdRemoveStat.Name = "cmdRemoveStat";
+            this.cmdRemoveStat.Size = new System.Drawing.Size(60, 23);
+            this.cmdRemoveStat.TabIndex = 2;
+            this.cmdRemoveStat.Text = "&Remove";
+            this.cmdRemoveStat.UseVisualStyleBackColor = true;
+            this.cmdRemoveStat.Click += new System.EventHandler(this.cmdRemoveStat_Click);
+            // 
+            // cmdAddStat
+            // 
+            this.cmdAddStat.Location = new System.Drawing.Point(225, 143);
+            this.cmdAddStat.Name = "cmdAddStat";
+            this.cmdAddStat.Size = new System.Drawing.Size(60, 23);
+            this.cmdAddStat.TabIndex = 3;
+            this.cmdAddStat.Text = "&Add";
+            this.cmdAddStat.UseVisualStyleBackColor = true;
+            this.cmdAddStat.Click += new System.EventHandler(this.cmdAddStat_Click);
+            // 
+            // cboStatType
+            // 
+            this.cboStatType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboStatType.FormattingEnabled = true;
+            this.cboStatType.Items.AddRange(new object[] {
+            "Profile",
+            "Speed",
+            "Acceleration",
+            "Deceleration",
+            "Pitch",
+            "Roll",
+            "Yaw",
+            "HullStrength",
+            "ShieldStrength",
+            "SystemStrength",
+            "ExplosionStrength"});
+            this.cboStatType.Location = new System.Drawing.Point(3, 107);
+            this.cboStatType.Name = "cboStatType";
+            this.cboStatType.Size = new System.Drawing.Size(141, 21);
+            this.cboStatType.TabIndex = 4;
+            this.cboStatType.SelectedIndexChanged += new System.EventHandler(this.cboStatType_SelectedIndexChanged);
+            // 
+            // cboStatMarks
+            // 
+            this.cboStatMarks.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboStatMarks.DropDownWidth = 120;
+            this.cboStatMarks.Enabled = false;
+            this.cboStatMarks.FormattingEnabled = true;
+            this.cboStatMarks.Location = new System.Drawing.Point(54, 134);
+            this.cboStatMarks.Name = "cboStatMarks";
+            this.cboStatMarks.Size = new System.Drawing.Size(147, 21);
+            this.cboStatMarks.TabIndex = 8;
+            // 
+            // txtStatProfile
+            // 
+            this.txtStatProfile.Enabled = false;
+            this.txtStatProfile.Location = new System.Drawing.Point(76, 161);
+            this.txtStatProfile.Name = "txtStatProfile";
+            this.txtStatProfile.Size = new System.Drawing.Size(125, 20);
+            this.txtStatProfile.TabIndex = 9;
+            this.txtStatProfile.Text = "Default";
+            // 
+            // numStatPercent
+            // 
+            this.numStatPercent.Enabled = false;
+            this.numStatPercent.Location = new System.Drawing.Point(155, 108);
+            this.numStatPercent.Maximum = new decimal(new int[] {
+            500,
+            0,
+            0,
+            0});
+            this.numStatPercent.Name = "numStatPercent";
+            this.numStatPercent.Size = new System.Drawing.Size(46, 20);
+            this.numStatPercent.TabIndex = 10;
+            this.numStatPercent.Value = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            // 
+            // chkStatPlayer
+            // 
+            this.chkStatPlayer.AutoSize = true;
+            this.chkStatPlayer.Location = new System.Drawing.Point(284, 109);
+            this.chkStatPlayer.Name = "chkStatPlayer";
+            this.chkStatPlayer.Size = new System.Drawing.Size(80, 17);
+            this.chkStatPlayer.TabIndex = 11;
+            this.chkStatPlayer.Text = "Player Craft";
+            this.chkStatPlayer.UseVisualStyleBackColor = true;
+            // 
+            // label61
+            // 
+            this.label61.AutoSize = true;
+            this.label61.Location = new System.Drawing.Point(205, 110);
+            this.label61.Name = "label61";
+            this.label61.Size = new System.Drawing.Size(44, 13);
+            this.label61.TabIndex = 12;
+            this.label61.Text = "Percent";
+            // 
+            // label62
+            // 
+            this.label62.AutoSize = true;
+            this.label62.Location = new System.Drawing.Point(3, 137);
+            this.label62.Name = "label62";
+            this.label62.Size = new System.Drawing.Size(45, 13);
+            this.label62.TabIndex = 13;
+            this.label62.Text = "Marking";
+            // 
+            // label63
+            // 
+            this.label63.AutoSize = true;
+            this.label63.Location = new System.Drawing.Point(3, 164);
+            this.label63.Name = "label63";
+            this.label63.Size = new System.Drawing.Size(67, 13);
+            this.label63.TabIndex = 14;
+            this.label63.Text = "Profile Name";
+            // 
             // XwaHookDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -3576,6 +3737,9 @@
             this.pnlHullIcon.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numHullIcon)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numPlayerHull)).EndInit();
+            this.tabStats.ResumeLayout(false);
+            this.tabStats.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numStatPercent)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -3844,5 +4008,17 @@
         private System.Windows.Forms.NumericUpDown numTurretS;
         private System.Windows.Forms.NumericUpDown numTurretM;
         private System.Windows.Forms.NumericUpDown numTurretH;
+        private System.Windows.Forms.TabPage tabStats;
+        private System.Windows.Forms.ListBox lstStats;
+        private System.Windows.Forms.ComboBox cboStatType;
+        private System.Windows.Forms.Button cmdRemoveStat;
+        private System.Windows.Forms.Button cmdAddStat;
+        private System.Windows.Forms.TextBox txtStatProfile;
+        private System.Windows.Forms.ComboBox cboStatMarks;
+        private System.Windows.Forms.NumericUpDown numStatPercent;
+        private System.Windows.Forms.Label label63;
+        private System.Windows.Forms.Label label62;
+        private System.Windows.Forms.Label label61;
+        private System.Windows.Forms.CheckBox chkStatPlayer;
     }
 }

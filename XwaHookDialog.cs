@@ -11,8 +11,8 @@
  * [UPD] Redid GUI
  * [UPD] No longer restricted by hook presence, added "*" to cbo as flag
  * [UPD] Unrecognized sections and comments are kept
- * [UPD] Object weapon profiles
- * [UPD] Mission craft text
+ * [ADD] MissionObject: weapon profiles
+ * [ADD] MissionTie: Mission craft text, StatsProfiles
  * v1.14.1, 230814
  * [ADD] Hyperspace hook support
  * [ADD] Object profile per model
@@ -57,12 +57,11 @@ using Idmr.Platform.Xwa;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Runtime.Remoting.Contexts;
 using System.Windows.Forms;
 
 namespace Idmr.Yogeme
 {
-	public partial class XwaHookDialog : Form
+    public partial class XwaHookDialog : Form
 	{
 		// this is going to be setup to read from the individual TXT files, but always write to Mission.ini
 		readonly string _mission;
@@ -81,12 +80,13 @@ namespace Idmr.Yogeme
 		readonly string _hyperFile = "";
 		readonly string _concourseFile = "";
 		readonly string _hullIconFile = "";
+		readonly string _statsFile = "";
 		readonly string _installDirectory = "";
 		readonly string _mis = "Missions\\";
 		readonly string _res = "Resdata\\";
 		readonly string _wave = "Wave\\";
 		readonly string _fm = "FlightModels\\";
-		enum ReadMode { None = -1, Backdrop, Mission, Sounds, Objects, HangarObjects, HangarCamera, FamilyHangarCamera, HangarMap, FamilyHangarMap, Skins, Shield, Hyper, Concourse, HullIcon }
+		enum ReadMode { None = -1, Backdrop, Mission, Sounds, Objects, HangarObjects, HangarCamera, FamilyHangarCamera, HangarMap, FamilyHangarMap, Skins, Shield, Hyper, Concourse, HullIcon, Stats }
 		bool _loading = false;
 		readonly int[,] _cameras = new int[5, 3];
 		readonly int[,] _defaultCameras = new int[5, 3] { { 1130, -2320, -300 }, { 1240, -330, -700 }, { -1120, 1360, -790 }, { -1200, -1530, -850 }, { 1070, 4640, -130 } };
@@ -97,7 +97,7 @@ namespace Idmr.Yogeme
 		readonly int[] _defaultRoofCranePosition = new int[3] { -1400, 786, -282 };
 		readonly Panel[] _panels = new Panel[11];
 		readonly List<string> _unknown = new List<string>();
-        readonly List<string>[] _comments = new List<string>[14];
+        readonly List<string>[] _comments = new List<string>[15];
 		string _preComments = "";
 		readonly bool[] _skipIffs = new bool[255];
         readonly bool _initialLoad = true;
@@ -151,6 +151,7 @@ namespace Idmr.Yogeme
 			cboMapMarkings.Items.AddRange(Strings.Color);
 			cboFamMapMarkings.Items.AddRange(Strings.Color);
 			cboSkinMarks.Items.AddRange(Strings.Color);
+			cboStatMarks.Items.AddRange(Strings.Color);
 			for (int i = cboMarkings.Items.Count; i < 256; i++)
 			{
 				cboMarkings.Items.Add("Clr #" + (i + 1));
@@ -158,6 +159,7 @@ namespace Idmr.Yogeme
 				cboMapMarkings.Items.Add("Clr #" + (i + 1));
 				cboFamMapMarkings.Items.Add("Clr #" + (i + 1));
 				cboSkinMarks.Items.Add("Clr #" + (i + 1));
+				cboStatMarks.Items.Add("Clr #" + (i + 1));
 			}
 			cboMarkings.SelectedIndex = 0;
 			cboShuttleMarks.SelectedIndex = 0;
@@ -215,6 +217,7 @@ namespace Idmr.Yogeme
 				_hyperFile = checkFile("_Hyperspace.txt");
 				_concourseFile = checkFile("_Concourse.txt");
 				_hullIconFile = checkFile("_HullIcon.txt");
+				_statsFile = checkFile("_StatsProfile.txt");
 			}
 			string line;
 
@@ -384,6 +387,19 @@ namespace Idmr.Yogeme
 					}
 				}
 			}
+			if (_statsFile != "")
+			{
+				using (var sr = new StringReader(_statsFile))
+				{
+					while ((line = sr.ReadLine()) != null)
+					{
+						line = removeComment (line);
+						if (line == "") continue;
+
+						lstStats.Items.Add(line);
+					}
+				}
+			}
 			#endregion
 
 			if (File.Exists(_fileName))
@@ -408,7 +424,6 @@ namespace Idmr.Yogeme
 
 		void createContents()
 		{
-			System.Diagnostics.Debug.WriteLine("create");
             string title = "";
             if (_installDirectory != "") using (var sr = new StreamReader(_installDirectory + "\\Missions\\MISSION.LST"))
                 {
@@ -441,7 +456,7 @@ namespace Idmr.Yogeme
                 for (int i = 0; i < lstBackdrops.Items.Count; i++) contents += lstBackdrops.Items[i] + "\r\n";
 				contents += "\r\n";
             }
-			if (_comments[(int)ReadMode.Backdrop].Count > 0) insertComments(ref contents, (int)ReadMode.Backdrop);
+			insertComments(ref contents, (int)ReadMode.Backdrop);
             if (lstMission.Items.Count > 0 || useSFoils || lstCraftText.Items.Count > 0 || useMissionSettings)
             {
                 contents += "[Mission_Tie]\r\n";
@@ -551,14 +566,14 @@ namespace Idmr.Yogeme
 				}
 				contents += "\r\n";
             }
-            if (_comments[(int)ReadMode.Mission].Count > 0) insertComments(ref contents, (int)ReadMode.Mission);
+            insertComments(ref contents, (int)ReadMode.Mission);
             if (lstSounds.Items.Count > 0)
             {
                 contents += "[Sounds]\r\n";
                 for (int i = 0; i < lstSounds.Items.Count; i++) contents += lstSounds.Items[i] + "\r\n";
                 contents += "\r\n";
             }
-            if (_comments[(int)ReadMode.Sounds].Count > 0) insertComments(ref contents, (int)ReadMode.Sounds);
+            insertComments(ref contents, (int)ReadMode.Sounds);
             if (lstObjects.Items.Count > 0 || lstHullIcon.Items.Count > 0)
             {
                 contents += "[Objects]\r\n";
@@ -566,7 +581,7 @@ namespace Idmr.Yogeme
                 for (int i = 0; i < lstHullIcon.Items.Count; i++) contents += lstHullIcon.Items[i] + "\r\n";
                 contents += "\r\n";
             }
-            if (_comments[(int)ReadMode.Objects].Count > 0) insertComments(ref contents, (int)ReadMode.Objects);
+            insertComments(ref contents, (int)ReadMode.Objects);
             if (useHangarObjects)
 			{
 				contents += "[HangarObjects]\r\n";
@@ -609,7 +624,7 @@ namespace Idmr.Yogeme
 				for (int i = 0; i < lstHangarObjects.Items.Count; i++) contents += lstHangarObjects.Items[i] + "\r\n";
 				contents += "\r\n";
 			}
-            if (_comments[(int)ReadMode.HangarObjects].Count > 0) insertComments(ref contents, (int)ReadMode.HangarObjects);
+            insertComments(ref contents, (int)ReadMode.HangarObjects);
             if (useHangarCamera)
 			{
 				contents += "[HangarCamera]\r\n";
@@ -627,7 +642,7 @@ namespace Idmr.Yogeme
 				}
 				contents += "\r\n";
 			}
-            if (_comments[(int)ReadMode.HangarCamera].Count > 0) insertComments(ref contents, (int)ReadMode.HangarCamera);
+            insertComments(ref contents, (int)ReadMode.HangarCamera);
             if (useFamilyHangarCamera)
 			{
 				contents += "[FamHangarCamera]\r\n";
@@ -645,28 +660,28 @@ namespace Idmr.Yogeme
 				}
 				contents += "\r\n";
 			}
-            if (_comments[(int)ReadMode.FamilyHangarCamera].Count > 0) insertComments(ref contents, (int)ReadMode.FamilyHangarCamera);
+            insertComments(ref contents, (int)ReadMode.FamilyHangarCamera);
             if (useHangarMap)
 			{
 				contents += "[HangarMap]\r\n";
 				for (int i = 0; i < lstMap.Items.Count; i++) contents += lstMap.Items[i].ToString() + "\r\n";
 				contents += "\r\n";
 			}
-            if (_comments[(int)ReadMode.HangarMap].Count > 0) insertComments(ref contents, (int)ReadMode.HangarMap);
+            insertComments(ref contents, (int)ReadMode.HangarMap);
             if (useFamilyHangarMap)
 			{
 				contents += "[FamHangarMap]\r\n";
 				for (int i = 0; i < lstFamilyMap.Items.Count; i++) contents += lstFamilyMap.Items[i].ToString() + "\r\n";
 				contents += "\r\n";
 			}
-            if (_comments[(int)ReadMode.FamilyHangarMap].Count > 0) insertComments(ref contents, (int)ReadMode.FamilyHangarMap);
+            insertComments(ref contents, (int)ReadMode.FamilyHangarMap);
             if (lstSkins.Items.Count > 0)
             {
                 contents += "[Skins]\r\n";
                 for (int i = 0; i < lstSkins.Items.Count; i++) contents += lstSkins.Items[i] + "\r\n";
 				contents += "\r\n";
             }
-            if (_comments[(int)ReadMode.Skins].Count > 0) insertComments(ref contents, (int)ReadMode.Skins);
+            insertComments(ref contents, (int)ReadMode.Skins);
             if (lstShield.Items.Count > 0 || !chkSSRecharge.Checked)
             {
                 contents += "[Shield]\r\n";
@@ -685,12 +700,12 @@ namespace Idmr.Yogeme
 				if (!chkSSRecharge.Checked) contents += "IsShieldRechargeForStarshipsEnabled = 0\r\n";
 				contents += "\r\n";
             }
-            if (_comments[(int)ReadMode.Shield].Count > 0) insertComments(ref contents, (int)ReadMode.Shield);
+            insertComments(ref contents, (int)ReadMode.Shield);
             if (!optHypGlobal.Checked)
             {
 				contents += "[Hyperspace]\r\nShortHyperspaceEffect = " + (optHypNormal.Checked ? "0" : "1") + "\r\n\r\n";
             }
-            if (_comments[(int)ReadMode.Hyper].Count > 0) insertComments(ref contents, (int)ReadMode.Hyper);
+            insertComments(ref contents, (int)ReadMode.Hyper);
             if (chkConcoursePlanetIndex.Checked || chkConcoursePlanetX.Checked || chkConcoursePlanetY.Checked)
 			{
 				contents += "[Concourse]\r\n";
@@ -699,12 +714,19 @@ namespace Idmr.Yogeme
 				if (chkConcoursePlanetY.Checked) contents += "FontPlanetPositionY = " + numConcoursePlanetY.Value + "\r\n";
 				contents += "\r\n";
 			}
-            if (_comments[(int)ReadMode.Concourse].Count > 0) insertComments(ref contents, (int)ReadMode.Concourse);
+            insertComments(ref contents, (int)ReadMode.Concourse);
 			if (chkPlayerHull.Checked && numPlayerHull.Value > 0)
 			{
 				contents += "[HullIcon]\r\nPlayerHullIcon = " + numPlayerHull.Value + "\r\n\r\n";
 			}
-			if (_comments[(int)ReadMode.HullIcon].Count > 0) insertComments(ref contents, (int)(ReadMode.HullIcon));
+			insertComments(ref contents, (int)ReadMode.HullIcon);
+			if (lstStats.Items.Count > 0)
+			{
+				contents += "[StatsProfiles]\r\n";
+				for (int i = 0; i < lstStats.Items.Count; i++) contents += lstStats.Items[i] + "\r\n";
+				contents += "\r\n";
+			}
+			insertComments(ref contents, (int)ReadMode.Stats);
 
             for (int i = 0; i < _unknown.Count; i++) contents += _unknown[i] + "\r\n";
 
@@ -715,7 +737,7 @@ namespace Idmr.Yogeme
 		{
             if (_comments[index].Count > 0)
             {
-                text = text.Substring(0, text.Length - 2);
+                text = text.Substring(0, text.Length - 2);	// trim off the extra "\r\n"
                 for (int i = 0; i < _comments[index].Count; i++) text += _comments[index][i] + "\r\n";
                 text += "\r\n";
             }
@@ -725,7 +747,6 @@ namespace Idmr.Yogeme
         {
 			if (!_initialLoad) reset();
 
-			System.Diagnostics.Debug.WriteLine("parse");
             string line;
             string lineLower;
             ReadMode readMode = ReadMode.None;
@@ -772,9 +793,8 @@ namespace Idmr.Yogeme
 					else if (lineLower == "[hyperspace]") readMode = ReadMode.Hyper;
 					else if (lineLower == "[concourse]") readMode = ReadMode.Concourse;
 					else if (lineLower == "[hullicon]") readMode = ReadMode.HullIcon;
+					else if (lineLower == "[statsprofiles]") readMode = ReadMode.Stats;
 					else _unknown.Add(txtHook.Lines[i]);
-
-					System.Diagnostics.Debug.WriteLine(line);
 				}
 				else if (readMode == ReadMode.Backdrop) lstBackdrops.Items.Add(line);
 				else if (readMode == ReadMode.Mission) parseMission(line);
@@ -806,6 +826,7 @@ namespace Idmr.Yogeme
 				else if (readMode == ReadMode.Hyper) parseHyper(line);
 				else if (readMode == ReadMode.Concourse) parseConcourse(line);
 				else if (readMode == ReadMode.HullIcon) parseHullIcon(line);
+				else if (readMode == ReadMode.Stats) lstStats.Items.Add(line);
 				else if (readMode == ReadMode.None && !isPre) _unknown.Add(txtHook.Lines[i]);
             }
         }
@@ -823,7 +844,6 @@ namespace Idmr.Yogeme
 
         void reset()
         {
-			System.Diagnostics.Debug.WriteLine("reset");
 			lstBackdrops.Items.Clear();
 			lstMission.Items.Clear();
 			lstSounds.Items.Clear();
@@ -885,6 +905,7 @@ namespace Idmr.Yogeme
 			chkDisableLaser.Checked = false;
 			chkDisableWarhead.Checked = false;
 			chkDisableCollision.Checked = false;
+			lstStats.Items.Clear();
         }
 
         #region Backdrops
@@ -902,64 +923,6 @@ namespace Idmr.Yogeme
         #endregion Backdrops
 
         #region MissionTie
-        /* TODO: MissionTIE: Craft stats by FG:
-			To define a stats profile for a craft, create a file named "[MissionDir]\[Mission]_StatsProfiles.txt" or create a section named "[StatsProfiles]" in "[MissionDir]\[Mission].ini".
-			Or create a file named "FlightModels\StatsProfiles.txt" or create a section named "[StatsProfiles]" in "FlightModels\default.ini".
-			The format is
-			CraftOptName_fgc_# = ProfileName
-			PlayerSpeedPercent = integer
-			PlayerAccelerationPercent = integer
-			PlayerDecelerationPercent = integer
-			PlayerPitchPercent = integer
-			PlayerRollPercent = integer
-			PlayerYawPercent = integer
-			PlayerExplosionStrengthPercent = integer
-			PlayerHullStrengthPercent = integer
-			PlayerSystemStrengthPercent = integer
-			PlayerShieldStrengthPercent = integer
-			SpeedPercent = integer
-			AccelerationPercent = integer
-			DecelerationPercent = integer
-			PitchPercent = integer
-			RollPercent = integer
-			YawPercent = integer
-			ExplosionStrengthPercent = integer
-			HullStrengthPercent = integer
-			SystemStrengthPercent = integer
-			ShieldStrengthPercent = integer
-			# in CraftOptName_fgc_# is an integer for the opt color marking index, starting at 0.
-			To define a profile for the player craft, set "CraftOptName_fg_player = ProfileName".
-			The default ProfileName is "Default".
-			Player*Percent applies to the player craft.
-			*Percent applies to all crafts.
-			See "StatsProfiles.txt"
-
-			The raw values are calculated as follow:
-
-			stats.Speed = (int)(stats.Speed * 2.25f + 0.5f);
-			stats.Acceleration = (int)(stats.Acceleration * 2.25f + 0.5f);
-			stats.Deceleration = (int)(stats.Deceleration * 2.25f + 0.5f);
-			stats.Pitch = stats.Pitch * 256;
-			stats.Roll = stats.Roll * 256;
-			stats.Yaw = stats.Yaw * 256;
-			stats.ExplosionStrength = stats.ExplosionStrength * 105;
-			stats.HullStrength = stats.HullStrength * 105;
-			stats.ShieldStrength = stats.ShieldStrength * 50;
-
-			if( ShipCategory == ShipCategory_Starship || ShipCategory == ShipCategory_Platform )
-			{
-				HullStrength /= 16;
-				ShieldStrength /= 16;
-				ExplosionStrength /= 16
-			}
-
-			if( ShipCategory == ShipCategory_Freighter || ShipCategory == ShipCategory_Container )
-			{
-				HullStrength /= 4;
-				ShieldStrength /= 4;
-				ExplosionStrength /= 4
-			}
-		*/
         /// <remarks>This also parses S-Foils</remarks>
         void parseMission(string line)
 		{
@@ -1053,6 +1016,13 @@ namespace Idmr.Yogeme
 
 			chkSkipIff.Checked = _skipIffs[cboSkipIff.SelectedIndex];
         }
+        private void cboStatType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+			if (cboStatType.SelectedIndex == -1) return;
+
+			txtStatProfile.Enabled = cboStatMarks.Enabled = (cboStatType.SelectedIndex == 0);
+			numStatPercent.Enabled = !txtStatProfile.Enabled;
+        }
 
         private void chkSkipIff_CheckedChanged(object sender, EventArgs e)
         {
@@ -1108,8 +1078,37 @@ namespace Idmr.Yogeme
 			if (lstCraftText.SelectedIndex == -1) return;
 			lstCraftText.Items.RemoveAt(lstCraftText.SelectedIndex);
         }
+        private void cmdAddStat_Click(object sender, EventArgs e)
+        {
+			if (cboStatType.SelectedIndex == -1) return;
 
-		bool useMissionSettings
+			if (cboStatType.SelectedIndex == 0 && txtStatProfile.Text.ToLower() != "default" && (chkStatPlayer.Checked || cboStatMarks.SelectedIndex != -1))
+			{
+				opnObjects.Title = "Select object...";
+				var res = opnObjects.ShowDialog();
+				if (res == DialogResult.OK)
+				{
+					string line = Path.GetFileNameWithoutExtension(opnObjects.FileName) + "_fg";
+					if (chkStatPlayer.Checked) line += "_player";
+					else line += "c_" + cboStatMarks.SelectedIndex;
+					line += " = " + txtStatProfile.Text;
+					lstStats.Items.Add(line);
+				}
+			}
+			else if (cboStatType.SelectedIndex != 0)
+			{
+				string line = cboStatType.Text + "Percent = " + numStatPercent.Value;
+				if (chkStatPlayer.Checked) line = "Player" + line;
+				lstStats.Items.Add(line);
+			}
+        }
+        private void cmdRemoveStat_Click(object sender, EventArgs e)
+        {
+			if (lstStats.SelectedIndex == -1) return;
+			lstStats.Items.RemoveAt(lstStats.SelectedIndex);
+        }
+
+        bool useMissionSettings
 		{
 			get
 			{
@@ -1815,6 +1814,8 @@ namespace Idmr.Yogeme
 
 			if (!chkPlayerHull.Checked && _hullIconFile != "") File.Delete(_hullIconFile);
 
+			if (lstStats.Items.Count == 0 && _statsFile != "") File.Delete(_statsFile);
+
 			if (lstBackdrops.Items.Count == 0
 				&& lstMission.Items.Count == 0 && lstCraftText.Items.Count == 0 && !useMissionSettings
                 && lstSounds.Items.Count == 0
@@ -1825,7 +1826,8 @@ namespace Idmr.Yogeme
                 && lstShield.Items.Count == 0 && chkSSRecharge.Checked
                 && optHypGlobal.Checked
 				&& !chkConcoursePlanetIndex.Checked && !chkConcoursePlanetX.Checked && !chkConcoursePlanetY.Checked
-                && !chkPlayerHull.Checked)
+                && !chkPlayerHull.Checked
+				&& lstStats.Items.Count == 0)
 			{
 				File.Delete(_fileName);
 				Close();
@@ -1861,6 +1863,7 @@ namespace Idmr.Yogeme
 				if (_hyperFile != "") File.Delete(_hyperFile);
 				if (_concourseFile != "") File.Delete(_concourseFile);
 				if (_hullIconFile != "") File.Delete(_hullIconFile);
+				if (_statsFile != "") File.Delete(_statsFile);
 			}
 			catch
 			{
@@ -1877,7 +1880,6 @@ namespace Idmr.Yogeme
 
         private void txtHook_Enter(object sender, EventArgs e)
         {
-			System.Diagnostics.Debug.WriteLine("enter");
 			createContents();
 			parseContents();
         }
@@ -1945,7 +1947,5 @@ namespace Idmr.Yogeme
 				return result;
 			}
 		}
-
-        
     }
 }
