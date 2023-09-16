@@ -13,6 +13,11 @@
  * [UPD] Unrecognized sections and comments are kept
  * [ADD] MissionObject: weapon profiles
  * [ADD] MissionTie: Mission craft text, StatsProfiles
+ * [UPD] FamHangarCamera: uses current "FamKey"
+ * [UPD] HangarMap and FamHangarMap: ObjectProfile and IsFloorInverted
+ * [UPD] HangarObjects: LoadShuttle now correctly checks on "1" instead of "not 0", "FoldOutside" removed
+ * [UPD] Camera and Family Camera tabs consolidated
+ * [ADD] Hangar now looks for _Opt and _Opt_IFF# sections and files
  * v1.14.1, 230814
  * [ADD] Hyperspace hook support
  * [ADD] Object profile per model
@@ -75,7 +80,19 @@ namespace Idmr.Yogeme
 		readonly string _famHangarCameraFile = "";
 		readonly string _hangarMapFile = "";
 		readonly string _famHangarMapFile = "";
-		readonly string _32bppFile = "";
+        readonly int _commandIff = 0;
+        readonly string _commandOpt = "";
+        readonly string _hangarObjectsFileS = "";
+        readonly string _hangarCameraFileS = "";
+        readonly string _famHangarCameraFileS = "";
+        readonly string _hangarMapFileS = "";
+        readonly string _famHangarMapFileS = "";
+        readonly string _hangarObjectsFileSI = "";
+        readonly string _hangarCameraFileSI = "";
+        readonly string _famHangarCameraFileSI = "";
+        readonly string _hangarMapFileSI = "";
+        readonly string _famHangarMapFileSI = "";
+        readonly string _32bppFile = "";
 		readonly string _shieldFile = "";
 		readonly string _hyperFile = "";
 		readonly string _concourseFile = "";
@@ -192,11 +209,74 @@ namespace Idmr.Yogeme
 			cboCraftText.Items.AddRange(Strings.CraftType);
 			cboCraftText.SelectedIndex = 0;
 			for (int i = 0; i < _comments.Length; i++) _comments[i] = new List<string>();
-			#endregion
+            #endregion
 
-			if (config.XwaInstalled)
+            if (config.XwaInstalled) _installDirectory = config.XwaPath + "\\";
+            #region get CommandShip
+            // CommandShip priority order: Player's CommandShip, Player's Arrival MS, Player's Departure MS
+            int commandShip = -1;
+            for (int i = 0; i < mission.FlightGroups.Count; i++)
 			{
-				_installDirectory = config.XwaPath + "\\";
+				if (mission.FlightGroups[i].PlayerNumber == 1)
+				{
+					var player = mission.FlightGroups[i];
+					int team = player.Team;
+					for (int j = 0; j < mission.FlightGroups.Count; j++)
+					{
+						var fg = mission.FlightGroups[j];
+						if ((fg.EnableDesignation1 == team && fg.Designation1 == 0) || (fg.EnableDesignation2 == team && fg.Designation2 == 0))
+						{
+							commandShip = j;
+							break;
+						}
+					}
+					if (commandShip != -1) break;
+
+					if (player.ArrivalMethod1) commandShip = player.ArrivalCraft1;
+					else if (player.DepartureMethod1) commandShip = player.DepartureCraft1;
+				}
+                if (commandShip != -1) break;
+            }
+			if (commandShip != -1 && config.XwaInstalled)
+			{
+				try
+				{
+					_commandIff = mission.FlightGroups[commandShip].IFF;
+
+					// OPT here. Use ship to get Species, to get EXE craft properties, which gets the line number in either LST, which is the OPT name
+					int type = mission.FlightGroups[commandShip].CraftType;
+					short lstFile = 0;
+					short lstLine = 0;
+					using (var exe = new BinaryReader(File.OpenRead(_installDirectory + "\\XwingAlliance.exe")))
+					{
+						exe.BaseStream.Position = 0x1AFB70 + type * 2;
+						short species = exe.ReadInt16();
+                        exe.BaseStream.Position = 0x1F9E40 + species * 0x18 + 0x14;
+						lstFile = exe.ReadInt16();
+						lstLine = exe.ReadInt16();
+					}
+					string lstFileName = "";
+					if (lstFile == 0) lstFileName = "SPACECRAFT0.LST";
+					else if (lstFile == 1) lstFileName = "EQUIPMENT0.LST";
+
+					using (var lst = new StreamReader(_installDirectory + _fm + lstFileName))
+					{
+						int lineNumber = 0;
+						while (lineNumber < lstLine)
+						{
+							lst.ReadLine();
+							lineNumber++;
+						}
+
+						_commandOpt = Path.GetFileNameWithoutExtension(lst.ReadLine());
+					}
+				}
+				catch { /* do nothing. If anything in here blows up, just forget it */ }
+			}
+            #endregion
+
+            if (config.XwaInstalled)
+			{
 				for (int i = 0; i < cboHook.Items.Count; i++)
 				{
 					string hook = "Hook_" + cboHook.Items[i].ToString() + ".dll";
@@ -212,6 +292,19 @@ namespace Idmr.Yogeme
 				_famHangarCameraFile = checkFile("_FamHangarCamera.txt");
 				_hangarMapFile = checkFile("_HangarMap.txt");
 				_famHangarMapFile = checkFile("_FamHangarMap.txt");
+				if (_commandOpt != "")
+				{
+                    _hangarObjectsFileSI = checkFile("_HangarObjects_" + _commandOpt + "_" + _commandIff + ".txt");
+                    _hangarCameraFileSI = checkFile("_HangarCamera_" + _commandOpt + "_" + _commandIff + ".txt");
+                    _famHangarCameraFileSI = checkFile("_FamHangarCamera_" + _commandOpt + "_" + _commandIff + ".txt");
+                    _hangarMapFileSI = checkFile("_HangarMap_" + _commandOpt + "_" + _commandIff + ".txt");
+                    _famHangarMapFileSI = checkFile("_FamHangarMap_" + _commandOpt + "_" + _commandIff + ".txt");
+                    _hangarObjectsFileS = checkFile("_HangarObjects_" + _commandOpt + ".txt");
+                    _hangarCameraFileS = checkFile("_HangarCamera_" + _commandOpt + ".txt");
+                    _famHangarCameraFileS = checkFile("_FamHangarCamera_" + _commandOpt + ".txt");
+                    _hangarMapFileS = checkFile("_HangarMap_" + _commandOpt + ".txt");
+                    _famHangarMapFileS = checkFile("_FamHangarMap_" + _commandOpt + ".txt");
+                }
 				_32bppFile = checkFile("_Skins.txt");
 				_shieldFile = checkFile("_Shield.txt");
 				_hyperFile = checkFile("_Hyperspace.txt");
@@ -267,7 +360,136 @@ namespace Idmr.Yogeme
 						else lstObjects.Items.Add(line);
 					}
 			}
-			if (_hangarObjectsFile != "")
+            if (_commandOpt != "")
+            {
+                if (_hangarObjectsFileSI != "")
+                {
+                    using (var sr = new StreamReader(_hangarObjectsFileSI))
+                        while ((line = sr.ReadLine()) != null)
+                        {
+                            line = removeComment(line);
+                            if (line == "") continue;
+
+                            parseHangarObjects(line);
+                        }
+                }
+                if (_hangarCameraFileSI != "")
+                {
+                    using (var sr = new StreamReader(_hangarCameraFileSI))
+                        while ((line = sr.ReadLine()) != null)
+                        {
+                            line = removeComment(line);
+                            if (line == "") continue;
+
+                            parseHangarCamera(line);
+                        }
+                }
+                if (_famHangarCameraFileSI != "")
+                {
+                    using (var sr = new StreamReader(_famHangarCameraFileSI))
+                        while ((line = sr.ReadLine()) != null)
+                        {
+                            line = removeComment(line);
+                            if (line == "") continue;
+
+                            parseFamilyHangarCamera(line);
+                        }
+                }
+                if (_hangarMapFileSI != "")
+                {
+                    using (var sr = new StreamReader(_hangarMapFileSI))
+                    {
+                        MapEntry entry = new MapEntry();
+                        while ((line = sr.ReadLine()) != null)
+                        {
+                            line = removeComment(line);
+                            if (line == "") continue;
+
+                            if (entry.Parse(line))
+                                lstMap.Items.Add(entry.ToString());
+                        }
+                    }
+                }
+                if (_famHangarMapFileSI != "")
+                {
+                    using (var sr = new StreamReader(_famHangarMapFileSI))
+                    {
+                        MapEntry entry = new MapEntry();
+                        while ((line = sr.ReadLine()) != null)
+                        {
+                            line = removeComment(line);
+                            if (line == "") continue;
+
+                            if (entry.Parse(line))
+                                lstFamilyMap.Items.Add(entry.ToString());
+                        }
+                    }
+                }
+                if (_hangarObjectsFileS != "")
+                {
+                    using (var sr = new StreamReader(_hangarObjectsFileS))
+                        while ((line = sr.ReadLine()) != null)
+                        {
+                            line = removeComment(line);
+                            if (line == "") continue;
+
+                            parseHangarObjects(line);
+                        }
+                }
+                if (_hangarCameraFileS != "")
+                {
+                    using (var sr = new StreamReader(_hangarCameraFileS))
+                        while ((line = sr.ReadLine()) != null)
+                        {
+                            line = removeComment(line);
+                            if (line == "") continue;
+
+                            parseHangarCamera(line);
+                        }
+                }
+                if (_famHangarCameraFileS != "")
+                {
+                    using (var sr = new StreamReader(_famHangarCameraFileS))
+                        while ((line = sr.ReadLine()) != null)
+                        {
+                            line = removeComment(line);
+                            if (line == "") continue;
+
+                            parseFamilyHangarCamera(line);
+                        }
+                }
+                if (_hangarMapFileS != "")
+                {
+                    using (var sr = new StreamReader(_hangarMapFileS))
+                    {
+                        MapEntry entry = new MapEntry();
+                        while ((line = sr.ReadLine()) != null)
+                        {
+                            line = removeComment(line);
+                            if (line == "") continue;
+
+                            if (entry.Parse(line))
+                                lstMap.Items.Add(entry.ToString());
+                        }
+                    }
+                }
+                if (_famHangarMapFileS != "")
+                {
+                    using (var sr = new StreamReader(_famHangarMapFileS))
+                    {
+                        MapEntry entry = new MapEntry();
+                        while ((line = sr.ReadLine()) != null)
+                        {
+                            line = removeComment(line);
+                            if (line == "") continue;
+
+                            if (entry.Parse(line))
+                                lstFamilyMap.Items.Add(entry.ToString());
+                        }
+                    }
+                }
+            }
+            if (_hangarObjectsFile != "")
 			{
 				using (var sr = new StreamReader(_hangarObjectsFile))
 					while ((line = sr.ReadLine()) != null)
@@ -619,7 +841,6 @@ namespace Idmr.Yogeme
 				if (numPlayerY.Value != 0) contents += "PlayerOffsetY = " + (int)numPlayerY.Value + "\r\n";
 				if (numPlayerZ.Value != 0) contents += "PlayerOffsetZ = " + (int)numPlayerZ.Value + "\r\n";
 				if (chkPlayerFloor.Checked) contents += "IsPlayerFloorInverted = 1\r\n";
-				if (chkHangarFold.Checked) contents += "FoldOutside = 1\r\n";
 
 				for (int i = 0; i < lstHangarObjects.Items.Count; i++) contents += lstHangarObjects.Items[i] + "\r\n";
 				contents += "\r\n";
@@ -653,9 +874,9 @@ namespace Idmr.Yogeme
 					for (int j = 0; j < 3; j++) use |= (_familyCameras[i, j] != _defaultFamilyCameras[i, j]);
 					if (use)
 					{
-						contents += "Key" + keys[i] + "_X = " + _familyCameras[i, 0] + "\r\n";
-						contents += "Key" + keys[i] + "_Y = " + _familyCameras[i, 1] + "\r\n";
-						contents += "Key" + keys[i] + "_Z = " + _familyCameras[i, 2] + "\r\n";
+						contents += "FamKey" + keys[i] + "_X = " + _familyCameras[i, 0] + "\r\n";
+						contents += "FamKey" + keys[i] + "_Y = " + _familyCameras[i, 1] + "\r\n";
+						contents += "FamKey" + keys[i] + "_Z = " + _familyCameras[i, 2] + "\r\n";
 					}
 				}
 				contents += "\r\n";
@@ -794,6 +1015,20 @@ namespace Idmr.Yogeme
 					else if (lineLower == "[concourse]") readMode = ReadMode.Concourse;
 					else if (lineLower == "[hullicon]") readMode = ReadMode.HullIcon;
 					else if (lineLower == "[statsprofiles]") readMode = ReadMode.Stats;
+					else if (_commandOpt != "")
+					{
+                        if (lineLower == "[hangarobjects_" + _commandOpt + "_" + _commandIff + "]") readMode = ReadMode.HangarObjects;
+                        else if (lineLower == "[hangarcamera_" + _commandOpt + "_" + _commandIff + "]") readMode = ReadMode.HangarCamera;
+                        else if (lineLower == "[famhangarcamera_" + _commandOpt + "_" + _commandIff + "]") readMode = ReadMode.FamilyHangarCamera;
+                        else if (lineLower == "[hangarmap_" + _commandOpt + "_" + _commandIff + "]") readMode = ReadMode.HangarMap;
+                        else if (lineLower == "[famhangarmap_" + _commandOpt + "_" + _commandIff + "]") readMode = ReadMode.FamilyHangarMap;
+						else if (lineLower == "[hangarobjects_" + _commandOpt + "]") readMode = ReadMode.HangarObjects;
+                        else if (lineLower == "[hangarcamera_" + _commandOpt + "]") readMode = ReadMode.HangarCamera;
+                        else if (lineLower == "[famhangarcamera_" + _commandOpt + "]") readMode = ReadMode.FamilyHangarCamera;
+                        else if (lineLower == "[hangarmap_" + _commandOpt + "]") readMode = ReadMode.HangarMap;
+                        else if (lineLower == "[famhangarmap_" + _commandOpt + "]") readMode = ReadMode.FamilyHangarMap;
+                        else _unknown.Add(txtHook.Lines[i]);
+                    }
 					else _unknown.Add(txtHook.Lines[i]);
 				}
 				else if (readMode == ReadMode.Backdrop) lstBackdrops.Items.Add(line);
@@ -881,7 +1116,6 @@ namespace Idmr.Yogeme
 			cmdPlayerReset_Click("reset", new EventArgs());
 			chkPlayerFloor.Checked = false;
 			chkFloor.Checked = false;
-			chkHangarFold.Checked = false;
 			numPlayerAnimationElevation.Value = 0;
 			lstMap.Items.Clear();
 			lstFamilyMap.Items.Clear();
@@ -1223,12 +1457,10 @@ namespace Idmr.Yogeme
 			chkWeaponProfile.Enabled = numWeaponModel.Enabled = optWeaponProfile.Checked;
 			numWeaponProfileMarking.Enabled = optWeaponProfile.Checked && chkWeaponProfile.Checked;
 		}
-		#endregion
+        #endregion
 
-		#region Hangars
-		// TODO: Hangars: need a top-level IFF selector, and clone all Hangar values X times, including read/write all of the IFF-specific hangar files
-		// TODO: Hangars: go through and figure out what else I'm missing
-		void parseHangarCamera(string line)
+        #region Hangars
+        void parseHangarCamera(string line)
 		{
             string[] parts = line.ToLower().Replace(" ", "").Split('=');
             try
@@ -1257,13 +1489,13 @@ namespace Idmr.Yogeme
             try
 			{
                 int view;
-                if (parts[0].StartsWith("key1")) view = 0;
-                else if (parts[0].StartsWith("key2")) view = 1;
-                else if (parts[0].StartsWith("key3")) view = 2;
-                else if (parts[0].StartsWith("key6")) view = 3;
-                else if (parts[0].StartsWith("key7")) view = 4;
-                else if (parts[0].StartsWith("key8")) view = 5;
-                else if (parts[0].StartsWith("key9")) view = 6;
+                if (parts[0].StartsWith("famkey1")) view = 0;
+                else if (parts[0].StartsWith("famkey2")) view = 1;
+                else if (parts[0].StartsWith("famkey3")) view = 2;
+                else if (parts[0].StartsWith("famkey6")) view = 3;
+                else if (parts[0].StartsWith("famkey7")) view = 4;
+                else if (parts[0].StartsWith("famkey8")) view = 5;
+                else if (parts[0].StartsWith("famkey9")) view = 6;
                 else throw new InvalidDataException();
 
                 int camera;
@@ -1281,9 +1513,10 @@ namespace Idmr.Yogeme
 			string[] parts = line.ToLower().Replace(" ", "").Split('=');
 			try
 			{
-				if (parts[0] == "loadshuttle") chkShuttle.Checked = (parts[1] != "0");
+				if (parts[0] == "loadshuttle") chkShuttle.Checked = (parts[1] == "1");
 				else if (parts[0] == "shuttlemodelindex") cboShuttleModel.SelectedIndex = int.Parse(parts[1]);
 				else if (parts[0] == "shuttlemarkings") cboShuttleMarks.SelectedIndex = int.Parse(parts[1]);
+				// ShuttleObjectProfile
 				else if (parts[0] == "shuttlepositionx") numShuttlePositionX.Value = int.Parse(parts[1]);
 				else if (parts[0] == "shuttlepositiony") numShuttlePositionY.Value = int.Parse(parts[1]);
 				else if (parts[0] == "shuttlepositionz") numShuttlePositionZ.Value = int.Parse(parts[1]);
@@ -1293,8 +1526,10 @@ namespace Idmr.Yogeme
 					try { cboShuAnimation.SelectedIndex = (int)Enum.Parse(typeof(ShuttleAnimation), parts[1], true); }
 					catch { MessageBox.Show("Error reading ShuttleAnimation, using default.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); }
 				else if (parts[0] == "shuttleanimationstraightline") numShuDistance.Value = int.Parse(parts[1]);
-
-				else if (parts[0] == "loaddroids") chkDroids.Checked = (parts[1] != "0");
+				// ShuttleAnimationElevation
+				else if (parts[0] == "loaddroids") chkDroids.Checked = (parts[1] == "1");
+				// LoadDroid1 =1
+				// LoadDroid2 =1
 				else if (parts[0] == "droidspositionz") numDroidsZ.Value = int.Parse(parts[1]);
 				else if (parts[0] == "droid1positionz")
 				{
@@ -1307,21 +1542,29 @@ namespace Idmr.Yogeme
 					chkDroid2.Checked = (numDroid2Z.Value != numDroidsZ.Value);
 				}
 				else if (parts[0] == "isdroidsfloorinverted") chkDroidsFloor.Checked = (parts[1] != "0");
+				// IsDroid1FloorInverted !=0
+				// IsDroid2FloorInverted !=0
 				else if (parts[0] == "droid1update") chkDroid1Update.Checked = (parts[1] != "0");
 				else if (parts[0] == "droid2update") chkDroid2Update.Checked = (parts[1] != "0");
+				// Droid1ModelIndex (311 HangarDroid)
+				// Droid1Markings
+				// Droid1ObjectProfile
+				// Droid2ModelIndex (312 HangarDroid2)
+				// Droid2Markings
+				// Droid2ObjectProfile
 
 				else if (parts[0] == "hangarroofcranepositionx") numRoofCranePositionX.Value = int.Parse(parts[1]);
 				else if (parts[0] == "hangarroofcranepositiony") numRoofCranePositionY.Value = int.Parse(parts[1]);
 				else if (parts[0] == "hangarroofcranepositionz") numRoofCranePositionZ.Value = int.Parse(parts[1]);
 				else if (parts[0] == "hangarroofcraneaxis")
 				{
-					// 0 is default, don't need to check it
 					if (int.Parse(parts[1]) == 1) optRoofCraneAxisY.Checked = true;
 					else if (int.Parse(parts[1]) == 2) optRoofCraneAxisZ.Checked = true;
 				}
 				else if (parts[0] == "hangarroofcranelowoffset") numRoofCraneLowOffset.Value = int.Parse(parts[1]);
 				else if (parts[0] == "hangarroofcranehighoffset") numRoofCraneHighOffset.Value = int.Parse(parts[1]);
 				else if (parts[0] == "ishangarfloorinverted") chkFloor.Checked = (parts[1] != "0");
+				// HangarFloorInvertedHeight
 				else if (parts[0] == "hangariff")
 				{
 					if (int.Parse(parts[1]) != -1)
@@ -1335,12 +1578,25 @@ namespace Idmr.Yogeme
 						}
 					}
 				}
+				// DrawShadows (IsHangarFloorInverted ? 0 : 1)
 				else if (parts[0] == "playeranimationelevation") numPlayerAnimationElevation.Value = int.Parse(parts[1]);
+				// PlayerAnimationInvertedElevation (PlayerAnimationElevation)
+				// PlayerAnimationStraightLine
 				else if (parts[0] == "playeroffsetx") numPlayerX.Value = int.Parse(parts[1]);
 				else if (parts[0] == "playeroffsety") numPlayerY.Value = int.Parse(parts[1]);
 				else if (parts[0] == "playeroffsetz") numPlayerZ.Value = int.Parse(parts[1]);
+				// PlayerInvertedOffsetX
+				// PlayerInvertedOffsetY
+				// PlayerInvertedOffsetZ
+				// PlayerModelIndices (null)
+				// PlayerOffsetsX (null)
+				// PlayerOffsetsY (null)
+				// PlayerOffsetsZ (null)
+				// ^ comma-delim, all four arrays must be the same size
 				else if (parts[0] == "isplayerfloorinverted") chkPlayerFloor.Checked = (parts[1] != "0");
-				else if (parts[0] == "foldoutside") chkHangarFold.Checked = (parts[1] != "0");
+				// PlayerFloorInvertedModelIndicies (null)
+				// LightColorIntensity (192)
+				// LightColorRgb (FFFFFF)
                 else throw new InvalidDataException();
             }
 			catch { _comments[(int)ReadMode.HangarObjects].Add(line); }
@@ -1559,8 +1815,7 @@ namespace Idmr.Yogeme
 					(numRoofCranePositionX.Value != _defaultRoofCranePosition[0]) || (numRoofCranePositionY.Value != _defaultRoofCranePosition[1]) || (numRoofCranePositionZ.Value != _defaultRoofCranePosition[2]) ||
 					!optRoofCraneAxisX.Checked || (numRoofCraneLowOffset.Value != 0) || (numRoofCraneHighOffset.Value != 0) ||
 					chkFloor.Checked || chkHangarIff.Checked ||
-					(numPlayerAnimationElevation.Value != 0) || (numPlayerX.Value != 0) || (numPlayerY.Value != 0) || (numPlayerZ.Value != 0) || chkPlayerFloor.Checked ||
-					chkHangarFold.Checked;
+					(numPlayerAnimationElevation.Value != 0) || (numPlayerX.Value != 0) || (numPlayerY.Value != 0) || (numPlayerZ.Value != 0) || chkPlayerFloor.Checked;
 			}
 		}
 		bool useHangarMap {  get { return lstMap.Items.Count >= 4; } }
@@ -1790,31 +2045,56 @@ namespace Idmr.Yogeme
 				if (res == DialogResult.No) return;
 			}
 
-			if (lstBackdrops.Items.Count == 0 && _bdFile != "") File.Delete(_bdFile);
+			if (lstBackdrops.Items.Count == 0) File.Delete(_bdFile);
 
-			if (lstMission.Items.Count == 0 && !useSFoils && lstCraftText.Items.Count == 0 && !useMissionSettings && _missionTxtFile != "") File.Delete(_missionTxtFile);
+			if (lstMission.Items.Count == 0 && !useSFoils && lstCraftText.Items.Count == 0 && !useMissionSettings) File.Delete(_missionTxtFile);
 
-			if (lstSounds.Items.Count == 0 && _soundFile != "") File.Delete(_soundFile);
+			if (lstSounds.Items.Count == 0) File.Delete(_soundFile);
 
-			if (lstObjects.Items.Count == 0 && lstHullIcon.Items.Count == 0 && _objFile != "") File.Delete(_objFile);
+			if (lstObjects.Items.Count == 0 && lstHullIcon.Items.Count == 0) File.Delete(_objFile);
 
-			if (!useHangarObjects && _hangarObjectsFile != "") File.Delete(_hangarObjectsFile);
-			if (!useHangarCamera && _hangarCameraFile != "") File.Delete(_hangarCameraFile);
-			if (!useFamilyHangarCamera && _famHangarCameraFile != "") File.Delete(_famHangarCameraFile);
-			if (!useHangarMap && _hangarMapFile != "") File.Delete(_hangarMapFile);
-			if (!useFamilyHangarMap && _famHangarMapFile != "") File.Delete(_famHangarMapFile);
+			if (!useHangarObjects)
+			{
+				File.Delete(_hangarObjectsFile);
+                File.Delete(_hangarObjectsFileSI);
+                File.Delete(_hangarObjectsFileS);
+            }
+			if (!useHangarCamera)
+			{
+				File.Delete(_hangarCameraFile);
+                File.Delete(_hangarCameraFileSI);
+                File.Delete(_hangarCameraFileS);
+            }
+			if (!useFamilyHangarCamera)
+			{
+				File.Delete(_famHangarCameraFile);
+                File.Delete(_famHangarCameraFileSI);
+                File.Delete(_famHangarCameraFileS);
+            }
+			if (!useHangarMap)
+			{
+				File.Delete(_hangarMapFile);
+                File.Delete(_hangarMapFileSI);
+                File.Delete(_hangarMapFileS);
+            }
+			if (!useFamilyHangarMap)
+			{
+				File.Delete(_famHangarMapFile);
+				File.Delete(_famHangarMapFileSI);
+				File.Delete(_famHangarMapFileS);
+			}
 
-			if (lstSkins.Items.Count == 0 && _32bppFile != "") File.Delete(_32bppFile);
+            if (lstSkins.Items.Count == 0) File.Delete(_32bppFile);
 
-			if (lstShield.Items.Count == 0 && chkSSRecharge.Checked && _shieldFile != "") File.Delete(_shieldFile);
+			if (lstShield.Items.Count == 0 && chkSSRecharge.Checked) File.Delete(_shieldFile);
 
-			if (optHypGlobal.Checked && _hyperFile != "") File.Delete(_hyperFile);
+			if (optHypGlobal.Checked) File.Delete(_hyperFile);
 
-			if (!chkConcoursePlanetIndex.Checked && !chkConcoursePlanetX.Checked && !chkConcoursePlanetY.Checked && _concourseFile != "") File.Delete(_concourseFile);
+			if (!chkConcoursePlanetIndex.Checked && !chkConcoursePlanetX.Checked && !chkConcoursePlanetY.Checked) File.Delete(_concourseFile);
 
-			if (!chkPlayerHull.Checked && _hullIconFile != "") File.Delete(_hullIconFile);
+			if (!chkPlayerHull.Checked) File.Delete(_hullIconFile);
 
-			if (lstStats.Items.Count == 0 && _statsFile != "") File.Delete(_statsFile);
+			if (lstStats.Items.Count == 0) File.Delete(_statsFile);
 
 			if (lstBackdrops.Items.Count == 0
 				&& lstMission.Items.Count == 0 && lstCraftText.Items.Count == 0 && !useMissionSettings
@@ -1849,21 +2129,31 @@ namespace Idmr.Yogeme
                 sw.Flush();
 				sw.Close();
 
-				if (_bdFile != "") File.Delete(_bdFile);
-				if (_missionTxtFile != "") File.Delete(_missionTxtFile);
-				if (_soundFile != "") File.Delete(_soundFile);
-				if (_objFile != "") File.Delete(_objFile);
-				if (_hangarObjectsFile != "") File.Delete(_hangarObjectsFile);
-				if (_hangarCameraFile != "") File.Delete(_hangarCameraFile);
-				if (_famHangarCameraFile != "") File.Delete(_famHangarCameraFile);
-				if (_hangarMapFile != "") File.Delete(_hangarMapFile);
-				if (_famHangarMapFile != "") File.Delete(_famHangarMapFile);
-				if (_32bppFile != "") File.Delete(_32bppFile);
-				if (_shieldFile != "") File.Delete(_shieldFile);
-				if (_hyperFile != "") File.Delete(_hyperFile);
-				if (_concourseFile != "") File.Delete(_concourseFile);
-				if (_hullIconFile != "") File.Delete(_hullIconFile);
-				if (_statsFile != "") File.Delete(_statsFile);
+				File.Delete(_bdFile);
+				File.Delete(_missionTxtFile);
+				File.Delete(_soundFile);
+				File.Delete(_objFile);
+				File.Delete(_hangarObjectsFile);
+				File.Delete(_hangarCameraFile);
+				File.Delete(_famHangarCameraFile);
+				File.Delete(_hangarMapFile);
+				File.Delete(_famHangarMapFile);
+                File.Delete(_hangarObjectsFileSI);
+                File.Delete(_hangarCameraFileSI);
+                File.Delete(_famHangarCameraFileSI);
+                File.Delete(_hangarMapFileSI);
+                File.Delete(_famHangarMapFileSI);
+                File.Delete(_hangarObjectsFileS);
+                File.Delete(_hangarCameraFileS);
+                File.Delete(_famHangarCameraFileS);
+                File.Delete(_hangarMapFileS);
+                File.Delete(_famHangarMapFileS);
+                File.Delete(_32bppFile);
+				File.Delete(_shieldFile);
+				File.Delete(_hyperFile);
+				File.Delete(_concourseFile);
+				File.Delete(_hullIconFile);
+				File.Delete(_statsFile);
 			}
 			catch
 			{
@@ -1907,10 +2197,16 @@ namespace Idmr.Yogeme
 			public int HeadingXY;
 			public int HeadingZ;
 			public bool IsGrounded;
+			public string Profile;
+			public bool IsFloorInverted;
 
 			public override string ToString()
 			{
-				return ModelIndex + ", " + (Markings != 0 ? Markings.ToString() + ", " : "") + PositionX + ", " + PositionY + ", " + (IsGrounded ? "0x7FFFFFFF" : PositionZ.ToString()) + ", " + HeadingXY + ", " + HeadingZ;
+				return ModelIndex + ", " + (Markings != 0 ? Markings.ToString() + ", " : "")
+					+ PositionX + ", " + PositionY + ", " + (IsGrounded ? "0x7FFFFFFF" : PositionZ.ToString())
+					+ ", " + HeadingXY + ", " + HeadingZ
+					+ (Profile != "" ? ", " + Profile : "")
+					+ (IsFloorInverted ? (Profile == "" ? ", Default" : "") + ", 1" : "");
 			}
 
 			public bool Parse(string line)
@@ -1919,7 +2215,7 @@ namespace Idmr.Yogeme
 
 				int offset = 0;
 				string[] parts = line.Replace(" ", "").Split(',');
-				if (parts.Length == 7) offset = 1;
+				if (parts.Length >= 7) offset = 1;
 				else if (parts.Length != 6) return false;
 
 				ModelIndex = parseInt32(parts[0]);
@@ -1931,6 +2227,9 @@ namespace Idmr.Yogeme
 				if (!IsGrounded) PositionZ = parseInt32(parts[3 + offset]);
 				HeadingXY = parseInt32(parts[4 + offset]);
 				HeadingZ = parseInt32(parts[5 + offset]);
+				if (parts.Length >= 8) Profile = parts[7];
+				else Profile = "";
+				if (parts.Length == 9) IsFloorInverted = (parts[8] == "1");
 
 				return true;
 			}
