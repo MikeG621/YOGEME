@@ -15,7 +15,7 @@
  * [ADD] MissionTie: Mission craft text, StatsProfiles
  * [UPD] FamHangarCamera: uses current "FamKey"
  * [UPD] HangarMap and FamHangarMap: ObjectProfile and IsFloorInverted
- * [UPD] HangarObjects: LoadShuttle now correctly checks on "1" instead of "not 0", "FoldOutside" removed
+ * [UPD] HangarObjects: LoadShuttle now correctly checks on "1" instead of "not 0", "FoldOutside" removed, loads OPT replacements into list
  * [UPD] Camera and Family Camera tabs consolidated
  * [ADD] Hangar now looks for _Opt and _Opt_IFF# sections and files
  * v1.14.1, 230814
@@ -1527,6 +1527,7 @@ namespace Idmr.Yogeme
 					catch { MessageBox.Show("Error reading ShuttleAnimation, using default.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); }
 				else if (parts[0] == "shuttleanimationstraightline") numShuDistance.Value = int.Parse(parts[1]);
 				// ShuttleAnimationElevation
+
 				else if (parts[0] == "loaddroids") chkDroids.Checked = (parts[1] == "1");
 				// LoadDroid1 =1
 				// LoadDroid2 =1
@@ -1579,6 +1580,7 @@ namespace Idmr.Yogeme
 					}
 				}
 				// DrawShadows (IsHangarFloorInverted ? 0 : 1)
+
 				else if (parts[0] == "playeranimationelevation") numPlayerAnimationElevation.Value = int.Parse(parts[1]);
 				// PlayerAnimationInvertedElevation (PlayerAnimationElevation)
 				// PlayerAnimationStraightLine
@@ -1595,8 +1597,11 @@ namespace Idmr.Yogeme
 				// ^ comma-delim, all four arrays must be the same size
 				else if (parts[0] == "isplayerfloorinverted") chkPlayerFloor.Checked = (parts[1] != "0");
 				// PlayerFloorInvertedModelIndicies (null)
+
 				// LightColorIntensity (192)
 				// LightColorRgb (FFFFFF)
+
+				else if (parts[0].StartsWith(_fm, StringComparison.InvariantCultureIgnoreCase)) lstHangarObjects.Items.Add(parts[1]);
                 else throw new InvalidDataException();
             }
 			catch { _comments[(int)ReadMode.HangarObjects].Add(line); }
