@@ -293,8 +293,6 @@
             this.cboShuttleMarks = new System.Windows.Forms.ComboBox();
             this.chkDroid2Update = new System.Windows.Forms.CheckBox();
             this.chkDroid1Update = new System.Windows.Forms.CheckBox();
-            this.chkDroid2 = new System.Windows.Forms.CheckBox();
-            this.chkDroid1 = new System.Windows.Forms.CheckBox();
             this.numDroidsZ = new System.Windows.Forms.NumericUpDown();
             this.numDroid1Z = new System.Windows.Forms.NumericUpDown();
             this.numDroid2Z = new System.Windows.Forms.NumericUpDown();
@@ -309,6 +307,27 @@
             this.txtShuttleProfile = new System.Windows.Forms.TextBox();
             this.label35 = new System.Windows.Forms.Label();
             this.numShuElevation = new System.Windows.Forms.NumericUpDown();
+            this.pnlDroids = new System.Windows.Forms.Panel();
+            this.chkLoadDroid1 = new System.Windows.Forms.CheckBox();
+            this.chkLoadDroid2 = new System.Windows.Forms.CheckBox();
+            this.grpDroid1 = new System.Windows.Forms.GroupBox();
+            this.grpDroid2 = new System.Windows.Forms.GroupBox();
+            this.chkDroid1Floor = new System.Windows.Forms.CheckBox();
+            this.chkDroid2Floor = new System.Windows.Forms.CheckBox();
+            this.label41 = new System.Windows.Forms.Label();
+            this.cboDroid1Model = new System.Windows.Forms.ComboBox();
+            this.cboDroid2Model = new System.Windows.Forms.ComboBox();
+            this.label64 = new System.Windows.Forms.Label();
+            this.label65 = new System.Windows.Forms.Label();
+            this.cboDroid1Markings = new System.Windows.Forms.ComboBox();
+            this.label66 = new System.Windows.Forms.Label();
+            this.cboDroid2Markings = new System.Windows.Forms.ComboBox();
+            this.txtDroid1Profile = new System.Windows.Forms.TextBox();
+            this.label67 = new System.Windows.Forms.Label();
+            this.label68 = new System.Windows.Forms.Label();
+            this.txtDroid2Profile = new System.Windows.Forms.TextBox();
+            this.label69 = new System.Windows.Forms.Label();
+            this.label70 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.numFamHeadingZ)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numFamPosZ)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numFamHeadingXY)).BeginInit();
@@ -388,6 +407,9 @@
             this.grpPlayerPosition.SuspendLayout();
             this.pnlShuttle.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numShuElevation)).BeginInit();
+            this.pnlDroids.SuspendLayout();
+            this.grpDroid1.SuspendLayout();
+            this.grpDroid2.SuspendLayout();
             this.SuspendLayout();
             // 
             // cmdOK
@@ -3212,16 +3234,8 @@
             // 
             // tabDroids
             // 
-            this.tabDroids.Controls.Add(this.chkDroid2Update);
-            this.tabDroids.Controls.Add(this.chkDroid1Update);
-            this.tabDroids.Controls.Add(this.chkDroid2);
-            this.tabDroids.Controls.Add(this.chkDroid1);
-            this.tabDroids.Controls.Add(this.numDroidsZ);
-            this.tabDroids.Controls.Add(this.numDroid1Z);
-            this.tabDroids.Controls.Add(this.numDroid2Z);
-            this.tabDroids.Controls.Add(this.label40);
+            this.tabDroids.Controls.Add(this.pnlDroids);
             this.tabDroids.Controls.Add(this.chkDroids);
-            this.tabDroids.Controls.Add(this.chkDroidsFloor);
             this.tabDroids.Location = new System.Drawing.Point(4, 22);
             this.tabDroids.Name = "tabDroids";
             this.tabDroids.Size = new System.Drawing.Size(369, 374);
@@ -3467,11 +3481,11 @@
             this.chkDroid2Update.AutoSize = true;
             this.chkDroid2Update.Checked = true;
             this.chkDroid2Update.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkDroid2Update.Location = new System.Drawing.Point(213, 72);
+            this.chkDroid2Update.Location = new System.Drawing.Point(6, 65);
             this.chkDroid2Update.Name = "chkDroid2Update";
-            this.chkDroid2Update.Size = new System.Drawing.Size(98, 17);
+            this.chkDroid2Update.Size = new System.Drawing.Size(61, 17);
             this.chkDroid2Update.TabIndex = 71;
-            this.chkDroid2Update.Text = "Update Droid 2";
+            this.chkDroid2Update.Text = "Update";
             this.chkDroid2Update.UseVisualStyleBackColor = true;
             // 
             // chkDroid1Update
@@ -3479,36 +3493,16 @@
             this.chkDroid1Update.AutoSize = true;
             this.chkDroid1Update.Checked = true;
             this.chkDroid1Update.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkDroid1Update.Location = new System.Drawing.Point(9, 72);
+            this.chkDroid1Update.Location = new System.Drawing.Point(6, 65);
             this.chkDroid1Update.Name = "chkDroid1Update";
-            this.chkDroid1Update.Size = new System.Drawing.Size(98, 17);
+            this.chkDroid1Update.Size = new System.Drawing.Size(61, 17);
             this.chkDroid1Update.TabIndex = 70;
-            this.chkDroid1Update.Text = "Update Droid 1";
+            this.chkDroid1Update.Text = "Update";
             this.chkDroid1Update.UseVisualStyleBackColor = true;
-            // 
-            // chkDroid2
-            // 
-            this.chkDroid2.AutoSize = true;
-            this.chkDroid2.Location = new System.Drawing.Point(213, 49);
-            this.chkDroid2.Name = "chkDroid2";
-            this.chkDroid2.Size = new System.Drawing.Size(89, 17);
-            this.chkDroid2.TabIndex = 68;
-            this.chkDroid2.Text = "Use Droid2 Z";
-            this.chkDroid2.UseVisualStyleBackColor = true;
-            // 
-            // chkDroid1
-            // 
-            this.chkDroid1.AutoSize = true;
-            this.chkDroid1.Location = new System.Drawing.Point(9, 49);
-            this.chkDroid1.Name = "chkDroid1";
-            this.chkDroid1.Size = new System.Drawing.Size(89, 17);
-            this.chkDroid1.TabIndex = 66;
-            this.chkDroid1.Text = "Use Droid1 Z";
-            this.chkDroid1.UseVisualStyleBackColor = true;
             // 
             // numDroidsZ
             // 
-            this.numDroidsZ.Location = new System.Drawing.Point(268, 22);
+            this.numDroidsZ.Location = new System.Drawing.Point(55, 25);
             this.numDroidsZ.Maximum = new decimal(new int[] {
             65535,
             0,
@@ -3525,8 +3519,7 @@
             // 
             // numDroid1Z
             // 
-            this.numDroid1Z.Enabled = false;
-            this.numDroid1Z.Location = new System.Drawing.Point(104, 48);
+            this.numDroid1Z.Location = new System.Drawing.Point(67, 18);
             this.numDroid1Z.Maximum = new decimal(new int[] {
             65535,
             0,
@@ -3543,8 +3536,7 @@
             // 
             // numDroid2Z
             // 
-            this.numDroid2Z.Enabled = false;
-            this.numDroid2Z.Location = new System.Drawing.Point(308, 48);
+            this.numDroid2Z.Location = new System.Drawing.Point(67, 18);
             this.numDroid2Z.Maximum = new decimal(new int[] {
             65535,
             0,
@@ -3562,7 +3554,7 @@
             // label40
             // 
             this.label40.AutoSize = true;
-            this.label40.Location = new System.Drawing.Point(216, 24);
+            this.label40.Location = new System.Drawing.Point(3, 27);
             this.label40.Name = "label40";
             this.label40.Size = new System.Drawing.Size(47, 13);
             this.label40.TabIndex = 63;
@@ -3573,17 +3565,18 @@
             this.chkDroids.AutoSize = true;
             this.chkDroids.Checked = true;
             this.chkDroids.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkDroids.Location = new System.Drawing.Point(9, 23);
+            this.chkDroids.Location = new System.Drawing.Point(3, 6);
             this.chkDroids.Name = "chkDroids";
             this.chkDroids.Size = new System.Drawing.Size(83, 17);
             this.chkDroids.TabIndex = 62;
             this.chkDroids.Text = "Load Droids";
             this.chkDroids.UseVisualStyleBackColor = true;
+            this.chkDroids.CheckedChanged += new System.EventHandler(this.chkDroids_CheckedChanged);
             // 
             // chkDroidsFloor
             // 
             this.chkDroidsFloor.AutoSize = true;
-            this.chkDroidsFloor.Location = new System.Drawing.Point(96, 23);
+            this.chkDroidsFloor.Location = new System.Drawing.Point(3, 3);
             this.chkDroidsFloor.Name = "chkDroidsFloor";
             this.chkDroidsFloor.Size = new System.Drawing.Size(112, 17);
             this.chkDroidsFloor.TabIndex = 64;
@@ -3702,6 +3695,222 @@
             this.numShuElevation.Name = "numShuElevation";
             this.numShuElevation.Size = new System.Drawing.Size(60, 20);
             this.numShuElevation.TabIndex = 26;
+            // 
+            // pnlDroids
+            // 
+            this.pnlDroids.Controls.Add(this.grpDroid2);
+            this.pnlDroids.Controls.Add(this.grpDroid1);
+            this.pnlDroids.Controls.Add(this.chkLoadDroid2);
+            this.pnlDroids.Controls.Add(this.chkLoadDroid1);
+            this.pnlDroids.Controls.Add(this.chkDroidsFloor);
+            this.pnlDroids.Controls.Add(this.label40);
+            this.pnlDroids.Controls.Add(this.numDroidsZ);
+            this.pnlDroids.Location = new System.Drawing.Point(3, 29);
+            this.pnlDroids.Name = "pnlDroids";
+            this.pnlDroids.Size = new System.Drawing.Size(363, 299);
+            this.pnlDroids.TabIndex = 72;
+            // 
+            // chkLoadDroid1
+            // 
+            this.chkLoadDroid1.AutoSize = true;
+            this.chkLoadDroid1.Checked = true;
+            this.chkLoadDroid1.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkLoadDroid1.Location = new System.Drawing.Point(199, 3);
+            this.chkLoadDroid1.Name = "chkLoadDroid1";
+            this.chkLoadDroid1.Size = new System.Drawing.Size(87, 17);
+            this.chkLoadDroid1.TabIndex = 73;
+            this.chkLoadDroid1.Text = "Load Droid 1";
+            this.chkLoadDroid1.UseVisualStyleBackColor = true;
+            this.chkLoadDroid1.CheckedChanged += new System.EventHandler(this.chkLoadDroid1_CheckedChanged);
+            // 
+            // chkLoadDroid2
+            // 
+            this.chkLoadDroid2.AutoSize = true;
+            this.chkLoadDroid2.Checked = true;
+            this.chkLoadDroid2.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkLoadDroid2.Location = new System.Drawing.Point(199, 23);
+            this.chkLoadDroid2.Name = "chkLoadDroid2";
+            this.chkLoadDroid2.Size = new System.Drawing.Size(87, 17);
+            this.chkLoadDroid2.TabIndex = 73;
+            this.chkLoadDroid2.Text = "Load Droid 2";
+            this.chkLoadDroid2.UseVisualStyleBackColor = true;
+            this.chkLoadDroid2.CheckedChanged += new System.EventHandler(this.chkLoadDroid2_CheckedChanged);
+            // 
+            // grpDroid1
+            // 
+            this.grpDroid1.Controls.Add(this.label69);
+            this.grpDroid1.Controls.Add(this.txtDroid1Profile);
+            this.grpDroid1.Controls.Add(this.label67);
+            this.grpDroid1.Controls.Add(this.label65);
+            this.grpDroid1.Controls.Add(this.cboDroid1Markings);
+            this.grpDroid1.Controls.Add(this.label41);
+            this.grpDroid1.Controls.Add(this.cboDroid1Model);
+            this.grpDroid1.Controls.Add(this.numDroid1Z);
+            this.grpDroid1.Controls.Add(this.chkDroid1Update);
+            this.grpDroid1.Controls.Add(this.chkDroid1Floor);
+            this.grpDroid1.Location = new System.Drawing.Point(3, 51);
+            this.grpDroid1.Name = "grpDroid1";
+            this.grpDroid1.Size = new System.Drawing.Size(174, 196);
+            this.grpDroid1.TabIndex = 74;
+            this.grpDroid1.TabStop = false;
+            this.grpDroid1.Text = "Droid 1";
+            // 
+            // grpDroid2
+            // 
+            this.grpDroid2.Controls.Add(this.label70);
+            this.grpDroid2.Controls.Add(this.txtDroid2Profile);
+            this.grpDroid2.Controls.Add(this.label68);
+            this.grpDroid2.Controls.Add(this.label66);
+            this.grpDroid2.Controls.Add(this.cboDroid2Markings);
+            this.grpDroid2.Controls.Add(this.label64);
+            this.grpDroid2.Controls.Add(this.cboDroid2Model);
+            this.grpDroid2.Controls.Add(this.chkDroid2Update);
+            this.grpDroid2.Controls.Add(this.numDroid2Z);
+            this.grpDroid2.Controls.Add(this.chkDroid2Floor);
+            this.grpDroid2.Location = new System.Drawing.Point(183, 51);
+            this.grpDroid2.Name = "grpDroid2";
+            this.grpDroid2.Size = new System.Drawing.Size(174, 196);
+            this.grpDroid2.TabIndex = 74;
+            this.grpDroid2.TabStop = false;
+            this.grpDroid2.Text = "Droid 2";
+            // 
+            // chkDroid1Floor
+            // 
+            this.chkDroid1Floor.AutoSize = true;
+            this.chkDroid1Floor.Location = new System.Drawing.Point(6, 42);
+            this.chkDroid1Floor.Name = "chkDroid1Floor";
+            this.chkDroid1Floor.Size = new System.Drawing.Size(79, 17);
+            this.chkDroid1Floor.TabIndex = 64;
+            this.chkDroid1Floor.Text = "Invert Floor";
+            this.chkDroid1Floor.UseVisualStyleBackColor = true;
+            // 
+            // chkDroid2Floor
+            // 
+            this.chkDroid2Floor.AutoSize = true;
+            this.chkDroid2Floor.Location = new System.Drawing.Point(6, 42);
+            this.chkDroid2Floor.Name = "chkDroid2Floor";
+            this.chkDroid2Floor.Size = new System.Drawing.Size(79, 17);
+            this.chkDroid2Floor.TabIndex = 64;
+            this.chkDroid2Floor.Text = "Invert Floor";
+            this.chkDroid2Floor.UseVisualStyleBackColor = true;
+            // 
+            // label41
+            // 
+            this.label41.AutoSize = true;
+            this.label41.Location = new System.Drawing.Point(6, 88);
+            this.label41.Name = "label41";
+            this.label41.Size = new System.Drawing.Size(64, 13);
+            this.label41.TabIndex = 72;
+            this.label41.Text = "Model index";
+            // 
+            // cboDroid1Model
+            // 
+            this.cboDroid1Model.FormattingEnabled = true;
+            this.cboDroid1Model.Location = new System.Drawing.Point(76, 85);
+            this.cboDroid1Model.Name = "cboDroid1Model";
+            this.cboDroid1Model.Size = new System.Drawing.Size(44, 21);
+            this.cboDroid1Model.TabIndex = 71;
+            // 
+            // cboDroid2Model
+            // 
+            this.cboDroid2Model.FormattingEnabled = true;
+            this.cboDroid2Model.Location = new System.Drawing.Point(76, 85);
+            this.cboDroid2Model.Name = "cboDroid2Model";
+            this.cboDroid2Model.Size = new System.Drawing.Size(44, 21);
+            this.cboDroid2Model.TabIndex = 71;
+            // 
+            // label64
+            // 
+            this.label64.AutoSize = true;
+            this.label64.Location = new System.Drawing.Point(6, 88);
+            this.label64.Name = "label64";
+            this.label64.Size = new System.Drawing.Size(64, 13);
+            this.label64.TabIndex = 72;
+            this.label64.Text = "Model index";
+            // 
+            // label65
+            // 
+            this.label65.AutoSize = true;
+            this.label65.Location = new System.Drawing.Point(6, 110);
+            this.label65.Name = "label65";
+            this.label65.Size = new System.Drawing.Size(50, 13);
+            this.label65.TabIndex = 74;
+            this.label65.Text = "Markings";
+            // 
+            // cboDroid1Markings
+            // 
+            this.cboDroid1Markings.FormattingEnabled = true;
+            this.cboDroid1Markings.Location = new System.Drawing.Point(9, 127);
+            this.cboDroid1Markings.Name = "cboDroid1Markings";
+            this.cboDroid1Markings.Size = new System.Drawing.Size(159, 21);
+            this.cboDroid1Markings.TabIndex = 73;
+            // 
+            // label66
+            // 
+            this.label66.AutoSize = true;
+            this.label66.Location = new System.Drawing.Point(6, 110);
+            this.label66.Name = "label66";
+            this.label66.Size = new System.Drawing.Size(50, 13);
+            this.label66.TabIndex = 76;
+            this.label66.Text = "Markings";
+            // 
+            // cboDroid2Markings
+            // 
+            this.cboDroid2Markings.FormattingEnabled = true;
+            this.cboDroid2Markings.Location = new System.Drawing.Point(9, 127);
+            this.cboDroid2Markings.Name = "cboDroid2Markings";
+            this.cboDroid2Markings.Size = new System.Drawing.Size(159, 21);
+            this.cboDroid2Markings.TabIndex = 75;
+            // 
+            // txtDroid1Profile
+            // 
+            this.txtDroid1Profile.Location = new System.Drawing.Point(9, 168);
+            this.txtDroid1Profile.Name = "txtDroid1Profile";
+            this.txtDroid1Profile.Size = new System.Drawing.Size(159, 20);
+            this.txtDroid1Profile.TabIndex = 76;
+            // 
+            // label67
+            // 
+            this.label67.AutoSize = true;
+            this.label67.Location = new System.Drawing.Point(6, 152);
+            this.label67.Name = "label67";
+            this.label67.Size = new System.Drawing.Size(36, 13);
+            this.label67.TabIndex = 75;
+            this.label67.Text = "Profile";
+            // 
+            // label68
+            // 
+            this.label68.AutoSize = true;
+            this.label68.Location = new System.Drawing.Point(6, 152);
+            this.label68.Name = "label68";
+            this.label68.Size = new System.Drawing.Size(36, 13);
+            this.label68.TabIndex = 75;
+            this.label68.Text = "Profile";
+            // 
+            // txtDroid2Profile
+            // 
+            this.txtDroid2Profile.Location = new System.Drawing.Point(9, 168);
+            this.txtDroid2Profile.Name = "txtDroid2Profile";
+            this.txtDroid2Profile.Size = new System.Drawing.Size(159, 20);
+            this.txtDroid2Profile.TabIndex = 76;
+            // 
+            // label69
+            // 
+            this.label69.AutoSize = true;
+            this.label69.Location = new System.Drawing.Point(6, 20);
+            this.label69.Name = "label69";
+            this.label69.Size = new System.Drawing.Size(54, 13);
+            this.label69.TabIndex = 77;
+            this.label69.Text = "Z Position";
+            // 
+            // label70
+            // 
+            this.label70.AutoSize = true;
+            this.label70.Location = new System.Drawing.Point(6, 20);
+            this.label70.Name = "label70";
+            this.label70.Size = new System.Drawing.Size(54, 13);
+            this.label70.TabIndex = 77;
+            this.label70.Text = "Z Position";
             // 
             // XwaHookDialog
             // 
@@ -3835,6 +4044,12 @@
             this.pnlShuttle.ResumeLayout(false);
             this.pnlShuttle.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numShuElevation)).EndInit();
+            this.pnlDroids.ResumeLayout(false);
+            this.pnlDroids.PerformLayout();
+            this.grpDroid1.ResumeLayout(false);
+            this.grpDroid1.PerformLayout();
+            this.grpDroid2.ResumeLayout(false);
+            this.grpDroid2.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -4106,8 +4321,6 @@
         private System.Windows.Forms.TabPage tabDroids;
         private System.Windows.Forms.CheckBox chkDroid2Update;
         private System.Windows.Forms.CheckBox chkDroid1Update;
-        private System.Windows.Forms.CheckBox chkDroid2;
-        private System.Windows.Forms.CheckBox chkDroid1;
         private System.Windows.Forms.NumericUpDown numDroidsZ;
         private System.Windows.Forms.NumericUpDown numDroid1Z;
         private System.Windows.Forms.NumericUpDown numDroid2Z;
@@ -4122,5 +4335,26 @@
         private System.Windows.Forms.Label label27;
         private System.Windows.Forms.NumericUpDown numShuElevation;
         private System.Windows.Forms.Label label35;
+        private System.Windows.Forms.CheckBox chkLoadDroid1;
+        private System.Windows.Forms.Panel pnlDroids;
+        private System.Windows.Forms.GroupBox grpDroid2;
+        private System.Windows.Forms.GroupBox grpDroid1;
+        private System.Windows.Forms.CheckBox chkLoadDroid2;
+        private System.Windows.Forms.TextBox txtDroid2Profile;
+        private System.Windows.Forms.Label label68;
+        private System.Windows.Forms.Label label66;
+        private System.Windows.Forms.ComboBox cboDroid2Markings;
+        private System.Windows.Forms.Label label64;
+        private System.Windows.Forms.ComboBox cboDroid2Model;
+        private System.Windows.Forms.CheckBox chkDroid2Floor;
+        private System.Windows.Forms.TextBox txtDroid1Profile;
+        private System.Windows.Forms.Label label67;
+        private System.Windows.Forms.Label label65;
+        private System.Windows.Forms.ComboBox cboDroid1Markings;
+        private System.Windows.Forms.Label label41;
+        private System.Windows.Forms.ComboBox cboDroid1Model;
+        private System.Windows.Forms.CheckBox chkDroid1Floor;
+        private System.Windows.Forms.Label label70;
+        private System.Windows.Forms.Label label69;
     }
 }

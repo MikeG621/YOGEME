@@ -170,6 +170,8 @@ namespace Idmr.Yogeme
 			cboFamMapMarkings.Items.AddRange(Strings.Color);
 			cboSkinMarks.Items.AddRange(Strings.Color);
 			cboStatMarks.Items.AddRange(Strings.Color);
+			cboDroid1Markings.Items.AddRange(Strings.Color);
+			cboDroid2Markings.Items.AddRange(Strings.Color);
 			for (int i = cboMarkings.Items.Count; i < 256; i++)
 			{
 				cboMarkings.Items.Add("Clr #" + (i + 1));
@@ -178,6 +180,8 @@ namespace Idmr.Yogeme
 				cboFamMapMarkings.Items.Add("Clr #" + (i + 1));
 				cboSkinMarks.Items.Add("Clr #" + (i + 1));
 				cboStatMarks.Items.Add("Clr #" + (i + 1));
+				cboDroid1Markings.Items.Add("Clr #" + (i + 1));
+				cboDroid2Markings.Items.Add("Clr #" + (i + 1));
 			}
 			cboMarkings.SelectedIndex = 0;
 			cboShuttleMarks.SelectedIndex = 0;
@@ -185,6 +189,8 @@ namespace Idmr.Yogeme
 			cboMapMarkings.SelectedIndex = 0;
 			cboFamMapMarkings.SelectedIndex = 0;
 			cboSkinMarks.SelectedIndex = 0;
+			cboDroid1Markings.SelectedIndex = 0;
+			cboDroid2Markings.SelectedIndex = 0;
 			cboFG.Items.AddRange(mission.FlightGroups.GetList());
 			cboProfileFG.Items.AddRange(mission.FlightGroups.GetList());
 			cboSFoilFG.Items.AddRange(mission.FlightGroups.GetList());
@@ -193,10 +199,14 @@ namespace Idmr.Yogeme
 				cboShuttleModel.Items.Add(i);
 				cboMapIndex.Items.Add(i);
 				cboFamMapIndex.Items.Add(i);
+				cboDroid1Model.Items.Add(i);
+				cboDroid2Model.Items.Add(i);
 			}
 			cboShuttleModel.SelectedIndex = 50;
 			cboMapIndex.SelectedIndex = 0;
 			cboFamMapIndex.SelectedIndex = 0;
+			cboDroid1Model.SelectedIndex = 311;
+			cboDroid2Model.SelectedIndex = 312;
 			for (int i = 0; i < 5; i++)
 				for (int j = 0; j < 3; j++)
 					_cameras[i, j] = _defaultCameras[i, j];
@@ -805,31 +815,53 @@ namespace Idmr.Yogeme
                 contents += "\r\n";
             }
             insertComments(ref contents, (int)ReadMode.Objects);
-            if (useHangarObjects)
+			if (useHangarObjects)
 			{
 				contents += "[HangarObjects]\r\n";
 				if (!chkShuttle.Checked) contents += "LoadShuttle = 0\r\n";
-				if (cboShuttleModel.SelectedIndex != 50) contents += "ShuttleModelIndex = " + cboShuttleModel.SelectedIndex + "\r\n";
-				if (cboShuttleMarks.SelectedIndex != 0) contents += "ShuttleMarkings = " + cboShuttleMarks.SelectedIndex + "\r\n";
-				if (txtShuttleProfile.Text != "") contents += "ShuttleObjectProfile = " + txtShuttleProfile.Text + "\r\n";
-				if (numShuttlePositionX.Value != _defaultShuttlePosition[0]) contents += "ShuttlePositionX = " + (int)numShuttlePositionX.Value + "\r\n";
-				if (numShuttlePositionY.Value != _defaultShuttlePosition[1]) contents += "ShuttlePositionY = " + (int)numShuttlePositionY.Value + "\r\n";
-				if (numShuttlePositionZ.Value != _defaultShuttlePosition[2]) contents += "ShuttlePositionZ = " + (int)numShuttlePositionZ.Value + "\r\n";
-				if (numShuttleOrientation.Value != _defaultShuttlePosition[3]) contents += "ShuttleOrientation = " + (int)numShuttleOrientation.Value + "\r\n";
-				if (chkShuttleFloor.Checked) contents += "IsShuttleFloorInverted = 1\r\n";
-				if (cboShuAnimation.SelectedIndex != 0) contents += "ShuttleAnimation = " + cboShuAnimation.Text + "\r\n";
-				if (numShuDistance.Value != 0) contents += "ShuttleAnimationStraightLine = " + (int)numShuDistance.Value + "\r\n";
-				if (numShuElevation.Value != 0) contents += "ShuttleAnimationElevation = " + (int)numShuElevation.Value + "\r\n";
+				else
+				{
+					if (cboShuttleModel.SelectedIndex != 50) contents += "ShuttleModelIndex = " + cboShuttleModel.SelectedIndex + "\r\n";
+					if (cboShuttleMarks.SelectedIndex != 0) contents += "ShuttleMarkings = " + cboShuttleMarks.SelectedIndex + "\r\n";
+					if (txtShuttleProfile.Text != "") contents += "ShuttleObjectProfile = " + txtShuttleProfile.Text + "\r\n";
+					if (numShuttlePositionX.Value != _defaultShuttlePosition[0]) contents += "ShuttlePositionX = " + (int)numShuttlePositionX.Value + "\r\n";
+					if (numShuttlePositionY.Value != _defaultShuttlePosition[1]) contents += "ShuttlePositionY = " + (int)numShuttlePositionY.Value + "\r\n";
+					if (numShuttlePositionZ.Value != _defaultShuttlePosition[2]) contents += "ShuttlePositionZ = " + (int)numShuttlePositionZ.Value + "\r\n";
+					if (numShuttleOrientation.Value != _defaultShuttlePosition[3]) contents += "ShuttleOrientation = " + (int)numShuttleOrientation.Value + "\r\n";
+					if (chkShuttleFloor.Checked) contents += "IsShuttleFloorInverted = 1\r\n";
+					if (cboShuAnimation.SelectedIndex != 0) contents += "ShuttleAnimation = " + cboShuAnimation.Text + "\r\n";
+					if (numShuDistance.Value != 0) contents += "ShuttleAnimationStraightLine = " + (int)numShuDistance.Value + "\r\n";
+					if (numShuElevation.Value != 0) contents += "ShuttleAnimationElevation = " + (int)numShuElevation.Value + "\r\n";
+				}
 
 				if (!chkDroids.Checked) contents += "LoadDroids = 0\r\n";
-				if (numDroidsZ.Value != 0) contents += "DroidsPositionZ = " + (int)numDroidsZ.Value + "\r\n";
-				if (chkDroid1.Checked && numDroid1Z.Value != numDroidsZ.Value) contents += "Droid1PositionZ = " + (int)numDroid1Z.Value + "\r\n";
-				if (chkDroid2.Checked && numDroid2Z.Value != numDroidsZ.Value) contents += "Droid2PositionZ = " + (int)numDroid2Z.Value + "\r\n";
-				if (chkDroidsFloor.Checked) contents += "IsDroidsFloorInverted = 1\r\n";
-				if (!chkDroid1Update.Checked) contents += "Droid1Update = 0\r\n";
-				if (!chkDroid2Update.Checked) contents += "Droid2Update = 0\r\n";
+				else
+				{
+					if (numDroidsZ.Value != 0) contents += "DroidsPositionZ = " + (int)numDroidsZ.Value + "\r\n";
+					if (chkDroidsFloor.Checked) contents += "IsDroidsFloorInverted = 1\r\n";
+					if (!chkLoadDroid1.Checked) contents += "LoadDroid1 = 0\r\n";
+					else
+					{
+						if (numDroid1Z.Value != numDroidsZ.Value) contents += "Droid1PositionZ = " + (int)numDroid1Z.Value + "\r\n";
+						if (chkDroid1Floor.Checked) contents += "IsDroid1FloorInverted = 1\r\n";
+						if (!chkDroid1Update.Checked) contents += "Droid1Update = 0\r\n";
+						if (cboDroid1Model.SelectedIndex != 311) contents += "Droid1ModelIndex = " + cboDroid1Model.SelectedIndex + "\r\n";
+						if (cboDroid1Markings.SelectedIndex != 0) contents += "Droid1Markings = " + cboDroid1Markings.SelectedIndex + "\r\n";
+						if (txtDroid1Profile.Text != "") contents += "Droid1ObjectProfile = " + txtDroid1Profile.Text + "\r\n";
+					}
+					if (!chkLoadDroid2.Checked) contents += "LoadDroid2 = 0\r\n";
+					else
+					{
+						if (numDroid2Z.Value != numDroidsZ.Value) contents += "Droid2PositionZ = " + (int)numDroid2Z.Value + "\r\n";
+						if (chkDroid2Floor.Checked) contents += "IsDroid2FloorInverted = 1\r\n";
+						if (!chkDroid2Update.Checked) contents += "Droid2Update = 0\r\n";
+						if (cboDroid2Model.SelectedIndex != 312) contents += "Droid2ModelIndex = " + cboDroid2Model.SelectedIndex + "\r\n";
+						if (cboDroid2Markings.SelectedIndex != 0) contents += "Droid2Markings = " + cboDroid2Markings.SelectedIndex + "\r\n";
+						if (txtDroid2Profile.Text != "") contents += "Droid2ObjectProfile = " + txtDroid2Profile.Text + "\r\n";
+					}
+				}
 
-				if (numRoofCranePositionX.Value != _defaultRoofCranePosition[0]) contents += "HangarRoofCranePositionX = " + (int)numRoofCranePositionX.Value + "\r\n";
+                if (numRoofCranePositionX.Value != _defaultRoofCranePosition[0]) contents += "HangarRoofCranePositionX = " + (int)numRoofCranePositionX.Value + "\r\n";
 				if (numRoofCranePositionY.Value != _defaultRoofCranePosition[1]) contents += "HangarRoofCranePositionY = " + (int)numRoofCranePositionY.Value + "\r\n";
 				if (numRoofCranePositionZ.Value != _defaultRoofCranePosition[2]) contents += "HangarRoofCranePositionZ = " + (int)numRoofCranePositionZ.Value + "\r\n";
 				if (optRoofCraneAxisY.Checked) contents += "HangarRoofCraneAxis = 1\r\n";
@@ -1106,14 +1138,22 @@ namespace Idmr.Yogeme
 			cmdShuttleReset_Click("reset", new EventArgs());
 			chkHangarIff.Checked = false;
 			chkDroids.Checked = true;
+			chkLoadDroid1.Checked = true;
+			chkLoadDroid2.Checked = true;
 			chkDroidsFloor.Checked = false;
 			numDroidsZ.Value = 0;
-			chkDroid1.Checked = false;
 			numDroid1Z.Value = 0;
-			chkDroid2.Checked = false;
 			numDroid2Z.Value = 0;
 			chkDroid1Update.Checked = true;
 			chkDroid2Update.Checked = true;
+			chkDroid1Floor.Checked = false;
+			chkDroid2Floor.Checked = false;
+			cboDroid1Model.SelectedIndex = 311;
+			cboDroid2Model.SelectedIndex = 312;
+			cboDroid1Markings.SelectedIndex = 0;
+			cboDroid2Markings.SelectedIndex = 0;
+			txtDroid1Profile.Text = "";
+			txtDroid2Profile.Text = "";
 			cmdCraneReset_Click("reset", new EventArgs());
 			optRoofCraneAxisX.Checked = true;
 			numRoofCraneHighOffset.Value = 0;
@@ -1534,32 +1574,24 @@ namespace Idmr.Yogeme
 				else if (parts[0] == "shuttleanimationelevation") numShuElevation.Value = int.Parse(parts[1]);
 
 				else if (parts[0] == "loaddroids") chkDroids.Checked = (parts[1] == "1");
-				// LoadDroid1 =1
-				// LoadDroid2 =1
-				else if (parts[0] == "droidspositionz") numDroidsZ.Value = int.Parse(parts[1]);
-				else if (parts[0] == "droid1positionz")
-				{
-					numDroid1Z.Value = int.Parse(parts[1]);
-					chkDroid1.Checked = (numDroid1Z.Value != numDroidsZ.Value);
-				}
-				else if (parts[0] == "droid2positionz")
-				{
-					numDroid2Z.Value = int.Parse(parts[1]);
-					chkDroid2.Checked = (numDroid2Z.Value != numDroidsZ.Value);
-				}
+				else if (parts[0] == "loaddroid1") chkLoadDroid1.Checked = (parts[1] == "1");
+                else if (parts[0] == "loaddroid2") chkLoadDroid2.Checked = (parts[1] == "1");
+                else if (parts[0] == "droidspositionz") numDroidsZ.Value = int.Parse(parts[1]);
+				else if (parts[0] == "droid1positionz") numDroid1Z.Value = int.Parse(parts[1]);
+				else if (parts[0] == "droid2positionz") numDroid2Z.Value = int.Parse(parts[1]);
 				else if (parts[0] == "isdroidsfloorinverted") chkDroidsFloor.Checked = (parts[1] != "0");
-				// IsDroid1FloorInverted !=0
-				// IsDroid2FloorInverted !=0
-				else if (parts[0] == "droid1update") chkDroid1Update.Checked = (parts[1] != "0");
+                else if (parts[0] == "isdroid1floorinverted") chkDroid1Floor.Checked = (parts[1] != "0");
+                else if (parts[0] == "isdroid2floorinverted") chkDroid2Floor.Checked = (parts[1] != "0");
+                else if (parts[0] == "droid1update") chkDroid1Update.Checked = (parts[1] != "0");
 				else if (parts[0] == "droid2update") chkDroid2Update.Checked = (parts[1] != "0");
-				// Droid1ModelIndex (311 HangarDroid)
-				// Droid1Markings
-				// Droid1ObjectProfile
-				// Droid2ModelIndex (312 HangarDroid2)
-				// Droid2Markings
-				// Droid2ObjectProfile
+				else if (parts[0] == "droid1modelindex") cboDroid1Model.SelectedIndex = int.Parse(parts[1]);
+				else if (parts[0] == "droid1markings") cboDroid1Markings.SelectedIndex = int.Parse(parts[1]);
+				else if (parts[0] == "droid1objectprofile") txtDroid1Profile.Text = parts[1];
+                else if (parts[0] == "droid2modelindex") cboDroid2Model.SelectedIndex = int.Parse(parts[1]);
+                else if (parts[0] == "droid2markings") cboDroid2Markings.SelectedIndex = int.Parse(parts[1]);
+                else if (parts[0] == "droid2objectprofile") txtDroid2Profile.Text = parts[1];
 
-				else if (parts[0] == "hangarroofcranepositionx") numRoofCranePositionX.Value = int.Parse(parts[1]);
+                else if (parts[0] == "hangarroofcranepositionx") numRoofCranePositionX.Value = int.Parse(parts[1]);
 				else if (parts[0] == "hangarroofcranepositiony") numRoofCranePositionY.Value = int.Parse(parts[1]);
 				else if (parts[0] == "hangarroofcranepositionz") numRoofCranePositionZ.Value = int.Parse(parts[1]);
 				else if (parts[0] == "hangarroofcraneaxis")
@@ -1631,14 +1663,6 @@ namespace Idmr.Yogeme
 			_loading = false;
 		}
 
-		private void chkDroid1_CheckedChanged(object sender, EventArgs e)
-		{
-			numDroid1Z.Enabled = chkDroid1.Checked;
-		}
-		private void chkDroid2_CheckedChanged(object sender, EventArgs e)
-		{
-			numDroid2Z.Enabled = chkDroid2.Checked;
-		}
 		private void chkFamGrounded_CheckedChanged(object sender, EventArgs e)
 		{
 			numFamPosZ.Enabled = !chkFamGrounded.Checked;
@@ -1663,6 +1687,18 @@ namespace Idmr.Yogeme
         private void chkShuttle_CheckedChanged(object sender, EventArgs e)
         {
             pnlShuttle.Enabled = chkShuttle.Checked;
+        }
+        private void chkLoadDroid1_CheckedChanged(object sender, EventArgs e)
+        {
+            grpDroid1.Enabled = chkLoadDroid1.Checked;
+        }
+        private void chkLoadDroid2_CheckedChanged(object sender, EventArgs e)
+        {
+            grpDroid2.Enabled = chkLoadDroid2.Checked;
+        }
+        private void chkDroids_CheckedChanged(object sender, EventArgs e)
+        {
+            pnlDroids.Enabled = chkDroids.Checked;
         }
 
         private void cmdAddFamMap_Click(object sender, EventArgs e)
@@ -1824,8 +1860,10 @@ namespace Idmr.Yogeme
 					!chkShuttle.Checked || (cboShuttleModel.SelectedIndex != 50) || (cboShuttleMarks.SelectedIndex != 0) || txtShuttleProfile.Text != "" ||
 					(numShuttlePositionX.Value != _defaultShuttlePosition[0]) || (numShuttlePositionY.Value != _defaultShuttlePosition[1]) || (numShuttlePositionZ.Value != _defaultShuttlePosition[2]) ||
 					(numShuttleOrientation.Value != _defaultShuttlePosition[3]) || chkShuttleFloor.Checked || (cboShuAnimation.SelectedIndex != 0) || (numShuDistance.Value != 0) || numShuElevation.Value != 0 ||
-					!chkDroids.Checked || (numDroidsZ.Value != 0) || (chkDroid1.Checked && numDroid1Z.Value != numDroidsZ.Value) || (chkDroid2.Checked && numDroid2Z.Value != numDroidsZ.Value) ||
-					chkDroidsFloor.Checked || !chkDroid1Update.Checked || !chkDroid2Update.Checked ||
+					!chkDroids.Checked || !chkLoadDroid1.Checked || !chkLoadDroid2.Checked || (numDroidsZ.Value != 0) || (numDroid1Z.Value != numDroidsZ.Value) || (numDroid2Z.Value != numDroidsZ.Value) ||
+					chkDroidsFloor.Checked || chkDroid1Floor.Checked || chkDroid2Floor.Checked || !chkDroid1Update.Checked || !chkDroid2Update.Checked ||
+					cboDroid1Markings.SelectedIndex != 0 || cboDroid2Markings.SelectedIndex != 0 || cboDroid1Model.SelectedIndex != 311 || cboDroid2Model.SelectedIndex != 312 ||
+					txtDroid1Profile.Text != "" || txtDroid2Profile.Text != "" ||
 					(numRoofCranePositionX.Value != _defaultRoofCranePosition[0]) || (numRoofCranePositionY.Value != _defaultRoofCranePosition[1]) || (numRoofCranePositionZ.Value != _defaultRoofCranePosition[2]) ||
 					!optRoofCraneAxisX.Checked || (numRoofCraneLowOffset.Value != 0) || (numRoofCraneHighOffset.Value != 0) ||
 					chkFloor.Checked || chkHangarIff.Checked ||
