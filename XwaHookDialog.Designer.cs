@@ -133,13 +133,11 @@
             this.label33 = new System.Windows.Forms.Label();
             this.label42 = new System.Windows.Forms.Label();
             this.label32 = new System.Windows.Forms.Label();
-            this.label41 = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
             this.optRoofCraneAxisZ = new System.Windows.Forms.RadioButton();
             this.optRoofCraneAxisY = new System.Windows.Forms.RadioButton();
             this.optRoofCraneAxisX = new System.Windows.Forms.RadioButton();
             this.numRoofCranePositionZ = new System.Windows.Forms.NumericUpDown();
-            this.label27 = new System.Windows.Forms.Label();
             this.numRoofCraneHighOffset = new System.Windows.Forms.NumericUpDown();
             this.numPlayerZ = new System.Windows.Forms.NumericUpDown();
             this.numRoofCraneLowOffset = new System.Windows.Forms.NumericUpDown();
@@ -281,7 +279,6 @@
             this.cboShuttleModel = new System.Windows.Forms.ComboBox();
             this.label39 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
-            this.label35 = new System.Windows.Forms.Label();
             this.label36 = new System.Windows.Forms.Label();
             this.chkShuttle = new System.Windows.Forms.CheckBox();
             this.numShuDistance = new System.Windows.Forms.NumericUpDown();
@@ -304,6 +301,14 @@
             this.label40 = new System.Windows.Forms.Label();
             this.chkDroids = new System.Windows.Forms.CheckBox();
             this.chkDroidsFloor = new System.Windows.Forms.CheckBox();
+            this.grpShuttlePosition = new System.Windows.Forms.GroupBox();
+            this.grpCranePosition = new System.Windows.Forms.GroupBox();
+            this.grpPlayerPosition = new System.Windows.Forms.GroupBox();
+            this.pnlShuttle = new System.Windows.Forms.Panel();
+            this.label27 = new System.Windows.Forms.Label();
+            this.txtShuttleProfile = new System.Windows.Forms.TextBox();
+            this.label35 = new System.Windows.Forms.Label();
+            this.numShuElevation = new System.Windows.Forms.NumericUpDown();
             ((System.ComponentModel.ISupportInitialize)(this.numFamHeadingZ)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numFamPosZ)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numFamHeadingXY)).BeginInit();
@@ -378,6 +383,11 @@
             ((System.ComponentModel.ISupportInitialize)(this.numDroidsZ)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numDroid1Z)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numDroid2Z)).BeginInit();
+            this.grpShuttlePosition.SuspendLayout();
+            this.grpCranePosition.SuspendLayout();
+            this.grpPlayerPosition.SuspendLayout();
+            this.pnlShuttle.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numShuElevation)).BeginInit();
             this.SuspendLayout();
             // 
             // cmdOK
@@ -1360,32 +1370,18 @@
             // 
             // tabHangarObjects2
             // 
+            this.tabHangarObjects2.Controls.Add(this.grpPlayerPosition);
+            this.tabHangarObjects2.Controls.Add(this.grpCranePosition);
             this.tabHangarObjects2.Controls.Add(this.chkFloor);
-            this.tabHangarObjects2.Controls.Add(this.label44);
-            this.tabHangarObjects2.Controls.Add(this.cmdPlayerReset);
-            this.tabHangarObjects2.Controls.Add(this.cmdCraneReset);
-            this.tabHangarObjects2.Controls.Add(this.numPlayerX);
-            this.tabHangarObjects2.Controls.Add(this.numRoofCranePositionX);
-            this.tabHangarObjects2.Controls.Add(this.numPlayerY);
-            this.tabHangarObjects2.Controls.Add(this.numRoofCranePositionY);
             this.tabHangarObjects2.Controls.Add(this.label34);
-            this.tabHangarObjects2.Controls.Add(this.label28);
             this.tabHangarObjects2.Controls.Add(this.label33);
-            this.tabHangarObjects2.Controls.Add(this.label42);
             this.tabHangarObjects2.Controls.Add(this.label32);
-            this.tabHangarObjects2.Controls.Add(this.label41);
             this.tabHangarObjects2.Controls.Add(this.panel1);
-            this.tabHangarObjects2.Controls.Add(this.numRoofCranePositionZ);
-            this.tabHangarObjects2.Controls.Add(this.label27);
             this.tabHangarObjects2.Controls.Add(this.numRoofCraneHighOffset);
-            this.tabHangarObjects2.Controls.Add(this.numPlayerZ);
             this.tabHangarObjects2.Controls.Add(this.numRoofCraneLowOffset);
             this.tabHangarObjects2.Controls.Add(this.numPlayerAnimationElevation);
-            this.tabHangarObjects2.Controls.Add(this.label29);
             this.tabHangarObjects2.Controls.Add(this.chkPlayerFloor);
             this.tabHangarObjects2.Controls.Add(this.label30);
-            this.tabHangarObjects2.Controls.Add(this.label43);
-            this.tabHangarObjects2.Controls.Add(this.label31);
             this.tabHangarObjects2.Location = new System.Drawing.Point(4, 22);
             this.tabHangarObjects2.Name = "tabHangarObjects2";
             this.tabHangarObjects2.Size = new System.Drawing.Size(369, 374);
@@ -1406,7 +1402,7 @@
             // label44
             // 
             this.label44.AutoSize = true;
-            this.label44.Location = new System.Drawing.Point(72, 201);
+            this.label44.Location = new System.Drawing.Point(6, 16);
             this.label44.Name = "label44";
             this.label44.Size = new System.Drawing.Size(14, 13);
             this.label44.TabIndex = 42;
@@ -1414,27 +1410,27 @@
             // 
             // cmdPlayerReset
             // 
-            this.cmdPlayerReset.Location = new System.Drawing.Point(248, 225);
+            this.cmdPlayerReset.Location = new System.Drawing.Point(276, 11);
             this.cmdPlayerReset.Name = "cmdPlayerReset";
-            this.cmdPlayerReset.Size = new System.Drawing.Size(104, 23);
+            this.cmdPlayerReset.Size = new System.Drawing.Size(62, 23);
             this.cmdPlayerReset.TabIndex = 20;
-            this.cmdPlayerReset.Text = "Reset Player Pos";
+            this.cmdPlayerReset.Text = "Reset";
             this.cmdPlayerReset.UseVisualStyleBackColor = true;
             this.cmdPlayerReset.Click += new System.EventHandler(this.cmdPlayerReset_Click);
             // 
             // cmdCraneReset
             // 
-            this.cmdCraneReset.Location = new System.Drawing.Point(248, 101);
+            this.cmdCraneReset.Location = new System.Drawing.Point(276, 11);
             this.cmdCraneReset.Name = "cmdCraneReset";
-            this.cmdCraneReset.Size = new System.Drawing.Size(104, 23);
+            this.cmdCraneReset.Size = new System.Drawing.Size(62, 23);
             this.cmdCraneReset.TabIndex = 19;
-            this.cmdCraneReset.Text = "Reset Crane Pos";
+            this.cmdCraneReset.Text = "Reset";
             this.cmdCraneReset.UseVisualStyleBackColor = true;
             this.cmdCraneReset.Click += new System.EventHandler(this.cmdCraneReset_Click);
             // 
             // numPlayerX
             // 
-            this.numPlayerX.Location = new System.Drawing.Point(92, 199);
+            this.numPlayerX.Location = new System.Drawing.Point(26, 14);
             this.numPlayerX.Maximum = new decimal(new int[] {
             65535,
             0,
@@ -1451,7 +1447,7 @@
             // 
             // numRoofCranePositionX
             // 
-            this.numRoofCranePositionX.Location = new System.Drawing.Point(93, 75);
+            this.numRoofCranePositionX.Location = new System.Drawing.Point(26, 14);
             this.numRoofCranePositionX.Maximum = new decimal(new int[] {
             65535,
             0,
@@ -1473,7 +1469,7 @@
             // 
             // numPlayerY
             // 
-            this.numPlayerY.Location = new System.Drawing.Point(179, 199);
+            this.numPlayerY.Location = new System.Drawing.Point(113, 14);
             this.numPlayerY.Maximum = new decimal(new int[] {
             65535,
             0,
@@ -1490,7 +1486,7 @@
             // 
             // numRoofCranePositionY
             // 
-            this.numRoofCranePositionY.Location = new System.Drawing.Point(179, 75);
+            this.numRoofCranePositionY.Location = new System.Drawing.Point(112, 14);
             this.numRoofCranePositionY.Maximum = new decimal(new int[] {
             65535,
             0,
@@ -1522,7 +1518,7 @@
             // label28
             // 
             this.label28.AutoSize = true;
-            this.label28.Location = new System.Drawing.Point(245, 77);
+            this.label28.Location = new System.Drawing.Point(178, 16);
             this.label28.Name = "label28";
             this.label28.Size = new System.Drawing.Size(14, 13);
             this.label28.TabIndex = 36;
@@ -1540,7 +1536,7 @@
             // label42
             // 
             this.label42.AutoSize = true;
-            this.label42.Location = new System.Drawing.Point(250, 201);
+            this.label42.Location = new System.Drawing.Point(184, 16);
             this.label42.Name = "label42";
             this.label42.Size = new System.Drawing.Size(14, 13);
             this.label42.TabIndex = 37;
@@ -1554,15 +1550,6 @@
             this.label32.Size = new System.Drawing.Size(86, 13);
             this.label32.TabIndex = 49;
             this.label32.Text = "Roof Crane Axis:";
-            // 
-            // label41
-            // 
-            this.label41.AutoSize = true;
-            this.label41.Location = new System.Drawing.Point(7, 201);
-            this.label41.Name = "label41";
-            this.label41.Size = new System.Drawing.Size(60, 13);
-            this.label41.TabIndex = 30;
-            this.label41.Text = "Player Pos:";
             // 
             // panel1
             // 
@@ -1608,7 +1595,7 @@
             // 
             // numRoofCranePositionZ
             // 
-            this.numRoofCranePositionZ.Location = new System.Drawing.Point(265, 75);
+            this.numRoofCranePositionZ.Location = new System.Drawing.Point(198, 14);
             this.numRoofCranePositionZ.Maximum = new decimal(new int[] {
             65535,
             0,
@@ -1627,15 +1614,6 @@
             0,
             0,
             -2147483648});
-            // 
-            // label27
-            // 
-            this.label27.AutoSize = true;
-            this.label27.Location = new System.Drawing.Point(3, 77);
-            this.label27.Name = "label27";
-            this.label27.Size = new System.Drawing.Size(64, 13);
-            this.label27.TabIndex = 31;
-            this.label27.Text = "Roof Crane:";
             // 
             // numRoofCraneHighOffset
             // 
@@ -1656,7 +1634,7 @@
             // 
             // numPlayerZ
             // 
-            this.numPlayerZ.Location = new System.Drawing.Point(270, 199);
+            this.numPlayerZ.Location = new System.Drawing.Point(204, 14);
             this.numPlayerZ.Maximum = new decimal(new int[] {
             65535,
             0,
@@ -1690,7 +1668,7 @@
             // 
             // numPlayerAnimationElevation
             // 
-            this.numPlayerAnimationElevation.Location = new System.Drawing.Point(128, 243);
+            this.numPlayerAnimationElevation.Location = new System.Drawing.Point(128, 260);
             this.numPlayerAnimationElevation.Maximum = new decimal(new int[] {
             65535,
             0,
@@ -1708,7 +1686,7 @@
             // label29
             // 
             this.label29.AutoSize = true;
-            this.label29.Location = new System.Drawing.Point(159, 77);
+            this.label29.Location = new System.Drawing.Point(92, 16);
             this.label29.Name = "label29";
             this.label29.Size = new System.Drawing.Size(14, 13);
             this.label29.TabIndex = 40;
@@ -1717,7 +1695,7 @@
             // chkPlayerFloor
             // 
             this.chkPlayerFloor.AutoSize = true;
-            this.chkPlayerFloor.Location = new System.Drawing.Point(6, 225);
+            this.chkPlayerFloor.Location = new System.Drawing.Point(6, 242);
             this.chkPlayerFloor.Name = "chkPlayerFloor";
             this.chkPlayerFloor.Size = new System.Drawing.Size(111, 17);
             this.chkPlayerFloor.TabIndex = 18;
@@ -1727,7 +1705,7 @@
             // label30
             // 
             this.label30.AutoSize = true;
-            this.label30.Location = new System.Drawing.Point(7, 245);
+            this.label30.Location = new System.Drawing.Point(7, 262);
             this.label30.Name = "label30";
             this.label30.Size = new System.Drawing.Size(112, 13);
             this.label30.TabIndex = 44;
@@ -1736,7 +1714,7 @@
             // label43
             // 
             this.label43.AutoSize = true;
-            this.label43.Location = new System.Drawing.Point(159, 201);
+            this.label43.Location = new System.Drawing.Point(93, 16);
             this.label43.Name = "label43";
             this.label43.Size = new System.Drawing.Size(14, 13);
             this.label43.TabIndex = 41;
@@ -1745,7 +1723,7 @@
             // label31
             // 
             this.label31.AutoSize = true;
-            this.label31.Location = new System.Drawing.Point(73, 77);
+            this.label31.Location = new System.Drawing.Point(6, 16);
             this.label31.Name = "label31";
             this.label31.Size = new System.Drawing.Size(14, 13);
             this.label31.TabIndex = 43;
@@ -3223,26 +3201,8 @@
             // 
             // tabShuttle
             // 
-            this.tabShuttle.Controls.Add(this.numShuttlePositionX);
-            this.tabShuttle.Controls.Add(this.numShuttleOrientation);
-            this.tabShuttle.Controls.Add(this.numShuttlePositionY);
-            this.tabShuttle.Controls.Add(this.cmdShuttleReset);
-            this.tabShuttle.Controls.Add(this.cboShuttleModel);
-            this.tabShuttle.Controls.Add(this.label39);
-            this.tabShuttle.Controls.Add(this.label1);
-            this.tabShuttle.Controls.Add(this.label35);
-            this.tabShuttle.Controls.Add(this.label36);
+            this.tabShuttle.Controls.Add(this.pnlShuttle);
             this.tabShuttle.Controls.Add(this.chkShuttle);
-            this.tabShuttle.Controls.Add(this.numShuDistance);
-            this.tabShuttle.Controls.Add(this.numShuttlePositionZ);
-            this.tabShuttle.Controls.Add(this.cboShuAnimation);
-            this.tabShuttle.Controls.Add(this.label26);
-            this.tabShuttle.Controls.Add(this.label3);
-            this.tabShuttle.Controls.Add(this.label38);
-            this.tabShuttle.Controls.Add(this.label37);
-            this.tabShuttle.Controls.Add(this.chkShuttleFloor);
-            this.tabShuttle.Controls.Add(this.label2);
-            this.tabShuttle.Controls.Add(this.cboShuttleMarks);
             this.tabShuttle.Location = new System.Drawing.Point(4, 22);
             this.tabShuttle.Name = "tabShuttle";
             this.tabShuttle.Size = new System.Drawing.Size(369, 374);
@@ -3271,7 +3231,7 @@
             // 
             // numShuttlePositionX
             // 
-            this.numShuttlePositionX.Location = new System.Drawing.Point(100, 126);
+            this.numShuttlePositionX.Location = new System.Drawing.Point(26, 40);
             this.numShuttlePositionX.Maximum = new decimal(new int[] {
             65535,
             0,
@@ -3293,7 +3253,7 @@
             // 
             // numShuttleOrientation
             // 
-            this.numShuttleOrientation.Location = new System.Drawing.Point(100, 98);
+            this.numShuttleOrientation.Location = new System.Drawing.Point(70, 14);
             this.numShuttleOrientation.Maximum = new decimal(new int[] {
             65535,
             0,
@@ -3315,7 +3275,7 @@
             // 
             // numShuttlePositionY
             // 
-            this.numShuttlePositionY.Location = new System.Drawing.Point(186, 126);
+            this.numShuttlePositionY.Location = new System.Drawing.Point(112, 40);
             this.numShuttlePositionY.Maximum = new decimal(new int[] {
             65535,
             0,
@@ -3337,17 +3297,17 @@
             // 
             // cmdShuttleReset
             // 
-            this.cmdShuttleReset.Location = new System.Drawing.Point(228, 90);
+            this.cmdShuttleReset.Location = new System.Drawing.Point(291, 37);
             this.cmdShuttleReset.Name = "cmdShuttleReset";
-            this.cmdShuttleReset.Size = new System.Drawing.Size(104, 23);
+            this.cmdShuttleReset.Size = new System.Drawing.Size(64, 23);
             this.cmdShuttleReset.TabIndex = 34;
-            this.cmdShuttleReset.Text = "Reset SHU Pos";
+            this.cmdShuttleReset.Text = "Reset";
             this.cmdShuttleReset.UseVisualStyleBackColor = true;
             // 
             // cboShuttleModel
             // 
             this.cboShuttleModel.FormattingEnabled = true;
-            this.cboShuttleModel.Location = new System.Drawing.Point(241, 14);
+            this.cboShuttleModel.Location = new System.Drawing.Point(73, 3);
             this.cboShuttleModel.Name = "cboShuttleModel";
             this.cboShuttleModel.Size = new System.Drawing.Size(44, 21);
             this.cboShuttleModel.TabIndex = 20;
@@ -3355,34 +3315,25 @@
             // label39
             // 
             this.label39.AutoSize = true;
-            this.label39.Location = new System.Drawing.Point(9, 100);
+            this.label39.Location = new System.Drawing.Point(6, 16);
             this.label39.Name = "label39";
-            this.label39.Size = new System.Drawing.Size(84, 13);
+            this.label39.Size = new System.Drawing.Size(58, 13);
             this.label39.TabIndex = 36;
-            this.label39.Text = "SHU Orientation";
+            this.label39.Text = "Orientation";
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(173, 17);
+            this.label1.Location = new System.Drawing.Point(3, 6);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(62, 13);
+            this.label1.Size = new System.Drawing.Size(64, 13);
             this.label1.TabIndex = 25;
-            this.label1.Text = "SHU Model";
-            // 
-            // label35
-            // 
-            this.label35.AutoSize = true;
-            this.label35.Location = new System.Drawing.Point(10, 128);
-            this.label35.Name = "label35";
-            this.label35.Size = new System.Drawing.Size(70, 13);
-            this.label35.TabIndex = 35;
-            this.label35.Text = "SHU Position";
+            this.label1.Text = "Model index";
             // 
             // label36
             // 
             this.label36.AutoSize = true;
-            this.label36.Location = new System.Drawing.Point(252, 128);
+            this.label36.Location = new System.Drawing.Point(178, 42);
             this.label36.Name = "label36";
             this.label36.Size = new System.Drawing.Size(14, 13);
             this.label36.TabIndex = 37;
@@ -3399,10 +3350,11 @@
             this.chkShuttle.TabIndex = 22;
             this.chkShuttle.Text = "Load SHU";
             this.chkShuttle.UseVisualStyleBackColor = true;
+            this.chkShuttle.CheckedChanged += new System.EventHandler(this.chkShuttle_CheckedChanged);
             // 
             // numShuDistance
             // 
-            this.numShuDistance.Location = new System.Drawing.Point(258, 45);
+            this.numShuDistance.Location = new System.Drawing.Point(122, 186);
             this.numShuDistance.Maximum = new decimal(new int[] {
             65535,
             0,
@@ -3419,7 +3371,7 @@
             // 
             // numShuttlePositionZ
             // 
-            this.numShuttlePositionZ.Location = new System.Drawing.Point(272, 126);
+            this.numShuttlePositionZ.Location = new System.Drawing.Point(198, 40);
             this.numShuttlePositionZ.Maximum = new decimal(new int[] {
             65535,
             0,
@@ -3442,7 +3394,7 @@
             "Right",
             "Top",
             "Bottom"});
-            this.cboShuAnimation.Location = new System.Drawing.Point(107, 44);
+            this.cboShuAnimation.Location = new System.Drawing.Point(62, 160);
             this.cboShuAnimation.Name = "cboShuAnimation";
             this.cboShuAnimation.Size = new System.Drawing.Size(62, 21);
             this.cboShuAnimation.TabIndex = 24;
@@ -3450,25 +3402,25 @@
             // label26
             // 
             this.label26.AutoSize = true;
-            this.label26.Location = new System.Drawing.Point(175, 47);
+            this.label26.Location = new System.Drawing.Point(3, 188);
             this.label26.Name = "label26";
-            this.label26.Size = new System.Drawing.Size(77, 13);
+            this.label26.Size = new System.Drawing.Size(113, 13);
             this.label26.TabIndex = 31;
-            this.label26.Text = "SHU Anim Dist";
+            this.label26.Text = "Animation Straight Dist";
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(9, 47);
+            this.label3.Location = new System.Drawing.Point(3, 163);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(79, 13);
+            this.label3.Size = new System.Drawing.Size(53, 13);
             this.label3.TabIndex = 32;
-            this.label3.Text = "SHU Animation";
+            this.label3.Text = "Animation";
             // 
             // label38
             // 
             this.label38.AutoSize = true;
-            this.label38.Location = new System.Drawing.Point(80, 128);
+            this.label38.Location = new System.Drawing.Point(6, 42);
             this.label38.Name = "label38";
             this.label38.Size = new System.Drawing.Size(14, 13);
             this.label38.TabIndex = 38;
@@ -3477,7 +3429,7 @@
             // label37
             // 
             this.label37.AutoSize = true;
-            this.label37.Location = new System.Drawing.Point(166, 128);
+            this.label37.Location = new System.Drawing.Point(92, 42);
             this.label37.Name = "label37";
             this.label37.Size = new System.Drawing.Size(14, 13);
             this.label37.TabIndex = 39;
@@ -3486,26 +3438,26 @@
             // chkShuttleFloor
             // 
             this.chkShuttleFloor.AutoSize = true;
-            this.chkShuttleFloor.Location = new System.Drawing.Point(88, 17);
+            this.chkShuttleFloor.Location = new System.Drawing.Point(3, 237);
             this.chkShuttleFloor.Name = "chkShuttleFloor";
-            this.chkShuttleFloor.Size = new System.Drawing.Size(79, 17);
+            this.chkShuttleFloor.Size = new System.Drawing.Size(115, 17);
             this.chkShuttleFloor.TabIndex = 23;
-            this.chkShuttleFloor.Text = "Invert SHU";
+            this.chkShuttleFloor.Text = "Invert Shuttle Floor";
             this.chkShuttleFloor.UseVisualStyleBackColor = true;
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(9, 74);
+            this.label2.Location = new System.Drawing.Point(3, 33);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(62, 13);
+            this.label2.Size = new System.Drawing.Size(50, 13);
             this.label2.TabIndex = 30;
-            this.label2.Text = "SHU Marks";
+            this.label2.Text = "Markings";
             // 
             // cboShuttleMarks
             // 
             this.cboShuttleMarks.FormattingEnabled = true;
-            this.cboShuttleMarks.Location = new System.Drawing.Point(71, 71);
+            this.cboShuttleMarks.Location = new System.Drawing.Point(59, 30);
             this.cboShuttleMarks.Name = "cboShuttleMarks";
             this.cboShuttleMarks.Size = new System.Drawing.Size(126, 21);
             this.cboShuttleMarks.TabIndex = 21;
@@ -3638,6 +3590,119 @@
             this.chkDroidsFloor.Text = "Invert Droids Floor";
             this.chkDroidsFloor.UseVisualStyleBackColor = true;
             // 
+            // grpShuttlePosition
+            // 
+            this.grpShuttlePosition.Controls.Add(this.label39);
+            this.grpShuttlePosition.Controls.Add(this.numShuttlePositionX);
+            this.grpShuttlePosition.Controls.Add(this.label37);
+            this.grpShuttlePosition.Controls.Add(this.numShuttleOrientation);
+            this.grpShuttlePosition.Controls.Add(this.label38);
+            this.grpShuttlePosition.Controls.Add(this.numShuttlePositionY);
+            this.grpShuttlePosition.Controls.Add(this.numShuttlePositionZ);
+            this.grpShuttlePosition.Controls.Add(this.cmdShuttleReset);
+            this.grpShuttlePosition.Controls.Add(this.label36);
+            this.grpShuttlePosition.Location = new System.Drawing.Point(3, 57);
+            this.grpShuttlePosition.Name = "grpShuttlePosition";
+            this.grpShuttlePosition.Size = new System.Drawing.Size(361, 68);
+            this.grpShuttlePosition.TabIndex = 40;
+            this.grpShuttlePosition.TabStop = false;
+            this.grpShuttlePosition.Text = "Position";
+            // 
+            // grpCranePosition
+            // 
+            this.grpCranePosition.Controls.Add(this.label31);
+            this.grpCranePosition.Controls.Add(this.label29);
+            this.grpCranePosition.Controls.Add(this.numRoofCranePositionZ);
+            this.grpCranePosition.Controls.Add(this.cmdCraneReset);
+            this.grpCranePosition.Controls.Add(this.label28);
+            this.grpCranePosition.Controls.Add(this.numRoofCranePositionY);
+            this.grpCranePosition.Controls.Add(this.numRoofCranePositionX);
+            this.grpCranePosition.Location = new System.Drawing.Point(3, 5);
+            this.grpCranePosition.Name = "grpCranePosition";
+            this.grpCranePosition.Size = new System.Drawing.Size(363, 41);
+            this.grpCranePosition.TabIndex = 63;
+            this.grpCranePosition.TabStop = false;
+            this.grpCranePosition.Text = "Roof Crane Position";
+            // 
+            // grpPlayerPosition
+            // 
+            this.grpPlayerPosition.Controls.Add(this.label44);
+            this.grpPlayerPosition.Controls.Add(this.label43);
+            this.grpPlayerPosition.Controls.Add(this.numPlayerZ);
+            this.grpPlayerPosition.Controls.Add(this.cmdPlayerReset);
+            this.grpPlayerPosition.Controls.Add(this.label42);
+            this.grpPlayerPosition.Controls.Add(this.numPlayerY);
+            this.grpPlayerPosition.Controls.Add(this.numPlayerX);
+            this.grpPlayerPosition.Location = new System.Drawing.Point(4, 199);
+            this.grpPlayerPosition.Name = "grpPlayerPosition";
+            this.grpPlayerPosition.Size = new System.Drawing.Size(362, 41);
+            this.grpPlayerPosition.TabIndex = 64;
+            this.grpPlayerPosition.TabStop = false;
+            this.grpPlayerPosition.Text = "Player Position";
+            // 
+            // pnlShuttle
+            // 
+            this.pnlShuttle.Controls.Add(this.txtShuttleProfile);
+            this.pnlShuttle.Controls.Add(this.label27);
+            this.pnlShuttle.Controls.Add(this.numShuElevation);
+            this.pnlShuttle.Controls.Add(this.numShuDistance);
+            this.pnlShuttle.Controls.Add(this.chkShuttleFloor);
+            this.pnlShuttle.Controls.Add(this.cboShuAnimation);
+            this.pnlShuttle.Controls.Add(this.label35);
+            this.pnlShuttle.Controls.Add(this.grpShuttlePosition);
+            this.pnlShuttle.Controls.Add(this.label26);
+            this.pnlShuttle.Controls.Add(this.label1);
+            this.pnlShuttle.Controls.Add(this.label3);
+            this.pnlShuttle.Controls.Add(this.cboShuttleModel);
+            this.pnlShuttle.Controls.Add(this.label2);
+            this.pnlShuttle.Controls.Add(this.cboShuttleMarks);
+            this.pnlShuttle.Location = new System.Drawing.Point(0, 40);
+            this.pnlShuttle.Name = "pnlShuttle";
+            this.pnlShuttle.Size = new System.Drawing.Size(369, 331);
+            this.pnlShuttle.TabIndex = 41;
+            // 
+            // label27
+            // 
+            this.label27.AutoSize = true;
+            this.label27.Location = new System.Drawing.Point(3, 137);
+            this.label27.Name = "label27";
+            this.label27.Size = new System.Drawing.Size(36, 13);
+            this.label27.TabIndex = 41;
+            this.label27.Text = "Profile";
+            // 
+            // txtShuttleProfile
+            // 
+            this.txtShuttleProfile.Location = new System.Drawing.Point(45, 134);
+            this.txtShuttleProfile.Name = "txtShuttleProfile";
+            this.txtShuttleProfile.Size = new System.Drawing.Size(150, 20);
+            this.txtShuttleProfile.TabIndex = 42;
+            // 
+            // label35
+            // 
+            this.label35.AutoSize = true;
+            this.label35.Location = new System.Drawing.Point(3, 214);
+            this.label35.Name = "label35";
+            this.label35.Size = new System.Drawing.Size(100, 13);
+            this.label35.TabIndex = 31;
+            this.label35.Text = "Animation Elevation";
+            // 
+            // numShuElevation
+            // 
+            this.numShuElevation.Location = new System.Drawing.Point(122, 212);
+            this.numShuElevation.Maximum = new decimal(new int[] {
+            65535,
+            0,
+            0,
+            0});
+            this.numShuElevation.Minimum = new decimal(new int[] {
+            65536,
+            0,
+            0,
+            -2147483648});
+            this.numShuElevation.Name = "numShuElevation";
+            this.numShuElevation.Size = new System.Drawing.Size(60, 20);
+            this.numShuElevation.TabIndex = 26;
+            // 
             // XwaHookDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -3761,6 +3826,15 @@
             ((System.ComponentModel.ISupportInitialize)(this.numDroidsZ)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numDroid1Z)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numDroid2Z)).EndInit();
+            this.grpShuttlePosition.ResumeLayout(false);
+            this.grpShuttlePosition.PerformLayout();
+            this.grpCranePosition.ResumeLayout(false);
+            this.grpCranePosition.PerformLayout();
+            this.grpPlayerPosition.ResumeLayout(false);
+            this.grpPlayerPosition.PerformLayout();
+            this.pnlShuttle.ResumeLayout(false);
+            this.pnlShuttle.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numShuElevation)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -3866,13 +3940,11 @@
 		private System.Windows.Forms.Label label33;
 		private System.Windows.Forms.Label label42;
 		private System.Windows.Forms.Label label32;
-		private System.Windows.Forms.Label label41;
 		private System.Windows.Forms.Panel panel1;
 		private System.Windows.Forms.RadioButton optRoofCraneAxisZ;
 		private System.Windows.Forms.RadioButton optRoofCraneAxisY;
 		private System.Windows.Forms.RadioButton optRoofCraneAxisX;
 		private System.Windows.Forms.NumericUpDown numRoofCranePositionZ;
-		private System.Windows.Forms.Label label27;
 		private System.Windows.Forms.NumericUpDown numRoofCraneHighOffset;
 		private System.Windows.Forms.NumericUpDown numPlayerZ;
 		private System.Windows.Forms.NumericUpDown numRoofCraneLowOffset;
@@ -4019,7 +4091,6 @@
         private System.Windows.Forms.ComboBox cboShuttleModel;
         private System.Windows.Forms.Label label39;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label35;
         private System.Windows.Forms.Label label36;
         private System.Windows.Forms.CheckBox chkShuttle;
         private System.Windows.Forms.NumericUpDown numShuDistance;
@@ -4043,5 +4114,13 @@
         private System.Windows.Forms.Label label40;
         private System.Windows.Forms.CheckBox chkDroids;
         private System.Windows.Forms.CheckBox chkDroidsFloor;
+        private System.Windows.Forms.GroupBox grpShuttlePosition;
+        private System.Windows.Forms.GroupBox grpCranePosition;
+        private System.Windows.Forms.GroupBox grpPlayerPosition;
+        private System.Windows.Forms.Panel pnlShuttle;
+        private System.Windows.Forms.TextBox txtShuttleProfile;
+        private System.Windows.Forms.Label label27;
+        private System.Windows.Forms.NumericUpDown numShuElevation;
+        private System.Windows.Forms.Label label35;
     }
 }

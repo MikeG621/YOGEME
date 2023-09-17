@@ -18,6 +18,7 @@
  * [UPD] HangarObjects: LoadShuttle now correctly checks on "1" instead of "not 0", "FoldOutside" removed, loads OPT replacements into list
  * [UPD] Camera and Family Camera tabs consolidated
  * [ADD] Hangar now looks for _Opt and _Opt_IFF# sections and files
+ * [ADD] HangarObjects: ShuttleAnimationElevation, ShuttleObjectProfile
  * v1.14.1, 230814
  * [ADD] Hyperspace hook support
  * [ADD] Object profile per model
@@ -810,6 +811,7 @@ namespace Idmr.Yogeme
 				if (!chkShuttle.Checked) contents += "LoadShuttle = 0\r\n";
 				if (cboShuttleModel.SelectedIndex != 50) contents += "ShuttleModelIndex = " + cboShuttleModel.SelectedIndex + "\r\n";
 				if (cboShuttleMarks.SelectedIndex != 0) contents += "ShuttleMarkings = " + cboShuttleMarks.SelectedIndex + "\r\n";
+				if (txtShuttleProfile.Text != "") contents += "ShuttleObjectProfile = " + txtShuttleProfile.Text + "\r\n";
 				if (numShuttlePositionX.Value != _defaultShuttlePosition[0]) contents += "ShuttlePositionX = " + (int)numShuttlePositionX.Value + "\r\n";
 				if (numShuttlePositionY.Value != _defaultShuttlePosition[1]) contents += "ShuttlePositionY = " + (int)numShuttlePositionY.Value + "\r\n";
 				if (numShuttlePositionZ.Value != _defaultShuttlePosition[2]) contents += "ShuttlePositionZ = " + (int)numShuttlePositionZ.Value + "\r\n";
@@ -817,6 +819,7 @@ namespace Idmr.Yogeme
 				if (chkShuttleFloor.Checked) contents += "IsShuttleFloorInverted = 1\r\n";
 				if (cboShuAnimation.SelectedIndex != 0) contents += "ShuttleAnimation = " + cboShuAnimation.Text + "\r\n";
 				if (numShuDistance.Value != 0) contents += "ShuttleAnimationStraightLine = " + (int)numShuDistance.Value + "\r\n";
+				if (numShuElevation.Value != 0) contents += "ShuttleAnimationElevation = " + (int)numShuElevation.Value + "\r\n";
 
 				if (!chkDroids.Checked) contents += "LoadDroids = 0\r\n";
 				if (numDroidsZ.Value != 0) contents += "DroidsPositionZ = " + (int)numDroidsZ.Value + "\r\n";
@@ -1095,8 +1098,10 @@ namespace Idmr.Yogeme
 			chkShuttle.Checked = true;
 			chkShuttleFloor.Checked = false;
             cboShuttleModel.SelectedIndex = 50;
+			txtShuttleProfile.Text = "";
 			cboShuAnimation.SelectedIndex = 0;
 			numShuDistance.Value = 0;
+			numShuElevation.Value = 0;
 			cboShuttleMarks.SelectedIndex = 0;
 			cmdShuttleReset_Click("reset", new EventArgs());
 			chkHangarIff.Checked = false;
@@ -1516,7 +1521,7 @@ namespace Idmr.Yogeme
 				if (parts[0] == "loadshuttle") chkShuttle.Checked = (parts[1] == "1");
 				else if (parts[0] == "shuttlemodelindex") cboShuttleModel.SelectedIndex = int.Parse(parts[1]);
 				else if (parts[0] == "shuttlemarkings") cboShuttleMarks.SelectedIndex = int.Parse(parts[1]);
-				// ShuttleObjectProfile
+				else if (parts[0] == "shuttleobjectprofile") txtShuttleProfile.Text = parts[1];
 				else if (parts[0] == "shuttlepositionx") numShuttlePositionX.Value = int.Parse(parts[1]);
 				else if (parts[0] == "shuttlepositiony") numShuttlePositionY.Value = int.Parse(parts[1]);
 				else if (parts[0] == "shuttlepositionz") numShuttlePositionZ.Value = int.Parse(parts[1]);
@@ -1526,7 +1531,7 @@ namespace Idmr.Yogeme
 					try { cboShuAnimation.SelectedIndex = (int)Enum.Parse(typeof(ShuttleAnimation), parts[1], true); }
 					catch { MessageBox.Show("Error reading ShuttleAnimation, using default.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); }
 				else if (parts[0] == "shuttleanimationstraightline") numShuDistance.Value = int.Parse(parts[1]);
-				// ShuttleAnimationElevation
+				else if (parts[0] == "shuttleanimationelevation") numShuElevation.Value = int.Parse(parts[1]);
 
 				else if (parts[0] == "loaddroids") chkDroids.Checked = (parts[1] == "1");
 				// LoadDroid1 =1
@@ -1602,7 +1607,7 @@ namespace Idmr.Yogeme
 				// LightColorRgb (FFFFFF)
 
 				else if (parts[0].StartsWith(_fm, StringComparison.InvariantCultureIgnoreCase)) lstHangarObjects.Items.Add(parts[1]);
-                else throw new InvalidDataException();
+				else throw new InvalidDataException();
             }
 			catch { _comments[(int)ReadMode.HangarObjects].Add(line); }
         }
@@ -1655,8 +1660,12 @@ namespace Idmr.Yogeme
 		{
 			cboMapMarkings.Enabled = chkMarks.Checked;
 		}
+        private void chkShuttle_CheckedChanged(object sender, EventArgs e)
+        {
+            pnlShuttle.Enabled = chkShuttle.Checked;
+        }
 
-		private void cmdAddFamMap_Click(object sender, EventArgs e)
+        private void cmdAddFamMap_Click(object sender, EventArgs e)
 		{
 			MapEntry entry = new MapEntry
 			{
@@ -1812,9 +1821,9 @@ namespace Idmr.Yogeme
 			get
 			{
 				return (lstHangarObjects.Items.Count > 0) ||
-					!chkShuttle.Checked || (cboShuttleModel.SelectedIndex != 50) || (cboShuttleMarks.SelectedIndex != 0) ||
+					!chkShuttle.Checked || (cboShuttleModel.SelectedIndex != 50) || (cboShuttleMarks.SelectedIndex != 0) || txtShuttleProfile.Text != "" ||
 					(numShuttlePositionX.Value != _defaultShuttlePosition[0]) || (numShuttlePositionY.Value != _defaultShuttlePosition[1]) || (numShuttlePositionZ.Value != _defaultShuttlePosition[2]) ||
-					(numShuttleOrientation.Value != _defaultShuttlePosition[3]) || chkShuttleFloor.Checked || (cboShuAnimation.SelectedIndex != 0) || (numShuDistance.Value != 0) ||
+					(numShuttleOrientation.Value != _defaultShuttlePosition[3]) || chkShuttleFloor.Checked || (cboShuAnimation.SelectedIndex != 0) || (numShuDistance.Value != 0) || numShuElevation.Value != 0 ||
 					!chkDroids.Checked || (numDroidsZ.Value != 0) || (chkDroid1.Checked && numDroid1Z.Value != numDroidsZ.Value) || (chkDroid2.Checked && numDroid2Z.Value != numDroidsZ.Value) ||
 					chkDroidsFloor.Checked || !chkDroid1Update.Checked || !chkDroid2Update.Checked ||
 					(numRoofCranePositionX.Value != _defaultRoofCranePosition[0]) || (numRoofCranePositionY.Value != _defaultRoofCranePosition[1]) || (numRoofCranePositionZ.Value != _defaultRoofCranePosition[2]) ||
