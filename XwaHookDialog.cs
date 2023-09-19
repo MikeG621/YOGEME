@@ -18,7 +18,8 @@
  * [UPD] HangarObjects: LoadShuttle now correctly checks on "1" instead of "not 0", "FoldOutside" removed, loads OPT replacements into list
  * [UPD] Camera and Family Camera tabs consolidated
  * [ADD] Hangar now looks for _Opt and _Opt_IFF# sections and files
- * [ADD] HangarObjects: ShuttleAnimationElevation, ShuttleObjectProfile
+ * [ADD] HangarObjects: ShuttleAnimationElevation, ShuttleObjectProfile, LoadDroid#, Droid#ModelIndex, Droid#Markings, Droid#ObjectProfile, IsDroid#FloorInverted,
+ *         DrawShadows, LightColorIntensity, LightColorRgb, HangarFloorInvertedHeight
  * v1.14.1, 230814
  * [ADD] Hyperspace hook support
  * [ADD] Object profile per model
@@ -63,6 +64,7 @@ using Idmr.Platform.Xwa;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 namespace Idmr.Yogeme
@@ -869,6 +871,10 @@ namespace Idmr.Yogeme
 				if (numRoofCraneLowOffset.Value != 0) contents += "HangarRoofCraneLowOffset = " + (int)numRoofCraneLowOffset.Value + "\r\n";
 				if (numRoofCraneHighOffset.Value != 0) contents += "HangarRoofCraneHighOffset = " + (int)numRoofCraneHighOffset.Value + "\r\n";
 				if (chkFloor.Checked) contents += "IsHangarFloorInverted = 1\r\n";
+				if (numInvertedHangarFloor.Value != 0) contents += "HangarFloorInvertedHeight = " + (int)numInvertedHangarFloor.Value + "\r\n";
+				if (chkShadows.Checked == chkFloor.Checked) contents += "DrawShadows = " + (chkShadows.Checked ? "1" : "0") + "\r\n";
+				if (numIntensity.Value != 192) contents += "LightColorIntensity = " + (int)numIntensity.Value + "\r\n";
+				if (txtLightColor.Text != "FFFFFF") contents += "LightColorRgb = " + txtLightColor.Text + "\r\n";
 				if (chkHangarIff.Checked) contents += "HangarIff = " + cboHangarIff.SelectedIndex + "\r\n";
 
 				if (numPlayerAnimationElevation.Value != 0) contents += "PlayerAnimationElevation = " + (int)numPlayerAnimationElevation.Value + "\r\n";
@@ -1161,6 +1167,10 @@ namespace Idmr.Yogeme
 			cmdPlayerReset_Click("reset", new EventArgs());
 			chkPlayerFloor.Checked = false;
 			chkFloor.Checked = false;
+			numInvertedHangarFloor.Value = 0;
+			chkShadows.Checked = true;
+			txtLightColor.Text = "FFFFFF";
+			numIntensity.Value = 192;
 			numPlayerAnimationElevation.Value = 0;
 			lstMap.Items.Clear();
 			lstFamilyMap.Items.Clear();
@@ -1602,7 +1612,7 @@ namespace Idmr.Yogeme
 				else if (parts[0] == "hangarroofcranelowoffset") numRoofCraneLowOffset.Value = int.Parse(parts[1]);
 				else if (parts[0] == "hangarroofcranehighoffset") numRoofCraneHighOffset.Value = int.Parse(parts[1]);
 				else if (parts[0] == "ishangarfloorinverted") chkFloor.Checked = (parts[1] != "0");
-				// HangarFloorInvertedHeight
+				else if (parts[0] == "hangarfloorinvertedheight") numInvertedHangarFloor.Value = int.Parse(parts[1]);
 				else if (parts[0] == "hangariff")
 				{
 					if (int.Parse(parts[1]) != -1)
@@ -1616,7 +1626,9 @@ namespace Idmr.Yogeme
 						}
 					}
 				}
-				// DrawShadows (IsHangarFloorInverted ? 0 : 1)
+				else if (parts[0] == "drawshadows") chkShadows.Checked = (parts[1] != "0");
+				else if (parts[0] == "lightcolorrgb") txtLightColor.Text = parts[1];
+				else if (parts[0] == "lightcolorintensity") numIntensity.Value = int.Parse(parts[1]);
 
 				else if (parts[0] == "playeranimationelevation") numPlayerAnimationElevation.Value = int.Parse(parts[1]);
 				// PlayerAnimationInvertedElevation (PlayerAnimationElevation)
@@ -1634,9 +1646,6 @@ namespace Idmr.Yogeme
 				// ^ comma-delim, all four arrays must be the same size
 				else if (parts[0] == "isplayerfloorinverted") chkPlayerFloor.Checked = (parts[1] != "0");
 				// PlayerFloorInvertedModelIndicies (null)
-
-				// LightColorIntensity (192)
-				// LightColorRgb (FFFFFF)
 
 				else if (parts[0].StartsWith(_fm, StringComparison.InvariantCultureIgnoreCase)) lstHangarObjects.Items.Add(parts[1]);
 				else throw new InvalidDataException();
@@ -1832,7 +1841,21 @@ namespace Idmr.Yogeme
 			if (!_loading) _familyCameras[cboFamilyCamera.SelectedIndex, 2] = (int)numFamilyCameraZ.Value;
 		}
 
-		bool useHangarCamera
+        private void txtLightColor_Leave(object sender, EventArgs e)
+        {
+			Regex rx = new Regex(@"([A-F0-9]){3}((A-F0-9]){3})?", RegexOptions.Compiled);
+			Match match = rx.Match(txtLightColor.Text);
+			if (!match.Success) txtLightColor.Text = "FFFFFF";
+			if (txtLightColor.Text.Length == 3)
+			{
+				// just to shorten the code line...
+				string t = txtLightColor.Text;
+				txtLightColor.Text = t.Substring(0, 1) + t.Substring(0, 1) + t.Substring(1, 1) + t.Substring(1, 1) + t.Substring(2, 1) + t.Substring(2, 1);
+			}
+			else if (txtLightColor.Text.Length != 6) txtLightColor.Text = "FFFFFF";
+        }
+
+        bool useHangarCamera
 		{
 			get
 			{
@@ -1866,7 +1889,7 @@ namespace Idmr.Yogeme
 					txtDroid1Profile.Text != "" || txtDroid2Profile.Text != "" ||
 					(numRoofCranePositionX.Value != _defaultRoofCranePosition[0]) || (numRoofCranePositionY.Value != _defaultRoofCranePosition[1]) || (numRoofCranePositionZ.Value != _defaultRoofCranePosition[2]) ||
 					!optRoofCraneAxisX.Checked || (numRoofCraneLowOffset.Value != 0) || (numRoofCraneHighOffset.Value != 0) ||
-					chkFloor.Checked || chkHangarIff.Checked ||
+					chkFloor.Checked || numInvertedHangarFloor.Value != 0 || chkShadows.Checked == chkFloor.Checked || chkHangarIff.Checked || txtLightColor.Text != "FFFFFF" || numIntensity.Value != 192 ||
 					(numPlayerAnimationElevation.Value != 0) || (numPlayerX.Value != 0) || (numPlayerY.Value != 0) || (numPlayerZ.Value != 0) || chkPlayerFloor.Checked;
 			}
 		}
