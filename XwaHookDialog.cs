@@ -19,7 +19,8 @@
  * [UPD] Camera and Family Camera tabs consolidated
  * [ADD] Hangar now looks for _Opt and _Opt_IFF# sections and files
  * [ADD] HangarObjects: ShuttleAnimationElevation, ShuttleObjectProfile, LoadDroid#, Droid#ModelIndex, Droid#Markings, Droid#ObjectProfile, IsDroid#FloorInverted,
- *         DrawShadows, LightColorIntensity, LightColorRgb, HangarFloorInvertedHeight
+ *         DrawShadows, LightColorIntensity, LightColorRgb, HangarFloorInvertedHeight, PlayerAnimationStraightLine, PlayerAnimationInvertedElevation, PlayerInvertedPositionX/Y/Z,
+ *         PlayerModelIndices, PlayerOffsetsX/Y/Z, PlayerFloorInvertedModelIndices
  * v1.14.1, 230814
  * [ADD] Hyperspace hook support
  * [ADD] Object profile per model
@@ -121,6 +122,10 @@ namespace Idmr.Yogeme
 		string _preComments = "";
 		readonly bool[] _skipIffs = new bool[255];
         readonly bool _initialLoad = true;
+		string _tempModels = "";
+		string _tempXs = "";
+		string _tempYs = "";
+		string _tempZs = "";
 
 		public XwaHookDialog(Mission mission, Settings config)
 		{
@@ -203,12 +208,14 @@ namespace Idmr.Yogeme
 				cboFamMapIndex.Items.Add(i);
 				cboDroid1Model.Items.Add(i);
 				cboDroid2Model.Items.Add(i);
+				cboAutoModel.Items.Add(i);
 			}
 			cboShuttleModel.SelectedIndex = 50;
 			cboMapIndex.SelectedIndex = 0;
 			cboFamMapIndex.SelectedIndex = 0;
 			cboDroid1Model.SelectedIndex = 311;
 			cboDroid2Model.SelectedIndex = 312;
+			cboAutoModel.SelectedIndex = 0;
 			for (int i = 0; i < 5; i++)
 				for (int j = 0; j < 3; j++)
 					_cameras[i, j] = _defaultCameras[i, j];
@@ -385,6 +392,7 @@ namespace Idmr.Yogeme
 
                             parseHangarObjects(line);
                         }
+					checkIndicies();
                 }
                 if (_hangarCameraFileSI != "")
                 {
@@ -448,6 +456,7 @@ namespace Idmr.Yogeme
 
                             parseHangarObjects(line);
                         }
+					checkIndicies();
                 }
                 if (_hangarCameraFileS != "")
                 {
@@ -512,6 +521,7 @@ namespace Idmr.Yogeme
 
 						parseHangarObjects(line);
 					}
+				checkIndicies();
 			}
 			if (_hangarCameraFile != "")
 			{
@@ -878,12 +888,48 @@ namespace Idmr.Yogeme
 				if (chkHangarIff.Checked) contents += "HangarIff = " + cboHangarIff.SelectedIndex + "\r\n";
 
 				if (numPlayerAnimationElevation.Value != 0) contents += "PlayerAnimationElevation = " + (int)numPlayerAnimationElevation.Value + "\r\n";
+				if (numPlayerStraight.Value != 0) contents += "PlayerAnimationStraightLine = " + (int)numPlayerStraight.Value + "\r\n";
 				if (numPlayerX.Value != 0) contents += "PlayerOffsetX = " + (int)numPlayerX.Value + "\r\n";
 				if (numPlayerY.Value != 0) contents += "PlayerOffsetY = " + (int)numPlayerY.Value + "\r\n";
 				if (numPlayerZ.Value != 0) contents += "PlayerOffsetZ = " + (int)numPlayerZ.Value + "\r\n";
 				if (chkPlayerFloor.Checked) contents += "IsPlayerFloorInverted = 1\r\n";
+				if (numInvertedPlayerFloor.Value != numPlayerAnimationElevation.Value) contents += "PlayerAnimationInvertedElevation = " + (int)numInvertedPlayerFloor.Value + "\r\n";
+                if (numInvertedPlayerX.Value != 0) contents += "PlayerInvertedOffsetX = " + (int)numInvertedPlayerX.Value + "\r\n";
+                if (numInvertedPlayerY.Value != 0) contents += "PlayerInvertedOffsetY = " + (int)numInvertedPlayerY.Value + "\r\n";
+                if (numInvertedPlayerZ.Value != 0) contents += "PlayerInvertedOffsetZ = " + (int)numInvertedPlayerZ.Value + "\r\n";
+				if (lstAutoPlayer.Items.Count > 0)
+				{
+					string invert = "";
+					string model = "";
+					string x = "";
+					string y = "";
+					string z = "";
+					for (int i = 0; i < lstAutoPlayer.Items.Count; i++)
+					{
+						if (lstAutoPlayer.Items[i].ToString().StartsWith("Inverted")) invert += (invert.Length != 0 ? ", " : "") + lstAutoPlayer.Items[i].ToString().Split(',')[1];
+						else
+						{
+							var parts = lstAutoPlayer.Items[i].ToString().Split(',');
+							if (parts.Length == 4)
+							{
+								model += (model.Length != 0 ? ", " : "") + parts[0];
+								x += (x.Length != 0 ? ", " : "") + parts[1];
+								y += (y.Length != 0 ? ", " : "") + parts[2];
+								z += (z.Length != 0 ? ", " : "") + parts[3];
+							}
+						}
+					}
+					if (invert != "") contents += "PlayerFloorInvertedModelIndices = " + invert + "\r\n";
+					if (model != "")
+					{
+						contents += "PlayerModelIndices = " + model + "\r\n";
+						contents += "PlayerOffsetsX = " + x + "\r\n";
+                        contents += "PlayerOffsetsY = " + y + "\r\n";
+                        contents += "PlayerOffsetsZ = " + z + "\r\n";
+                    }
+				}
 
-				for (int i = 0; i < lstHangarObjects.Items.Count; i++) contents += lstHangarObjects.Items[i] + "\r\n";
+                for (int i = 0; i < lstHangarObjects.Items.Count; i++) contents += lstHangarObjects.Items[i] + "\r\n";
 				contents += "\r\n";
 			}
             insertComments(ref contents, (int)ReadMode.HangarObjects);
@@ -1105,6 +1151,7 @@ namespace Idmr.Yogeme
 				else if (readMode == ReadMode.Stats) lstStats.Items.Add(line);
 				else if (readMode == ReadMode.None && !isPre) _unknown.Add(txtHook.Lines[i]);
             }
+			checkIndicies();
         }
 
         string removeComment(string line)
@@ -1165,6 +1212,7 @@ namespace Idmr.Yogeme
 			numRoofCraneHighOffset.Value = 0;
 			numRoofCraneLowOffset.Value = 0;
 			cmdPlayerReset_Click("reset", new EventArgs());
+			cmdInvertedPlayerReset_Click("reset", new EventArgs());
 			chkPlayerFloor.Checked = false;
 			chkFloor.Checked = false;
 			numInvertedHangarFloor.Value = 0;
@@ -1172,6 +1220,9 @@ namespace Idmr.Yogeme
 			txtLightColor.Text = "FFFFFF";
 			numIntensity.Value = 192;
 			numPlayerAnimationElevation.Value = 0;
+			numPlayerStraight.Value = 0;
+			numInvertedPlayerFloor.Value = 0;
+			lstAutoPlayer.Items.Clear();
 			lstMap.Items.Clear();
 			lstFamilyMap.Items.Clear();
 			cmdDefaultCamera_Click("reset", new EventArgs());
@@ -1515,6 +1566,23 @@ namespace Idmr.Yogeme
         #endregion
 
         #region Hangars
+		void checkIndicies()
+		{
+			if (_tempModels != "" && _tempXs != "" && _tempYs != "" && _tempZs != "")
+			{
+				var models = _tempModels.Split(',');
+				var xs = _tempXs.Split(',');
+				var ys = _tempYs.Split(',');
+				var zs = _tempZs.Split(',');
+				if (xs.Length == models.Length && ys.Length == models.Length && zs.Length == models.Length)
+					for (var i = 0; i < models.Length; i++)
+						lstAutoPlayer.Items.Add(models[i] + "," + xs[i] + "," + ys[i] + "," + zs[i]);
+			}
+			_tempModels = "";
+			_tempXs = "";
+			_tempYs = "";
+			_tempZs = "";
+		}
         void parseHangarCamera(string line)
 		{
             string[] parts = line.ToLower().Replace(" ", "").Split('=');
@@ -1585,23 +1653,23 @@ namespace Idmr.Yogeme
 
 				else if (parts[0] == "loaddroids") chkDroids.Checked = (parts[1] == "1");
 				else if (parts[0] == "loaddroid1") chkLoadDroid1.Checked = (parts[1] == "1");
-                else if (parts[0] == "loaddroid2") chkLoadDroid2.Checked = (parts[1] == "1");
-                else if (parts[0] == "droidspositionz") numDroidsZ.Value = int.Parse(parts[1]);
+				else if (parts[0] == "loaddroid2") chkLoadDroid2.Checked = (parts[1] == "1");
+				else if (parts[0] == "droidspositionz") numDroidsZ.Value = int.Parse(parts[1]);
 				else if (parts[0] == "droid1positionz") numDroid1Z.Value = int.Parse(parts[1]);
 				else if (parts[0] == "droid2positionz") numDroid2Z.Value = int.Parse(parts[1]);
 				else if (parts[0] == "isdroidsfloorinverted") chkDroidsFloor.Checked = (parts[1] != "0");
-                else if (parts[0] == "isdroid1floorinverted") chkDroid1Floor.Checked = (parts[1] != "0");
-                else if (parts[0] == "isdroid2floorinverted") chkDroid2Floor.Checked = (parts[1] != "0");
-                else if (parts[0] == "droid1update") chkDroid1Update.Checked = (parts[1] != "0");
+				else if (parts[0] == "isdroid1floorinverted") chkDroid1Floor.Checked = (parts[1] != "0");
+				else if (parts[0] == "isdroid2floorinverted") chkDroid2Floor.Checked = (parts[1] != "0");
+				else if (parts[0] == "droid1update") chkDroid1Update.Checked = (parts[1] != "0");
 				else if (parts[0] == "droid2update") chkDroid2Update.Checked = (parts[1] != "0");
 				else if (parts[0] == "droid1modelindex") cboDroid1Model.SelectedIndex = int.Parse(parts[1]);
 				else if (parts[0] == "droid1markings") cboDroid1Markings.SelectedIndex = int.Parse(parts[1]);
 				else if (parts[0] == "droid1objectprofile") txtDroid1Profile.Text = parts[1];
-                else if (parts[0] == "droid2modelindex") cboDroid2Model.SelectedIndex = int.Parse(parts[1]);
-                else if (parts[0] == "droid2markings") cboDroid2Markings.SelectedIndex = int.Parse(parts[1]);
-                else if (parts[0] == "droid2objectprofile") txtDroid2Profile.Text = parts[1];
+				else if (parts[0] == "droid2modelindex") cboDroid2Model.SelectedIndex = int.Parse(parts[1]);
+				else if (parts[0] == "droid2markings") cboDroid2Markings.SelectedIndex = int.Parse(parts[1]);
+				else if (parts[0] == "droid2objectprofile") txtDroid2Profile.Text = parts[1];
 
-                else if (parts[0] == "hangarroofcranepositionx") numRoofCranePositionX.Value = int.Parse(parts[1]);
+				else if (parts[0] == "hangarroofcranepositionx") numRoofCranePositionX.Value = int.Parse(parts[1]);
 				else if (parts[0] == "hangarroofcranepositiony") numRoofCranePositionY.Value = int.Parse(parts[1]);
 				else if (parts[0] == "hangarroofcranepositionz") numRoofCranePositionZ.Value = int.Parse(parts[1]);
 				else if (parts[0] == "hangarroofcraneaxis")
@@ -1631,21 +1699,24 @@ namespace Idmr.Yogeme
 				else if (parts[0] == "lightcolorintensity") numIntensity.Value = int.Parse(parts[1]);
 
 				else if (parts[0] == "playeranimationelevation") numPlayerAnimationElevation.Value = int.Parse(parts[1]);
-				// PlayerAnimationInvertedElevation (PlayerAnimationElevation)
-				// PlayerAnimationStraightLine
+				else if (parts[0] == "playeranimationstraightline") numPlayerStraight.Value = int.Parse(parts[1]);
 				else if (parts[0] == "playeroffsetx") numPlayerX.Value = int.Parse(parts[1]);
 				else if (parts[0] == "playeroffsety") numPlayerY.Value = int.Parse(parts[1]);
 				else if (parts[0] == "playeroffsetz") numPlayerZ.Value = int.Parse(parts[1]);
-				// PlayerInvertedOffsetX
-				// PlayerInvertedOffsetY
-				// PlayerInvertedOffsetZ
-				// PlayerModelIndices (null)
-				// PlayerOffsetsX (null)
-				// PlayerOffsetsY (null)
-				// PlayerOffsetsZ (null)
-				// ^ comma-delim, all four arrays must be the same size
+				else if (parts[0] == "playermodelindices") _tempModels = parts[1];
+				else if (parts[0] == "playeroffsetsx") _tempXs = parts[1];
+				else if (parts[0] == "playeroffsetsy") _tempYs = parts[1];
+				else if (parts[0] == "playeroffsetsz") _tempZs = parts[1];
 				else if (parts[0] == "isplayerfloorinverted") chkPlayerFloor.Checked = (parts[1] != "0");
-				// PlayerFloorInvertedModelIndicies (null)
+				else if (parts[0] == "playeranimationinvertedelevation") numInvertedPlayerFloor.Value = int.Parse(parts[1]);
+				else if (parts[0] == "playerinvertedoffsetx") numInvertedPlayerX.Value = int.Parse(parts[1]);
+				else if (parts[0] == "playerinvertedoffsety") numInvertedPlayerY.Value = int.Parse(parts[1]);
+				else if (parts[0] == "playerinvertedoffsetz") numInvertedPlayerZ.Value = int.Parse(parts[1]);
+				else if (parts[0] == "playerfloorinvertedmodelindices")
+				{
+					var models = parts[1].Split(',');
+					for (int i = 0; i < models.Length; i++) lstAutoPlayer.Items.Add("Inverted," + models[i]);
+				}
 
 				else if (parts[0].StartsWith(_fm, StringComparison.InvariantCultureIgnoreCase)) lstHangarObjects.Items.Add(parts[1]);
 				else throw new InvalidDataException();
@@ -1754,7 +1825,12 @@ namespace Idmr.Yogeme
 			};
 			lstMap.Items.Add(entry.ToString());
 		}
-		private void cmdCraneReset_Click(object sender, EventArgs e)
+        private void cmdAutoAdd_Click(object sender, EventArgs e)
+        {
+            if (chkAutoInvert.Checked) lstAutoPlayer.Items.Add("Inverted," + cboAutoModel.Text);
+            else lstAutoPlayer.Items.Add(cboAutoModel.Text + "," + numAutoX.Value + "," + numAutoY.Value + "," + numAutoZ.Value);
+        }
+        private void cmdCraneReset_Click(object sender, EventArgs e)
 		{
 			numRoofCranePositionX.Value = _defaultRoofCranePosition[0];
 			numRoofCranePositionY.Value = _defaultRoofCranePosition[1];
@@ -1778,7 +1854,13 @@ namespace Idmr.Yogeme
 			numPlayerY.Value = 0;
 			numPlayerZ.Value = 0;
 		}
-		private void cmdRemoveFamMap_Click(object sender, EventArgs e)
+        private void cmdInvertedPlayerReset_Click(object sender, EventArgs e)
+        {
+			numInvertedPlayerX.Value = 0;
+			numInvertedPlayerY.Value = 0;
+			numInvertedPlayerZ.Value = 0;
+        }
+        private void cmdRemoveFamMap_Click(object sender, EventArgs e)
 		{
 			if (lstFamilyMap.SelectedIndex != -1)
 			{
@@ -1808,7 +1890,11 @@ namespace Idmr.Yogeme
 				lstMap.Items.RemoveAt(lstMap.SelectedIndex);
 			}
 		}
-		private void cmdShuttleReset_Click(object sender, EventArgs e)
+        private void cmdAutoRemove_Click(object sender, EventArgs e)
+        {
+            if (lstAutoPlayer.SelectedIndex != -1) lstAutoPlayer.Items.RemoveAt(lstAutoPlayer.SelectedIndex);
+        }
+        private void cmdShuttleReset_Click(object sender, EventArgs e)
 		{
 			numShuttlePositionX.Value = _defaultShuttlePosition[0];
 			numShuttlePositionY.Value = _defaultShuttlePosition[1];
@@ -1890,7 +1976,8 @@ namespace Idmr.Yogeme
 					(numRoofCranePositionX.Value != _defaultRoofCranePosition[0]) || (numRoofCranePositionY.Value != _defaultRoofCranePosition[1]) || (numRoofCranePositionZ.Value != _defaultRoofCranePosition[2]) ||
 					!optRoofCraneAxisX.Checked || (numRoofCraneLowOffset.Value != 0) || (numRoofCraneHighOffset.Value != 0) ||
 					chkFloor.Checked || numInvertedHangarFloor.Value != 0 || chkShadows.Checked == chkFloor.Checked || chkHangarIff.Checked || txtLightColor.Text != "FFFFFF" || numIntensity.Value != 192 ||
-					(numPlayerAnimationElevation.Value != 0) || (numPlayerX.Value != 0) || (numPlayerY.Value != 0) || (numPlayerZ.Value != 0) || chkPlayerFloor.Checked;
+					(numPlayerAnimationElevation.Value != 0) || (numPlayerStraight.Value != 0) || (numPlayerX.Value != 0) || (numPlayerY.Value != 0) || (numPlayerZ.Value != 0) || chkPlayerFloor.Checked ||
+					numInvertedPlayerFloor.Value != numPlayerAnimationElevation.Value || (numInvertedPlayerX.Value != 0) || (numInvertedPlayerY.Value != 0) || (numInvertedPlayerZ.Value != 0) || lstAutoPlayer.Items.Count > 0;
 			}
 		}
 		bool useHangarMap {  get { return lstMap.Items.Count >= 4; } }

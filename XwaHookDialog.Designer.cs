@@ -335,6 +335,31 @@
             this.label73 = new System.Windows.Forms.Label();
             this.numIntensity = new System.Windows.Forms.NumericUpDown();
             this.txtLightColor = new System.Windows.Forms.TextBox();
+            this.label74 = new System.Windows.Forms.Label();
+            this.numInvertedPlayerFloor = new System.Windows.Forms.NumericUpDown();
+            this.label75 = new System.Windows.Forms.Label();
+            this.numPlayerStraight = new System.Windows.Forms.NumericUpDown();
+            this.grpInvertedPlayerPos = new System.Windows.Forms.GroupBox();
+            this.label76 = new System.Windows.Forms.Label();
+            this.label77 = new System.Windows.Forms.Label();
+            this.numInvertedPlayerZ = new System.Windows.Forms.NumericUpDown();
+            this.cmdInvertedPlayerReset = new System.Windows.Forms.Button();
+            this.label78 = new System.Windows.Forms.Label();
+            this.numInvertedPlayerY = new System.Windows.Forms.NumericUpDown();
+            this.numInvertedPlayerX = new System.Windows.Forms.NumericUpDown();
+            this.label79 = new System.Windows.Forms.Label();
+            this.cboAutoModel = new System.Windows.Forms.ComboBox();
+            this.lstAutoPlayer = new System.Windows.Forms.ListBox();
+            this.grpHangarAutoModel = new System.Windows.Forms.GroupBox();
+            this.cmdAutoAdd = new System.Windows.Forms.Button();
+            this.cmdAutoRemove = new System.Windows.Forms.Button();
+            this.numAutoX = new System.Windows.Forms.NumericUpDown();
+            this.numAutoY = new System.Windows.Forms.NumericUpDown();
+            this.label80 = new System.Windows.Forms.Label();
+            this.numAutoZ = new System.Windows.Forms.NumericUpDown();
+            this.label81 = new System.Windows.Forms.Label();
+            this.label82 = new System.Windows.Forms.Label();
+            this.chkAutoInvert = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.numFamHeadingZ)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numFamPosZ)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numFamHeadingXY)).BeginInit();
@@ -419,6 +444,16 @@
             ((System.ComponentModel.ISupportInitialize)(this.numRoofCranePositionX)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numInvertedHangarFloor)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numIntensity)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numInvertedPlayerFloor)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numPlayerStraight)).BeginInit();
+            this.grpInvertedPlayerPos.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numInvertedPlayerZ)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numInvertedPlayerY)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numInvertedPlayerX)).BeginInit();
+            this.grpHangarAutoModel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numAutoX)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numAutoY)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numAutoZ)).BeginInit();
             this.SuspendLayout();
             // 
             // cmdOK
@@ -1416,9 +1451,15 @@
             // 
             // tabPlayer
             // 
+            this.tabPlayer.Controls.Add(this.grpHangarAutoModel);
+            this.tabPlayer.Controls.Add(this.grpInvertedPlayerPos);
             this.tabPlayer.Controls.Add(this.grpPlayerPosition);
+            this.tabPlayer.Controls.Add(this.numInvertedPlayerFloor);
+            this.tabPlayer.Controls.Add(this.numPlayerStraight);
             this.tabPlayer.Controls.Add(this.numPlayerAnimationElevation);
             this.tabPlayer.Controls.Add(this.chkPlayerFloor);
+            this.tabPlayer.Controls.Add(this.label74);
+            this.tabPlayer.Controls.Add(this.label75);
             this.tabPlayer.Controls.Add(this.label30);
             this.tabPlayer.Location = new System.Drawing.Point(4, 22);
             this.tabPlayer.Name = "tabPlayer";
@@ -1508,7 +1549,7 @@
             // 
             // numPlayerAnimationElevation
             // 
-            this.numPlayerAnimationElevation.Location = new System.Drawing.Point(128, 260);
+            this.numPlayerAnimationElevation.Location = new System.Drawing.Point(124, 73);
             this.numPlayerAnimationElevation.Maximum = new decimal(new int[] {
             65535,
             0,
@@ -1526,7 +1567,7 @@
             // chkPlayerFloor
             // 
             this.chkPlayerFloor.AutoSize = true;
-            this.chkPlayerFloor.Location = new System.Drawing.Point(6, 242);
+            this.chkPlayerFloor.Location = new System.Drawing.Point(3, 96);
             this.chkPlayerFloor.Name = "chkPlayerFloor";
             this.chkPlayerFloor.Size = new System.Drawing.Size(111, 17);
             this.chkPlayerFloor.TabIndex = 18;
@@ -1536,11 +1577,11 @@
             // label30
             // 
             this.label30.AutoSize = true;
-            this.label30.Location = new System.Drawing.Point(7, 262);
+            this.label30.Location = new System.Drawing.Point(3, 75);
             this.label30.Name = "label30";
-            this.label30.Size = new System.Drawing.Size(112, 13);
+            this.label30.Size = new System.Drawing.Size(100, 13);
             this.label30.TabIndex = 44;
-            this.label30.Text = "Player Anim Elevation:";
+            this.label30.Text = "Animation Elevation";
             // 
             // label43
             // 
@@ -3410,7 +3451,7 @@
             this.grpPlayerPosition.Controls.Add(this.label42);
             this.grpPlayerPosition.Controls.Add(this.numPlayerY);
             this.grpPlayerPosition.Controls.Add(this.numPlayerX);
-            this.grpPlayerPosition.Location = new System.Drawing.Point(4, 199);
+            this.grpPlayerPosition.Location = new System.Drawing.Point(3, 5);
             this.grpPlayerPosition.Name = "grpPlayerPosition";
             this.grpPlayerPosition.Size = new System.Drawing.Size(362, 41);
             this.grpPlayerPosition.TabIndex = 64;
@@ -4016,6 +4057,317 @@
             this.txtLightColor.Text = "FFFFFF";
             this.txtLightColor.Leave += new System.EventHandler(this.txtLightColor_Leave);
             // 
+            // label74
+            // 
+            this.label74.AutoSize = true;
+            this.label74.Location = new System.Drawing.Point(3, 163);
+            this.label74.Name = "label74";
+            this.label74.Size = new System.Drawing.Size(96, 13);
+            this.label74.TabIndex = 44;
+            this.label74.Text = "Inverted Elevation:";
+            // 
+            // numInvertedPlayerFloor
+            // 
+            this.numInvertedPlayerFloor.Location = new System.Drawing.Point(124, 161);
+            this.numInvertedPlayerFloor.Maximum = new decimal(new int[] {
+            65535,
+            0,
+            0,
+            0});
+            this.numInvertedPlayerFloor.Minimum = new decimal(new int[] {
+            65536,
+            0,
+            0,
+            -2147483648});
+            this.numInvertedPlayerFloor.Name = "numInvertedPlayerFloor";
+            this.numInvertedPlayerFloor.Size = new System.Drawing.Size(60, 20);
+            this.numInvertedPlayerFloor.TabIndex = 17;
+            // 
+            // label75
+            // 
+            this.label75.AutoSize = true;
+            this.label75.Location = new System.Drawing.Point(3, 49);
+            this.label75.Name = "label75";
+            this.label75.Size = new System.Drawing.Size(113, 13);
+            this.label75.TabIndex = 44;
+            this.label75.Text = "Animation Straight Dist";
+            // 
+            // numPlayerStraight
+            // 
+            this.numPlayerStraight.Location = new System.Drawing.Point(124, 47);
+            this.numPlayerStraight.Maximum = new decimal(new int[] {
+            65535,
+            0,
+            0,
+            0});
+            this.numPlayerStraight.Minimum = new decimal(new int[] {
+            65536,
+            0,
+            0,
+            -2147483648});
+            this.numPlayerStraight.Name = "numPlayerStraight";
+            this.numPlayerStraight.Size = new System.Drawing.Size(60, 20);
+            this.numPlayerStraight.TabIndex = 17;
+            // 
+            // grpInvertedPlayerPos
+            // 
+            this.grpInvertedPlayerPos.Controls.Add(this.label76);
+            this.grpInvertedPlayerPos.Controls.Add(this.label77);
+            this.grpInvertedPlayerPos.Controls.Add(this.numInvertedPlayerZ);
+            this.grpInvertedPlayerPos.Controls.Add(this.cmdInvertedPlayerReset);
+            this.grpInvertedPlayerPos.Controls.Add(this.label78);
+            this.grpInvertedPlayerPos.Controls.Add(this.numInvertedPlayerY);
+            this.grpInvertedPlayerPos.Controls.Add(this.numInvertedPlayerX);
+            this.grpInvertedPlayerPos.Location = new System.Drawing.Point(3, 119);
+            this.grpInvertedPlayerPos.Name = "grpInvertedPlayerPos";
+            this.grpInvertedPlayerPos.Size = new System.Drawing.Size(362, 41);
+            this.grpInvertedPlayerPos.TabIndex = 64;
+            this.grpInvertedPlayerPos.TabStop = false;
+            this.grpInvertedPlayerPos.Text = "Inverted Player Position";
+            // 
+            // label76
+            // 
+            this.label76.AutoSize = true;
+            this.label76.Location = new System.Drawing.Point(6, 16);
+            this.label76.Name = "label76";
+            this.label76.Size = new System.Drawing.Size(14, 13);
+            this.label76.TabIndex = 42;
+            this.label76.Text = "X";
+            // 
+            // label77
+            // 
+            this.label77.AutoSize = true;
+            this.label77.Location = new System.Drawing.Point(93, 16);
+            this.label77.Name = "label77";
+            this.label77.Size = new System.Drawing.Size(14, 13);
+            this.label77.TabIndex = 41;
+            this.label77.Text = "Y";
+            // 
+            // numInvertedPlayerZ
+            // 
+            this.numInvertedPlayerZ.Location = new System.Drawing.Point(204, 14);
+            this.numInvertedPlayerZ.Maximum = new decimal(new int[] {
+            65535,
+            0,
+            0,
+            0});
+            this.numInvertedPlayerZ.Minimum = new decimal(new int[] {
+            65536,
+            0,
+            0,
+            -2147483648});
+            this.numInvertedPlayerZ.Name = "numInvertedPlayerZ";
+            this.numInvertedPlayerZ.Size = new System.Drawing.Size(60, 20);
+            this.numInvertedPlayerZ.TabIndex = 16;
+            // 
+            // cmdInvertedPlayerReset
+            // 
+            this.cmdInvertedPlayerReset.Location = new System.Drawing.Point(276, 11);
+            this.cmdInvertedPlayerReset.Name = "cmdInvertedPlayerReset";
+            this.cmdInvertedPlayerReset.Size = new System.Drawing.Size(62, 23);
+            this.cmdInvertedPlayerReset.TabIndex = 20;
+            this.cmdInvertedPlayerReset.Text = "Reset";
+            this.cmdInvertedPlayerReset.UseVisualStyleBackColor = true;
+            this.cmdInvertedPlayerReset.Click += new System.EventHandler(this.cmdInvertedPlayerReset_Click);
+            // 
+            // label78
+            // 
+            this.label78.AutoSize = true;
+            this.label78.Location = new System.Drawing.Point(184, 16);
+            this.label78.Name = "label78";
+            this.label78.Size = new System.Drawing.Size(14, 13);
+            this.label78.TabIndex = 37;
+            this.label78.Text = "Z";
+            // 
+            // numInvertedPlayerY
+            // 
+            this.numInvertedPlayerY.Location = new System.Drawing.Point(113, 14);
+            this.numInvertedPlayerY.Maximum = new decimal(new int[] {
+            65535,
+            0,
+            0,
+            0});
+            this.numInvertedPlayerY.Minimum = new decimal(new int[] {
+            65536,
+            0,
+            0,
+            -2147483648});
+            this.numInvertedPlayerY.Name = "numInvertedPlayerY";
+            this.numInvertedPlayerY.Size = new System.Drawing.Size(60, 20);
+            this.numInvertedPlayerY.TabIndex = 15;
+            // 
+            // numInvertedPlayerX
+            // 
+            this.numInvertedPlayerX.Location = new System.Drawing.Point(26, 14);
+            this.numInvertedPlayerX.Maximum = new decimal(new int[] {
+            65535,
+            0,
+            0,
+            0});
+            this.numInvertedPlayerX.Minimum = new decimal(new int[] {
+            65536,
+            0,
+            0,
+            -2147483648});
+            this.numInvertedPlayerX.Name = "numInvertedPlayerX";
+            this.numInvertedPlayerX.Size = new System.Drawing.Size(60, 20);
+            this.numInvertedPlayerX.TabIndex = 14;
+            // 
+            // label79
+            // 
+            this.label79.AutoSize = true;
+            this.label79.Location = new System.Drawing.Point(6, 94);
+            this.label79.Name = "label79";
+            this.label79.Size = new System.Drawing.Size(64, 13);
+            this.label79.TabIndex = 66;
+            this.label79.Text = "Model index";
+            // 
+            // cboAutoModel
+            // 
+            this.cboAutoModel.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboAutoModel.FormattingEnabled = true;
+            this.cboAutoModel.Location = new System.Drawing.Point(76, 91);
+            this.cboAutoModel.Name = "cboAutoModel";
+            this.cboAutoModel.Size = new System.Drawing.Size(44, 21);
+            this.cboAutoModel.TabIndex = 65;
+            // 
+            // lstAutoPlayer
+            // 
+            this.lstAutoPlayer.FormattingEnabled = true;
+            this.lstAutoPlayer.Location = new System.Drawing.Point(6, 19);
+            this.lstAutoPlayer.Name = "lstAutoPlayer";
+            this.lstAutoPlayer.Size = new System.Drawing.Size(256, 69);
+            this.lstAutoPlayer.TabIndex = 67;
+            // 
+            // grpHangarAutoModel
+            // 
+            this.grpHangarAutoModel.Controls.Add(this.label82);
+            this.grpHangarAutoModel.Controls.Add(this.label79);
+            this.grpHangarAutoModel.Controls.Add(this.label81);
+            this.grpHangarAutoModel.Controls.Add(this.lstAutoPlayer);
+            this.grpHangarAutoModel.Controls.Add(this.numAutoZ);
+            this.grpHangarAutoModel.Controls.Add(this.cboAutoModel);
+            this.grpHangarAutoModel.Controls.Add(this.chkAutoInvert);
+            this.grpHangarAutoModel.Controls.Add(this.cmdAutoRemove);
+            this.grpHangarAutoModel.Controls.Add(this.label80);
+            this.grpHangarAutoModel.Controls.Add(this.cmdAutoAdd);
+            this.grpHangarAutoModel.Controls.Add(this.numAutoY);
+            this.grpHangarAutoModel.Controls.Add(this.numAutoX);
+            this.grpHangarAutoModel.Location = new System.Drawing.Point(3, 187);
+            this.grpHangarAutoModel.Name = "grpHangarAutoModel";
+            this.grpHangarAutoModel.Size = new System.Drawing.Size(362, 146);
+            this.grpHangarAutoModel.TabIndex = 68;
+            this.grpHangarAutoModel.TabStop = false;
+            this.grpHangarAutoModel.Text = "Automatic Player Model Behavior";
+            // 
+            // cmdAutoAdd
+            // 
+            this.cmdAutoAdd.Location = new System.Drawing.Point(276, 19);
+            this.cmdAutoAdd.Name = "cmdAutoAdd";
+            this.cmdAutoAdd.Size = new System.Drawing.Size(62, 23);
+            this.cmdAutoAdd.TabIndex = 20;
+            this.cmdAutoAdd.Text = "&Add";
+            this.cmdAutoAdd.UseVisualStyleBackColor = true;
+            this.cmdAutoAdd.Click += new System.EventHandler(this.cmdAutoAdd_Click);
+            // 
+            // cmdAutoRemove
+            // 
+            this.cmdAutoRemove.Location = new System.Drawing.Point(276, 55);
+            this.cmdAutoRemove.Name = "cmdAutoRemove";
+            this.cmdAutoRemove.Size = new System.Drawing.Size(62, 23);
+            this.cmdAutoRemove.TabIndex = 20;
+            this.cmdAutoRemove.Text = "&Remove";
+            this.cmdAutoRemove.UseVisualStyleBackColor = true;
+            this.cmdAutoRemove.Click += new System.EventHandler(this.cmdAutoRemove_Click);
+            // 
+            // numAutoX
+            // 
+            this.numAutoX.Location = new System.Drawing.Point(26, 119);
+            this.numAutoX.Maximum = new decimal(new int[] {
+            65535,
+            0,
+            0,
+            0});
+            this.numAutoX.Minimum = new decimal(new int[] {
+            65536,
+            0,
+            0,
+            -2147483648});
+            this.numAutoX.Name = "numAutoX";
+            this.numAutoX.Size = new System.Drawing.Size(60, 20);
+            this.numAutoX.TabIndex = 14;
+            // 
+            // numAutoY
+            // 
+            this.numAutoY.Location = new System.Drawing.Point(113, 119);
+            this.numAutoY.Maximum = new decimal(new int[] {
+            65535,
+            0,
+            0,
+            0});
+            this.numAutoY.Minimum = new decimal(new int[] {
+            65536,
+            0,
+            0,
+            -2147483648});
+            this.numAutoY.Name = "numAutoY";
+            this.numAutoY.Size = new System.Drawing.Size(60, 20);
+            this.numAutoY.TabIndex = 15;
+            // 
+            // label80
+            // 
+            this.label80.AutoSize = true;
+            this.label80.Location = new System.Drawing.Point(184, 121);
+            this.label80.Name = "label80";
+            this.label80.Size = new System.Drawing.Size(14, 13);
+            this.label80.TabIndex = 37;
+            this.label80.Text = "Z";
+            // 
+            // numAutoZ
+            // 
+            this.numAutoZ.Location = new System.Drawing.Point(204, 119);
+            this.numAutoZ.Maximum = new decimal(new int[] {
+            65535,
+            0,
+            0,
+            0});
+            this.numAutoZ.Minimum = new decimal(new int[] {
+            65536,
+            0,
+            0,
+            -2147483648});
+            this.numAutoZ.Name = "numAutoZ";
+            this.numAutoZ.Size = new System.Drawing.Size(60, 20);
+            this.numAutoZ.TabIndex = 16;
+            // 
+            // label81
+            // 
+            this.label81.AutoSize = true;
+            this.label81.Location = new System.Drawing.Point(93, 121);
+            this.label81.Name = "label81";
+            this.label81.Size = new System.Drawing.Size(14, 13);
+            this.label81.TabIndex = 41;
+            this.label81.Text = "Y";
+            // 
+            // label82
+            // 
+            this.label82.AutoSize = true;
+            this.label82.Location = new System.Drawing.Point(6, 121);
+            this.label82.Name = "label82";
+            this.label82.Size = new System.Drawing.Size(14, 13);
+            this.label82.TabIndex = 42;
+            this.label82.Text = "X";
+            // 
+            // chkAutoInvert
+            // 
+            this.chkAutoInvert.AutoSize = true;
+            this.chkAutoInvert.Location = new System.Drawing.Point(175, 94);
+            this.chkAutoInvert.Name = "chkAutoInvert";
+            this.chkAutoInvert.Size = new System.Drawing.Size(65, 17);
+            this.chkAutoInvert.TabIndex = 18;
+            this.chkAutoInvert.Text = "Inverted";
+            this.chkAutoInvert.UseVisualStyleBackColor = true;
+            // 
             // XwaHookDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -4156,6 +4508,18 @@
             ((System.ComponentModel.ISupportInitialize)(this.numRoofCranePositionX)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numInvertedHangarFloor)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numIntensity)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numInvertedPlayerFloor)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numPlayerStraight)).EndInit();
+            this.grpInvertedPlayerPos.ResumeLayout(false);
+            this.grpInvertedPlayerPos.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numInvertedPlayerZ)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numInvertedPlayerY)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numInvertedPlayerX)).EndInit();
+            this.grpHangarAutoModel.ResumeLayout(false);
+            this.grpHangarAutoModel.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numAutoX)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numAutoY)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numAutoZ)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -4469,5 +4833,30 @@
         private System.Windows.Forms.Label label72;
         private System.Windows.Forms.NumericUpDown numIntensity;
         private System.Windows.Forms.TextBox txtLightColor;
+        private System.Windows.Forms.NumericUpDown numInvertedPlayerFloor;
+        private System.Windows.Forms.Label label74;
+        private System.Windows.Forms.NumericUpDown numPlayerStraight;
+        private System.Windows.Forms.Label label75;
+        private System.Windows.Forms.GroupBox grpInvertedPlayerPos;
+        private System.Windows.Forms.Label label76;
+        private System.Windows.Forms.Label label77;
+        private System.Windows.Forms.NumericUpDown numInvertedPlayerZ;
+        private System.Windows.Forms.Button cmdInvertedPlayerReset;
+        private System.Windows.Forms.Label label78;
+        private System.Windows.Forms.NumericUpDown numInvertedPlayerY;
+        private System.Windows.Forms.NumericUpDown numInvertedPlayerX;
+        private System.Windows.Forms.ListBox lstAutoPlayer;
+        private System.Windows.Forms.Label label79;
+        private System.Windows.Forms.ComboBox cboAutoModel;
+        private System.Windows.Forms.GroupBox grpHangarAutoModel;
+        private System.Windows.Forms.Button cmdAutoRemove;
+        private System.Windows.Forms.Button cmdAutoAdd;
+        private System.Windows.Forms.Label label82;
+        private System.Windows.Forms.Label label81;
+        private System.Windows.Forms.NumericUpDown numAutoZ;
+        private System.Windows.Forms.Label label80;
+        private System.Windows.Forms.NumericUpDown numAutoY;
+        private System.Windows.Forms.NumericUpDown numAutoX;
+        private System.Windows.Forms.CheckBox chkAutoInvert;
     }
 }
