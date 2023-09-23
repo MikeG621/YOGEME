@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2023 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.14.1+
+ * VERSION: 1.15
  */
 
 /* CHANGELOG
+ * v1.15, 230923
  * [ADD] Concourse, HullIcon hooks support
  * [UPD] Redid GUI
  * [UPD] No longer restricted by hook presence, added "*" to cbo as flag

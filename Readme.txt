@@ -3,8 +3,8 @@
 
 Author: Michael Gaisser (mjgaisser@gmail.com)
 Contributor: Random Starfighter (JB)
-Version: 1.14.2
-Date: 2023.09.01
+Version: 1.15
+Date: 2023.09.23
 
 Thank you for downloading YOGEME, the all-in-one mission editor for the X-Wing
 series, Xwing95 through X-wing Alliance.  This program allows easy mission
@@ -27,6 +27,26 @@ your user settings.
 
 ==========
 Version History
+
+v1.15, 23 Sep 2023
+ - (XWA) Overhaul of Hook dialog, brought up to current
+   - Complete GUI rework;
+     - drop-down selector instead of tabs
+     - no longer prevented from working on a hook that isn't installed
+     - Text box to directly modify the INI contents
+   - Unsupported/unrecognized sections/values are kept, as are comments
+   - During Write, adds short description from the LST if possible
+   - Added COncourse and HullIcon support
+   - Added MissionObject weapon profiles
+   - Added MissionTie craft text and stats profiles
+   - Fixed FamHangarCamera to use correct key names
+   - Added HangarMap and FamilyHangarMap profiles and inverted floor
+   - Removed HangarObjects "FoldOutside"
+   - HangarObjects "LoadShuttle" now matches hook's check for "is 1" instead of "not 0"
+   - Added HangarObjects OPT replacements to the list
+   - The Camera and Family Camera tabs are consolidated
+   - Added ability to detect CommandShip, so Hangar files can now check for additional _[OPT] and _[OPT]_[IFF#] files to load.
+   - Added a lot of keys to HangarObjects: individual Droid settings, object profiles, inverted player, hangar lights, etc.
 
 v1.14.2, 01 Sep 2023
  - (XW) Error when changing ship type to B-Wing caused a crash with the Map [Issue #86]
