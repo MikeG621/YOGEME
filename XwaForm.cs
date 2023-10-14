@@ -3,10 +3,12 @@
  * Copyright (C) 2007-2023 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.14.1
+ * VERSION: 1.15.1
  */
 
 /* CHANGELOG
+ * v1.15.1, 231014
+ * [FIX #87] Crash due to Region 4 references in trigger text
  * v1.14.1, 230814
  * [FIX #85] Call to Backdrops for hook now uses full path
  * v1.14, 230804
@@ -894,7 +896,7 @@ namespace Idmr.Yogeme
 			{
 				int reg = Common.ParseIntAfter(text, "REG:");
 				string regName = "#" + reg;
-				if (reg > 0 && reg <= 4 && !_mission.Regions[reg].ToUpper().StartsWith("REGION"))
+				if (reg > 0 && reg <= 4 && !_mission.Regions[reg - 1].ToUpper().StartsWith("REGION"))
 					regName += " (" +_mission.Regions[reg - 1] + ")";
 				text = text.Replace("REG:" + reg, regName);
 			}
