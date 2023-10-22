@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2023 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.15.1
+ * VERSION: 1.15.1+
  */
 
 /* CHANGELOG
+ * [UPD] Changes due to XWA Arr/Dep Method1
  * v1.15.1, 231014
  * [FIX #87] Crash due to Region 4 references in trigger text
  * v1.14.1, 230814
@@ -2507,9 +2508,9 @@ namespace Idmr.Yogeme
 					continue;
 
 				FlightGroup fg = _mission.FlightGroups[i];
-				if (fg.ArrivalMethod1 == true && fg.ArrivalCraft1 == fgIndex) count[cMothership]++;
+				if (fg.ArrivalMethod1 != 0 && fg.ArrivalCraft1 == fgIndex) count[cMothership]++;
 				if (fg.ArrivalMethod2 == true && fg.ArrivalCraft2 == fgIndex) count[cMothership]++;
-				if (fg.DepartureMethod1 == true && fg.DepartureCraft1 == fgIndex) count[cMothership]++;
+				if (fg.DepartureMethod1 != 0 && fg.DepartureCraft1 == fgIndex) count[cMothership]++;
 				if (fg.DepartureMethod2 == true && fg.DepartureCraft2 == fgIndex) count[cMothership]++;
 				foreach (Mission.Trigger adt in fg.ArrDepTriggers)
 				{
@@ -2899,9 +2900,9 @@ namespace Idmr.Yogeme
 					case "ArrivalCraft2": fg.ArrivalCraft2 = Convert.ToByte(value); break;
 					case "DepartureCraft1": fg.DepartureCraft1 = Convert.ToByte(value); break;
 					case "DepartureCraft2": fg.DepartureCraft2 = Convert.ToByte(value); break;
-					case "ArrivalMethod1": fg.ArrivalMethod1 = Convert.ToBoolean(value); break;
+					case "ArrivalMethod1": fg.ArrivalMethod1 = Convert.ToByte(value); break;
 					case "ArrivalMethod2": fg.ArrivalMethod2 = Convert.ToBoolean(value); break;
-					case "DepartureMethod1": fg.DepartureMethod1 = Convert.ToBoolean(value); break;
+					case "DepartureMethod1": fg.DepartureMethod1 = Convert.ToByte(value); break;
 					case "DepartureMethod2": fg.DepartureMethod2 = Convert.ToBoolean(value); break;
 					case "ArrDepTrigger":
 						trig = getTriggerFromControls(cboADTrigAmount, cboADTrigType, cboADTrigVar, cboADTrig, cboADPara, numADPara);
@@ -3304,16 +3305,18 @@ namespace Idmr.Yogeme
 			cboGlobSpecCargo.SelectedIndex = _mission.FlightGroups[_activeFG].GlobalSpecialCargo;
 			#endregion
 			#region Arr/Dep
-			optArrMS.Checked = _mission.FlightGroups[_activeFG].ArrivalMethod1;
-			optArrHyp.Checked = !optArrMS.Checked;
+			optArrMS.Checked = (_mission.FlightGroups[_activeFG].ArrivalMethod1 == 1);
+			optArrHyp.Checked = (_mission.FlightGroups[_activeFG].ArrivalMethod1 == 0);
+			optArrRegion.Checked = (_mission.FlightGroups[_activeFG].ArrivalMethod1 == 2);
 			try { cboArrMS.SelectedIndex = _mission.FlightGroups[_activeFG].ArrivalCraft1; }
 			catch { cboArrMS.SelectedIndex = 0; _mission.FlightGroups[_activeFG].ArrivalCraft1 = 0; optArrHyp.Checked = true; }
 			optArrMSAlt.Checked = _mission.FlightGroups[_activeFG].ArrivalMethod2;
 			optArrHypAlt.Checked = !optArrMSAlt.Checked;
 			try { cboArrMSAlt.SelectedIndex = _mission.FlightGroups[_activeFG].ArrivalCraft2; }
 			catch { cboArrMSAlt.SelectedIndex = 0; _mission.FlightGroups[_activeFG].ArrivalCraft2 = 0; optArrHypAlt.Checked = true; }
-			optDepMS.Checked = _mission.FlightGroups[_activeFG].DepartureMethod1;
-			optDepHyp.Checked = !optDepMS.Checked;
+			optDepMS.Checked = (_mission.FlightGroups[_activeFG].DepartureMethod1 == 1);
+			optDepHyp.Checked = (_mission.FlightGroups[_activeFG].DepartureMethod1 == 0);
+			optDepRegion.Checked = (_mission.FlightGroups[_activeFG].DepartureMethod1 == 2);
 			try { cboDepMS.SelectedIndex = _mission.FlightGroups[_activeFG].DepartureCraft1; }
 			catch { cboDepMS.SelectedIndex = 0; _mission.FlightGroups[_activeFG].DepartureCraft1 = 0; optDepHyp.Checked = true; }
 			optDepMSAlt.Checked = _mission.FlightGroups[_activeFG].DepartureMethod2;
@@ -3730,17 +3733,18 @@ namespace Idmr.Yogeme
 				}
 			}
 		}
-		void optArrMS_CheckedChanged(object sender, EventArgs e)
-		{
-			cboArrMS.Enabled = optArrMS.Checked;
-		}
-		void optArrMSAlt_CheckedChanged(object sender, EventArgs e)
+
+        void optArrHyp_CheckedChanged(object sender, EventArgs e)
+        {
+			cboArrMS.Enabled = !optArrHyp.Checked;
+        }
+        void optDepHyp_CheckedChanged(object sender, EventArgs e)
+        {
+			cboDepMS.Enabled = !optDepHyp.Checked;
+        }
+        void optArrMSAlt_CheckedChanged(object sender, EventArgs e)
 		{
 			cboArrMSAlt.Enabled = optArrMSAlt.Checked;
-		}
-		void optDepMS_CheckedChanged(object sender, EventArgs e)
-		{
-			cboDepMS.Enabled = optDepMS.Checked;
 		}
 		void optDepMSAlt_CheckedChanged(object sender, EventArgs e)
 		{
@@ -5307,7 +5311,6 @@ namespace Idmr.Yogeme
 		{
 			_mission.MissionNotes = Common.Update(this, _mission.MissionNotes, txtNotes.Text);
 		}
-
-		#endregion
-	}
+        #endregion
+    }
 }

@@ -28,6 +28,9 @@ your user settings.
 ==========
 Version History
 
+ - (XWA) Designation Unknown (0x14) renamed to "HYP from Any Region" via Platform.dll
+ - (XWA) Arrival method type 2, "Hyper in Region of [mothership]" added [Issue #91]
+
 v1.15.1, 14 Oct 2023
  - (XWA) Fixed a crash with trigger text referencing Region 4 [Issue #87]
  - (XWA) Platform.dll updated for issues #89 and #90
@@ -40,7 +43,7 @@ v1.15, 23 Sep 2023
      - Text box to directly modify the INI contents
    - Unsupported/unrecognized sections/values are kept, as are comments
    - During Write, adds short description from the LST if possible
-   - Added COncourse and HullIcon support
+   - Added Concourse and HullIcon support
    - Added MissionObject weapon profiles
    - Added MissionTie craft text and stats profiles
    - Fixed FamHangarCamera to use correct key names

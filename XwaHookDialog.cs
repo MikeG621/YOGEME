@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2023 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.15
+ * VERSION: 1.15+
  */
 
 /* CHANGELOG
+ * [UPD] Changes due to Arr/Dep Method1
  * v1.15, 230923
  * [ADD] Concourse, HullIcon hooks support
  * [UPD] Redid GUI
@@ -253,8 +254,8 @@ namespace Idmr.Yogeme
 					}
 					if (commandShip != -1) break;
 
-					if (player.ArrivalMethod1) commandShip = player.ArrivalCraft1;
-					else if (player.DepartureMethod1) commandShip = player.DepartureCraft1;
+					if (player.ArrivalMethod1 == 1) commandShip = player.ArrivalCraft1;
+					else if (player.DepartureMethod1 == 1) commandShip = player.DepartureCraft1;
 				}
                 if (commandShip != -1) break;
             }

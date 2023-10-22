@@ -794,6 +794,8 @@ namespace Idmr.Yogeme
             this.dataOrders = new System.Data.DataView();
             this.dataOrders_Raw = new System.Data.DataView();
             this.ttActiveSequence = new System.Windows.Forms.ToolTip(this.components);
+            this.optArrRegion = new System.Windows.Forms.RadioButton();
+            this.optDepRegion = new System.Windows.Forms.RadioButton();
             ((System.ComponentModel.ISupportInitialize)(this.dataWaypoints)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataWaypoints_Raw)).BeginInit();
             this.tabMain.SuspendLayout();
@@ -2594,6 +2596,7 @@ namespace Idmr.Yogeme
             // 
             // groupBox9
             // 
+            this.groupBox9.Controls.Add(this.optDepRegion);
             this.groupBox9.Controls.Add(this.optDepHyp);
             this.groupBox9.Controls.Add(this.cboDepMS);
             this.groupBox9.Controls.Add(this.optDepMS);
@@ -2613,6 +2616,7 @@ namespace Idmr.Yogeme
             this.optDepHyp.TabIndex = 6;
             this.optDepHyp.TabStop = true;
             this.optDepHyp.Text = "Hyperspace";
+            this.optDepHyp.CheckedChanged += new System.EventHandler(this.optDepHyp_CheckedChanged);
             // 
             // cboDepMS
             // 
@@ -2630,7 +2634,6 @@ namespace Idmr.Yogeme
             this.optDepMS.Size = new System.Drawing.Size(80, 24);
             this.optDepMS.TabIndex = 7;
             this.optDepMS.Text = "Mothership";
-            this.optDepMS.CheckedChanged += new System.EventHandler(this.optDepMS_CheckedChanged);
             // 
             // lblDep1
             // 
@@ -2842,6 +2845,7 @@ namespace Idmr.Yogeme
             // 
             // groupBox12
             // 
+            this.groupBox12.Controls.Add(this.optArrRegion);
             this.groupBox12.Controls.Add(this.cboArrMS);
             this.groupBox12.Controls.Add(this.optArrHyp);
             this.groupBox12.Controls.Add(this.optArrMS);
@@ -2870,6 +2874,7 @@ namespace Idmr.Yogeme
             this.optArrHyp.TabIndex = 0;
             this.optArrHyp.TabStop = true;
             this.optArrHyp.Text = "Hyperspace";
+            this.optArrHyp.CheckedChanged += new System.EventHandler(this.optArrHyp_CheckedChanged);
             // 
             // optArrMS
             // 
@@ -2878,7 +2883,6 @@ namespace Idmr.Yogeme
             this.optArrMS.Size = new System.Drawing.Size(80, 24);
             this.optArrMS.TabIndex = 1;
             this.optArrMS.Text = "Mothership";
-            this.optArrMS.CheckedChanged += new System.EventHandler(this.optArrMS_CheckedChanged);
             // 
             // lblArr2
             // 
@@ -9308,6 +9312,28 @@ namespace Idmr.Yogeme
             // 
             this.ttActiveSequence.ToolTipTitle = "Active Sequence";
             // 
+            // optArrRegion
+            // 
+            this.optArrRegion.AutoSize = true;
+            this.optArrRegion.Location = new System.Drawing.Point(112, 20);
+            this.optArrRegion.Name = "optArrRegion";
+            this.optArrRegion.Size = new System.Drawing.Size(116, 17);
+            this.optArrRegion.TabIndex = 3;
+            this.optArrRegion.TabStop = true;
+            this.optArrRegion.Text = "Hyper in Region of:";
+            this.optArrRegion.UseVisualStyleBackColor = true;
+            // 
+            // optDepRegion
+            // 
+            this.optDepRegion.AutoSize = true;
+            this.optDepRegion.Location = new System.Drawing.Point(108, 20);
+            this.optDepRegion.Name = "optDepRegion";
+            this.optDepRegion.Size = new System.Drawing.Size(116, 17);
+            this.optDepRegion.TabIndex = 9;
+            this.optDepRegion.TabStop = true;
+            this.optDepRegion.Text = "Hyper in Region of:";
+            this.optDepRegion.UseVisualStyleBackColor = true;
+            // 
             // XwaForm
             // 
             this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
@@ -9359,6 +9385,7 @@ namespace Idmr.Yogeme
             ((System.ComponentModel.ISupportInitialize)(this.numDepSec)).EndInit();
             this.groupBox10.ResumeLayout(false);
             this.groupBox9.ResumeLayout(false);
+            this.groupBox9.PerformLayout();
             this.groupBox8.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.numArrSec)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numArrMin)).EndInit();
@@ -9366,6 +9393,7 @@ namespace Idmr.Yogeme
             this.panel9.ResumeLayout(false);
             this.groupBox11.ResumeLayout(false);
             this.groupBox12.ResumeLayout(false);
+            this.groupBox12.PerformLayout();
             this.tabGoals.ResumeLayout(false);
             this.tabGoals.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numUnk42)).EndInit();
@@ -10323,5 +10351,7 @@ namespace Idmr.Yogeme
 		private ToolTip ttActiveSequence;
         private NumericUpDown numFilterRegion;
         private CheckBox chkRegionFilter;
+        private RadioButton optArrRegion;
+        private RadioButton optDepRegion;
     }
 }
