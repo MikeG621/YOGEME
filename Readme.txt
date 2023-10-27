@@ -3,8 +3,8 @@
 
 Author: Michael Gaisser (mjgaisser@gmail.com)
 Contributor: Random Starfighter (JB)
-Version: 1.15.1
-Date: 2023.10.14
+Version: 1.15.2
+Date: 2023.10.27
 
 Thank you for downloading YOGEME, the all-in-one mission editor for the X-Wing
 series, Xwing95 through X-wing Alliance.  This program allows easy mission
@@ -28,6 +28,7 @@ your user settings.
 ==========
 Version History
 
+v1.15.2, 27 Oct 2023
  - (XWA) Designation Unknown (0x14) renamed to "HYP from Any Region" via Platform.dll
  - (XWA) Arrival method type 2, "Hyper in Region of [mothership]" added [Issue #91]
 

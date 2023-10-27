@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2023 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.15.1+
+ * VERSION: 1.15.2
  */
 
 /* CHANGELOG
+ * v1.15.2, 231027
  * [UPD] Changes due to XWA Arr/Dep Method1
  * v1.15.1, 231014
  * [FIX #87] Crash due to Region 4 references in trigger text
