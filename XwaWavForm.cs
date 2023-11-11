@@ -3,10 +3,12 @@
  * Copyright (C) 2007-2023 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.14
+ * VERSION: 1.15.3
  */
 
 /* CHANGELOG
+ * v1.15.3, 231111
+ * [FIX] Briefing tab was pointing to wrong files due to not fixing the regex groups after previous fix
  * v1.14, 230804
  * [FIX] Support for "8B" co-op missions [#84]
  * v1.13.12, 220319
@@ -65,8 +67,8 @@ namespace Idmr.Yogeme
 				Close();
 				return;
 			}
-			_battleNumber = int.Parse(match.Groups[1].Value);
-			_missionNumber = int.Parse(match.Groups[2].Value);
+			_battleNumber = int.Parse(match.Groups[2].Value);
+			_missionNumber = int.Parse(match.Groups[3].Value);
 			_frontend = _wave + "FrontEnd\\B" + _battleNumber + "M" + _missionNumber + "\\";
 			opnWav.InitialDirectory = _wave;
 			Reload();

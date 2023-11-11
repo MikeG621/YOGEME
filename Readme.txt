@@ -3,7 +3,7 @@
 
 Author: Michael Gaisser (mjgaisser@gmail.com)
 Contributor: Random Starfighter (JB)
-Version: 1.15.2
+Version: 1.15.3
 Date: 2023.10.27
 
 Thank you for downloading YOGEME, the all-in-one mission editor for the X-Wing
@@ -28,8 +28,10 @@ your user settings.
 ==========
 Version History
 
+v1.15.3, 11 Nov 2023
  - (XWA) Fixed a Briefing event overflow that could occur when adding Move commands [Issue #92]
  - (XWA) Opening a corrupted briefing should now stop importing wherever it fails, instead of crashing completely
+ - (XWA) Fixed the Briefing tab pointing to wrong files due to not fixing the regex groups after v1.14's issue 84 fix
 
 v1.15.2, 27 Oct 2023
  - (XWA) Designation Unknown (0x14) renamed to "HYP from Any Region" via Platform.dll

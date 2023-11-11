@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2023 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.14+
+ * VERSION: 1.15.3
  */
 
 /* CHANGELOG
+ * v1.15.3, 231111
  * [FIX #92] Event overflow due to XWA move
  * v1.14, 230804
  * [NEW] SkipMarker for TIE/XvT
