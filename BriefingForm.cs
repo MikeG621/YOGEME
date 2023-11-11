@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2023 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.14
+ * VERSION: 1.14+
  */
 
 /* CHANGELOG
+ * [FIX #92] Event overflow due to XWA move
  * v1.14, 230804
  * [NEW] SkipMarker for TIE/XvT
  * [UPD] Replaced Unk1 field with label
@@ -504,18 +505,22 @@ namespace Idmr.Yogeme
 			int offset = 0;
 			for (int i = 0; i < _maxEvents; i++)
 			{
-				_events[i, 0] = rawEvents[offset++];        // time
-				_events[i, 1] = rawEvents[offset++];        // event
-				if (_events[i, 1] == 0 || _events[i, 1] == (short)BaseBriefing.EventType.EndBriefing) break;
-				else
+				try
 				{
-					for (int j = 2; j < 2 + brief.EventParameterCount(_events[i, 1]); j++, offset++) _events[i, j] = rawEvents[offset];
-					if (_platform == Settings.Platform.XWA && _events[i, 1] == (short)BaseBriefing.EventType.XwaMoveIcon && _briefData[_events[i, 2]].Waypoint != null && _briefData[_events[i, 2]].Waypoint[0] == 0 && _briefData[_events[i, 2]].Waypoint[1] == 0)
-					{   // this prevents Exception if Move instruction is before NewIcon, and only assigns initial position
-						_briefData[_events[i, 2]].Waypoint[0] = _events[i, 3];
-						_briefData[_events[i, 2]].Waypoint[1] = _events[i, 4];
+					_events[i, 0] = rawEvents[offset++];        // time
+					_events[i, 1] = rawEvents[offset++];        // event
+					if (_events[i, 1] == 0 || _events[i, 1] == (short)BaseBriefing.EventType.EndBriefing) break;
+					else
+					{
+						for (int j = 2; j < 2 + brief.EventParameterCount(_events[i, 1]); j++, offset++) _events[i, j] = rawEvents[offset];
+						if (_platform == Settings.Platform.XWA && _events[i, 1] == (short)BaseBriefing.EventType.XwaMoveIcon && _briefData[_events[i, 2]].Waypoint != null && _briefData[_events[i, 2]].Waypoint[0] == 0 && _briefData[_events[i, 2]].Waypoint[1] == 0)
+						{   // this prevents Exception if Move instruction is before NewIcon, and only assigns initial position
+							_briefData[_events[i, 2]].Waypoint[0] = _events[i, 3];
+							_briefData[_events[i, 2]].Waypoint[1] = _events[i, 4];
+						}
 					}
 				}
+				catch (ArgumentOutOfRangeException) { break; }	// if briefing is corrupted leading to an overflow, just kick out
 				// okay, now that's in a usable format, list the event in lstEvents
 				lstEvents.Items.Add("");
 				updateList(i);
@@ -2565,9 +2570,15 @@ namespace Idmr.Yogeme
 					}
 					else
 					{
-						int t0 = hsbTimer.Value, x = _briefData[_icon].Waypoint[0], y = _briefData[_icon].Waypoint[1];
 						int total = (int)Math.Round(numMoveTime.Value * _timerInterval);
-						for (int j = 0; j <= total; j++)
+                        if (!hasAvailableEventSpace((2 + brief.EventParameterCount((int)_eventType)) * total))
+                        {
+                            MessageBox.Show("Not enough room in Event list for the full Move, aborting...", "Error");
+                            cmdCancel_Click(0, new EventArgs());
+                            return;
+                        }
+                        int t0 = hsbTimer.Value, x = _briefData[_icon].Waypoint[0], y = _briefData[_icon].Waypoint[1];
+                        for (int j = 0; j <= total; j++)
 						{
 							i = findNext(j + t0);
 							try
@@ -3079,7 +3090,7 @@ namespace Idmr.Yogeme
 
 			return true;
 		}
-		void insertEvent()
+        void insertEvent()
 		{
 			// create a new item @ SelectedIndex, 
 			int i = lstEvents.SelectedIndex;

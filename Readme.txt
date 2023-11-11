@@ -28,6 +28,9 @@ your user settings.
 ==========
 Version History
 
+ - (XWA) Fixed a Briefing event overflow that could occur when adding Move commands [Issue #92]
+ - (XWA) Opening a corrupted briefing should now stop importing wherever it fails, instead of crashing completely
+
 v1.15.2, 27 Oct 2023
  - (XWA) Designation Unknown (0x14) renamed to "HYP from Any Region" via Platform.dll
  - (XWA) Arrival method type 2, "Hyper in Region of [mothership]" added [Issue #91]
