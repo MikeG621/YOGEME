@@ -28,6 +28,8 @@ your user settings.
 ==========
 Version History
 
+ - (XWA) "HYP from Any Region" exit buoys now processed in the map [Issue #93]
+
 v1.15.3, 11 Nov 2023
  - (XWA) Fixed a Briefing event overflow that could occur when adding Move commands [Issue #92]
  - (XWA) Opening a corrupted briefing should now stop importing wherever it fails, instead of crashing completely

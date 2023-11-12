@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2023 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.14
+ * VERSION: 1.14+
  */
 
 /* CHANGELOG
+ * [FIX #93] "From any" buoys detected
  * v1.14, 230804
  * [FIX] pct.MouseLeave will now clear shiftState
  * [FIX] buoys also check Des2 [#83]
@@ -1955,7 +1956,7 @@ namespace Idmr.Yogeme
 							for (int b = 0; b < numCraft; b++)
 							{
 								var buoy = (Platform.Xwa.FlightGroup)_mapData[b].FlightGroup;
-                                if (buoy.CraftType == 85 && buoy.Waypoints[0][4] == r && (buoy.Designation1 == reg + 12 || buoy.Designation2 == reg + 12))   // From are #12-15
+                                if (buoy.CraftType == 85 && buoy.Waypoints[0][4] == r && (buoy.Designation1 == reg + 12 || buoy.Designation2 == reg + 12 || buoy.Designation1 == 0x14 || buoy.Designation2 == 0x14))   // From are #12-15, 0x14 is "From any"
 								{
 									exitBuoySP = buoy.Waypoints[0];
 									System.Diagnostics.Debug.WriteLine(fg.ToString() + " enters Region " + (r + 1) + " from " + (reg + 1) + " via " + buoy.ToString());
