@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2023 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.14+
+ * VERSION: 1.15.4
  */
 
 /* CHANGELOG
+ * v1.15.4, 231125
  * [FIX #93] "From any" buoys detected
  * v1.14, 230804
  * [FIX] pct.MouseLeave will now clear shiftState
