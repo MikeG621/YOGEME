@@ -1,12 +1,13 @@
 /*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
- * Copyright (C) 2007-2022 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2023 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.13.1
+ * VERSION: 1.13.1+
  */
 
 /* CHANGELOG
+ * [UPD] Removed RunConverter due to being obsolete
  * v1.13.1, 220208
  * [NEW] Cut and Paste handling [JB]
  * [NEW] KeyDown handling for multi-line TextBoxes [JB]
@@ -97,7 +98,7 @@ namespace Idmr.Yogeme
 				}
 			}
 			catch (Exception x) { throw new ApplicationException(x.Message); }
-			finally { if (sr != null) sr.Close(); }
+			finally { sr?.Close(); }
 		}
 
 		/// <summary>Run MissionVerify.exe on open mission</summary>
@@ -127,26 +128,6 @@ namespace Idmr.Yogeme
 			catch (Exception x) { MessageBox.Show(x.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); }
 		}
 		
-		/// <summary>Run Converter.exe on open mission</summary>
-		/// <param name="current">Path to mission file</param>
-		/// <param name="mode">0 = TIE to XvT, 1 = TIE to XWA, 2 = XvT to XWA</param>
-		public static void RunConverter(string current, byte mode)
-		{
-			try
-			{
-				string newFile = "";
-				if (mode == 1) newFile = current.ToLower().Replace(".tie", "_XvT.tie");
-				else if (mode == 4) newFile = current.ToLower().Replace(".tie", "_BoP.tie");
-				else newFile = current.ToLower().Replace(".tie", "_XWA.tie");
-
-				Process MV = new Process();
-				MV.StartInfo.FileName = Application.StartupPath + "\\Converter.exe";
-				MV.StartInfo.Arguments = "\"" + current + "\" \"" + newFile + "\" " + mode;
-				MV.Start();
-			}
-			catch (Exception x) { MessageBox.Show(x.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); }
-		}
-
 		/// <summary>Adds an asterik to the window title</summary>
 		/// <param name="form"></param>
 		/// <param name="loading"></param>

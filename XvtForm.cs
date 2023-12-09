@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2023 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.13.12
+ * VERSION: 1.13.12+
  */
 
 /* CHANGELOG
+ * [UPD] SaveAs XWA now uses Platform
  * v1.13.12, 230116
  * [NEW] RememberSelectedOrder option functionality
  * v1.13.11, 221030
@@ -1786,9 +1787,7 @@ namespace Idmr.Yogeme
 					case 0:
 						try
 						{
-							FlightGroup fg = (FlightGroup)obj;
-#pragma warning disable IDE0016 // Use 'throw' expression. Can't use due to needing the null check before new()
-							if (fg == null) throw new FormatException();
+							FlightGroup fg = (FlightGroup)obj ?? throw new FormatException();
 							if (!newFG()) break;
 
 							_mission.FlightGroups[_activeFG] = fg;
@@ -1806,15 +1805,13 @@ namespace Idmr.Yogeme
 					case 1:
 						try
 						{
-							Platform.Xvt.Message m = (Platform.Xvt.Message)obj;
-							if (m == null) throw new FormatException();
+							Platform.Xvt.Message m = (Platform.Xvt.Message)obj ?? throw new FormatException();
 							if (!newMess()) break;
 
 							_mission.Messages[_activeMessage] = m;
 							messRefreshItem(_activeMessage);
 							lstMessages.SelectedIndex = _activeMessage;
 							lstMessages_SelectedIndexChanged(0, new EventArgs());
-#pragma warning restore IDE0016 // Use 'throw' expression
 						}
 						catch { /* do nothing */ }
 						break;
@@ -1889,8 +1886,16 @@ namespace Idmr.Yogeme
 		}
 		void menuSaveAsXWA_Click(object sender, EventArgs e)
 		{
-			menuSave_Click("SaveAsXWA", new System.EventArgs());
-			Common.RunConverter(_mission.MissionPath, 2);
+			promptSave();
+			try
+			{
+				Platform.Xwa.Mission converted = Platform.Converter.XvtBopToXwa(_mission);
+				converted.Save();
+			}
+			catch (Exception x) // Platform doesn't throw anything, but leave this here just in case
+			{
+				MessageBox.Show(x.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+			}
 		}
 		void menuTest_Click(object sender, EventArgs e)
 		{

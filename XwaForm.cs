@@ -7,6 +7,7 @@
  */
 
 /* CHANGELOG
+ * [FIX #96] craftStart() ignores SAT/1 thru RDV (includes asteroids and mines)
  * v1.15.2, 231027
  * [UPD] Changes due to XWA Arr/Dep Method1
  * v1.15.1, 231014
@@ -457,12 +458,13 @@ namespace Idmr.Yogeme
 		}
 		void craftStart(FlightGroup fg, bool bAdd)
 		{
-			if (fg.Difficulty == 1 || fg.Difficulty == 3 || fg.Difficulty == 6 || !fg.ArrivesIn30Seconds || fg.CraftType == 0xB7) return;
+			if (fg.Difficulty == 1 || fg.Difficulty == 3 || fg.Difficulty == 6
+				|| !fg.ArrivesIn30Seconds
+				|| fg.CraftType == 0xB7 || (fg.CraftType >= 0x46 && fg.CraftType <= 0x58)) return; // Ignore SAT/1 thru RDV
 			if (bAdd) _startingShips += fg.NumberOfCraft;
 			else _startingShips -= fg.NumberOfCraft;
 			lblStarting.Text = _startingShips.ToString() + " craft at 30 seconds";
-			if (_startingShips > Mission.CraftLimit) lblStarting.ForeColor = Color.Red;
-			else lblStarting.ForeColor = SystemColors.ControlText;
+			lblStarting.ForeColor = _startingShips > Mission.CraftLimit ? Color.Red : SystemColors.ControlText;
 		}
 		void initializeMission()
 		{
@@ -2170,9 +2172,7 @@ namespace Idmr.Yogeme
 					case 0:
 						try
 						{
-							FlightGroup fg = (FlightGroup)obj;
-#pragma warning disable IDE0016 // Use 'throw' expression. Can't use due to needing the null check before new()
-							if (fg == null) throw new FormatException();
+							FlightGroup fg = (FlightGroup)obj ?? throw new FormatException();
 							if (!newFG()) break;
 
 							_mission.FlightGroups[_activeFG] = fg;
@@ -2190,15 +2190,13 @@ namespace Idmr.Yogeme
 					case 1:
 						try
 						{
-							Platform.Xwa.Message mess = (Platform.Xwa.Message)obj;
-							if (mess == null) throw new FormatException();
+							Platform.Xwa.Message mess = (Platform.Xwa.Message)obj ?? throw new FormatException();
 							if (!newMess()) break;
 
 							_mission.Messages[_activeMessage] = mess;
 							messRefreshItem(_activeMessage);
 							lstMessages.SelectedIndex = _activeMessage;
 							lstMessages_SelectedIndexChanged(0, new EventArgs());
-#pragma warning restore IDE0016 // Use 'throw' expression
 						}
 						catch { /* do nothing */ }
 						break;
