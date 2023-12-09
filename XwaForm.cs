@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2023 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.15.2
+ * VERSION: 1.15.2+
  */
 
 /* CHANGELOG
+ * [NEW #97] GlobalSummary dialog
  * [FIX #96] craftStart() ignores SAT/1 thru RDV (includes asteroids and mines)
  * v1.15.2, 231027
  * [UPD] Changes due to XWA Arr/Dep Method1
@@ -1873,6 +1874,7 @@ namespace Idmr.Yogeme
 		{
 			Close();
 		}
+		void menuGlobalSummary_Click(object sender, EventArgs e) => new GlobalSummaryDialog(_mission.FlightGroups).Show();
 		void menuGoalSummary_Click(object sender, EventArgs e)
 		{
 			string output = "(global goals not included):\r\n----------\r\n" + generateGoalSummary();
@@ -5310,6 +5312,8 @@ namespace Idmr.Yogeme
 		{
 			_mission.MissionNotes = Common.Update(this, _mission.MissionNotes, txtNotes.Text);
 		}
-        #endregion
-    }
+		#endregion
+
+		
+	}
 }

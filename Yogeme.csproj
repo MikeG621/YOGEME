@@ -180,6 +180,9 @@
     <EmbeddedResource Include="FlightGroupLibraryForm.resx">
       <DependentUpon>FlightGroupLibraryForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="GlobalSummaryDialog.resx">
+      <DependentUpon>GlobalSummaryDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="HyperbuoyDialog.resx">
       <DependentUpon>HyperbuoyDialog.cs</DependentUpon>
     </EmbeddedResource>
@@ -267,6 +270,12 @@
     </Compile>
     <Compile Include="FormationDialog.Designer.cs">
       <DependentUpon>FormationDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GlobalSummaryDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GlobalSummaryDialog.Designer.cs">
+      <DependentUpon>GlobalSummaryDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="HyperbuoyDialog.cs">
       <SubType>Form</SubType>

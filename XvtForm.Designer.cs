@@ -598,6 +598,7 @@ namespace Idmr.Yogeme
 			this.menuGoalSummary = new System.Windows.Forms.MenuItem();
 			this.menuLibrary = new System.Windows.Forms.MenuItem();
 			this.menuTest = new System.Windows.Forms.MenuItem();
+			this.menuGlobalSummary = new System.Windows.Forms.MenuItem();
 			this.menuHelp = new System.Windows.Forms.MenuItem();
 			this.menuHelpInfo = new System.Windows.Forms.MenuItem();
 			this.menuAbout = new System.Windows.Forms.MenuItem();
@@ -2888,12 +2889,12 @@ namespace Idmr.Yogeme
 			this.label57.Text = "Speed:";
 			this.label57.TextAlign = System.Drawing.ContentAlignment.BottomRight;
 			// 
-			// txtOString
+			// cboOString
 			// 
 			this.cboOString.Location = new System.Drawing.Point(408, 16);
 			this.cboOString.MaxLength = 15;
 			this.cboOString.Name = "cboOString";
-			this.cboOString.Size = new System.Drawing.Size(128, 20);
+			this.cboOString.Size = new System.Drawing.Size(128, 21);
 			this.cboOString.TabIndex = 32;
 			// 
 			// label54
@@ -4705,10 +4706,9 @@ namespace Idmr.Yogeme
 			// 
 			this.label53.Location = new System.Drawing.Point(344, 72);
 			this.label53.Name = "label53";
-			this.label53.Size = new System.Drawing.Size(104, 24);
+			this.label53.Size = new System.Drawing.Size(104, 29);
 			this.label53.TabIndex = 21;
-			this.label53.Text = "Notes\t\t\t       (not used in game)";
-			this.label53.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
+			this.label53.Text = "Notes\r\n(not used in game)";
 			// 
 			// txtShort
 			// 
@@ -6592,7 +6592,8 @@ namespace Idmr.Yogeme
             this.menuOptions,
             this.menuGoalSummary,
             this.menuLibrary,
-            this.menuTest});
+            this.menuTest,
+            this.menuGlobalSummary});
 			this.menuTools.Text = "&Tools";
 			// 
 			// menuVerify
@@ -6642,6 +6643,12 @@ namespace Idmr.Yogeme
 			this.menuTest.Index = 7;
 			this.menuTest.Text = "&Test";
 			this.menuTest.Click += new System.EventHandler(this.menuTest_Click);
+			// 
+			// menuGlobalSummary
+			// 
+			this.menuGlobalSummary.Index = 8;
+			this.menuGlobalSummary.Text = "GG and G&U Summary";
+			this.menuGlobalSummary.Click += new System.EventHandler(this.menuGlobalSummary_Click);
 			// 
 			// menuHelp
 			// 
@@ -7434,5 +7441,6 @@ namespace Idmr.Yogeme
 		private MenuItem menuLibrary;
 		private NumericUpDown numRndSeed;
 		private Label label29;
+		private MenuItem menuGlobalSummary;
 	}
 }

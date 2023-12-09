@@ -29,6 +29,7 @@ your user settings.
 Version History
 
  - External Converter utility no longer packaged due to functionality now within Platform.dll
+ - (All but Xwing) Global Summary dialog to list out current GlobalGroups and GlobalUnits [#97]
  - (XWA) 32bpp Hook skin opacity support
  - (XWA) SAT/1 thru RDV no longer counted in "# Craft at 30 seconds" note [Issue #96]
 

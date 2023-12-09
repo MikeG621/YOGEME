@@ -7,6 +7,7 @@
  */
 
 /* CHANGELOG
+ * [NEW #97] GlobalSummary dialog
  * [UPD] SaveAs XWA now uses Platform
  * v1.13.12, 230116
  * [NEW] RememberSelectedOrder option functionality
@@ -1535,6 +1536,7 @@ namespace Idmr.Yogeme
 		{
 			Close();
 		}
+		void menuGlobalSummary_Click(object sender, EventArgs e) => new GlobalSummaryDialog(_mission.FlightGroups).Show();
 		void menuGoalSummary_Click(object sender, EventArgs e)
 		{
 			string output = "(global goals not included):\r\n----------\r\n" + generateGoalSummary();
