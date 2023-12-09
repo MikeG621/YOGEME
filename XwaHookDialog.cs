@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2023 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.15.2
+ * VERSION: 1.15.2+
  */
 
 /* CHANGELOG
+ * [UPD] 32bpp: skin opacity
  * v1.15.2, 231027
  * [UPD] Changes due to Arr/Dep Method1
  * v1.15, 230923
@@ -2013,6 +2014,10 @@ namespace Idmr.Yogeme
 		{
 			cboSkinMarks.Enabled = chkSkinMarks.Checked;
 		}
+		private void chkOpacity_CheckedChanged(object sender, EventArgs e)
+		{
+			numOpacity.Enabled = chkOpacity.Checked;
+		}
 
 		private void cmdAddSkin_Click(object sender, EventArgs e)
 		{
@@ -2022,7 +2027,7 @@ namespace Idmr.Yogeme
 			if (res == DialogResult.OK)
 			{
 				string line = Path.GetFileNameWithoutExtension(opnObjects.FileName) + (chkSkinMarks.Checked ? "_fgc_" + cboSkinMarks.SelectedIndex : "") + " = "
-					+ (chkDefaultSkin.Checked ? "Default" + (chkSkinMarks.Checked ? "_" + cboSkinMarks.SelectedIndex : "") : txtSkin.Text);
+					+ (chkDefaultSkin.Checked ? "Default" + (chkSkinMarks.Checked ? "_" + cboSkinMarks.SelectedIndex : "") : txtSkin.Text) + (chkOpacity.Checked ? "-" + (int)numOpacity.Value : "");
 				lstSkins.Items.Add(line);
 			}
 		}
@@ -2030,7 +2035,7 @@ namespace Idmr.Yogeme
 		{
 			if (lstSkins.SelectedIndex == -1) return;
 			string line = lstSkins.SelectedItem.ToString();
-			line += ", " + (chkDefaultSkin.Checked ? "Default" + (chkSkinMarks.Checked ? "_" + cboSkinMarks.SelectedIndex : "") : txtSkin.Text);
+			line += ", " + (chkDefaultSkin.Checked ? "Default" + (chkSkinMarks.Checked ? "_" + cboSkinMarks.SelectedIndex : "") : txtSkin.Text) + (chkOpacity.Checked ? "-" + (int)numOpacity.Value : "");
 			lstSkins.Items[lstSkins.SelectedIndex] = line;
 		}
 		private void cmdRemoveSkin_Click(object sender, EventArgs e)
@@ -2411,5 +2416,5 @@ namespace Idmr.Yogeme
 				return result;
 			}
 		}
-    }
+	}
 }

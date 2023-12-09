@@ -3896,7 +3896,7 @@ namespace Idmr.Yogeme
 				case 0x3A:
 				case 0x39:
 				case 0x3D: //Self-Destruct, Repair Self, Board to Defuse, Park At, Work On
-					text = Common.GetFormattedTime(_mission.GetDelaySeconds(value), true);
+					text = Common.GetFormattedTime(Mission.GetDelaySeconds(value), true);
 					break;
 				case 0x02:
 				case 0x03:
@@ -3988,7 +3988,7 @@ namespace Idmr.Yogeme
 				cboGoalPara.Visible = false;
 				numGoalTimeLimit.Visible = true;
 
-				int sec = _mission.GetDelaySeconds((byte)numGoalTimeLimit.Value);
+				int sec = Mission.GetDelaySeconds((byte)numGoalTimeLimit.Value);
 				lblGoalTimeLimit.Text = "Time Limit:";
 				lblGoalTimeLimitSec.Visible = true;
 				lblGoalTimeLimitSec.Text = (sec == 0 ? "No time limit" : "< " + Common.GetFormattedTime(sec, false));
@@ -4812,7 +4812,7 @@ namespace Idmr.Yogeme
 		}
 		void numMessDelay_ValueChanged(object sender, EventArgs e)
 		{
-			lblDelay.Text = Common.GetFormattedTime(_mission.GetDelaySeconds((byte)numMessDelay.Value), true);
+			lblDelay.Text = Common.GetFormattedTime(Mission.GetDelaySeconds((byte)numMessDelay.Value), true);
 		}
 		void txtMessage_TextChanged(object sender, EventArgs e)
 		{

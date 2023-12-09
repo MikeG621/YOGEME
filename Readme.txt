@@ -28,6 +28,8 @@ your user settings.
 ==========
 Version History
 
+ - (XWA) 32bpp Hook skin opacity support
+
 v1.15.4, 25 Nov 2023
  - (XWA) "HYP from Any Region" exit buoys now processed in the map [Issue #93]
 
