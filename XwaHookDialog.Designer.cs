@@ -338,6 +338,8 @@
 			this.pnlHangar = new System.Windows.Forms.Panel();
 			this.pnlSFoils = new System.Windows.Forms.Panel();
 			this.pnlSkins = new System.Windows.Forms.Panel();
+			this.numOpacity = new System.Windows.Forms.NumericUpDown();
+			this.chkOpacity = new System.Windows.Forms.CheckBox();
 			this.pnlShield = new System.Windows.Forms.Panel();
 			this.chkSSRecharge = new System.Windows.Forms.CheckBox();
 			this.pnlHyper = new System.Windows.Forms.Panel();
@@ -360,8 +362,11 @@
 			this.cmdHullRemove = new System.Windows.Forms.Button();
 			this.cmdHullAdd = new System.Windows.Forms.Button();
 			this.lstHullIcon = new System.Windows.Forms.ListBox();
-			this.chkOpacity = new System.Windows.Forms.CheckBox();
-			this.numOpacity = new System.Windows.Forms.NumericUpDown();
+			this.label83 = new System.Windows.Forms.Label();
+			this.chkIntRegion1 = new System.Windows.Forms.CheckBox();
+			this.chkIntRegion2 = new System.Windows.Forms.CheckBox();
+			this.chkIntRegion3 = new System.Windows.Forms.CheckBox();
+			this.chkIntRegion4 = new System.Windows.Forms.CheckBox();
 			((System.ComponentModel.ISupportInitialize)(this.numFamHeadingZ)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numFamPosZ)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numFamHeadingXY)).BeginInit();
@@ -447,6 +452,7 @@
 			this.pnlHangar.SuspendLayout();
 			this.pnlSFoils.SuspendLayout();
 			this.pnlSkins.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.numOpacity)).BeginInit();
 			this.pnlShield.SuspendLayout();
 			this.pnlHyper.SuspendLayout();
 			this.pnlConcourse.SuspendLayout();
@@ -456,7 +462,6 @@
 			this.pnlHullIcon.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numHullIcon)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numPlayerHull)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.numOpacity)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// cmdOK
@@ -1362,10 +1367,9 @@
 			// 
 			this.label46.Location = new System.Drawing.Point(3, 143);
 			this.label46.Name = "label46";
-			this.label46.Size = new System.Drawing.Size(366, 35);
+			this.label46.Size = new System.Drawing.Size(366, 48);
 			this.label46.TabIndex = 4;
-			this.label46.Text = "This replaces individual WAV sounds used in the mission. Select the original soun" +
-    "d to be replaced, then the new one.";
+			this.label46.Text = resources.GetString("label46.Text");
 			// 
 			// optCraftProfile
 			// 
@@ -3953,6 +3957,11 @@
 			// 
 			// pnlSounds
 			// 
+			this.pnlSounds.Controls.Add(this.chkIntRegion4);
+			this.pnlSounds.Controls.Add(this.chkIntRegion3);
+			this.pnlSounds.Controls.Add(this.chkIntRegion2);
+			this.pnlSounds.Controls.Add(this.chkIntRegion1);
+			this.pnlSounds.Controls.Add(this.label83);
 			this.pnlSounds.Controls.Add(this.label46);
 			this.pnlSounds.Controls.Add(this.cmdRemoveSounds);
 			this.pnlSounds.Controls.Add(this.lstSounds);
@@ -4114,6 +4123,30 @@
 			this.pnlSkins.Size = new System.Drawing.Size(378, 214);
 			this.pnlSkins.TabIndex = 59;
 			this.pnlSkins.Visible = false;
+			// 
+			// numOpacity
+			// 
+			this.numOpacity.Enabled = false;
+			this.numOpacity.Location = new System.Drawing.Point(69, 182);
+			this.numOpacity.Name = "numOpacity";
+			this.numOpacity.Size = new System.Drawing.Size(46, 20);
+			this.numOpacity.TabIndex = 30;
+			this.numOpacity.Value = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+			// 
+			// chkOpacity
+			// 
+			this.chkOpacity.AutoSize = true;
+			this.chkOpacity.Location = new System.Drawing.Point(3, 183);
+			this.chkOpacity.Name = "chkOpacity";
+			this.chkOpacity.Size = new System.Drawing.Size(62, 17);
+			this.chkOpacity.TabIndex = 29;
+			this.chkOpacity.Text = "Opacity";
+			this.chkOpacity.UseVisualStyleBackColor = true;
+			this.chkOpacity.CheckedChanged += new System.EventHandler(this.chkOpacity_CheckedChanged);
 			// 
 			// pnlShield
 			// 
@@ -4373,29 +4406,54 @@
 			this.lstHullIcon.Size = new System.Drawing.Size(366, 95);
 			this.lstHullIcon.TabIndex = 0;
 			// 
-			// chkOpacity
+			// label83
 			// 
-			this.chkOpacity.AutoSize = true;
-			this.chkOpacity.Location = new System.Drawing.Point(3, 183);
-			this.chkOpacity.Name = "chkOpacity";
-			this.chkOpacity.Size = new System.Drawing.Size(62, 17);
-			this.chkOpacity.TabIndex = 29;
-			this.chkOpacity.Text = "Opacity";
-			this.chkOpacity.UseVisualStyleBackColor = true;
-			this.chkOpacity.CheckedChanged += new System.EventHandler(this.chkOpacity_CheckedChanged);
+			this.label83.AutoSize = true;
+			this.label83.Location = new System.Drawing.Point(147, 122);
+			this.label83.Name = "label83";
+			this.label83.Size = new System.Drawing.Size(76, 13);
+			this.label83.TabIndex = 5;
+			this.label83.Text = "INT in Region:";
 			// 
-			// numOpacity
+			// chkIntRegion1
 			// 
-			this.numOpacity.Enabled = false;
-			this.numOpacity.Location = new System.Drawing.Point(69, 182);
-			this.numOpacity.Name = "numOpacity";
-			this.numOpacity.Size = new System.Drawing.Size(46, 20);
-			this.numOpacity.TabIndex = 30;
-			this.numOpacity.Value = new decimal(new int[] {
-            100,
-            0,
-            0,
-            0});
+			this.chkIntRegion1.AutoSize = true;
+			this.chkIntRegion1.Location = new System.Drawing.Point(229, 121);
+			this.chkIntRegion1.Name = "chkIntRegion1";
+			this.chkIntRegion1.Size = new System.Drawing.Size(32, 17);
+			this.chkIntRegion1.TabIndex = 6;
+			this.chkIntRegion1.Text = "1";
+			this.chkIntRegion1.UseVisualStyleBackColor = true;
+			// 
+			// chkIntRegion2
+			// 
+			this.chkIntRegion2.AutoSize = true;
+			this.chkIntRegion2.Location = new System.Drawing.Point(262, 121);
+			this.chkIntRegion2.Name = "chkIntRegion2";
+			this.chkIntRegion2.Size = new System.Drawing.Size(32, 17);
+			this.chkIntRegion2.TabIndex = 6;
+			this.chkIntRegion2.Text = "2";
+			this.chkIntRegion2.UseVisualStyleBackColor = true;
+			// 
+			// chkIntRegion3
+			// 
+			this.chkIntRegion3.AutoSize = true;
+			this.chkIntRegion3.Location = new System.Drawing.Point(295, 121);
+			this.chkIntRegion3.Name = "chkIntRegion3";
+			this.chkIntRegion3.Size = new System.Drawing.Size(32, 17);
+			this.chkIntRegion3.TabIndex = 6;
+			this.chkIntRegion3.Text = "3";
+			this.chkIntRegion3.UseVisualStyleBackColor = true;
+			// 
+			// chkIntRegion4
+			// 
+			this.chkIntRegion4.AutoSize = true;
+			this.chkIntRegion4.Location = new System.Drawing.Point(328, 121);
+			this.chkIntRegion4.Name = "chkIntRegion4";
+			this.chkIntRegion4.Size = new System.Drawing.Size(32, 17);
+			this.chkIntRegion4.TabIndex = 6;
+			this.chkIntRegion4.Text = "4";
+			this.chkIntRegion4.UseVisualStyleBackColor = true;
 			// 
 			// XwaHookDialog
 			// 
@@ -4527,6 +4585,7 @@
 			((System.ComponentModel.ISupportInitialize)(this.numTurretM)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.numTurretH)).EndInit();
 			this.pnlSounds.ResumeLayout(false);
+			this.pnlSounds.PerformLayout();
 			this.pnlObjects.ResumeLayout(false);
 			this.pnlObjects.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numWeaponModel)).EndInit();
@@ -4536,6 +4595,7 @@
 			this.pnlSFoils.PerformLayout();
 			this.pnlSkins.ResumeLayout(false);
 			this.pnlSkins.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.numOpacity)).EndInit();
 			this.pnlShield.ResumeLayout(false);
 			this.pnlShield.PerformLayout();
 			this.pnlHyper.ResumeLayout(false);
@@ -4549,7 +4609,6 @@
 			this.pnlHullIcon.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numHullIcon)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.numPlayerHull)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.numOpacity)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -4890,5 +4949,10 @@
         private System.Windows.Forms.CheckBox chkAutoInvert;
 		private System.Windows.Forms.NumericUpDown numOpacity;
 		private System.Windows.Forms.CheckBox chkOpacity;
+		private System.Windows.Forms.CheckBox chkIntRegion4;
+		private System.Windows.Forms.CheckBox chkIntRegion3;
+		private System.Windows.Forms.CheckBox chkIntRegion2;
+		private System.Windows.Forms.CheckBox chkIntRegion1;
+		private System.Windows.Forms.Label label83;
 	}
 }

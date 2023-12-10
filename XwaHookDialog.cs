@@ -7,6 +7,7 @@
  */
 
 /* CHANGELOG
+ * [UPD] Sounds: Interdictor
  * [UPD] 32bpp: skin opacity
  * v1.15.2, 231027
  * [UPD] Changes due to Arr/Dep Method1
@@ -81,6 +82,7 @@ namespace Idmr.Yogeme
 		readonly string _fileName = "";
 		readonly string _bdFile = "";
 		readonly string _soundFile = "";
+		readonly string _interdictionFile = "";
 		readonly string _objFile = "";
 		readonly string _missionTxtFile = "";
 		readonly string _hangarObjectsFile = "";
@@ -111,7 +113,7 @@ namespace Idmr.Yogeme
 		readonly string _res = "Resdata\\";
 		readonly string _wave = "Wave\\";
 		readonly string _fm = "FlightModels\\";
-		enum ReadMode { None = -1, Backdrop, Mission, Sounds, Objects, HangarObjects, HangarCamera, FamilyHangarCamera, HangarMap, FamilyHangarMap, Skins, Shield, Hyper, Concourse, HullIcon, Stats }
+		enum ReadMode { None = -1, Backdrop, Mission, Sounds, Interdiction, Objects, HangarObjects, HangarCamera, FamilyHangarCamera, HangarMap, FamilyHangarMap, Skins, Shield, Hyper, Concourse, HullIcon, Stats }
 		bool _loading = false;
 		readonly int[,] _cameras = new int[5, 3];
 		readonly int[,] _defaultCameras = new int[5, 3] { { 1130, -2320, -300 }, { 1240, -330, -700 }, { -1120, 1360, -790 }, { -1200, -1530, -850 }, { 1070, 4640, -130 } };
@@ -122,7 +124,7 @@ namespace Idmr.Yogeme
 		readonly int[] _defaultRoofCranePosition = new int[3] { -1400, 786, -282 };
 		readonly Panel[] _panels = new Panel[11];
 		readonly List<string> _unknown = new List<string>();
-        readonly List<string>[] _comments = new List<string>[15];
+        readonly List<string>[] _comments = new List<string>[16];
 		string _preComments = "";
 		readonly bool[] _skipIffs = new bool[255];
         readonly bool _initialLoad = true;
@@ -130,6 +132,7 @@ namespace Idmr.Yogeme
 		string _tempXs = "";
 		string _tempYs = "";
 		string _tempZs = "";
+		readonly CheckBox[] _chkRegions = new CheckBox[4];
 
 		public XwaHookDialog(Mission mission, Settings config)
 		{
@@ -162,6 +165,10 @@ namespace Idmr.Yogeme
 				_panels[i].Left = 395;
 				_panels[i].Top = 45;
 			}
+			_chkRegions[0] = chkIntRegion1;
+			_chkRegions[1] = chkIntRegion2;
+			_chkRegions[2] = chkIntRegion3;
+			_chkRegions[3]= chkIntRegion4;
 			cboHook.SelectedIndex = 0;
 			cboIff.Items.AddRange(Strings.IFF);
 			cboHangarIff.Items.AddRange(Strings.IFF);
@@ -309,6 +316,7 @@ namespace Idmr.Yogeme
 
 				_bdFile = checkFile("_Resdata.txt");
 				_soundFile = checkFile("_Sounds.txt");
+				_interdictionFile = checkFile("_Interdiction.txt");
 				_objFile = checkFile("_Objects.txt");
 				_missionTxtFile = checkFile(".txt");
 				_hangarObjectsFile = checkFile("_HangarObjects.txt");
@@ -370,6 +378,17 @@ namespace Idmr.Yogeme
 						if (line == "") continue;
 
 						lstSounds.Items.Add(line);
+					}
+			}
+			if (_interdictionFile != "")
+			{
+				using (var sr = new StreamReader(_interdictionFile))
+					while ((line = sr.ReadLine()) != null)
+					{
+						line = removeComment(line);
+						if (line == "") continue;
+
+						parseInterdiction(line);
 					}
 			}
 			if (_objFile != "")
@@ -823,6 +842,14 @@ namespace Idmr.Yogeme
                 contents += "\r\n";
             }
             insertComments(ref contents, (int)ReadMode.Sounds);
+			if (useInterdiction)
+			{
+				contents += "[Interdiction]\r\nRegion = ";
+				string regions = "";
+				for (int i = 0; i < 4; i++) if (_chkRegions[i].Checked) regions += (regions != "" ? ", " : "") + i;
+				contents += regions + "\r\n\r\n";
+			}
+			insertComments(ref contents, (int)ReadMode.Interdiction);
             if (lstObjects.Items.Count > 0 || lstHullIcon.Items.Count > 0)
             {
                 contents += "[Objects]\r\n";
@@ -1094,6 +1121,7 @@ namespace Idmr.Yogeme
 					if (lineLower == "[resdata]") readMode = ReadMode.Backdrop;
 					else if (lineLower == "[mission_tie]") readMode = ReadMode.Mission;
 					else if (lineLower == "[sounds]") readMode = ReadMode.Sounds;
+					else if (lineLower == "[interdiction]") readMode = ReadMode.Interdiction;
 					else if (lineLower == "[objects]") readMode = ReadMode.Objects;
 					else if (lineLower == "[hangarobjects]") readMode = ReadMode.HangarObjects;
 					else if (lineLower == "[hangarcamera]") readMode = ReadMode.HangarCamera;
@@ -1108,23 +1136,24 @@ namespace Idmr.Yogeme
 					else if (lineLower == "[statsprofiles]") readMode = ReadMode.Stats;
 					else if (_commandOpt != "")
 					{
-                        if (lineLower == "[hangarobjects_" + _commandOpt + "_" + _commandIff + "]") readMode = ReadMode.HangarObjects;
-                        else if (lineLower == "[hangarcamera_" + _commandOpt + "_" + _commandIff + "]") readMode = ReadMode.HangarCamera;
-                        else if (lineLower == "[famhangarcamera_" + _commandOpt + "_" + _commandIff + "]") readMode = ReadMode.FamilyHangarCamera;
-                        else if (lineLower == "[hangarmap_" + _commandOpt + "_" + _commandIff + "]") readMode = ReadMode.HangarMap;
-                        else if (lineLower == "[famhangarmap_" + _commandOpt + "_" + _commandIff + "]") readMode = ReadMode.FamilyHangarMap;
+						if (lineLower == "[hangarobjects_" + _commandOpt + "_" + _commandIff + "]") readMode = ReadMode.HangarObjects;
+						else if (lineLower == "[hangarcamera_" + _commandOpt + "_" + _commandIff + "]") readMode = ReadMode.HangarCamera;
+						else if (lineLower == "[famhangarcamera_" + _commandOpt + "_" + _commandIff + "]") readMode = ReadMode.FamilyHangarCamera;
+						else if (lineLower == "[hangarmap_" + _commandOpt + "_" + _commandIff + "]") readMode = ReadMode.HangarMap;
+						else if (lineLower == "[famhangarmap_" + _commandOpt + "_" + _commandIff + "]") readMode = ReadMode.FamilyHangarMap;
 						else if (lineLower == "[hangarobjects_" + _commandOpt + "]") readMode = ReadMode.HangarObjects;
-                        else if (lineLower == "[hangarcamera_" + _commandOpt + "]") readMode = ReadMode.HangarCamera;
-                        else if (lineLower == "[famhangarcamera_" + _commandOpt + "]") readMode = ReadMode.FamilyHangarCamera;
-                        else if (lineLower == "[hangarmap_" + _commandOpt + "]") readMode = ReadMode.HangarMap;
-                        else if (lineLower == "[famhangarmap_" + _commandOpt + "]") readMode = ReadMode.FamilyHangarMap;
-                        else _unknown.Add(txtHook.Lines[i]);
-                    }
+						else if (lineLower == "[hangarcamera_" + _commandOpt + "]") readMode = ReadMode.HangarCamera;
+						else if (lineLower == "[famhangarcamera_" + _commandOpt + "]") readMode = ReadMode.FamilyHangarCamera;
+						else if (lineLower == "[hangarmap_" + _commandOpt + "]") readMode = ReadMode.HangarMap;
+						else if (lineLower == "[famhangarmap_" + _commandOpt + "]") readMode = ReadMode.FamilyHangarMap;
+						else _unknown.Add(txtHook.Lines[i]);
+					}
 					else _unknown.Add(txtHook.Lines[i]);
 				}
 				else if (readMode == ReadMode.Backdrop) lstBackdrops.Items.Add(line);
 				else if (readMode == ReadMode.Mission) parseMission(line);
 				else if (readMode == ReadMode.Sounds) lstSounds.Items.Add(line);
+				else if (readMode == ReadMode.Interdiction) parseInterdiction(line);
 				else if (readMode == ReadMode.Objects)
 				{
 					if (lineLower.Contains("_hullicon")) parseHullIcon(line);
@@ -1174,6 +1203,7 @@ namespace Idmr.Yogeme
 			lstBackdrops.Items.Clear();
 			lstMission.Items.Clear();
 			lstSounds.Items.Clear();
+			chkIntRegion1.Checked = chkIntRegion2.Checked = chkIntRegion3.Checked = chkIntRegion4.Checked = false;
 			lstObjects.Items.Clear();
 			lstSFoils.Items.Clear();
 			chkForceHangarSF.Checked = false;
@@ -1471,6 +1501,20 @@ namespace Idmr.Yogeme
         #endregion
 
         #region Sounds
+		void parseInterdiction(string line)
+		{
+			string[] parts = line.ToLower().Replace(" ", "").Split('=');
+			try
+			{
+				if (parts[0] == "region" && parts.Length > 1)
+				{
+					parts = parts[1].Split(',');
+					for (int i = 0; i < parts.Length; i++) _chkRegions[int.Parse(parts[i])].Checked = true;
+				}
+				else throw new InvalidDataException();
+			}
+			catch { _comments[(int)ReadMode.Interdiction].Add(line); }
+		}
         private void cmdAddSounds_Click(object sender, EventArgs e)
 		{
 			if (_installDirectory != "") opnSounds.InitialDirectory = _installDirectory + _wave;
@@ -1488,6 +1532,16 @@ namespace Idmr.Yogeme
 		private void cmdRemoveSounds_Click(object sender, EventArgs e)
 		{
 			if (lstSounds.SelectedIndex != -1) lstSounds.Items.RemoveAt(lstSounds.SelectedIndex);
+		}
+
+		bool useInterdiction
+		{
+			get
+			{
+				bool use = false;
+				for (int i = 0; i < 4; i++) use |= _chkRegions[i].Checked;
+				return use;
+			}
 		}
         #endregion
 
@@ -2220,6 +2274,7 @@ namespace Idmr.Yogeme
 			if (lstMission.Items.Count == 0 && !useSFoils && lstCraftText.Items.Count == 0 && !useMissionSettings) File.Delete(_missionTxtFile);
 
 			if (lstSounds.Items.Count == 0) File.Delete(_soundFile);
+			if (!useInterdiction) File.Delete(_interdictionFile);
 
 			if (lstObjects.Items.Count == 0 && lstHullIcon.Items.Count == 0) File.Delete(_objFile);
 
@@ -2269,6 +2324,7 @@ namespace Idmr.Yogeme
 			if (lstBackdrops.Items.Count == 0
 				&& lstMission.Items.Count == 0 && lstCraftText.Items.Count == 0 && !useMissionSettings
                 && lstSounds.Items.Count == 0
+				&& !useInterdiction
 				&& lstObjects.Items.Count == 0 && lstHullIcon.Items.Count == 0
                 && !useHangarObjects && !useHangarCamera && !useFamilyHangarCamera && !useHangarMap && !useFamilyHangarMap
 				&& !useSFoils
@@ -2302,6 +2358,7 @@ namespace Idmr.Yogeme
 				File.Delete(_bdFile);
 				File.Delete(_missionTxtFile);
 				File.Delete(_soundFile);
+				File.Delete(_interdictionFile);
 				File.Delete(_objFile);
 				File.Delete(_hangarObjectsFile);
 				File.Delete(_hangarCameraFile);
