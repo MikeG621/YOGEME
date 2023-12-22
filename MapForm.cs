@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2023 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.15.4+
+ * VERSION: 1.15.5
  */
 
 /* CHANGELOG
+ * v1.15.5, 231222
  * [FIX #94] WP1 on hyper orders being enabled even if disabled
  * [FIX] bad offsets if hyper WP1 disabled
  * v1.15.4, 231125

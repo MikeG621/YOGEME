@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2023 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.15.2+
+ * VERSION: 1.15.5
  */
 
 /* CHANGELOG
+ * v1.15.5, 231222
  * [NEW #97] GlobalSummary dialog
  * [FIX #96] craftStart() ignores SAT/1 thru RDV (includes asteroids and mines)
  * v1.15.2, 231027

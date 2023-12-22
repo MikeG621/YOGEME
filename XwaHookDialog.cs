@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2023 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.15.2+
+ * VERSION: 1.15.5
  */
 
 /* CHANGELOG
+ * v1.15.5, 231222
  * [UPD] Sounds: Interdictor
  * [UPD] 32bpp: skin opacity
  * v1.15.2, 231027

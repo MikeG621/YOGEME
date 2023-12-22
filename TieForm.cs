@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2023 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.13.12+
+ * VERSION: 1.15.5
  */
 
 /* CHANGELOG
+ * v1.15.5, 231222
  * [NEW #97] GlobalSummary dialog
  * [UPD] SaveAs upgrades now use Platform
  * v1.13.12, 230116

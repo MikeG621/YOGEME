@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2023 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.13.1+
+ * VERSION: 1.15.5
  */
 
 /* CHANGELOG
+ * v1.15.5, 231222
  * [UPD] Removed RunConverter due to being obsolete
  * v1.13.1, 220208
  * [NEW] Cut and Paste handling [JB]

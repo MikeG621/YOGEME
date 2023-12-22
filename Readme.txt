@@ -3,8 +3,8 @@
 
 Author: Michael Gaisser (mjgaisser@gmail.com)
 Contributor: Random Starfighter (JB)
-Version: 1.15.4
-Date: 2023.11.25
+Version: 1.15.5
+Date: 2023.12.22
 
 Thank you for downloading YOGEME, the all-in-one mission editor for the X-Wing
 series, Xwing95 through X-wing Alliance.  This program allows easy mission
@@ -28,9 +28,12 @@ your user settings.
 ==========
 Version History
 
+v1.15.5, 22 Dec 2023
  - External Converter utility no longer packaged due to functionality now within Platform.dll
+ - DSCUP shiplist no longer packaged simply due to age and obsolesence
  - (All but Xwing) Global Summary dialog to list out current GlobalGroups and GlobalUnits [#97]
  - (XWA) 32bpp Hook skin opacity support
+ - (XWA) Sound hook, Interdictor
  - (XWA) SAT/1 thru RDV no longer counted in "# Craft at 30 seconds" note [Issue #96]
  - (XWA) WP1 on hyper orders being enabled even if disabled [Issue #94]
  - (XWA) Fixed bad offsets on hyper exit if order WP1 originally disabled
