@@ -8,6 +8,7 @@
 
 /* CHANGELOG
  * [FIX #94] WP1 on hyper orders being enabled even if disabled
+ * [FIX] bad offsets if hyper WP1 disabled
  * v1.15.4, 231125
  * [FIX #93] "From any" buoys detected
  * v1.14, 230804
@@ -104,6 +105,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Security.Cryptography;
 using System.Windows.Forms;
 
 namespace Idmr.Yogeme
@@ -1982,6 +1984,7 @@ namespace Idmr.Yogeme
 						}
 					}
 
+					Platform.Xwa.FlightGroup.Order hyperOrder = null;
 					if (fg.PlayerNumber != 0)
 					{
 						// Player
@@ -2009,6 +2012,7 @@ namespace Idmr.Yogeme
 							int ord = o % 4;
 							if (fg.Orders[reg, ord].Command == (byte)Platform.Xwa.FlightGroup.Order.CommandList.HyperToRegion && fg.Orders[reg, ord].Variable1 == r)
 							{
+								hyperOrder = fg.Orders[reg, ord];
 								for (int w = 1; w < 8; w++)
 								{
 									if (!fg.Orders[reg, ord].Waypoints[w].Enabled)
@@ -2034,8 +2038,9 @@ namespace Idmr.Yogeme
 								break;
 							}
 						}
-						int[] offset = new int[3];
-						for (int c = 0; c < 3; c++) offset[c] = hyperEntry[c] - enterBuoy[c];
+                        int[] offset = new int[3];
+						if (hyperOrder.Waypoints[0].Enabled) // don't calc an offset if WP1 disabled, use the buoy itself
+							for (int c = 0; c < 3; c++) offset[c] = hyperEntry[c] - enterBuoy[c];
 						for (int c = 0; c < 3; c++) _mapData[i].WPs[17][r][c] = (short)(exitBuoySP[c] + offset[c]);
 						_mapData[i].WPs[17][r].Enabled = true;
 						for (int c = 0; c < 3; c++) _mapData[i].WPs[18][r][c] = (short)(o1w1[c] + offset[c]);

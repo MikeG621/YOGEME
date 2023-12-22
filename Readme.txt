@@ -32,9 +32,13 @@ Version History
  - (All but Xwing) Global Summary dialog to list out current GlobalGroups and GlobalUnits [#97]
  - (XWA) 32bpp Hook skin opacity support
  - (XWA) SAT/1 thru RDV no longer counted in "# Craft at 30 seconds" note [Issue #96]
+ - (XWA) WP1 on hyper orders being enabled even if disabled [Issue #94]
+ - (XWA) Fixed bad offsets on hyper exit if order WP1 originally disabled
 
 v1.15.4, 25 Nov 2023
  - (XWA) "HYP from Any Region" exit buoys now processed in the map [Issue #93]
+18 Dec 2023 re-release
+ - (XWA) via Imageformat.Dat, support for BC7 compressed backdrop [Issue #98]
 
 v1.15.3, 11 Nov 2023
  - (XWA) Fixed a Briefing event overflow that could occur when adding Move commands [Issue #92]
@@ -617,8 +621,15 @@ See License.txt for the full text. If for some reason License.txt was not
 distributed with this program, you can obtain the full text of the license at
 http://mozilla.org/MPL/2.0/.
 
-The Galactic Empire: Empire Reborn is Copyright © 2004- Tiberius Fel
+-----
+ImageFormat.Dat
 
+The LZMA SDK is written and placed in the public domain by Igor Pavlov.
+
+The BC7 library and implementation are Copyright (C) 2020-2021
+Richard Geldreich, Jr and 2023 Jérémy Ansel, covered by the MIT License.
+See "MIT License.txt" for full details.
+-----
 "Star Wars" and related items are trademarks of LucasFilm Ltd and
 LucasArts Entertainment Co.
 
