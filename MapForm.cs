@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2023 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.15.4
+ * VERSION: 1.15.4+
  */
 
 /* CHANGELOG
+ * [FIX #94] WP1 on hyper orders being enabled even if disabled
  * v1.15.4, 231125
  * [FIX #93] "From any" buoys detected
  * v1.14, 230804
@@ -2006,13 +2007,13 @@ namespace Idmr.Yogeme
 						{
 							int reg = o / 4;
 							int ord = o % 4;
-							if (fg.Orders[reg, ord].Command == 50 && fg.Orders[reg, ord].Variable1 == r)
+							if (fg.Orders[reg, ord].Command == (byte)Platform.Xwa.FlightGroup.Order.CommandList.HyperToRegion && fg.Orders[reg, ord].Variable1 == r)
 							{
 								for (int w = 1; w < 8; w++)
 								{
 									if (!fg.Orders[reg, ord].Waypoints[w].Enabled)
 									{
-										hyperEntry = fg.Orders[reg, ord].Waypoints[w - 1];
+										for (int c = 0; c < 3; c++) hyperEntry[c] = fg.Orders[reg, ord].Waypoints[w - 1][c];
 										hyperEntry.Region = (byte)reg;
 										hyperEntry.Enabled = true;
 										break;
@@ -2391,7 +2392,7 @@ namespace Idmr.Yogeme
 					Difficulty = getDifficultyFlags(fg[i].Difficulty)
 				};
 				_mapData[i].WPs[0] = fg[i].Waypoints;
-				_mapData[i].FullName = Platform.Tie.Strings.CraftAbbrv[_mapData[i].Craft] + " " + fg[i].Name;
+				_mapData[i].FullName = fg[i].ToString();
 			}
 			reloadSelectionControls();
 		}
@@ -2414,7 +2415,7 @@ namespace Idmr.Yogeme
 					Difficulty = getDifficultyFlags(fg[i].Difficulty)
 				};
 				_mapData[i].WPs[0] = fg[i].Waypoints;
-				_mapData[i].FullName = Platform.Xvt.Strings.CraftAbbrv[_mapData[i].Craft] + " " + fg[i].Name;
+				_mapData[i].FullName = fg[i].ToString();
 			}
 			reloadSelectionControls();
 		}
@@ -2447,7 +2448,7 @@ namespace Idmr.Yogeme
 					int order = j % 4;
 					_mapData[i].WPs[j + 1] = fg[i].Orders[region, order].Waypoints;
 				}
-				_mapData[i].FullName = Platform.Xwa.Strings.CraftAbbrv[_mapData[i].Craft] + " " + fg[i].Name;
+				_mapData[i].FullName = fg[i].ToString();
 			}
             processHyperPoints();
             reloadSelectionControls();
@@ -3210,7 +3211,6 @@ namespace Idmr.Yogeme
 						break;
 				}
 			}
-			// TODO: might be able to remove some of these since FG is there?
 			public int Craft;
 			public int FgIndex;
 			public byte IFF;

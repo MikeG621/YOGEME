@@ -128,17 +128,17 @@ namespace Idmr.Yogeme
 			catch (Exception x) { MessageBox.Show(x.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); }
 		}
 		
-		/// <summary>Adds an asterik to the window title</summary>
-		/// <param name="form"></param>
-		/// <param name="loading"></param>
+		/// <summary>Adds an asterisk to the window title</summary>
+		/// <param name="form">The relevant window.</param>
+		/// <param name="loading">Must be <b>false</b> to have an effect.</param>
 		public static void Title(Form form, bool loading) { if (form.Text.IndexOf("*") == -1 && !loading) form.Text += "*"; }
 
-		/// <summary>Adds an asterik to the window title if change detected</summary>
+		/// <summary>Adds an asterisk to the window title if change detected</summary>
 		/// <typeparam name="T">Type of value</typeparam>
-		/// <param name="form"></param>
+		/// <param name="form">The relevant window</param>
 		/// <param name="oldValue">Original value to compare against</param>
 		/// <param name="newValue">New value from the UI</param>
-		/// <returns>newValue</returns>
+		/// <returns><paramref name="newValue"/></returns>
         public static T Update<T>(Form form, T oldValue, T newValue)
 		{
 			if (form.Text.IndexOf("*") == -1 && oldValue.ToString() != newValue.ToString())
