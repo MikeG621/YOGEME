@@ -28,6 +28,9 @@ your user settings.
 ==========
 Version History
 
+ - Option to toggle SuperBackdrops now always enabled, even if not detected. Still doesn't do anything if not installed.
+ - (XWA) Fixed a crash if SuperBackdrops is enabled on a new mission and the default craft type is Backdrop [Issue #100]
+
 v1.15.5, 22 Dec 2023
  - External Converter utility no longer packaged due to functionality now within Platform.dll
  - DSCUP shiplist no longer packaged simply due to age and obsolesence

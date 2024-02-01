@@ -1,12 +1,13 @@
 /*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
- * Copyright (C) 2007-2023 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2024 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.13.12
+ * VERSION: 1.13.12+
  */
 
 /* CHANGELOG
+ * [UPD] Permanently enable SBD chk, even if not detected
  * v1.13.12, 230116
  * [NEW] RememberSelectedOrder
  * v1.13.4, 220606
@@ -135,7 +136,7 @@ namespace Idmr.Yogeme
 			chkTest.Checked = _config.ConfirmTest;
 			chkVerifyTest.Checked = _config.VerifyTest;
 			chkVerifyTest.Enabled = !_config.Verify;
-			chkBackdrops.Enabled = _config.SuperBackdropsInstalled;
+			//chkBackdrops.Enabled = _config.SuperBackdropsInstalled;
 			chkBackdrops.Checked = _config.InitializeUsingSuperBackdrops;
 			int t = _config.Waypoints;
 			for (int i = 0; i < 22; i++) chkWP[i].Checked = Convert.ToBoolean(t & (1 << i));

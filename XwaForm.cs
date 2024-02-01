@@ -1,12 +1,13 @@
 /*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
- * Copyright (C) 2007-2023 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2024 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.15.5
+ * VERSION: 1.15.5+
  */
 
 /* CHANGELOG
+ * [FIX #100] SBD crash if default craft is Backdrop
  * v1.15.5, 231222
  * [NEW #97] GlobalSummary dialog
  * [FIX #96] craftStart() ignores SAT/1 thru RDV (includes asteroids and mines)
@@ -2338,7 +2339,15 @@ namespace Idmr.Yogeme
 			_mission.FlightGroups[_mission.FlightGroups.Count - 2].Waypoints[0].X = -1;
 			_mission.FlightGroups[_mission.FlightGroups.Count - 1].Waypoints[0].X = 1;
 			int tempIndex = _activeFG;
-			for (int i = 0, copied = 0; copied < requiredQty - 6; i++)
+			if (_loading)
+			{
+				// this trips on initialize, if default craft is a backdrop
+				_mission.FlightGroups.Add();
+				_mission.FlightGroups[_mission.FlightGroups.Count - 1].CraftType = Convert.ToByte(_config.XwaCraft);
+				_mission.FlightGroups[_mission.FlightGroups.Count - 1].IFF = Convert.ToByte(_config.XwaIff);
+				_mission.FlightGroups.RemoveAt(0);
+			}
+			else for (int i = 0, copied = 0; copied < requiredQty - 6; i++)
 			{
 				if (_mission.FlightGroups[i].CraftType == 0xB7 && _mission.FlightGroups[i].Waypoints[0].Region == region)
 				{
