@@ -2339,9 +2339,9 @@ namespace Idmr.Yogeme
 			_mission.FlightGroups[_mission.FlightGroups.Count - 2].Waypoints[0].X = -1;
 			_mission.FlightGroups[_mission.FlightGroups.Count - 1].Waypoints[0].X = 1;
 			int tempIndex = _activeFG;
-			if (_loading)
+			if (_loading && _config.XwaCraft == 0xb7)
 			{
-				// this trips on initialize, if default craft is a backdrop
+				// necessary since the copy/paste would cause an exception
 				_mission.FlightGroups.Add();
 				_mission.FlightGroups[_mission.FlightGroups.Count - 1].CraftType = Convert.ToByte(_config.XwaCraft);
 				_mission.FlightGroups[_mission.FlightGroups.Count - 1].IFF = Convert.ToByte(_config.XwaIff);

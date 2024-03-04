@@ -327,6 +327,11 @@
 			this.chkSkipHyper = new System.Windows.Forms.CheckBox();
 			this.chkRedAlert = new System.Windows.Forms.CheckBox();
 			this.pnlSounds = new System.Windows.Forms.Panel();
+			this.chkIntRegion4 = new System.Windows.Forms.CheckBox();
+			this.chkIntRegion3 = new System.Windows.Forms.CheckBox();
+			this.chkIntRegion2 = new System.Windows.Forms.CheckBox();
+			this.chkIntRegion1 = new System.Windows.Forms.CheckBox();
+			this.label83 = new System.Windows.Forms.Label();
 			this.pnlObjects = new System.Windows.Forms.Panel();
 			this.label56 = new System.Windows.Forms.Label();
 			this.numWeaponModel = new System.Windows.Forms.NumericUpDown();
@@ -362,11 +367,33 @@
 			this.cmdHullRemove = new System.Windows.Forms.Button();
 			this.cmdHullAdd = new System.Windows.Forms.Button();
 			this.lstHullIcon = new System.Windows.Forms.ListBox();
-			this.label83 = new System.Windows.Forms.Label();
-			this.chkIntRegion1 = new System.Windows.Forms.CheckBox();
-			this.chkIntRegion2 = new System.Windows.Forms.CheckBox();
-			this.chkIntRegion3 = new System.Windows.Forms.CheckBox();
-			this.chkIntRegion4 = new System.Windows.Forms.CheckBox();
+			this.pnlWeaponRate = new System.Windows.Forms.Panel();
+			this.lstWeapons = new System.Windows.Forms.ListBox();
+			this.cmdRemWeap = new System.Windows.Forms.Button();
+			this.cmdAddWeap = new System.Windows.Forms.Button();
+			this.cboWeapFG = new System.Windows.Forms.ComboBox();
+			this.pnlWeapRateOrProfiles = new System.Windows.Forms.Panel();
+			this.optWeapRate = new System.Windows.Forms.RadioButton();
+			this.optWeapProfiles = new System.Windows.Forms.RadioButton();
+			this.pnlWeapProfiles = new System.Windows.Forms.Panel();
+			this.optWeapProfile = new System.Windows.Forms.RadioButton();
+			this.optWarheadProfile = new System.Windows.Forms.RadioButton();
+			this.optEnergyProfile = new System.Windows.Forms.RadioButton();
+			this.optLinkingProfile = new System.Windows.Forms.RadioButton();
+			this.txtWeapProfile = new System.Windows.Forms.TextBox();
+			this.chkWeapDecharge = new System.Windows.Forms.CheckBox();
+			this.chkWeapRecharge = new System.Windows.Forms.CheckBox();
+			this.pnlWeapRates = new System.Windows.Forms.Panel();
+			this.chkTransfer = new System.Windows.Forms.CheckBox();
+			this.chkImpact = new System.Windows.Forms.CheckBox();
+			this.chkImpactSpeed = new System.Windows.Forms.CheckBox();
+			this.chkImpactAngle = new System.Windows.Forms.CheckBox();
+			this.numDecharge = new System.Windows.Forms.NumericUpDown();
+			this.numRecharge = new System.Windows.Forms.NumericUpDown();
+			this.numTransfer = new System.Windows.Forms.NumericUpDown();
+			this.numImpactSpeed = new System.Windows.Forms.NumericUpDown();
+			this.numImpactAngle = new System.Windows.Forms.NumericUpDown();
+			this.label84 = new System.Windows.Forms.Label();
 			((System.ComponentModel.ISupportInitialize)(this.numFamHeadingZ)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numFamPosZ)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numFamHeadingXY)).BeginInit();
@@ -462,6 +489,15 @@
 			this.pnlHullIcon.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numHullIcon)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numPlayerHull)).BeginInit();
+			this.pnlWeaponRate.SuspendLayout();
+			this.pnlWeapRateOrProfiles.SuspendLayout();
+			this.pnlWeapProfiles.SuspendLayout();
+			this.pnlWeapRates.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.numDecharge)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.numRecharge)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.numTransfer)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.numImpactSpeed)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.numImpactAngle)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// cmdOK
@@ -3450,7 +3486,8 @@
             "Shield",
             "Hyperspace",
             "Concourse",
-            "HulIcon"});
+            "HulIcon",
+            "Weapon_Rate"});
 			this.cboHook.Location = new System.Drawing.Point(12, 12);
 			this.cboHook.Name = "cboHook";
 			this.cboHook.Size = new System.Drawing.Size(121, 21);
@@ -3972,6 +4009,55 @@
 			this.pnlSounds.TabIndex = 55;
 			this.pnlSounds.Visible = false;
 			// 
+			// chkIntRegion4
+			// 
+			this.chkIntRegion4.AutoSize = true;
+			this.chkIntRegion4.Location = new System.Drawing.Point(328, 121);
+			this.chkIntRegion4.Name = "chkIntRegion4";
+			this.chkIntRegion4.Size = new System.Drawing.Size(32, 17);
+			this.chkIntRegion4.TabIndex = 6;
+			this.chkIntRegion4.Text = "4";
+			this.chkIntRegion4.UseVisualStyleBackColor = true;
+			// 
+			// chkIntRegion3
+			// 
+			this.chkIntRegion3.AutoSize = true;
+			this.chkIntRegion3.Location = new System.Drawing.Point(295, 121);
+			this.chkIntRegion3.Name = "chkIntRegion3";
+			this.chkIntRegion3.Size = new System.Drawing.Size(32, 17);
+			this.chkIntRegion3.TabIndex = 6;
+			this.chkIntRegion3.Text = "3";
+			this.chkIntRegion3.UseVisualStyleBackColor = true;
+			// 
+			// chkIntRegion2
+			// 
+			this.chkIntRegion2.AutoSize = true;
+			this.chkIntRegion2.Location = new System.Drawing.Point(262, 121);
+			this.chkIntRegion2.Name = "chkIntRegion2";
+			this.chkIntRegion2.Size = new System.Drawing.Size(32, 17);
+			this.chkIntRegion2.TabIndex = 6;
+			this.chkIntRegion2.Text = "2";
+			this.chkIntRegion2.UseVisualStyleBackColor = true;
+			// 
+			// chkIntRegion1
+			// 
+			this.chkIntRegion1.AutoSize = true;
+			this.chkIntRegion1.Location = new System.Drawing.Point(229, 121);
+			this.chkIntRegion1.Name = "chkIntRegion1";
+			this.chkIntRegion1.Size = new System.Drawing.Size(32, 17);
+			this.chkIntRegion1.TabIndex = 6;
+			this.chkIntRegion1.Text = "1";
+			this.chkIntRegion1.UseVisualStyleBackColor = true;
+			// 
+			// label83
+			// 
+			this.label83.AutoSize = true;
+			this.label83.Location = new System.Drawing.Point(147, 122);
+			this.label83.Name = "label83";
+			this.label83.Size = new System.Drawing.Size(76, 13);
+			this.label83.TabIndex = 5;
+			this.label83.Text = "INT in Region:";
+			// 
 			// pnlObjects
 			// 
 			this.pnlObjects.Controls.Add(this.label56);
@@ -4406,61 +4492,325 @@
 			this.lstHullIcon.Size = new System.Drawing.Size(366, 95);
 			this.lstHullIcon.TabIndex = 0;
 			// 
-			// label83
+			// pnlWeaponRate
 			// 
-			this.label83.AutoSize = true;
-			this.label83.Location = new System.Drawing.Point(147, 122);
-			this.label83.Name = "label83";
-			this.label83.Size = new System.Drawing.Size(76, 13);
-			this.label83.TabIndex = 5;
-			this.label83.Text = "INT in Region:";
+			this.pnlWeaponRate.Controls.Add(this.label84);
+			this.pnlWeaponRate.Controls.Add(this.pnlWeapRates);
+			this.pnlWeaponRate.Controls.Add(this.txtWeapProfile);
+			this.pnlWeaponRate.Controls.Add(this.pnlWeapProfiles);
+			this.pnlWeaponRate.Controls.Add(this.pnlWeapRateOrProfiles);
+			this.pnlWeaponRate.Controls.Add(this.cboWeapFG);
+			this.pnlWeaponRate.Controls.Add(this.cmdRemWeap);
+			this.pnlWeaponRate.Controls.Add(this.cmdAddWeap);
+			this.pnlWeaponRate.Controls.Add(this.lstWeapons);
+			this.pnlWeaponRate.Location = new System.Drawing.Point(1564, 42);
+			this.pnlWeaponRate.Name = "pnlWeaponRate";
+			this.pnlWeaponRate.Size = new System.Drawing.Size(375, 351);
+			this.pnlWeaponRate.TabIndex = 66;
 			// 
-			// chkIntRegion1
+			// lstWeapons
 			// 
-			this.chkIntRegion1.AutoSize = true;
-			this.chkIntRegion1.Location = new System.Drawing.Point(229, 121);
-			this.chkIntRegion1.Name = "chkIntRegion1";
-			this.chkIntRegion1.Size = new System.Drawing.Size(32, 17);
-			this.chkIntRegion1.TabIndex = 6;
-			this.chkIntRegion1.Text = "1";
-			this.chkIntRegion1.UseVisualStyleBackColor = true;
+			this.lstWeapons.FormattingEnabled = true;
+			this.lstWeapons.HorizontalScrollbar = true;
+			this.lstWeapons.Location = new System.Drawing.Point(3, 3);
+			this.lstWeapons.Name = "lstWeapons";
+			this.lstWeapons.Size = new System.Drawing.Size(366, 108);
+			this.lstWeapons.TabIndex = 1;
 			// 
-			// chkIntRegion2
+			// cmdRemWeap
 			// 
-			this.chkIntRegion2.AutoSize = true;
-			this.chkIntRegion2.Location = new System.Drawing.Point(262, 121);
-			this.chkIntRegion2.Name = "chkIntRegion2";
-			this.chkIntRegion2.Size = new System.Drawing.Size(32, 17);
-			this.chkIntRegion2.TabIndex = 6;
-			this.chkIntRegion2.Text = "2";
-			this.chkIntRegion2.UseVisualStyleBackColor = true;
+			this.cmdRemWeap.Location = new System.Drawing.Point(69, 117);
+			this.cmdRemWeap.Name = "cmdRemWeap";
+			this.cmdRemWeap.Size = new System.Drawing.Size(60, 23);
+			this.cmdRemWeap.TabIndex = 3;
+			this.cmdRemWeap.Text = "&Remove";
+			this.cmdRemWeap.UseVisualStyleBackColor = true;
+			this.cmdRemWeap.Click += new System.EventHandler(this.cmdRemWeap_Click);
 			// 
-			// chkIntRegion3
+			// cmdAddWeap
 			// 
-			this.chkIntRegion3.AutoSize = true;
-			this.chkIntRegion3.Location = new System.Drawing.Point(295, 121);
-			this.chkIntRegion3.Name = "chkIntRegion3";
-			this.chkIntRegion3.Size = new System.Drawing.Size(32, 17);
-			this.chkIntRegion3.TabIndex = 6;
-			this.chkIntRegion3.Text = "3";
-			this.chkIntRegion3.UseVisualStyleBackColor = true;
+			this.cmdAddWeap.Location = new System.Drawing.Point(3, 117);
+			this.cmdAddWeap.Name = "cmdAddWeap";
+			this.cmdAddWeap.Size = new System.Drawing.Size(60, 23);
+			this.cmdAddWeap.TabIndex = 2;
+			this.cmdAddWeap.Text = "&Add";
+			this.cmdAddWeap.UseVisualStyleBackColor = true;
+			this.cmdAddWeap.Click += new System.EventHandler(this.cmdAddWeap_Click);
 			// 
-			// chkIntRegion4
+			// cboWeapFG
 			// 
-			this.chkIntRegion4.AutoSize = true;
-			this.chkIntRegion4.Location = new System.Drawing.Point(328, 121);
-			this.chkIntRegion4.Name = "chkIntRegion4";
-			this.chkIntRegion4.Size = new System.Drawing.Size(32, 17);
-			this.chkIntRegion4.TabIndex = 6;
-			this.chkIntRegion4.Text = "4";
-			this.chkIntRegion4.UseVisualStyleBackColor = true;
+			this.cboWeapFG.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboWeapFG.FormattingEnabled = true;
+			this.cboWeapFG.Location = new System.Drawing.Point(212, 117);
+			this.cboWeapFG.Name = "cboWeapFG";
+			this.cboWeapFG.Size = new System.Drawing.Size(157, 21);
+			this.cboWeapFG.TabIndex = 4;
+			// 
+			// pnlWeapRateOrProfiles
+			// 
+			this.pnlWeapRateOrProfiles.Controls.Add(this.optWeapProfiles);
+			this.pnlWeapRateOrProfiles.Controls.Add(this.optWeapRate);
+			this.pnlWeapRateOrProfiles.Location = new System.Drawing.Point(3, 141);
+			this.pnlWeapRateOrProfiles.Name = "pnlWeapRateOrProfiles";
+			this.pnlWeapRateOrProfiles.Size = new System.Drawing.Size(126, 24);
+			this.pnlWeapRateOrProfiles.TabIndex = 9;
+			// 
+			// optWeapRate
+			// 
+			this.optWeapRate.AutoSize = true;
+			this.optWeapRate.Checked = true;
+			this.optWeapRate.Location = new System.Drawing.Point(3, 3);
+			this.optWeapRate.Name = "optWeapRate";
+			this.optWeapRate.Size = new System.Drawing.Size(53, 17);
+			this.optWeapRate.TabIndex = 5;
+			this.optWeapRate.Text = "Rates";
+			this.optWeapRate.UseVisualStyleBackColor = true;
+			// 
+			// optWeapProfiles
+			// 
+			this.optWeapProfiles.AutoSize = true;
+			this.optWeapProfiles.Location = new System.Drawing.Point(62, 2);
+			this.optWeapProfiles.Name = "optWeapProfiles";
+			this.optWeapProfiles.Size = new System.Drawing.Size(59, 17);
+			this.optWeapProfiles.TabIndex = 6;
+			this.optWeapProfiles.Text = "Profiles";
+			this.optWeapProfiles.UseVisualStyleBackColor = true;
+			this.optWeapProfiles.CheckedChanged += new System.EventHandler(this.optWeapProfiles_CheckedChanged);
+			// 
+			// pnlWeapProfiles
+			// 
+			this.pnlWeapProfiles.Controls.Add(this.optLinkingProfile);
+			this.pnlWeapProfiles.Controls.Add(this.optEnergyProfile);
+			this.pnlWeapProfiles.Controls.Add(this.optWarheadProfile);
+			this.pnlWeapProfiles.Controls.Add(this.optWeapProfile);
+			this.pnlWeapProfiles.Enabled = false;
+			this.pnlWeapProfiles.Location = new System.Drawing.Point(65, 168);
+			this.pnlWeapProfiles.Name = "pnlWeapProfiles";
+			this.pnlWeapProfiles.Size = new System.Drawing.Size(286, 23);
+			this.pnlWeapProfiles.TabIndex = 10;
+			// 
+			// optWeapProfile
+			// 
+			this.optWeapProfile.AutoSize = true;
+			this.optWeapProfile.Checked = true;
+			this.optWeapProfile.Location = new System.Drawing.Point(3, 3);
+			this.optWeapProfile.Name = "optWeapProfile";
+			this.optWeapProfile.Size = new System.Drawing.Size(66, 17);
+			this.optWeapProfile.TabIndex = 8;
+			this.optWeapProfile.Text = "Weapon";
+			this.optWeapProfile.UseVisualStyleBackColor = true;
+			// 
+			// optWarheadProfile
+			// 
+			this.optWarheadProfile.AutoSize = true;
+			this.optWarheadProfile.Location = new System.Drawing.Point(75, 3);
+			this.optWarheadProfile.Name = "optWarheadProfile";
+			this.optWarheadProfile.Size = new System.Drawing.Size(69, 17);
+			this.optWarheadProfile.TabIndex = 9;
+			this.optWarheadProfile.Text = "Warhead";
+			this.optWarheadProfile.UseVisualStyleBackColor = true;
+			// 
+			// optEnergyProfile
+			// 
+			this.optEnergyProfile.AutoSize = true;
+			this.optEnergyProfile.Location = new System.Drawing.Point(150, 4);
+			this.optEnergyProfile.Name = "optEnergyProfile";
+			this.optEnergyProfile.Size = new System.Drawing.Size(58, 17);
+			this.optEnergyProfile.TabIndex = 10;
+			this.optEnergyProfile.Text = "Energy";
+			this.optEnergyProfile.UseVisualStyleBackColor = true;
+			// 
+			// optLinkingProfile
+			// 
+			this.optLinkingProfile.AutoSize = true;
+			this.optLinkingProfile.Location = new System.Drawing.Point(214, 4);
+			this.optLinkingProfile.Name = "optLinkingProfile";
+			this.optLinkingProfile.Size = new System.Drawing.Size(59, 17);
+			this.optLinkingProfile.TabIndex = 11;
+			this.optLinkingProfile.Text = "Linking";
+			this.optLinkingProfile.UseVisualStyleBackColor = true;
+			// 
+			// txtWeapProfile
+			// 
+			this.txtWeapProfile.Enabled = false;
+			this.txtWeapProfile.Location = new System.Drawing.Point(241, 142);
+			this.txtWeapProfile.Name = "txtWeapProfile";
+			this.txtWeapProfile.Size = new System.Drawing.Size(128, 20);
+			this.txtWeapProfile.TabIndex = 7;
+			this.txtWeapProfile.Text = "Default";
+			// 
+			// chkWeapDecharge
+			// 
+			this.chkWeapDecharge.AutoSize = true;
+			this.chkWeapDecharge.Location = new System.Drawing.Point(3, 3);
+			this.chkWeapDecharge.Name = "chkWeapDecharge";
+			this.chkWeapDecharge.Size = new System.Drawing.Size(99, 17);
+			this.chkWeapDecharge.TabIndex = 12;
+			this.chkWeapDecharge.Text = "Decharge Rate";
+			this.chkWeapDecharge.UseVisualStyleBackColor = true;
+			// 
+			// chkWeapRecharge
+			// 
+			this.chkWeapRecharge.AutoSize = true;
+			this.chkWeapRecharge.Location = new System.Drawing.Point(3, 26);
+			this.chkWeapRecharge.Name = "chkWeapRecharge";
+			this.chkWeapRecharge.Size = new System.Drawing.Size(99, 17);
+			this.chkWeapRecharge.TabIndex = 14;
+			this.chkWeapRecharge.Text = "Recharge Rate";
+			this.chkWeapRecharge.UseVisualStyleBackColor = true;
+			// 
+			// pnlWeapRates
+			// 
+			this.pnlWeapRates.Controls.Add(this.numImpactAngle);
+			this.pnlWeapRates.Controls.Add(this.numImpactSpeed);
+			this.pnlWeapRates.Controls.Add(this.numTransfer);
+			this.pnlWeapRates.Controls.Add(this.numRecharge);
+			this.pnlWeapRates.Controls.Add(this.numDecharge);
+			this.pnlWeapRates.Controls.Add(this.chkWeapDecharge);
+			this.pnlWeapRates.Controls.Add(this.chkImpactAngle);
+			this.pnlWeapRates.Controls.Add(this.chkImpactSpeed);
+			this.pnlWeapRates.Controls.Add(this.chkImpact);
+			this.pnlWeapRates.Controls.Add(this.chkTransfer);
+			this.pnlWeapRates.Controls.Add(this.chkWeapRecharge);
+			this.pnlWeapRates.Location = new System.Drawing.Point(6, 192);
+			this.pnlWeapRates.Name = "pnlWeapRates";
+			this.pnlWeapRates.Size = new System.Drawing.Size(190, 142);
+			this.pnlWeapRates.TabIndex = 30;
+			// 
+			// chkTransfer
+			// 
+			this.chkTransfer.AutoSize = true;
+			this.chkTransfer.Location = new System.Drawing.Point(3, 49);
+			this.chkTransfer.Name = "chkTransfer";
+			this.chkTransfer.Size = new System.Drawing.Size(127, 17);
+			this.chkTransfer.TabIndex = 16;
+			this.chkTransfer.Text = "Energy Transfer Rate";
+			this.chkTransfer.UseVisualStyleBackColor = true;
+			// 
+			// chkImpact
+			// 
+			this.chkImpact.AutoSize = true;
+			this.chkImpact.Checked = true;
+			this.chkImpact.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.chkImpact.Location = new System.Drawing.Point(3, 71);
+			this.chkImpact.Name = "chkImpact";
+			this.chkImpact.Size = new System.Drawing.Size(124, 17);
+			this.chkImpact.TabIndex = 18;
+			this.chkImpact.Text = "Impact Spin Enabled";
+			this.chkImpact.UseVisualStyleBackColor = true;
+			// 
+			// chkImpactSpeed
+			// 
+			this.chkImpactSpeed.AutoSize = true;
+			this.chkImpactSpeed.Location = new System.Drawing.Point(3, 94);
+			this.chkImpactSpeed.Name = "chkImpactSpeed";
+			this.chkImpactSpeed.Size = new System.Drawing.Size(127, 17);
+			this.chkImpactSpeed.TabIndex = 19;
+			this.chkImpactSpeed.Text = "Impact Spin Speed %";
+			this.chkImpactSpeed.UseVisualStyleBackColor = true;
+			// 
+			// chkImpactAngle
+			// 
+			this.chkImpactAngle.AutoSize = true;
+			this.chkImpactAngle.Location = new System.Drawing.Point(3, 117);
+			this.chkImpactAngle.Name = "chkImpactAngle";
+			this.chkImpactAngle.Size = new System.Drawing.Size(123, 17);
+			this.chkImpactAngle.TabIndex = 21;
+			this.chkImpactAngle.Text = "Impact Spin Angle %";
+			this.chkImpactAngle.UseVisualStyleBackColor = true;
+			// 
+			// numDecharge
+			// 
+			this.numDecharge.Location = new System.Drawing.Point(134, 2);
+			this.numDecharge.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+			this.numDecharge.Name = "numDecharge";
+			this.numDecharge.Size = new System.Drawing.Size(49, 20);
+			this.numDecharge.TabIndex = 13;
+			this.numDecharge.Value = new decimal(new int[] {
+            3,
+            0,
+            0,
+            0});
+			// 
+			// numRecharge
+			// 
+			this.numRecharge.Location = new System.Drawing.Point(134, 25);
+			this.numRecharge.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+			this.numRecharge.Name = "numRecharge";
+			this.numRecharge.Size = new System.Drawing.Size(49, 20);
+			this.numRecharge.TabIndex = 15;
+			this.numRecharge.Value = new decimal(new int[] {
+            2,
+            0,
+            0,
+            0});
+			// 
+			// numTransfer
+			// 
+			this.numTransfer.Location = new System.Drawing.Point(134, 46);
+			this.numTransfer.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+			this.numTransfer.Name = "numTransfer";
+			this.numTransfer.Size = new System.Drawing.Size(49, 20);
+			this.numTransfer.TabIndex = 17;
+			this.numTransfer.Value = new decimal(new int[] {
+            4,
+            0,
+            0,
+            0});
+			// 
+			// numImpactSpeed
+			// 
+			this.numImpactSpeed.Location = new System.Drawing.Point(134, 93);
+			this.numImpactSpeed.Name = "numImpactSpeed";
+			this.numImpactSpeed.Size = new System.Drawing.Size(49, 20);
+			this.numImpactSpeed.TabIndex = 20;
+			this.numImpactSpeed.Value = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+			// 
+			// numImpactAngle
+			// 
+			this.numImpactAngle.Location = new System.Drawing.Point(134, 116);
+			this.numImpactAngle.Name = "numImpactAngle";
+			this.numImpactAngle.Size = new System.Drawing.Size(49, 20);
+			this.numImpactAngle.TabIndex = 22;
+			this.numImpactAngle.Value = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+			// 
+			// label84
+			// 
+			this.label84.Location = new System.Drawing.Point(202, 193);
+			this.label84.Name = "label84";
+			this.label84.Size = new System.Drawing.Size(167, 141);
+			this.label84.TabIndex = 31;
+			this.label84.Text = "Select an FG, then Rates or Profiles.  For Rates, check which options to add. See" +
+    " hook readme for defaults, YOGEME will not omit default selections except for Im" +
+    "pact.";
 			// 
 			// XwaHookDialog
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.cmdCancel;
-			this.ClientSize = new System.Drawing.Size(1671, 857);
+			this.ClientSize = new System.Drawing.Size(2109, 913);
+			this.Controls.Add(this.pnlWeaponRate);
 			this.Controls.Add(this.pnlHullIcon);
 			this.Controls.Add(this.pnlConcourse);
 			this.Controls.Add(this.txtHook);
@@ -4609,6 +4959,19 @@
 			this.pnlHullIcon.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numHullIcon)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.numPlayerHull)).EndInit();
+			this.pnlWeaponRate.ResumeLayout(false);
+			this.pnlWeaponRate.PerformLayout();
+			this.pnlWeapRateOrProfiles.ResumeLayout(false);
+			this.pnlWeapRateOrProfiles.PerformLayout();
+			this.pnlWeapProfiles.ResumeLayout(false);
+			this.pnlWeapProfiles.PerformLayout();
+			this.pnlWeapRates.ResumeLayout(false);
+			this.pnlWeapRates.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.numDecharge)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.numRecharge)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.numTransfer)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.numImpactSpeed)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.numImpactAngle)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -4954,5 +5317,32 @@
 		private System.Windows.Forms.CheckBox chkIntRegion2;
 		private System.Windows.Forms.CheckBox chkIntRegion1;
 		private System.Windows.Forms.Label label83;
+		private System.Windows.Forms.Panel pnlWeaponRate;
+		private System.Windows.Forms.ComboBox cboWeapFG;
+		private System.Windows.Forms.Button cmdRemWeap;
+		private System.Windows.Forms.Button cmdAddWeap;
+		private System.Windows.Forms.ListBox lstWeapons;
+		private System.Windows.Forms.Panel pnlWeapProfiles;
+		private System.Windows.Forms.RadioButton optLinkingProfile;
+		private System.Windows.Forms.RadioButton optEnergyProfile;
+		private System.Windows.Forms.RadioButton optWarheadProfile;
+		private System.Windows.Forms.RadioButton optWeapProfile;
+		private System.Windows.Forms.Panel pnlWeapRateOrProfiles;
+		private System.Windows.Forms.RadioButton optWeapProfiles;
+		private System.Windows.Forms.RadioButton optWeapRate;
+		private System.Windows.Forms.TextBox txtWeapProfile;
+		private System.Windows.Forms.Panel pnlWeapRates;
+		private System.Windows.Forms.CheckBox chkWeapDecharge;
+		private System.Windows.Forms.CheckBox chkWeapRecharge;
+		private System.Windows.Forms.CheckBox chkImpactAngle;
+		private System.Windows.Forms.CheckBox chkImpactSpeed;
+		private System.Windows.Forms.CheckBox chkImpact;
+		private System.Windows.Forms.CheckBox chkTransfer;
+		private System.Windows.Forms.NumericUpDown numDecharge;
+		private System.Windows.Forms.NumericUpDown numImpactAngle;
+		private System.Windows.Forms.NumericUpDown numImpactSpeed;
+		private System.Windows.Forms.NumericUpDown numTransfer;
+		private System.Windows.Forms.NumericUpDown numRecharge;
+		private System.Windows.Forms.Label label84;
 	}
 }

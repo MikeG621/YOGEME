@@ -1,12 +1,13 @@
 ﻿/*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
- * Copyright (C) 2007-2023 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2024 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.15.5
+ * VERSION: 1.15.5+
  */
 
 /* CHANGELOG
+ * [ADD] WeaponRates hook support
  * v1.15.5, 231222
  * [UPD] Sounds: Interdictor
  * [UPD] 32bpp: skin opacity
@@ -79,6 +80,7 @@ namespace Idmr.Yogeme
     public partial class XwaHookDialog : Form
 	{
 		// this is going to be setup to read from the individual TXT files, but always write to Mission.ini
+		#region vars
 		readonly string _mission;
 		readonly string _fileName = "";
 		readonly string _bdFile = "";
@@ -109,23 +111,32 @@ namespace Idmr.Yogeme
 		readonly string _concourseFile = "";
 		readonly string _hullIconFile = "";
 		readonly string _statsFile = "";
+		readonly string _weapRatesFile = "";
+		readonly string _weapProfilesFile = "";
+		readonly string _warheadProfilesFile = "";
+		readonly string _energyProfilesFile = "";
+		readonly string _linkingProfilesFile = "";
 		readonly string _installDirectory = "";
 		readonly string _mis = "Missions\\";
 		readonly string _res = "Resdata\\";
 		readonly string _wave = "Wave\\";
 		readonly string _fm = "FlightModels\\";
-		enum ReadMode { None = -1, Backdrop, Mission, Sounds, Interdiction, Objects, HangarObjects, HangarCamera, FamilyHangarCamera, HangarMap, FamilyHangarMap, Skins, Shield, Hyper, Concourse, HullIcon, Stats }
+		enum ReadMode { None = -1, Backdrop, Mission, Sounds, Interdiction, Objects,
+			HangarObjects, HangarCamera, FamilyHangarCamera, HangarMap, FamilyHangarMap,
+			Skins, Shield, Hyper, Concourse, HullIcon, Stats,
+			WeaponRate, WeapProfile, WarheadProfile, EnergyProfile, LinkingProfile }
 		bool _loading = false;
 		readonly int[,] _cameras = new int[5, 3];
 		readonly int[,] _defaultCameras = new int[5, 3] { { 1130, -2320, -300 }, { 1240, -330, -700 }, { -1120, 1360, -790 }, { -1200, -1530, -850 }, { 1070, 4640, -130 } };
 		readonly int[,] _familyCameras = new int[7, 3];
-		readonly int[,] _defaultFamilyCameras = new int[7, 3] { { 780, -6471, -4977 }, { -1970, -8810, -4707 }, { 2510, -5391, -5067 }, { 1740, -8461, -5047 }, { 3180, 2629, -3777 }, { 8242, 6500, 10 }, { -13360, 35019, -6537 } };
+		readonly int[,] _defaultFamilyCameras = new int[7, 3] { { 780, -6471, -4977 }, { -1970, -8810, -4707 }, { 2510, -5391, -5067 },
+			{ 1740, -8461, -5047 }, { 3180, 2629, -3777 }, { 8242, 6500, 10 }, { -13360, 35019, -6537 } };
 		enum ShuttleAnimation { Right, Top, Bottom }
 		readonly int[] _defaultShuttlePosition = new int[4] { 1127, 959, 0, 43136 };
 		readonly int[] _defaultRoofCranePosition = new int[3] { -1400, 786, -282 };
-		readonly Panel[] _panels = new Panel[11];
+		readonly Panel[] _panels = new Panel[12];
 		readonly List<string> _unknown = new List<string>();
-        readonly List<string>[] _comments = new List<string>[16];
+        readonly List<string>[] _comments = new List<string>[21];
 		string _preComments = "";
 		readonly bool[] _skipIffs = new bool[255];
         readonly bool _initialLoad = true;
@@ -134,6 +145,7 @@ namespace Idmr.Yogeme
 		string _tempYs = "";
 		string _tempZs = "";
 		readonly CheckBox[] _chkRegions = new CheckBox[4];
+		#endregion
 
 		public XwaHookDialog(Mission mission, Settings config)
 		{
@@ -161,6 +173,7 @@ namespace Idmr.Yogeme
 			_panels[8] = pnlHyper;
 			_panels[9] = pnlConcourse;
 			_panels[10] = pnlHullIcon;
+			_panels[11] = pnlWeaponRate;
 			for (int i = 0; i < _panels.Length; i++)
 			{
 				_panels[i].Left = 395;
@@ -169,7 +182,7 @@ namespace Idmr.Yogeme
 			_chkRegions[0] = chkIntRegion1;
 			_chkRegions[1] = chkIntRegion2;
 			_chkRegions[2] = chkIntRegion3;
-			_chkRegions[3]= chkIntRegion4;
+			_chkRegions[3] = chkIntRegion4;
 			cboHook.SelectedIndex = 0;
 			cboIff.Items.AddRange(Strings.IFF);
 			cboHangarIff.Items.AddRange(Strings.IFF);
@@ -213,6 +226,7 @@ namespace Idmr.Yogeme
 			cboFG.Items.AddRange(mission.FlightGroups.GetList());
 			cboProfileFG.Items.AddRange(mission.FlightGroups.GetList());
 			cboSFoilFG.Items.AddRange(mission.FlightGroups.GetList());
+			cboWeapFG.Items.AddRange((mission.FlightGroups.GetList()));
 			for (int i = 0; i < 400; i++)
 			{
 				cboShuttleModel.Items.Add(i);
@@ -344,6 +358,11 @@ namespace Idmr.Yogeme
 				_concourseFile = checkFile("_Concourse.txt");
 				_hullIconFile = checkFile("_HullIcon.txt");
 				_statsFile = checkFile("_StatsProfile.txt");
+				_weapRatesFile = checkFile("_WeaponRates.txt");
+				_weapProfilesFile = checkFile("_WeaponProfiles.txt");
+				_warheadProfilesFile = checkFile("_WarheadProfiles.txt");
+				_energyProfilesFile = checkFile("_EnergyProfiles.txt");
+				_linkingProfilesFile = checkFile("_LinkingProfiles.txt");
 			}
 			string line;
 
@@ -666,6 +685,71 @@ namespace Idmr.Yogeme
 						if (line == "") continue;
 
 						lstStats.Items.Add(line);
+					}
+				}
+			}
+			if (_weapRatesFile != "")
+			{
+				using (var sr = new StringReader(_weapRatesFile))
+				{
+					while ((line = sr.ReadLine()) != null)
+					{
+						line = removeComment(line);
+						if (line == "") continue;
+
+						lstWeapons.Items.Add(line);
+					}
+				}
+			}
+			if (_weapProfilesFile != "")
+			{
+				using (var sr = new StringReader(_weapProfilesFile))
+				{
+					while ((line = sr.ReadLine()) != null)
+					{
+						line = removeComment(line);
+						if (line == "") continue;
+
+						lstWeapons.Items.Add(line);
+					}
+				}
+			}
+			if (_warheadProfilesFile != "")
+			{
+				using (var sr = new StringReader(_warheadProfilesFile))
+				{
+					while ((line = sr.ReadLine()) != null)
+					{
+						line = removeComment(line);
+						if (line == "") continue;
+
+						lstWeapons.Items.Add(line);
+					}
+				}
+			}
+			if (_energyProfilesFile != "")
+			{
+				using (var sr = new StringReader(_energyProfilesFile))
+				{
+					while ((line = sr.ReadLine()) != null)
+					{
+						line = removeComment(line);
+						if (line == "") continue;
+
+						lstWeapons.Items.Add(line);
+					}
+				}
+			}
+			if (_linkingProfilesFile != "")
+			{
+				using (var sr = new StringReader(_linkingProfilesFile))
+				{
+					while ((line = sr.ReadLine()) != null)
+					{
+						line = removeComment(line);
+						if (line == "") continue;
+
+						lstWeapons.Items.Add(line);
 					}
 				}
 			}
@@ -1067,6 +1151,89 @@ namespace Idmr.Yogeme
 				contents += "\r\n";
 			}
 			insertComments(ref contents, (int)ReadMode.Stats);
+			if (lstWeapons.Items.Count > 0)
+			{
+				var writeMode = ReadMode.None;
+				for (int i = 0; i < lstWeapons.Items.Count; i++)
+					if (lstWeapons.Items[i].ToString().Contains("Rate") || lstWeapons.Items[i].ToString().Contains("Impact"))
+					{
+						if (writeMode == ReadMode.None)
+						{
+							writeMode = ReadMode.WeaponRate;
+							contents += "[WeaponRates]\r\n";
+						}
+						contents += lstWeapons.Items[i] + "\r\n";
+					}
+				if (writeMode == ReadMode.WeaponRate)
+				{
+					contents += "\r\n";
+					insertComments(ref contents, (int)ReadMode.WeaponRate);
+				}
+				writeMode = ReadMode.None;
+				for (int i = 0; i < lstWeapons.Items.Count;i++)
+					if (lstWeapons.Items[i].ToString().StartsWith("WeaponProfile"))
+					{
+						if (writeMode == ReadMode.None)
+						{
+							writeMode = ReadMode.WeapProfile;
+							contents += "[WeaponProfiles]\r\n";
+						}
+						contents += lstWeapons.Items[i] + "\r\n";
+					}
+				if (writeMode == ReadMode.WeapProfile)
+				{
+					contents += "\r\n";
+					insertComments(ref contents, (int)ReadMode.WeapProfile);
+				}
+				writeMode = ReadMode.None;
+				for (int i = 0; i < lstWeapons.Items.Count; i++)
+					if (lstWeapons.Items[i].ToString().StartsWith("WarheadProfile"))
+					{
+						if (writeMode == ReadMode.None)
+						{
+							writeMode = ReadMode.WarheadProfile;
+							contents += "[WarheadProfiles]\r\n";
+						}
+						contents += lstWeapons.Items[i] + "\r\n";
+					}
+				if (writeMode == ReadMode.WarheadProfile)
+				{
+					contents += "\r\n";
+					insertComments(ref contents, (int)ReadMode.WarheadProfile);
+				}
+				writeMode = ReadMode.None;
+				for (int i = 0; i < lstWeapons.Items.Count; i++)
+					if (lstWeapons.Items[i].ToString().StartsWith("EnergyProfile"))
+					{
+						if (writeMode == ReadMode.None)
+						{
+							writeMode = ReadMode.EnergyProfile;
+							contents += "[EnergyProfiles]\r\n";
+						}
+						contents += lstWeapons.Items[i] + "\r\n";
+					}
+				if (writeMode == ReadMode.EnergyProfile)
+				{
+					contents += "\r\n";
+					insertComments(ref contents, (int)ReadMode.EnergyProfile);
+				}
+				writeMode = ReadMode.None;
+				for (int i = 0; i < lstWeapons.Items.Count; i++)
+					if (lstWeapons.Items[i].ToString().StartsWith("LinkingProfile"))
+					{
+						if (writeMode == ReadMode.None)
+						{
+							writeMode = ReadMode.LinkingProfile;
+							contents += "[LinkingProfiles]\r\n";
+						}
+						contents += lstWeapons.Items[i] + "\r\n";
+					}
+				if (writeMode == ReadMode.LinkingProfile)
+				{
+					contents += "\r\n";
+					insertComments(ref contents, (int)ReadMode.LinkingProfile);
+				}
+			}
 
             for (int i = 0; i < _unknown.Count; i++) contents += _unknown[i] + "\r\n";
 
@@ -1135,6 +1302,11 @@ namespace Idmr.Yogeme
 					else if (lineLower == "[concourse]") readMode = ReadMode.Concourse;
 					else if (lineLower == "[hullicon]") readMode = ReadMode.HullIcon;
 					else if (lineLower == "[statsprofiles]") readMode = ReadMode.Stats;
+					else if (lineLower == "[weaponrates]") readMode = ReadMode.WeaponRate;
+					else if (lineLower == "[weaponprofiles]") readMode = ReadMode.WeapProfile;
+					else if (lineLower == "[warheadprofiles]") readMode = ReadMode.WarheadProfile;
+					else if (lineLower == "[energyprofiles]") readMode = ReadMode.EnergyProfile;
+					else if (lineLower == "[linkingprofiles]") readMode = ReadMode.LinkingProfile;
 					else if (_commandOpt != "")
 					{
 						if (lineLower == "[hangarobjects_" + _commandOpt + "_" + _commandIff + "]") readMode = ReadMode.HangarObjects;
@@ -1183,6 +1355,8 @@ namespace Idmr.Yogeme
 				else if (readMode == ReadMode.Concourse) parseConcourse(line);
 				else if (readMode == ReadMode.HullIcon) parseHullIcon(line);
 				else if (readMode == ReadMode.Stats) lstStats.Items.Add(line);
+				else if (readMode == ReadMode.WeaponRate || readMode == ReadMode.WeapProfile || readMode == ReadMode.WarheadProfile
+					|| readMode == ReadMode.EnergyProfile || readMode == ReadMode.LinkingProfile) lstWeapons.Items.Add(line);
 				else if (readMode == ReadMode.None && !isPre) _unknown.Add(txtHook.Lines[i]);
             }
 			checkIndicies();
@@ -1281,6 +1455,7 @@ namespace Idmr.Yogeme
 			chkDisableWarhead.Checked = false;
 			chkDisableCollision.Checked = false;
 			lstStats.Items.Clear();
+			lstWeapons.Items.Clear();
         }
 
         #region Backdrops
@@ -2243,9 +2418,47 @@ namespace Idmr.Yogeme
         {
             if (lstHullIcon.SelectedIndex != -1) lstHullIcon.Items.RemoveAt(lstHullIcon.SelectedIndex);
         }
-        #endregion
+		#endregion
 
-        private void cboHook_SelectedIndexChanged(object sender, EventArgs e)
+		#region WeaponRates
+		private void cmdAddWeap_Click(object sender, EventArgs e)
+		{
+			if (cboWeapFG.SelectedIndex == -1) return;
+
+			if (optWeapProfiles.Checked && txtWeapProfile.Text.ToLower() != "default")
+			{
+				string profile = "Profile_fg_" + cboWeapFG.SelectedIndex.ToString() + " = " + txtWeapProfile.Text;
+				if (optWeapProfile.Checked) profile = "Weapon" + profile;
+				else if (optWarheadProfile.Checked) profile = "Warhead" + profile;
+				else if (optEnergyProfile.Checked) profile = "Energy" + profile;
+				else if (optLinkingProfile.Checked) profile = "Linking" + profile;
+				lstWeapons.Items.Add(profile);
+			}
+			else if (optWeapRate.Checked)
+			{
+				string rate = "_fg_" + cboWeapFG.SelectedIndex.ToString() + " = ";
+				if (chkWeapDecharge.Checked) lstWeapons.Items.Add("DechargeRate" + rate + numDecharge.Value);
+				if (chkWeapRecharge.Checked) lstWeapons.Items.Add("RechargeRate" + rate + numRecharge.Value);
+				if (chkTransfer.Checked) lstWeapons.Items.Add("EnergyTransferRate" + rate + numTransfer.Value);
+				if (!chkImpact.Checked) lstWeapons.Items.Add("IsImpactSpinningEnabled" + rate + 0);
+				if (chkImpactSpeed.Checked && numImpactSpeed.Value != 100) lstWeapons.Items.Add("ImpactSpinningSpeedFactorPercent" + rate + numImpactSpeed.Value);
+				if (chkImpactAngle.Checked && numImpactAngle.Value != 100) lstWeapons.Items.Add("ImpactSpinningAngleFactorPercent" + rate + numImpactAngle.Value);
+			}
+		}
+		private void cmdRemWeap_Click(object sender, EventArgs e)
+		{
+			if (lstWeapons.SelectedIndex != -1) lstWeapons.Items.RemoveAt(lstWeapons.SelectedIndex);
+		}
+
+		private void optWeapProfiles_CheckedChanged(object sender, EventArgs e)
+		{
+			pnlWeapProfiles.Enabled = optWeapProfiles.Checked;
+			pnlWeapRates.Enabled = !optWeapProfiles.Checked;
+			txtWeapProfile.Enabled = optWeapProfiles.Checked;
+		}
+		#endregion
+
+		private void cboHook_SelectedIndexChanged(object sender, EventArgs e)
         {
 			if (cboHook.SelectedIndex == -1) return;
 
@@ -2474,5 +2687,7 @@ namespace Idmr.Yogeme
 				return result;
 			}
 		}
+
+		
 	}
 }
