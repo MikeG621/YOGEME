@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2024 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.15.5+
+ * VERSION: 1.15.6
  */
 
 /* CHANGELOG
+ * v1.15.6, 240311
  * [FIX #100] SBD crash if default craft is Backdrop
  * v1.15.5, 231222
  * [NEW #97] GlobalSummary dialog

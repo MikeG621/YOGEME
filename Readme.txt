@@ -3,8 +3,8 @@
 
 Author: Michael Gaisser (mjgaisser@gmail.com)
 Contributor: Random Starfighter (JB)
-Version: 1.15.5
-Date: 2023.12.22
+Version: 1.15.6
+Date: 2024.03.11
 
 Thank you for downloading YOGEME, the all-in-one mission editor for the X-Wing
 series, Xwing95 through X-wing Alliance.  This program allows easy mission
@@ -28,6 +28,7 @@ your user settings.
 ==========
 Version History
 
+v1.15.6, 11 Mar 2024
  - Option to toggle SuperBackdrops now always enabled, even if not detected. Still doesn't do anything if not installed.
  - (XWA) Fixed a crash if SuperBackdrops is enabled on a new mission and the default craft type is Backdrop [Issue #100]
  - (XWA) WeaponRates hook support added
