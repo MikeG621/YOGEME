@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2024 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.15.6
+ * VERSION: 1.15.6+
  */
 
 /* CHANGELOG
+ * [UPD] ArrDep renames
  * v1.15.6, 240314
  * [ADD] WeaponRates hook support
  * v1.15.5, 231222
@@ -279,8 +280,8 @@ namespace Idmr.Yogeme
 					}
 					if (commandShip != -1) break;
 
-					if (player.ArrivalMethod1 == 1) commandShip = player.ArrivalCraft1;
-					else if (player.DepartureMethod1 == 1) commandShip = player.DepartureCraft1;
+					if (player.ArrivalMethod == 1) commandShip = player.ArrivalMothership;
+					else if (player.DepartureMethod == 1) commandShip = player.DepartureMothership;
 				}
                 if (commandShip != -1) break;
             }
