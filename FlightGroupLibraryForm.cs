@@ -1,13 +1,14 @@
 ﻿/*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
- * Copyright (C) 2007-2020 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2024 Michael Gaisser (mjgaisser@gmail.com)
  * This file authored by "JB" (Random Starfighter) (randomstarfighter@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.8
+ * VERSION: 1.8+
  */
 
 /* CHANGELOG:
+ * [UPD] Mostly cleanup
  * v1.8, 201004
  * [NEW] Release [JB]
  */
@@ -33,7 +34,6 @@ namespace Idmr.Yogeme
 		List<string> _groupNames = null;             // User-defined names for each library.
 		List<List<string>> _craftProblems = null;    // A list of logic issues of all items in the current library group. Each FlightGroup contains a list of strings describing any problems. Logic issues are direct FG references that may cause unintended behavior if added to a mission without scrubbing them.
 
-		//bool _loading = false;	//~MG: this was never actually reassigned, it was always false
 		bool _isDirty = false;
 
 		/// <summary>Initializes and prepares the FG Library for the specified platform.</summary>
@@ -72,6 +72,110 @@ namespace Idmr.Yogeme
 			Show();
 		}
 
+		#region methods
+		/// <summary>Deletes the selected library craft from the group.</summary>
+		private void deleteLibraryCraftSelection()
+		{
+			// [JB] I tried adding a keypress handler for delete, but this caused all sorts of weird problems.  Possibly event race conditions with drag selection.
+			ListBox.SelectedIndexCollection sic = lstLibraryCraft.SelectedIndices;
+			int group = lstLibraryGroup.SelectedIndex;
+			if (sic.Count > 0 && group >= 0 && group < _groupList.Count)
+			{
+				while (sic.Count > 0)
+				{
+					int index = sic[sic.Count - 1];
+					_groupList[group].RemoveAt(index);
+					lstLibraryCraft.Items.RemoveAt(index); // Removing will modify the selected collection too.
+				}
+				_isDirty = true;
+			}
+			// There are some weird anomalies if deleting while a mouse-drag is in progress, where the underlying selection data doesn't correspond to what the user actually sees.
+			// This doesn't entirely solve the problem, but it helps.  Keeping this just to be safe.
+			lstLibraryCraft.Enabled = false;
+			for (int i = 0; i < lstLibraryCraft.Items.Count; i++)
+				if (lstLibraryCraft.GetSelected(i))
+					lstLibraryCraft.SetSelected(i, false);
+			lstLibraryCraft.Enabled = true;
+
+			refreshGroupCraftCount();
+		}
+
+		/// <summary>Retrieves the IFF color to draw an item in the craft lists.</summary>
+		/// <remarks>This code is adapted from the getFlightGroupDrawColor() functions of each platform.</remarks>
+		Brush getFlightGroupDrawColor(object fg)
+		{
+			Brush brText = SystemBrushes.ControlText;
+			Brush[] xwingColors = { Brushes.DodgerBlue, Brushes.Lime, Brushes.Red, Brushes.DodgerBlue, Brushes.RoyalBlue };
+			Brush[] tieColors = { Brushes.Lime, Brushes.Red, Brushes.DodgerBlue, Brushes.MediumOrchid, Brushes.OrangeRed, Brushes.DarkOrchid };
+			Brush[] xvtxwaColors = { Brushes.Lime, Brushes.Red, Brushes.DodgerBlue, Brushes.Yellow, Brushes.OrangeRed, Brushes.MediumOrchid };
+
+			int iff;
+			switch (_platform)
+			{
+				case Settings.Platform.XWING:
+					brText = Brushes.White; // Default to white for objects
+					if (((Platform.Xwing.FlightGroup)fg).IsFlightGroup())
+					{
+						iff = ((Platform.Xwing.FlightGroup)fg).GetActualIFF();
+						brText = (iff <= 4 ? xwingColors[iff] : SystemBrushes.ControlText);
+					}
+					break;
+				case Settings.Platform.TIE:
+					iff = ((Platform.Tie.FlightGroup)fg).IFF;
+					if (iff <= 5) brText = tieColors[iff];
+					if (((Platform.Tie.FlightGroup)fg).Difficulty == 6) brText = Brushes.Gray;
+					break;
+				case Settings.Platform.XvT:
+				case Settings.Platform.BoP:
+					iff = ((Platform.Xvt.FlightGroup)fg).IFF;
+					if (iff <= 5) brText = xvtxwaColors[iff];
+					if (((Platform.Xvt.FlightGroup)fg).Difficulty == 6 || ((Platform.Xvt.FlightGroup)fg).Difficulty == 7) brText = Brushes.Gray;
+					break;
+				case Settings.Platform.XWA:
+					iff = ((Platform.Xwa.FlightGroup)fg).IFF;
+					if (iff <= 5) brText = xvtxwaColors[iff];
+					if (((Platform.Xwa.FlightGroup)fg).Difficulty == 6) brText = Brushes.Gray;
+					break;
+			}
+			return brText;
+		}
+
+		/// <summary>Retrieves a generic object from within the platform-specific FlightGroupCollection.</summary>
+		private object getFlightGroupObjectFromCollection(int index)
+		{
+			switch (_platform)
+			{
+				case Settings.Platform.XWING: return ((Platform.Xwing.FlightGroupCollection)_flightGroupCollection)[index];
+				case Settings.Platform.TIE: return ((Platform.Tie.FlightGroupCollection)_flightGroupCollection)[index];
+				case Settings.Platform.XvT: case Settings.Platform.BoP: return ((Platform.Xvt.FlightGroupCollection)_flightGroupCollection)[index];
+				case Settings.Platform.XWA: return ((Platform.Xwa.FlightGroupCollection)_flightGroupCollection)[index];
+			}
+			return "";
+		}
+
+		/// <summary>Returns the craft string as it would appear in the FlightGroup list.</summary>
+		private string getFlightGroupString(object fg)
+		{
+			try
+			{
+				switch (_platform)
+				{
+					case Settings.Platform.XWING: return ((Platform.Xwing.FlightGroup)fg).ToString(true);
+					case Settings.Platform.TIE: return ((Platform.Tie.FlightGroup)fg).ToString(true);
+					case Settings.Platform.XvT: case Settings.Platform.BoP: return ((Platform.Xvt.FlightGroup)fg).ToString(true);
+					case Settings.Platform.XWA: return ((Platform.Xwa.FlightGroup)fg).ToString(true);
+				}
+			}
+			catch (Exception) { /* do nothing */ }
+			return "(invalid)";
+		}
+
+		/// <summary>Returns the full path and filename of the platform-specific library data.</summary>
+		private string getFullPath(string libraryFileName) => Path.Combine(Directory.GetCurrentDirectory(), libraryFileName);
+
+		/// <summary>Returns a string containing the group name and its number of items.</summary>
+		private string getGroupName(int group) => group < 0 || group >= _groupList.Count ? "" : _groupNames[group] + "  (" + _groupList[group].Count + ")";
+
 		/// <summary>Returns the filename where the platform-specific library data is stored.</summary>
 		private string getLibraryFileName()
 		{
@@ -85,10 +189,16 @@ namespace Idmr.Yogeme
 			return "";
 		}
 
-		/// <summary>Returns the full path and filename of the platform-specific library data.</summary>
-		private string getFullPath(string libraryFileName)
+		/// <summary>Resolves the target craft name of an FG index within the mission collection.</summary>
+		private string getProblemTargetName(int index)
 		{
-			return Path.Combine(Directory.GetCurrentDirectory(), libraryFileName);
+			if (index >= 0 && index < lstMissionCraft.Items.Count)
+			{
+				object targ = getFlightGroupObjectFromCollection(index);
+				if (targ.GetType().ToString().Contains("FlightGroup"))
+					return "[#" + (index + 1).ToString() + ": " + ((Platform.BaseFlightGroup)getFlightGroupObjectFromCollection(index)).ToString() + "]";
+			}
+			return "[#" + (index + 1).ToString() + " out of range]";
 		}
 
 		/// <summary>Activates a platform and loads its corresponding library data.</summary>
@@ -132,38 +242,141 @@ namespace Idmr.Yogeme
 
 		/// <summary>Loads the contents of a library from an open file stream.</summary>
 		private void loadLibraryFromStream(FileStream fs, BinaryReader br)
-		{
-			try
-			{
-				int fileId = br.ReadInt32();
-				int fileVersion = br.ReadInt32();
-				int filePlatform = br.ReadInt32();
-				if (fileId != _libraryHeaderId || fileVersion != _libraryVersion || filePlatform != (int)_platform)
-					return;
+		{	// removed the try block, redundant
+			int fileId = br.ReadInt32();
+			int fileVersion = br.ReadInt32();
+			int filePlatform = br.ReadInt32();
+			if (fileId != _libraryHeaderId || fileVersion != _libraryVersion || filePlatform != (int)_platform) return;
 
-				List<object> group = _groupList[0];
-				int groupCount = br.ReadInt32();
-				for (int i = 0; i < groupCount; i++)
+			List<object> group = _groupList[0];
+			int groupCount = br.ReadInt32();
+			for (int i = 0; i < groupCount; i++)
+			{
+				string groupName = br.ReadString();
+				if (i > 0)
 				{
-					string groupName = br.ReadString();
-					if (i > 0)
-					{
-						_groupNames.Add(groupName);
-						group = new List<object>();
-					}
-					int craftCount = br.ReadInt32();
-					br.ReadInt32(); // Reserved for future expansion data if needed.
-					for (int j = 0; j < craftCount; j++)
-					{
-						System.Runtime.Serialization.IFormatter formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
-						object fg = formatter.Deserialize(fs);
-						group.Add(fg);
-					}
-					if (i > 0)
-						_groupList.Add(group);
+					_groupNames.Add(groupName);
+					group = new List<object>();
 				}
+				int craftCount = br.ReadInt32();
+				br.ReadInt32(); // Reserved for future expansion data if needed.
+				for (int j = 0; j < craftCount; j++)
+				{
+					System.Runtime.Serialization.IFormatter formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+					object fg = formatter.Deserialize(fs);
+					group.Add(fg);
+				}
+				if (i > 0) _groupList.Add(group);
 			}
-			catch (Exception) { /* do nothing */ }
+		}
+
+		/// <summary>Adds a new problem string to a list of problems.</summary>
+		private void logProblem(string problem, List<string> output)
+		{
+			if (output == null) return;
+
+			if (problem.Contains("FG:"))
+			{
+				int index = Common.ParseIntAfter(problem, "FG:");
+				string target = getProblemTargetName(index);
+				problem = problem.Replace("FG:" + index, target);
+			}
+			output.Add("  " + problem);
+		}
+
+		/// <summary>Initializes and resets a library to its default empty state.</summary>
+		private void resetDefaultLibrary()
+		{
+			_groupList = new List<List<object>>
+			{
+				new List<object>()
+			};
+
+			_groupNames = new List<string>
+			{
+				"Default"
+			};
+
+			_craftProblems = new List<List<string>>();
+		}
+
+		/// <summary>Refreshes the list of library groups contained within the library.</summary>
+		private void refreshGroupList()
+		{
+			if (_groupNames.Count < 1 || _groupList.Count < 1) resetDefaultLibrary();
+
+			if (_groupNames[0] != "Default") _groupNames[0] = "Default";
+
+			int prevSelection = lstLibraryGroup.SelectedIndex;
+			if (prevSelection == -1) prevSelection = 0;
+
+			lstLibraryGroup.Items.Clear();
+			cboLibraryGroup.Items.Clear();
+			for (int i = 0; i < _groupNames.Count; i++)
+			{
+				lstLibraryGroup.Items.Add(getGroupName(i));
+				cboLibraryGroup.Items.Add(getGroupName(i));
+			}
+			lstLibraryGroup.SelectedIndex = prevSelection;
+			if (cboLibraryGroup.SelectedIndex == -1) cboLibraryGroup.SelectedIndex = 0;
+		}
+
+		/// <summary>Refreshes the visible craft count in the group listing.</summary>
+		private void refreshGroupCraftCount()
+		{
+			int group = lstLibraryGroup.SelectedIndex;
+			if (group < 0 || group >= _groupList.Count) return;
+
+			lstLibraryGroup.Items[group] = getGroupName(group);
+			cboLibraryGroup.Items[group] = getGroupName(group);
+		}
+
+		/// <summary>Refreshes the contents of the craft list of the selected library group.</summary>
+		private void refreshLibraryCraft()
+		{
+			lstLibraryCraft.Items.Clear();
+			int group = lstLibraryGroup.SelectedIndex;
+			if (group < 0 || group >= _groupList.Count) return;
+
+			for (int i = 0; i < _groupList[group].Count; i++) lstLibraryCraft.Items.Add(getFlightGroupString(_groupList[group][i]));
+			refreshProblems();
+		}
+
+		/// <summary>Refreshes the contents of the mission craft list.</summary>
+		private void refreshMissionCraft()
+		{
+			lstMissionCraft.Items.Clear();
+			switch (_platform)
+			{
+				case Settings.Platform.XWING:
+					foreach (Platform.Xwing.FlightGroup fg in (Platform.Xwing.FlightGroupCollection)_flightGroupCollection)
+						lstMissionCraft.Items.Add(fg.ToString(true));
+					break;
+				case Settings.Platform.TIE:
+					foreach (Platform.Tie.FlightGroup fg in (Platform.Tie.FlightGroupCollection)_flightGroupCollection)
+						lstMissionCraft.Items.Add(fg.ToString(true));
+					break;
+				case Settings.Platform.XvT:
+				case Settings.Platform.BoP:
+					foreach (Platform.Xvt.FlightGroup fg in (Platform.Xvt.FlightGroupCollection)_flightGroupCollection)
+						lstMissionCraft.Items.Add(fg.ToString(true));
+					break;
+				case Settings.Platform.XWA:
+					foreach (Platform.Xwa.FlightGroup fg in (Platform.Xwa.FlightGroupCollection)_flightGroupCollection)
+						lstMissionCraft.Items.Add(fg.ToString(true));
+					break;
+			}
+		}
+
+		/// <summary>Rebuilds the list of FG reference problems in the library craft list.</summary>
+		void refreshProblems()
+		{
+			_craftProblems.Clear();
+			int group = lstLibraryGroup.SelectedIndex;
+			if (group < 0 || group >= _groupList.Count) return;
+
+			for (int i = 0; i < _groupList[group].Count; i++) _craftProblems.Add(scanProblems(_groupList[group][i], false, true));
+			lstLibraryCraft.Refresh();
 		}
 
 		/// <summary>Opens a platform-specific library file and writes the entire library into it.</summary>
@@ -200,248 +413,28 @@ namespace Idmr.Yogeme
 			}
 		}
 
-		/// <summary>Initializes and resets a library to its default empty state.</summary>
-		private void resetDefaultLibrary()
-		{
-			_groupList = new List<List<object>>
-			{
-				new List<object>()
-			};
-
-			_groupNames = new List<string>
-			{
-				"Default"
-			};
-
-			_craftProblems = new List<List<string>>();
-		}
-
-		/// <summary>Returns a string containing the group name and its number of items.</summary>
-		private string getGroupName(int group)
-		{
-			if (group < 0 || group >= _groupList.Count)
-				return "";
-			return _groupNames[group] + "  (" + _groupList[group].Count + ")";
-		}
-
-		/// <summary>Refreshes the list of library groups contained within the library.</summary>
-		private void refreshGroupList()
-		{
-			if(_groupNames.Count < 1 || _groupList.Count < 1)
-				resetDefaultLibrary();
-
-			if (_groupNames[0] != "Default")
-				_groupNames[0] = "Default";
-
-			int prevSelection = lstLibraryGroup.SelectedIndex;
-			if (prevSelection == -1)
-				prevSelection = 0;
-
-			lstLibraryGroup.Items.Clear();
-			cboLibraryGroup.Items.Clear();
-			for (int i = 0; i < _groupNames.Count; i++)
-			{
-				lstLibraryGroup.Items.Add(getGroupName(i));
-				cboLibraryGroup.Items.Add(getGroupName(i));
-			}
-			lstLibraryGroup.SelectedIndex = prevSelection;
-			if (cboLibraryGroup.SelectedIndex == -1)
-				cboLibraryGroup.SelectedIndex = 0;
-		}
-
-		/// <summary>Refreshes the visible craft count in the group listing.</summary>
-		private void refreshGroupCraftCount()
-		{
-			int group = lstLibraryGroup.SelectedIndex;
-			if (group < 0 || group >= _groupList.Count)
-				return;
-			lstLibraryGroup.Items[group] = getGroupName(group);
-			cboLibraryGroup.Items[group] = getGroupName(group);
-		}
-
-		/// <summary>Refreshes the contents of the mission craft list.</summary>
-		private void refreshMissionCraft()
-		{
-			lstMissionCraft.Items.Clear();
-			switch (_platform)
-			{
-				case Settings.Platform.XWING:
-					foreach (Platform.Xwing.FlightGroup fg in (Platform.Xwing.FlightGroupCollection)_flightGroupCollection)
-						lstMissionCraft.Items.Add(fg.ToString(true));
-					break;
-				case Settings.Platform.TIE:
-					foreach (Platform.Tie.FlightGroup fg in (Platform.Tie.FlightGroupCollection)_flightGroupCollection)
-						lstMissionCraft.Items.Add(fg.ToString(true));
-					break;
-				case Settings.Platform.XvT:
-				case Settings.Platform.BoP:
-					foreach (Platform.Xvt.FlightGroup fg in (Platform.Xvt.FlightGroupCollection)_flightGroupCollection)
-						lstMissionCraft.Items.Add(fg.ToString(true));
-					break;
-				case Settings.Platform.XWA:
-					foreach (Platform.Xwa.FlightGroup fg in (Platform.Xwa.FlightGroupCollection)_flightGroupCollection)
-						lstMissionCraft.Items.Add(fg.ToString(true));
-					break;
-			}
-		}
-
-		/// <summary>Refreshes the contents of the craft list of the selected library group.</summary>
-		private void refreshLibraryCraft()
-		{
-			lstLibraryCraft.Items.Clear();
-			int group = lstLibraryGroup.SelectedIndex;
-			if (group < 0 || group >= _groupList.Count)
-				return;
-			for (int i = 0; i < _groupList[group].Count; i++)
-				lstLibraryCraft.Items.Add(getFlightGroupString(_groupList[group][i]));
-			refreshProblems();
-		}
-
-		/// <summary>Returns the craft string as it would appear in the FlightGroup list.</summary>
-		private string getFlightGroupString(object fg)
-		{
-			try
-			{
-				switch (_platform)
-				{
-					case Settings.Platform.XWING: return ((Platform.Xwing.FlightGroup)fg).ToString(true);
-					case Settings.Platform.TIE: return ((Platform.Tie.FlightGroup)fg).ToString(true);
-					case Settings.Platform.XvT: case Settings.Platform.BoP: return ((Platform.Xvt.FlightGroup)fg).ToString(true);
-					case Settings.Platform.XWA: return ((Platform.Xwa.FlightGroup)fg).ToString(true);
-				}
-			} catch (Exception) { /* do nothing */ }
-			return "(invalid)";
-		}
-
-		/// <summary>Retrieves a generic object from within the platform-specific FlightGroupCollection.</summary>
-		private object getFlightGroupObjectFromCollection(int index)
-		{
-			switch (_platform)
-			{
-				case Settings.Platform.XWING: return ((Platform.Xwing.FlightGroupCollection)_flightGroupCollection)[index];
-				case Settings.Platform.TIE: return ((Platform.Tie.FlightGroupCollection)_flightGroupCollection)[index];
-				case Settings.Platform.XvT: case Settings.Platform.BoP: return ((Platform.Xvt.FlightGroupCollection)_flightGroupCollection)[index];
-				case Settings.Platform.XWA: return ((Platform.Xwa.FlightGroupCollection)_flightGroupCollection)[index];
-			}
-			return "";
-		}
-
-		/// <summary>Retrieves the IFF color to draw an item in the craft lists.</summary>
-		/// <remarks>This code is adapted from the getFlightGroupDrawColor() functions of each platform.</remarks>
-		Brush getFlightGroupDrawColor(object fg)
-		{
-			Brush brText = SystemBrushes.ControlText;
-			Brush[] xwingColors = { Brushes.DodgerBlue, Brushes.Lime, Brushes.Red, Brushes.DodgerBlue, Brushes.RoyalBlue };
-			Brush[] tieColors = { Brushes.Lime, Brushes.Red, Brushes.DodgerBlue, Brushes.MediumOrchid, Brushes.OrangeRed, Brushes.DarkOrchid };
-			Brush[] xvtxwaColors = { Brushes.Lime, Brushes.Red, Brushes.DodgerBlue, Brushes.Yellow, Brushes.OrangeRed, Brushes.MediumOrchid };
-
-			int iff;
-			switch (_platform)
-			{
-				case Settings.Platform.XWING:
-					brText = Brushes.White; // Default to white for objects
-					if (((Platform.Xwing.FlightGroup)fg).IsFlightGroup())
-					{
-						iff = ((Platform.Xwing.FlightGroup)fg).GetActualIFF();
-						brText = (iff <= 4 ? xwingColors[iff] : SystemBrushes.ControlText);
-					}
-					break;
-				case Settings.Platform.TIE:
-					iff = ((Platform.Tie.FlightGroup)fg).IFF;
-					if (iff <= 5) brText = tieColors[iff];
-					if(((Platform.Tie.FlightGroup)fg).Difficulty == 6) brText = Brushes.Gray;
-					break;
-				case Settings.Platform.XvT:
-				case Settings.Platform.BoP:
-					iff = ((Platform.Xvt.FlightGroup)fg).IFF;
-					if (iff <= 5) brText = xvtxwaColors[iff];
-					if (((Platform.Xvt.FlightGroup)fg).Difficulty == 6 || ((Platform.Xvt.FlightGroup)fg).Difficulty == 7) brText = Brushes.Gray;
-					break;
-				case Settings.Platform.XWA:
-					iff = ((Platform.Xwa.FlightGroup)fg).IFF;
-					if (iff <= 5) brText = xvtxwaColors[iff];
-					if (((Platform.Xwa.FlightGroup)fg).Difficulty == 6) brText = Brushes.Gray;
-					break;
-			}
-			return brText;
-		}
-
-		/// <summary>Deletes the selected library craft from the group.</summary>
-		private void deleteLibraryCraftSelection()
-		{
-			// [JB] I tried adding a keypress handler for delete, but this caused all sorts of weird problems.  Possibly event race conditions with drag selection.
-			ListBox.SelectedIndexCollection sic = lstLibraryCraft.SelectedIndices;
-			int group = lstLibraryGroup.SelectedIndex;
-			if (sic.Count > 0 && group >= 0 && group < _groupList.Count)
-			{
-				while(sic.Count > 0)
-				{
-					int index = sic[sic.Count - 1];
-					_groupList[group].RemoveAt(index);
-					lstLibraryCraft.Items.RemoveAt(index); // Removing will modify the selected collection too.
-				}
-				_isDirty = true;
-			}
-			// There are some weird anomalies if deleting while a mouse-drag is in progress, where the underlying selection data doesn't correspond to what the user actually sees.
-			// This doesn't entirely solve the problem, but it helps.  Keeping this just to be safe.
-			lstLibraryCraft.Enabled = false;
-			for (int i = 0; i < lstLibraryCraft.Items.Count; i++)
-				if (lstLibraryCraft.GetSelected(i))
-					lstLibraryCraft.SetSelected(i, false);
-			lstLibraryCraft.Enabled = true;
-
-			refreshGroupCraftCount();
-		}
-
-		/// <summary>Resolves the target craft name of an FG index within the mission collection.</summary>
-		private string getProblemTargetName(int index)
-		{
-			if (index >= 0 && index < lstMissionCraft.Items.Count)
-			{
-				object targ = getFlightGroupObjectFromCollection(index);
-				if (targ.GetType().ToString().Contains("FlightGroup"))
-					return "[#" + (index + 1).ToString() + ": " + ((Platform.BaseFlightGroup)getFlightGroupObjectFromCollection(index)).ToString() + "]";
-			}
-			return "[#" + (index + 1).ToString() + " out of range]";
-		}
-
-		/// <summary>Adds a new problem string to a list of problems.</summary>
-		private void logProblem(string problem, List<string> output)
-		{
-			if (output == null)
-				return;
-
-			if (problem.Contains("FG:"))
-			{
-				int index = Common.ParseIntAfter(problem, "FG:");
-				string target = getProblemTargetName(index);
-				problem = problem.Replace("FG:" + index, target);
-			}
-			output.Add("  " + problem);
-		}
-
 		/// <summary>Scans a BaseFlightGroup's arrival/departure motherships for FG reference problems.</summary>
 		private void scanMothershipProblems(Platform.BaseFlightGroup bfg, bool scrubProblems, List<string> output)
 		{
-			if (bfg.ArrivalMethod1)
+			if (bfg.ArrivalMethod)
 			{
-				logProblem("Arrival mothership is FG:" + bfg.ArrivalCraft1, output);
-				if (scrubProblems) { bfg.ArrivalMethod1 = false; bfg.ArrivalCraft1 = 0; }
+				logProblem("Arrival mothership is FG:" + bfg.ArrivalMothership, output);
+				if (scrubProblems) { bfg.ArrivalMethod = false; bfg.ArrivalMothership = 0; }
 			}
-			if (bfg.ArrivalMethod2)
+			if (bfg.AlternateMothershipUsed)
 			{
-				logProblem("Alternate Arrival mothership is FG:" + bfg.ArrivalCraft2, output);
-				if (scrubProblems) { bfg.ArrivalMethod2 = false; bfg.ArrivalCraft2 = 0; }
+				logProblem("Alternate Arrival mothership is FG:" + bfg.AlternateMothership, output);
+				if (scrubProblems) { bfg.AlternateMothershipUsed = false; bfg.AlternateMothership = 0; }
 			}
-			if (bfg.DepartureMethod1)
+			if (bfg.DepartureMethod)
 			{
-				logProblem("Departure mothership is FG:" + bfg.DepartureCraft1, output);
-				if (scrubProblems) { bfg.DepartureMethod1 = false; bfg.DepartureCraft1 = 0; }
+				logProblem("Departure mothership is FG:" + bfg.DepartureMothership, output);
+				if (scrubProblems) { bfg.DepartureMethod = false; bfg.DepartureMothership = 0; }
 			}
-			if (bfg.DepartureMethod2)
+			if (bfg.CapturedDepartViaMothership)
 			{
-				logProblem("Alternate Departure mothership is FG:" + bfg.DepartureCraft2, output);
-				if (scrubProblems) { bfg.DepartureMethod2 = false; bfg.DepartureCraft2 = 0; }
+				logProblem("Alternate Departure mothership is FG:" + bfg.CapturedDepartureMothership, output);
+				if (scrubProblems) { bfg.CapturedDepartViaMothership = false; bfg.CapturedDepartureMothership = 0; }
 			}
 		}
 
@@ -456,8 +449,7 @@ namespace Idmr.Yogeme
 			List<string> errors = (compileProblems ? new List<string>() : null);
 			Platform.BaseFlightGroup bfg = (Platform.BaseFlightGroup)fg;
 			// Begin the list with a craft name indicating the object we're checking.
-			if(errors != null)
-				errors.Add(bfg.ToString());
+			errors?.Add(bfg.ToString());
 			switch (_platform)
 			{
 				case Settings.Platform.XWING:
@@ -559,10 +551,10 @@ namespace Idmr.Yogeme
 							logProblem("ArrDep trigger #" + (i + 1) + " references FG:" + trig.Variable, errors);
 							if (scrubProblems) { trig.Condition = 0; trig.Variable = 0; trig.VariableType = 0; }
 						}
-						if (trig.Parameter1 > 4)
+						if (trig.Parameter > 4)
 						{
-							logProblem("ArrDep trigger #" + (i + 1) + " parameter references FG:" + (trig.Parameter1 - 1), errors);
-							if (scrubProblems) { trig.Parameter1 = 0; }
+							logProblem("ArrDep trigger #" + (i + 1) + " parameter references FG:" + (trig.Parameter - 1), errors);
+							if (scrubProblems) { trig.Parameter = 0; }
 						}
 					}
 					for (int reg = 0; reg < 4; reg++)
@@ -582,10 +574,10 @@ namespace Idmr.Yogeme
 									logProblem("Region #" + (reg + 1) + " Order #" + (i + 1) + " Skip trigger #" + (k + 1) + " references FG:" + trig.Variable, errors);
 									if (scrubProblems) { trig.Condition = 0; trig.Variable = 0; trig.VariableType = 0; }
 								}
-								if (trig.Parameter1 > 4)
+								if (trig.Parameter > 4)
 								{
-									logProblem("Region #" + (reg + 1) + " Order #" + (i + 1) + " Skip trigger #" + (k + 1) + " parameter references FG:" + (trig.Parameter1 - 1), errors);
-									if (scrubProblems) { trig.Parameter1 = 0; }
+									logProblem("Region #" + (reg + 1) + " Order #" + (i + 1) + " Skip trigger #" + (k + 1) + " parameter references FG:" + (trig.Parameter - 1), errors);
+									if (scrubProblems) { trig.Parameter = 0; }
 								}
 							}
 						}
@@ -594,93 +586,18 @@ namespace Idmr.Yogeme
 			}
 			
 			//Remove the name if no errors were logged.
-			if (errors != null && errors.Count == 1)
-				errors.Clear();
+			if (errors != null && errors.Count == 1) errors.Clear();
 			return errors;
 		}
+		#endregion
 
-		/// <summary>Rebuilds the list of FG reference problems in the library craft list.</summary>
-		void refreshProblems()
-		{
-			_craftProblems.Clear();
-			int group = lstLibraryGroup.SelectedIndex;
-			if (group < 0 || group >= _groupList.Count)
-				return;
-			for(int i = 0; i < _groupList[group].Count; i++)
-				_craftProblems.Add(scanProblems(_groupList[group][i], false, true));
-			lstLibraryCraft.Refresh();
-		}
-
-		private void cmdNewGroup_Click(object sender, EventArgs e)
-		{
-			_groupList.Add(new List<object>());
-			string name = txtName.Text.Trim();
-			txtName.Text = "";
-			if (name == "") name = "New Group";
-			_groupNames.Add(name);
-			refreshGroupList();
-			lstLibraryGroup.SelectedIndex = lstLibraryGroup.Items.Count - 1;
-			_isDirty = true;
-		}
-
-		private void cmdDeleteGroup_Click(object sender, EventArgs e)
-		{
-			int group = lstLibraryGroup.SelectedIndex;
-			if (group < 1)
-			{
-				MessageBox.Show("You cannot delete the Default group. Delete its FlightGroup contents instead.", "Note");
-				return;
-			}
-			if (group >= _groupList.Count)
-				return;
-			if (_groupList[group].Count > 0)
-			{
-				DialogResult res = MessageBox.Show("Are you sure you want to delete the library group \"" + _groupNames[group] + "\" ?" + Environment.NewLine + "It contains " + _groupList[group].Count + " craft.", "Confirm", MessageBoxButtons.YesNo);
-				if (res != DialogResult.Yes)
-					return;
-			}
-			_groupList.RemoveAt(group);
-			_groupNames.RemoveAt(group);
-			if (group > _groupList.Count - 1)
-				group = _groupList.Count - 1;
-			lstLibraryGroup.SelectedIndex = group;
-			cboLibraryGroup.SelectedIndex = group;
-			refreshGroupList();
-			refreshLibraryCraft();
-			_isDirty = true;
-		}
-
-		private void cmdRenameGroup_Click(object sender, EventArgs e)
-		{
-			int group = lstLibraryGroup.SelectedIndex;
-			if (group < 0 || group >= _groupNames.Count)
-				return;
-			if (group == 0)
-			{
-				MessageBox.Show("You cannot rename the Default group.", "Note");
-				return;
-			}
-			string name = txtName.Text.Trim();
-			if (name == "")
-				return;
-			_groupNames[group] = name;
-			refreshGroupList();
-			txtName.Text = "";
-			_isDirty = true;
-		}
-
-		private void lstLibraryGroup_SelectedIndexChanged(object sender, EventArgs e)
-		{
-			//if (!_loading)
-			refreshLibraryCraft();
-		}
-
+		#region controls
 		/// <summary>Adds all selected mission craft into the current library group.</summary>
 		private void cmdAddToLibrary_Click(object sender, EventArgs e)
 		{
 			int group = lstLibraryGroup.SelectedIndex;
-			if (group < 0 || group >= _groupList.Count)
-				return;
+			if (group < 0 || group >= _groupList.Count) return;
+
 			foreach (int si in lstMissionCraft.SelectedIndices)
 			{
 				using (MemoryStream ms = new MemoryStream(2048))
@@ -697,15 +614,12 @@ namespace Idmr.Yogeme
 			}
 			refreshGroupCraftCount();
 		}
-
 		private void cmdAddToMission_Click(object sender, EventArgs e)
 		{
 			ListBox.SelectedIndexCollection sic = lstLibraryCraft.SelectedIndices;
-			if (sic.Count == 0)
-				return;
 			int group = lstLibraryGroup.SelectedIndex;
-			if (group < 0 || group >= _groupList.Count)
-				return;
+			if (sic.Count == 0 || group < 0 || group >= _groupList.Count) return;
+
 			object[] sendArray = new object[sic.Count];
 			int index = 0;
 			// Create an array of cloned objects to send back to the form.
@@ -717,21 +631,184 @@ namespace Idmr.Yogeme
 					formatter.Serialize(ms, _groupList[group][si]);
 					ms.Position = 0;
 					object fg = formatter.Deserialize(ms);
-					if (chkAutoscrubAddMission.Checked)
-						scanProblems(fg, true, false);
+					if (chkAutoscrubAddMission.Checked) scanProblems(fg, true, false);
 					sendArray[index++] = fg;
 				}
 			}
 			_onAddEvent(sendArray, new EventArgs());
 		}
-
-		private void lstMissionCraft_DrawItem(object sender, DrawItemEventArgs e)
+		private void cmdDeleteCraft_Click(object sender, EventArgs e) => deleteLibraryCraftSelection();
+		private void cmdDeleteGroup_Click(object sender, EventArgs e)
 		{
-			object fg = getFlightGroupObjectFromCollection(e.Index);
-			if (e.Index == -1 || fg.ToString() == "") return;
-			e.DrawBackground();
-			Brush brText = getFlightGroupDrawColor(fg); 
-			e.Graphics.DrawString(lstMissionCraft.Items[e.Index].ToString(), e.Font, brText, e.Bounds, StringFormat.GenericDefault);
+			int group = lstLibraryGroup.SelectedIndex;
+			if (group < 1)
+			{
+				MessageBox.Show("You cannot delete the Default group. Delete its FlightGroup contents instead.", "Note");
+				return;
+			}
+			if (group >= _groupList.Count) return;
+
+			DialogResult res = MessageBox.Show("Are you sure you want to delete the library group \"" + _groupNames[group] + "\" ?" + Environment.NewLine + "It contains " + _groupList[group].Count + " craft.", "Confirm", MessageBoxButtons.YesNo);
+			if (res != DialogResult.Yes) return;
+
+			_groupList.RemoveAt(group);
+			_groupNames.RemoveAt(group);
+			if (group > _groupList.Count - 1) group = _groupList.Count - 1;
+			lstLibraryGroup.SelectedIndex = group;
+			cboLibraryGroup.SelectedIndex = group;
+			refreshGroupList();
+			refreshLibraryCraft();
+			_isDirty = true;
+		}
+		private void cmdMoveCraftDown_Click(object sender, EventArgs e)
+		{
+			ListBox.SelectedIndexCollection sic = lstLibraryCraft.SelectedIndices;
+			int group = lstLibraryGroup.SelectedIndex;
+			if (sic.Count == 0 || group < 0 || group >= _groupList.Count) return;
+
+			int[] selection = new int[sic.Count];
+			for (int i = 0; i < sic.Count; i++) selection[i] = sic[i];
+			if (selection[selection.Length - 1] == lstLibraryCraft.Items.Count - 1) return;
+
+			for (int i = selection.Length - 1; i >= 0; i--)
+			{
+				object temp = _groupList[group][selection[i] + 1];
+				_groupList[group][selection[i] + 1] = _groupList[group][selection[i]];
+				_groupList[group][selection[i]] = temp;
+			}
+			refreshLibraryCraft();
+			for (int i = 0; i < selection.Length; i++) lstLibraryCraft.SetSelected(selection[i] + 1, true);
+			_isDirty = true;
+		}
+		private void cmdMoveCraftToGroup_Click(object sender, EventArgs e)
+		{
+			ListBox.SelectedIndexCollection sic = lstLibraryCraft.SelectedIndices;
+			int srcGroup = lstLibraryGroup.SelectedIndex;
+			int dstGroup = cboLibraryGroup.SelectedIndex;
+			if (sic.Count == 0 || srcGroup < 0 || srcGroup >= _groupList.Count || dstGroup < 0 || dstGroup >= _groupList.Count) return;
+
+			if (srcGroup == dstGroup)
+			{
+				MessageBox.Show("Already in this group.", "Note");
+				return;
+			}
+
+			for (int i = sic.Count - 1; i >= 0; i--)
+			{
+				_groupList[dstGroup].Add(_groupList[srcGroup][sic[i]]);
+				_groupList[srcGroup].RemoveAt(sic[i]);
+			}
+			refreshGroupList();
+			refreshLibraryCraft();
+			_isDirty = true;
+		}
+		private void cmdMoveCraftUp_Click(object sender, EventArgs e)
+		{
+			ListBox.SelectedIndexCollection sic = lstLibraryCraft.SelectedIndices;
+			int group = lstLibraryGroup.SelectedIndex;
+			if (sic.Count == 0 || group < 0 || group >= _groupList.Count) return;
+
+			int[] selection = new int[sic.Count];
+			for (int i = 0; i < sic.Count; i++) selection[i] = sic[i];
+			if (selection[0] == 0) return;
+
+			for (int i = 0; i < selection.Length; i++)
+			{
+				object temp = _groupList[group][selection[i] - 1];
+				_groupList[group][selection[i] - 1] = _groupList[group][selection[i]];
+				_groupList[group][selection[i]] = temp;
+			}
+			refreshLibraryCraft();
+			for (int i = 0; i < selection.Length; i++) lstLibraryCraft.SetSelected(selection[i] - 1, true);
+			_isDirty = true;
+		}
+		private void cmdNewGroup_Click(object sender, EventArgs e)
+		{
+			_groupList.Add(new List<object>());
+			string name = txtName.Text.Trim();
+			txtName.Text = "";
+			if (name == "") name = "New Group";
+			_groupNames.Add(name);
+			refreshGroupList();
+			lstLibraryGroup.SelectedIndex = lstLibraryGroup.Items.Count - 1;
+			_isDirty = true;
+		}
+		private void cmdRenameGroup_Click(object sender, EventArgs e)
+		{
+			int group = lstLibraryGroup.SelectedIndex;
+			if (group < 0 || group >= _groupNames.Count) return;
+
+			if (group == 0)
+			{
+				MessageBox.Show("You cannot rename the Default group.", "Note");
+				return;
+			}
+
+			string name = txtName.Text.Trim();
+			if (name == "") return;
+
+			_groupNames[group] = name;
+			refreshGroupList();
+			txtName.Text = "";
+			_isDirty = true;
+		}
+		private void cmdScrubProblems_Click(object sender, EventArgs e)
+		{
+			int group = lstLibraryGroup.SelectedIndex;
+			if (group < 0 || group >= _groupList.Count) return;
+
+			foreach (int si in lstLibraryCraft.SelectedIndices)
+			{
+				if (si >= 0 && si < _groupList[group].Count)
+					scanProblems(_groupList[group][si], true, false);
+			}
+			refreshProblems();
+			_isDirty = true;
+		}
+		private void cmdViewProblems_Click(object sender, EventArgs e)
+		{
+			string text = "";
+			int count = 0;
+			foreach (int si in lstLibraryCraft.SelectedIndices)
+			{
+				if (count > 38)
+				{
+					text += Environment.NewLine + "Too many problems to list, select fewer craft.";
+					break;
+				}
+				if (text != "") text += Environment.NewLine;
+				for (int i = 0; i < _craftProblems[si].Count; i++)
+				{
+					if (i > 0 && text != "") text += Environment.NewLine;
+					text += _craftProblems[si][i];
+					count++;
+				}
+			}
+			if (text == "") text = "No problems found.";
+			MessageBox.Show(text, "Possible FlightGroup reference problems");
+		}
+
+		private void form_Activated(object sender, EventArgs e)
+		{
+			// The main editor form doesn't synchronize its changes with the FG Library.
+			// This automatically performs a refresh whenever the user switches focus to the library form.
+			refreshMissionCraft();
+			refreshProblems();
+		}
+		private void form_FormClosing(object sender, FormClosingEventArgs e)
+		{
+			if (_isDirty)
+			{
+				saveLibrary();
+				_isDirty = false;
+			}
+		}
+		private void form_SizeChanged(object sender, EventArgs e)
+		{
+			int height = grpCraftManager.Bottom - lstMissionCraft.Top;
+			if (ClientRectangle.Bottom > lstMissionCraft.Top + height) height += ClientRectangle.Bottom - (lstMissionCraft.Top + height);
+			lstMissionCraft.Size = new Size(lstMissionCraft.Width, height);
+			lstLibraryCraft.Size = new Size(lstLibraryCraft.Width, height);
 		}
 
 		private void lstGroupCraft_DrawItem(object sender, DrawItemEventArgs e)
@@ -752,144 +829,16 @@ namespace Idmr.Yogeme
 				e.Graphics.DrawString(lstLibraryCraft.Items[e.Index].ToString(), e.Font, brText, e.Bounds, StringFormat.GenericDefault);
 			}
 		}
-
-		private void cmdMoveCraftUp_Click(object sender, EventArgs e)
+		private void lstLibraryGroup_SelectedIndexChanged(object sender, EventArgs e) => refreshLibraryCraft();
+		private void lstMissionCraft_DrawItem(object sender, DrawItemEventArgs e)
 		{
-			ListBox.SelectedIndexCollection sic = lstLibraryCraft.SelectedIndices;
-			int group = lstLibraryGroup.SelectedIndex;
-			if (sic.Count == 0 || group < 0 || group >= _groupList.Count)
-				return;
-			int[] selection = new int[sic.Count];
-			for (int i = 0; i < sic.Count; i++)
-				selection[i] = sic[i];
-			if (selection[0] == 0)
-				return;
-			for (int i = 0; i < selection.Length; i++)
-			{
-				object temp = _groupList[group][selection[i] - 1];
-				_groupList[group][selection[i] - 1] = _groupList[group][selection[i]];
-				_groupList[group][selection[i]] = temp;
-			}
-			refreshLibraryCraft();
-			for (int i = 0; i < selection.Length; i++)
-				lstLibraryCraft.SetSelected(selection[i] - 1, true);
-			_isDirty = true;
-		}
+			object fg = getFlightGroupObjectFromCollection(e.Index);
+			if (e.Index == -1 || fg.ToString() == "") return;
 
-		private void cmdMoveCraftDown_Click(object sender, EventArgs e)
-		{
-			ListBox.SelectedIndexCollection sic = lstLibraryCraft.SelectedIndices;
-			int group = lstLibraryGroup.SelectedIndex;
-			if (sic.Count == 0 || group < 0 || group >= _groupList.Count)
-				return;
-			int[] selection = new int[sic.Count];
-			for (int i = 0; i < sic.Count; i++)
-				selection[i] = sic[i];
-			if (selection[selection.Length - 1] == lstLibraryCraft.Items.Count - 1)
-				return;
-			for (int i = selection.Length - 1; i >= 0; i--)
-			{
-				object temp = _groupList[group][selection[i] + 1];
-				_groupList[group][selection[i] + 1] = _groupList[group][selection[i]];
-				_groupList[group][selection[i]] = temp;
-			}
-			refreshLibraryCraft();
-			for (int i = 0; i < selection.Length; i++)
-				lstLibraryCraft.SetSelected(selection[i] + 1, true);
-			_isDirty = true;
+			e.DrawBackground();
+			Brush brText = getFlightGroupDrawColor(fg);
+			e.Graphics.DrawString(lstMissionCraft.Items[e.Index].ToString(), e.Font, brText, e.Bounds, StringFormat.GenericDefault);
 		}
-
-		private void cmdDeleteCraft_Click(object sender, EventArgs e)
-		{
-			deleteLibraryCraftSelection();
-		}
-
-		private void cmdMoveCraftToGroup_Click(object sender, EventArgs e)
-		{
-			ListBox.SelectedIndexCollection sic = lstLibraryCraft.SelectedIndices;
-			int srcGroup = lstLibraryGroup.SelectedIndex;
-			int dstGroup = cboLibraryGroup.SelectedIndex;
-			if (sic.Count == 0 || srcGroup < 0 || srcGroup >= _groupList.Count || dstGroup < 0 || dstGroup >= _groupList.Count)
-				return;
-			if (srcGroup == dstGroup)
-			{
-				MessageBox.Show("Already in this group.", "Note");
-				return;
-			}
-			for (int i = sic.Count - 1; i >= 0; i--)
-			{
-				_groupList[dstGroup].Add(_groupList[srcGroup][sic[i]]);
-				_groupList[srcGroup].RemoveAt(sic[i]);
-			}
-			refreshGroupList();
-			refreshLibraryCraft();
-			_isDirty = true;
-		}
-
-		private void form_Activated(object sender, EventArgs e)
-		{
-			// The main editor form doesn't synchronize its changes with the FG Library.
-			// This automatically performs a refresh whenever the user switches focus to the library form.
-			refreshMissionCraft();
-			refreshProblems();
-		}
-
-		private void form_SizeChanged(object sender, EventArgs e)
-		{
-			int height = grpCraftManager.Bottom - lstMissionCraft.Top;
-			if (ClientRectangle.Bottom > lstMissionCraft.Top + height)
-				height += ClientRectangle.Bottom - (lstMissionCraft.Top + height);
-			lstMissionCraft.Size = new Size(lstMissionCraft.Width, height);
-			lstLibraryCraft.Size = new Size(lstLibraryCraft.Width, height);
-		}
-
-		private void form_FormClosing(object sender, FormClosingEventArgs e)
-		{
-			if (_isDirty)
-			{
-				saveLibrary();
-				_isDirty = false;
-			}
-		}
-
-		private void cmdViewProblems_Click(object sender, EventArgs e)
-		{
-			string text = "";
-			int count = 0;
-			foreach (int si in lstLibraryCraft.SelectedIndices)
-			{
-				if (count > 38)
-				{
-					text += Environment.NewLine + "Too many problems to list, select fewer craft.";
-					break;
-				}
-				if (text != "")
-					text += Environment.NewLine;
-				for(int i = 0; i < _craftProblems[si].Count; i++)
-				{
-					if (i > 0 && text != "")
-						text += Environment.NewLine;
-					text += _craftProblems[si][i];
-					count++;
-				}
-			}
-			if (text == "")
-				text = "No problems found.";
-			MessageBox.Show(text, "Possible FlightGroup reference problems");
-		}
-
-		private void cmdScrubProblems_Click(object sender, EventArgs e)
-		{
-			int group = lstLibraryGroup.SelectedIndex;
-			if (group < 0 || group >= _groupList.Count)
-				return;
-			foreach (int si in lstLibraryCraft.SelectedIndices)
-			{
-				if (si >= 0 && si < _groupList[group].Count)
-					scanProblems(_groupList[group][si], true, false);
-			}
-			refreshProblems();
-			_isDirty = true;
-		}
+		#endregion
 	}
 }
