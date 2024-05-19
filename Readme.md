@@ -36,14 +36,12 @@ To remove YOGEME, simply delete the directory where you placed it.
 This will leave behind a single config file in AppData with your user settings.
 
 ## Latest Release
-#### v1.15.7, 19 May 2024
-- (XWA) Briefing logo was off by 1, not accounting for "None" properly.
-
 #### WIP
 Extensive updates due to changes in Platform.dll, using the full file format spec.
 - (Briefing) Unknown 3 now labeled "Tile", still unknown effect.
 - (Briefing) Labels for Unk1/2 StartLength/EventLength and the Unknowns group deleted.
 - (Briefing) X-wing page events now edited directly instead of copying back and forth to a separate array first.
+- (Hyper dialog) Update per spec, enum use to remove magic numbers.
 
 ---
 ### Additional Information
@@ -56,38 +54,41 @@ Extensive updates due to changes in Platform.dll, using the full file format spe
 
 ### Version History
 
+#### v1.15.7, 19 May 2024
+- (XWA) Briefing logo was off by 1, not accounting for "None" properly.
+
 #### v1.15.6, 11 Mar 2024
 - Option to toggle SuperBackdrops now always enabled, even if not detected. Still doesn't do anything if not installed.
-- (XWA) Fixed a crash if SuperBackdrops is enabled on a new mission and the default craft type is Backdrop [Issue #100]
-- (XWA) WeaponRat
-- 
+- (XWA) Fixed a crash if SuperBackdrops is enabled on a new mission and the default craft type is Backdrop [Issue [#100](https://github.com/MikeG621/YOGEME/issues/100)]
+- (XWA) WeaponRate hook
+
 #### v1.15.5, 22 Dec 2023
 - External Converter utility no longer packaged due to functionality now within Platform.dll
 - DSCUP shiplist no longer packaged simply due to age and obsolesence
-- (All but Xwing) Global Summary dialog to list out current GlobalGroups and GlobalUnits [Issue #97]
+- (All but Xwing) Global Summary dialog to list out current GlobalGroups and GlobalUnits [Issue [#97](https://github.com/MikeG621/YOGEME/issues/97)]
 - (XWA) 32bpp Hook skin opacity support
 - (XWA) Sound hook, Interdictor
-- (XWA) SAT/1 thru RDV no longer counted in "# Craft at 30 seconds" note [Issue #96]
-- (XWA) WP1 on hyper orders being enabled even if disabled [Issue #94]
+- (XWA) SAT/1 thru RDV no longer counted in "# Craft at 30 seconds" note [Issue [#96](https://github.com/MikeG621/YOGEME/issues/97)]
+- (XWA) WP1 on hyper orders being enabled even if disabled [Issue [#94](https://github.com/MikeG621/YOGEME/issues/94)]
 - (XWA) Fixed bad offsets on hyper exit if order WP1 originally disabled
 
 #### v1.15.4, 25 Nov 2023
-- (XWA) "HYP from Any Region" exit buoys now processed in the map [Issue #93]
-  - #### 18 Dec 2023 re-release
-    - (XWA) via Imageformat.Dat, support for BC7 compressed backdrop [Issue #98]
+- (XWA) "HYP from Any Region" exit buoys now processed in the map [Issue [#93](https://github.com/MikeG621/YOGEME/issues/93)]
+  ##### 18 Dec 2023 re-release
+  - (XWA) via Imageformat.Dat, support for BC7 compressed backdrop [Issue [#98](https://github.com/MikeG621/YOGEME/issues/98)]
 
 #### v1.15.3, 11 Nov 2023
-- (XWA) Fixed a Briefing event overflow that could occur when adding Move commands [Issue #92]
+- (XWA) Fixed a Briefing event overflow that could occur when adding Move commands [Issue [#92](https://github.com/MikeG621/YOGEME/issues/92)]
 - (XWA) Opening a corrupted briefing should now stop importing wherever it fails, instead of crashing completely
 - (XWA) Fixed the Briefing tab pointing to wrong files due to not fixing the regex groups after v1.14's issue 84 fix
 
 #### v1.15.2, 27 Oct 2023
 - (XWA) Designation Unknown (0x14) renamed to "HYP from Any Region" via Platform.dll
-- (XWA) Arrival method type 2, "Hyper in Region of [mothership]" added [Issue #91]
+- (XWA) Arrival method type 2, "Hyper in Region of [mothership]" added [Issue [#91](https://github.com/MikeG621/YOGEME/issues/91)]
 
 #### v1.15.1, 14 Oct 2023
-- (XWA) Fixed a crash with trigger text referencing Region 4 [Issue #87]
-- (XWA) Platform.dll updated for issues #89 and #90
+- (XWA) Fixed a crash with trigger text referencing Region 4 [Issue [#87](https://github.com/MikeG621/YOGEME/issues/87)]
+- (XWA) Platform.dll updated for issues [#89](https://github.com/MikeG621/YOGEME/issues/89) and [#90](https://github.com/MikeG621/YOGEME/issues/90)
 
 #### v1.15, 23 Sep 2023
 - (XWA) Overhaul of Hook dialog, brought up to current
@@ -110,24 +111,25 @@ Extensive updates due to changes in Platform.dll, using the full file format spe
   - Added a lot of keys to HangarObjects: individual Droid settings, object profiles, inverted player, hangar lights, etc.
 
 #### v1.14.2, 01 Sep 2023
-- (XW) Error when changing ship type to B-Wing caused a crash with the Map [Issue #86]
+- (XW) Error when changing ship type to B-Wing caused a crash with the Map [Issue [#86](https://github.com/MikeG621/YOGEME/issues/86)]
 
 #### v1.14.1, 14 Aug 2023
-- (XWA) Backdrop hook now loads the Resdata.txt or INI based on mission location, not just "\Missions\" [Issue #85]
+- (XWA) Backdrop hook now loads the Resdata.txt or INI based on mission location, not just "\Missions\" [Issue [#85](https://github.com/MikeG621/YOGEME/issues/85)]
 - (XWA) Hyperspace hook support added
 - (XWA) Object hook profile per model added
 
 #### v1.14, 04 Aug 2023
-- (XWA) Wav form now supports mission names that start with "8" to support the MP hook [Issue #84]
+- (XWA) Wav form now supports mission names that start with "8" to support the MP hook [Issue [#84](https://github.com/MikeG621/YOGEME/issues/84)]
 - (XWA) Moved around the Trigger Parameter fields to be more consistent between locations and so it's a bit more natural to
-     select the correct control when adjusting the Region or Proximity target [Issue #82]
+  select the correct control when adjusting the Region or Proximity target [Issue [#82](https://github.com/MikeG621/YOGEME/issues/82)]
 - (Backdrop) The "Color:" text now only shows for XWA.
-- (Backdrop) Added a label pointing out that the selected color is on the clipboard, as it's not applied automatically [Issue #80]
+- (Backdrop) Added a label pointing out that the selected color is on the clipboard, as it's not applied automatically [Issue [#80](https://github.com/MikeG621/YOGEME/issues/80)]
 - (Briefing) Fixed a crash that would occur if the Caption/Title event was created without a string being selected.
 - (Briefing) Page number correctly increments on CaptionText instead of PageBreak
 - (Briefing) **NEW COMMAND**: For TIE and XvT, there is now a "Marker" button which adds a breakpoint for the Skip button in-game, without clearing the Text and Caption text.
 - (Map) Moving the mouse off of the map will now clear the Shift state so it doesn't get stuck.
-- (Map, XWA) Virtual hyper waypoints will check secondary Designation for buoys, and multiple related selection issues were fixed. Likely still needs some more work. [Issue #83]
+- (Map, XWA) Virtual hyper waypoints will check secondary Designation for buoys, and multiple related selection issues were fixed.
+  Likely still needs some more work. [Issue [#83](https://github.com/MikeG621/YOGEME/issues/83)]
 
 #### v1.13.12, 16 Jan 2023
 - Various simple cleanups
@@ -148,16 +150,17 @@ Extensive updates due to changes in Platform.dll, using the full file format spe
 - (XWA) Fixed Wireframe Roll in the map
 - (XWA) Craft now display the hyper exit points instead of SP1 in other regions
 - Updates for TIE, all involving Platform.dll to some degree. Deleted items are those confirmed to have zero effect in the executable.
-  - "Captured on Ejection" and "Secret Goals" removed (involves GUI update) [Issues #73 and #74]
-  - Trigger "Unknown (arrive?)" now "cannon subsystem disabled" [Issue #75]
-  - Trigger Type "Craft When" fixed [Issue #76]
-  - Trigger Type "Misc" now "Adjusted AI Skill", added "Status" and "All Craft" types to match XvT [Issue #77]
-  - Status "No Lasers" now "No Turrets", everything past "Hyperdrive Added" deleted [Issue #78]
-  - Orders after "Board to Repair" deleted [Issue #79]
+  - "Captured on Ejection" and "Secret Goals" removed (involves GUI update)
+    [Issues [#73](https://github.com/MikeG621/YOGEME/issues/73) and [#74](https://github.com/MikeG621/YOGEME/issues/74)]
+  - Trigger "Unknown (arrive?)" now "cannon subsystem disabled" [Issue [#75](https://github.com/MikeG621/YOGEME/issues/75)]
+  - Trigger Type "Craft When" fixed [Issue [#76](https://github.com/MikeG621/YOGEME/issues/76)]
+  - Trigger Type "Misc" now "Adjusted AI Skill", added "Status" and "All Craft" types to match XvT [Issue [#77](https://github.com/MikeG621/YOGEME/issues/77)]
+  - Status "No Lasers" now "No Turrets", everything past "Hyperdrive Added" deleted [Issue [#78](https://github.com/MikeG621/YOGEME/issues/78)]
+  - Orders after "Board to Repair" deleted [Issue [#79](https://github.com/MikeG621/YOGEME/issues/79)]
 
 #### v1.13.9, 07 Sep 2022
-- New error dialog with the ability to skip future errors. Currently only for Backdrop DAT loading [Issue #71]
-- (XWA) Lines in RESDATA.txt will be skipped when loading backdrops if commented out by ; or // [Issue #72]
+- New error dialog with the ability to skip future errors. Currently only for Backdrop DAT loading [Issue [#71](https://github.com/MikeG621/YOGEME/issues/71)]
+- (XWA) Lines in RESDATA.txt will be skipped when loading backdrops if commented out by ; or // [Issue [#72](https://github.com/MikeG621/YOGEME/issues/72)]
 
 #### v1.13.8, 28 Aug 2022
 - (XWA) Added ability to edit COMBAT.LST if Justagai's MP Hook is installed
@@ -206,15 +209,15 @@ Extensive updates due to changes in Platform.dll, using the full file format spe
 
 #### v1.13, 30 Jan 2022
 - Formation dialog redesigned (JB)
-- (All) Multi-select added to all platforms [Issue #23] (JB)
-- (Xwing) Formation list fixed (via Platform.dll) [Issue #63] (JB)
+- (All) Multi-select added to all platforms [Issue [#23](https://github.com/MikeG621/YOGEME/issues/23)] (JB)
+- (Xwing) Formation list fixed (via Platform.dll) [Issue [#63](https://github.com/MikeG621/YOGEME/issues/63)] (JB)
 - (XvT) Order Designation is now an editable drop-down (JB)
 - (XWA) Copy/paste buttons added for Order Waypoints
 
 #### v1.12, 03 Jan 2022
 - (All) Fixed the "looping" effect when scrolling through colored list boxes (Thanks to RandomStarfighter)
 - (XW) Created the Tour Editor, similar to TIE's Battle Editor
-- (XvT) Multi-select in FlightGroups and Messages [Issue #23] (JB)
+- (XvT) Multi-select in FlightGroups and Messages [Issue [#23](https://github.com/MikeG621/YOGEME/issues/23)] (JB)
      This was pretty extensive, several files were touched to get this going, including updates to Platform.dll.
      Allows for changing properties for multiple FGs/Messages, multi-delete, shifting up/down in the list.
      Properties shown in the tab will be highest selected item.
@@ -237,7 +240,8 @@ Extensive updates due to changes in Platform.dll, using the full file format spe
 - Set InvariantCulture to prevent text read errors (JB)
 
 #### v1.11, 01 Aug 2021
-- (XWA) Color picker for XWA backdrops. Copied to YOGEME's clipboard to be used for the backdrop name (via Ctrl+V) [Issue #46]
+- (XWA) Color picker for XWA backdrops.
+  Copied to YOGEME's clipboard to be used for the backdrop name (via Ctrl+V) [Issue [#46](https://github.com/MikeG621/YOGEME/issues/76)]
 - Multiple fixes from Random Starfighter (JB)
   - (All) SS Patrol and SS Await Return order strings now show target info (via Platform.dll)
   - (XWA) Hyper to Region order text updated with token so it'll show number and name if defined (via Platform.dll)
@@ -250,14 +254,14 @@ Extensive updates due to changes in Platform.dll, using the full file format spe
 
 #### v1.10.2, 06 Jun 2021
 - (XWA) SuperBackdrop region detection.
-- (XWA) Backdrop error messages with XWAUP v3 fixed [Issue #44] (via ImageFormat.Dat.dll)
+- (XWA) Backdrop error messages with XWAUP v3 fixed [Issue [#44](https://github.com/MikeG621/YOGEME/issues/44)] (via ImageFormat.Dat.dll)
 
 #### v1.10.1, 06 Jun 2021
 - (XWA) Backdrop shadow fix
 
 #### v1.10, 20 May 2021
-- (All) Redid handling bad waypoint values [Issue #56] (JB)
-- (XW) Converting FG Goals from XW corrected [Issue #55] (JB, via Platform.dll)
+- (All) Redid handling bad waypoint values [Issue [#56](https://github.com/MikeG621/YOGEME/issues/56)] (JB)
+- (XW) Converting FG Goals from XW corrected [Issue [#55](https://github.com/MikeG621/YOGEME/issues/55)] (JB, via Platform.dll)
 - (XWA) Hook Dialog redesigned
   - Mission : Wingman markings, HangarObjects : Droid1/2Update added
   - Fixed missing Droid1/2PositionZ read
@@ -265,21 +269,22 @@ Extensive updates due to changes in Platform.dll, using the full file format spe
   - Skins (32bpp) hook support added
   - Shield hook support added
   - Can now handle comments at the end of a line
-- (XWA) Map wireframes correctly take into account craft rotations when not using Waypoints. Adjusting rotation refreshes map. [Issue #58, #59] (JB))
+- (XWA) Map wireframes correctly take into account craft rotations when not using Waypoints.
+  Adjusting rotation refreshes map. [Issue [#58](https://github.com/MikeG621/YOGEME/issues/58), [#59](https://github.com/MikeG621/YOGEME/issues/59)] (JB))
 - (XWA) "Tools - Mission Craft List" menu item to display the pre-briefing craft list
 - (XWA) Added explicit PlayerNumber check if Verify isn't run since XWA will crash at the Briefing if missing
 
 #### v1.9.2, 28 Mar 2021
-- MissionVerify updated with "OR true" and "AND false" trigger detection for 1AO2 and 3AO4s [Issue #48]
-- (All) Craft Type dropdown now lists 20 items instead of the default 8 [Issue #45]
+- MissionVerify updated with "OR true" and "AND false" trigger detection for 1AO2 and 3AO4s [Issue [#48](https://github.com/MikeG621/YOGEME/issues/48)]
+- (All) Craft Type dropdown now lists 20 items instead of the default 8 [Issue [#45](https://github.com/MikeG621/YOGEME/issues/45)]
 - (Test) Fixed a load failure when testing a mission that isn't located in a platform directory
 - (XW) Converting from XW will sort the Failed message more reliably (via Platform.dll)
-- (XW) Briefing conversion accuracy improved in general (via Platform.dll) [Issues #51 and #53]
-- (XWA) And/Or values now match XWA's even/odd behavior when opening (via Platform.dll) [Issue #48]
-- (XWA) Briefing MoveMap command's accuracy has been fixed [Issue #53]
+- (XW) Briefing conversion accuracy improved in general (via Platform.dll) [Issues [#51](https://github.com/MikeG621/YOGEME/issues/51) and [#53](https://github.com/MikeG621/YOGEME/issues/53)]
+- (XWA) And/Or values now match XWA's even/odd behavior when opening (via Platform.dll) [Issue [#48](https://github.com/MikeG621/YOGEME/issues/48)]
+- (XWA) Briefing MoveMap command's accuracy has been fixed [Issue [#53](https://github.com/MikeG621/YOGEME/issues/53)]
 - Number of things in the XWA Wav dialog:
   - Fixed the wrong EoM button being hidden when WAV file doesn't exist
-  - Fixed a crash when using multi-digit battle or mission numbers [Issue #49]
+  - Fixed a crash when using multi-digit battle or mission numbers [Issue [#49](https://github.com/MikeG621/YOGEME/issues/49)]
   - PrePost text fields now clear when changing categories
   - PrePost text fields now provide a comment about random Pre-briefing WAVS when none are defined
 
@@ -306,7 +311,7 @@ Extensive updates due to changes in Platform.dll, using the full file format spe
 - Various code cleanups
 - (TIE) Fixed a double Verify condition
 - (TIE-XWA) Test function will now detect the platform per the mission location and launch there instead of default [Issue #20]
-- (All) Test menu item moved under Tools, changed to <u>T</u>est (suggestion per Issue #20)
+- (All) Test menu item moved under Tools, changed to <u>T</u>est (suggestion per Issue [#20](https://github.com/MikeG621/YOGEME/issues/20))
 - (All) The MissionVerify path setting will now revert to default if it's missing
 - (XWA) Added [Objects] ObjectProfile_fg_# hook support
 - (XWA) Backdrop dialog now saves the images in memory to make opening the dialog repeatedly much faster
@@ -314,7 +319,7 @@ Extensive updates due to changes in Platform.dll, using the full file format spe
 - (XWA) GlobalCargo dropdown now lists Shadow when Backdrops are selected
 
 #### v1.8, 04 Oct 2020
-- (All) Fixed an exception due to incomplete CraftDataManager creation that would occur when platform not detected [Issue #37]
+- (All) Fixed an exception due to incomplete CraftDataManager creation that would occur when platform not detected [Issue [#37](https://github.com/MikeG621/YOGEME/issues/37)]
 - (TIE-XWA) Fixed Test function trying to launch if you cancel a new save
 - (XWA) Added detection for DTM Super Backdrops v3.1
 - (XWA) Fixed Special Cargo text box not showing when switching craft
@@ -369,7 +374,7 @@ Extensive updates due to changes in Platform.dll, using the full file format spe
 - (All) Mission Map now supports ship wireframe display (JB)
   - Works for all platforms, reads resources from the install directory, mod compatable
   - Touches a lot of things, not going to spell it out here
-  - "\*_shiplist.txt" files for custom craft replaced with "craft_data_*.txt"
+  - "\*\_shiplist.txt" files for custom craft replaced with "craft_data_*.txt"
 - Various fixes and tweaks by Random Starfighter (JB)
   - (Backdrops) Images are now foregraound instead of background
   - (Backdrops) Fixed a possible IndexOutOfRange when clicking thumbnails
@@ -394,7 +399,7 @@ Extensive updates due to changes in Platform.dll, using the full file format spe
   - (Xwing) Yaw/Pitch/Roll tweaks, save fixed
   - (Xwing) Briefing Icons now use BMPs instead of the DATs
  
-With this release I'm also going to mark [Issue #14] and [Issue #12] closed,
+With this release I'm also going to mark [Issue [#14](https://github.com/MikeG621/YOGEME/issues/14)] and [Issue [#12](https://github.com/MikeG621/YOGEME/issues/12)] closed,
 which are "Pre-TIE95" and "OPT import". Probably could've closed out 14 a
 couple years ago, but I think it's in better shape now. Thanks to Random for
 the work on X-wing and the OPT overhaul.
@@ -405,7 +410,7 @@ the work on X-wing and the OPT overhaul.
 #### v1.6.5, 04 Jul 2020
 - (Map) If the craft index is too high (mods) use the default 'X' image
 - (All) Added more details to custom ship list error message
-- (All) Clipboard bin and help path now explicitly use Startup Path to prevent implicit from defaulting to sys32 [Issue #32]
+- (All) Clipboard bin and help path now explicitly use Startup Path to prevent implicit from defaulting to sys32 [Issue [#32](https://github.com/MikeG621/YOGEME/issues/32)]
 - (XW) Added custom shiplist capability
 - (Briefing) Icons now use BMPs instead of the DATs
 - (Briefing) If the craft index is too high (mods) use the default 'X-wing' image
@@ -419,25 +424,25 @@ it may not be available going forward, I'm leaving the templates in for those wh
 have installers and wish to use it.
 
 #### v1.6.4, 19 Jan 2020
-- (All) Added briefing callbacks so mission doesn't dirty until something is changed [Issue #30]
-- (TIE) Battle form Height increased to account for W10 visual style [Issue #31]
+- (All) Added briefing callbacks so mission doesn't dirty until something is changed [Issue [#30](https://github.com/MikeG621/YOGEME/issues/30)]
+- (TIE) Battle form Height increased to account for W10 visual style [Issue [#31](https://github.com/MikeG621/YOGEME/issues/31)]
 - (TIE, XvT) Backdrop dialog now dirties mission on OK
 
 #### v1.6.3, 01 Jan 2020
-- (All) Fixed a settings write corruption due to partial platform detection [Issue #29]
+- (All) Fixed a settings write corruption due to partial platform detection [Issue [#29](https://github.com/MikeG621/YOGEME/issues/29)]
 - (XWA) Added ShuttleAnimation and ShuttleAnimationStraightLine hooks
 
 #### v1.6.2, 28 Sep 2019
-- (All) Fixed a crash that'd occur if Verify was run with a bad path [Issue #28]
+- (All) Fixed a crash that'd occur if Verify was run with a bad path [Issue [#28](https://github.com/MikeG621/YOGEME/issues/28)]
 - (XWA) Tweaked the hook INI backup filename during save to prevent possible clashes
 - (XWA) Fixed error during hooked backdrop load
 - (XWA) Idmr.ImageFormat.Dat.dll updated to handle Format 25 images correctly for backdrops
 
 #### v1.6.1, 16 Sep 2019
-- (XWA) Fixed a crash that'd occur if the mission INI file doesn't exist [Issue #27]
+- (XWA) Fixed a crash that'd occur if the mission INI file doesn't exist [Issue [#27](https://github.com/MikeG621/YOGEME/issues/27)]
 
 #### v1.6, 15 Sep 2019
-- (XWA) Mission Hook editing dialog added for the hooks by Jérémy Ansel (JeremyaFr) [Issue #26]
+- (XWA) Mission Hook editing dialog added for the hooks by Jérémy Ansel (JeremyaFr) [Issue [#26](https://github.com/MikeG621/YOGEME/issues/26)]
 - (XWA) SuperBackdrops detection changed to Readme instead of Backup since XWAUCP is different than a solo install
 - (XWA) Backdrop "Loading..." button text now always appears, not just when SBD detected 
 - (XWA) Backdrop dialog now always resized for XWA to accommodate larger images, not just when SBD detected
@@ -445,7 +450,7 @@ have installers and wish to use it.
 
 #### v1.5.1, 13 May 2019
 While I did add the below a couple months ago and just haven't gone through releasing it,
-turns out I forgot to finish updating Converter.exe and package it. Oops. [Issue #25]
+turns out I forgot to finish updating Converter.exe and package it. Oops. [Issue [#25](https://github.com/MikeG621/YOGEME/issues/25)]
 - (All) Changing GG or GU value will now prompt to update references throughout if it's the only FG with that designation
 
 #### v1.5, 10 Sep 2018
@@ -499,23 +504,23 @@ This most likely isn't a full list of everything that's visible to the user, but
 - And I took care of a couple things too...
   - (OfficerPreview) Fixed page count and highlighting display
   - (OfficerPreview) Bad characters now display a red 'X' instead of crashing
-  - (XWA) Craft markings now allow values beyond the original 4 [Issue #21]
+  - (XWA) Craft markings now allow values beyond the original 4 [Issue [#21](https://github.com/MikeG621/YOGEME/issues/21)]
  
 #### v1.4.3, 09 May 2018
 - (All) Code change for splitting some strings
 - (XWA) Added distances to Prox Trigger display and appropriate ComboBoxes
-- (XWA) Added a label that appears for Escort orders to explain the selected Position [Issue #18]
+- (XWA) Added a label that appears for Escort orders to explain the selected Position [Issue [#18](https://github.com/MikeG621/YOGEME/issues/18)]
 - (XWA) Order speed now displays as MGLT instead of raw value
-- (XWA) TriggerType unknowns filled in (JeremyAnsel) [Issue #19]
+- (XWA) TriggerType unknowns filled in (JeremyAnsel) [Issue [#19](https://github.com/MikeG621/YOGEME/issues/19)]
 
 #### v1.4.2, 24 Feb 2018
-- (XWA) Updated Platform.dll to fix Order WP inversion [Issue #16]
-- (Settings) Added explicit Steam detection for all platforms [Issue #17]
-- (MissionVerify) Updated MV to remove containers, backdrops, probes, etc from AI and Orders checks [Issue #15]
+- (XWA) Updated Platform.dll to fix Order WP inversion [Issue [#16](https://github.com/MikeG621/YOGEME/issues/16)]
+- (Settings) Added explicit Steam detection for all platforms [Issue [#17](https://github.com/MikeG621/YOGEME/issues/17)]
+- (MissionVerify) Updated MV to remove containers, backdrops, probes, etc from AI and Orders checks [Issue [#15](https://github.com/MikeG621/YOGEME/issues/15)]
 - (MissionVerfiy) Made various other changes, covered in v1.4.1r2 release
 
 #### v1.4.1, 18 Nov 2018
-- (XWA) Added DTM's SuperBackdrops support [Issue #13]
+- (XWA) Added DTM's SuperBackdrops support [Issue [#13](https://github.com/MikeG621/YOGEME/issues/13)]
   - (Options) New setting on the XWA tab to initialize new missions with SBD
   - Clicking the 'Backdrops' button on the main FlightGroup tab changes the text to "Loading" due to longer load times from high-res images.
 - (XWA) Special Cargo text box visibility resets properly when toggling Backdrops
@@ -526,10 +531,10 @@ This most likely isn't a full list of everything that's visible to the user, but
 - (Misc) Updated the install.log to add the shiplist templates from 1.4 and the switch to MPL back from 1.2.3
 
 #### v1.4, 16 Oct 2017
-- (XWA) Added Hyperbuoy dialog [Issue #13]
-- (XvT/XWA) Made LST vertically resizable [Issue #11]
-- (Map) Form is now resizable, can be maximized [Issue #11]
-- (All) Added ability to replace default craft list, included templates [Issue #10]
+- (XWA) Added Hyperbuoy dialog [Issue [#13](https://github.com/MikeG621/YOGEME/issues/13)]
+- (XvT/XWA) Made LST vertically resizable [Issue [#11](https://github.com/MikeG621/YOGEME/issues/11)]
+- (Map) Form is now resizable, can be maximized [Issue [#11](https://github.com/MikeG621/YOGEME/issues/11)]
+- (All) Added ability to replace default craft list, included templates [Issue [#10](https://github.com/MikeG621/YOGEME/issues/10)]
 
 #### v1.3, 7 Jan 2017
 - Lots of fixes and new features by Random Starfighter (JB)
@@ -567,17 +572,17 @@ This most likely isn't a full list of everything that's visible to the user, but
 - (XvT) FG Goal strings were saving in the wrong order.
 - (XvT) FG Goal copy/paste now gets entire goal with strings and points, not just trigger.
 - (XvT) Updated Platform Global Goal implementation.
-- Fixed a bug where using the Verify tool with a space in the file path would show the full GUI instead of straight to results. [Issue #7]
+- Fixed a bug where using the Verify tool with a space in the file path would show the full GUI instead of straight to results. [Issue [#7](https://github.com/MikeG621/YOGEME/issues/7)]
 
 #### v1.2.6 - 09 Feb 2015
-- (XWA) Fixed a bug where the Save/Exit dialogs would prompt twice. [Issue #6]
-- Rebuilt with latest Idmr.Platform.dll [Issues #5 and #8]
+- (XWA) Fixed a bug where the Save/Exit dialogs would prompt twice. [Issue [#6](https://github.com/MikeG621/YOGEME/issues/6)]
+- Rebuilt with latest Idmr.Platform.dll [Issues [#5](https://github.com/MikeG621/YOGEME/issues/5) and [#8](https://github.com/MikeG621/YOGEME/issues/8)]
  
 #### v1.2.5 - 10 Jan 2015
-- (All) Common.Update changed to generic, appropriate changes made (JeremyAnsel) [Issue #3]
+- (All) Common.Update changed to generic, appropriate changes made (JeremyAnsel) [Issue [#3](https://github.com/MikeG621/YOGEME/issues/3)]
 
 #### v1.2.4 - 15 Dec 2014
-- (Settings) Fixed another crash point for x64 installs (JeremyAnsel) [Issue #1]
+- (Settings) Fixed another crash point for x64 installs (JeremyAnsel) [Issue [#1](https://github.com/MikeG621/YOGEME/issues/1)]
  
 #### v1.2.3 - 14 Dec 2014
 - Updated install.log so the uninstaller will remove the test pilot files
@@ -616,10 +621,10 @@ This most likely isn't a full list of everything that's visible to the user, but
   - (BaseBriefing) Fixed bug regarding StartLength calculation
   - (*.FlightGroup) Fixed bug preventing proper SpecialCargoCraft handling during Load/Save
   - (Tie.FlightGroup) Added Unknowns 19-21
-  - (Tie.Officers) Fixed bug in Save( ) causing '[' and ']' to save as characters instead of the appropriate highlighiting codes
-  - (Xvt.Briefing) Fixed bug in Save( ) prevent proper Events writing
-  - (Xvt.Mission) Fixed critical bug in LoadMission( ) that resulted in unhandled exception
-  - (Xwa.Mission) Fixed critical bug in Save( ) causing infinite loop and filesize
+  - (Tie.Officers) Fixed bug in `Save()` causing '[' and ']' to save as characters instead of the appropriate highlighiting codes
+  - (Xvt.Briefing) Fixed bug in `Save()` prevent proper Events writing
+  - (Xvt.Mission) Fixed critical bug in `LoadMission()` that resulted in unhandled exception
+  - (Xwa.Mission) Fixed critical bug in `Save()` causing infinite loop and filesize
 - Back-end updates
 
 #### v1.1 - 15 July 2012
