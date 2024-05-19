@@ -42,6 +42,8 @@ Extensive updates due to changes in Platform.dll, using the full file format spe
 - (Briefing) Labels for Unk1/2 StartLength/EventLength and the Unknowns group deleted.
 - (Briefing) X-wing page events now edited directly instead of copying back and forth to a separate array first.
 - (Hyper dialog) Update per spec, enum use to remove magic numbers.
+- (TIE) Added TimeLimit, RndSeed, Vars, WinBonus, Rescue, EomDelay, GlobalDelay, WaveDelay
+- (TIE) Arr/Dep renames
 
 ---
 ### Additional Information
