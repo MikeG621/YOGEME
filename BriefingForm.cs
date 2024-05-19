@@ -1,12 +1,13 @@
 /*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
- * Copyright (C) 2007-2023 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2024 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.15.3
+ * VERSION: 1.15.3+
  */
 
 /* CHANGELOG
+ * [UPD] Updates due to Platform
  * v1.15.3, 231111
  * [FIX #92] Event overflow due to XWA move
  * v1.14, 230804
@@ -169,7 +170,7 @@ namespace Idmr.Yogeme
 			lstEvents.Items.Clear();
 			importEvents(_tieBriefing.Events);
 			hsbTimer.Value = 0;
-			numUnk3.Enabled = false;
+			numTile.Value = _tieBriefing.Tile;
 			cboText.SelectedIndex = 0;
 			cboFGTag.SelectedIndex = 0;
 			cboTextTag.SelectedIndex = 0;
@@ -248,7 +249,7 @@ namespace Idmr.Yogeme
 			lstEvents.Items.Clear();
 			importEvents(_xvtBriefing.Events);
 			hsbTimer.Value = 0;
-			numUnk3.Value = _xvtBriefing.Unknown3;
+			numTile.Value = _xvtBriefing.Tile;
 			cboText.SelectedIndex = 0;
 			cboFGTag.SelectedIndex = 0;
 			cboTextTag.SelectedIndex = 0;
@@ -382,7 +383,7 @@ namespace Idmr.Yogeme
 			cboNewIcon.Items.AddRange(names);
 			importEvents(_xwaBriefing.Events);
 			hsbTimer.Value = 0;
-			numUnk3.Enabled = false;
+			numTile.Value = _xwaBriefing.Tile;
 			txtNotes.Enabled = true;
 			txtNotes.Text = _xwaBriefing.BriefingStringsNotes[0];
 			cboText.SelectedIndex = 0;
@@ -500,20 +501,19 @@ namespace Idmr.Yogeme
 				Close();
 			}
 		}
-		void importEvents(short[] rawEvents)
+		void importEvents(BaseBriefing.EventCollection rawEvents)
 		{
 			BaseBriefing brief = (_platform == Settings.Platform.TIE ? _tieBriefing : (_platform == Settings.Platform.XvT ? _xvtBriefing : (BaseBriefing)_xwaBriefing));
-			int offset = 0;
 			for (int i = 0; i < _maxEvents; i++)
 			{
 				try
 				{
-					_events[i, 0] = rawEvents[offset++];        // time
-					_events[i, 1] = rawEvents[offset++];        // event
+					_events[i, 0] = rawEvents[i].Time;
+					_events[i, 1] = (short)rawEvents[i].Type;
 					if (_events[i, 1] == 0 || _events[i, 1] == (short)BaseBriefing.EventType.EndBriefing) break;
 					else
 					{
-						for (int j = 2; j < 2 + brief.EventParameterCount(_events[i, 1]); j++, offset++) _events[i, j] = rawEvents[offset];
+						for (int j = 0; j < brief.EventParameterCount(_events[i, 1]); j++) _events[i, j + 2] = rawEvents[i].Variables[j];
 						if (_platform == Settings.Platform.XWA && _events[i, 1] == (short)BaseBriefing.EventType.XwaMoveIcon && _briefData[_events[i, 2]].Waypoint != null && _briefData[_events[i, 2]].Waypoint[0] == 0 && _briefData[_events[i, 2]].Waypoint[1] == 0)
 						{   // this prevents Exception if Move instruction is before NewIcon, and only assigns initial position
 							_briefData[_events[i, 2]].Waypoint[0] = _events[i, 3];
@@ -581,15 +581,16 @@ namespace Idmr.Yogeme
 		public void Save()
 		{
 			BaseBriefing brief = (_platform == Settings.Platform.TIE ? _tieBriefing : (_platform == Settings.Platform.XvT ? _xvtBriefing : (BaseBriefing)_xwaBriefing));
-			int offset = 0;
+			brief.Events.Clear();
 			for (int evnt = 0; evnt < _maxEvents; evnt++)
 			{
-				for (int i = 0; i < 2; i++, offset++) brief.Events[offset] = _events[evnt, i];
-				if (_events[evnt, 1] == (short)BaseBriefing.EventType.EndBriefing) break;
-				else for (int i = 2; i < 2 + brief.EventParameterCount(_events[evnt, 1]); i++, offset++)
-						brief.Events[offset] = _events[evnt, i];
+				if (_events[evnt, 1] == 0 || _events[evnt, 1] == (short)BaseBriefing.EventType.EndBriefing) break;
+
+				brief.Events.Add(new BaseBriefing.Event((BaseBriefing.EventType)_events[evnt, 1]) { Time = _events[evnt, 0] });
+				for (int i = 0; i < BaseBriefing.EventParameters.GetCount(brief.Events[evnt].Type); i++)
+					brief.Events[evnt].Variables[i] = _events[evnt, i + 2];
 			}
-			if (_platform == Settings.Platform.XvT) _xvtBriefing.Unknown3 = (short)numUnk3.Value;
+			brief.Tile = (short)numTile.Value;
 			onModified?.Invoke("Save", new EventArgs());
 		}
 
@@ -1131,7 +1132,7 @@ namespace Idmr.Yogeme
 				_textTags[v, 3] = _events[i, 5];    // color
 				paint = true;
 			}
-			else if (_events[i, 1] == (int)BaseBriefing.EventType.XwaNewIcon)
+			else if (_events[i, 1] == (int)BaseBriefing.EventType.XwaSetIcon)
 			{
 				_briefData[_events[i, 2]].Craft = _events[i, 3] - 1;
 				_briefData[_events[i, 2]].IFF = (byte)_events[i, 4];
@@ -2451,7 +2452,7 @@ namespace Idmr.Yogeme
 					// don't need to repaint or restore/edit from backup, as it's taken care of during placement
 					break;
 				#endregion
-				case BaseBriefing.EventType.XwaNewIcon:
+				case BaseBriefing.EventType.XwaSetIcon:
 					#region new icon
 					if (_tempX == -621 && _tempY == -621 && cboNCraft.SelectedIndex == 0)
 					{
@@ -2702,7 +2703,7 @@ namespace Idmr.Yogeme
 		}
 		void cmdNewShip_Click(object sender, EventArgs e)
 		{
-			_eventType = BaseBriefing.EventType.XwaNewIcon;
+			_eventType = BaseBriefing.EventType.XwaSetIcon;
 			enableOkCancel(true);
 			pnlNew.Visible = true;
 			lblTitle.Visible = false;
@@ -2852,7 +2853,7 @@ namespace Idmr.Yogeme
 				_textTags[(int)numText.Value - 1, 3] = cboColorTag.SelectedIndex;
 				MapPaint();
 			}
-			else if (_eventType == BaseBriefing.EventType.XwaNewIcon)
+			else if (_eventType == BaseBriefing.EventType.XwaSetIcon)
 			{
 				_briefData[_icon].Waypoint = new short[4];
 				_tempX = (short)(256 * e.X / _zoomX - 128 * w / _zoomX + _mapX);
@@ -3166,7 +3167,7 @@ namespace Idmr.Yogeme
 				if (_tags[_events[index, 2]].Length > 30) temp += ": \"" + _tags[_events[index, 2]].Substring(0, 30) + "...\"";
 				else temp += ": \"" + _tags[_events[index, 2]] + '\"';
 			}
-			else if (_events[index, 1] == (int)BaseBriefing.EventType.XwaNewIcon) { temp += " #" + _events[index, 2] + ": Craft: " + Platform.Xwa.Strings.CraftType[_events[index, 3]] + " IFF: " + cboIFF.Items[_events[index, 4]].ToString(); }
+			else if (_events[index, 1] == (int)BaseBriefing.EventType.XwaSetIcon) { temp += " #" + _events[index, 2] + ": Craft: " + Platform.Xwa.Strings.CraftType[_events[index, 3]] + " IFF: " + cboIFF.Items[_events[index, 4]].ToString(); }
 			else if (_events[index, 1] == (int)BaseBriefing.EventType.XwaShipInfo)
 			{
 				if (_events[index, 2] == 1) temp += ": Icon # " + _events[index, 3] + " State: On";
@@ -3259,7 +3260,7 @@ namespace Idmr.Yogeme
 				numX.Enabled = true;
 				numY.Enabled = true;
 			}
-			else if (_events[i, 1] == (int)BaseBriefing.EventType.XwaNewIcon)
+			else if (_events[i, 1] == (int)BaseBriefing.EventType.XwaSetIcon)
 			{
 				cboFG.SelectedIndex = _events[i, 2];
 				cboCraft.SelectedIndex = _events[i, 3];
@@ -3317,7 +3318,7 @@ namespace Idmr.Yogeme
 		{
 			int i = lstEvents.SelectedIndex;
 			if (i == -1 || _loading) return;
-			if (_events[i, 1] == (int)BaseBriefing.EventType.XwaNewIcon)
+			if (_events[i, 1] == (int)BaseBriefing.EventType.XwaSetIcon)
 			{
 				_events[i, 3] = (short)cboCraft.SelectedIndex;
 				onModified?.Invoke("NewIcon", new EventArgs());
@@ -3346,7 +3347,7 @@ namespace Idmr.Yogeme
 		{
 			int i = lstEvents.SelectedIndex;
 			if (i == -1 || _loading) return;
-			if ((_events[i, 1] >= (int)BaseBriefing.EventType.FGTag1 && _events[i, 1] <= (int)BaseBriefing.EventType.FGTag8) || _events[i, 1] == (int)BaseBriefing.EventType.XwaNewIcon
+			if ((_events[i, 1] >= (int)BaseBriefing.EventType.FGTag1 && _events[i, 1] <= (int)BaseBriefing.EventType.FGTag8) || _events[i, 1] == (int)BaseBriefing.EventType.XwaSetIcon
 				|| _events[i, 1] == (int)BaseBriefing.EventType.XwaMoveIcon || _events[i, 1] == (int)BaseBriefing.EventType.XwaRotateIcon)
 			{
 				onModified?.Invoke("ChangeFG", new EventArgs());
@@ -3363,7 +3364,7 @@ namespace Idmr.Yogeme
 		{
 			int i = lstEvents.SelectedIndex;
 			if (i == -1 || _loading) return;
-			if (_events[i, 1] == (int)BaseBriefing.EventType.XwaNewIcon)
+			if (_events[i, 1] == (int)BaseBriefing.EventType.XwaSetIcon)
 			{
 				onModified?.Invoke("ChangeIFF", new EventArgs());
 				_events[i, 4] = (short)cboIFF.SelectedIndex;
@@ -3640,7 +3641,7 @@ namespace Idmr.Yogeme
 				txtLength.Text = Convert.ToString(Math.Round(((decimal)_xvtBriefing.Length / _timerInterval), 2));
 				lstEvents.Items.Clear();
 				importEvents(_xvtBriefing.Events);
-				numUnk3.Value = _xvtBriefing.Unknown3;
+				numTile.Value = _xvtBriefing.Tile;
 				cboText.SelectedIndex = 0;
 				cboFGTag.SelectedIndex = 0;
 				cboTextTag.SelectedIndex = 0;
@@ -3657,7 +3658,7 @@ namespace Idmr.Yogeme
 				txtLength.Text = Convert.ToString(Math.Round(((decimal)_xwaBriefing.Length / _timerInterval), 2));
 				lstEvents.Items.Clear();
 				importEvents(_xwaBriefing.Events);
-				numUnk3.Enabled = false;
+				numTile.Value = _xwaBriefing.Tile;
 				txtNotes.Enabled = true;
 				txtNotes.Text = _xwaBriefing.BriefingStringsNotes[0];
 				cboText.SelectedIndex = 0;

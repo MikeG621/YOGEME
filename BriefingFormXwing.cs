@@ -1,13 +1,14 @@
 /*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
- * Copyright (C) 2007-2022 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2024 Michael Gaisser (mjgaisser@gmail.com)
  * This file authored by "JB" (Random Starfighter) (randomstarfighter@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.13.6
+ * VERSION: 1.13.6+
  */
 
 /* CHANGELOG
+ * [UPD] Updates per Platform
  * v1.13.6, 220619
  * [NEW] Shift All checkbox on Events tab so timing can move together
  * v1.8, 201004
@@ -155,7 +156,7 @@ namespace Idmr.Yogeme
 			setCurrentPage(0);  //Set the working page to grab the event list before importing
 
 			lstEvents.Items.Clear();
-			importEvents(_xwingBriefing.Events);
+			importEvents(_xwingBriefing.Pages[0].Events);
 			hsbTimer.Value = 0;
 			cboText.SelectedIndex = 0;
 			cboFGTag.SelectedIndex = 0;
@@ -253,21 +254,16 @@ namespace Idmr.Yogeme
 				Close();
 			}
 		}
-		void importEvents(short[] rawEvents)
+		void importEvents(Briefing.EventCollection rawEvents)
 		{
 			BaseBriefing brief = getBriefing();
 
-			int offset = 0;
 			for (int i = 0; i < _maxEvents; i++)
 			{
-				_events[i, 0] = rawEvents[offset++];        // time
-				_events[i, 1] = rawEvents[offset++];        // event
+				_events[i, 0] = rawEvents[i].Time;
+				_events[i, 1] = (short)rawEvents[i].Type;
 				if (_events[i, 1] == 0 || _events[i, 1] == (short)Briefing.EventType.EndBriefing) break;
-				else
-				{
-					for (int j = 2; j < 2 + brief.EventParameterCount(_events[i, 1]); j++, offset++) _events[i, j] = rawEvents[offset];
-					//Removed XWA code
-				}
+				else for (int j = 0; j < brief.EventParameterCount(_events[i, 1]); j++) _events[i, j + 2] = rawEvents[i].Variables[j];
 				// okay, now that's in a usable format, list the event in lstEvents
 				lstEvents.Items.Add("");
 				updateList(i);
@@ -299,32 +295,21 @@ namespace Idmr.Yogeme
 		{
 			if (_platform == Settings.Platform.XWING)
 			{
-				int offset = 0;
+				//Saves the event list we're currently editing back into the Briefing.
+				var events = _xwingBriefing.Pages[_currentPage].Events;
+				events.Clear();
 				for (int evnt = 0; evnt < _maxEvents; evnt++)
 				{
-					for (int i = 0; i < 2; i++, offset++) _xwingBriefing.Events[offset] = _events[evnt, i];
-					if (_events[evnt, 1] == (short)Briefing.EventType.EndBriefing) break;
-					else
-					{
-						int eid = _events[evnt, 1];
-						if (eid == (short)Briefing.EventType.None) break;
-						int pcount = _xwingBriefing.EventParameterCount(eid);
-						for (int i = 2; i < 2 + pcount; i++, offset++)
-							_xwingBriefing.Events[offset] = _events[evnt, i];
-					}
+					if (_events[evnt, 1] == 0 || _events[evnt, 1] == (short)Briefing.EventType.EndBriefing) break;
+
+					events.Add(new Briefing.Event((Briefing.EventType)_events[evnt, 1]) { Time = _events[evnt, 0] });
+					for (int i = 0; i < Briefing.EventParameters.GetCount(events[evnt].Type); i++)
+						events[evnt].Variables[i] = _events[evnt, i + 2];
 				}
-				saveCurrentPage();
 				onModified?.Invoke("XW Save", new EventArgs());
 			}
 		}
 
-		void saveCurrentPage()
-		{
-			//Saves the event list we're currently editing back into the Briefing.
-			BriefingPage pg = _xwingBriefing.GetBriefingPage(_currentPage);
-			Array.Copy(_xwingBriefing.Events, pg.Events, pg.Events.Length);
-			pg.EventsLength = (short)_xwingBriefing.GetEventsLength(_currentPage);
-		}
 		void setCurrentPage(int index)
 		{
 			//Just in case, make sure there's a default page that exists to edit
@@ -338,10 +323,9 @@ namespace Idmr.Yogeme
 				Save();
 			_currentPage = index;
 			BriefingPage pg = _xwingBriefing.GetBriefingPage(_currentPage);
-			Array.Copy(pg.Events, _xwingBriefing.Events, pg.Events.Length);
 
 			lstEvents.Items.Clear();
-			importEvents(_xwingBriefing.Events);
+			importEvents(_xwingBriefing.Pages[_currentPage].Events);
 			updateTitle();
 
 			bool btemp = _loading;
@@ -350,7 +334,7 @@ namespace Idmr.Yogeme
 			cboSelectPage2.SelectedIndex = index;
 			_loading = btemp;
 
-			txtLength.Text = Convert.ToString(Math.Round(((decimal)pg.Length / _timerInterval), 2));
+			txtLength.Text = Convert.ToString(Math.Round((decimal)pg.Length / _timerInterval, 2));
 
 			refreshDisplayElements();
 		}
@@ -2250,7 +2234,7 @@ namespace Idmr.Yogeme
 			}
 			else
 			{
-				if ((_events[i, 1] >= (int)BaseBriefing.EventType.FGTag1 && _events[i, 1] <= (int)BaseBriefing.EventType.FGTag8) || _events[i, 1] == (int)BaseBriefing.EventType.XwaNewIcon
+				if ((_events[i, 1] >= (int)BaseBriefing.EventType.FGTag1 && _events[i, 1] <= (int)BaseBriefing.EventType.FGTag8) || _events[i, 1] == (int)BaseBriefing.EventType.XwaSetIcon
 					|| _events[i, 1] == (int)BaseBriefing.EventType.XwaMoveIcon || _events[i, 1] == (int)BaseBriefing.EventType.XwaRotateIcon) _events[i, 2] = (short)cboFG.SelectedIndex;
 				else if (_events[i, 1] == (int)BaseBriefing.EventType.XwaShipInfo) _events[i, 3] = (short)cboFG.SelectedIndex;
 			}
@@ -2533,7 +2517,7 @@ namespace Idmr.Yogeme
 		{
 			int index = lstPages.SelectedIndex;
 			if (index <= 0) return;
-			saveCurrentPage();
+			Save();
 			BriefingPage temp = _xwingBriefing.Pages[index];
 			_xwingBriefing.Pages[index] = _xwingBriefing.Pages[index - 1];
 			_xwingBriefing.Pages[index - 1] = temp;
@@ -2546,7 +2530,7 @@ namespace Idmr.Yogeme
 		{
 			int index = lstPages.SelectedIndex;
 			if (index < 0 || index >= _xwingBriefing.Pages.Count - 1) return;
-			saveCurrentPage();
+			Save();
 			BriefingPage temp = _xwingBriefing.Pages[index];
 			_xwingBriefing.Pages[index] = _xwingBriefing.Pages[index + 1];
 			_xwingBriefing.Pages[index + 1] = temp;
@@ -2565,7 +2549,7 @@ namespace Idmr.Yogeme
 				return;
 			}
 
-			saveCurrentPage();
+			Save();
 
 			int newPage = clampValue(_currentPage - 1, 0, _xwingBriefing.Pages.Count - 1);
 			_currentPage = newPage;  //Directly set the current page so that SetCurrentPage() doesn't try to save a non-existent page when switching. 
@@ -2578,25 +2562,18 @@ namespace Idmr.Yogeme
 		}
 		void cmdPageAdd_Click(object sender, EventArgs e)
 		{
-			saveCurrentPage();
+			Save();
 
 			int textType = cboPageAddType.SelectedIndex;
-			int titleText = cboPageAddTitle.SelectedIndex;
-			int captionText = cboPageAddCaption.SelectedIndex;
+			short captionText = (short)cboPageAddCaption.SelectedIndex;
 
-			BriefingPage pg = new BriefingPage
-			{
-				PageType = (short)Briefing.PageType.Text
-			};
-			int pos = 0;
+			BriefingPage pg = new BriefingPage { PageType = (short)Briefing.PageType.Text };
 			if (textType == 0) //Text only
 			{
-				pg.Events[pos++] = 0;
-				pg.Events[pos++] = (short)Briefing.EventType.TitleText;
-				pg.Events[pos++] = (short)titleText;
-				pg.Events[pos++] = 0;
-				pg.Events[pos++] = (short)Briefing.EventType.CaptionText;
-				pg.Events[pos++] = (short)captionText;
+				pg.Events.Add(new Briefing.Event(Briefing.EventType.TitleText));
+				pg.Events[0].Variables[0] = (short)cboPageAddTitle.SelectedIndex;
+				pg.Events.Add(new Briefing.Event(Briefing.EventType.CaptionText));
+				pg.Events[1].Variables[0] = captionText;
 			}
 			else
 			{
@@ -2608,20 +2585,15 @@ namespace Idmr.Yogeme
 					return;
 				}
 
-				pg.Events[pos++] = 0;
-				pg.Events[pos++] = (short)Briefing.EventType.TitleText;
-				pg.Events[pos++] = (short)hintTitle;
-				pg.Events[pos++] = 0;
-				pg.Events[pos++] = (short)Briefing.EventType.CaptionText;
-				pg.Events[pos++] = (short)hintCaption;
-				pg.Events[pos++] = 1;
-				pg.Events[pos++] = (short)Briefing.EventType.ClearText;
-				pg.Events[pos++] = 1;
-				pg.Events[pos++] = (short)Briefing.EventType.TitleText;
-				pg.Events[pos++] = (short)hintTitle;
-				pg.Events[pos++] = 1;
-				pg.Events[pos++] = (short)Briefing.EventType.CaptionText;
-				pg.Events[pos++] = (short)captionText;
+				pg.Events.Add(new Briefing.Event(Briefing.EventType.TitleText));
+				pg.Events[0].Variables[0] = (short)hintTitle;
+				pg.Events.Add(new Briefing.Event(Briefing.EventType.CaptionText));
+				pg.Events[1].Variables[0] = (short)hintCaption;
+				pg.Events.Add(new Briefing.Event(Briefing.EventType.ClearText) { Time = 1 });
+				pg.Events.Add(new Briefing.Event(Briefing.EventType.TitleText) { Time = 1 });
+				pg.Events[3].Variables[0] = (short)hintTitle;
+				pg.Events.Add(new Briefing.Event(Briefing.EventType.CaptionText) {  Time = 1 });
+				pg.Events[4].Variables[0] = captionText;
 
 				_strings = _xwingBriefing.BriefingString;
 				importStrings();  //Just in case new strings were added.
@@ -2629,7 +2601,6 @@ namespace Idmr.Yogeme
 			_xwingBriefing.Pages.Add(pg);
 			onModified?.Invoke("PageAdd", new EventArgs());
 			int pgIndex = _xwingBriefing.Pages.Count - 1;
-			_xwingBriefing.Pages[pgIndex].EventsLength = (short)_xwingBriefing.GetEventsLength(pgIndex);
 			rebuildPageList();
 			lstPages.SelectedIndex = pgIndex;
 		}
@@ -2827,33 +2798,14 @@ namespace Idmr.Yogeme
 					entry += "Unknown:" + pg.PageType;
 				else
 					entry += _xwingBriefing.WindowSettings[pg.PageType].GetPageDesc();
-				short[] events = pg.Events;
 
-				//int hintString = _xwingBriefing.FindStringList(Strings.BriefingPageHintTitle);
 				bool isHint = false;
-
 				//Detect hint page.  Has 5 commands in sequence: TitleText,CaptionText,ClearText,TitleText,CaptionText
-				if (events[1] == (short)Briefing.EventType.TitleText && events[4] == (short)Briefing.EventType.CaptionText && events[7] == (short)Briefing.EventType.ClearText && events[9] == (short)Briefing.EventType.TitleText && events[12] == (short)Briefing.EventType.CaptionText)
+				if (pg.Events[0].Type == Briefing.EventType.TitleText && pg.Events[1].Type == Briefing.EventType.CaptionText
+					&& pg.Events[2].Type == Briefing.EventType.ClearText && pg.Events[3].Type == Briefing.EventType.TitleText
+					&& pg.Events[4].Type == Briefing.EventType.CaptionText)
 					isHint = true;
 
-				/*
-                int pos = 0;
-                while (pos < events.Length)
-                {
-                    pos++; //skip time
-                    int evt = events[pos++];
-                    if (evt == (int)Platform.Xwing.Briefing.EventType.TitleText)
-                    {
-                        if(events[pos] == hintString)
-                        {
-                            isHint = true;
-                            break;
-                        }
-                    }
-                    else if (evt == (int)Platform.Xwing.Briefing.EventType.None || evt == (int)Platform.Xwing.Briefing.EventType.EndBriefing)
-                        break;
-                    pos += _xwingBriefing.EventParameterCount(evt);
-                }*/
 				if (isHint)
 					entry += " (hints)";
 				lstPages.Items.Add(entry);

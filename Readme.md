@@ -32,15 +32,18 @@ platform, it can be activated in the Options dialog. Note however that certain
 functions may not work properly for an uninstalled platform.
 
 ## Uninstall
-To remove YOGEME, you simply delete the directory where you placed it. The
-Uninstall utility has been removed due to more anti-virus packages starting to
-flag it, and although it's a false-positive the situation does not appear to
-be getting better. This will leave behind a single config file in AppData with
-your user settings.
+To remove YOGEME, simply delete the directory where you placed it.
+This will leave behind a single config file in AppData with your user settings.
 
 ## Latest Release
 #### v1.15.7, 19 May 2024
 - (XWA) Briefing logo was off by 1, not accounting for "None" properly.
+
+#### WIP
+Extensive updates due to changes in Platform.dll, using the full file format spec.
+- (Briefing) Unknown 3 now labeled "Tile", still unknown effect.
+- (Briefing) Labels for Unk1/2 StartLength/EventLength and the Unknowns group deleted.
+- (Briefing) X-wing page events now edited directly instead of copying back and forth to a separate array first.
 
 ---
 ### Additional Information
