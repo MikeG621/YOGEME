@@ -3,10 +3,12 @@
  * Copyright (C) 2007-2024 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.15.6
+ * VERSION: 1.15.7
  */
 
 /* CHANGELOG
+ * v1.15.7, 240519
+ * [FIX] Briefing Logo wasn't accounting for "None" properly
  * v1.15.6, 240311
  * [FIX #100] SBD crash if default craft is Backdrop
  * v1.15.5, 231222
@@ -5130,8 +5132,8 @@ namespace Idmr.Yogeme
 			txtSuccNote.Text = _mission.SuccessfulNotes;
 			cboHangar.SelectedIndex = (int)_mission.MissionType;
 			cboOfficer.SelectedIndex = _mission.Officer;
-			try { cboLogo.SelectedIndex = (int)_mission.Logo - 4; }
-			catch { _mission.Logo = Mission.LogoEnum.None; cboLogo.SelectedIndex = 4; }
+			try { cboLogo.SelectedIndex = (int)_mission.Logo - 3; }
+			catch { _mission.Logo = Mission.LogoEnum.None; cboLogo.SelectedIndex = 3; }
 			chkMissUnk1.Checked = _mission.Unknown1;
 			chkMissUnk2.Checked = _mission.Unknown2;
 			numMissUnk3.Value = _mission.Unknown3;
@@ -5159,7 +5161,7 @@ namespace Idmr.Yogeme
 		}
 		void cboLogo_Leave(object sender, EventArgs e)
 		{
-			_mission.Logo = Common.Update(this, _mission.Logo, (Mission.LogoEnum)Convert.ToByte(cboLogo.SelectedIndex + 4));
+			_mission.Logo = Common.Update(this, _mission.Logo, (Mission.LogoEnum)Convert.ToByte(cboLogo.SelectedIndex + 3));
 		}
 		void cboOfficer_Leave(object sender, EventArgs e)
 		{
