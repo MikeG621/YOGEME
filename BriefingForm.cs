@@ -503,7 +503,6 @@ namespace Idmr.Yogeme
 		}
 		void importEvents(BaseBriefing.EventCollection rawEvents)
 		{
-			BaseBriefing brief = (_platform == Settings.Platform.TIE ? _tieBriefing : (_platform == Settings.Platform.XvT ? _xvtBriefing : (BaseBriefing)_xwaBriefing));
 			for (int i = 0; i < _maxEvents; i++)
 			{
 				try
@@ -511,14 +510,12 @@ namespace Idmr.Yogeme
 					_events[i, 0] = rawEvents[i].Time;
 					_events[i, 1] = (short)rawEvents[i].Type;
 					if (_events[i, 1] == 0 || _events[i, 1] == (short)BaseBriefing.EventType.EndBriefing) break;
-					else
-					{
-						for (int j = 0; j < brief.EventParameterCount(_events[i, 1]); j++) _events[i, j + 2] = rawEvents[i].Variables[j];
-						if (_platform == Settings.Platform.XWA && _events[i, 1] == (short)BaseBriefing.EventType.XwaMoveIcon && _briefData[_events[i, 2]].Waypoint != null && _briefData[_events[i, 2]].Waypoint[0] == 0 && _briefData[_events[i, 2]].Waypoint[1] == 0)
-						{   // this prevents Exception if Move instruction is before NewIcon, and only assigns initial position
-							_briefData[_events[i, 2]].Waypoint[0] = _events[i, 3];
-							_briefData[_events[i, 2]].Waypoint[1] = _events[i, 4];
-						}
+
+					for (int j = 0; j < BaseBriefing.EventParameters.GetCount(_events[i, 1]); j++) _events[i, j + 2] = rawEvents[i].Variables[j];
+					if (_platform == Settings.Platform.XWA && _events[i, 1] == (short)BaseBriefing.EventType.XwaMoveIcon && _briefData[_events[i, 2]].Waypoint != null && _briefData[_events[i, 2]].Waypoint[0] == 0 && _briefData[_events[i, 2]].Waypoint[1] == 0)
+					{   // this prevents Exception if Move instruction is before NewIcon, and only assigns initial position
+						_briefData[_events[i, 2]].Waypoint[0] = _events[i, 3];
+						_briefData[_events[i, 2]].Waypoint[1] = _events[i, 4];
 					}
 				}
 				catch (ArgumentOutOfRangeException) { break; }	// if briefing is corrupted leading to an overflow, just kick out
@@ -2121,7 +2118,7 @@ namespace Idmr.Yogeme
 		void cmdOk_Click(object sender, EventArgs e)
 		{
 			BaseBriefing brief = (_platform == Settings.Platform.TIE ? _tieBriefing : (_platform == Settings.Platform.XvT ? _xvtBriefing : (BaseBriefing)_xwaBriefing));
-			if (hasAvailableEventSpace(2 + brief.EventParameterCount((int)_eventType)) == false) //Check space for a full event
+			if (!hasAvailableEventSpace(2 + BaseBriefing.EventParameters.GetCount(_eventType))) //Check space for a full event
 			{
 				MessageBox.Show("Event list is full, cannot add more.", "Error");
 				cmdCancel_Click(0, new EventArgs());
@@ -2573,7 +2570,7 @@ namespace Idmr.Yogeme
 					else
 					{
 						int total = (int)Math.Round(numMoveTime.Value * _timerInterval);
-                        if (!hasAvailableEventSpace((2 + brief.EventParameterCount((int)_eventType)) * total))
+                        if (!hasAvailableEventSpace((2 + BaseBriefing.EventParameters.GetCount(_eventType)) * total))
                         {
                             MessageBox.Show("Not enough room in Event list for the full Move, aborting...", "Error");
                             cmdCancel_Click(0, new EventArgs());
@@ -3080,17 +3077,7 @@ namespace Idmr.Yogeme
 		bool hasAvailableEventSpace(int requestedParams)
 		{
 			BaseBriefing brief = (_platform == Settings.Platform.TIE ? _tieBriefing : (_platform == Settings.Platform.XvT ? _xvtBriefing : (BaseBriefing)_xwaBriefing));
-			int paramCount = 2;  //Reserve space for the ending command
-			for (int j = 0; j < lstEvents.Items.Count; j++)
-			{
-				paramCount += 2 + brief.EventParameterCount(_events[j, 1]);
-				if (paramCount >= brief.Events.Length)
-					return false;
-			}
-			if (paramCount + requestedParams >= brief.Events.Length)
-				return false;
-
-			return true;
+			return brief.EventsLength + requestedParams < _maxEvents * 2;
 		}
         void insertEvent()
 		{
@@ -3331,9 +3318,9 @@ namespace Idmr.Yogeme
 			if (_loading || i == -1 || cboEvent.SelectedIndex == -1) return;
 
             BaseBriefing brief = (_platform == Settings.Platform.TIE ? _tieBriefing : (_platform == Settings.Platform.XvT ? _xvtBriefing : (BaseBriefing)_xwaBriefing));
-			int oldEventSize = 2 + brief.EventParameterCount(_events[i, 1]);
-			int newEventSize = 2 + brief.EventParameterCount(convertCboEventIndexToEvent(cboEvent.SelectedIndex));
-			if (hasAvailableEventSpace(newEventSize - oldEventSize) == false)
+			int oldEventSize = 2 + BaseBriefing.EventParameters.GetCount(_events[i, 1]);
+			int newEventSize = 2 + BaseBriefing.EventParameters.GetCount(convertCboEventIndexToEvent(cboEvent.SelectedIndex));
+			if (!hasAvailableEventSpace(newEventSize - oldEventSize))
 			{
 				MessageBox.Show("Cannot change Event Type because the briefing list is full and the replaced event needs more space than is available.", "Error");
 				return;

@@ -256,14 +256,13 @@ namespace Idmr.Yogeme
 		}
 		void importEvents(Briefing.EventCollection rawEvents)
 		{
-			BaseBriefing brief = getBriefing();
-
 			for (int i = 0; i < _maxEvents; i++)
 			{
 				_events[i, 0] = rawEvents[i].Time;
 				_events[i, 1] = (short)rawEvents[i].Type;
 				if (_events[i, 1] == 0 || _events[i, 1] == (short)Briefing.EventType.EndBriefing) break;
-				else for (int j = 0; j < brief.EventParameterCount(_events[i, 1]); j++) _events[i, j + 2] = rawEvents[i].Variables[j];
+
+				for (int j = 0; j < Briefing.EventParameters.GetCount(_events[i, 1]); j++) _events[i, j + 2] = rawEvents[i].Variables[j];
 				// okay, now that's in a usable format, list the event in lstEvents
 				lstEvents.Items.Add("");
 				updateList(i);
@@ -1135,7 +1134,7 @@ namespace Idmr.Yogeme
 		{
 			//[JB] Add test
 			BaseBriefing brief = getBriefing();
-			if (!hasAvailableEventSpace(2 + brief.EventParameterCount((int)_eventType))) //Check space for a full event
+			if (!_xwingBriefing.Pages[_currentPage].Events.HasSpaceForEvent(_eventType)) //Check space for a full event
 			{
 				MessageBox.Show("Event list is full, cannot add more.", "Error");
 				cmdCancel_Click(0, new EventArgs());
@@ -2050,22 +2049,7 @@ namespace Idmr.Yogeme
 		}
 		#endregion	tabStrings
 		#region tabEvents
-		bool hasAvailableEventSpace(int requestedParams)
-		{
-			//[JB] Tally briefing events and make sure there's enough space in the raw briefing array.
-			var brief = _xwingBriefing;  //[JB] Modified for X-wing
-			int paramCount = 2;  //Reserve space for the ending command
-			for (int j = 0; j < lstEvents.Items.Count; j++)
-			{
-				paramCount += 2 + brief.EventParameterCount(_events[j, 1]);
-				if (paramCount >= brief.Events.Length)
-					return false;
-			}
-			if (paramCount + requestedParams >= brief.Events.Length)
-				return false;
-
-			return true;
-		}
+		bool hasAvailableEventSpace(int requestedParams) => _xwingBriefing.Pages[_currentPage].EventsLength + requestedParams < _maxEvents * 2;
 		void insertEvent()
 		{
 			// create a new item @ SelectedIndex, 
@@ -2207,10 +2191,9 @@ namespace Idmr.Yogeme
 			int i = lstEvents.SelectedIndex;
 			if (_loading || i == -1 || cboEvent.SelectedIndex == -1) return;
 
-			var brief = getBriefing();
-			int oldEventSize = 2 + brief.EventParameterCount(_events[i, 1]);
-			int newEventSize = 2 + brief.EventParameterCount((short)(cboEvent.SelectedIndex + 3));
-			if (hasAvailableEventSpace(newEventSize - oldEventSize) == false)
+			int oldEventSize = 2 + Briefing.EventParameters.GetCount(_events[i, 1]);
+			int newEventSize = 2 + Briefing.EventParameters.GetCount((short)(cboEvent.SelectedIndex + 3));
+			if (!hasAvailableEventSpace(newEventSize - oldEventSize))
 			{
 				MessageBox.Show("Cannot change Event Type because the briefing list is full and the replaced event needs more space than is available.", "Error");
 				return;
@@ -2302,7 +2285,7 @@ namespace Idmr.Yogeme
 		}
 		void cmdNew_Click(object sender, EventArgs e)
 		{
-			if (hasAvailableEventSpace(6) == false)  //Check space for a full event
+			if (!hasAvailableEventSpace(6))  //Check space for a full event
 			{
 				MessageBox.Show("Event list is full, cannot add more.", "Error");
 				return;
