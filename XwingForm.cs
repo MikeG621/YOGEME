@@ -1,13 +1,14 @@
 /*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
- * Copyright (C) 2007-2023 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2024 Michael Gaisser (mjgaisser@gmail.com)
  * This file authored by "JB" (Random Starfighter) (randomstarfighter@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.14.2
+ * VERSION: 1.14.2+
  */
 
 /* CHANGELOG:
+ * [UPD] Events changes
  * v1.14.2, 230901
  * [FIX #86] FG.CraftType when changing to B-wing
  * v1.13.11, 221030
@@ -917,16 +918,15 @@ namespace Idmr.Yogeme
 		}
 		void menuLibrary_Click(object sender, EventArgs e)
 		{
-			if (_fLibrary != null)
-				_fLibrary.Close();
+			_fLibrary?.Close();
 			_fLibrary = new FlightGroupLibraryForm(Settings.Platform.XWING, _mission.FlightGroups, flightGroupLibraryCallback);
 		}
 		void flightGroupLibraryCallback(object sender, EventArgs e)
 		{
-			foreach (FlightGroup fg in (object[])sender)
+			foreach (FlightGroup fg in (FlightGroup[])sender)
 			{
-				if (fg == null || !newFG(fg.IsFlightGroup()))
-					break;
+				if (fg == null || !newFG(fg.IsFlightGroup())) break;
+
 				_mission.FlightGroups[_activeFG] = fg;
 				updateFGList();
 				listRefreshItem(_activeFG);
@@ -1031,8 +1031,7 @@ namespace Idmr.Yogeme
 			{
 				try
 				{
-					FlightGroup fg = (FlightGroup)obj;
-					if (fg == null) throw new FormatException();
+					FlightGroup fg = (FlightGroup)obj ?? throw new FormatException();
 
 					foreach (FlightGroup cur in getSelectedFlightgroups())
 					{
@@ -1040,11 +1039,9 @@ namespace Idmr.Yogeme
 						cur.ArrivalHyperspace = fg.ArrivalHyperspace;
 						cur.DepartureHyperspace = fg.DepartureHyperspace;
 						cur.Mothership = fg.Mothership;
-						if (cur.Mothership >= _mission.FlightGroups.Count)
-							cur.Mothership = -1;
+						if (cur.Mothership >= _mission.FlightGroups.Count) cur.Mothership = -1;
 						cur.ArrivalFG = fg.ArrivalFG;
-						if (cur.ArrivalFG >= _mission.FlightGroups.Count)
-							cur.ArrivalFG = -1;
+						if (cur.ArrivalFG >= _mission.FlightGroups.Count) cur.ArrivalFG = -1;
 						cur.ArrivalEvent = fg.ArrivalEvent;
 						cur.ArrivalDelay = fg.ArrivalDelay;
 						craftStart(cur, true);
@@ -1059,18 +1056,15 @@ namespace Idmr.Yogeme
 			{
 				try
 				{
-					FlightGroup fg = (FlightGroup)obj;
-					if (fg == null) throw new FormatException();
+					FlightGroup fg = (FlightGroup)obj ?? throw new FormatException();
 
 					foreach (FlightGroup cur in getSelectedFlightgroups())
 					{
 						cur.Order = fg.Order;
 						cur.TargetPrimary = fg.TargetPrimary;
-						if (cur.TargetPrimary >= _mission.FlightGroups.Count)
-							cur.TargetPrimary = -1;
+						if (cur.TargetPrimary >= _mission.FlightGroups.Count) cur.TargetPrimary = -1;
 						cur.TargetSecondary = fg.TargetSecondary;
-						if (cur.TargetSecondary >= _mission.FlightGroups.Count)
-							cur.TargetSecondary = -1;
+						if (cur.TargetSecondary >= _mission.FlightGroups.Count) 	cur.TargetSecondary = -1;
 						cur.DockTimeThrottle = fg.DockTimeThrottle;
 					}
 					lstFG_SelectedIndexChanged(0, new EventArgs());
@@ -1079,10 +1073,7 @@ namespace Idmr.Yogeme
 				}
 				catch { /* do nothing */ }
 			}
-			else if (Common.Paste(ActiveControl, obj))
-			{
-				Common.Title(this, false);
-			}
+			else if (Common.Paste(ActiveControl, obj)) Common.Title(this, false);
 			else if (ActiveControl.GetType() == typeof(DataGridTextBox))
 			{
 				try
@@ -1106,8 +1097,7 @@ namespace Idmr.Yogeme
 					case 0:
 						try
 						{
-							FlightGroup fg = (FlightGroup)obj;
-							if (fg == null) throw new FormatException();
+							FlightGroup fg = (FlightGroup)obj ?? throw new FormatException();
 
 							if (_mode == EditorMode.BRF)  //Can't validate anything if pasting into BRF, so reset indexes.
 							{
@@ -1258,20 +1248,11 @@ namespace Idmr.Yogeme
 				for (int page = 0; page < br.Pages.Count; page++)
 				{
 					BriefingPage pg = br.GetBriefingPage(page);
-					int briefLen = br.GetEventsLength(page);
-					int p = 0;
-					while (p < briefLen)
+					for (int p = 0; p < pg.Events.Count; p++)
 					{
-						if (pg.Events[p + 1] >= (int)Briefing.EventType.FGTag1 && pg.Events[p + 1] <= (int)Briefing.EventType.FGTag4)
-						{
-							if (pg.Events[p + 2] == fgIndex)
-								count[cBrief]++;
-						}
-						else if (pg.Events[p + 1] == (int)Briefing.EventType.EndBriefing || pg.Events[p + 1] == (int)Briefing.EventType.None)
-						{
-							break;
-						}
-						p += 2 + br.EventParameterCount(pg.Events[p + 1]);
+						if (pg.Events[p].IsEndEvent) break;
+
+						if (pg.Events[p].IsFGTag && pg.Events[p].Variables[0] == fgIndex) count[cBrief]++;
 					}
 				}
 			}
@@ -1305,8 +1286,7 @@ namespace Idmr.Yogeme
 		}
 		void deleteFG()
 		{
-			if (_fBrief != null)  //Close (which also saves) the briefing before accessing it.  Don't call save directly since this may cause FG index corruption if multiple FGs are deleted.
-				_fBrief.Close();
+			_fBrief?.Close();   //Close (which also saves) the briefing before accessing it.  Don't call save directly since this may cause FG index corruption if multiple FGs are deleted.
 
 			restrictSelection();
 			List<int> selection = Common.GetSelectedIndices(lstFG);
@@ -1329,14 +1309,12 @@ namespace Idmr.Yogeme
 						if (count[6] > 0) s += "\nAssociated Briefing FG Tag events will be deleted.";
 						s += "\n\nAre you sure you want to delete this Flight Group?";
 						DialogResult res = MessageBox.Show(s, "WARNING: Confirm Delete", MessageBoxButtons.YesNo);
-						if (res == DialogResult.No)
-							break;  // exit the outer for() loop
+						if (res == DialogResult.No) break;  // exit the outer for() loop
 					}
 				}
 
 				replaceClipboardFGReference(_activeFG, -1);
-				if (_mode == EditorMode.BRF)
-					_mission.Briefing.TransformFGReferences(_activeFG, -1);
+				if (_mode == EditorMode.BRF) _mission.Briefing.TransformFGReferences(_activeFG, -1);
 
 				if (_mission.FlightGroups.Count != 1) lstFG.Items.RemoveAt(_activeFG);
 				craftStart(_mission.FlightGroups[_activeFG], false);
@@ -1356,8 +1334,7 @@ namespace Idmr.Yogeme
 #pragma warning restore IDE0059 // Unnecessary assignment of a value
 			}
 			// Fix bounds and make new selection.
-			if (startFG >= _mission.FlightGroups.Count)
-				startFG = _mission.FlightGroups.Count - 1;
+			if (startFG >= _mission.FlightGroups.Count) startFG = _mission.FlightGroups.Count - 1;
 			lstFG.SelectedIndex = startFG;
 
 			updateFGList();
@@ -1471,9 +1448,9 @@ namespace Idmr.Yogeme
 					case "PlatformSeconds": fg.Formation = Convert.ToByte(value); break;
 					case "Status": fg.Status1 = Convert.ToByte(((int)value == 18 ? 10 : 0) + Convert.ToByte(value)); break;  // B-wing repeats codes at status 10 and higher
 					case "ArriveViaHyper": fg.ArrivalHyperspace = Convert.ToInt16(value); break;
-					case "ArriveViaMothership": fg.ArrivalMethod1 = Convert.ToBoolean(value); break;
+					case "ArriveViaMothership": fg.ArrivalMethod = Convert.ToBoolean(value); break;
 					case "DepartViaHyper": fg.DepartureHyperspace = Convert.ToInt16(value); break;
-					case "DepartViaMothership": fg.DepartureMethod1 = Convert.ToBoolean(value); break;
+					case "DepartViaMothership": fg.DepartureMethod = Convert.ToBoolean(value); break;
 					case "Mothership": fg.Mothership = Convert.ToInt16(translateNullableFG((int)value)); break;
 					case "ArrivalTrigFlightgroup": fg.ArrivalFG = Convert.ToInt16(translateNullableFG((int)value)); break;
 					case "ArrivalTrigCondition": fg.ArrivalEvent = Convert.ToInt16(value); break;
@@ -1660,8 +1637,8 @@ namespace Idmr.Yogeme
 		}
 		void moveFlightgroups(int direction)
 		{
-			if (!checkMove(direction))  // Validates selection count and range.
-				return;
+			if (!checkMove(direction)) return;
+
 			List<int> selection = Common.GetSelectedIndices(lstFG);
 			for (int i = 0; i < selection.Count; i++)
 			{
@@ -1682,7 +1659,7 @@ namespace Idmr.Yogeme
 			}
 			Common.SetSelectedIndices(lstFG, selection, ref _noRefresh);  // Apply adjusted indices
 
-			if (_fBrief != null) _fBrief.Close();
+			_fBrief?.Close();
 			refreshMap(-1);
 			updateFGList();
 			Common.Title(this, false);
