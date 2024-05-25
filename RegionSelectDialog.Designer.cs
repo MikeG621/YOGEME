@@ -42,9 +42,9 @@
 			this.label1.AutoSize = true;
 			this.label1.Location = new System.Drawing.Point(12, 9);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(182, 13);
+			this.label1.Size = new System.Drawing.Size(168, 13);
 			this.label1.TabIndex = 0;
-			this.label1.Text = "Selection Region to apply Backdrops";
+			this.label1.Text = "Select Region to apply Backdrops";
 			// 
 			// optRegion1
 			// 

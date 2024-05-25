@@ -1,16 +1,18 @@
 ﻿/*
- * YOGEME.exe, All-in-one Mission Editor for the X-wing series, TIE through XWA
- * Copyright (C) 2007-2017 Michael Gaisser (mjgaisser@gmail.com)
+ * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
+ * Copyright (C) 2007-2064 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.4.1
+ * VERSION: 1.4.1+
  */
 
 /* CHANGELOG
+ * [UPD] ctor uses Region[] instead of string[]
  * v1.4.1, 171118
  * [NEW] created (#13)
  */
 
+using Idmr.Platform.Xwa;
 using System;
 using System.Windows.Forms;
 
@@ -18,34 +20,22 @@ namespace Idmr.Yogeme
 {
 	public partial class RegionSelectDialog : Form
 	{
-		/// <summary>Initalizes a new dialog.</summary>
-		public RegionSelectDialog()
-		{
-			InitializeComponent();
-		}
-
 		/// <summary>Initializes a dialog using custom region names.</summary>
-		/// <param name="regionNames">Array of region names, must have a <see cref="Array.Length"/> of <b>4</b>.</param>
-		/// <exception cref="ArgumentException">Length of <i>regionNames</i> is not <b>4</b>.</exception>
-		public RegionSelectDialog(string[] regionNames)
+		/// <param name="regions">Array of region objects, must have a <see cref="Array.Length"/> of <b>4</b>.</param>
+		/// <exception cref="ArgumentException">Length of <paramref name="regions"/> is not <b>4</b>.</exception>
+		public RegionSelectDialog(Mission.Region[] regions)
 		{
-			if (regionNames.Length != 4) throw new ArgumentException("regionNames must have length of 4.");
+			if (regions.Length != 4) throw new ArgumentException("regionNames must have length of 4.");
+
 			InitializeComponent();
-			optRegion1.Text = regionNames[0];
-			optRegion2.Text = regionNames[1];
-			optRegion3.Text = regionNames[2];
-			optRegion4.Text = regionNames[3];
+			optRegion1.Text = regions[0].Name;
+			optRegion2.Text = regions[1].Name;
+			optRegion3.Text = regions[2].Name;
+			optRegion4.Text = regions[3].Name;
 		}
 
-		private void cmdOk_Click(object sender, EventArgs e)
-		{
-			Close();
-		}
-
-		private void cmdCancel_Click(object sender, EventArgs e)
-		{
-			Close();
-		}
+		void cmdOk_Click(object sender, EventArgs e) => Close();
+		void cmdCancel_Click(object sender, EventArgs e) => Close();
 
 		public byte SelectedRegion
 		{

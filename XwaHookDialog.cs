@@ -280,8 +280,8 @@ namespace Idmr.Yogeme
 					}
 					if (commandShip != -1) break;
 
-					if (player.ArrivalMethod == 1) commandShip = player.ArrivalMothership;
-					else if (player.DepartureMethod == 1) commandShip = player.DepartureMothership;
+					if (player.ArriveViaMothership == 1) commandShip = player.ArrivalMothership;
+					else if (player.DepartViaMothership == 1) commandShip = player.DepartureMothership;
 				}
                 if (commandShip != -1) break;
             }
