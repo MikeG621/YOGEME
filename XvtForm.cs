@@ -693,7 +693,7 @@ namespace Idmr.Yogeme
 			cboPlayer.SelectedIndex = 0;
 			cboPosition.SelectedIndex = 0;
 			cboFormation.Items.AddRange(Strings.Formation); cboFormation.SelectedIndex = 0;
-			cboRadio.Items.AddRange(Strings.Radio); cboRadio.SelectedIndex = _mission.FlightGroups[0].Radio;
+			cboRadio.Items.AddRange(Strings.Radio); cboRadio.SelectedIndex = (int)_mission.FlightGroups[0].Radio;
 			cboStatus.Items.AddRange(Strings.Status); cboStatus.SelectedIndex = 0;
 			cboStatus2.Items.AddRange(Strings.Status); cboStatus2.SelectedIndex = 0;
 			cboWarheads.Items.AddRange(Strings.Warheads); cboWarheads.SelectedIndex = 0;
@@ -1064,7 +1064,6 @@ namespace Idmr.Yogeme
 			registerFgMultiEdit(cboPosition, "PlayerCraft", 0);
 			registerFgMultiEdit(cboRadio, "Radio", 0);
 			registerFgMultiEdit(cboFormation, "Formation", 0);
-			registerFgMultiEdit(numLead, "FormLeaderDist", 0);
 			registerFgMultiEdit(numSpacing, "FormDistance", 0);
 			registerFgMultiEdit(cboStatus, "Status1", 0);    // numBackdrop tied to Status1
 			registerFgMultiEdit(cboStatus2, "Status2", 0);
@@ -1073,14 +1072,14 @@ namespace Idmr.Yogeme
 			registerFgMultiEdit(cboCounter, "Countermeasures", 0);
 			registerFgMultiEdit(numExplode, "ExplosionTime", 0);
 
-			registerFgMultiEdit(optArrMS, "ArrivalMethod1", 0);
-			registerFgMultiEdit(cboArrMS, "ArrivalCraft1", 0);
-			registerFgMultiEdit(optArrMSAlt, "ArrivalMethod2", 0);
-			registerFgMultiEdit(cboArrMSAlt, "ArrivalCraft2", 0);
-			registerFgMultiEdit(optDepMS, "DepartureMethod1", 0);
-			registerFgMultiEdit(cboDepMS, "DepartureCraft1", 0);
-			registerFgMultiEdit(optDepMSAlt, "DepartureMethod2", 0);
-			registerFgMultiEdit(cboDepMSAlt, "DepartureCraft2", 0);
+			registerFgMultiEdit(optArrMS, "ArriveViaMothership", 0);
+			registerFgMultiEdit(cboArrMS, "ArrivalMothership", 0);
+			registerFgMultiEdit(optArrMSAlt, "AlternateMothershipUsed", 0);
+			registerFgMultiEdit(cboArrMSAlt, "AlternateMothership", 0);
+			registerFgMultiEdit(optDepMS, "DepartViaMothership", 0);
+			registerFgMultiEdit(cboDepMS, "DepartureMothership", 0);
+			registerFgMultiEdit(optDepMSAlt, "CapturedDepartViaMothership", 0);
+			registerFgMultiEdit(cboDepMSAlt, "CapturedDepartureMothership", 0);
 			registerFgMultiEdit(cboADTrigAmount, "ArrDepTrigger", MultiEditRefreshType.ArrDepLabel);
 			registerFgMultiEdit(cboADTrigType, "ArrDepTrigger", MultiEditRefreshType.ArrDepLabel);
 			registerFgMultiEdit(cboADTrigVar, "ArrDepTrigger", MultiEditRefreshType.ArrDepLabel);
@@ -1139,8 +1138,7 @@ namespace Idmr.Yogeme
 			registerFgMultiEdit(numYaw, "Yaw", 0);
 			registerFgMultiEdit(numRoll, "Roll", 0);
 
-			registerFgMultiEdit(numUnk1, "Unk1", 0);   // These are the only unknowns with individual handlers.
-			registerFgMultiEdit(numUnk5, "Unk5", 0);
+			registerFgMultiEdit(numWavesDelay, "Unk1", 0);   // These are the only unknowns with individual handlers.
 
 			registerMsgMultiEdit(cboMessAmount, "MessTrigger", 0);
 			registerMsgMultiEdit(cboMessType, "MessTrigger", 0);
@@ -1157,15 +1155,10 @@ namespace Idmr.Yogeme
 		}
 		void updateMissionTabs()
 		{
-			numMissUnk1.Value = _mission.Unknown1;
-			numMissUnk2.Value = _mission.Unknown2;
-			chkMissUnk3.Checked = _mission.Unknown3;
-			for (int i = 0; i < 4; i++)
-			{
-				txtIFF[i].Text = _mission.IFFs[i + 2];
-			}
+			numWinType.Value = _mission.WinType;
+			for (int i = 0; i < 4; i++) txtIFF[i].Text = _mission.IFFs[i + 2];
 			cboMissType.SelectedIndex = (int)_mission.MissionType;
-			chkPreventOutcome.Checked = _mission.PreventMissionOutcome;
+			chkGoalsUnimportant.Checked = _mission.GoalsUnimportant;
 			numRndSeed.Value = _mission.RndSeed;
 			numMissTimeMin.Value = _mission.TimeLimitMin;
 			numMissTimeSec.Value = _mission.TimeLimitSec;
@@ -1550,10 +1543,10 @@ namespace Idmr.Yogeme
 		}
 		void flightGroupLibraryCallback(object sender, EventArgs e)
 		{
-			foreach (FlightGroup fg in (object[])sender)
+			foreach (FlightGroup fg in (FlightGroup[])sender)
 			{
-				if (fg == null || !newFG())
-					break;
+				if (fg == null || !newFG()) break;
+
 				_mission.FlightGroups[_activeFG] = fg;
 				updateFGList();
 				listRefreshItem(_activeFG);
@@ -2082,55 +2075,45 @@ namespace Idmr.Yogeme
 		{
 			int[] count = new int[8];
 			const int cMothership = 1, cArrDep = 2, cOrder = 3, cSkip = 4, cGoal = 5, cMessage = 6, cBrief = 7;
+			byte typeFG = (byte)Mission.Trigger.TypeList.FlightGroup;
+
 			for (int i = 0; i < _mission.FlightGroups.Count; i++)
 			{
-				if (fgIndex == i)
-					continue;
+				if (fgIndex == i) continue;
 
 				FlightGroup fg = _mission.FlightGroups[i];
-				if (fg.ArrivalMethod1 == true && fg.ArrivalCraft1 == fgIndex) count[cMothership]++;
-				if (fg.ArrivalMethod2 == true && fg.ArrivalCraft2 == fgIndex) count[cMothership]++;
-				if (fg.DepartureMethod1 == true && fg.DepartureCraft1 == fgIndex) count[cMothership]++;
-				if (fg.DepartureMethod2 == true && fg.DepartureCraft2 == fgIndex) count[cMothership]++;
+				if (fg.ArriveViaMothership == true && fg.ArrivalMothership == fgIndex) count[cMothership]++;
+				if (fg.AlternateMothershipUsed && fg.AlternateMothership == fgIndex) count[cMothership]++;
+				if (fg.DepartViaMothership == true && fg.DepartureMothership == fgIndex) count[cMothership]++;
+				if (fg.CapturedDepartViaMothership && fg.CapturedDepartureMothership == fgIndex) count[cMothership]++;
 				foreach (Mission.Trigger adt in fg.ArrDepTriggers)
 				{
 					//Note: many FGs initially present in battle use the first FG for Arr/Dep condition, even though the FG isn't actually used (condition is TRUE or FALSE). In which case no need to warn.
-					if (adt.VariableType == 1 && adt.Variable == fgIndex && adt.Condition != 0 && adt.Condition != 10) count[cArrDep]++;
+					if (adt.VariableType == typeFG && adt.Variable == fgIndex && adt.Condition != 0 && adt.Condition != 10) count[cArrDep]++;
 				}
 				foreach (FlightGroup.Order order in fg.Orders)
 				{
-					if (order.Target1Type == 1 && order.Target1 == fgIndex) count[cOrder]++;
-					if (order.Target2Type == 1 && order.Target2 == fgIndex) count[cOrder]++;
-					if (order.Target3Type == 1 && order.Target3 == fgIndex) count[cOrder]++;
-					if (order.Target4Type == 1 && order.Target4 == fgIndex) count[cOrder]++;
+					if (order.Target1Type == typeFG && order.Target1 == fgIndex) count[cOrder]++;
+					if (order.Target2Type == typeFG && order.Target2 == fgIndex) count[cOrder]++;
+					if (order.Target3Type == typeFG && order.Target3 == fgIndex) count[cOrder]++;
+					if (order.Target4Type == typeFG && order.Target4 == fgIndex) count[cOrder]++;
 				}
 				foreach (Mission.Trigger sk in fg.SkipToOrder4Trigger)
-					if (sk.VariableType == 1 && sk.Variable == fgIndex) count[cSkip]++;
+					if (sk.VariableType == typeFG && sk.Variable == fgIndex) count[cSkip]++;
 			}
 
 			foreach (Globals global in _mission.Globals)
 				foreach (Globals.Goal goal in global.Goals)
 					foreach (Globals.Goal.Trigger trig in goal.Triggers)
-						if (trig.GoalTrigger.VariableType == 1 && trig.GoalTrigger.Variable == fgIndex)
-							count[cGoal]++;
+						if (trig.GoalTrigger.VariableType == typeFG && trig.GoalTrigger.Variable == fgIndex) count[cGoal]++;
 
 			foreach (Platform.Xvt.Message msg in _mission.Messages)
 				foreach (Mission.Trigger trig in msg.Triggers)
-					if (trig.VariableType == 1 && trig.Variable == fgIndex)
-						count[cMessage]++;
+					if (trig.VariableType == typeFG && trig.Variable == fgIndex) count[cMessage]++;
 
 			foreach (var br in _mission.Briefings)
-			{
-				int p = 0;
-				while (p < br.EventsLength)
-				{
-					if (br.Events[p + 1] >= (int)Platform.BaseBriefing.EventType.FGTag1 && br.Events[p + 1] <= (int)Platform.BaseBriefing.EventType.FGTag8)
-						if (br.Events[p + 2] == fgIndex)
-							count[cBrief]++;
-
-					p += 2 + br.EventParameterCount(br.Events[p + 1]);
-				}
-			}
+				foreach (var evt in br.Events)
+					if (evt.IsFGTag && evt.Variables[0] == fgIndex) count[cBrief]++;
 
 			for (int i = 1; i < 8; i++)
 				count[0] += count[i];
@@ -2443,20 +2426,21 @@ namespace Idmr.Yogeme
 
 			string[] fgList = _mission.FlightGroups.GetList();
 			bool temp = _loading;
+			byte typeFG = (byte)Mission.Trigger.TypeList.FlightGroup;
 			_loading = true;
-			comboReset(cboArrMS, fgList, _mission.FlightGroups[_activeFG].ArrivalCraft1);
-			comboReset(cboArrMSAlt, fgList, _mission.FlightGroups[_activeFG].ArrivalCraft2);
-			comboReset(cboDepMS, fgList, _mission.FlightGroups[_activeFG].DepartureCraft1);
-			comboReset(cboDepMSAlt, fgList, _mission.FlightGroups[_activeFG].DepartureCraft2);
+			comboReset(cboArrMS, fgList, _mission.FlightGroups[_activeFG].ArrivalMothership);
+			comboReset(cboArrMSAlt, fgList, _mission.FlightGroups[_activeFG].AlternateMothership);
+			comboReset(cboDepMS, fgList, _mission.FlightGroups[_activeFG].DepartureMothership);
+			comboReset(cboDepMSAlt, fgList, _mission.FlightGroups[_activeFG].CapturedDepartureMothership);
 			//[JB] Force refresh of trigger/order controls if Type==Flight Group is selected.
-			if (cboADTrigType.SelectedIndex == 1) comboReset(cboADTrigVar, fgList, _mission.FlightGroups[_activeFG].ArrDepTriggers[_activeArrDepTrigger].Variable);
-			if (cboSkipType.SelectedIndex == 1) comboReset(cboSkipVar, fgList, cboSkipVar.SelectedIndex);
-			if (cboGlobalType.SelectedIndex == 1) comboReset(cboGlobalVar, fgList, cboGlobalVar.SelectedIndex);
-			if (cboOT1Type.SelectedIndex == 1) comboReset(cboOT1, fgList, _mission.FlightGroups[_activeFG].Orders[_activeOrder].Target1);
-			if (cboOT2Type.SelectedIndex == 1) comboReset(cboOT2, fgList, _mission.FlightGroups[_activeFG].Orders[_activeOrder].Target2);
-			if (cboOT3Type.SelectedIndex == 1) comboReset(cboOT3, fgList, _mission.FlightGroups[_activeFG].Orders[_activeOrder].Target3);
-			if (cboOT4Type.SelectedIndex == 1) comboReset(cboOT4, fgList, _mission.FlightGroups[_activeFG].Orders[_activeOrder].Target4);
-			if (cboMessType.SelectedIndex == 1) comboReset(cboMessVar, fgList, cboMessVar.SelectedIndex);
+			if (cboADTrigType.SelectedIndex == typeFG) comboReset(cboADTrigVar, fgList, _mission.FlightGroups[_activeFG].ArrDepTriggers[_activeArrDepTrigger].Variable);
+			if (cboSkipType.SelectedIndex == typeFG) comboReset(cboSkipVar, fgList, cboSkipVar.SelectedIndex);
+			if (cboGlobalType.SelectedIndex == typeFG) comboReset(cboGlobalVar, fgList, cboGlobalVar.SelectedIndex);
+			if (cboOT1Type.SelectedIndex == typeFG) comboReset(cboOT1, fgList, _mission.FlightGroups[_activeFG].Orders[_activeOrder].Target1);
+			if (cboOT2Type.SelectedIndex == typeFG) comboReset(cboOT2, fgList, _mission.FlightGroups[_activeFG].Orders[_activeOrder].Target2);
+			if (cboOT3Type.SelectedIndex == typeFG) comboReset(cboOT3, fgList, _mission.FlightGroups[_activeFG].Orders[_activeOrder].Target3);
+			if (cboOT4Type.SelectedIndex == typeFG) comboReset(cboOT4, fgList, _mission.FlightGroups[_activeFG].Orders[_activeOrder].Target4);
+			if (cboMessType.SelectedIndex == typeFG) comboReset(cboMessVar, fgList, cboMessVar.SelectedIndex);
 			// Refresh trigger labels
 			for (int i = 0; i < 6; i++) labelRefresh(_mission.FlightGroups[_activeFG].ArrDepTriggers[i], lblADTrig[i]);
 			lblADTrigArr_Click(lblADTrig[_activeArrDepTrigger], new EventArgs());
@@ -2593,24 +2577,23 @@ namespace Idmr.Yogeme
 					case "Markings": fg.Markings = Convert.ToByte(value); break;
 					case "PlayerNumber": fg.PlayerNumber = Convert.ToByte(value); break;
 					case "PlayerCraft": fg.PlayerCraft = Convert.ToByte(value); break;
-					case "Radio": fg.Radio = Convert.ToByte(value); break;
+					case "Radio": fg.Radio = (FlightGroup.RadioChannel)value; break;
 					case "Formation": fg.Formation = Convert.ToByte(value); break;
 					case "FormDistance": fg.FormDistance = Convert.ToByte(value); break;
-					case "FormLeaderDist": fg.FormLeaderDist = Convert.ToByte(value); break;
 					case "Status1": fg.Status1 = Convert.ToByte(value); break;
 					case "Status2": fg.Status2 = Convert.ToByte(value); break;
 					case "Missile": fg.Missile = Convert.ToByte(value); break;
 					case "Beam": fg.Beam = Convert.ToByte(value); break;
-					case "Countermeasures": fg.Countermeasures = Convert.ToByte(value); break;
+					case "Countermeasures": fg.Countermeasures = (FlightGroup.CounterTypes)value; break;
 					case "ExplosionTime": fg.ExplosionTime = Convert.ToByte(value); break;
-					case "ArrivalCraft1": fg.ArrivalCraft1 = Convert.ToByte(value); break;
-					case "ArrivalCraft2": fg.ArrivalCraft2 = Convert.ToByte(value); break;
-					case "DepartureCraft1": fg.DepartureCraft1 = Convert.ToByte(value); break;
-					case "DepartureCraft2": fg.DepartureCraft2 = Convert.ToByte(value); break;
-					case "ArrivalMethod1": fg.ArrivalMethod1 = Convert.ToBoolean(value); break;
-					case "ArrivalMethod2": fg.ArrivalMethod2 = Convert.ToBoolean(value); break;
-					case "DepartureMethod1": fg.DepartureMethod1 = Convert.ToBoolean(value); break;
-					case "DepartureMethod2": fg.DepartureMethod2 = Convert.ToBoolean(value); break;
+					case "ArrivalMothership": fg.ArrivalMothership = Convert.ToByte(value); break;
+					case "AlternateMothership": fg.AlternateMothership = Convert.ToByte(value); break;
+					case "DepartureMothership": fg.DepartureMothership = Convert.ToByte(value); break;
+					case "CapturedDepartureMothership": fg.CapturedDepartureMothership = Convert.ToByte(value); break;
+					case "ArriveViaMothership": fg.ArriveViaMothership = Convert.ToBoolean(value); break;
+					case "AlternateMothershipUsed": fg.AlternateMothershipUsed = Convert.ToBoolean(value); break;
+					case "DepartViaMothership": fg.DepartViaMothership = Convert.ToBoolean(value); break;
+					case "CapturedDepartViaMothership": fg.CapturedDepartViaMothership = Convert.ToBoolean(value); break;
 					case "ArrDepTrigger":
 						trig = getTriggerFromControls(cboADTrigAmount, cboADTrigType, cboADTrigVar, cboADTrig);
 						fg.ArrDepTriggers[_activeArrDepTrigger] = trig;     // trig needed for refresh at end
@@ -2653,7 +2636,7 @@ namespace Idmr.Yogeme
 					case "Order34Or": fg.Orders[_activeOrder].T3AndOrT4 = Convert.ToBoolean(value); break;
 					case "OrderThrottle": fg.Orders[_activeOrder].Throttle = Convert.ToByte(value); break;
 					case "OrderSpeed": fg.Orders[_activeOrder].Speed = Convert.ToByte(value); break;
-					case "StopArrivingWhen": fg.StopArrivingWhen = Convert.ToByte(value); break;
+					case "StopArrivingWhen": fg.StopArrivingWhen = (FlightGroup.WavesEnd)value; break;
 					case "RandomArrivalDelayMinutes": fg.RandomArrivalDelayMinutes = Convert.ToByte(value); break;
 					case "RandomArrivalDelaySeconds": fg.RandomArrivalDelaySeconds = Convert.ToByte(value); break;
 					case "OptCategory": fg.OptCraftCategory = (FlightGroup.OptionalCraftCategory)Convert.ToByte(value); break;
@@ -2666,8 +2649,6 @@ namespace Idmr.Yogeme
 					case "Pitch": fg.Pitch = Convert.ToInt16(value); break;
 					case "Yaw": fg.Yaw = Convert.ToInt16(value); break;
 					case "Roll": fg.Roll = Convert.ToInt16(value); break;
-					case "Unk1": fg.Unknowns.Unknown1 = Convert.ToByte(value); break;
-					case "Unk5": fg.Unknowns.Unknown5 = Convert.ToByte(value); break;
 					default: throw new ArgumentException("Unhandled multi-edit property: " + name);
 				}
 				if(refreshType.HasFlag(MultiEditRefreshType.CraftCount)) craftStart(fg, true);
@@ -2732,37 +2713,38 @@ namespace Idmr.Yogeme
 			cboPlayer.SelectedIndex = _mission.FlightGroups[_activeFG].PlayerNumber;
 			cboPosition.SelectedIndex = _mission.FlightGroups[_activeFG].PlayerCraft;
 			cboFormation.SelectedIndex = _mission.FlightGroups[_activeFG].Formation;
-			cboRadio.SelectedIndex = _mission.FlightGroups[_activeFG].Radio;
-			numLead.Value = _mission.FlightGroups[_activeFG].FormLeaderDist;
+			cboRadio.SelectedIndex = (int)_mission.FlightGroups[_activeFG].Radio;
 			numSpacing.Value = _mission.FlightGroups[_activeFG].FormDistance;
 			numWaves.Value = _mission.FlightGroups[_activeFG].NumberOfWaves;
+			numWavesDelay.Value = _mission.FlightGroups[_activeFG].WavesDelay;
 			numCraft.Value = _mission.FlightGroups[_activeFG].NumberOfCraft;
 			numGG.Value = _mission.FlightGroups[_activeFG].GlobalGroup;
 			numGU.Value = _mission.FlightGroups[_activeFG].GlobalUnit;
+			chkPreventNumbering.Checked = _mission.FlightGroups[_activeFG].PreventCraftNumbering;
 			refreshStatus();  //Handles Status1, special case for mines.
 			Common.SafeSetCBO(cboStatus2, _mission.FlightGroups[_activeFG].Status2, true);
 			cboWarheads.SelectedIndex = _mission.FlightGroups[_activeFG].Missile;
 			cboBeam.SelectedIndex = _mission.FlightGroups[_activeFG].Beam;
-			cboCounter.SelectedIndex = _mission.FlightGroups[_activeFG].Countermeasures;
+			cboCounter.SelectedIndex = (int)_mission.FlightGroups[_activeFG].Countermeasures;
 			numExplode.Value = _mission.FlightGroups[_activeFG].ExplosionTime;
 			#endregion
 			#region Arr/Dep
-			optArrMS.Checked = _mission.FlightGroups[_activeFG].ArrivalMethod1;
+			optArrMS.Checked = _mission.FlightGroups[_activeFG].ArriveViaMothership;
 			optArrHyp.Checked = !optArrMS.Checked;
-			try { cboArrMS.SelectedIndex = _mission.FlightGroups[_activeFG].ArrivalCraft1; }
-			catch { cboArrMS.SelectedIndex = 0; _mission.FlightGroups[_activeFG].ArrivalCraft1 = 0; optArrHyp.Checked = true; }
-			optArrMSAlt.Checked = _mission.FlightGroups[_activeFG].ArrivalMethod2;
+			try { cboArrMS.SelectedIndex = _mission.FlightGroups[_activeFG].ArrivalMothership; }
+			catch { cboArrMS.SelectedIndex = 0; _mission.FlightGroups[_activeFG].ArrivalMothership = 0; optArrHyp.Checked = true; }
+			optArrMSAlt.Checked = _mission.FlightGroups[_activeFG].AlternateMothershipUsed;
 			optArrHypAlt.Checked = !optArrMSAlt.Checked;
-			try { cboArrMSAlt.SelectedIndex = _mission.FlightGroups[_activeFG].ArrivalCraft2; }
-			catch { cboArrMSAlt.SelectedIndex = 0; _mission.FlightGroups[_activeFG].ArrivalCraft2 = 0; optArrHypAlt.Checked = true; }
-			optDepMS.Checked = _mission.FlightGroups[_activeFG].DepartureMethod1;
+			try { cboArrMSAlt.SelectedIndex = _mission.FlightGroups[_activeFG].AlternateMothership; }
+			catch { cboArrMSAlt.SelectedIndex = 0; _mission.FlightGroups[_activeFG].AlternateMothership = 0; optArrHypAlt.Checked = true; }
+			optDepMS.Checked = _mission.FlightGroups[_activeFG].DepartViaMothership;
 			optDepHyp.Checked = !optDepMS.Checked;
-			try { cboDepMS.SelectedIndex = _mission.FlightGroups[_activeFG].DepartureCraft1; }
-			catch { cboDepMS.SelectedIndex = 0; _mission.FlightGroups[_activeFG].DepartureCraft1 = 0; optDepHyp.Checked = true; }
-			optDepMSAlt.Checked = _mission.FlightGroups[_activeFG].DepartureMethod2;
+			try { cboDepMS.SelectedIndex = _mission.FlightGroups[_activeFG].DepartureMothership; }
+			catch { cboDepMS.SelectedIndex = 0; _mission.FlightGroups[_activeFG].DepartureMothership = 0; optDepHyp.Checked = true; }
+			optDepMSAlt.Checked = _mission.FlightGroups[_activeFG].CapturedDepartViaMothership;
 			optDepHypAlt.Checked = !optDepMSAlt.Checked;
-			try { cboDepMSAlt.SelectedIndex = _mission.FlightGroups[_activeFG].DepartureCraft2; }
-			catch { cboDepMSAlt.SelectedIndex = 0; _mission.FlightGroups[_activeFG].DepartureCraft2 = 0; optDepHypAlt.Checked = true; }
+			try { cboDepMSAlt.SelectedIndex = _mission.FlightGroups[_activeFG].CapturedDepartureMothership; }
+			catch { cboDepMSAlt.SelectedIndex = 0; _mission.FlightGroups[_activeFG].CapturedDepartureMothership = 0; optDepHypAlt.Checked = true; }
 			for (int i = 0; i < 4; i++)
 			{
 				optADAndOr[i].Checked = _mission.FlightGroups[_activeFG].ArrDepAO[i];
@@ -2772,12 +2754,14 @@ namespace Idmr.Yogeme
 			numArrSec.Value = _mission.FlightGroups[_activeFG].ArrivalDelaySeconds;
 			numDepMin.Value = _mission.FlightGroups[_activeFG].DepartureTimerMinutes;
 			numDepSec.Value = _mission.FlightGroups[_activeFG].DepartureTimerSeconds;
+			numDepClockMin.Value = _mission.FlightGroups[_activeFG].DepartureClockMinutes;
+			numDepClockSec.Value = _mission.FlightGroups[_activeFG].DepartureClockSeconds;
 			cboAbort.SelectedIndex = _mission.FlightGroups[_activeFG].AbortTrigger;
 			cboDiff.SelectedIndex = _mission.FlightGroups[_activeFG].Difficulty;
 			chkArrHuman.Checked = _mission.FlightGroups[_activeFG].ArriveOnlyIfHuman;
 			for (int i = 0; i < 6; i++) labelRefresh(_mission.FlightGroups[_activeFG].ArrDepTriggers[i], lblADTrig[i]);
 			lblADTrigArr_Click(lblADTrig[0], new EventArgs());  //[JB] Added sender.  Fixes massive slowdown from exception handling a null control.  Also fixed the remaining _Click() calls with the relevant senders.
-			Common.SafeSetCBO(cboStopArrivingWhen, _mission.FlightGroups[_activeFG].StopArrivingWhen, true);
+			Common.SafeSetCBO(cboStopArrivingWhen, (int)_mission.FlightGroups[_activeFG].StopArrivingWhen, true);
 			numRandomArrivalDelayMinutes.Value = _mission.FlightGroups[_activeFG].RandomArrivalDelayMinutes;
 			numRandomArrivalDelaySeconds.Value = _mission.FlightGroups[_activeFG].RandomArrivalDelaySeconds;
 			#endregion
@@ -2806,25 +2790,6 @@ namespace Idmr.Yogeme
 			cboOptCat.SelectedIndex = (int)_mission.FlightGroups[_activeFG].OptCraftCategory;
 			optSkipOR.Checked = _mission.FlightGroups[_activeFG].SkipToO4T1AndOrT2;
 			optSkipAND.Checked = !optSkipOR.Checked;
-			#endregion
-			#region Unknowns
-			numUnk1.Value = _mission.FlightGroups[_activeFG].Unknowns.Unknown1;
-			numUnk5.Value = _mission.FlightGroups[_activeFG].Unknowns.Unknown5;
-			numUnkOrder.Value = 1;
-			numUnkOrder_ValueChanged(0, new EventArgs()); //[JB] Force refresh of associated checkboxes
-			chkUnk17.Checked = _mission.FlightGroups[_activeFG].Unknowns.Unknown17;
-			chkUnk18.Checked = _mission.FlightGroups[_activeFG].Unknowns.Unknown18;
-			chkPreventNumbering.Checked = _mission.FlightGroups[_activeFG].PreventCraftNumbering;
-			numDepClockMin.Value = _mission.FlightGroups[_activeFG].DepartureClockMinutes;
-			numDepClockSec.Value = _mission.FlightGroups[_activeFG].DepartureClockSeconds;
-			chkUnk22.Checked = _mission.FlightGroups[_activeFG].Unknowns.Unknown22;
-			chkUnk23.Checked = _mission.FlightGroups[_activeFG].Unknowns.Unknown23;
-			chkUnk24.Checked = _mission.FlightGroups[_activeFG].Unknowns.Unknown24;
-			chkUnk25.Checked = _mission.FlightGroups[_activeFG].Unknowns.Unknown25;
-			chkUnk26.Checked = _mission.FlightGroups[_activeFG].Unknowns.Unknown26;
-			chkUnk27.Checked = _mission.FlightGroups[_activeFG].Unknowns.Unknown27;
-			chkUnk28.Checked = _mission.FlightGroups[_activeFG].Unknowns.Unknown28;
-			chkUnk29.Checked = _mission.FlightGroups[_activeFG].Unknowns.Unknown29;
 			#endregion
 			//[JB] Need to check special cargo to restore edit box if necessary.
 			bool sc = _mission.FlightGroups[_activeFG].RandSpecCargo | (_mission.FlightGroups[_activeFG].SpecialCargoCraft > 0);
@@ -2869,7 +2834,6 @@ namespace Idmr.Yogeme
 			cboRadio.Enabled = !state;
 			cboFormation.Enabled = !state;
 			numSpacing.Enabled = !state;
-			numLead.Enabled = !state;
 			cmdForms.Enabled = !state;
 			cmdBackdrop.Enabled = state;
 			numBackdrop.Enabled = state;
@@ -3657,51 +3621,6 @@ namespace Idmr.Yogeme
 			lblExplode.Text = numExplode.Value != 0 ? (numExplode.Value * 5) + " sec" : "default";
 		}
 		#endregion
-		#region Unknowns
-
-		void grpUnkOrder_Leave(object sender, EventArgs e)
-		{
-			numUnkOrder_Enter("grpUnkOrder_Leave", new EventArgs());
-		}
-		void grpUnkOther_Leave(object sender, EventArgs e)
-		{
-			// Not important enough to separate editing of individual values.
-			foreach (FlightGroup fg in getSelectedFlightgroups())
-			{
-				fg.Unknowns.Unknown17 = Common.Update(this, fg.Unknowns.Unknown17, chkUnk17.Checked);
-				fg.Unknowns.Unknown18 = Common.Update(this, fg.Unknowns.Unknown18, chkUnk18.Checked);
-				fg.Unknowns.Unknown22 = Common.Update(this, fg.Unknowns.Unknown22, chkUnk22.Checked);
-				fg.Unknowns.Unknown23 = Common.Update(this, fg.Unknowns.Unknown23, chkUnk23.Checked);
-				fg.Unknowns.Unknown24 = Common.Update(this, fg.Unknowns.Unknown24, chkUnk24.Checked);
-				fg.Unknowns.Unknown25 = Common.Update(this, fg.Unknowns.Unknown25, chkUnk25.Checked);
-				fg.Unknowns.Unknown26 = Common.Update(this, fg.Unknowns.Unknown26, chkUnk26.Checked);
-				fg.Unknowns.Unknown27 = Common.Update(this, fg.Unknowns.Unknown27, chkUnk27.Checked);
-				fg.Unknowns.Unknown28 = Common.Update(this, fg.Unknowns.Unknown28, chkUnk28.Checked);
-				fg.Unknowns.Unknown29 = Common.Update(this, fg.Unknowns.Unknown29, chkUnk29.Checked);
-			}
-		}
-
-		void numUnkOrder_Enter(object sender, EventArgs e)
-		{
-			int i = (int)numUnkOrder.Value - 1;
-			// Not important enough to separate editing of individual values.
-			foreach (FlightGroup fg in getSelectedFlightgroups())
-			{
-				fg.Orders[i].Unknown6 = Common.Update(this, fg.Orders[i].Unknown6, Convert.ToByte(numUnk6.Value));
-				fg.Orders[i].Unknown7 = Common.Update(this, fg.Orders[i].Unknown7, Convert.ToByte(numUnk7.Value));
-				fg.Orders[i].Unknown8 = Common.Update(this, fg.Orders[i].Unknown8, Convert.ToByte(numUnk8.Value));
-				fg.Orders[i].Unknown9 = Common.Update(this, fg.Orders[i].Unknown9, Convert.ToByte(numUnk9.Value));
-			}
-		}
-		void numUnkOrder_ValueChanged(object sender, EventArgs e)
-		{
-			int i = (int)numUnkOrder.Value - 1;
-			numUnk6.Value = _mission.FlightGroups[_activeFG].Orders[i].Unknown6;
-			numUnk7.Value = _mission.FlightGroups[_activeFG].Orders[i].Unknown7;
-			numUnk8.Value = _mission.FlightGroups[_activeFG].Orders[i].Unknown8;
-			numUnk9.Value = _mission.FlightGroups[_activeFG].Orders[i].Unknown9;
-		}
-		#endregion
 		#endregion
 		#region Messages
 		bool newMess()
@@ -4176,13 +4095,9 @@ namespace Idmr.Yogeme
 			_mission.MissionType = Common.Update(this, _mission.MissionType, (Mission.MissionTypeEnum)Convert.ToByte(cboMissType.SelectedIndex));
 		}
 
-		void chkMissUnk3_Leave(object sender, EventArgs e)
+		void chkGoalsUnimportant_Leave(object sender, EventArgs e)
 		{
-			_mission.Unknown3 = Common.Update(this, _mission.Unknown3, chkMissUnk3.Checked);
-		}
-		void chkPreventOutcome_Leave(object sender, EventArgs e)
-		{
-			_mission.PreventMissionOutcome = Common.Update(this, _mission.PreventMissionOutcome, chkPreventOutcome.Checked);
+			_mission.GoalsUnimportant = Common.Update(this, _mission.GoalsUnimportant, chkGoalsUnimportant.Checked);
 		}
 		private void numRndSeed_ValueChanged(object sender, EventArgs e)
 		{
@@ -4196,13 +4111,9 @@ namespace Idmr.Yogeme
 		{
 			_mission.TimeLimitSec = Common.Update(this, _mission.TimeLimitSec, Convert.ToByte(numMissTimeSec.Value));
 		}
-		void numMissUnk1_Leave(object sender, EventArgs e)
+		void numWinType_Leave(object sender, EventArgs e)
 		{
-			_mission.Unknown1 = Common.Update(this, _mission.Unknown1, Convert.ToByte(numMissUnk1.Value));
-		}
-		void numMissUnk2_Leave(object sender, EventArgs e)
-		{
-			_mission.Unknown2 = Common.Update(this, _mission.Unknown2, Convert.ToByte(numMissUnk2.Value));
+			_mission.WinType = Common.Update(this, _mission.WinType, Convert.ToByte(numWinType.Value));
 		}
 
 		void optXvT_CheckedChanged(object sender, EventArgs e)
