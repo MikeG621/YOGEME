@@ -1036,8 +1036,8 @@ namespace Idmr.Yogeme
 					foreach (FlightGroup cur in getSelectedFlightgroups())
 					{
 						craftStart(cur, false);
-						cur.ArrivalHyperspace = fg.ArrivalHyperspace;
-						cur.DepartureHyperspace = fg.DepartureHyperspace;
+						cur.ArriveViaHyperspace = fg.ArriveViaHyperspace;
+						cur.DepartViaHyperspace = fg.DepartViaHyperspace;
 						cur.Mothership = fg.Mothership;
 						if (cur.Mothership >= _mission.FlightGroups.Count) cur.Mothership = -1;
 						cur.ArrivalFG = fg.ArrivalFG;
@@ -1447,10 +1447,8 @@ namespace Idmr.Yogeme
 					case "PlatformValue": fg.Formation = Convert.ToByte(value); break;    // Multipurpose property
 					case "PlatformSeconds": fg.Formation = Convert.ToByte(value); break;
 					case "Status": fg.Status1 = Convert.ToByte(((int)value == 18 ? 10 : 0) + Convert.ToByte(value)); break;  // B-wing repeats codes at status 10 and higher
-					case "ArriveViaHyper": fg.ArrivalHyperspace = Convert.ToInt16(value); break;
-					case "ArriveViaMothership": fg.ArrivalMethod = Convert.ToBoolean(value); break;
-					case "DepartViaHyper": fg.DepartureHyperspace = Convert.ToInt16(value); break;
-					case "DepartViaMothership": fg.DepartureMethod = Convert.ToBoolean(value); break;
+					case "ArriveViaHyperspace": fg.ArriveViaHyperspace = Convert.ToBoolean(value); break;
+					case "DepartViaHyperspace": fg.DepartViaHyperspace = Convert.ToBoolean(value); break;
 					case "Mothership": fg.Mothership = Convert.ToInt16(translateNullableFG((int)value)); break;
 					case "ArrivalTrigFlightgroup": fg.ArrivalFG = Convert.ToInt16(translateNullableFG((int)value)); break;
 					case "ArrivalTrigCondition": fg.ArrivalEvent = Convert.ToInt16(value); break;
@@ -1781,7 +1779,7 @@ namespace Idmr.Yogeme
 					else
 					{
 						if (fg.ArrivalFG == srcIndex) { fg.ArrivalFG = dst; fg.ArrivalEvent = 0; change = true; } else if (fg.ArrivalFG > srcIndex && dstIndex == -1) { fg.ArrivalFG--; change = true; }
-						if (fg.Mothership == srcIndex) { fg.Mothership = dst; fg.ArrivalHyperspace = 1; change = true; } else if (fg.Mothership > srcIndex && dstIndex == -1) { fg.Mothership--; change = true; }
+						if (fg.Mothership == srcIndex) { fg.Mothership = dst; fg.ArriveViaHyperspace = true; change = true; } else if (fg.Mothership > srcIndex && dstIndex == -1) { fg.Mothership--; change = true; }
 						if (fg.TargetPrimary == srcIndex) { fg.TargetPrimary = dst; change = true; } else if (fg.TargetPrimary > srcIndex && dstIndex == -1) { fg.TargetPrimary--; change = true; }
 						if (fg.TargetSecondary == srcIndex) { fg.TargetSecondary = dst; change = true; } else if (fg.TargetSecondary > srcIndex && dstIndex == -1) { fg.TargetSecondary--; change = true; }
 					}
@@ -1950,9 +1948,9 @@ namespace Idmr.Yogeme
 			cboStatus.SelectedIndex = _mission.FlightGroups[_activeFG].Status1 % 10;  //Status >= 10 is for the B-wing, status codes repeat in the same order
 			#endregion
 			#region Arr/Dep
-			optArrHyp.Checked = Convert.ToBoolean(_mission.FlightGroups[_activeFG].ArrivalHyperspace);
+			optArrHyp.Checked = _mission.FlightGroups[_activeFG].ArriveViaHyperspace;
 			optArrMS.Checked = !optArrHyp.Checked;
-			optDepHyp.Checked = Convert.ToBoolean(_mission.FlightGroups[_activeFG].DepartureHyperspace);
+			optDepHyp.Checked = _mission.FlightGroups[_activeFG].DepartViaHyperspace;
 			optDepMS.Checked = !optDepHyp.Checked;
 			comboLoadIndex(cboMothership, _mission.FlightGroups[_activeFG].Mothership, true);
 			comboLoadIndex(cboArrFG, _mission.FlightGroups[_activeFG].ArrivalFG, true);

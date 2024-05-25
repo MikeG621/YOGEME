@@ -1700,9 +1700,9 @@ namespace Idmr.Yogeme
 					continue;
 
 				FlightGroup fg = _mission.FlightGroups[i];
-				if (fg.ArrivalMethod == true && fg.ArrivalMothership == fgIndex) count[cMothership]++;
+				if (fg.ArriveViaMothership && fg.ArrivalMothership == fgIndex) count[cMothership]++;
 				if (fg.AlternateMothershipUsed && fg.AlternateMothership == fgIndex) count[cMothership]++;
-				if (fg.DepartureMethod == true && fg.DepartureMothership == fgIndex) count[cMothership]++;
+				if (fg.DepartViaMothership && fg.DepartureMothership == fgIndex) count[cMothership]++;
 				if (fg.CapturedDepartViaMothership && fg.CapturedDepartureMothership == fgIndex) count[cMothership]++;
 				foreach (Mission.Trigger adt in fg.ArrDepTriggers)
 				{
@@ -1894,9 +1894,9 @@ namespace Idmr.Yogeme
 					case "AlternateMothership": fg.AlternateMothership = Convert.ToByte(value); break;
 					case "DepartureMothership": fg.DepartureMothership = Convert.ToByte(value); break;
 					case "CapturedDepartureMothership": fg.CapturedDepartureMothership = Convert.ToByte(value); break;
-					case "ArrivalMethod": fg.ArrivalMethod = Convert.ToBoolean(value); break;
+					case "ArriveViaMothership": fg.ArriveViaMothership = Convert.ToBoolean(value); break;
 					case "AlternateMothershipUsed": fg.AlternateMothershipUsed = Convert.ToBoolean(value); break;
-					case "DepartureMethod": fg.DepartureMethod = Convert.ToBoolean(value); break;
+					case "DepartViaMothership": fg.DepartViaMothership = Convert.ToBoolean(value); break;
 					case "CapturedDepartViaMothership": fg.CapturedDepartViaMothership = Convert.ToBoolean(value); break;
 					case "ArrDepTrigger":
 						fg.ArrDepTriggers[_activeArrDepTrigger] = getTriggerFromControls(cboADTrigAmount, cboADTrigType, cboADTrigVar, cboADTrig);
@@ -2252,11 +2252,11 @@ namespace Idmr.Yogeme
 			cboBeam.SelectedIndex = _mission.FlightGroups[_activeFG].Beam;
 			#endregion
 			#region Arr/Dep
-			optArrMS.Checked = Convert.ToBoolean(_mission.FlightGroups[_activeFG].ArrivalMethod);
+			optArrMS.Checked = Convert.ToBoolean(_mission.FlightGroups[_activeFG].ArriveViaMothership);
 			optArrHyp.Checked = !optArrMS.Checked;
 			optArrMSAlt.Checked = Convert.ToBoolean(_mission.FlightGroups[_activeFG].AlternateMothershipUsed);
 			optArrHypAlt.Checked = !optArrMSAlt.Checked;
-			optDepMS.Checked = Convert.ToBoolean(_mission.FlightGroups[_activeFG].DepartureMethod);
+			optDepMS.Checked = Convert.ToBoolean(_mission.FlightGroups[_activeFG].DepartViaMothership);
 			optDepHyp.Checked = !optDepMS.Checked;
 			optDepMSAlt.Checked = Convert.ToBoolean(_mission.FlightGroups[_activeFG].CapturedDepartViaMothership);
 			optDepHypAlt.Checked = !optDepMSAlt.Checked;

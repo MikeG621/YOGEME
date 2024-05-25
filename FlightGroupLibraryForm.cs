@@ -9,6 +9,7 @@
 
 /* CHANGELOG:
  * [UPD] Mostly cleanup
+ * [UPD] ArrDep renames
  * v1.8, 201004
  * [NEW] Release [JB]
  */
@@ -416,20 +417,20 @@ namespace Idmr.Yogeme
 		/// <summary>Scans a BaseFlightGroup's arrival/departure motherships for FG reference problems.</summary>
 		private void scanMothershipProblems(Platform.BaseFlightGroup bfg, bool scrubProblems, List<string> output)
 		{
-			if (bfg.ArrivalMethod)
+			if (bfg.ArriveViaMothership)
 			{
 				logProblem("Arrival mothership is FG:" + bfg.ArrivalMothership, output);
-				if (scrubProblems) { bfg.ArrivalMethod = false; bfg.ArrivalMothership = 0; }
+				if (scrubProblems) { bfg.ArriveViaMothership = false; bfg.ArrivalMothership = 0; }
 			}
 			if (bfg.AlternateMothershipUsed)
 			{
 				logProblem("Alternate Arrival mothership is FG:" + bfg.AlternateMothership, output);
 				if (scrubProblems) { bfg.AlternateMothershipUsed = false; bfg.AlternateMothership = 0; }
 			}
-			if (bfg.DepartureMethod)
+			if (bfg.DepartViaMothership)
 			{
 				logProblem("Departure mothership is FG:" + bfg.DepartureMothership, output);
-				if (scrubProblems) { bfg.DepartureMethod = false; bfg.DepartureMothership = 0; }
+				if (scrubProblems) { bfg.DepartViaMothership = false; bfg.DepartureMothership = 0; }
 			}
 			if (bfg.CapturedDepartViaMothership)
 			{
@@ -456,15 +457,15 @@ namespace Idmr.Yogeme
 					Platform.Xwing.FlightGroup xwing = (Platform.Xwing.FlightGroup)fg;
 					if (xwing.Mothership >= 0)
 					{
-						if (xwing.ArrivalHyperspace == 0)
+						if (!xwing.ArriveViaHyperspace)
 						{
 							logProblem("Arrival mothership is FG:" + xwing.Mothership, errors);
-							if (scrubProblems) xwing.ArrivalHyperspace = 1;
+							if (scrubProblems) xwing.ArriveViaHyperspace = true;
 						}
-						if (xwing.DepartureHyperspace == 0)
+						if (!xwing.DepartViaHyperspace)
 						{
 							logProblem("Departure mothership is FG:" + xwing.Mothership, errors);
-							if (scrubProblems) xwing.DepartureHyperspace = 1;
+							if (scrubProblems) xwing.DepartViaHyperspace = true;
 						}
 						if (scrubProblems) xwing.Mothership = -1;
 					}
