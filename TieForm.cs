@@ -914,7 +914,7 @@ namespace Idmr.Yogeme
 			numRndSeed.Value = _mission.RandomSeed;
 			numTimeLimitMin.Value = _mission.TimeLimitMin;
 			numTimeLimitSec.Value = _mission.TimeLimitSec;
-			numEomDelay.Value = _mission.EomDelay;
+			numEomDelay.Value = _mission.RawFailedEomDelay;
 			numRescue.Value = _mission.Rescue;
 			for (int i = 0; i < 8; i++) numVars[i].Value = _mission.LegacyVars[i];
 			numWin1.Value = _mission.WinBonus[0];
@@ -1034,10 +1034,11 @@ namespace Idmr.Yogeme
 		void messageMultiEditHandler(object sender, EventArgs e)
 		{
 			if (_loading) return;
+
 			MultiEditProperty prop = (MultiEditProperty)((Control)sender).Tag;
 			if (prop.Name != "")
 			{
-				setMessageProperty(/*prop.RefreshType,*/ prop.Name, Common.GetControlValue(sender));
+				setMessageProperty(prop.Name, Common.GetControlValue(sender));
 				Common.Title(this, false);
 			}
 			if (prop.RefreshType.HasFlag(MultiEditRefreshType.ItemText)) messRefreshSelectedItems();
@@ -2814,7 +2815,7 @@ namespace Idmr.Yogeme
 				msgs.Add(_mission.Messages[msgIndex]);
 			return msgs;
 		}
-		void setMessageProperty(/*MultiEditRefreshType refreshType,*/ string name, object value)
+		void setMessageProperty(string name, object value)
 		{
 			int trigRefresh = 0;
 			foreach (Platform.Tie.Message msg in getSelectedMessages())
@@ -2827,7 +2828,7 @@ namespace Idmr.Yogeme
 						if (trigRefresh++ == 0) labelRefresh(trig, _activeMessageTrig == 0 ? lblMess1 : lblMess2);  // only refresh once
 						break;
 					case "MessColor": msg.Color = Convert.ToByte(value); break;
-					case "MessDelay": msg.Delay = Convert.ToByte((int)value / 5); break;
+					case "MessDelay": msg.RawDelay = Convert.ToByte(value); break;
 					case "Mess1OR2": msg.Trig1AndOrTrig2 = Convert.ToBoolean(value); break;
 				}
 			}
@@ -2961,12 +2962,19 @@ namespace Idmr.Yogeme
 			txtMessage.Text = _mission.Messages[_activeMessage].MessageString;
 			txtShort.Text = _mission.Messages[_activeMessage].Short;
 			cboMessColor.SelectedIndex = _mission.Messages[_activeMessage].Color;
-			numMessDelay.Value = _mission.Messages[_activeMessage].Delay * 5;
+			numMessDelay.Value = _mission.Messages[_activeMessage].RawDelay;
 			optMessOR.Checked = _mission.Messages[_activeMessage].Trig1AndOrTrig2;
 			optMessAND.Checked = !optMessOR.Checked;
 			lblMessArr_Click(0, new EventArgs());
 			_loading = btemp;
 		}
+
+		void numMessDelay_ValueChanged(object sender, EventArgs e)
+		{
+			_mission.Messages[_activeMessage].RawDelay = Common.Update(this, _mission.Messages[_activeMessage].RawDelay, (byte)numMessDelay.Value);
+			lblMessDelay.Text = "= " + (int)(numMessDelay.Value / 12) + ":" + (numMessDelay.Value * 5 % 60).ToString("00");
+		}
+
 		void txtMessage_TextChanged(object sender, EventArgs e)
 		{
 			if (_loading) return;
@@ -2997,13 +3005,11 @@ namespace Idmr.Yogeme
 			cboGlobalType.SelectedIndex = -1;
 			cboGlobalType.SelectedIndex = _mission.GlobalGoals.Goals[_activeGlobalGoal / 2].Triggers[_activeGlobalGoal % 2].VariableType;
 			cboGlobalAmount.SelectedIndex = _mission.GlobalGoals.Goals[_activeGlobalGoal / 2].Triggers[_activeGlobalGoal % 2].Amount;
-			numGlobalDelay.Value = _mission.GlobalGoals.Goals[_activeGlobalGoal / 2].Delay;
+			numGlobalDelay.Value = _mission.GlobalGoals.Goals[_activeGlobalGoal / 2].RawDelay;
+			txtGlobalNote.Text = _mission.GlobalGoals.Goals[_activeGlobalGoal / 2].Name;
 			_loading = btemp;
 		}
-		void lblGlobArr_DoubleClick(object sender, EventArgs e)
-		{
-			menuPaste_Click("Glob", new EventArgs());
-		}
+		void lblGlobArr_DoubleClick(object sender, EventArgs e) => menuPaste_Click("Glob", new EventArgs());
 		void lblGlobArr_MouseUp(object sender, MouseEventArgs e)
 		{
 			if (e.Button == MouseButtons.Right) menuCopy_Click("Glob", new EventArgs());
@@ -3021,7 +3027,7 @@ namespace Idmr.Yogeme
 				_mission.GlobalGoals.Goals[_activeGlobalGoal / 2].Triggers[_activeGlobalGoal % 2].Condition = Common.Update(this, _mission.GlobalGoals.Goals[_activeGlobalGoal / 2].Triggers[_activeGlobalGoal % 2].Condition, Convert.ToByte(cboGlobalTrig.SelectedIndex));
 			labelRefresh(_mission.GlobalGoals.Goals[_activeGlobalGoal / 2].Triggers[_activeGlobalGoal % 2], lblGlob[_activeGlobalGoal]);
 		}
-		void cboGlobalType_SelectedIndexChanged(object sender, System.EventArgs e)
+		void cboGlobalType_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (cboGlobalType.SelectedIndex == -1) return;
 			if (!_loading)
@@ -3040,24 +3046,30 @@ namespace Idmr.Yogeme
 
 		void numGlobalDelay_ValueChanged(object sender, EventArgs e)
 		{
-			_mission.GlobalGoals.Goals[_activeGlobalGoal / 2].Delay = Common.Update(this, _mission.GlobalGoals.Goals[_activeGlobalGoal / 2].Delay, (byte)numGlobalDelay.Value);
-			lblGlobalDelay.Text = "= " + numGlobalDelay.Value / 12 + ":" + (numGlobalDelay.Value * 5 % 60).ToString("g2");
+			_mission.GlobalGoals.Goals[_activeGlobalGoal / 2].RawDelay = Common.Update(this, _mission.GlobalGoals.Goals[_activeGlobalGoal / 2].RawDelay, (byte)numGlobalDelay.Value);
+			lblGlobalDelay.Text = "= " + (int)(numGlobalDelay.Value / 12) + ":" + (numGlobalDelay.Value * 5 % 60).ToString("00");
 		}
 
-		void optBonOR_CheckedChanged(object sender, System.EventArgs e)
+		void optBonOR_CheckedChanged(object sender, EventArgs e)
 		{
 			if (!_loading)
 				_mission.GlobalGoals.Goals[2].T1AndOrT2 = Common.Update(this, _mission.GlobalGoals.Goals[2].T1AndOrT2, optBonOR.Checked);
 		}
-		void optPrimOR_CheckedChanged(object sender, System.EventArgs e)
+		void optPrimOR_CheckedChanged(object sender, EventArgs e)
 		{
 			if (!_loading)
 				_mission.GlobalGoals.Goals[0].T1AndOrT2 = Common.Update(this, _mission.GlobalGoals.Goals[0].T1AndOrT2, optPrimOR.Checked);
 		}
-		void optSecOR_CheckedChanged(object sender, System.EventArgs e)
+		void optSecOR_CheckedChanged(object sender, EventArgs e)
 		{
 			if (!_loading)
 				_mission.GlobalGoals.Goals[1].T1AndOrT2 = Common.Update(this, _mission.GlobalGoals.Goals[1].T1AndOrT2, optSecOR.Checked);
+		}
+
+		void txtGlobalNote_TextChanged(object sender, EventArgs e)
+		{
+			if (!_loading)
+				_mission.GlobalGoals.Goals[_activeGlobalGoal / 2].Name = Common.Update(this, _mission.GlobalGoals.Goals[_activeGlobalGoal / 2].Name, txtGlobalNote.Text);
 		}
 		#endregion
 		#region Officers
@@ -3301,8 +3313,8 @@ namespace Idmr.Yogeme
 
 		void numEomDelay_ValueChanged(object sender, EventArgs e)
 		{
-			_mission.EomDelay = Common.Update(this, _mission.EomDelay, (byte)numEomDelay.Value);
-			lblEomDelay.Text = "= " + _mission.EomDelay / 12 + ":" + (_mission.EomDelay * 5 % 60).ToString("g2");
+			_mission.RawFailedEomDelay = Common.Update(this, _mission.RawFailedEomDelay, (byte)numEomDelay.Value);
+			lblEomDelay.Text = "= " + _mission.FailedEomDelaySeconds / 60 + ":" + (_mission.FailedEomDelaySeconds % 60).ToString("00");
 		}
 		void numTimeLimitMin_Leave(object sender, EventArgs e) => _mission.TimeLimitMin = Common.Update(this, _mission.TimeLimitMin, (byte)numTimeLimitMin.Value);
 		void numTimeLimitSec_Leave(object sender, EventArgs e) => _mission.TimeLimitSec = Common.Update(this, _mission.TimeLimitSec, (byte)numTimeLimitSec.Value);
@@ -3327,8 +3339,7 @@ namespace Idmr.Yogeme
 			_mission.IFFs[(int)t.Tag] = Common.Update(this, _mission.IFFs[(int)t.Tag], t.Text);
 			comboReset(cboIFF, getIffStrings(), cboIFF.SelectedIndex);
 		}
-		#endregion
 
-		
+		#endregion
 	}
 }
