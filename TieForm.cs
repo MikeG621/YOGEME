@@ -381,7 +381,7 @@ namespace Idmr.Yogeme
 			tabMain.SelectedIndex = 0;
 			tabFGMinor.SelectedIndex = 0;
 			comboReset(cboIFF, getIffStrings(), 0);  //[JB] Changed by feature request.
-			this.Text = "Ye Olde Galactic Empire Mission Editor - TIE - New Mission.tie";
+			Text = "Ye Olde Galactic Empire Mission Editor - TIE - New Mission.tie";
 		}
 		void loadCraftData(string fileMission)
 		{
@@ -480,8 +480,8 @@ namespace Idmr.Yogeme
 			bool btemp = _loading;  //[JB] Now that the IFFs are loaded, replace the list items.  Need to set _loading otherwise it will trigger an IFF reset for the first FG.
 			_loading = true;
 			comboReset(cboIFF, getIffStrings(), 0);  //[JB] Feature added by request.
-			_loading = btemp;
 			updateMissionTabs();
+			_loading = btemp;
 			Text = "Ye Olde Galactic Empire Mission Editor - TIE - " + _mission.MissionFileName;
 			_config.LastMission = fileMission;
 			refreshRecent();
@@ -1047,6 +1047,7 @@ namespace Idmr.Yogeme
 		void opnTIE_FileOk(object sender, System.ComponentModel.CancelEventArgs e)
 		{
 			_loading = true;
+			initializeMission();
 			if (loadMission(opnTIE.FileName))
 			{
 				tabMain.SelectedIndex = 0;
@@ -2330,6 +2331,8 @@ namespace Idmr.Yogeme
 			cboStatus.Visible = !state;
 			lblBackdrop.Visible = state;
 			chkRadio.Enabled = !state;
+			txtCargo.Enabled = !state;
+			numWaveDelay.Enabled = !state;
 		}
 		void refreshStatus()
 		{
