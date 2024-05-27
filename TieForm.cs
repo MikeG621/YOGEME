@@ -8,6 +8,7 @@
 
 /* CHANGELOG
  * [UPD] Spec updates (TimeLimit, RndSeed, Vars, WinBonus, Rescue, EomDelay, GlobalDelay, WaveDelay, ArrDep renames)
+ * [UPD] IFF5 (Red) Hostile permanently checked
  * v1.15.5, 231222
  * [NEW #97] GlobalSummary dialog
  * [UPD] SaveAs upgrades now use Platform
@@ -196,7 +197,6 @@ namespace Idmr.Yogeme
 		readonly RadioButton[] optOfficers = new RadioButton[4];
 		readonly MenuItem[] menuRecentMissions = new MenuItem[6];
 		readonly Dictionary<ComboBox, ComboBox> colorizedFGList = new Dictionary<ComboBox, ComboBox>();  //[JB] Maps a control that should have a colorized FG list with a control that determines whether the list actually contains a FG list.
-		readonly NumericUpDown[] numVars = new NumericUpDown[8];
 #pragma warning restore IDE1006 // Naming Styles
 		#endregion
 
@@ -771,23 +771,10 @@ namespace Idmr.Yogeme
 			txtIFF[3] = txtIFF6;
 			for (int i = 0; i < 4; i++)
 			{
-				chkIFF[i].Leave += new EventHandler(chkIFFArr_Leave);
+				if (i != 2) chkIFF[i].Leave += new EventHandler(chkIFFArr_Leave);
 				chkIFF[i].Tag = i + 2;
 				txtIFF[i].Leave += new EventHandler(txtIFFArr_Leave);
 				txtIFF[i].Tag = i + 2;
-			}
-			numVars[0] = numVar1;
-			numVars[1] = numVar2;
-			numVars[2] = numVar3;
-			numVars[3] = numVar4;
-			numVars[4] = numVar5;
-			numVars[5] = numVar6;
-			numVars[6] = numVar7;
-			numVars[7] = numVar8;
-			for (int i = 0; i < 8; i++)
-			{
-				numVars[i].Leave += new EventHandler(numVars_Leave);
-				numVars[i].Tag = i;
 			}
 			#endregion
 			updateMissionTabs();
@@ -813,7 +800,6 @@ namespace Idmr.Yogeme
 			registerFgMultiEdit(txtPilot, "Pilot", 0);
 			registerFgMultiEdit(numCraft, "NumberOfCraft", MultiEditRefreshType.ItemText | MultiEditRefreshType.CraftName | MultiEditRefreshType.CraftCount);
 			registerFgMultiEdit(numWaves, "NumberOfWaves", MultiEditRefreshType.ItemText);
-			registerFgMultiEdit(numWaveDelay, "WavesDelay", 0);
 			// numGlobal has special logic, not handled here.
 			registerFgMultiEdit(txtCargo, "Cargo", 0);
 			registerFgMultiEdit(txtSpecCargo, "SpecialCargo", 0);
@@ -909,16 +895,11 @@ namespace Idmr.Yogeme
 			for (int i = 0; i < 4; i++)
 			{
 				txtIFF[i].Text = _mission.IFFs[i + 2];
-				chkIFF[i].Checked = _mission.IffHostile[i + 2];
+				if (i != 2) chkIFF[i].Checked = _mission.IffHostile[i + 2];
 			}
 			numRndSeed.Value = _mission.RandomSeed;
 			numTimeLimitMin.Value = _mission.TimeLimitMin;
 			numTimeLimitSec.Value = _mission.TimeLimitSec;
-			numEomDelay.Value = _mission.RawFailedEomDelay;
-			numRescue.Value = _mission.Rescue;
-			for (int i = 0; i < 8; i++) numVars[i].Value = _mission.LegacyVars[i];
-			numWin1.Value = _mission.WinBonus[0];
-			numWin2.Value = _mission.WinBonus[1];
 			#endregion
 			#region Messages tab
 			int msgIndex = lstMessages.SelectedIndex;
@@ -2239,7 +2220,6 @@ namespace Idmr.Yogeme
 			chkRandSC.Checked = _mission.FlightGroups[_activeFG].RandSpecCargo;
 			numCraft.Value = _mission.FlightGroups[_activeFG].NumberOfCraft;
 			numWaves.Value = _mission.FlightGroups[_activeFG].NumberOfWaves;
-			numWaveDelay.Value = _mission.FlightGroups[_activeFG].WavesDelay;
 			numGlobal.Value = _mission.FlightGroups[_activeFG].GlobalGroup;
 			cboCraft.SelectedIndex = _mission.FlightGroups[_activeFG].CraftType;
 			cboIFF.SelectedIndex = _mission.FlightGroups[_activeFG].IFF;
@@ -2332,7 +2312,6 @@ namespace Idmr.Yogeme
 			lblBackdrop.Visible = state;
 			chkRadio.Enabled = !state;
 			txtCargo.Enabled = !state;
-			numWaveDelay.Enabled = !state;
 		}
 		void refreshStatus()
 		{
@@ -3008,7 +2987,6 @@ namespace Idmr.Yogeme
 			cboGlobalType.SelectedIndex = -1;
 			cboGlobalType.SelectedIndex = _mission.GlobalGoals.Goals[_activeGlobalGoal / 2].Triggers[_activeGlobalGoal % 2].VariableType;
 			cboGlobalAmount.SelectedIndex = _mission.GlobalGoals.Goals[_activeGlobalGoal / 2].Triggers[_activeGlobalGoal % 2].Amount;
-			numGlobalDelay.Value = _mission.GlobalGoals.Goals[_activeGlobalGoal / 2].RawDelay;
 			txtGlobalNote.Text = _mission.GlobalGoals.Goals[_activeGlobalGoal / 2].Name;
 			_loading = btemp;
 		}
@@ -3045,12 +3023,6 @@ namespace Idmr.Yogeme
 			if(!_loading)
 				_mission.GlobalGoals.Goals[_activeGlobalGoal / 2].Triggers[_activeGlobalGoal % 2].Variable = Common.Update(this, _mission.GlobalGoals.Goals[_activeGlobalGoal / 2].Triggers[_activeGlobalGoal % 2].Variable, Convert.ToByte(cboGlobalVar.SelectedIndex));
 			labelRefresh(_mission.GlobalGoals.Goals[_activeGlobalGoal / 2].Triggers[_activeGlobalGoal % 2], lblGlob[_activeGlobalGoal]);
-		}
-
-		void numGlobalDelay_ValueChanged(object sender, EventArgs e)
-		{
-			_mission.GlobalGoals.Goals[_activeGlobalGoal / 2].RawDelay = Common.Update(this, _mission.GlobalGoals.Goals[_activeGlobalGoal / 2].RawDelay, (byte)numGlobalDelay.Value);
-			lblGlobalDelay.Text = "= " + (int)(numGlobalDelay.Value / 12) + ":" + (numGlobalDelay.Value * 5 % 60).ToString("00");
 		}
 
 		void optBonOR_CheckedChanged(object sender, EventArgs e)
@@ -3313,23 +3285,11 @@ namespace Idmr.Yogeme
 			CheckBox c = (CheckBox)sender;
 			_mission.IffHostile[(int)c.Tag] = Common.Update(this, _mission.IffHostile[(int)c.Tag], c.Checked);
 		}
+		void chkIFF5_CheckedChanged(object sender, EventArgs e) => chkIFF5.Checked = true;
 
-		void numEomDelay_ValueChanged(object sender, EventArgs e)
-		{
-			_mission.RawFailedEomDelay = Common.Update(this, _mission.RawFailedEomDelay, (byte)numEomDelay.Value);
-			lblEomDelay.Text = "= " + _mission.FailedEomDelaySeconds / 60 + ":" + (_mission.FailedEomDelaySeconds % 60).ToString("00");
-		}
 		void numTimeLimitMin_Leave(object sender, EventArgs e) => _mission.TimeLimitMin = Common.Update(this, _mission.TimeLimitMin, (byte)numTimeLimitMin.Value);
 		void numTimeLimitSec_Leave(object sender, EventArgs e) => _mission.TimeLimitSec = Common.Update(this, _mission.TimeLimitSec, (byte)numTimeLimitSec.Value);
-		void numRescue_Leave(object sender, EventArgs e) => _mission.Rescue = Common.Update(this, _mission.Rescue, (byte)numRescue.Value);
 		void numRndSeed_Leave(object sender, EventArgs e) => _mission.RandomSeed = Common.Update(this, _mission.RandomSeed, (byte)numRndSeed.Value);
-		void numVars_Leave(object sender, EventArgs e)
-		{
-			NumericUpDown n = (NumericUpDown)sender;
-			_mission.LegacyVars[(int)n.Tag] = Common.Update(this, _mission.LegacyVars[(int)n.Tag], (byte)n.Value);
-		}
-		void numWin1_Leave(object sender, EventArgs e) => _mission.WinBonus[0] = Common.Update(this, _mission.WinBonus[0], (byte)numWin1.Value);
-		void numWin2_Leave(object sender, EventArgs e) => _mission.WinBonus[1] = Common.Update(this, _mission.WinBonus[1], (byte)numWin2.Value);
 
 		void txtEoMArr_Leave(object sender, EventArgs e)
 		{
@@ -3342,7 +3302,6 @@ namespace Idmr.Yogeme
 			_mission.IFFs[(int)t.Tag] = Common.Update(this, _mission.IFFs[(int)t.Tag], t.Text);
 			comboReset(cboIFF, getIffStrings(), cboIFF.SelectedIndex);
 		}
-
 		#endregion
 	}
 }
