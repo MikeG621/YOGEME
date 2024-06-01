@@ -39,8 +39,8 @@ be getting better. This will leave behind a single config file in AppData with
 your user settings.
 
 ## Latest Release
-#### v1.15.7, 19 May 2024
-- (XWA) Briefing logo was off by 1, not accounting for "None" properly.
+#### v1.15.8, 1 Jun 2024
+- (XWA) Fixed a Hook dialog crash, something I broke back in v1.15. (Microsoft documentation lied to me...) [Issue #101]
 
 ---
 ### Additional Information
@@ -53,6 +53,9 @@ your user settings.
 
 ### Version History
 
+#### v1.15.7, 19 May 2024
+- (XWA) Briefing logo was off by 1, not accounting for "None" properly.
+- 
 #### v1.15.6, 11 Mar 2024
 - Option to toggle SuperBackdrops now always enabled, even if not detected. Still doesn't do anything if not installed.
 - (XWA) Fixed a crash if SuperBackdrops is enabled on a new mission and the default craft type is Backdrop [Issue #100]
