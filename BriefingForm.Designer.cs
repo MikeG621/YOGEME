@@ -101,12 +101,12 @@ namespace Idmr.Yogeme
 			this.dataS = new System.Windows.Forms.DataGrid();
 			this.label2 = new System.Windows.Forms.Label();
 			this.tabEvents = new System.Windows.Forms.TabPage();
+			this.label14 = new System.Windows.Forms.Label();
+			this.numTile = new System.Windows.Forms.NumericUpDown();
 			this.chkShift = new System.Windows.Forms.CheckBox();
 			this.labBriefIndex2 = new System.Windows.Forms.Label();
 			this.cboBriefIndex2 = new System.Windows.Forms.ComboBox();
 			this.cmdNew = new System.Windows.Forms.Button();
-			this.numTile = new System.Windows.Forms.NumericUpDown();
-			this.label14 = new System.Windows.Forms.Label();
 			this.cmdUp = new System.Windows.Forms.Button();
 			this.grpParameters = new System.Windows.Forms.GroupBox();
 			this.cboRotate = new System.Windows.Forms.ComboBox();
@@ -1125,6 +1125,30 @@ namespace Idmr.Yogeme
 			this.tabEvents.TabIndex = 2;
 			this.tabEvents.Text = "Event List";
 			// 
+			// label14
+			// 
+			this.label14.AutoSize = true;
+			this.label14.Location = new System.Drawing.Point(317, 77);
+			this.label14.Name = "label14";
+			this.label14.Size = new System.Drawing.Size(107, 13);
+			this.label14.TabIndex = 1;
+			this.label14.Text = "Tile (unknown effect)";
+			this.label14.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
+			this.label14.Visible = false;
+			// 
+			// numTile
+			// 
+			this.numTile.Location = new System.Drawing.Point(430, 75);
+			this.numTile.Maximum = new decimal(new int[] {
+            65535,
+            0,
+            0,
+            0});
+			this.numTile.Name = "numTile";
+			this.numTile.Size = new System.Drawing.Size(56, 20);
+			this.numTile.TabIndex = 22;
+			this.numTile.Visible = false;
+			// 
 			// chkShift
 			// 
 			this.chkShift.AutoSize = true;
@@ -1163,28 +1187,6 @@ namespace Idmr.Yogeme
 			this.cmdNew.TabIndex = 2;
 			this.cmdNew.Text = "&New Event";
 			this.cmdNew.Click += new System.EventHandler(this.cmdNew_Click);
-			// 
-			// numTile
-			// 
-			this.numTile.Location = new System.Drawing.Point(430, 75);
-			this.numTile.Maximum = new decimal(new int[] {
-            65535,
-            0,
-            0,
-            0});
-			this.numTile.Name = "numTile";
-			this.numTile.Size = new System.Drawing.Size(56, 20);
-			this.numTile.TabIndex = 22;
-			// 
-			// label14
-			// 
-			this.label14.AutoSize = true;
-			this.label14.Location = new System.Drawing.Point(317, 77);
-			this.label14.Name = "label14";
-			this.label14.Size = new System.Drawing.Size(107, 13);
-			this.label14.TabIndex = 1;
-			this.label14.Text = "Tile (unknown effect)";
-			this.label14.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
 			// 
 			// cmdUp
 			// 
