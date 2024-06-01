@@ -56,6 +56,9 @@ Extensive updates due to changes in Platform.dll, using the full file format spe
 
 ### Version History
 
+#### v1.15.8, 1 Jun 2024
+- (XWA) Fixed a Hook dialog crash, something I broke back in v1.15. (Microsoft documentation lied to me...) [Issue [#101](https://github.com/MikeG621/YOGEME/issues/101)]
+- 
 #### v1.15.7, 19 May 2024
 - (XWA) Briefing logo was off by 1, not accounting for "None" properly.
 

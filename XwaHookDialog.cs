@@ -3,11 +3,13 @@
  * Copyright (C) 2007-2024 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.15.6+
+ * VERSION: 1.15.8+
  */
 
 /* CHANGELOG
  * [UPD] ArrDep renames
+ * v1.15.8, 240601
+ * [FIX #101] Cleanup in v1.15 broke File.Delete, exception for empty string isn't just 2.1 and older per the documentation...
  * v1.15.6, 240314
  * [ADD] WeaponRates hook support
  * v1.15.5, 231222
@@ -2485,57 +2487,57 @@ namespace Idmr.Yogeme
 				if (res == DialogResult.No) return;
 			}
 
-			if (lstBackdrops.Items.Count == 0) File.Delete(_bdFile);
+			if (lstBackdrops.Items.Count == 0 && _bdFile != "") File.Delete(_bdFile);
 
-			if (lstMission.Items.Count == 0 && !useSFoils && lstCraftText.Items.Count == 0 && !useMissionSettings) File.Delete(_missionTxtFile);
+			if (lstMission.Items.Count == 0 && !useSFoils && lstCraftText.Items.Count == 0 && !useMissionSettings && _missionTxtFile != "") File.Delete(_missionTxtFile);
 
-			if (lstSounds.Items.Count == 0) File.Delete(_soundFile);
-			if (!useInterdiction) File.Delete(_interdictionFile);
+			if (lstSounds.Items.Count == 0 && _soundFile != "") File.Delete(_soundFile);
+			if (!useInterdiction && _interdictionFile != "") File.Delete(_interdictionFile);
 
-			if (lstObjects.Items.Count == 0 && lstHullIcon.Items.Count == 0) File.Delete(_objFile);
+			if (lstObjects.Items.Count == 0 && lstHullIcon.Items.Count == 0 && _objFile != "") File.Delete(_objFile);
 
 			if (!useHangarObjects)
 			{
-				File.Delete(_hangarObjectsFile);
-                File.Delete(_hangarObjectsFileSI);
-                File.Delete(_hangarObjectsFileS);
+				if (_hangarObjectsFile != "") File.Delete(_hangarObjectsFile);
+				if (_hangarObjectsFileSI != "") File.Delete(_hangarObjectsFileSI);
+				if (_hangarObjectsFileS != "") File.Delete(_hangarObjectsFileS);
             }
 			if (!useHangarCamera)
 			{
-				File.Delete(_hangarCameraFile);
-                File.Delete(_hangarCameraFileSI);
-                File.Delete(_hangarCameraFileS);
+				if (_hangarCameraFile != "") File.Delete(_hangarCameraFile);
+				if (_hangarCameraFileSI != "") File.Delete(_hangarCameraFileSI);
+				if (_hangarCameraFileS != "") File.Delete(_hangarCameraFileS);
             }
 			if (!useFamilyHangarCamera)
 			{
-				File.Delete(_famHangarCameraFile);
-                File.Delete(_famHangarCameraFileSI);
-                File.Delete(_famHangarCameraFileS);
+				if (_famHangarCameraFile != "") File.Delete(_famHangarCameraFile);
+				if (_famHangarCameraFileSI != "") File.Delete(_famHangarCameraFileSI);
+				if (_famHangarCameraFileS != "") File.Delete(_famHangarCameraFileS);
             }
 			if (!useHangarMap)
 			{
-				File.Delete(_hangarMapFile);
-                File.Delete(_hangarMapFileSI);
-                File.Delete(_hangarMapFileS);
+				if (_hangarMapFile != "") File.Delete(_hangarMapFile);
+				if (_hangarMapFileSI != "") File.Delete(_hangarMapFileSI);
+				if (_hangarMapFileS != "") File.Delete(_hangarMapFileS);
             }
 			if (!useFamilyHangarMap)
 			{
-				File.Delete(_famHangarMapFile);
-				File.Delete(_famHangarMapFileSI);
-				File.Delete(_famHangarMapFileS);
+				if (_famHangarMapFile != "") File.Delete(_famHangarMapFile);
+				if (_famHangarMapFileSI != "") File.Delete(_famHangarMapFileSI);
+				if (_famHangarMapFileS != "") File.Delete(_famHangarMapFileS);
 			}
 
-            if (lstSkins.Items.Count == 0) File.Delete(_32bppFile);
+            if (lstSkins.Items.Count == 0 && _32bppFile != "") File.Delete(_32bppFile);
 
-			if (lstShield.Items.Count == 0 && chkSSRecharge.Checked) File.Delete(_shieldFile);
+			if (lstShield.Items.Count == 0 && chkSSRecharge.Checked && _shieldFile != "") File.Delete(_shieldFile);
 
-			if (optHypGlobal.Checked) File.Delete(_hyperFile);
+			if (optHypGlobal.Checked && _hyperFile != "") File.Delete(_hyperFile);
 
-			if (!chkConcoursePlanetIndex.Checked && !chkConcoursePlanetX.Checked && !chkConcoursePlanetY.Checked) File.Delete(_concourseFile);
+			if (!chkConcoursePlanetIndex.Checked && !chkConcoursePlanetX.Checked && !chkConcoursePlanetY.Checked && _concourseFile != "") File.Delete(_concourseFile);
 
-			if (!chkPlayerHull.Checked) File.Delete(_hullIconFile);
+			if (!chkPlayerHull.Checked && _hullIconFile != "") File.Delete(_hullIconFile);
 
-			if (lstStats.Items.Count == 0) File.Delete(_statsFile);
+			if (lstStats.Items.Count == 0 && _statsFile != "") File.Delete(_statsFile);
 
 			if (lstBackdrops.Items.Count == 0
 				&& lstMission.Items.Count == 0 && lstCraftText.Items.Count == 0 && !useMissionSettings
