@@ -1,12 +1,13 @@
 /*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
- * Copyright (C) 2007-2023 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2024 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.15.5
+ * VERSION: 1.15.5+
  */
 
 /* CHANGELOG
+ * [UPD] spec updates, cleanup
  * v1.15.5, 231222
  * [NEW #97] GlobalSummary dialog
  * [UPD] SaveAs XWA now uses Platform
@@ -380,7 +381,7 @@ namespace Idmr.Yogeme
 				brText = Brushes.Gray;
 			return brText;
 		}
-		Color getHighlightColor() { return _config.ColorInteractSelected; }
+		Color getHighlightColor() => _config.ColorInteractSelected;
 		/// <summary>Generates a string list of IFF names which provide default names instead of an empty string when no custom names are defined</summary>
 		string[] getIffStrings()
 		{
@@ -1204,10 +1205,7 @@ namespace Idmr.Yogeme
 			setInteractiveLabelColor(lblSkipTrig2, _activeSkipTrigger == 1);
 		}
 
-		void briefingModifiedCallback(object sender, EventArgs e)
-		{
-			Common.Title(this, _loading);
-		}
+		void briefingModifiedCallback(object sender, EventArgs e) => Common.Title(this, _loading);
 
 		void colorizedComboBox_DrawItem(object sender, DrawItemEventArgs e)
 		{
@@ -1420,10 +1418,7 @@ namespace Idmr.Yogeme
 		#endregion event handlers
 
 		#region Menu
-		void menuAbout_Click(object sender, EventArgs e)
-		{
-			new AboutDialog().ShowDialog();
-		}
+		void menuAbout_Click(object sender, EventArgs e) => new AboutDialog().ShowDialog();
 		void menuBrief_Click(object sender, EventArgs e)
 		{
 			Common.Title(this, false);
@@ -1522,14 +1517,8 @@ namespace Idmr.Yogeme
 			if(Common.Cut(ActiveControl))
 				Common.Title(this, false);
 		}
-		void menuER_Click(object sender, EventArgs e)
-		{
-			Common.LaunchER();
-		}
-		void menuExit_Click(object sender, EventArgs e)
-		{
-			Close();
-		}
+		void menuER_Click(object sender, EventArgs e) => Common.LaunchER();
+		void menuExit_Click(object sender, EventArgs e) => Close();
 		void menuGlobalSummary_Click(object sender, EventArgs e) => new GlobalSummaryDialog(_mission.FlightGroups).Show();
 		void menuGoalSummary_Click(object sender, EventArgs e)
 		{
@@ -1554,14 +1543,8 @@ namespace Idmr.Yogeme
 				craftStart(fg, true);
 			}
 		}
-		void menuHelpInfo_Click(object sender, EventArgs e)
-		{
-			Common.LaunchHelp();
-		}
-		void menuIDMR_Click(object sender, EventArgs e)
-		{
-			Common.LaunchIdmr();
-		}
+		void menuHelpInfo_Click(object sender, EventArgs e) => Common.LaunchHelp();
+		void menuIDMR_Click(object sender, EventArgs e) => Common.LaunchIdmr();
 		void menuLST_Click(object sender, EventArgs e)
 		{
 			try { _fLST.Close(); }
@@ -1591,10 +1574,7 @@ namespace Idmr.Yogeme
 			new XwingForm(_config).Show();
 			Close();
 		}
-		void menuNewBoP_Click(object sender, EventArgs e)
-		{
-			menuNewXvT_Click("BoP", new EventArgs());
-		}
+		void menuNewBoP_Click(object sender, EventArgs e) => menuNewXvT_Click("BoP", new EventArgs());
 		void menuNewTIE_Click(object sender, EventArgs e)
 		{
 			promptSave();
@@ -1617,7 +1597,7 @@ namespace Idmr.Yogeme
 			for (_activeTeam = 0; _activeTeam < 10; _activeTeam++) teamRefresh();
 			lblTeamArr_Click(lblTeam[0], new EventArgs());
 			setBop(sender.ToString() == "BoP");
-			if (this.Text.EndsWith("*")) this.Text = this.Text.Substring(0, this.Text.Length - 1);
+			if (Text.EndsWith("*")) Text = Text.Substring(0, Text.Length - 1);
 			_loading = false;  //[JB] Fix loading state when creating a new mission
 		}
 		void menuNewXWA_Click(object sender, EventArgs e)
@@ -1640,10 +1620,7 @@ namespace Idmr.Yogeme
 				opnXvT.InitialDirectory = _config.GetWorkingPath(); //Update since folder may have changed
 			}
 		}
-		void menuOptions_Click(object sender, EventArgs e)
-		{
-			new OptionsDialog(_config, applySettingsHandler).ShowDialog();
-		}
+		void menuOptions_Click(object sender, EventArgs e) => new OptionsDialog(_config, applySettingsHandler).ShowDialog();
 		void menuDelete_Click(object sender, EventArgs e)
 		{
 			if (tabMain.SelectedIndex == 0)
@@ -2063,7 +2040,7 @@ namespace Idmr.Yogeme
 		}
 		void menuVerify_Click(object sender, EventArgs e)
 		{
-			menuSave_Click("Verify", new System.EventArgs());
+			menuSave_Click("Verify", new EventArgs());
 			if (!_config.Verify) Common.RunVerify(_mission.MissionPath, _config);    //prevents from doing this twice due to Save
 		}
 		#endregion
@@ -2806,14 +2783,8 @@ namespace Idmr.Yogeme
 			Common.UpdateMoveButtons(cmdMoveFGUp, cmdMoveFGDown, lstFG);
 			if (!lstFG.Focused) lstFG.Focus();  //[JB] Return control back to the list (helpful to maintain navigation using the arrow keys when certain tabs are open)
 		}
-		void cmdMoveFGUp_Click(object sender, EventArgs e)
-		{
-			moveFlightgroups(-1);
-		}
-		void cmdMoveFGDown_Click(object sender, EventArgs e)
-		{
-			moveFlightgroups(1);
-		}
+		void cmdMoveFGUp_Click(object sender, EventArgs e) => moveFlightgroups(-1);
+		void cmdMoveFGDown_Click(object sender, EventArgs e) => moveFlightgroups(1);
 		#region Craft
 		void enableBackdrop(bool state)
 		{
@@ -3825,10 +3796,7 @@ namespace Idmr.Yogeme
 			cboMessAmount.SelectedIndex = _mission.Messages[_activeMessage].Triggers[_activeMessageTrigger].Amount;
 			_loading = btemp;
 		}
-		void lblMessTrigArr_DoubleClick(object sender, EventArgs e)
-		{
-			menuPaste_Click("MessTrig", new EventArgs());
-		}
+		void lblMessTrigArr_DoubleClick(object sender, EventArgs e) => menuPaste_Click("MessTrig", new EventArgs());
 		void lblMessTrigArr_MouseUp(object sender, MouseEventArgs e)
 		{
 			if (e.Button == MouseButtons.Right) menuCopy_Click("MessTrig", new EventArgs());
@@ -3847,19 +3815,10 @@ namespace Idmr.Yogeme
 			_mission.Messages[_activeMessage].MessageString = Common.Update(this, _mission.Messages[_activeMessage].MessageString, txtMessage.Text);
 			messRefreshItem(_activeMessage);
 		}
-		void txtShort_Leave(object sender, EventArgs e)
-		{
-			_mission.Messages[_activeMessage].Note = Common.Update(this, _mission.Messages[_activeMessage].Note, txtShort.Text);
-		}
+		void txtShort_Leave(object sender, EventArgs e) => _mission.Messages[_activeMessage].Note = Common.Update(this, _mission.Messages[_activeMessage].Note, txtShort.Text);
 
-		void cmdMoveMessUp_Click(object sender, EventArgs e)
-		{
-			moveMessages(-1);
-		}
-		void cmdMoveMessDown_Click(object sender, EventArgs e)
-		{
-			moveMessages(1);
-		}
+		void cmdMoveMessUp_Click(object sender, EventArgs e) => moveMessages(-1);
+		void cmdMoveMessDown_Click(object sender, EventArgs e) => moveMessages(1);
 		#endregion
 		#region Globals
 		void cboGlobalTeam_SelectedIndexChanged(object sender, EventArgs e)
@@ -3908,10 +3867,7 @@ namespace Idmr.Yogeme
 			labelRefresh(_mission.Globals[_activeTeam].Goals[g].Triggers[t].GoalTrigger, lblGlobTrig[_activeGlobalTrigger]);
 			_loading = btemp;
 		}
-		void lblGlobTrigArr_DoubleClick(object sender, EventArgs e)
-		{
-			menuPaste_Click("Glob", new EventArgs());
-		}
+		void lblGlobTrigArr_DoubleClick(object sender, EventArgs e) => menuPaste_Click("Glob", new EventArgs());
 		void lblGlobTrigArr_MouseUp(object sender, MouseEventArgs e)
 		{
 			if (e.Button == MouseButtons.Right) menuCopy_Click("Glob", new EventArgs());
@@ -3957,10 +3913,7 @@ namespace Idmr.Yogeme
 			labelRefresh(_mission.Globals[_activeTeam].Goals[g].Triggers[t].GoalTrigger, lblGlobTrig[_activeGlobalTrigger]);
 		}
 
-		void numGlobalPoints_Leave(object sender, EventArgs e)
-		{
-			_mission.Globals[_activeTeam].Goals[_activeGlobalTrigger / 4].Points = Common.Update(this, _mission.Globals[_activeTeam].Goals[_activeGlobalTrigger / 4].Points, (short)numGlobalPoints.Value);
-		}
+		void numGlobalPoints_Leave(object sender, EventArgs e) => _mission.Globals[_activeTeam].Goals[_activeGlobalTrigger / 4].Points = Common.Update(this, _mission.Globals[_activeTeam].Goals[_activeGlobalTrigger / 4].Points, (short)numGlobalPoints.Value);
 
 		void txtGlobal_Leave(object sender, EventArgs e)
 		{
@@ -4068,10 +4021,7 @@ namespace Idmr.Yogeme
 			}
 			_loading = btemp;
 		}
-		void lblTeamArr_DoubleClick(object sender, EventArgs e)
-		{
-			menuPaste_Click("Team", new EventArgs());
-		}
+		void lblTeamArr_DoubleClick(object sender, EventArgs e) => menuPaste_Click("Team", new EventArgs());
 		void lblTeamArr_MouseUp(object sender, MouseEventArgs e)
 		{
 			if (e.Button == MouseButtons.Right) menuCopy_Click("Team", new EventArgs());
@@ -4090,31 +4040,13 @@ namespace Idmr.Yogeme
 		}
 		#endregion
 		#region Mission
-		void cboMissType_Leave(object sender, EventArgs e)
-		{
-			_mission.MissionType = Common.Update(this, _mission.MissionType, (Mission.MissionTypeEnum)Convert.ToByte(cboMissType.SelectedIndex));
-		}
+		void cboMissType_Leave(object sender, EventArgs e) => _mission.MissionType = Common.Update(this, _mission.MissionType, (Mission.MissionTypeEnum)Convert.ToByte(cboMissType.SelectedIndex));
 
-		void chkGoalsUnimportant_Leave(object sender, EventArgs e)
-		{
-			_mission.GoalsUnimportant = Common.Update(this, _mission.GoalsUnimportant, chkGoalsUnimportant.Checked);
-		}
-		private void numRndSeed_ValueChanged(object sender, EventArgs e)
-		{
-			_mission.RndSeed = Common.Update(this, _mission.RndSeed, Convert.ToByte(numRndSeed.Value));
-		}
-		void numMissTimeMin_Leave(object sender, EventArgs e)
-		{
-			_mission.TimeLimitMin = Common.Update(this, _mission.TimeLimitMin, Convert.ToByte(numMissTimeMin.Value));
-		}
-		void numMissTimeSec_Leave(object sender, EventArgs e)
-		{
-			_mission.TimeLimitSec = Common.Update(this, _mission.TimeLimitSec, Convert.ToByte(numMissTimeSec.Value));
-		}
-		void numWinType_Leave(object sender, EventArgs e)
-		{
-			_mission.WinType = Common.Update(this, _mission.WinType, Convert.ToByte(numWinType.Value));
-		}
+		void chkGoalsUnimportant_Leave(object sender, EventArgs e) => _mission.GoalsUnimportant = Common.Update(this, _mission.GoalsUnimportant, chkGoalsUnimportant.Checked);
+		private void numRndSeed_ValueChanged(object sender, EventArgs e) => _mission.RndSeed = Common.Update(this, _mission.RndSeed, Convert.ToByte(numRndSeed.Value));
+		void numMissTimeMin_Leave(object sender, EventArgs e) => _mission.TimeLimitMin = Common.Update(this, _mission.TimeLimitMin, Convert.ToByte(numMissTimeMin.Value));
+		void numMissTimeSec_Leave(object sender, EventArgs e) => _mission.TimeLimitSec = Common.Update(this, _mission.TimeLimitSec, Convert.ToByte(numMissTimeSec.Value));
+		void numWinType_Leave(object sender, EventArgs e) => _mission.WinType = Common.Update(this, _mission.WinType, Convert.ToByte(numWinType.Value));
 
 		void optXvT_CheckedChanged(object sender, EventArgs e)
 		{
@@ -4129,18 +4061,9 @@ namespace Idmr.Yogeme
 			comboReset(cboIFF, getIffStrings(), cboIFF.SelectedIndex);
 		}
 
-		void txtMissDesc_Leave(object sender, EventArgs e)
-		{
-			_mission.MissionDescription = Common.Update(this, _mission.MissionDescription, txtMissDesc.Text);
-		}
-		void txtMissFail_Leave(object sender, EventArgs e)
-		{
-			_mission.MissionFailed = Common.Update(this, _mission.MissionFailed, txtMissFail.Text);
-		}
-		void txtMissSucc_Leave(object sender, EventArgs e)
-		{
-			_mission.MissionSuccessful = Common.Update(this, _mission.MissionSuccessful, txtMissSucc.Text);
-		}
+		void txtMissDesc_Leave(object sender, EventArgs e) => _mission.MissionDescription = Common.Update(this, _mission.MissionDescription, txtMissDesc.Text);
+		void txtMissFail_Leave(object sender, EventArgs e) => _mission.MissionFailed = Common.Update(this, _mission.MissionFailed, txtMissFail.Text);
+		void txtMissSucc_Leave(object sender, EventArgs e) => _mission.MissionSuccessful = Common.Update(this, _mission.MissionSuccessful, txtMissSucc.Text);
 		#endregion
 	}
 }

@@ -200,6 +200,8 @@ namespace Idmr.Yogeme
 #pragma warning restore IDE1006 // Naming Styles
 		#endregion
 
+		/// <summary>Initialize with a blank mission.</summary>
+		/// <param name="settings"></param>
 		public TieForm(Settings settings)
 		{
 			_config = settings;
@@ -210,8 +212,12 @@ namespace Idmr.Yogeme
 			lstFG.SelectedIndex = 0;
 			_loading = false;
 		}
+		/// <summary>Initialize with an existing mission.</summary>
+		/// <param name="settings"></param>
+		/// <param name="path"></param>
+		/// <remarks>This is for command line and "Open..." support.</remarks>>
 		public TieForm(Settings settings, string path)
-		{   //this is the command line and "Open..." support
+		{
 			_config = settings;
 			InitializeComponent();
 			_loading = true;
