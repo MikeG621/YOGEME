@@ -9,6 +9,7 @@
 /* CHANGELOG
  * [UPD] Spec updates (TimeLimit, RndSeed, Vars, WinBonus, Rescue, EomDelay, GlobalDelay, WaveDelay, ArrDep renames)
  * [UPD] IFF5 (Red) Hostile permanently checked
+ * [FIX] Questions not clearing properly when loading a second mission
  * v1.15.5, 231222
  * [NEW #97] GlobalSummary dialog
  * [UPD] SaveAs upgrades now use Platform

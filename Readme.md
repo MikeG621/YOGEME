@@ -38,12 +38,15 @@ This will leave behind a single config file in AppData with your user settings.
 ## Latest Release
 #### WIP
 Extensive updates due to changes in Platform.dll, using the full file format spec.
-- (Briefing) Unknown 3 now labeled "Tile", still unknown effect.
+- (Briefing) Unknown 3 now labeled "Tile", still unknown effect. Confirmed no effect in TIE.
 - (Briefing) Labels for Unk1/2 StartLength/EventLength and the Unknowns group deleted.
 - (Briefing) X-wing page events now edited directly instead of copying back and forth to a separate array first.
 - (Hyper dialog) Update per spec, enum use to remove magic numbers.
-- (TIE) Added TimeLimit, RndSeed, Vars, WinBonus, Rescue, EomDelay, GlobalDelay, WaveDelay
-- (TIE) Arr/Dep renames
+- (TIE) Added TimeLimit, RndSeed, Global Goal editor note.
+- (TIE) Arr/Dep renames.
+- (TIE) IFF 5 (Red) permanently checked to match game behavior.
+- (TIE) Fixed a big where the Questions wouldn't clear properly when loading a second mission.
+- (XvT) Added Flightgroup Handicap, Global Goal delay, EoM delay.
 
 ---
 ### Additional Information

@@ -1120,6 +1120,7 @@ namespace Idmr.Yogeme
 			registerFgMultiEdit(optOT3T4OR, "Order34Or", MultiEditRefreshType.OrderLabel);
 			registerFgMultiEdit(cboOThrottle, "OrderThrottle", 0);
 			registerFgMultiEdit(cboOSpeed, "OrderSpeed", 0);
+			registerFgMultiEdit(cboHandicap, "Handicap", 0);
 
 			registerFgMultiEdit(cboStopArrivingWhen, "StopArrivingWhen", 0);
 			registerFgMultiEdit(numRandomArrivalDelayMinutes, "RandomArrivalDelayMinutes", 0);
@@ -2749,6 +2750,7 @@ namespace Idmr.Yogeme
 			#endregion
 			for (_activeOrder = 0; _activeOrder < 4; _activeOrder++) orderLabelRefresh();
 			lblOrderArr_Click(lblOrder[_config.RememberSelectedOrder ? order : 0], new EventArgs());
+			cboHandicap.SelectedIndex = _mission.FlightGroups[_activeFG].Handicap;
 			#region Options
 			cboRole1.SelectedIndex = 0;
 			cboRole2.SelectedIndex = 0;
@@ -3913,6 +3915,7 @@ namespace Idmr.Yogeme
 			labelRefresh(_mission.Globals[_activeTeam].Goals[g].Triggers[t].GoalTrigger, lblGlobTrig[_activeGlobalTrigger]);
 		}
 
+		void numGlobalDelay_Leave(object sender, EventArgs e) => _mission.Globals[_activeTeam].Goals[_activeGlobalTrigger / 4].Delay = Common.Update(this, _mission.Globals[_activeTeam].Goals[_activeGlobalTrigger / 4].Delay, (byte)(numGlobalDelay.Value / 5));
 		void numGlobalPoints_Leave(object sender, EventArgs e) => _mission.Globals[_activeTeam].Goals[_activeGlobalTrigger / 4].Points = Common.Update(this, _mission.Globals[_activeTeam].Goals[_activeGlobalTrigger / 4].Points, (short)numGlobalPoints.Value);
 
 		void txtGlobal_Leave(object sender, EventArgs e)
@@ -4019,6 +4022,9 @@ namespace Idmr.Yogeme
 				txtEoM[i].Text = _mission.Teams[_activeTeam].EndOfMissionMessages[i];
 				cboEoMColor[i].SelectedIndex = _mission.Teams[_activeTeam].EndOfMissionMessageColor[i];
 			}
+			numEomCompDelay.Value = _mission.Teams[_activeTeam].EomRawDelay[0] * 5;
+			numEomSecDelay.Value = _mission.Teams[_activeTeam].EomRawDelay[1] * 5;
+			numEomFailedDelay.Value = _mission.Teams[_activeTeam].EomRawDelay[2] * 5;
 			_loading = btemp;
 		}
 		void lblTeamArr_DoubleClick(object sender, EventArgs e) => menuPaste_Click("Team", new EventArgs());
@@ -4026,6 +4032,10 @@ namespace Idmr.Yogeme
 		{
 			if (e.Button == MouseButtons.Right) menuCopy_Click("Team", new EventArgs());
 		}
+
+		void numEomCompDelay_Leave(object sender, EventArgs e) => _mission.Teams[_activeTeam].EomRawDelay[0] = Common.Update(this, _mission.Teams[_activeTeam].EomRawDelay[0], (byte)(numEomCompDelay.Value / 5));
+		void numEomSecDelay_Leave(object sender, EventArgs e) => _mission.Teams[_activeTeam].EomRawDelay[1] = Common.Update(this, _mission.Teams[_activeTeam].EomRawDelay[1], (byte)(numEomSecDelay.Value / 5));
+		void numEomFailedDelay_Leave(object sender, EventArgs e) => _mission.Teams[_activeTeam].EomRawDelay[2] = Common.Update(this, _mission.Teams[_activeTeam].EomRawDelay[2], (byte)(numEomFailedDelay.Value / 5));
 
 		void txtEoMArr_Leave(object sender, EventArgs e)
 		{
@@ -4065,5 +4075,6 @@ namespace Idmr.Yogeme
 		void txtMissFail_Leave(object sender, EventArgs e) => _mission.MissionFailed = Common.Update(this, _mission.MissionFailed, txtMissFail.Text);
 		void txtMissSucc_Leave(object sender, EventArgs e) => _mission.MissionSuccessful = Common.Update(this, _mission.MissionSuccessful, txtMissSucc.Text);
 		#endregion
+
 	}
 }
