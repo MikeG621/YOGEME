@@ -1,13 +1,14 @@
 ﻿/*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
- * Copyright (C) 2007-2023 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2024 Michael Gaisser (mjgaisser@gmail.com)
  * This file authored by "JB" (Random Starfighter) (randomstarfighter@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.13.12
+ * VERSION: 1.13.12+
  */
 
 /* CHANGELOG
+ * [UPD] cleanup
  * v1.13.12, 230116
  * [UPD] Implemented LfdReader and removed unused code
  * v1.13.10, 221018
@@ -211,17 +212,13 @@ namespace Idmr.Yogeme.MapWireframe
 		public static MeshType[] HangarMeshes { get; } = new MeshType[] { MeshType.DockingPlatform, MeshType.LandingPlatform, MeshType.Hangar };
 
 		/// <summary>Returns the default MeshTypes combined into a single value.</summary>
-		public static long GetDefaultFlags()
-		{
-			return GetFlags(DefaultMeshes);
-		}
+		public static long GetDefaultFlags() => GetFlags(DefaultMeshes);
 
 		/// <summary>Combines an array of enum-based MeshTypes into a single value.</summary>
 		public static long GetFlags(MeshType[] list)
 		{
 			long retval = 0;
-			foreach (MeshType value in list)
-				retval |= (long)(1 << (int)value);
+			foreach (MeshType value in list) retval |= (long)(1 << (int)value);
 			return retval;
 		}
 
@@ -229,8 +226,7 @@ namespace Idmr.Yogeme.MapWireframe
 		public static long GetFlags(int[] list)
 		{
 			long retval = 0;
-			foreach (int value in list)
-				retval |= (long)(1 << value);
+			foreach (int value in list) retval |= (long)(1 << value);
 			return retval;
 		}
 	}
@@ -261,16 +257,10 @@ namespace Idmr.Yogeme.MapWireframe
 	public class OptLod
 	{
 		/// <summary>Initializes the LOD at the maximum value</summary>
-		public OptLod()
-		{
-			Distance = float.MaxValue;
-		}
+		public OptLod() => Distance = float.MaxValue;
 		/// <summary>Initializes the LOD with the specified distance</summary>
 		/// <param name="dist">The distance assigned to the LOD</param>
-		public OptLod(float dist)
-		{
-			Distance = dist;
-		}
+		public OptLod(float dist) => Distance = dist;
 
 		/// <summary>Gets the LOD distance</summary>
 		/// <remarks>This isn't referenced or used anywhere</remarks>
@@ -299,8 +289,8 @@ namespace Idmr.Yogeme.MapWireframe
 	/// The format is a tree of nodes, utilizing C-style pointers to navigate each node in the tree and access their data elements.</remarks>
 	public class OptFile
 	{
-		private int _basePosition;  // The file contents begin with some meta data that isn't part of the actual model data. This will be the stream position where the real data begins.
-		private int _globalOffset;  // The first piece of real data in the file is a pointer to itself. Since the entire file would be contiguous in memory, subtracting from any other pointer address gives us a relative offset into the file.
+		int _basePosition;  // The file contents begin with some meta data that isn't part of the actual model data. This will be the stream position where the real data begins.
+		int _globalOffset;  // The first piece of real data in the file is a pointer to itself. Since the entire file would be contiguous in memory, subtracting from any other pointer address gives us a relative offset into the file.
 
 		/// <summary>Initializes and attempts to load the contents from file.</summary>
 		/// <param name="filename">Path and filename of the OPT model to load.</param>
@@ -310,8 +300,7 @@ namespace Idmr.Yogeme.MapWireframe
 		{
 			try
 			{
-				if (!File.Exists(filename))
-					return false;
+				if (!File.Exists(filename)) return false;
 
 				List<int> meshFilter = checkProfile ? getXwauDefaultProfileFilter(filename) : null;
 
@@ -326,10 +315,7 @@ namespace Idmr.Yogeme.MapWireframe
 					}
 				}
 			}
-			catch
-			{
-				return false;
-			}
+			catch { return false; }
 			return true;
 		}
 
@@ -338,7 +324,7 @@ namespace Idmr.Yogeme.MapWireframe
 		/// the chosen profile.  Loading the entire OPT as a wireframe may include superfluous geometry.</remarks>
 		/// <param name="filename">Path and filename of the OPT model to check.</param>
 		/// <returns>Returns a list of top-level node indices that must be filtered out when loading the <b>Default</b> wireframe.  This can be null.</returns>
-		private List<int> getXwauDefaultProfileFilter(string filename)
+		List<int> getXwauDefaultProfileFilter(string filename)
 		{
 			// According to the hook source code and documentation on the forum (https://www.xwaupgrade.com/phpBB3/viewtopic.php?f=33&t=13090&p=176375), the search criteria is:
 			//   FlightModels\[Model].opt
@@ -353,8 +339,7 @@ namespace Idmr.Yogeme.MapWireframe
 				string path = filename.Substring(0, pathPos + 1);
 				string model = filename.Substring(pathPos + 1);
 				int extPos = model.LastIndexOf(".");
-				if (extPos >= 0)
-					model = model.Substring(0, extPos);
+				if (extPos >= 0) model = model.Substring(0, extPos);
 
 				iniFilename = path + model + "ObjectProfiles.txt";
 			}
@@ -368,8 +353,7 @@ namespace Idmr.Yogeme.MapWireframe
 				inSection = false;
 			}
 
-			if (!File.Exists(iniFilename))
-				return null;
+			if (!File.Exists(iniFilename)) return null;
 
 			List<int> meshFilter = null;
 			try
@@ -382,21 +366,14 @@ namespace Idmr.Yogeme.MapWireframe
 					{
 						string line = sr.ReadLine();
 						int pos = line.IndexOf(";");
-						if (pos >= 0)
-							line = line.Substring(0, pos);
+						if (pos >= 0) line = line.Substring(0, pos);
 						line = line.Trim().Replace("\t", "");
 
-						if (line.StartsWith("["))
-						{
-							inSection = (line == "[ObjectProfiles]");
-						}
+						if (line.StartsWith("[")) inSection = (line == "[ObjectProfiles]");
 						else if (inSection && line.Length > 0)
 						{
 							string[] tokens = line.Split('=');
-							if (tokens.Length == 2)
-							{
-								objectProfiles.Add(tokens[0].ToUpper().Trim(), tokens[1].Trim());
-							}
+							if (tokens.Length == 2) objectProfiles.Add(tokens[0].ToUpper().Trim(), tokens[1].Trim());
 						}
 					}
 				}
@@ -418,13 +395,13 @@ namespace Idmr.Yogeme.MapWireframe
 					}
 				}
 			}
-			catch { }
+			catch { /* do nothing */ }
 			return meshFilter;
 		}
 
 		/// <summary>Parses all top-level nodes.</summary>
 		/// <remarks>Typically each top-level node is a single component of a particular MeshType. Its MeshType and mesh information will be defined somewhere in its child node tree.</remarks>
-		private void parseTopNodes(FileStream fs, BinaryReader br, List<int> meshFilter)
+		void parseTopNodes(FileStream fs, BinaryReader br, List<int> meshFilter)
 		{
 			_basePosition = (int)fs.Position;
 			_globalOffset = br.ReadInt32();
@@ -432,15 +409,13 @@ namespace Idmr.Yogeme.MapWireframe
 			int nodeCount = br.ReadInt32();
 			int nodeTableOffset = br.ReadInt32();
 
-			if (nodeTableOffset != 0)
-				nodeTableOffset -= _globalOffset;
+			if (nodeTableOffset != 0) nodeTableOffset -= _globalOffset;
 
 			Components = new List<OptComponent>();
 			for (int i = 0; i < nodeCount; i++)
 			{
 				// XWAU may require us to filter out extra meshes that shouldn't appear on the default model.
-				if (meshFilter != null && meshFilter.Contains(i))
-					continue;
+				if (meshFilter != null && meshFilter.Contains(i)) continue;
 
 				fs.Position = _basePosition + nodeTableOffset + (i * 4);
 				int nodeOffset = br.ReadInt32();
@@ -457,27 +432,23 @@ namespace Idmr.Yogeme.MapWireframe
 
 		/// <summary>Recursively parses all child nodes of a top-level node.</summary>
 		/// <remarks>Loads any relevant data into the specified component object.</remarks>
-		private void parseChildNodes(FileStream fs, BinaryReader br, OptComponent node)
+		void parseChildNodes(FileStream fs, BinaryReader br, OptComponent node)
 		{
-			//int nameOffset = br.ReadInt32();
 			fs.Position += 4;
 			OptNodeType nodeType = (OptNodeType)br.ReadInt32();
 			int childNodeCount = br.ReadInt32();
 			int childNodeOffset = br.ReadInt32();
 			int dataCount = br.ReadInt32();
 			int dataOffset = br.ReadInt32();
-			if (childNodeOffset != 0)
-				childNodeOffset -= _globalOffset;
+			if (childNodeOffset != 0) childNodeOffset -= _globalOffset;
 
 			node.NodeType = nodeType;
-			if (dataOffset != 0)
-				dataOffset -= _globalOffset;
+			if (dataOffset != 0) dataOffset -= _globalOffset;
 
 			switch (nodeType)
 			{
 				case OptNodeType.MeshVertices:
-					if (dataOffset == 0)
-						break;
+					if (dataOffset == 0) break;
 					fs.Position = _basePosition + dataOffset;
 					for (int i = 0; i < dataCount; i++)
 					{
@@ -488,10 +459,7 @@ namespace Idmr.Yogeme.MapWireframe
 					}
 					break;
 				case OptNodeType.FaceData:
-					if (dataOffset == 0)
-						break;
-					if (node.LoadingLodIndex >= node.Lods.Count)
-						break;
+					if (dataOffset == 0 || node.LoadingLodIndex >= node.Lods.Count) break;
 					fs.Position = _basePosition + dataOffset + 4;  // Into the data, skipping Int32 edgeCount.
 					for (int i = 0; i < dataCount; i++)
 					{
@@ -504,24 +472,19 @@ namespace Idmr.Yogeme.MapWireframe
 					}
 					break;
 				case OptNodeType.MeshDescriptor:
-					if (dataOffset == 0)
-						break;
+					if (dataOffset == 0) break;
 					fs.Position = _basePosition + dataOffset;
 					node.MeshType = (MeshType)br.ReadInt32();
 					break;
 				case OptNodeType.FaceGrouping:
-					if (dataOffset == 0)
-						break;
+					if (dataOffset == 0) break;
 					fs.Position = _basePosition + dataOffset;
 					for (int i = 0; i < dataCount; i++)
 					{
 						float distance = br.ReadSingle();
 						node.Lods.Add(new OptLod(distance));
 					}
-					while (node.Lods.Count < childNodeCount)
-					{
-						node.Lods.Add(new OptLod());
-					}
+					while (node.Lods.Count < childNodeCount) { node.Lods.Add(new OptLod()); }
 					for (int i = 0; i < childNodeCount; i++)
 					{
 						node.LoadingLodIndex = i;
@@ -590,16 +553,13 @@ namespace Idmr.Yogeme.MapWireframe
 		/// Can technically handle a <paramref name="craftFormat"/> of CRFT, CPLX or SHIP, although should only occur with processing B-WING.CFT, which is CRFT.</remarks>
 		public bool LoadCftFile(string cftFile, Resource.ResourceType craftFormat)
 		{
-			if (!File.Exists(cftFile) || craftFormat == Resource.ResourceType.Undefined)
-				return false;
+			if (!File.Exists(cftFile) || craftFormat == Resource.ResourceType.Undefined) return false;
 			_lfdCraftFormat = craftFormat;
 
 			try
 			{
-				if (_lfdCraftFormat == Resource.ResourceType.Crft || _lfdCraftFormat == Resource.ResourceType.Cplx)
-					parseXwing(cftFile, 0);
-				else if (_lfdCraftFormat == Resource.ResourceType.Ship)
-					Craft = new Ship(cftFile, 0);
+				if (_lfdCraftFormat == Resource.ResourceType.Crft || _lfdCraftFormat == Resource.ResourceType.Cplx) parseXwing(cftFile, 0);
+				else if (_lfdCraftFormat == Resource.ResourceType.Ship) Craft = new Ship(cftFile, 0);
 				else return false;  // just in case the Type is something random, shouldn't ever happen
 			}
 			catch { return false; }
@@ -614,22 +574,18 @@ namespace Idmr.Yogeme.MapWireframe
 		public bool LoadFromArchive(string archiveName, string resourceName)
 		{
 			_lfdCraftFormat = Resource.ResourceType.Undefined;
-            if (!File.Exists(archiveName) || Resource.GetType(archiveName, 0) != Resource.ResourceType.Rmap)
-				return false;
+            if (!File.Exists(archiveName) || Resource.GetType(archiveName, 0) != Resource.ResourceType.Rmap) return false;
 
 			var rmap = new Rmap(archiveName);
 			int index = 0;
-			for (; index < rmap.NumberOfHeaders; index++)
-				if (rmap.SubHeaders[index].Name.ToUpper() == resourceName.ToUpper()) break;
+			for (; index < rmap.NumberOfHeaders; index++) if (rmap.SubHeaders[index].Name.ToUpper() == resourceName.ToUpper()) break;
 			if (index == rmap.NumberOfHeaders) return false;	// didn't find the name
 
 			_lfdCraftFormat = rmap.SubHeaders[index].Type;
 			try
 			{
-				if (_lfdCraftFormat == Resource.ResourceType.Crft || _lfdCraftFormat == Resource.ResourceType.Cplx)
-					parseXwing(archiveName, rmap.SubHeaders[index].Offset);
-				else if (_lfdCraftFormat == Resource.ResourceType.Ship)
-					Craft = new Ship(archiveName, rmap.SubHeaders[index].Offset);
+				if (_lfdCraftFormat == Resource.ResourceType.Crft || _lfdCraftFormat == Resource.ResourceType.Cplx) parseXwing(archiveName, rmap.SubHeaders[index].Offset);
+				else if (_lfdCraftFormat == Resource.ResourceType.Ship) Craft = new Ship(archiveName, rmap.SubHeaders[index].Offset);
                 else return false;  // just in case the Type is something random, shouldn't ever happen
             }
 			catch { return false; }
@@ -664,10 +620,7 @@ namespace Idmr.Yogeme.MapWireframe
 	{
 		/// <summary>Initialize an empty definition of the assigned type</summary>
 		/// <param name="createMeshType">The type to assign</param>
-		public MeshLayerDefinition(MeshType createMeshType)
-		{
-			MeshType = createMeshType;
-		}
+		public MeshLayerDefinition(MeshType createMeshType) => MeshType = createMeshType;
 
 		/// <summary>Gets the definition's type</summary>
 		public MeshType MeshType { get; private set; }
@@ -684,16 +637,14 @@ namespace Idmr.Yogeme.MapWireframe
 		/// <summary>Creates a definition from a loaded OPT.</summary>
 		/// <param name="opt">The source OPT object</param>
 		/// <remarks>Performs some basic optimization to prevent shared edges, so that lines don't have to be drawn twice.</remarks>
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0059:Unnecessary assignment of a value", Justification = "assignment function performs other necessary actions")]
 		public WireframeDefinition(OptFile opt)
 		{
-#pragma warning disable IDE0059 // Unnecessary assignment of a value: assignment function performs other necessary actions
 			MeshLayerDefinition layer = getOrCreateMeshLayerDefinition(MeshType.MainHull);  // Create a default entry so that it's first in the list, for drawing purposes.
-#pragma warning restore IDE0059 // Unnecessary assignment of a value
 
 			foreach (OptComponent comp in opt.Components)
 			{
-				if (comp.Lods.Count == 0)
-					continue;
+				if (comp.Lods.Count == 0) continue;
 
 				int[] vertUsed = new int[comp.Vertices.Count];
 				HashSet<int> lineUsed = new HashSet<int>();
@@ -705,8 +656,7 @@ namespace Idmr.Yogeme.MapWireframe
 					{
 						int vi = face.VertexIndex[i];
 						// If the face is a triangle (rather than a quad), the last index will be -1.
-						if (vi == -1)
-							continue;
+						if (vi == -1) continue;
 						if (vertUsed[vi] == 0)
 						{
 							layer.Vertices.Add(comp.Vertices[vi]);
@@ -717,11 +667,9 @@ namespace Idmr.Yogeme.MapWireframe
 					{
 						int v1 = face.VertexIndex[i];
 						int v2 = face.VertexIndex[i + 1];
-						if (v1 == -1)
-							continue;
+						if (v1 == -1) continue;
 						// For a triangle, the last vertex is missing. Link back to the first vertex in the face.
-						if (v2 == -1)
-							v2 = face.VertexIndex[0];
+						if (v2 == -1) v2 = face.VertexIndex[0];
 
 						// Normalize and construct a key to determine if this line already exists. Add if it doesn't.
 						if (v2 < v1)
@@ -917,18 +865,14 @@ namespace Idmr.Yogeme.MapWireframe
 			if (def != null)
 			{
 				Vertices.Capacity = def.Vertices.Count;
-				for (int i = 0; i < def.Vertices.Count; i++)
-					Vertices.Add(new Vertex(def.Vertices[i]));
+				for (int i = 0; i < def.Vertices.Count; i++) Vertices.Add(new Vertex(def.Vertices[i]));
 			}
 		}
 
 		/// <summary>Returns if the instance is included in the visibility flags</summary>
 		/// <param name="meshVisibilityFilter">The flags determining which mesh types to display</param>
 		/// <returns><b>true</b> if the <see cref="MeshLayerDefinition.MeshType"/> is included</returns>
-		public bool MatchMeshFilter(long meshVisibilityFilter)
-		{
-			return MeshLayerDefinition != null && (meshVisibilityFilter & (1 << (int)MeshLayerDefinition.MeshType)) != 0;
-		}
+		public bool MatchMeshFilter(long meshVisibilityFilter) => MeshLayerDefinition != null && (meshVisibilityFilter & (1 << (int)MeshLayerDefinition.MeshType)) != 0;
 
 		/// <summary>Gets the mesh source</summary>
 		public MeshLayerDefinition MeshLayerDefinition { get; private set; }
@@ -940,17 +884,17 @@ namespace Idmr.Yogeme.MapWireframe
 	/// <summary>Represents a local instance of a <see cref="WireframeDefinition"/> for a single craft/flightgroup.</summary>
 	public class WireframeInstance
 	{
-		private bool _rebuildRequired = true;
-		private int _curX = 0;
-		private int _curY = 0;
-		private int _curZ = 0;
-		private int _dstX = 0;
-		private int _dstY = 0;
-		private int _dstZ = 0;
-		private int _curZoom = 0;
-		private MapForm.Orientation _curOrientation;
-		private long _curVisibilityFlags = 0;
-		private double _scaleMult;
+		bool _rebuildRequired = true;
+		int _curX = 0;
+		int _curY = 0;
+		int _curZ = 0;
+		int _dstX = 0;
+		int _dstY = 0;
+		int _dstZ = 0;
+		int _curZoom = 0;
+		MapForm.Orientation _curOrientation;
+		long _curVisibilityFlags = 0;
+		double _scaleMult;
 
 		/// <summary>Creates a new instance from the specified definition.</summary>
 		/// <param name="def">The original wireframe source</param>
@@ -962,13 +906,9 @@ namespace Idmr.Yogeme.MapWireframe
 			AssignedCraftType = craftType;
 			AssignedFGIndex = fgIndex;
 			ModelDef = def;
-			if (def == null)
-				return;
+			if (def == null) return;
 
-			foreach (MeshLayerDefinition layer in ModelDef.MeshLayerDefinitions)
-			{
-				LayerInstances.Add(new MeshLayerInstance(layer));
-			}
+			foreach (MeshLayerDefinition layer in ModelDef.MeshLayerDefinitions) LayerInstances.Add(new MeshLayerInstance(layer));
 		}
 
 		/// <summary>Determine whether the core instance has changed, and flags for rebuild if needed.</summary>
@@ -993,8 +933,7 @@ namespace Idmr.Yogeme.MapWireframe
 		/// <remarks>If no change is detected, the wireframe remains as is. Resulting vertex positions are relative to the model origin.</remarks>
 		public void UpdateParams(Platform.BaseFlightGroup.BaseWaypoint cur, Platform.BaseFlightGroup.BaseWaypoint dest, int zoom, MapForm.Orientation orientation, long meshTypeVisibilityFlags, int degRoll)
 		{
-			if (ModelDef == null)
-				return;
+			if (ModelDef == null) return;
 			if (!_rebuildRequired && _curX == cur.RawX && _curY == cur.RawY && _curZ == cur.RawZ && _dstX == dest.RawX && _dstY == dest.RawY && _dstZ == dest.RawZ && _curZoom == zoom && _curOrientation == orientation && _curVisibilityFlags == meshTypeVisibilityFlags)
 				return;
 			_rebuildRequired = false;
@@ -1027,18 +966,14 @@ namespace Idmr.Yogeme.MapWireframe
 			}
 			else if (dest.Enabled)
 			{
-				if (_curOrientation == MapForm.Orientation.YZ)
-				{
-					yaw = Math.Atan2(diffX, diffY);
-				}
+				if (_curOrientation == MapForm.Orientation.YZ) yaw = Math.Atan2(diffX, diffY);
 				else
 				{
 					yaw = Math.Atan2(-diffY, -diffX);
 					yaw += (Math.PI / 2);
 				}
 				pitch = -Math.Atan2(diffZ, Math.Sqrt(diffX * diffX + diffY * diffY));
-				if (yaw > Math.PI)
-					yaw -= Math.PI * 2;
+				if (yaw > Math.PI) yaw -= Math.PI * 2;
 			}
 
 			updatePoints(_scaleMult, new Matrix3(yaw, pitch, roll));
@@ -1053,8 +988,7 @@ namespace Idmr.Yogeme.MapWireframe
 		/// <remarks>If no change is detected, the wireframe remains as is. Resulting vertex positions are relative to the model origin.</remarks>
 		public void UpdateSimple(int zoom, long meshTypeVisibilityFlags, int degYaw, int degPitch, int degRoll)
 		{
-			if (ModelDef == null)
-				return;
+			if (ModelDef == null) return;
 			if (!_rebuildRequired && _curX == degYaw && _curY == degPitch && _curZ == degRoll &&_curZoom == zoom && _curVisibilityFlags == meshTypeVisibilityFlags)
 				return;
 			_rebuildRequired = false;
@@ -1069,8 +1003,7 @@ namespace Idmr.Yogeme.MapWireframe
 			_scaleMult = _curZoom / 40960.0;
 			double yaw = -degYaw * (Math.PI / 180.0f);
 			// Any craft pitch outside this range seems to be rejected by XWA.
-			if (degPitch >= 90 || degPitch <= -92)
-				degPitch = 0;
+			if (degPitch >= 90 || degPitch <= -92) degPitch = 0;
 			double pitch = degPitch * (Math.PI / 180.0f);
 			double roll = -degRoll * (Math.PI / 180.0f);
 			updatePoints(_scaleMult, new Matrix3(yaw, pitch, roll));
@@ -1078,13 +1011,12 @@ namespace Idmr.Yogeme.MapWireframe
 
 		/// <param name="scaleMult">Scale multiplier.</param>
 		/// <param name="rotation">A matrix with the necessary rotation transform.</param>
-		private void updatePoints(double scaleMult, Matrix3 rotation)
+		void updatePoints(double scaleMult, Matrix3 rotation)
 		{
 			rotation.Scale(scaleMult);
 			foreach (MeshLayerInstance cinst in LayerInstances)
 			{
-				if (!cinst.MatchMeshFilter(_curVisibilityFlags))
-					continue;
+				if (!cinst.MatchMeshFilter(_curVisibilityFlags)) continue;
 				for (int i = 0; i < cinst.Vertices.Count; i++)
 				{
 					Vertex v = cinst.Vertices[i];
@@ -1139,23 +1071,16 @@ namespace Idmr.Yogeme.MapWireframe
 		/// If the instance for the specifed <paramref name="fgIndex"/> does not exist it is created and returned. If it does exist, updates the <paramref name="craftType"/> if necessary and returns it.</returns>
 		public WireframeInstance GetOrCreateWireframeInstance(int craftType, int fgIndex)
 		{
-			if (fgIndex < 0)
-				return null;
+			if (fgIndex < 0) return null;
 
 			WireframeDefinition def = getWireframeDefinition(craftType);
-			if (def == null)
-				return null;
+			if (def == null) return null;
 
 			// Pad the list so there's no out-of-bounds problems.
-			while (_wireframeInstances.Count <= fgIndex)
-			{
-				_wireframeInstances.Add(null);
-			}
+			while (_wireframeInstances.Count <= fgIndex) { _wireframeInstances.Add(null); }
 
-			if (_wireframeInstances[fgIndex] == null)
-				_wireframeInstances[fgIndex] = createWireframeInstance(def, craftType, fgIndex);
-			else
-				_wireframeInstances[fgIndex] = update(_wireframeInstances[fgIndex], craftType, fgIndex);
+			if (_wireframeInstances[fgIndex] == null) _wireframeInstances[fgIndex] = createWireframeInstance(def, craftType, fgIndex);
+			else _wireframeInstances[fgIndex] = update(_wireframeInstances[fgIndex], craftType, fgIndex);
 
 			return _wireframeInstances[fgIndex];
 		}
@@ -1202,8 +1127,7 @@ namespace Idmr.Yogeme.MapWireframe
 		/// <remarks>Also detects the craft file format to establish a proper loading context.</remarks>
 		void parseSpeciesFile(string filename)
 		{
-			if (!File.Exists(filename))
-				return;
+			if (!File.Exists(filename)) return;
 			if (Resource.GetType(filename, 0) == Resource.ResourceType.Rmap)
 			{
 				var rmap = new Rmap(filename);
@@ -1218,13 +1142,11 @@ namespace Idmr.Yogeme.MapWireframe
 		/// <summary>Loads a model definition into the cache, or retrieves an already existing cache entry.</summary>
 		/// <remarks>If not already loaded, searches through the possible resource names to find a matching OPT or DOS species entry. If found, the mesh is loaded and converted to a ready format that the wireframe system can use.</remarks>
 		/// <returns>Returns a model definition. If the model failed to load, the definition will be empty, but valid. Returns <b>null</b> if out of range.</returns>
-		private WireframeDefinition getWireframeDefinition(int craftType)
+		WireframeDefinition getWireframeDefinition(int craftType)
 		{
 			// Check if already loaded.
-			if (_wireframeDefinitions.ContainsKey(craftType))
-				return _wireframeDefinitions[craftType];
-			if (_craftData == null || craftType < 0 || craftType >= _craftData.Count)
-				return null;
+			if (_wireframeDefinitions.ContainsKey(craftType)) return _wireframeDefinitions[craftType];
+			if (_craftData == null || craftType < 0 || craftType >= _craftData.Count) return null;
 
 			string resourceNames = _craftData[craftType].ResourceNames.ToLower();
 			WireframeDefinition def;
@@ -1235,15 +1157,9 @@ namespace Idmr.Yogeme.MapWireframe
 				foreach (string s in names)
 				{
 					string s2 = s;
-					if (s2.IndexOf('*') >= 0)
-						s2 = s2.Remove(s2.IndexOf('*'));
-					if (_curPlatform == Settings.Platform.BoP)
-					{
-						if (opt.LoadFromFile(Path.Combine(_modelLoadDirectory, s2 + ".op1"), false))
-							break;
-					}
-					if (opt.LoadFromFile(Path.Combine(_modelLoadDirectory, s2 + ".opt"), _curPlatform == Settings.Platform.XWA))
-						break;
+					if (s2.IndexOf('*') >= 0) s2 = s2.Remove(s2.IndexOf('*'));
+					if (_curPlatform == Settings.Platform.BoP && opt.LoadFromFile(Path.Combine(_modelLoadDirectory, s2 + ".op1"), false)) break;
+					if (opt.LoadFromFile(Path.Combine(_modelLoadDirectory, s2 + ".opt"), _curPlatform == Settings.Platform.XWA)) break;
 				}
 				def = new WireframeDefinition(opt);
 			}
@@ -1260,16 +1176,11 @@ namespace Idmr.Yogeme.MapWireframe
 						float.TryParse(s2.Substring(s2.IndexOf('*') + 1), out scale);
 						s2 = s2.Remove(s2.IndexOf('*'));
 					}
-					if (_dosSpeciesMap.ContainsKey(s2))
-					{
-						if (craft.LoadFromArchive(_dosSpeciesMap[s2], s2))
-							break;
-					}
+					if (_dosSpeciesMap.ContainsKey(s2)) { if (craft.LoadFromArchive(_dosSpeciesMap[s2], s2)) break; }
 					else
 					{
 						// This is really only required for the B-wing in the DOS versions of XWING, which exists in a standalone file.
-						if (craft.LoadCftFile(Path.Combine(_modelLoadDirectory, s2 + ".cft"), _dosCraftFormat))
-							break;
+						if (craft.LoadCftFile(Path.Combine(_modelLoadDirectory, s2 + ".cft"), _dosCraftFormat)) break;
 					}
 				}
 				def = new WireframeDefinition(craft);
@@ -1280,19 +1191,13 @@ namespace Idmr.Yogeme.MapWireframe
 		}
 
 		/// <summary>Creates a new WireframeInstance from a definition.</summary>
-		private WireframeInstance createWireframeInstance(WireframeDefinition def, int craftType, int fgIndex)
-		{
-			if (def == null)
-				return null;
-			return new WireframeInstance(def, craftType, fgIndex);
-		}
+		WireframeInstance createWireframeInstance(WireframeDefinition def, int craftType, int fgIndex) => def == null ? null : new WireframeInstance(def, craftType, fgIndex);
 
 		/// <summary>Checks if an existing WireframeInstance needs to change its model type.</summary>
 		/// <returns>Returns the current instance if nothing changed, otherwise returns a new instance.</returns>
-		private WireframeInstance update(WireframeInstance currentInstance, int craftType, int fgIndex)
+		WireframeInstance update(WireframeInstance currentInstance, int craftType, int fgIndex)
 		{
-			if (currentInstance == null)
-				return null;
+			if (currentInstance == null) return null;
 
 			WireframeInstance ret = currentInstance;
 			if (craftType != currentInstance.AssignedCraftType)
@@ -1300,10 +1205,7 @@ namespace Idmr.Yogeme.MapWireframe
 				WireframeDefinition def = getWireframeDefinition(craftType);
 				ret = createWireframeInstance(def, craftType, fgIndex);
 			}
-			else
-			{
-				currentInstance.CheckAssignment(craftType, fgIndex);
-			}
+			else currentInstance.CheckAssignment(craftType, fgIndex);
 			return ret;
 		}
 	}

@@ -29,12 +29,12 @@ namespace Idmr.Yogeme
 			Height = 218;
 		}
 
-		void cmdClose_Click(object sender, System.EventArgs e) { Close(); }
+		void cmdClose_Click(object sender, System.EventArgs e) => Close();
 
-		void lnkGE_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) { Common.LaunchER(); }
-		void lnkIdmr_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) { Common.LaunchIdmr(); }
-		void lnkMail_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) { Common.EmailJagged(); }
+		void lnkGE_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) => Common.LaunchER();
+		void lnkIdmr_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) => Common.LaunchIdmr();
+		void lnkMail_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) => Common.EmailJagged();
 
-		void pctBanner_Click(object sender, System.EventArgs e) { Common.LaunchIdmr(); }
+		void pctBanner_Click(object sender, System.EventArgs e) => Common.LaunchIdmr();
 	}
 }

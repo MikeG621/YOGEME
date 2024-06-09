@@ -1,12 +1,13 @@
 /*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
- * Copyright (C) 2007-2023 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2024 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.15.5
+ * VERSION: 1.15.5+
  */
 
 /* CHANGELOG
+ * [UPD] use actual types for comparison instead of strings
  * v1.15.5, 231222
  * [UPD] Removed RunConverter due to being obsolete
  * v1.13.1, 220208
@@ -57,13 +58,13 @@ namespace Idmr.Yogeme
 	public static class Common
 	{
 		/// <summary>Launch a browser at the EmpireReborn site</summary>
-		public static void LaunchER() { Process.Start("http://empirereborn.net"); }
+		public static void LaunchER() => Process.Start("http://empirereborn.net");
 
 		/// <summary>Launch a browser at the IDMR site</summary>
-		public static void LaunchIdmr() { Process.Start("https://github.com/MikeG621/YOGEME/releases"); }
+		public static void LaunchIdmr() => Process.Start("https://github.com/MikeG621/YOGEME/releases");
 
-		public static void LaunchHelp() { Process.Start(Application.StartupPath + "\\yogeme.chm"); }
-		public static void EmailJagged() { Process.Start("mailto:mjgaisser@gmail.com?subject=YOGEME"); }
+		public static void LaunchHelp() => Process.Start(Application.StartupPath + "\\yogeme.chm");
+		public static void EmailJagged() => Process.Start("mailto:mjgaisser@gmail.com?subject=YOGEME");
 
 		/// <summary>Processes properly formatted custom craft list files to be used in YOGEME.</summary>
 		/// <param name="filePath">The full path to the shiplist file.</param>
@@ -198,21 +199,18 @@ namespace Idmr.Yogeme
             return (index >= 0 && index < array.Count);
         }
 
-        /// <summary>Returns a formatted string of a time (m:ss)</summary>
-        /// <param name="seconds">Total number of seconds in the time.</param>
-        /// <param name="verbose">Whether or not to append " second(s)".</param>
+		/// <summary>Returns a formatted string of a time (m:ss)</summary>
+		/// <param name="seconds">Total number of seconds in the time.</param>
+		/// <param name="verbose">Whether or not to append " second(s)".</param>
 		/// <returns>Formatted time</returns>
-        public static string GetFormattedTime(int seconds, bool verbose)
-        {
-            return string.Format("{0}:{1:00}", seconds / 60, seconds % 60) + (verbose ? " second" + (seconds == 1 ? "" : "s") : "");
-        }
+		public static string GetFormattedTime(int seconds, bool verbose) => string.Format("{0}:{1:00}", seconds / 60, seconds % 60) + (verbose ? " second" + (seconds == 1 ? "" : "s") : "");
 
-        /// <summary>Safe alternative to <b>cbo.SelectedIndex = n</b> which can automatically handle cases of invalid indexes.</summary>
-        /// <param name="cbo">ComboBox to operate on.</param>
-        /// <param name="index">Requested SelectedIndex value.</param>
-        /// <param name="autoExpand">When <paramref name="index"/> is invalid, expand the list with numbered slots.</param>
+		/// <summary>Safe alternative to <b>cbo.SelectedIndex = n</b> which can automatically handle cases of invalid indexes.</summary>
+		/// <param name="cbo">ComboBox to operate on.</param>
+		/// <param name="index">Requested SelectedIndex value.</param>
+		/// <param name="autoExpand">When <paramref name="index"/> is invalid, expand the list with numbered slots.</param>
 		/// <remarks>If <paramref name="index"/> is negative or exceeds the item count, <b>-1</b> is used.</remarks>
-        public static void SafeSetCBO(ComboBox cbo, int index, bool autoExpand)
+		public static void SafeSetCBO(ComboBox cbo, int index, bool autoExpand)
         {
             if (index < -1)
                 index = -1;
@@ -255,10 +253,7 @@ namespace Idmr.Yogeme
 		/// <param name="index">The selected index.</param>
 		/// <param name="echo">Whether or not to return <paramref name="index"/> on error.</param>
 		/// <returns>The indicated string in the array. If <paramref name="index"/> is invalid, will return an empty string unless <paramref name="echo"/> is <b>true</b>, then returns <paramref name="index"/>.</returns>
-		public static string SafeString(string[] stringArray, int index, bool echo)
-		{
-			return (stringArray != null && index >= 0 && index < stringArray.Length) ? stringArray[index] : echo ? index.ToString() : "";
-		}
+		public static string SafeString(string[] stringArray, int index, bool echo) => (stringArray != null && index >= 0 && index < stringArray.Length) ? stringArray[index] : echo ? index.ToString() : "";
 
 		/// <summary>Independently enables or disables a pair of form Buttons depending on the state of a MultiSelect ListBox.</summary>
 		/// <param name="up">The appropriate "Move Up" button.</param>
@@ -301,12 +296,12 @@ namespace Idmr.Yogeme
 		/// <param name="handler">The handler event to assign.</param>
 		public static void AddControlChangedHandler(Control control, EventHandler handler)
 		{
-			string ct = control.GetType().ToString();
-			if (ct == "System.Windows.Forms.TextBox") ((TextBox)control).TextChanged += handler;
-			else if (ct == "System.Windows.Forms.NumericUpDown") ((NumericUpDown)control).ValueChanged += handler;
-			else if (ct == "System.Windows.Forms.CheckBox") ((CheckBox)control).CheckedChanged += handler;
-			else if (ct == "System.Windows.Forms.RadioButton") ((RadioButton)control).CheckedChanged += handler;
-			else if (ct == "System.Windows.Forms.ComboBox")
+			var type = control.GetType();
+			if (type == typeof(TextBox)) ((TextBox)control).TextChanged += handler;
+			else if (type == typeof(NumericUpDown)) ((NumericUpDown)control).ValueChanged += handler;
+			else if (type == typeof(CheckBox)) ((CheckBox)control).CheckedChanged += handler;
+			else if (type == typeof(RadioButton)) ((RadioButton)control).CheckedChanged += handler;
+			else if (type == typeof(ComboBox))
 			{
 				ComboBox cbo = (ComboBox)control;
 				if (cbo.DropDownStyle == ComboBoxStyle.DropDownList)
@@ -314,7 +309,7 @@ namespace Idmr.Yogeme
 				else
 					cbo.TextChanged += handler;
 			}
-			else throw new ArgumentException("Cannot register changed handler to unacceptable control type: " + ct);
+			else throw new ArgumentException("Cannot register changed handler to unacceptable control type: " + type.ToString());
 		}
 
 		/// <summary>Retrieves the current value of common editable form control as a generic object.</summary>
@@ -324,12 +319,12 @@ namespace Idmr.Yogeme
 		public static object GetControlValue(object sender)
 		{
 			object value = 0;
-			string ct = sender.GetType().ToString();
-			if (ct == "System.Windows.Forms.TextBox") value = ((TextBox)sender).Text;
-			else if (ct == "System.Windows.Forms.NumericUpDown") value = (int)((NumericUpDown)sender).Value;
-			else if (ct == "System.Windows.Forms.CheckBox") value = ((CheckBox)sender).Checked;
-			else if (ct == "System.Windows.Forms.RadioButton") value = ((RadioButton)sender).Checked;
-			else if (ct == "System.Windows.Forms.ComboBox")
+			var type = sender.GetType();
+			if (type == typeof(TextBox)) value = ((TextBox)sender).Text;
+			else if (type == typeof(NumericUpDown)) value = (int)((NumericUpDown)sender).Value;
+			else if (type == typeof(CheckBox)) value = ((CheckBox)sender).Checked;
+			else if (type == typeof(RadioButton)) value = ((RadioButton)sender).Checked;
+			else if (type == typeof(ComboBox))
 			{
 				ComboBox cbo = (ComboBox)sender;
 				if (cbo.DropDownStyle == ComboBoxStyle.DropDownList)

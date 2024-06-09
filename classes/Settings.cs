@@ -1,12 +1,13 @@
 ﻿/*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
- * Copyright (C) 2007-2023 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2024 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.13.12
+ * VERSION: 1.13.12+
  */
 
 /* CHANGELOG
+ * [UPD] Defaults now initialized directly instead of load function
  * v1.13.12, 230116
  * [NEW] RememberSelectedOrder
  * v1.13.4, 220606
@@ -96,64 +97,8 @@ namespace Idmr.Yogeme
 		/// <summary>Creates a new Settings object and loads saved settings</summary>
 		public Settings()
 		{
-			loadDefaults();
-			LoadSettings();
-		}
-
-		void loadDefaults()
-		{
-			RestrictPlatforms = true;
-			ConfirmExit = true;
-			ConfirmSave = true;
-			ConfirmTest = true;
-			DeleteTestPilots = true;
-			RememberPlatformFolder = true;
-			ConfirmFGDelete = true;
-			MapOptions = MapOpts.FGTags | MapOpts.Traces;
 			for (int i = 0; i < 6; i++) _recentMissions[i] = "";
-			Startup = StartupMode.Normal;
-			XwingCraft = 1;
-			XwingIff = 1;  //0 = Default, 1 = Rebel
-			TieCraft = XvtCraft = XwaCraft = 5;
-			TieIff = XvtIff = XwaIff = 1;
-			Verify = true;
-			VerifyTest = true;
-			Waypoints = 1;
-			ColorizedDropDowns = true;
-			ColorInteractSelected = Color.Blue;
-			ColorInteractNonSelected = Color.Black;
-			ColorInteractBackground = Color.RosyBrown;
-
-			MapMouseWheelZoomPercentage = 10.0;
-			WireframeEnabled = true;
-			WireframeIconThresholdEnabled = false;
-			WireframeIconThresholdSize = 25;
-			WireframeMeshIconEnabled = true;
-			WireframeMeshIconSize = 18;
-			WireframeMeshTypeVisibility = MeshTypeHelper.GetDefaultFlags();
-
-			XwingDetectMission = true;
-			TieDetectMission = true;
-			XvtDetectMission = true;
-			XwaDetectMission = true;
-
-			XwingOverrideExternal = false;
-			TieOverrideExternal = false;
-			XvtOverrideExternal = false;
-			XwaOverrideExternal = false;
-
-			XwaOverrideScan = true;
-			XwaFlagRemappedCraft = true;
-
-			MapMiddleClickActionSelected = MapForm.MiddleClickAction.FitToSelection;
-			MapMiddleClickActionNoneSelected = MapForm.MiddleClickAction.FitToWorld;
-			MapSnapTo = 0;
-			MapSnapAmount = 0.10f;
-			MapSnapUnit = 0;
-
-			OneIndexedFGs = true;
-
-			RememberSelectedOrder = false;
+			LoadSettings();
 		}
 
 		/// <summary>Loads saved settings</summary>
@@ -328,10 +273,7 @@ namespace Idmr.Yogeme
 			{
 				keyplat = Registry.LocalMachine.OpenSubKey("SOFTWARE\\LucasArts Entertainment Company LLC\\X-Wing95\\1.0");
 
-				if (keyplat == null)
-				{
-					keyplat = Registry.LocalMachine.OpenSubKey("SOFTWARE\\Wow6432Node\\LucasArts Entertainment Company LLC\\X-Wing95\\1.0");
-				}
+				if (keyplat == null) keyplat = Registry.LocalMachine.OpenSubKey("SOFTWARE\\Wow6432Node\\LucasArts Entertainment Company LLC\\X-Wing95\\1.0");
 
 				if (keyplat != null)
 				{
@@ -344,10 +286,7 @@ namespace Idmr.Yogeme
 			{
 				keyplat = Registry.LocalMachine.OpenSubKey("SOFTWARE\\LucasArts Entertainment Company LLC\\TIE95\\1.0");
 
-				if (keyplat == null)
-				{
-					keyplat = Registry.LocalMachine.OpenSubKey("SOFTWARE\\Wow6432Node\\LucasArts Entertainment Company LLC\\TIE95\\1.0");
-				}
+				if (keyplat == null) keyplat = Registry.LocalMachine.OpenSubKey("SOFTWARE\\Wow6432Node\\LucasArts Entertainment Company LLC\\TIE95\\1.0");
 
 				if (keyplat != null)
 				{
@@ -360,10 +299,7 @@ namespace Idmr.Yogeme
 			{
 				keyplat = Registry.LocalMachine.OpenSubKey("SOFTWARE\\LucasArts Entertainment Company\\X-Wing vs. TIE Fighter\\1.0");
 
-				if (keyplat == null)
-				{
-					keyplat = Registry.LocalMachine.OpenSubKey("SOFTWARE\\Wow6432Node\\LucasArts Entertainment Company\\X-Wing vs. TIE Fighter\\1.0");
-				}
+				if (keyplat == null) keyplat = Registry.LocalMachine.OpenSubKey("SOFTWARE\\Wow6432Node\\LucasArts Entertainment Company\\X-Wing vs. TIE Fighter\\1.0");
 
 				if (keyplat != null)
 				{
@@ -376,10 +312,7 @@ namespace Idmr.Yogeme
 			{
 				keyplat = Registry.LocalMachine.OpenSubKey("SOFTWARE\\LucasArts Entertainment Company\\X-Wing vs. TIE Fighter\\2.0");
 
-				if (keyplat == null)
-				{
-					keyplat = Registry.LocalMachine.OpenSubKey("SOFTWARE\\Wow6432Node\\LucasArts Entertainment Company\\X-Wing vs. TIE Fighter\\2.0");
-				}
+				if (keyplat == null) keyplat = Registry.LocalMachine.OpenSubKey("SOFTWARE\\Wow6432Node\\LucasArts Entertainment Company\\X-Wing vs. TIE Fighter\\2.0");
 
 				if (keyplat != null)
 				{
@@ -392,10 +325,7 @@ namespace Idmr.Yogeme
 			{
 				keyplat = Registry.LocalMachine.OpenSubKey("SOFTWARE\\LucasArts Entertainment Company LLC\\X-Wing Alliance\\v1.0");
 
-				if (keyplat == null)
-				{
-					keyplat = Registry.LocalMachine.OpenSubKey("SOFTWARE\\Wow6432Node\\LucasArts Entertainment Company LLC\\X-Wing Alliance\\v1.0");
-				}
+				if (keyplat == null) keyplat = Registry.LocalMachine.OpenSubKey("SOFTWARE\\Wow6432Node\\LucasArts Entertainment Company LLC\\X-Wing Alliance\\v1.0");
 
 				if (keyplat != null)
 				{
@@ -417,10 +347,7 @@ namespace Idmr.Yogeme
 					string s = keyplat.Name + "\\" + k + "\\InstallProperties";
 					RegistryKey sub = Registry.LocalMachine.OpenSubKey(s.Substring(19));
 
-					if (sub == null)
-					{
-						continue;
-					}
+					if (sub == null) continue;
 
 					string comm = (string)sub.GetValue("DisplayName");
 					if (comm == "Star Wars: X. C. S. - X-Wing 95" && !XwingInstalled)
@@ -509,33 +436,6 @@ namespace Idmr.Yogeme
 		/// <remarks>Registry use has been deprecated</remarks>
 		public void SaveSettings()
 		{
-			#region save registry (DEPRECATED)
-			/*RegistryKey key = Registry.CurrentUser.OpenSubKey("Software\\IDMR\\MissionEditor", true);
-			if (key == null) key = Registry.CurrentUser.CreateSubKey("Software\\IDMR\\MissionEditor");
-			key.SetValue("BoP", Convert.ToInt32(BopInstalled));
-			key.SetValue("BoPInstall", _bopPath);
-			key.SetValue("ConfirmExit", Convert.ToInt32(ConfirmExit));
-			key.SetValue("ConfirmSave", Convert.ToInt32(ConfirmSave));
-			key.SetValue("LastMission", _lastMission);
-			key.SetValue("LastPlatform", Convert.ToInt32(LastPlatform));
-			key.SetValue("MapOptions", Convert.ToInt32(MapOptions));
-			key.SetValue("RestrictPlatforms", Convert.ToInt32(RestrictPlatforms));
-			key.SetValue("Startup", Convert.ToInt32(Startup));
-			key.SetValue("TIE", Convert.ToInt32(TieInstalled));
-			key.SetValue("TIECraft", _tieCraft);
-			key.SetValue("TIEInstall", _tiePath);
-			key.SetValue("Verify", Convert.ToInt32(Verify));
-			key.SetValue("Waypoints", _waypoints);
-			key.SetValue("XvT", Convert.ToInt32(XvtInstalled));
-			key.SetValue("XvTCraft", _xvtCraft);
-			key.SetValue("XvTInstall", _xvtPath);
-			key.SetValue("XWA", Convert.ToInt32(XwaInstalled));
-			key.SetValue("XWACraft", _xwaCraft);
-			key.SetValue("XWAInstall", _xwaPath);
-			key.Close();
-			File.Delete(_settingsDir + "\\Settings.dat");*/
-			#endregion
-			#region save file
 			if (!Directory.Exists(_settingsDir)) Directory.CreateDirectory(_settingsDir);
 			FileStream fs = File.OpenWrite(_settingsDir + "\\Settings.dat");
 			BinaryWriter bw = new BinaryWriter(fs);
@@ -577,7 +477,7 @@ namespace Idmr.Yogeme
 			bw.Write(ConfirmTest);
 			bw.Write(DeleteTestPilots);
 			bw.Write(VerifyTest);
-			bw.Write(RememberPlatformFolder); //[JB] Added
+			bw.Write(RememberPlatformFolder);
 			bw.Write(ConfirmFGDelete);
 			bw.Write(_mruTiePath);
 			bw.Write(_mruXvtPath);
@@ -629,7 +529,6 @@ namespace Idmr.Yogeme
 
 			fs.SetLength(fs.Position);
 			fs.Close();
-			#endregion
 			// remove Regkey if needed
 			Registry.CurrentUser.DeleteSubKey("Software\\IDMR\\MissionEditor", false);
 		}
@@ -668,34 +567,34 @@ namespace Idmr.Yogeme
 		/// <remarks>No action is taken when using set if the directory does not exist</remarks>
 		public string BopPath
 		{
-			get { return _bopPath; }
+			get => _bopPath;
 			set { if (Directory.Exists(value)) { _bopPath = value; } }
 		}
 		/// <summary>Gets or sets the foreground color for the selected Goal, Trigger, Order, etc.</summary>
-		public Color ColorInteractSelected { get; set; }
+		public Color ColorInteractSelected { get; set; } = Color.Blue;
 		/// <summary>Gets or sets the foreground color for non-selected Goals, Triggers, Orders, etc.</summary>
-		public Color ColorInteractNonSelected { get; set; }
+		public Color ColorInteractNonSelected { get; set; } = Color.Black;
 		/// <summary>Gets or sets the background color for Goals, Triggers, Orders, etc.</summary>
-		public Color ColorInteractBackground { get; set; }
+		public Color ColorInteractBackground { get; set; } = Color.RosyBrown;
 		/// <summary>Gets or sets whether FlightGroup ComboBox dropdowns are colorized according to IFF.</summary>
-		public bool ColorizedDropDowns { get; set; }
+		public bool ColorizedDropDowns { get; set; } = true;
 		/// <summary>Gets or sets if the confirmation dialog is shown when exiting YOGEME</summary>
-		public bool ConfirmExit { get; set; }
+		public bool ConfirmExit { get; set; } = true;
 		/// <summary>Gets or sets if a confirmation dialog is shown when deleting a Flight Group, if other FGs, goals, mission, or briefing triggers depend on it.</summary>
-		public bool ConfirmFGDelete { get; set; }  //[JB] Added
+		public bool ConfirmFGDelete { get; set; } = true;
 		/// <summary>Gets or sets if a confirmation dialog is shown when closing an unsaved mission</summary>
-		public bool ConfirmSave { get; set; }
+		public bool ConfirmSave { get; set; } = true;
 		/// <summary>Gets or sets if the Test dialog is shown</summary>
-		public bool ConfirmTest { get; set; }
+		public bool ConfirmTest { get; set; } = true;
 		/// <summary>Gets or sets if pilot files created during Test are deleted when the platform is closed</summary>
-		public bool DeleteTestPilots { get; set; }
+		public bool DeleteTestPilots { get; set; } = true;
 		/// <summary>Gets or sets if new XWA missions will be initialized with DTM's Super Backdrops</summary>
 		public bool InitializeUsingSuperBackdrops { get; set; }
 		/// <summary>Gets or sets the path to last opened mission</summary>
 		/// <remarks>Updates <see cref="RecentMissions"/> and <see cref="RecentPlatforms"/> during set</remarks>
 		public string LastMission
 		{
-			get { return _recentMissions[0]; }
+			get => _recentMissions[0];
 			set
 			{
 				_recentMissions[0] = value;  //Index [0] holds the current mission, [1...5] hold the Recent list.
@@ -715,8 +614,7 @@ namespace Idmr.Yogeme
 							continue;
 						missions[n] = _recentMissions[i];
 						platforms[n] = _recentPlatforms[i];
-						if (++n >= 5)  //Got our 5 items
-							break;
+						if (++n >= 5) break;
 					}
 					for (int i = 0; i < 5; i++)
 					{
@@ -729,113 +627,113 @@ namespace Idmr.Yogeme
 		/// <summary>Gets or sets the most recent platform used in YOGEME</summary>
 		public Platform LastPlatform
 		{
-			get { return _recentPlatforms[0]; }
-			set { _recentPlatforms[0] = value; }
+			get => _recentPlatforms[0];
+			set => _recentPlatforms[0] = value;
 		}
 		/// <summary>Gets or sets the map options</summary>
-		public MapOpts MapOptions { get; set; }
+		public MapOpts MapOptions { get; set; } = MapOpts.FGTags | MapOpts.Traces;
 		/// <summary>Gets a copy of the five most recent missions</summary>
-		public string[] RecentMissions { get { return (string[])_recentMissions.Clone(); } }
+		public string[] RecentMissions => (string[])_recentMissions.Clone();
 		/// <summary>Gets a copy of the platforms pertaining to <see cref="RecentMissions"/></summary>
-		public Platform[] RecentPlatforms { get { return (Platform[])_recentPlatforms.Clone(); } }
+		public Platform[] RecentPlatforms => (Platform[])_recentPlatforms.Clone();
 		/// <summary>Gets or sets if the most recently used folder is remembered when Saving/Loading missions of a particular platform.</summary>
-		public bool RememberPlatformFolder { get; set; }  //[JB] Added
+		public bool RememberPlatformFolder { get; set; } = true;
 		/// <summary>Gets or sets if the user can only platform that have been installed</summary>
-		public bool RestrictPlatforms { get; set; }
+		public bool RestrictPlatforms { get; set; } = true;
 		/// <summary>Gets or sets the initial mode of YOGEME</summary>
-		public StartupMode Startup { get; set; }
+		public StartupMode Startup { get; set; } = StartupMode.Normal;
 		/// <summary>Gets or sets the installation status of DTM's Super Backdrops mod for XWA</summary>
 		public bool SuperBackdropsInstalled { get; set; }
 
 		/// <summary>Gets or sets the default craft type in TIE Fighter</summary>
-		public byte TieCraft { get; set; }
+		public byte TieCraft { get; set; } = 5;
 		/// <summary>Gets or sets the default IFF for new ships in TIE Fighter</summary>
-		public byte TieIff { get; set; }
+		public byte TieIff { get; set; } = 1;
 		/// <summary>Gets or sets if TIE95 is installed</summary>
 		public bool TieInstalled { get; set; }
 		/// <summary>Gets or sets the install directoy for TIE95</summary>
 		/// <remarks>No action is taken when using set if the directory does not exist</remarks>
 		public string TiePath
 		{
-			get { return _tiePath; }
+			get => _tiePath;
 			set { if (Directory.Exists(value)) { _tiePath = value; } }
 		}
 		/// <summary>Gets or sets if the missions will be verified when saving</summary>
-		public bool Verify { get; set; }
+		public bool Verify { get; set; } = true;
 		/// <summary>Gets or sets the path to the verify application</summary>
 		/// <remarks>No action is taken when using set if the file does not exist</remarks>
 		public string VerifyLocation
 		{
-			get { return _verifyLocation; }
+			get => _verifyLocation;
 			set { if (File.Exists(value)) _verifyLocation = value; }
 		}
 		/// <summary>Gets or sets if the mission will be verified before testing</summary>
 		/// <remarks>If <see cref="Verify"/> is <b>true</b>, this value is ignored such that the verification only occurs once</remarks>
-		public bool VerifyTest { get; set; }
+		public bool VerifyTest { get; set; } = true;
 		/// <summary>Gets or sets the default enabled waypoints in the Map interface</summary>
-		public int Waypoints { get; set; }
+		public int Waypoints { get; set; } = 1;
 		/// <summary>Gets or sets the default craft type for X-wing vs TIE Fighter</summary>
-		public byte XvtCraft { get; set; }
+		public byte XvtCraft { get; set; } = 5;
 		/// <summary>Gets or sets the default IFF for new ships in X-wing vs TIE Fighter</summary>
-		public byte XvtIff { get; set; }
+		public byte XvtIff { get; set; } = 1;
 		/// <summary>Gets or sets if X-wing vs TIE Fighter is installed</summary>
 		public bool XvtInstalled { get; set; }
 		/// <summary>Gets or sets the install directory for X-wing vs TIE Fighter</summary>
 		/// <remarks>No action is taken when using set if the directory does not exist</remarks>
 		public string XvtPath
 		{
-			get { return _xvtPath; }
+			get => _xvtPath;
 			set { if (Directory.Exists(value)) { _xvtPath = value; } }
 		}
 		/// <summary>Gets or sets the default craft type for X-wing Alliance</summary>
-		public byte XwaCraft { get; set; }
+		public byte XwaCraft { get; set; } = 5;
 		/// <summary>Gets or sets the default IFF for new ships in X-wing Alliance</summary>
-		public byte XwaIff { get; set; }
+		public byte XwaIff { get; set; } = 1;
 		/// <summary>Gets or sets if X-wing Alliance is installed</summary>
 		public bool XwaInstalled { get; set; }
 		/// <summary>Gets or sets the install directory for X-wing Alliance</summary>
 		/// <remarks>No action is taken when using set if the directory does not exist</remarks>
 		public string XwaPath
 		{
-			get { return _xwaPath; }
+			get => _xwaPath;
 			set { if (Directory.Exists(value)) { _xwaPath = value; } }
 		}
 		/// <summary>Gets or sets the default craft type in X-wing</summary>
-		public byte XwingCraft { get; set; }
+		public byte XwingCraft { get; set; } = 1;
 		/// <summary>Gets or sets the default IFF for new ships in X-wing</summary>
-		public byte XwingIff { get; set; }
+		public byte XwingIff { get; set; } = 1; // Rebel
 		/// <summary>Gets or sets if XWING95 is installed</summary>
 		public bool XwingInstalled { get; set; }
 		/// <summary>Gets or sets the install directoy for XWING95</summary>
 		/// <remarks>No action is taken when using set if the directory does not exist</remarks>
 		public string XwingPath
 		{
-			get { return _xwingPath; }
+			get => _xwingPath;
 			set { if (Directory.Exists(value)) { _xwingPath = value; } }
 		}
 		/// <summary>Gets or sets the percentage (of the current zoom level) to adjust when using mousewheel zoom in the map.</summary>
-		public double MapMouseWheelZoomPercentage { get; set; }
+		public double MapMouseWheelZoomPercentage { get; set; } = 10;
 		/// <summary>Gets or sets whether craft wireframes are enabled for drawing in the map.</summary>
-		public bool WireframeEnabled { get; set; }
+		public bool WireframeEnabled { get; set; } = true;
 		/// <summary>Gets or sets whether a bitmap icon should be drawn instead of a wireframe when a craft's length is too short.</summary>
 		public bool WireframeIconThresholdEnabled { get; set; }
 		/// <summary>Gets or sets the craft size threshold (in meters) that must be achieved for a wireframe to be drawn.</summary>
-		public int WireframeIconThresholdSize { get; set; }
+		public int WireframeIconThresholdSize { get; set; } = 25;
 		/// <summary>Gets or sets whether to scale up a wireframe to simulate an icon if its render size is too small.</summary>
-		public bool WireframeMeshIconEnabled { get; set; }
+		public bool WireframeMeshIconEnabled { get; set; } = true;
 		/// <summary>Gets or sets the minimum size (in pixels) that a wireframe should be scaled to simulate an icon.</summary>
-		public int WireframeMeshIconSize { get; set; }
+		public int WireframeMeshIconSize { get; set; } = 18;
 		/// <summary>Gets or sets the collection of bit flags that determine which mesh types should be drawn.</summary>
-		public long WireframeMeshTypeVisibility { get; set; }
+		public long WireframeMeshTypeVisibility { get; set; } = MeshTypeHelper.GetDefaultFlags();
 
 		/// <summary>Gets or sets whether to detect the platform installation path from a loaded X-wing mission.</summary>
-		public bool XwingDetectMission { get; set; }
+		public bool XwingDetectMission { get; set; } = true;
 		/// <summary>Gets or sets whether to detect the platform installation path from a loaded TIE Fighter mission.</summary>
-		public bool TieDetectMission { get; set; }
+		public bool TieDetectMission { get; set; } = true;
 		/// <summary>Gets or sets whether to detect the platform installation path from a loaded X-wing vs TIE Fighter (or Balance of Power) mission.</summary>
-		public bool XvtDetectMission { get; set; }
+		public bool XvtDetectMission { get; set; } = true;
 		/// <summary>Gets or sets whether to detect the platform installation path from a loaded X-wing Alliance mission.</summary>
-		public bool XwaDetectMission { get; set; }
+		public bool XwaDetectMission { get; set; } = true;
 
 		/// <summary>Gets or sets whether craft names should be overridden by the external X-wing craft data file.</summary>
 		public bool XwingOverrideExternal { get; set; }
@@ -847,23 +745,23 @@ namespace Idmr.Yogeme
 		public bool XwaOverrideExternal { get; set; }
 
 		/// <summary>Gets or sets whether to scan the craft list directly from the XWA installation files. This will further override <see cref="XwaOverrideExternal"/> if enabled.</summary>
-		public bool XwaOverrideScan { get; set; }
+		public bool XwaOverrideScan { get; set; } = true;
 		/// <summary>Gets or sets whether a suffix should be added to craft names, indicating a craft type that has been remapped. Only applies when <see cref="XwaOverrideScan"/> is used.</summary>
-		public bool XwaFlagRemappedCraft { get; set; }
+		public bool XwaFlagRemappedCraft { get; set; } = true;
 
 		/// <summary>Gets or sets the action to perform when middle-clicking the map with something selected.</summary>
-		public MapForm.MiddleClickAction MapMiddleClickActionSelected { get; set; }
+		public MapForm.MiddleClickAction MapMiddleClickActionSelected { get; set; } = MapForm.MiddleClickAction.FitToSelection;
 		/// <summary>Gets or sets the action to perform when middle-clicking the map with nothing selected.</summary>
-		public MapForm.MiddleClickAction MapMiddleClickActionNoneSelected { get; set; }
+		public MapForm.MiddleClickAction MapMiddleClickActionNoneSelected { get; set; } = MapForm.MiddleClickAction.FitToWorld;
 		/// <summary>Gets or sets whether map movement snapping is enabled, and to what.</summary>
 		public byte MapSnapTo { get; set; }
 		/// <summary>Gets or sets the distance if map movement snapping is enabled.</summary>
-		public float MapSnapAmount { get; set; }
+		public float MapSnapAmount { get; set; } = .1f;
 		/// <summary>Gets or sets the unit of measurement for map movement snapping.</summary>
 		public byte MapSnapUnit { get; set; }
 
 		/// <summary>Gets or sets if the FlightGroup counter display starts at 1 instead of 0.</summary>
-		public bool OneIndexedFGs { get; set; }
+		public bool OneIndexedFGs { get; set; } = true;
 
 		/// <summary>Gets or sets if the selected order resets when changing FlightGroups.</summary>
 		public bool RememberSelectedOrder { get; set; }

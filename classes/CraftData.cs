@@ -1,13 +1,14 @@
 ﻿/*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
- * Copyright (C) 2007-2020 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2024 Michael Gaisser (mjgaisser@gmail.com)
  * This file authored by "JB" (Random Starfighter) (randomstarfighter@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.8
+ * VERSION: 1.8+
  */
 
 /* CHANGELOG
+ * [UPD] cleanup
  * v1.8, 201004
  * [NEW] GetCraftSpeed [JB]
  * [UPD] Added a blank ctor for fixed null loads
@@ -53,44 +54,36 @@ namespace Idmr.Yogeme
 	/// <summary>A singleton class that detects and resolves platform installation paths to retrieve craft data, as well as loading craft data from predefined external files.</summary>
 	public class CraftDataManager
 	{
-		private static readonly CraftDataManager _instance = new CraftDataManager();
+		static readonly CraftDataManager _instance = new CraftDataManager();
 
 		/// <summary>Will be true if custom craft data was exported into XWA's game folder and is being used from that location instead of YOGEME's operating path.</summary>
 		public bool XwaInstallSpecificExternalDataLoaded { get; set; } = false;
 
-		private string _currentInstallPath = "";                              // The current installation path as provided from Settings.
-		private string _currentMissionPath = "";                              // The full path+filename of the current mission.
-		private Settings.Platform _currentPlatform = Settings.Platform.None;  // Used to detect if the platform has changed since the last call to update.
+		string _currentInstallPath = "";                              // The current installation path as provided from Settings.
+		string _currentMissionPath = "";                              // The full path+filename of the current mission.
+		Settings.Platform _currentPlatform = Settings.Platform.None;  // Used to detect if the platform has changed since the last call to update.
 
 		// These booleans track the previous state to determine if the user's configuration has changed, and if data should be refreshed the next time a mission is loaded, even if from the same platform.
-		private bool _previousOverrideExternal = false;
-		private bool _previousOverrideScan = false;
-		private bool _previousFlagRemappedCraft = false;
+		bool _previousOverrideExternal = false;
+		bool _previousOverrideScan = false;
+		bool _previousFlagRemappedCraft = false;
 
-		private string _detectedInstallPath = "";                             // The path of the game platform installation, as resolved by detection from the mission path or the user's chosen install path.
-		private string _detectedModelPath = "";                               // The path of the game's craft models, as resolved by detection from the mission path or the user's chosen install path.
+		string _detectedInstallPath = "";                             // The path of the game platform installation, as resolved by detection from the mission path or the user's chosen install path.
+		string _detectedModelPath = "";                               // The path of the game's craft models, as resolved by detection from the mission path or the user's chosen install path.
 
-		private List<CraftData> _defaultCraftData = null;                     // This only contains strings provided by Idmr.Platform.
-		private List<CraftData> _editorCraftData = null;                      // This is strictly for use in the editor craft type list, separate from the map. Needed because X-wing is a special case.
-		private List<CraftData> _externalCraftData = null;                    // Contains the craft data loaded from an external file.
-		private List<CraftData> _scannedCraftData = null;                     // Contains a list scanned directly from the game executable and data files.
-		private List<CraftData> _finalizedCraftData = null;                   // The finalized craft data (after all loading and overrides have been applied) which is accessible to the rest of the program.
+		List<CraftData> _defaultCraftData = null;                     // This only contains strings provided by Idmr.Platform.
+		List<CraftData> _editorCraftData = null;                      // This is strictly for use in the editor craft type list, separate from the map. Needed because X-wing is a special case.
+		List<CraftData> _externalCraftData = null;                    // Contains the craft data loaded from an external file.
+		List<CraftData> _scannedCraftData = null;                     // Contains a list scanned directly from the game executable and data files.
+		List<CraftData> _finalizedCraftData = null;                   // The finalized craft data (after all loading and overrides have been applied) which is accessible to the rest of the program.
 
-		private CraftDataManager()
-		{
-		}
+		private CraftDataManager() { }
 
 		/// <summary>Retrieves public access to the singleton.</summary>
-		public static CraftDataManager GetInstance()
-		{
-			return _instance;
-		}
+		public static CraftDataManager GetInstance() => _instance;
 
 		/// <summary>Retrieves the finalized, fully loaded craft list for use in the map.</summary>
-		public List<CraftData> GetCraftDataList()
-		{
-			return _finalizedCraftData;
-		}
+		public List<CraftData> GetCraftDataList() => _finalizedCraftData;
 
 		/// <summary>Loads a platform, manages craft name strings, performs loading and merging of craft data, and path detection.</summary>
 		public void LoadPlatform(Settings.Platform platform, Settings config, string[] defaultLongNames, string[] defaultShortNames, string missionPath)
@@ -132,8 +125,7 @@ namespace Idmr.Yogeme
 					flagRemappedCraft = config.XwaFlagRemappedCraft;
 					break;
 			}
-			if (!detectMission)
-				missionPath = "";
+			if (!detectMission) missionPath = "";
 			_currentMissionPath = missionPath;
 
 			bool configChanged = (_previousOverrideExternal != overrideExternal || _previousOverrideScan != overrideScan || _previousFlagRemappedCraft != flagRemappedCraft);
@@ -145,15 +137,12 @@ namespace Idmr.Yogeme
 				if (_currentPlatform == Settings.Platform.XWING)
 				{
 					// If we don't want to override, or it failed to load, use the default string list.
-					if (!overrideExternal || _editorCraftData == null || _editorCraftData.Count == 0)
-						_editorCraftData = _defaultCraftData;
+					if (!overrideExternal || _editorCraftData == null || _editorCraftData.Count == 0) _editorCraftData = _defaultCraftData;
 
 					// If we did load the list, and the user modified it, then it's possible the count is incorrect.
 					// It's very important for this to be the correct size. Pad the list with the defaults, or trim the excess entries.
-					if (_editorCraftData.Count < _defaultCraftData.Count)
-						_editorCraftData = mergeLists(_editorCraftData, _defaultCraftData, false);
-					else if (_editorCraftData.Count > _defaultCraftData.Count)
-						_editorCraftData.RemoveRange(_defaultCraftData.Count, _editorCraftData.Count - _defaultCraftData.Count);
+					if (_editorCraftData.Count < _defaultCraftData.Count) _editorCraftData = mergeLists(_editorCraftData, _defaultCraftData, false);
+					else if (_editorCraftData.Count > _defaultCraftData.Count) _editorCraftData.RemoveRange(_defaultCraftData.Count, _editorCraftData.Count - _defaultCraftData.Count);
 				}
 			}
 
@@ -165,27 +154,22 @@ namespace Idmr.Yogeme
 			detectInstallationPaths();
 			if (previousDetectedInstall != _detectedInstallPath || configChanged || _detectedInstallPath == "")
 			{
-				if (_detectedInstallPath != "")
+				if (_detectedInstallPath != "" && _currentPlatform == Settings.Platform.XWA)
 				{
-					if (_currentPlatform == Settings.Platform.XWA)
+					XwaInstallSpecificExternalDataLoaded = false;
+
+					// Try loading a custom list from the installation directory. This allows the user to customize craft lists for different versions of XWA.
+					if (overrideExternal && File.Exists(Path.Combine(_detectedInstallPath, "craft_data_xwa.txt")))
 					{
-						XwaInstallSpecificExternalDataLoaded = false;
-
-						// Try loading a custom list from the installation directory. This allows the user to customize craft lists for different versions of XWA.
-						if (overrideExternal && File.Exists(Path.Combine(_detectedInstallPath, "craft_data_xwa.txt")))
-						{
-							_externalCraftData = loadCraftData(Path.Combine(_detectedInstallPath, "craft_data_xwa.txt"));
-							XwaInstallSpecificExternalDataLoaded = true;
-						}
-
-						if (overrideScan)
-							_scannedCraftData = scanXwa(flagRemappedCraft);
+						_externalCraftData = loadCraftData(Path.Combine(_detectedInstallPath, "craft_data_xwa.txt"));
+						XwaInstallSpecificExternalDataLoaded = true;
 					}
+
+					if (overrideScan) _scannedCraftData = scanXwa(flagRemappedCraft);
 				}
 
 				_finalizedCraftData = mergeLists(_defaultCraftData, _externalCraftData, overrideExternal);
-				if (overrideScan && _scannedCraftData != null && _scannedCraftData.Count > 0)
-					_finalizedCraftData = mergeLists(_finalizedCraftData, _scannedCraftData, true);
+				if (overrideScan && _scannedCraftData != null && _scannedCraftData.Count > 0) _finalizedCraftData = mergeLists(_finalizedCraftData, _scannedCraftData, true);
 			}
 		}
 
@@ -194,8 +178,7 @@ namespace Idmr.Yogeme
 		{
 			List<CraftData> container = (_currentPlatform == Settings.Platform.XWING ? _editorCraftData : _finalizedCraftData);
 			string[] result = new string[container.Count];
-			for (int i = 0; i < container.Count; i++)
-				result[i] = container[i].Name;
+			for (int i = 0; i < container.Count; i++) result[i] = container[i].Name;
 			return result;
 		}
 		/// <summary>Retrieves a string array of all loaded craft short names. This can be used to override the list in the editor.</summary>
@@ -203,31 +186,18 @@ namespace Idmr.Yogeme
 		{
 			List<CraftData> container = (_currentPlatform == Settings.Platform.XWING ? _editorCraftData : _finalizedCraftData);
 			string[] result = new string[container.Count];
-			for (int i = 0; i < container.Count; i++)
-				result[i] = container[i].Abbrev;
+			for (int i = 0; i < container.Count; i++) result[i] = container[i].Abbrev;
 			return result;
 		}
 
 		/// <summary>Retrieves the speed (in MGLT) of a craft.</summary>
-		public int GetCraftSpeed(int craftType)
-		{
-
-			if (craftType < 0 || craftType >= _finalizedCraftData.Count)
-				return 0;
-			return _finalizedCraftData[craftType].SpeedMglt;
-		}
+		public int GetCraftSpeed(int craftType) => craftType < 0 || craftType >= _finalizedCraftData.Count ? 0 : _finalizedCraftData[craftType].SpeedMglt;
 
 		/// <summary>Retrieves the detected install path.</summary>
-		public string GetInstallPath()
-		{
-			return _detectedInstallPath;
-		}
+		public string GetInstallPath() => _detectedInstallPath;
 
 		/// <summary>Retrieves the detected model path, so that wireframes may be loaded.</summary>
-		public string GetModelPath()
-		{
-			return _detectedModelPath;
-		}
+		public string GetModelPath() => _detectedModelPath;
 
 		/// <summary>Attempts to save the craft data to the specified file.</summary>
 		/// <returns>If failed, returns a string containing an exception error message. Returns an empty string on success.</returns>
@@ -240,38 +210,28 @@ namespace Idmr.Yogeme
 				{
 					sw.WriteLine("; Exported YOGEME craft list");
 					sw.WriteLine("; Line format is: CraftName,Abbrev,SpeedMGLT,ResourceName");
-					foreach (CraftData item in _finalizedCraftData)
-					{
-						sw.WriteLine("{0},{1},{2},{3}", item.Name, item.Abbrev, item.SpeedMglt, item.ResourceNames);
-					}
+					foreach (CraftData item in _finalizedCraftData) sw.WriteLine($"{item.Name},{item.Abbrev},{item.SpeedMglt},{item.ResourceNames}");
 				}
 			}
-			catch (Exception x)
-			{
-				result = x.Message;
-			}
+			catch (Exception x) { result = x.Message; }
 			return result;
 		}
 
 		/// <summary>Initializes a craft list with the default strings, which should be supplied from Idmr.Platform</summary>
 		/// <remarks>Any data that isn't a name will be initialized to empty.</remarks>
-		private void setDefaultStrings(string[] longNames, string[] shortNames)
+		void setDefaultStrings(string[] longNames, string[] shortNames)
 		{
 			_defaultCraftData = new List<CraftData>();
 			for (int i = 0; i < longNames.Length; i++)
 			{
-				CraftData entry = new CraftData()
-				{
-					Name = longNames[i]
-				};
-				if (i < shortNames.Length)
-					entry.Abbrev = shortNames[i];
+				CraftData entry = new CraftData() { Name = longNames[i] };
+				if (i < shortNames.Length) entry.Abbrev = shortNames[i];
 				_defaultCraftData.Add(entry);
 			}
 		}
 
 		/// <summary>Loads the craft data from an external text file. Automatically selects which source depending on current platform.</summary>
-		private void loadPlatformExternalCraftData()
+		void loadPlatformExternalCraftData()
 		{
 			string filename = "";
 			switch (_currentPlatform)
@@ -290,52 +250,44 @@ namespace Idmr.Yogeme
 
 		/// <summary>Tests if a given subfolder, filename, or subfolder+filename exists at the specified path.</summary>
 		/// <returns>If found, returns the input path (plus subfolder if applicable), or an empty string if not found.</returns>
-		private string testExist(string path, string subfolder, string filename)
+		string testExist(string path, string subfolder, string filename)
 		{
-			if (string.IsNullOrWhiteSpace(path))
-				return "";
+			if (string.IsNullOrWhiteSpace(path)) return "";
 			if (string.IsNullOrWhiteSpace(subfolder) && !string.IsNullOrWhiteSpace(filename))
 			{
-				if (File.Exists(Path.Combine(path, filename)))              // Filename only.
-					return path;
+				if (File.Exists(Path.Combine(path, filename))) return path;
 			}
 			else if (!string.IsNullOrWhiteSpace(subfolder) && string.IsNullOrWhiteSpace(filename))
 			{
-				if (Directory.Exists(Path.Combine(path, subfolder)))        // Subfolder only.
-					return Path.Combine(path, subfolder);
+				if (Directory.Exists(Path.Combine(path, subfolder))) return Path.Combine(path, subfolder);
 			}
 			else if (!string.IsNullOrWhiteSpace(subfolder) && !string.IsNullOrWhiteSpace(filename))
 			{
-				if (File.Exists(Path.Combine(path, subfolder, filename)))   // Both subfolder and filename.
-					return Path.Combine(path, subfolder);
+				if (File.Exists(Path.Combine(path, subfolder, filename))) return Path.Combine(path, subfolder);
 			}
 			return "";
 		}
 
 		/// <summary>Performs detection of a subfolder, filename, or subfolder+filename, searching up and down the folder hierarchy from the starting path.</summary>
 		/// <returns>Returns the found path (plus subfolder if applicable), or an empty string if not found.</returns>
-		private string detectExist(string startPath, string subfolder, string filename)
+		string detectExist(string startPath, string subfolder, string filename)
 		{
 			// If the path contains a filename, strip the filename out.
 			int separator = startPath.LastIndexOf(Path.DirectorySeparatorChar);
-			if (startPath.LastIndexOf('.') > separator && separator >= 0)
-				startPath = startPath.Remove(separator);
+			if (startPath.LastIndexOf('.') > separator && separator >= 0) startPath = startPath.Remove(separator);
 
 			string result = testExist(startPath, subfolder, filename);
-			if (result == "")
-				result = downwardSearch(startPath, subfolder, filename);
-			if (result == "")
-				result = upwardSearch(startPath, subfolder, filename);
+			if (result == "") result = downwardSearch(startPath, subfolder, filename);
+			if (result == "") result = upwardSearch(startPath, subfolder, filename);
 			return result;
 		}
 
 		/// <summary>Performs detection through multiple search criteria to determine if at least one match is discovered.</summary>
 		/// <remarks>Search criteria elements are separated by a comma. Each element contains a path and filename, separated by a backslash. To specify only a filename then use a single punctuation character in place of the subfolder.</remarks>
 		/// <returns>Returns the found path (plus subfolder if applicable), or an empty string if not found.</returns>
-		private string detectExistMultiple(string startPath, string searchCriteria)
+		string detectExistMultiple(string startPath, string searchCriteria)
 		{
-			if (string.IsNullOrWhiteSpace(startPath) || string.IsNullOrWhiteSpace(searchCriteria))
-				return "";
+			if (string.IsNullOrWhiteSpace(startPath) || string.IsNullOrWhiteSpace(searchCriteria)) return "";
 			foreach (string term in searchCriteria.Split(','))
 			{
 				string[] tokens = term.Split('\\');
@@ -343,22 +295,19 @@ namespace Idmr.Yogeme
 				if (subfolder.Length == 1 && char.IsPunctuation(subfolder, 0)) subfolder = "";
 				string filename = tokens.Length >= 2 ? tokens[1] : "";
 				string result = detectExist(startPath, subfolder, filename);
-				if (result != "")
-					return result;
+				if (result != "") return result;
 			}
 			return "";
 		}
 
 		/// <summary>Performs a downward search (deeper) into the directory structure.</summary>
 		/// <returns>Returns a path to the subfolder if successful. Otherwise an empty string.</returns>
-		private string downwardSearch(string lookPath, string subfolder, string filename)
+		string downwardSearch(string lookPath, string subfolder, string filename)
 		{
 			// Check for common problems first. Directory must exist for enumeration to proceed. Don't search off the root.
-			if (string.IsNullOrWhiteSpace(lookPath) || lookPath.Contains("..") || !Directory.Exists(lookPath) || lookPath == Path.GetPathRoot(lookPath))
-				return "";
+			if (string.IsNullOrWhiteSpace(lookPath) || lookPath.Contains("..") || !Directory.Exists(lookPath) || lookPath == Path.GetPathRoot(lookPath)) return "";
 			string result = testExist(lookPath, subfolder, filename);
-			if (result != "")
-				return result;
+			if (result != "") return result;
 
 			// There could be permission errors in certain cases, so fail gracefully if there's a problem while enumerating.
 			try
@@ -366,33 +315,27 @@ namespace Idmr.Yogeme
 				foreach (string s in Directory.EnumerateDirectories(lookPath))
 				{
 					result = downwardSearch(Path.Combine(lookPath, s), subfolder, filename);
-					if (result != "")
-						return result;
+					if (result != "") return result;
 				}
 			}
-			catch { }
+			catch { /* do nothing */ }
 			return "";
 		}
 
 		/// <summary>Searches upward towards the root of the directory structure, looking for the specified subfolder.</summary>
 		/// <returns>Returns a path to the subfolder if successful. Otherwise an empty string.</returns>
-		private string upwardSearch(string lookPath, string subfolder, string filename)
+		string upwardSearch(string lookPath, string subfolder, string filename)
 		{
 			string result = testExist(lookPath, subfolder, filename);
-			if (result != "")
-				return result;
+			if (result != "") return result;
 
-			//string curPath = lookPath;
 			while (true)
 			{
 				int pos = lookPath.LastIndexOf(Path.DirectorySeparatorChar);
-				if (pos >= 0)
-					lookPath = lookPath.Remove(pos);
-				if (pos < 0 || lookPath == "")
-					break;
+				if (pos >= 0) lookPath = lookPath.Remove(pos);
+				if (pos < 0 || lookPath == "") break;
 				result = testExist(lookPath, subfolder, filename);
-				if (result != "")
-					return result;
+				if (result != "") return result;
 			}
 			return "";
 		}
@@ -400,21 +343,16 @@ namespace Idmr.Yogeme
 		/// <summary>Tests if a string contains any of the substrings in the search criteria. Comparison is case insensitive.</summary>
 		/// <param name="str">String to test.</param>
 		/// <param name="searchCriteria">A comma-separated list of one or more substrings to search for.</param>
-		private bool containsSubstring(string str, string searchCriteria)
+		bool containsSubstring(string str, string searchCriteria)
 		{
-			if (string.IsNullOrWhiteSpace(str) || string.IsNullOrWhiteSpace(searchCriteria))
-				return false;
-			foreach (string token in searchCriteria.Split(','))
-			{
-				if (str.IndexOf(token, StringComparison.InvariantCultureIgnoreCase) >= 0)
-					return true;
-			}
+			if (string.IsNullOrWhiteSpace(str) || string.IsNullOrWhiteSpace(searchCriteria)) return false;
+			foreach (string token in searchCriteria.Split(',')) if (str.IndexOf(token, StringComparison.InvariantCultureIgnoreCase) >= 0) return true;
 			return false;
 		}
 
 		/// <summary>Performs detection for installation folder and models based on platform.</summary>
 		/// <remarks>If the mission path was assigned, begins detection from there. If mission detection is disabled or fails, it will try the assigned installation path instead.</remarks>
-		private void detectInstallationPaths()
+		void detectInstallationPaths()
 		{
 			string autoCriteria = "";
 			string installCriteria = "";
@@ -451,15 +389,13 @@ namespace Idmr.Yogeme
 				_detectedModelPath = detectExistMultiple(_currentMissionPath, modelCriteria);
 			}
 			// If not assigned, detection failed or the mission path was not specified for detection purposes. Check installation path instead.
-			if (_detectedInstallPath == "")
-				_detectedInstallPath = detectExistMultiple(_currentInstallPath, installCriteria);
-			if (_detectedModelPath == "")
-				_detectedModelPath = detectExistMultiple(_currentInstallPath, modelCriteria);
+			if (_detectedInstallPath == "") _detectedInstallPath = detectExistMultiple(_currentInstallPath, installCriteria);
+			if (_detectedModelPath == "") _detectedModelPath = detectExistMultiple(_currentInstallPath, modelCriteria);
 		}
 
 		/// <summary>Scans an XWA installation, attempting to load the craft data and slot mappings directly from the executable and its data files.</summary>
 		/// <param name="flagRemappedCraft">Specifies whether a suffix should be added to the name, indicating the craft slot has remapped (via mods) from the original, which would cause problems if attempting to load the mission in an unmodded game.</param>
-		private List<CraftData> scanXwa(bool flagRemappedCraft)
+		List<CraftData> scanXwa(bool flagRemappedCraft)
 		{
 			// This is the default vanilla craft mapping that converts a mission FlightGroup craft type into its corresponding object in game.
 			// It's added here for an extra feature to detect new craft slots (when modded with an upgrade pack). It is unable to detect craft slots that have been replaced, only if they've been remapped to a different slot.
@@ -471,8 +407,7 @@ namespace Idmr.Yogeme
 			string spaceCraftLstPath = Path.Combine(_detectedInstallPath, "FlightModels", "SpaceCraft0.lst");
 			string equipmentLstPath = Path.Combine(_detectedInstallPath, "FlightModels", "Equipment0.lst");
 
-			if (!File.Exists(exePath) || !File.Exists(stringsTxtPath) || !File.Exists(spaceCraftLstPath) || !File.Exists(equipmentLstPath))
-				return result;
+			if (!File.Exists(exePath) || !File.Exists(stringsTxtPath) || !File.Exists(spaceCraftLstPath) || !File.Exists(equipmentLstPath)) return result;
 
 			// Load all craft strings.
 			List<string> longNames = new List<string>();   // Full name     "TIE Fighter"
@@ -487,30 +422,24 @@ namespace Idmr.Yogeme
 					while (!sr.EndOfStream)
 					{
 						string s = sr.ReadLine();
-						if (s.StartsWith("!KBUOY") && s.LastIndexOf("!") > 0)
-							buoyNames.Add(s.Substring(s.LastIndexOf("!") + 1));
-						else if (buoyNames.Count > 0 && s.StartsWith("!KLASTBUOYSTRING"))
-							break;
+						if (s.StartsWith("!KBUOY") && s.LastIndexOf("!") > 0) buoyNames.Add(s.Substring(s.LastIndexOf("!") + 1));
+						else if (buoyNames.Count > 0 && s.StartsWith("!KLASTBUOYSTRING")) break;
 					}
 					while (!sr.EndOfStream)
 					{
 						string s = sr.ReadLine();
-						if (s.StartsWith("!KSPEC") && s.IndexOf(":") > 0)
-							longNames.Add(s.Substring(s.LastIndexOf(":") + 1));
-						else if (longNames.Count > 1 && s.StartsWith("!KLASTSPECSTRING"))
-							break;
+						if (s.StartsWith("!KSPEC") && s.IndexOf(":") > 0) longNames.Add(s.Substring(s.LastIndexOf(":") + 1));
+						else if (longNames.Count > 1 && s.StartsWith("!KLASTSPECSTRING")) break;
 					}
 					while (!sr.EndOfStream)
 					{
 						string s = sr.ReadLine();
-						if (s.StartsWith("!KSPEC") && s.IndexOf("_SHORT!") > 0)
-							shortNames.Add(s.Substring(s.LastIndexOf("!") + 1));
-						else if (shortNames.Count > 1 && s.StartsWith("!KLASTSPECSTRING"))
-							break;
+						if (s.StartsWith("!KSPEC") && s.IndexOf("_SHORT!") > 0) shortNames.Add(s.Substring(s.LastIndexOf("!") + 1));
+						else if (shortNames.Count > 1 && s.StartsWith("!KLASTSPECSTRING")) break;
 					}
 				}
 			}
-			catch { }
+			catch { /* do nothing */ }
 
 			// Load all OPT resource names. There are two LST files to load.
 			List<string>[] optList = new List<string>[2];
@@ -520,20 +449,14 @@ namespace Idmr.Yogeme
 			{
 				using (StreamReader sr = File.OpenText(spaceCraftLstPath))
 				{
-					while (!sr.EndOfStream)
-					{
-						optList[0].Add(sr.ReadLine());
-					}
+					while (!sr.EndOfStream) { optList[0].Add(sr.ReadLine()); }
 				}
 				using (StreamReader sr = File.OpenText(equipmentLstPath))
 				{
-					while (!sr.EndOfStream)
-					{
-						optList[1].Add(sr.ReadLine());
-					}
+					while (!sr.EndOfStream) { optList[1].Add(sr.ReadLine()); }
 				}
 			}
-			catch { }
+			catch { /* do nothing */ }
 
 
 			Dictionary<int, int> mappingTable = new Dictionary<int, int>();
@@ -560,8 +483,7 @@ namespace Idmr.Yogeme
 							{
 								short objIndex = br.ReadInt16();
 								// There are some duplicate mapper entries for mines/sats, don't overwrite.
-								if (!mappingTable.ContainsKey(objIndex))
-									mappingTable.Add(objIndex, i);
+								if (!mappingTable.ContainsKey(objIndex)) mappingTable.Add(objIndex, i);
 							}
 
 							// Iterate through the object array, which specifies internal craft and models.
@@ -576,8 +498,7 @@ namespace Idmr.Yogeme
 								if ((groupIndex == 0 || groupIndex == 1) && lineIndex >= 0)
 								{
 									int craftType = -1;
-									if (mappingTable.ContainsKey(i))
-										craftType = mappingTable[i];
+									if (mappingTable.ContainsKey(i)) craftType = mappingTable[i];
 									if (craftType >= 0 && craftType < result.Count)
 									{
 										CraftData data = result[craftType];
@@ -586,14 +507,11 @@ namespace Idmr.Yogeme
 										{
 											// Option to flag craft names if the craft mapping is different from vanilla.
 											bool flag = false;
-											if (flagRemappedCraft && craftType < defaultMapping.Length && i != defaultMapping[craftType])
-												flag = true;
+											if (flagRemappedCraft && craftType < defaultMapping.Length && i != defaultMapping[craftType]) flag = true;
 
 											int stringIndex = i;
-											if (stringIndex >= 0 && stringIndex < shortNames.Count)
-												data.Abbrev = shortNames[stringIndex] + (flag ? "+" : "");
-											if (stringIndex >= 0 && stringIndex < longNames.Count)
-												data.Name = longNames[stringIndex] + (flag ? " +" : "");
+											if (stringIndex >= 0 && stringIndex < shortNames.Count) data.Abbrev = shortNames[stringIndex] + (flag ? "+" : "");
+											if (stringIndex >= 0 && stringIndex < longNames.Count) data.Name = longNames[stringIndex] + (flag ? " +" : "");
 
 											// Navigate to the craft definition array to retrieve its speed. Convert from MPH to MGLT (which is really just meters/second).
 											fs.Position = 0x1BA080 + (craftDefIndex * 0x3DB) + 0x20;
@@ -612,10 +530,8 @@ namespace Idmr.Yogeme
 										if (lineIndex >= 0 && lineIndex < optList[groupIndex].Count)
 										{
 											string res = optList[groupIndex][lineIndex];
-											if (res.LastIndexOf('\\') >= 0)
-												res = res.Substring(res.LastIndexOf('\\') + 1);
-											if (res.LastIndexOf('.') >= 0)
-												res = res.Remove(res.LastIndexOf('.'));
+											if (res.LastIndexOf('\\') >= 0) res = res.Substring(res.LastIndexOf('\\') + 1);
+											if (res.LastIndexOf('.') >= 0) res = res.Remove(res.LastIndexOf('.'));
 											data.ResourceNames = res;
 										}
 									}
@@ -625,11 +541,10 @@ namespace Idmr.Yogeme
 					}
 				}
 			}
-			catch { }
+			catch { /* do nothing */ }
 
 			// Trim empty slots at the end of the list.
-			while (result.Count > 232 && result[result.Count - 1].Name == "")
-				result.RemoveAt(result.Count - 1);
+			while (result.Count > 232 && result[result.Count - 1].Name == "") result.RemoveAt(result.Count - 1);
 
 			return result;
 		}
@@ -637,13 +552,12 @@ namespace Idmr.Yogeme
 		/// <summary>Loads craft data from an external file.</summary>
 		/// <param name="filePath">The full path to the shiplist file.</param>
 		/// <remarks>Typically each line of the file must be in the format CraftName,Abbrev,SpeedMGLT,Resources</remarks>
-		private List<CraftData> loadCraftData(string filePath)
+		List<CraftData> loadCraftData(string filePath)
 		{
-			if (!File.Exists(filePath))
-				return null;
+			if (!File.Exists(filePath)) return null;
 
 			// This editor stuff is only needed for X-wing.
-			bool editorSection = false;
+			bool isEditorSection = false;
 			List<CraftData> editor = new List<CraftData>();
 
 			List<CraftData> list = new List<CraftData>();
@@ -654,22 +568,20 @@ namespace Idmr.Yogeme
 					while (!sr.EndOfStream)
 					{
 						string s = sr.ReadLine();
-						if (s.IndexOf(";") >= 0)
-							s = s.Remove(s.IndexOf(";"));  // Comment.
+						if (s.IndexOf(";") >= 0) s = s.Remove(s.IndexOf(";"));  // Comment.
 						s = s.Trim();  // Strip newlines or spaces preceeding comment.
-						if (s == "")
-							continue;
+						if (s == "") 	continue;
 
 						if (_currentPlatform == Settings.Platform.XWING)
 						{
 							if (s == "[EDITOR]")
 							{
-								editorSection = true;
+								isEditorSection = true;
 								continue;
 							}
 							else if (s == "[MAP]")
 							{
-								editorSection = false;
+								isEditorSection = false;
 								continue;
 							}
 						}
@@ -679,19 +591,16 @@ namespace Idmr.Yogeme
 							Name = Common.SafeString(line, 0, false),
 							Abbrev = Common.SafeString(line, 1, false)
 						};
-						int speed;
-						int.TryParse(Common.SafeString(line, 2, false), out speed);
+						int.TryParse(Common.SafeString(line, 2, false), out int speed);
 						data.SpeedMglt = speed;
 						data.ResourceNames = Common.SafeString(line, 3, false);
-						if (editorSection)
-							editor.Add(data);
-						else
-							list.Add(data);
+						if (isEditorSection) editor.Add(data);
+						else list.Add(data);
 					}
 					sr.Close();
 				}
 			}
-			catch { }
+			catch { /* do nothing */ }
 			_editorCraftData = editor;
 
 			List<CraftData> container = _currentPlatform == Settings.Platform.XWING ? editor : list;
@@ -711,7 +620,7 @@ namespace Idmr.Yogeme
 		/// <param name="first">Primary list.</param>
 		/// <param name="second">Secondary list. If longer than the first, excess entries will be appended to the result.</param>
 		/// <param name="overrideName">Specifies that names should always be replaced by the second list. Otherwise names will only be replaced if the string is empty in the first list.</param>
-		private List<CraftData> mergeLists(List<CraftData> first, List<CraftData> second, bool overrideName)
+		List<CraftData> mergeLists(List<CraftData> first, List<CraftData> second, bool overrideName)
 		{
 			List<CraftData> result = new List<CraftData>();
 			int i = 0;
@@ -720,16 +629,14 @@ namespace Idmr.Yogeme
 				for (i = 0; i < first.Count; i++)
 				{
 					CraftData entry = new CraftData(first[i]);
-					if (second != null && i < second.Count)
-						entry.Merge(second[i], overrideName);
+					if (second != null && i < second.Count) entry.Merge(second[i], overrideName);
 					result.Add(entry);
 				}
 			}
 			if (second != null)
 			{
 				// If the second list is longer, add the rest.
-				for (; i < second.Count; i++)
-					result.Add(new CraftData(second[i]));
+				for (; i < second.Count; i++) result.Add(new CraftData(second[i]));
 			}
 			return result;
 		}
@@ -743,11 +650,7 @@ namespace Idmr.Yogeme
 		/// <summary>Initializes a new instance.</summary>
 		/// <param name="source">Data optionally used to initialize the instance</param>
 		/// <remarks>If <paramref name="source"/> is <b>null</b>, no additional actions are taken</remarks>
-		public CraftData(CraftData source)
-		{
-			if (source != null)
-				CopyFrom(source);
-		}
+		public CraftData(CraftData source) { if (source != null) CopyFrom(source); }
 
 		/// <summary>Directly copies all data elements from the source object.</summary>
 		public void CopyFrom(CraftData source)
@@ -767,8 +670,7 @@ namespace Idmr.Yogeme
 				Name = source.Name;
 				Abbrev = source.Abbrev;  // Update both so there's no leftover names.
 			}
-			if (source.Abbrev != "" && (overrideName || Abbrev == ""))
-				Abbrev = source.Abbrev;
+			if (source.Abbrev != "" && (overrideName || Abbrev == "")) Abbrev = source.Abbrev;
 			SpeedMglt = source.SpeedMglt;
 			ResourceNames = source.ResourceNames;
 		}
