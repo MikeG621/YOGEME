@@ -1892,7 +1892,7 @@ namespace Idmr.Yogeme
 						fg.ArrDepTriggers[_activeArrDepTrigger] = getTriggerFromControls(cboADTrigAmount, cboADTrigType, cboADTrigVar, cboADTrig);
 						if(trigRefresh++ == 0) labelRefresh(fg.ArrDepTriggers[_activeArrDepTrigger], lblADTrig[_activeArrDepTrigger]);  // only refresh once
 						break;
-					case "ArrDepTriggerOr": fg.AT1AndOrAT2 = Convert.ToBoolean(value); break;
+					case "ArrDepTriggerOr": fg.AT1OrAT2 = Convert.ToBoolean(value); break;
 					case "ArrivalDelayMinutes": fg.ArrivalDelayMinutes = Convert.ToByte(value); break;
 					case "ArrivalDelaySeconds": fg.ArrivalDelaySeconds = Convert.ToByte(value); break;
 					case "AbortTrigger": fg.AbortTrigger = Convert.ToByte(value); break;
@@ -2257,7 +2257,7 @@ namespace Idmr.Yogeme
 			catch { cboDepMS.SelectedIndex = 0; _mission.FlightGroups[_activeFG].DepartureMothership = 0; optDepHyp.Checked = true; }
 			try { cboDepMSAlt.SelectedIndex = _mission.FlightGroups[_activeFG].CapturedDepartureMothership; }
 			catch { cboDepMSAlt.SelectedIndex = 0; _mission.FlightGroups[_activeFG].CapturedDepartureMothership = 0; optDepHypAlt.Checked = true; }
-			optArrOR.Checked = _mission.FlightGroups[_activeFG].AT1AndOrAT2;
+			optArrOR.Checked = _mission.FlightGroups[_activeFG].AT1OrAT2;
 			optArrAND.Checked = !optArrOR.Checked;
 			for (int i = 0; i < 3; i++) labelRefresh(_mission.FlightGroups[_activeFG].ArrDepTriggers[i], lblADTrig[i]);
 			numArrMin.Value = _mission.FlightGroups[_activeFG].ArrivalDelayMinutes;
@@ -2818,7 +2818,7 @@ namespace Idmr.Yogeme
 						break;
 					case "MessColor": msg.Color = Convert.ToByte(value); break;
 					case "MessDelay": msg.RawDelay = Convert.ToByte(value); break;
-					case "Mess1OR2": msg.Trig1AndOrTrig2 = Convert.ToBoolean(value); break;
+					case "Mess1OR2": msg.Trig1OrTrig2 = Convert.ToBoolean(value); break;
 				}
 			}
 		}
@@ -2932,7 +2932,7 @@ namespace Idmr.Yogeme
 			// evaluate the FALSE conditions to detect if it's locked into NEVER
 			bool[] never = new bool[3];
 			for (int i = 0; i < 2; i++) never[i] = (mess.Triggers[i].Condition == 10);
-			never[2] = ((never[0] || never[1]) && !mess.Trig1AndOrTrig2) || (never[0] && never[1]);   // T1/2 pair
+			never[2] = ((never[0] || never[1]) && !mess.Trig1OrTrig2) || (never[0] && never[1]);   // T1/2 pair
 			if (never[2]) used = false;
 			if (!used) brText = Brushes.Gray;
 
@@ -2952,7 +2952,7 @@ namespace Idmr.Yogeme
 			txtShort.Text = _mission.Messages[_activeMessage].Short;
 			cboMessColor.SelectedIndex = _mission.Messages[_activeMessage].Color;
 			numMessDelay.Value = _mission.Messages[_activeMessage].RawDelay;
-			optMessOR.Checked = _mission.Messages[_activeMessage].Trig1AndOrTrig2;
+			optMessOR.Checked = _mission.Messages[_activeMessage].Trig1OrTrig2;
 			optMessAND.Checked = !optMessOR.Checked;
 			lblMessArr_Click(0, new EventArgs());
 			_loading = btemp;

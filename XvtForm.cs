@@ -3681,9 +3681,9 @@ namespace Idmr.Yogeme
 						break;
 					case "MessColor": msg.Color = Convert.ToByte(value); break;
 					case "MessDelay": msg.Delay = Convert.ToByte((int)value / 5); break;
-					case "Mess1OR2": msg.T1AndOrT2 = Convert.ToBoolean(value); break;
-					case "Mess3OR4": msg.T3AndOrT4 = Convert.ToBoolean(value); break;
-					case "Mess12OR34": msg.T12AndOrT34 = Convert.ToBoolean(value); break;
+					case "Mess1OR2": msg.T1OrT2 = Convert.ToBoolean(value); break;
+					case "Mess3OR4": msg.T3OrT4 = Convert.ToBoolean(value); break;
+					case "Mess12OR34": msg.T12OrT34 = Convert.ToBoolean(value); break;
 				}
 			}
 		}
@@ -3739,10 +3739,10 @@ namespace Idmr.Yogeme
 			// evaluate the FALSE conditions to detect if it's locked into NEVER
 			bool[] never = new bool[6];
 			for (int i = 0; i < 4; i++) never[i] = (mess.Triggers[i].Condition == 10);
-			never[4] = ((never[0] || never[1]) && !mess.T1AndOrT2) || (never[0] && never[1]);   // T1/2 pair
-			never[5] = ((never[2] || never[3]) && !mess.T3AndOrT4) || (never[2] && never[3]);   // T3/4 pair
+			never[4] = ((never[0] || never[1]) && !mess.T1OrT2) || (never[0] && never[1]);   // T1/2 pair
+			never[5] = ((never[2] || never[3]) && !mess.T3OrT4) || (never[2] && never[3]);   // T3/4 pair
 			if (never[4] && never[5]) used = false;
-			else if ((never[4] || never[5]) && !mess.T12AndOrT34) used = false;
+			else if ((never[4] || never[5]) && !mess.T12OrT34) used = false;
 			if (!used) brText = Brushes.Gray;
 
 			e.Graphics.DrawString(lstMessages.Items[e.Index].ToString(), e.Font, brText, e.Bounds, StringFormat.GenericDefault);
@@ -3758,11 +3758,11 @@ namespace Idmr.Yogeme
 			for (int i = 0; i < 4; i++) labelRefresh(_mission.Messages[_activeMessage].Triggers[i], lblMessTrig[i]);
 			txtMessage.Text = _mission.Messages[_activeMessage].MessageString;
 			cboMessColor.SelectedIndex = _mission.Messages[_activeMessage].Color;
-			optMess1OR2.Checked = _mission.Messages[_activeMessage].T1AndOrT2;
+			optMess1OR2.Checked = _mission.Messages[_activeMessage].T1OrT2;
 			optMess1AND2.Checked = !optMess1OR2.Checked;
-			optMess3OR4.Checked = _mission.Messages[_activeMessage].T3AndOrT4;
+			optMess3OR4.Checked = _mission.Messages[_activeMessage].T3OrT4;
 			optMess3AND4.Checked = !optMess3OR4.Checked;
-			optMess12OR34.Checked = _mission.Messages[_activeMessage].T12AndOrT34;
+			optMess12OR34.Checked = _mission.Messages[_activeMessage].T12OrT34;
 			optMess12AND34.Checked = !optMess12OR34.Checked;
 			txtShort.Text = _mission.Messages[_activeMessage].Note;
 			numMessDelay.Value = _mission.Messages[_activeMessage].Delay * 5;
