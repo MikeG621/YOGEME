@@ -1,6 +1,6 @@
 /*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
- * Copyright (C) 2007-2022 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2024 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
  * VERSION: 1.13.6
@@ -59,7 +59,7 @@ namespace Idmr.Yogeme
 
 		void chkBoP_CheckedChanged(object sender, EventArgs e) { if (chkBoP.Checked) optXvT.Checked = true; }
 
-		void cmdCancel_Click(object sender, EventArgs e) { Close(); }
+		void cmdCancel_Click(object sender, EventArgs e) => Close();
 		void cmdOK_Click(object sender, EventArgs e)
 		{
 			if (!optXWING.Checked && !optTIE.Checked && !optXvT.Checked && !optXWA.Checked && !optLastMission.Checked) 

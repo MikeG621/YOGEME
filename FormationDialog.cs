@@ -1,6 +1,6 @@
 ﻿/*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
- * Copyright (C) 2007-2022 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2024 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
  * VERSION: 1.13
@@ -29,8 +29,8 @@ namespace Idmr.Yogeme
 	/// <summary>Dialog to visually choose Flightgroup Formation</summary>
 	public partial class FormationDialog : Form
 	{
-		public int Formation { get { return cboFormation.SelectedIndex; } }
-		public int Spacing { get { return (int)numFormSpacing.Value; } }
+		public int Formation => cboFormation.SelectedIndex;
+		public int Spacing => (int)numFormSpacing.Value;
 
 		/// <summary>Raw data array to retrieve formation positions. Will be initialized based on platform.</summary>
 		short[] _activeDataArray = null;
@@ -421,7 +421,7 @@ namespace Idmr.Yogeme
 		#endregion Raw Data
 
 		/// <summary>Keeps track of an icon's tag position and numbering string, so that identical positions can be managed more gracefully before drawing.</summary>
-		private class IconTag
+		class IconTag
 		{
 			public int X;
 			public int Y;
@@ -430,7 +430,7 @@ namespace Idmr.Yogeme
 		}
 
 		/// <summary>Stores a craft formation position, in pixels, relative to the origin. May be negative.</summary>
-		private class FormPosition
+		class FormPosition
 		{
 			public int X;
 			public int Y;
@@ -449,12 +449,10 @@ namespace Idmr.Yogeme
 
 			setPlatform(platform);
 
-			if (formationIndex < 0 || formationIndex >= cboFormation.Items.Count)
-				formationIndex = 0;
+			if (formationIndex < 0 || formationIndex >= cboFormation.Items.Count) formationIndex = 0;
 			cboFormation.SelectedIndex = formationIndex;
 
-			if (spacing < 0 || spacing > numFormSpacing.Maximum)
-				spacing = 2;
+			if (spacing < 0 || spacing > numFormSpacing.Maximum) spacing = 2;
 			numFormSpacing.Value = spacing;
 
 			lblFormInfo.BackColor = Color.Black;
@@ -462,7 +460,7 @@ namespace Idmr.Yogeme
 		}
 
 		/// <summary>Initializes the formation list, data arrays, and control visibility for the current working platform.</summary>
-		private void setPlatform(Settings.Platform platform)
+		void setPlatform(Settings.Platform platform)
 		{
 			_platform = platform;
 			cboFormation.Items.Clear();
@@ -516,19 +514,15 @@ namespace Idmr.Yogeme
 
 		/// <summary>Generates a bitmap from raw inline data.</summary>
 		/// <remarks>Pixels marked as zero are transparent.</remarks>
-		private Bitmap createBitmapFromRaw(byte[] data, int width, int height)
+		Bitmap createBitmapFromRaw(byte[] data, int width, int height)
 		{
 			Bitmap bmp = new Bitmap(width, height);
 			for (int y = 0; y < height; y++)
-			{
 				for (int x = 0; x < width; x++)
 				{
-					if (data[y * width + x] != 0)
-						bmp.SetPixel(x, y, Color.White);
-					else
-						bmp.SetPixel(x, y, Color.Transparent);
+					if (data[y * width + x] != 0) bmp.SetPixel(x, y, Color.White);
+					else bmp.SetPixel(x, y, Color.Transparent);
 				}
-			}
 			return bmp;
 		}
 
@@ -542,7 +536,7 @@ namespace Idmr.Yogeme
 
 		/// <summary>Creates an array of positions for each craft in a formation.</summary>
 		/// <remarks>XW has more significant differences than other platforms, so it has its own function.</remarks>
-		FormPosition[] generatePositionsXwing(int count /*, int spacing*/)
+		FormPosition[] generatePositionsXwing(int count)
 		{
 			if (count < 1) count = 1;
 			if (count >= 12) count = 12;
@@ -553,8 +547,7 @@ namespace Idmr.Yogeme
 
 			// Craft exiting a hangar always use a particular spacing (the smallest of all formations), but the formation remains intact.
 			int spacingIndex = cboFormation.SelectedIndex;
-			if (chkFormHangar.Checked)
-				spacingIndex = 9;
+			if (chkFormHangar.Checked) spacingIndex = 9;
 
 			int horizSpacing = getValue(_formationDataXwingHorizSpacing, spacingIndex);
 			int vertSpacing = getValue(_formationDataXwingVertSpacing, spacingIndex);
@@ -663,13 +656,11 @@ namespace Idmr.Yogeme
 		void addIconTag(int x, int y, int number, List<IconTag> list)
 		{
 			for (int i = 0; i < list.Count; i++)
-			{
 				if (list[i].X == x && list[i].Y == y)
 				{
 					list[i].Tag += "," + number;
 					return;
 				}
-			}
 			list.Add(new IconTag(x, y, number.ToString()));
 		}
 
@@ -699,10 +690,8 @@ namespace Idmr.Yogeme
 			g.Clear(Color.Black);
 
 			FormPosition[] positions;
-			if (_platform == Settings.Platform.XWING)
-				positions = generatePositionsXwing(count /*, (int)numFormSpacing.Value*/);
-			else
-				positions = generatePositions(count, (int)numFormSpacing.Value);
+			if (_platform == Settings.Platform.XWING) positions = generatePositionsXwing(count);
+			else positions = generatePositions(count, (int)numFormSpacing.Value);
 
 			FormPosition average = chkFormFitPanel.Checked ? generateCenteredAverage(positions) : new FormPosition(0, 0, 0);
 
@@ -783,10 +772,8 @@ namespace Idmr.Yogeme
 				isClipped = clipViewport(ref x, ref y);
 				x += quartWidth - halfIconSize;
 				y += quartHeight - halfIconSize;
-				if(isClipped)
-					g.DrawString("X", DefaultFont, Brushes.Red, x, y);
-				else
-					g.DrawImage(_topIcon, x, y);
+				if (isClipped) g.DrawString("X", DefaultFont, Brushes.Red, x, y);
+				else g.DrawImage(_topIcon, x, y);
 				addIconTag(x, y, i + 1, tagList);
 
 				x = (positions[i].Y + average.Y);
@@ -794,10 +781,8 @@ namespace Idmr.Yogeme
 				isClipped = clipViewport(ref x, ref y);
 				x += quartWidth + halfWidth - halfIconSize;
 				y += quartHeight + halfHeight - halfIconSize;
-				if(isClipped)
-					g.DrawString("X", DefaultFont, Brushes.Red, x, y);
-				else
-					g.DrawImage(_sideIcon, x, y);
+				if (isClipped) g.DrawString("X", DefaultFont, Brushes.Red, x, y);
+				else g.DrawImage(_sideIcon, x, y);
 				addIconTag(x, y, i + 1, tagList);
 
 				x = (positions[i].X + average.X);
@@ -805,16 +790,13 @@ namespace Idmr.Yogeme
 				isClipped = clipViewport(ref x, ref y);
 				x += quartWidth - halfIconSize;
 				y += quartHeight + halfHeight - halfIconSize;
-				if (isClipped)
-					g.DrawString("X", DefaultFont, Brushes.Red, x, y);
-				else
-					g.DrawImage(_frontIcon, x, y);
+				if (isClipped) g.DrawString("X", DefaultFont, Brushes.Red, x, y);
+				else g.DrawImage(_frontIcon, x, y);
 				addIconTag(x, y, i + 1, tagList);
 			}
 
 			// Draw the craft numbering tags below each icon.
-			foreach (IconTag tag in tagList)
-				g.DrawString(tag.Tag, DefaultFont, Brushes.LightGray, tag.X + 10, tag.Y + 10);
+			foreach (IconTag tag in tagList) g.DrawString(tag.Tag, DefaultFont, Brushes.LightGray, tag.X + 10, tag.Y + 10);
 
 			pctFormation.Invalidate();
 			p.Dispose();
@@ -822,22 +804,15 @@ namespace Idmr.Yogeme
 			g.Dispose();
 		}
 
-		void cboFormation_SelectedIndexChanged(object sender, EventArgs e)
-		{
-			if (cboFormation.SelectedIndex >= 0)
-				drawCanvas();
-		}
-		void numFormSpacing_ValueChanged(object sender, EventArgs e) { drawCanvas(); }
-		void chkFormOrigin_CheckedChanged(object sender, EventArgs e) { drawCanvas(); }
-		void chkFormHangar_CheckedChanged(object sender, EventArgs e) { drawCanvas(); }
-		void numFormCount_ValueChanged(object sender, EventArgs e) { drawCanvas(); }
+		void cboFormation_SelectedIndexChanged(object sender, EventArgs e) { if (cboFormation.SelectedIndex >= 0) drawCanvas(); }
+		void numFormSpacing_ValueChanged(object sender, EventArgs e) => drawCanvas();
+		void chkFormOrigin_CheckedChanged(object sender, EventArgs e) => drawCanvas();
+		void chkFormHangar_CheckedChanged(object sender, EventArgs e) => drawCanvas();
+		void numFormCount_ValueChanged(object sender, EventArgs e) => drawCanvas();
 
-		void cmdCancel_Click(object sender, EventArgs e) { Close(); }
-		void cmdOK_Click(object sender, EventArgs e) { Close(); }
+		void cmdCancel_Click(object sender, EventArgs e) => Close();
+		void cmdOK_Click(object sender, EventArgs e) => Close();
 
-		void pctFormation_Paint(object sender, PaintEventArgs e)
-		{
-			e.Graphics.DrawImage(_canvas, 0, 0, _canvas.Width, _canvas.Height);
-		}
+		void pctFormation_Paint(object sender, PaintEventArgs e) => e.Graphics.DrawImage(_canvas, 0, 0, _canvas.Width, _canvas.Height);
 	}
 }

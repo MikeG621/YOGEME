@@ -74,13 +74,10 @@ namespace Idmr.Yogeme
 			return item;
 		}
 
-		private void cmdClose_Click(object sender, EventArgs e)
-		{
-			Close();
-		}
+		void cmdClose_Click(object sender, EventArgs e) => Close();
 
 		[System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0017:Simplify object initialization", Justification = "Don't want to")]
-		private void cmdGenerate_Click(object sender, EventArgs e)
+		void cmdGenerate_Click(object sender, EventArgs e)
 		{
 			if (_mission.FlightGroups.Count > Mission.FlightGroupLimit - (chkReturn.Checked ? 4 : 2))
 			{

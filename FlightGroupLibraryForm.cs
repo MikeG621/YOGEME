@@ -48,8 +48,7 @@ namespace Idmr.Yogeme
 		{
 			InitializeComponent();
 
-			if (flightGroupCollection == null || onAddEvent == null)
-				throw new ArgumentNullException("Invalid arguments to FG Library");
+			if (flightGroupCollection == null || onAddEvent == null) throw new ArgumentNullException("Invalid arguments to FG Library");
 
 			string collectionType = flightGroupCollection.GetType().ToString();
 			string requiredType = "";
@@ -60,8 +59,7 @@ namespace Idmr.Yogeme
 				case Settings.Platform.XvT: case Settings.Platform.BoP: requiredType = typeof(Platform.Xvt.FlightGroupCollection).ToString(); break;
 				case Settings.Platform.XWA: requiredType = typeof(Platform.Xwa.FlightGroupCollection).ToString(); break;
 			}
-			if (collectionType != requiredType)
-				throw new ArgumentException("Invalid collection passed to FG Library");
+			if (collectionType != requiredType) throw new ArgumentException("Invalid collection passed to FG Library");
 
 			_flightGroupCollection = flightGroupCollection;
 			_onAddEvent = onAddEvent;
@@ -75,7 +73,7 @@ namespace Idmr.Yogeme
 
 		#region methods
 		/// <summary>Deletes the selected library craft from the group.</summary>
-		private void deleteLibraryCraftSelection()
+		void deleteLibraryCraftSelection()
 		{
 			// [JB] I tried adding a keypress handler for delete, but this caused all sorts of weird problems.  Possibly event race conditions with drag selection.
 			ListBox.SelectedIndexCollection sic = lstLibraryCraft.SelectedIndices;
@@ -93,9 +91,7 @@ namespace Idmr.Yogeme
 			// There are some weird anomalies if deleting while a mouse-drag is in progress, where the underlying selection data doesn't correspond to what the user actually sees.
 			// This doesn't entirely solve the problem, but it helps.  Keeping this just to be safe.
 			lstLibraryCraft.Enabled = false;
-			for (int i = 0; i < lstLibraryCraft.Items.Count; i++)
-				if (lstLibraryCraft.GetSelected(i))
-					lstLibraryCraft.SetSelected(i, false);
+			for (int i = 0; i < lstLibraryCraft.Items.Count; i++) if (lstLibraryCraft.GetSelected(i)) lstLibraryCraft.SetSelected(i, false);
 			lstLibraryCraft.Enabled = true;
 
 			refreshGroupCraftCount();
@@ -142,7 +138,7 @@ namespace Idmr.Yogeme
 		}
 
 		/// <summary>Retrieves a generic object from within the platform-specific FlightGroupCollection.</summary>
-		private object getFlightGroupObjectFromCollection(int index)
+		object getFlightGroupObjectFromCollection(int index)
 		{
 			switch (_platform)
 			{
@@ -155,7 +151,7 @@ namespace Idmr.Yogeme
 		}
 
 		/// <summary>Returns the craft string as it would appear in the FlightGroup list.</summary>
-		private string getFlightGroupString(object fg)
+		string getFlightGroupString(object fg)
 		{
 			try
 			{
@@ -172,13 +168,13 @@ namespace Idmr.Yogeme
 		}
 
 		/// <summary>Returns the full path and filename of the platform-specific library data.</summary>
-		private string getFullPath(string libraryFileName) => Path.Combine(Directory.GetCurrentDirectory(), libraryFileName);
+		string getFullPath(string libraryFileName) => Path.Combine(Directory.GetCurrentDirectory(), libraryFileName);
 
 		/// <summary>Returns a string containing the group name and its number of items.</summary>
-		private string getGroupName(int group) => group < 0 || group >= _groupList.Count ? "" : _groupNames[group] + "  (" + _groupList[group].Count + ")";
+		string getGroupName(int group) => group < 0 || group >= _groupList.Count ? "" : _groupNames[group] + "  (" + _groupList[group].Count + ")";
 
 		/// <summary>Returns the filename where the platform-specific library data is stored.</summary>
-		private string getLibraryFileName()
+		string getLibraryFileName()
 		{
 			switch (_platform)
 			{
@@ -191,23 +187,21 @@ namespace Idmr.Yogeme
 		}
 
 		/// <summary>Resolves the target craft name of an FG index within the mission collection.</summary>
-		private string getProblemTargetName(int index)
+		string getProblemTargetName(int index)
 		{
 			if (index >= 0 && index < lstMissionCraft.Items.Count)
 			{
 				object targ = getFlightGroupObjectFromCollection(index);
-				if (targ.GetType().ToString().Contains("FlightGroup"))
-					return "[#" + (index + 1).ToString() + ": " + ((Platform.BaseFlightGroup)getFlightGroupObjectFromCollection(index)).ToString() + "]";
+				if (targ.GetType().ToString().Contains("FlightGroup")) return "[#" + (index + 1).ToString() + ": " + ((Platform.BaseFlightGroup)getFlightGroupObjectFromCollection(index)).ToString() + "]";
 			}
 			return "[#" + (index + 1).ToString() + " out of range]";
 		}
 
 		/// <summary>Activates a platform and loads its corresponding library data.</summary>
-		private void loadLibrary(Settings.Platform platform)
+		void loadLibrary(Settings.Platform platform)
 		{
 			// Downgrade BoP so it can share the same library.
-			if (platform == Settings.Platform.BoP)
-				platform = Settings.Platform.XvT;
+			if (platform == Settings.Platform.BoP) platform = Settings.Platform.XvT;
 
 			_platform = platform;
 
@@ -218,8 +212,7 @@ namespace Idmr.Yogeme
 			lblLibraryCraft.Text = label;
 
 			string filename = getLibraryFileName();
-			if (filename == "")
-				return;
+			if (filename == "") return;
 
 			string path = getFullPath(filename);
 			if (File.Exists(path))
@@ -234,15 +227,12 @@ namespace Idmr.Yogeme
 						}
 					}
 				}
-				catch (Exception x)
-				{
-					MessageBox.Show("Error loading FG library!" + Environment.NewLine + x.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				}
+				catch (Exception x) { MessageBox.Show("Error loading FG library!" + Environment.NewLine + x.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); }
 			}
 		}
 
 		/// <summary>Loads the contents of a library from an open file stream.</summary>
-		private void loadLibraryFromStream(FileStream fs, BinaryReader br)
+		void loadLibraryFromStream(FileStream fs, BinaryReader br)
 		{	// removed the try block, redundant
 			int fileId = br.ReadInt32();
 			int fileVersion = br.ReadInt32();
@@ -272,7 +262,7 @@ namespace Idmr.Yogeme
 		}
 
 		/// <summary>Adds a new problem string to a list of problems.</summary>
-		private void logProblem(string problem, List<string> output)
+		void logProblem(string problem, List<string> output)
 		{
 			if (output == null) return;
 
@@ -286,23 +276,15 @@ namespace Idmr.Yogeme
 		}
 
 		/// <summary>Initializes and resets a library to its default empty state.</summary>
-		private void resetDefaultLibrary()
+		void resetDefaultLibrary()
 		{
-			_groupList = new List<List<object>>
-			{
-				new List<object>()
-			};
-
-			_groupNames = new List<string>
-			{
-				"Default"
-			};
-
+			_groupList = new List<List<object>> { new List<object>() };
+			_groupNames = new List<string> { "Default" };
 			_craftProblems = new List<List<string>>();
 		}
 
 		/// <summary>Refreshes the list of library groups contained within the library.</summary>
-		private void refreshGroupList()
+		void refreshGroupList()
 		{
 			if (_groupNames.Count < 1 || _groupList.Count < 1) resetDefaultLibrary();
 
@@ -323,7 +305,7 @@ namespace Idmr.Yogeme
 		}
 
 		/// <summary>Refreshes the visible craft count in the group listing.</summary>
-		private void refreshGroupCraftCount()
+		void refreshGroupCraftCount()
 		{
 			int group = lstLibraryGroup.SelectedIndex;
 			if (group < 0 || group >= _groupList.Count) return;
@@ -333,7 +315,7 @@ namespace Idmr.Yogeme
 		}
 
 		/// <summary>Refreshes the contents of the craft list of the selected library group.</summary>
-		private void refreshLibraryCraft()
+		void refreshLibraryCraft()
 		{
 			lstLibraryCraft.Items.Clear();
 			int group = lstLibraryGroup.SelectedIndex;
@@ -344,27 +326,23 @@ namespace Idmr.Yogeme
 		}
 
 		/// <summary>Refreshes the contents of the mission craft list.</summary>
-		private void refreshMissionCraft()
+		void refreshMissionCraft()
 		{
 			lstMissionCraft.Items.Clear();
 			switch (_platform)
 			{
 				case Settings.Platform.XWING:
-					foreach (Platform.Xwing.FlightGroup fg in (Platform.Xwing.FlightGroupCollection)_flightGroupCollection)
-						lstMissionCraft.Items.Add(fg.ToString(true));
+					foreach (Platform.Xwing.FlightGroup fg in (Platform.Xwing.FlightGroupCollection)_flightGroupCollection) lstMissionCraft.Items.Add(fg.ToString(true));
 					break;
 				case Settings.Platform.TIE:
-					foreach (Platform.Tie.FlightGroup fg in (Platform.Tie.FlightGroupCollection)_flightGroupCollection)
-						lstMissionCraft.Items.Add(fg.ToString(true));
+					foreach (Platform.Tie.FlightGroup fg in (Platform.Tie.FlightGroupCollection)_flightGroupCollection) lstMissionCraft.Items.Add(fg.ToString(true));
 					break;
 				case Settings.Platform.XvT:
 				case Settings.Platform.BoP:
-					foreach (Platform.Xvt.FlightGroup fg in (Platform.Xvt.FlightGroupCollection)_flightGroupCollection)
-						lstMissionCraft.Items.Add(fg.ToString(true));
+					foreach (Platform.Xvt.FlightGroup fg in (Platform.Xvt.FlightGroupCollection)_flightGroupCollection) lstMissionCraft.Items.Add(fg.ToString(true));
 					break;
 				case Settings.Platform.XWA:
-					foreach (Platform.Xwa.FlightGroup fg in (Platform.Xwa.FlightGroupCollection)_flightGroupCollection)
-						lstMissionCraft.Items.Add(fg.ToString(true));
+					foreach (Platform.Xwa.FlightGroup fg in (Platform.Xwa.FlightGroupCollection)_flightGroupCollection) lstMissionCraft.Items.Add(fg.ToString(true));
 					break;
 			}
 		}
@@ -381,7 +359,7 @@ namespace Idmr.Yogeme
 		}
 
 		/// <summary>Opens a platform-specific library file and writes the entire library into it.</summary>
-		private void saveLibrary()
+		void saveLibrary()
 		{
 			string filename = getFullPath(getLibraryFileName());
 			try
@@ -408,14 +386,11 @@ namespace Idmr.Yogeme
 					}
 				}
 			}
-			catch (Exception x)
-			{
-				MessageBox.Show("Unable to save FG library!" + Environment.NewLine + x.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-			}
+			catch (Exception x) { MessageBox.Show("Unable to save FG library!" + Environment.NewLine + x.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); }
 		}
 
 		/// <summary>Scans a BaseFlightGroup's arrival/departure motherships for FG reference problems.</summary>
-		private void scanMothershipProblems(Platform.BaseFlightGroup bfg, bool scrubProblems, List<string> output)
+		void scanMothershipProblems(Platform.BaseFlightGroup bfg, bool scrubProblems, List<string> output)
 		{
 			if (bfg.ArriveViaMothership)
 			{
@@ -445,7 +420,7 @@ namespace Idmr.Yogeme
 		/// <param name="scrubProblems">If true, if any FlightGroup references are detected or used in triggers, they will be replaced with null values.</param>
 		/// <param name="compileProblems">If true, specifies that a list strings will be returned, detailing all FlightGroup references used by this FlightGroup.</param>
 		/// <returns>Returns null if <paramref name="compileProblems"/> is false. Otherwise returns a list of strings.</returns>
-		private List<string> scanProblems(object fg, bool scrubProblems, bool compileProblems)
+		List<string> scanProblems(object fg, bool scrubProblems, bool compileProblems)
 		{
 			List<string> errors = (compileProblems ? new List<string>() : null);
 			Platform.BaseFlightGroup bfg = (Platform.BaseFlightGroup)fg;
@@ -594,7 +569,7 @@ namespace Idmr.Yogeme
 
 		#region controls
 		/// <summary>Adds all selected mission craft into the current library group.</summary>
-		private void cmdAddToLibrary_Click(object sender, EventArgs e)
+		void cmdAddToLibrary_Click(object sender, EventArgs e)
 		{
 			int group = lstLibraryGroup.SelectedIndex;
 			if (group < 0 || group >= _groupList.Count) return;
@@ -615,7 +590,7 @@ namespace Idmr.Yogeme
 			}
 			refreshGroupCraftCount();
 		}
-		private void cmdAddToMission_Click(object sender, EventArgs e)
+		void cmdAddToMission_Click(object sender, EventArgs e)
 		{
 			ListBox.SelectedIndexCollection sic = lstLibraryCraft.SelectedIndices;
 			int group = lstLibraryGroup.SelectedIndex;
@@ -638,8 +613,8 @@ namespace Idmr.Yogeme
 			}
 			_onAddEvent(sendArray, new EventArgs());
 		}
-		private void cmdDeleteCraft_Click(object sender, EventArgs e) => deleteLibraryCraftSelection();
-		private void cmdDeleteGroup_Click(object sender, EventArgs e)
+		void cmdDeleteCraft_Click(object sender, EventArgs e) => deleteLibraryCraftSelection();
+		void cmdDeleteGroup_Click(object sender, EventArgs e)
 		{
 			int group = lstLibraryGroup.SelectedIndex;
 			if (group < 1)
@@ -661,7 +636,7 @@ namespace Idmr.Yogeme
 			refreshLibraryCraft();
 			_isDirty = true;
 		}
-		private void cmdMoveCraftDown_Click(object sender, EventArgs e)
+		void cmdMoveCraftDown_Click(object sender, EventArgs e)
 		{
 			ListBox.SelectedIndexCollection sic = lstLibraryCraft.SelectedIndices;
 			int group = lstLibraryGroup.SelectedIndex;
@@ -681,7 +656,7 @@ namespace Idmr.Yogeme
 			for (int i = 0; i < selection.Length; i++) lstLibraryCraft.SetSelected(selection[i] + 1, true);
 			_isDirty = true;
 		}
-		private void cmdMoveCraftToGroup_Click(object sender, EventArgs e)
+		void cmdMoveCraftToGroup_Click(object sender, EventArgs e)
 		{
 			ListBox.SelectedIndexCollection sic = lstLibraryCraft.SelectedIndices;
 			int srcGroup = lstLibraryGroup.SelectedIndex;
@@ -703,7 +678,7 @@ namespace Idmr.Yogeme
 			refreshLibraryCraft();
 			_isDirty = true;
 		}
-		private void cmdMoveCraftUp_Click(object sender, EventArgs e)
+		void cmdMoveCraftUp_Click(object sender, EventArgs e)
 		{
 			ListBox.SelectedIndexCollection sic = lstLibraryCraft.SelectedIndices;
 			int group = lstLibraryGroup.SelectedIndex;
@@ -723,7 +698,7 @@ namespace Idmr.Yogeme
 			for (int i = 0; i < selection.Length; i++) lstLibraryCraft.SetSelected(selection[i] - 1, true);
 			_isDirty = true;
 		}
-		private void cmdNewGroup_Click(object sender, EventArgs e)
+		void cmdNewGroup_Click(object sender, EventArgs e)
 		{
 			_groupList.Add(new List<object>());
 			string name = txtName.Text.Trim();
@@ -734,7 +709,7 @@ namespace Idmr.Yogeme
 			lstLibraryGroup.SelectedIndex = lstLibraryGroup.Items.Count - 1;
 			_isDirty = true;
 		}
-		private void cmdRenameGroup_Click(object sender, EventArgs e)
+		void cmdRenameGroup_Click(object sender, EventArgs e)
 		{
 			int group = lstLibraryGroup.SelectedIndex;
 			if (group < 0 || group >= _groupNames.Count) return;
@@ -753,20 +728,16 @@ namespace Idmr.Yogeme
 			txtName.Text = "";
 			_isDirty = true;
 		}
-		private void cmdScrubProblems_Click(object sender, EventArgs e)
+		void cmdScrubProblems_Click(object sender, EventArgs e)
 		{
 			int group = lstLibraryGroup.SelectedIndex;
 			if (group < 0 || group >= _groupList.Count) return;
 
-			foreach (int si in lstLibraryCraft.SelectedIndices)
-			{
-				if (si >= 0 && si < _groupList[group].Count)
-					scanProblems(_groupList[group][si], true, false);
-			}
+			foreach (int si in lstLibraryCraft.SelectedIndices) if (si >= 0 && si < _groupList[group].Count) scanProblems(_groupList[group][si], true, false);
 			refreshProblems();
 			_isDirty = true;
 		}
-		private void cmdViewProblems_Click(object sender, EventArgs e)
+		void cmdViewProblems_Click(object sender, EventArgs e)
 		{
 			string text = "";
 			int count = 0;
@@ -789,14 +760,14 @@ namespace Idmr.Yogeme
 			MessageBox.Show(text, "Possible FlightGroup reference problems");
 		}
 
-		private void form_Activated(object sender, EventArgs e)
+		void form_Activated(object sender, EventArgs e)
 		{
 			// The main editor form doesn't synchronize its changes with the FG Library.
 			// This automatically performs a refresh whenever the user switches focus to the library form.
 			refreshMissionCraft();
 			refreshProblems();
 		}
-		private void form_FormClosing(object sender, FormClosingEventArgs e)
+		void form_FormClosing(object sender, FormClosingEventArgs e)
 		{
 			if (_isDirty)
 			{
@@ -804,7 +775,7 @@ namespace Idmr.Yogeme
 				_isDirty = false;
 			}
 		}
-		private void form_SizeChanged(object sender, EventArgs e)
+		void form_SizeChanged(object sender, EventArgs e)
 		{
 			int height = grpCraftManager.Bottom - lstMissionCraft.Top;
 			if (ClientRectangle.Bottom > lstMissionCraft.Top + height) height += ClientRectangle.Bottom - (lstMissionCraft.Top + height);
@@ -812,7 +783,7 @@ namespace Idmr.Yogeme
 			lstLibraryCraft.Size = new Size(lstLibraryCraft.Width, height);
 		}
 
-		private void lstGroupCraft_DrawItem(object sender, DrawItemEventArgs e)
+		void lstGroupCraft_DrawItem(object sender, DrawItemEventArgs e)
 		{
 			Brush brText;
 			int group = lstLibraryGroup.SelectedIndex;
@@ -830,8 +801,8 @@ namespace Idmr.Yogeme
 				e.Graphics.DrawString(lstLibraryCraft.Items[e.Index].ToString(), e.Font, brText, e.Bounds, StringFormat.GenericDefault);
 			}
 		}
-		private void lstLibraryGroup_SelectedIndexChanged(object sender, EventArgs e) => refreshLibraryCraft();
-		private void lstMissionCraft_DrawItem(object sender, DrawItemEventArgs e)
+		void lstLibraryGroup_SelectedIndexChanged(object sender, EventArgs e) => refreshLibraryCraft();
+		void lstMissionCraft_DrawItem(object sender, DrawItemEventArgs e)
 		{
 			object fg = getFlightGroupObjectFromCollection(e.Index);
 			if (e.Index == -1 || fg.ToString() == "") return;

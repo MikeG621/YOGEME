@@ -1,6 +1,6 @@
 ﻿/*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
- * Copyright (C) 2007-2023 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2024 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
  * VERSION: 1.15.3
@@ -87,16 +87,11 @@ namespace Idmr.Yogeme
 		public void Reload()
 		{
 			lstMessages.Items.Clear();
-			for (int i = 0; i < _mission.Messages.Count; i++)
-				lstMessages.Items.Add("#" + (i + 1) + ": " + _mission.Messages[i].MessageString);
+			for (int i = 0; i < _mission.Messages.Count; i++) lstMessages.Items.Add("#" + (i + 1) + ": " + _mission.Messages[i].MessageString);
 			lstBriefing.Items.Clear();
 			for (int i = 0; i < _mission.Briefings[0].BriefingString.Length; i++)
 				lstBriefing.Items.Add("#" + (i + 1) + ": " + (_mission.Briefings[0].BriefingString[i] != "" ? _mission.Briefings[0].BriefingString[i] : "(none)"));
-			if (File.Exists(_lstFile))
-			{
-				using (StreamReader sr = File.OpenText(_lstFile))
-					_messages = sr.ReadToEnd().Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
-			}
+			if (File.Exists(_lstFile)) using (StreamReader sr = File.OpenText(_lstFile)) _messages = sr.ReadToEnd().Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
 		}
 
 		void backupPrePost()
@@ -111,17 +106,11 @@ namespace Idmr.Yogeme
 		void stopPlayback()
 		{
 			// this should really only have 1 entry at any time
-			for (int i = 0; i < _activeSounds.Count; i++)
-			{
-				_activeSounds[i].Stop();
-			}
+			for (int i = 0; i < _activeSounds.Count; i++) _activeSounds[i].Stop();
 		}
 
 		#region controls
-		void cmdClose_Click(object sender, EventArgs e)
-		{
-			Close();
-		}
+		void cmdClose_Click(object sender, EventArgs e) => Close();
 		void cmdPlay_Click(object sender, EventArgs e)
 		{
 			Button cmd = (Button)sender;
@@ -180,8 +169,7 @@ namespace Idmr.Yogeme
 			string contents = string.Join("\r\n", _messages) + "\r\n";
 			if (!File.Exists(_lstFile + _bakExt) && File.Exists(_lstFile)) File.Copy(_lstFile, _lstFile + _bakExt);
 			File.Delete(_lstFile);
-			using (StreamWriter sw = new FileInfo(_lstFile).CreateText())
-				sw.Write(contents);
+			using (StreamWriter sw = new FileInfo(_lstFile).CreateText()) sw.Write(contents);
 
 			cmdSaveMessage.Enabled = false;
 			cmdSaveEom.Enabled = false;
@@ -263,8 +251,7 @@ namespace Idmr.Yogeme
 
 			int index = lstPrePost.SelectedIndex + 1;
 			string wave = _frontend + _prefix + _battleNumber.ToString("D2") + _missionNumber.ToString("D2");
-			for (; index < lstPrePost.Items.Count; index++)
-				File.Copy(wave + (index + 1).ToString("D2") + _wavExt, wave + index.ToString("D2") + _wavExt, true);
+			for (; index < lstPrePost.Items.Count; index++) File.Copy(wave + (index + 1).ToString("D2") + _wavExt, wave + index.ToString("D2") + _wavExt, true);
 			File.Delete(wave + index.ToString("D2") + _wavExt);
 
 			lstPrePost.Items.RemoveAt(lstPrePost.Items.Count - 1);
@@ -346,10 +333,7 @@ namespace Idmr.Yogeme
 
 
 			int index = 1;
-			while (File.Exists(_frontend + _prefix + _battleNumber.ToString("D2") + _missionNumber.ToString("D2") + index.ToString("D2") + _wavExt))
-			{
-				lstPrePost.Items.Add("Message #" + index++);
-			}
+			while (File.Exists(_frontend + _prefix + _battleNumber.ToString("D2") + _missionNumber.ToString("D2") + index.ToString("D2") + _wavExt)) { lstPrePost.Items.Add("Message #" + index++); }
 			cmdAdd.Enabled = true;
 
 			if (lstPrePostCategories.SelectedIndex == 0 && lstPrePost.Items.Count == 0)

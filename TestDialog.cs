@@ -1,6 +1,6 @@
 ﻿/*
- * YOGEME.exe, All-in-one Mission Editor for the X-wing series, TIE through XWA
- * Copyright (C) 2007-2014 Michael Gaisser (mjgaisser@gmail.com)
+ * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
+ * Copyright (C) 2007-2024 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
  * VERSION: 1.2.3
@@ -34,7 +34,7 @@ namespace Idmr.Yogeme
 			if (!_config.Verify) chkVerify.Enabled = true;
 		}
 
-		void cmdCancel_Click(object sender, EventArgs e) { Close(); }
+		void cmdCancel_Click(object sender, EventArgs e) => Close();
 
 		void cmdTest_Click(object sender, EventArgs e)
 		{

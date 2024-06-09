@@ -1,6 +1,6 @@
 ﻿/*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
- * Copyright (C) 2007-2022 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2024 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
  * VERSION: 1.12
@@ -53,15 +53,9 @@ namespace Idmr.Yogeme
 			lblTour.Text = "Tour " + _tourIndex;
 		}
 
-		private void cmdAdd_Click(object sender, EventArgs e)
-		{
-			opnMission.ShowDialog();
-		}
-		private void cmdCancel_Click(object sender, EventArgs e)
-		{
-			Close();
-		}
-		private void cmdMoveDown_Click(object sender, EventArgs e)
+		void cmdAdd_Click(object sender, EventArgs e) => opnMission.ShowDialog();
+		void cmdCancel_Click(object sender, EventArgs e) => Close();
+		void cmdMoveDown_Click(object sender, EventArgs e)
 		{
 			int missIndex = lstMiss.SelectedIndex;
 			if (missIndex == -1 || missIndex == lstMiss.Items.Count - 1) return;
@@ -85,7 +79,7 @@ namespace Idmr.Yogeme
 			lstMiss.Items.Insert(missIndex + 1, strTemp);
 			lstMiss.SelectedIndex = missIndex + 1;
 		}
-		private void cmdMoveUp_Click(object sender, EventArgs e)
+		void cmdMoveUp_Click(object sender, EventArgs e)
 		{
 			int missIndex = lstMiss.SelectedIndex;
 			if (missIndex < 1) return;
@@ -109,51 +103,48 @@ namespace Idmr.Yogeme
 			lstMiss.Items.Insert(missIndex - 1, strTemp);
 			lstMiss.SelectedIndex = missIndex - 1;
 		}
-		private void cmdNext_Click(object sender, EventArgs e)
+		void cmdNext_Click(object sender, EventArgs e)
 		{
 			if (_tourIndex < 5) _tourIndex++;	// LFD suggests there's up to 8, but there's only details for 5
 			loadTour();
 		}
-		private void cmdOK_Click(object sender, EventArgs e)
+		void cmdOK_Click(object sender, EventArgs e)
 		{
 			_missions.Write();
 			Close();
 		}
-		private void cmdPrev_Click(object sender, EventArgs e)
+		void cmdPrev_Click(object sender, EventArgs e)
 		{
 			if (_tourIndex > 1) _tourIndex--;
 			loadTour();
 		}
-		private void cmdRemove_Click(object sender, EventArgs e)
+		void cmdRemove_Click(object sender, EventArgs e)
 		{
-			if (lstMiss.SelectedIndex != -1)
-			{
-				int index = lstMiss.SelectedIndex;
-				_tour.Strings[0] = _tour.Strings[0].Replace(lstMiss.SelectedItem.ToString(), "").Replace("\0\0", "\0").Trim('\0');
-				_tour.Strings[1] = _tour.Strings[1].Replace(txtTitle.Text, "").Replace("\0\0", "\0").Trim('\0');
-				for (int i = index + 2; i < _tour.NumberOfStrings - 1; i++)
-					_tour.Strings[i] = _tour.Strings[i + 1];
-				_tour.NumberOfStrings--;
-				lstMiss.Items.RemoveAt(index);
-				try { lstMiss.SelectedIndex = index; }
-				catch (ArgumentOutOfRangeException) { lstMiss.SelectedIndex = index - 1; }
-			}
+			if (lstMiss.SelectedIndex == -1) return;
+
+			int index = lstMiss.SelectedIndex;
+			_tour.Strings[0] = _tour.Strings[0].Replace(lstMiss.SelectedItem.ToString(), "").Replace("\0\0", "\0").Trim('\0');
+			_tour.Strings[1] = _tour.Strings[1].Replace(txtTitle.Text, "").Replace("\0\0", "\0").Trim('\0');
+			for (int i = index + 2; i < _tour.NumberOfStrings - 1; i++) _tour.Strings[i] = _tour.Strings[i + 1];
+			_tour.NumberOfStrings--;
+			lstMiss.Items.RemoveAt(index);
+			try { lstMiss.SelectedIndex = index; }
+			catch (ArgumentOutOfRangeException) { lstMiss.SelectedIndex = index - 1; }
 		}
 
-		private void lstMiss_SelectedIndexChanged(object sender, EventArgs e)
+		void lstMiss_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			if (lstMiss.SelectedIndex != -1)
-			{
-				int missIndex = lstMiss.SelectedIndex;
-				string desc = _tour.Strings[2 + missIndex].Replace("\0", "\r\n");
-				desc = desc.Replace(Convert.ToChar(1), ']');
-				desc = desc.Replace(Convert.ToChar(2), '[');
-				txtDesc.Text = desc;
-				txtTitle.Text = _tour.Strings[1].Split('\0')[missIndex];
-			}
+			if (lstMiss.SelectedIndex == -1) return;
+
+			int missIndex = lstMiss.SelectedIndex;
+			string desc = _tour.Strings[2 + missIndex].Replace("\0", "\r\n");
+			desc = desc.Replace(Convert.ToChar(1), ']');
+			desc = desc.Replace(Convert.ToChar(2), '[');
+			txtDesc.Text = desc;
+			txtTitle.Text = _tour.Strings[1].Split('\0')[missIndex];
 		}
 
-		private void opnMission_FileOk(object sender, CancelEventArgs e)
+		void opnMission_FileOk(object sender, CancelEventArgs e)
 		{
 			string strMission = opnMission.FileName;
 			strMission = strMission.Remove(0, strMission.LastIndexOf("\\") + 1);
@@ -166,26 +157,24 @@ namespace Idmr.Yogeme
 			lstMiss.SelectedIndex = lstMiss.Items.Count - 1;
 		}
 
-		private void txtDesc_TextChanged(object sender, EventArgs e)
+		void txtDesc_TextChanged(object sender, EventArgs e)
 		{
-			if (lstMiss.SelectedIndex != -1)
-			{
-				int missIndex = lstMiss.SelectedIndex;
-				string desc = txtDesc.Text.Replace("\r\n", "\0");
-				desc = desc.Replace(']', Convert.ToChar(1));
-				desc = desc.Replace('[', Convert.ToChar(2));
-				_tour.Strings[2 + missIndex] = desc;
-			}
+			if (lstMiss.SelectedIndex == -1) return;
+
+			int missIndex = lstMiss.SelectedIndex;
+			string desc = txtDesc.Text.Replace("\r\n", "\0");
+			desc = desc.Replace(']', Convert.ToChar(1));
+			desc = desc.Replace('[', Convert.ToChar(2));
+			_tour.Strings[2 + missIndex] = desc;
 		}
 
-		private void txtTitle_TextChanged(object sender, EventArgs e)
+		void txtTitle_TextChanged(object sender, EventArgs e)
 		{
-			if (lstMiss.SelectedIndex != -1)
-			{
-				string[] titles = _tour.Strings[1].Split('\0');
-				titles[lstMiss.SelectedIndex] = txtTitle.Text;
-				_tour.Strings[1] = string.Join("\0", titles);
-			}
+			if (lstMiss.SelectedIndex == -1) return;
+
+			string[] titles = _tour.Strings[1].Split('\0');
+			titles[lstMiss.SelectedIndex] = txtTitle.Text;
+			_tour.Strings[1] = string.Join("\0", titles);
 		}
 	}
 }

@@ -137,7 +137,6 @@ namespace Idmr.Yogeme
 			chkTest.Checked = _config.ConfirmTest;
 			chkVerifyTest.Checked = _config.VerifyTest;
 			chkVerifyTest.Enabled = !_config.Verify;
-			//chkBackdrops.Enabled = _config.SuperBackdropsInstalled;
 			chkBackdrops.Checked = _config.InitializeUsingSuperBackdrops;
 			int t = _config.Waypoints;
 			for (int i = 0; i < 22; i++) chkWP[i].Checked = Convert.ToBoolean(t & (1 << i));
@@ -156,8 +155,7 @@ namespace Idmr.Yogeme
 			chkWireMeshIcon.Checked = _config.WireframeMeshIconEnabled;
 			numWireMeshIcon.Value = _config.WireframeMeshIconSize;
 
-			for (int i = 0; i < 32; i++)
-				lstWireMeshTypes.SetSelected(i, (_config.WireframeMeshTypeVisibility & (1 << i)) != 0);
+			for (int i = 0; i < 32; i++) lstWireMeshTypes.SetSelected(i, (_config.WireframeMeshTypeVisibility & (1 << i)) != 0);
 			refreshAllMeshCollectionCheckbox();
 
 			chkXwingDetectMission.Checked = _config.XwingDetectMission;
@@ -184,13 +182,12 @@ namespace Idmr.Yogeme
 			_closeCallback = callback;
 		}
 
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0059:Unnecessary assignment of a value", Justification = "TryParse may not work")]
 		void refreshColors()
 		{
-#pragma warning disable IDE0059 // Unnecessary assignment of a value
 			int sel = Color.Blue.ToArgb();
 			int nsel = Color.Black.ToArgb();
 			int background = Color.RosyBrown.ToArgb();
-#pragma warning restore IDE0059 // Unnecessary assignment of a value
 			int.TryParse(txtColorSelected.Text, System.Globalization.NumberStyles.HexNumber, null, out sel);
 			int.TryParse(txtColorNonSelected.Text, System.Globalization.NumberStyles.HexNumber, null, out nsel);
 			int.TryParse(txtColorBackground.Text, System.Globalization.NumberStyles.HexNumber, null, out background);
@@ -233,43 +230,16 @@ namespace Idmr.Yogeme
 			refreshColors();
 		}
 
-		void chkColorizeFG_CheckedChanged(object sender, EventArgs e)
-		{
-			_config.ColorizedDropDowns = chkColorizeFG.Checked;
-		}
-		void chkXWInstall_CheckedChanged(object sender, EventArgs e)
-		{
-			txtXW.Enabled = chkXWInstall.Checked;
-		}
-		void chkTIEInstall_CheckedChanged(object sender, EventArgs e)
-		{
-			txtTIE.Enabled = chkTIEInstall.Checked;
-		}
-		void chkXvTInstall_CheckedChanged(object sender, EventArgs e)
-		{
-			txtXvT.Enabled = chkXvTInstall.Checked;
-		}
-		void chkBoPInstall_CheckedChanged(object sender, EventArgs e)
-		{
-			txtBoP.Enabled = chkBoPInstall.Checked;
-		}
-		void chkXWAInstall_CheckedChanged(object sender, EventArgs e)
-		{
-			txtXWA.Enabled = chkXWAInstall.Checked;
-		}
-		void chkVerify_CheckedChanged(object sender, EventArgs e)
-		{
-			chkVerifyTest.Enabled = chkVerify.Checked;
-		}
+		void chkColorizeFG_CheckedChanged(object sender, EventArgs e) => _config.ColorizedDropDowns = chkColorizeFG.Checked;
+		void chkXWInstall_CheckedChanged(object sender, EventArgs e) => txtXW.Enabled = chkXWInstall.Checked;
+		void chkTIEInstall_CheckedChanged(object sender, EventArgs e) => txtTIE.Enabled = chkTIEInstall.Checked;
+		void chkXvTInstall_CheckedChanged(object sender, EventArgs e) => txtXvT.Enabled = chkXvTInstall.Checked;
+		void chkBoPInstall_CheckedChanged(object sender, EventArgs e) => txtBoP.Enabled = chkBoPInstall.Checked;
+		void chkXWAInstall_CheckedChanged(object sender, EventArgs e) => txtXWA.Enabled = chkXWAInstall.Checked;
+		void chkVerify_CheckedChanged(object sender, EventArgs e) => chkVerifyTest.Enabled = chkVerify.Checked;
 
-		void cmdBop_Click(object sender, EventArgs e)
-		{
-			selectPlatform(txtBoP, chkBoPInstall);
-		}
-		void cmdCancel_Click(object sender, EventArgs e)
-		{
-			Close();
-		}
+		void cmdBop_Click(object sender, EventArgs e) => selectPlatform(txtBoP, chkBoPInstall);
+		void cmdCancel_Click(object sender, EventArgs e) => Close();
 		void cmdInteractSelect_Click(object sender, EventArgs e)
 		{
 			DialogResult dr = colorSelector.ShowDialog();
@@ -297,6 +267,7 @@ namespace Idmr.Yogeme
 				refreshColors();
 			}
 		}
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0059:Unnecessary assignment of a value", Justification = "TryParse")]
 		void cmdOK_Click(object sender, EventArgs e)
 		{
 			if (optStartNormal.Checked) _config.Startup = Settings.StartupMode.Normal;
@@ -337,11 +308,9 @@ namespace Idmr.Yogeme
 			_config.VerifyTest = chkVerifyTest.Checked;
 			_config.InitializeUsingSuperBackdrops = chkBackdrops.Checked;
 
-#pragma warning disable IDE0059 // Unnecessary assignment of a value
 			int sel = Color.Blue.ToArgb();
 			int nsel = Color.Black.ToArgb();
 			int background = Color.RosyBrown.ToArgb();
-#pragma warning restore IDE0059 // Unnecessary assignment of a value
 			int.TryParse(txtColorSelected.Text, System.Globalization.NumberStyles.HexNumber, null, out sel);
 			int.TryParse(txtColorNonSelected.Text, System.Globalization.NumberStyles.HexNumber, null, out nsel);
 			int.TryParse(txtColorBackground.Text, System.Globalization.NumberStyles.HexNumber, null, out background);
@@ -383,71 +352,44 @@ namespace Idmr.Yogeme
 			_closeCallback?.Invoke(0, new EventArgs());
 			Close();
 		}
-		void cmdXW_Click(object sender, EventArgs e)
-		{
-			selectPlatform(txtXW, chkXWInstall);
-		}
-		void cmdTie_Click(object sender, EventArgs e)
-		{
-			selectPlatform(txtTIE, chkTIEInstall);
-		}
+		void cmdXW_Click(object sender, EventArgs e) => selectPlatform(txtXW, chkXWInstall);
+		void cmdTie_Click(object sender, EventArgs e) => selectPlatform(txtTIE, chkTIEInstall);
 		void cmdVerify_Click(object sender, EventArgs e)
 		{
 			try { opnVerify.InitialDirectory = txtVerify.Text.Substring(0, txtVerify.Text.LastIndexOf("\\")); }
 			catch { opnVerify.InitialDirectory = Application.StartupPath; }
-			if (opnVerify.ShowDialog() == DialogResult.OK)
-				txtVerify.Text = opnVerify.FileName;
+			if (opnVerify.ShowDialog() == DialogResult.OK) txtVerify.Text = opnVerify.FileName;
 		}
-		void cmdXvt_Click(object sender, EventArgs e)
-		{
-			selectPlatform(txtXvT, chkXvTInstall);
-		}
-		void cmdXwa_Click(object sender, EventArgs e)
-		{
-			selectPlatform(txtXWA, chkXWAInstall);
-		}
+		void cmdXvt_Click(object sender, EventArgs e) => selectPlatform(txtXvT, chkXvTInstall);
+		void cmdXwa_Click(object sender, EventArgs e) => selectPlatform(txtXWA, chkXWAInstall);
 
-		void txtColorSelected_TextChanged(object sender, EventArgs e)
-		{
-			refreshColors();
-		}
-		void txtColorNonSelected_TextChanged(object sender, EventArgs e)
-		{
-			refreshColors();
-		}
-		void txtColorBackground_TextChanged(object sender, EventArgs e)
-		{
-			refreshColors();
-		}
+		void txtColorSelected_TextChanged(object sender, EventArgs e) => refreshColors();
+		void txtColorNonSelected_TextChanged(object sender, EventArgs e) => refreshColors();
+		void txtColorBackground_TextChanged(object sender, EventArgs e) => refreshColors();
 
 		/// <summary>Broadly sets or clears visibility states of an entire range of meshtypes.</summary>
-		private void applyBatchVisibilityState(bool state, MeshType[] items)
+		void applyBatchVisibilityState(bool state, MeshType[] items)
 		{
 			foreach (var i in items)
 			{
 				int index = (int)i;
-				if (index >= 0 && index < lstWireMeshTypes.Items.Count)
-					lstWireMeshTypes.SetSelected(index, state);
+				if (index >= 0 && index < lstWireMeshTypes.Items.Count) lstWireMeshTypes.SetSelected(index, state);
 			}
 		}
 
 		/// <summary>Refreshes the checked state of a single checkbox.</summary>
 		/// <remarks>Compares the specified list of meshtypes against the current visibility list. The checkbox will be grayed out in a partial match, otherwise fully on or off.</remarks>
-		private void refreshMeshCollectionCheckbox(CheckBox chk, MeshType[] items)
+		void refreshMeshCollectionCheckbox(CheckBox chk, MeshType[] items)
 		{
 			int count = 0;
 			foreach (var i in items)
 			{
 				int index = (int)i;
-				if (index >= 0 && index < lstWireMeshTypes.Items.Count)
-					if (lstWireMeshTypes.GetSelected(index))
-						count++;
+				if (index >= 0 && index < lstWireMeshTypes.Items.Count && lstWireMeshTypes.GetSelected(index)) count++;
 			}
 			chk.ThreeState = false;
-			if (count == items.Length)
-				chk.CheckState = CheckState.Checked;
-			else if (count == 0)
-				chk.CheckState = CheckState.Unchecked;
+			if (count == items.Length) chk.CheckState = CheckState.Checked;
+			else if (count == 0) chk.CheckState = CheckState.Unchecked;
 			else
 			{
 				chk.ThreeState = true;
@@ -456,7 +398,7 @@ namespace Idmr.Yogeme
 		}
 
 		/// <summary>Refreshes the checked state of all meshtype checkboxes.</summary>
-		private void refreshAllMeshCollectionCheckbox()
+		void refreshAllMeshCollectionCheckbox()
 		{
 			refreshMeshCollectionCheckbox(chkWireToggleHull, MeshTypeHelper.HullMeshes);
 			refreshMeshCollectionCheckbox(chkWireToggleMisc, MeshTypeHelper.MiscMeshes);
@@ -464,7 +406,7 @@ namespace Idmr.Yogeme
 			refreshMeshCollectionCheckbox(chkWireToggleHangar, MeshTypeHelper.HangarMeshes);
 		}
 
-		private void chkWireToggleHull_CheckedChanged(object sender, EventArgs e)
+		void chkWireToggleHull_CheckedChanged(object sender, EventArgs e)
 		{
 			if (ActiveControl == chkWireToggleHull)
 			{
@@ -472,7 +414,7 @@ namespace Idmr.Yogeme
 				applyBatchVisibilityState(chkWireToggleHull.Checked, MeshTypeHelper.HullMeshes);
 			}
 		}
-		private void chkWireToggleMisc_CheckedChanged(object sender, EventArgs e)
+		void chkWireToggleMisc_CheckedChanged(object sender, EventArgs e)
 		{
 			if (ActiveControl == chkWireToggleMisc)
 			{
@@ -480,7 +422,7 @@ namespace Idmr.Yogeme
 				applyBatchVisibilityState(chkWireToggleMisc.Checked, MeshTypeHelper.MiscMeshes);
 			}
 		}
-		private void chkWireToggleWeapon_CheckedChanged(object sender, EventArgs e)
+		void chkWireToggleWeapon_CheckedChanged(object sender, EventArgs e)
 		{
 			if (ActiveControl == chkWireToggleWeapon)
 			{
@@ -488,7 +430,7 @@ namespace Idmr.Yogeme
 				applyBatchVisibilityState(chkWireToggleWeapon.Checked, MeshTypeHelper.WeaponMeshes);
 			}
 		}
-		private void chkWireToggleHangar_CheckedChanged(object sender, EventArgs e)
+		void chkWireToggleHangar_CheckedChanged(object sender, EventArgs e)
 		{
 			if (ActiveControl == chkWireToggleHangar)
 			{
@@ -496,20 +438,16 @@ namespace Idmr.Yogeme
 				applyBatchVisibilityState(chkWireToggleHangar.Checked, MeshTypeHelper.HangarMeshes);
 			}
 		}
-		private void lstWireMeshTypes_SelectedIndexChanged(object sender, EventArgs e)
-		{
-			if (ActiveControl == lstWireMeshTypes)
-				refreshAllMeshCollectionCheckbox();
-		}
+		void lstWireMeshTypes_SelectedIndexChanged(object sender, EventArgs e) { if (ActiveControl == lstWireMeshTypes) refreshAllMeshCollectionCheckbox(); }
 
-		private void cmdWireMeshDefault_Click(object sender, EventArgs e)
+		void cmdWireMeshDefault_Click(object sender, EventArgs e)
 		{
 			lstWireMeshTypes.ClearSelected();
 			applyBatchVisibilityState(true, MeshTypeHelper.DefaultMeshes);
 			refreshAllMeshCollectionCheckbox();
 		}
 
-		private void cmdExport_Click(object sender, EventArgs e)
+		void cmdExport_Click(object sender, EventArgs e)
 		{
 			SaveFileDialog dlg = new SaveFileDialog
 			{
@@ -517,15 +455,13 @@ namespace Idmr.Yogeme
 				Filter = "Text files (*.txt)|*.txt|All files|*.*"
 			};
 			string path = CraftDataManager.GetInstance().GetInstallPath();
-			if (path == "")
-				path = Environment.CurrentDirectory;
+			if (path == "") path = Environment.CurrentDirectory;
 			dlg.InitialDirectory = path;
 			
 			if (dlg.ShowDialog() == DialogResult.OK)
 			{
 				string result = CraftDataManager.GetInstance().SaveToFile(dlg.FileName);
-				if (result != "")
-					MessageBox.Show(result, "Failed to save file.", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				if (result != "") MessageBox.Show(result, "Failed to save file.", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
 		}
     }

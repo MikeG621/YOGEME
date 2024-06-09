@@ -1,6 +1,6 @@
 /*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
- * Copyright (C) 2007-2020 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2024 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
  * VERSION: 1.8.1
@@ -64,9 +64,7 @@ namespace Idmr.Yogeme
 				_installPath = config.TiePath;
 				// dummy bitmap to create a 256 color palette
 				//palette definition
-				// start with EMPIRE.PLTTstandard
 				Pltt standard = (Pltt)(new LfdFile(_installPath + "\\RESOURCE\\EMPIRE.LFD").Resources["PLTTstandard"]);
-				// then open up TOURDESK for the rest
 				LfdFile tourdesk = new LfdFile(_installPath + "\\RESOURCE\\TOURDESK.LFD");
 				Pltt toddesk = (Pltt)tourdesk.Resources["PLTTtoddesk"];
 				_systemPalette = Pltt.ConvertToPalette(new Pltt[]{standard, toddesk});
@@ -164,10 +162,7 @@ namespace Idmr.Yogeme
 				picSystem.Image = _systemImage;
 				picSystem.Size = _systemImage.Size;
 			}
-			catch(Exception x)
-			{
-				MessageBox.Show(x.Message + "  System image unavailable.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-			}
+			catch(Exception x) { MessageBox.Show(x.Message + "  System image unavailable.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); }
 			#endregion
 		}
 
@@ -214,10 +209,9 @@ namespace Idmr.Yogeme
 			tex.NumberOfStrings = (short)(_numMiss+4);
 			tex.Strings[0] = txtBattle.Text + '\0' + txtCutscene.Text;
 			tex.Strings[1] = txtBTitle1.Text + '\0' + txtBTitle2.Text + '\0' + txtCTitle1.Text + '\0' + txtCTitle2.Text;
-			tex.Strings[2] = _deltName + '\0' + txtSystem.Text + '\0' + numFrameTop.Value + ' ' + numFrameHeight.Value
-				+ ' ' + numFrameLeft.Value + ' ' + numFrameWidth.Value;
-			tex.Strings[3] = String.Join("\0",_missionFiles);
-			for(int i=0;i<_numMiss;i++) tex.Strings[4+i] = _missionDescriptions[i].Replace("\r\n", "\0");
+			tex.Strings[2] = _deltName + '\0' + txtSystem.Text + '\0' + numFrameTop.Value + ' ' + numFrameHeight.Value + ' ' + numFrameLeft.Value + ' ' + numFrameWidth.Value;
+			tex.Strings[3] = string.Join("\0",_missionFiles);
+			for (int i = 0; i < _numMiss; i++) tex.Strings[4 + i] = _missionDescriptions[i].Replace("\r\n", "\0");
 			try { _battle.Write(); }
 			catch (Exception x) { System.Diagnostics.Debug.WriteLine("Battle save failure"); throw x; }
 		}
@@ -230,10 +224,10 @@ namespace Idmr.Yogeme
 		}
 		void cmdMoveDown_Click(object sender, EventArgs e)
 		{
-			string strTemp;
 			int i = lstMiss.SelectedIndex+1;
 			if (i == -1 || i == _numMiss) return;
-			strTemp = _missionFiles[i-1];
+
+			string strTemp = _missionFiles[i - 1];
 			_missionFiles[i-1] = _missionFiles[i];
 			_missionFiles[i] = strTemp;
 			strTemp = _missionDescriptions[i-1];
@@ -245,10 +239,10 @@ namespace Idmr.Yogeme
 		}
 		void cmdMoveUp_Click(object sender, EventArgs e)
 		{
-			string strTemp;
 			int i = lstMiss.SelectedIndex;
 			if (i <= 0) return;
-			strTemp = _missionFiles[i-1];
+
+			string strTemp = _missionFiles[i - 1];
 			_missionFiles[i-1] = _missionFiles[i];
 			_missionFiles[i] = strTemp;
 			strTemp = _missionDescriptions[i-1];
@@ -274,10 +268,7 @@ namespace Idmr.Yogeme
 			_numMiss--;
 		}
 
-		void lstMiss_SelectedIndexChanged(object sender, EventArgs e)
-		{
-			if (lstMiss.SelectedIndex != -1) txtDesc.Text = _missionDescriptions[lstMiss.SelectedIndex];
-		}
+		void lstMiss_SelectedIndexChanged(object sender, EventArgs e) { if (lstMiss.SelectedIndex != -1) txtDesc.Text = _missionDescriptions[lstMiss.SelectedIndex]; }
 
 		void opnMission_FileOk(object sender, System.ComponentModel.CancelEventArgs e)
 		{
@@ -290,54 +281,27 @@ namespace Idmr.Yogeme
 			_numMiss++;
 		}
 
-		void txtDesc_TextChanged(object sender, EventArgs e)
-		{
-			if (lstMiss.SelectedIndex != -1) _missionDescriptions[lstMiss.SelectedIndex] = txtDesc.Text;
-		}
+		void txtDesc_TextChanged(object sender, EventArgs e) { if (lstMiss.SelectedIndex != -1) _missionDescriptions[lstMiss.SelectedIndex] = txtDesc.Text; }
 		#endregion
 		#region System tab
-		void cmdExport_Click(object sender, EventArgs e)
-		{
-			savSystem.ShowDialog();
-		}
-		void cmdImport_Click(object sender, EventArgs e)
-		{
-			opnSystem.ShowDialog();
-		}
+		void cmdExport_Click(object sender, EventArgs e) => savSystem.ShowDialog();
+		void cmdImport_Click(object sender, EventArgs e) => opnSystem.ShowDialog();
 
 		void opnSystem_FileOk(object sender, System.ComponentModel.CancelEventArgs e)
 		{
-			_systemImage = new Bitmap(opnSystem.FileName)
-			{
-				Palette = _systemPalette
-			};
+			_systemImage = new Bitmap(opnSystem.FileName) { Palette = _systemPalette };
 			picSystem.Width = _systemImage.Width;
 			picSystem.Height = _systemImage.Height;
 			picSystem.Image = _systemImage;
 		}
 
-		void savSystem_FileOk(object sender, System.ComponentModel.CancelEventArgs e)
-		{
-			_systemImage.Save(savSystem.FileName,System.Drawing.Imaging.ImageFormat.Bmp);	//if ImageFormat isn't specified, it saves as PNG with .BMP extension
-		}
+		void savSystem_FileOk(object sender, System.ComponentModel.CancelEventArgs e) => _systemImage.Save(savSystem.FileName, System.Drawing.Imaging.ImageFormat.Bmp); //if ImageFormat isn't specified, it saves as PNG with .BMP extension
 		#endregion
 		#region Galaxy tab
-		void numFrameHeight_ValueChanged(object sender, EventArgs e)
-		{
-			if (!_loading) drawFrame();
-		}
-		void numFrameLeft_ValueChanged(object sender, EventArgs e)
-		{
-			if (!_loading) drawFrame();
-		}
-		void numFrameTop_ValueChanged(object sender, EventArgs e)
-		{
-			if (!_loading) drawFrame();
-		}
-		void numFrameWidth_ValueChanged(object sender, EventArgs e)
-		{
-			if (!_loading) drawFrame();
-		}
+		void numFrameHeight_ValueChanged(object sender, EventArgs e) { if (!_loading) drawFrame(); }
+		void numFrameLeft_ValueChanged(object sender, EventArgs e) { if (!_loading) drawFrame(); }
+		void numFrameTop_ValueChanged(object sender, EventArgs e) { if (!_loading) drawFrame(); }
+		void numFrameWidth_ValueChanged(object sender, EventArgs e) { if (!_loading) drawFrame(); }
 
 		void picGalaxy_MouseDown(object sender, MouseEventArgs e)
 		{
@@ -348,9 +312,8 @@ namespace Idmr.Yogeme
 		{
 			if (_dragging)
 			{
-				int L, T;
-				L = e.X - (int)numFrameWidth.Value / 2;
-				T = e.Y - (int)numFrameHeight.Value / 2;
+				int L = e.X - (int)numFrameWidth.Value / 2;
+				int T = e.Y - (int)numFrameHeight.Value / 2;
 				if (L < 0) L = 0;
 				if (T < 0) T = 0;
 				if ((L + numFrameWidth.Value) > numFrameLeft.Maximum) L = (int)numFrameLeft.Maximum - (int)numFrameWidth.Value;
@@ -359,15 +322,9 @@ namespace Idmr.Yogeme
 				numFrameTop.Value = T;
 			}
 		}
-		void picGalaxy_MouseUp(object sender, MouseEventArgs e)
-		{
-			_dragging = false;
-		}
+		void picGalaxy_MouseUp(object sender, MouseEventArgs e) => _dragging = false;
 
-		void tcBattle_SelectedIndexChanged(object sender, EventArgs e)
-		{
-			if (tcBattle.SelectedIndex == 2) drawFrame();
-		}
+		void tcBattle_SelectedIndexChanged(object sender, EventArgs e) { if (tcBattle.SelectedIndex == 2) drawFrame(); }
 		#endregion
 	}
 }

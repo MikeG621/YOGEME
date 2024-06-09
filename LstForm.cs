@@ -64,8 +64,7 @@ namespace Idmr.Yogeme
 					"* 1B1M2ex.tie\r\n!MISSION_3_DESC!etc";
 				cboFile.Items.Add("MELEE\\MISSION.LST");
 				cboFile.Items.Add("MISSIONS\\MISSION.LST");
-				if (File.Exists(_installPath + "\\COMBAT\\MISSION.lst"))
-					cboFile.Items.Add("COMBAT\\MISSION.LST");
+				if (File.Exists(_installPath + "\\COMBAT\\MISSION.lst")) cboFile.Items.Add("COMBAT\\MISSION.LST");
 				cboFile.SelectedIndex = 1;
 			}
 			if (platform==Settings.Platform.XvT || platform==Settings.Platform.BoP)
@@ -91,7 +90,7 @@ namespace Idmr.Yogeme
 			}
 		}
 
-		private void cboFile_SelectedIndexChanged(object sender, EventArgs e)
+		void cboFile_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (cboFile.SelectedIndex == -1) return;
 			txtLST.Text = "";
@@ -101,16 +100,13 @@ namespace Idmr.Yogeme
 			sr.Close();
 		}
 
-		private void cmdSave_Click(object sender, EventArgs e)
+		void cmdSave_Click(object sender, EventArgs e)
 		{
 			StreamWriter sw = new FileInfo(_installPath+"\\"+cboFile.Text).CreateText();
 			sw.Write(txtLST.Text);
 			sw.Close();
 		}
 
-		private void form_Resize(object sender, EventArgs e)
-		{
-			txtLST.Height = Height - 117;
-		}
+		void form_Resize(object sender, EventArgs e) => txtLST.Height = Height - 117;
 	}
 }

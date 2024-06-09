@@ -1,6 +1,6 @@
 ﻿/*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
- * Copyright (C) 2007-2021 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2024 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
  * VERSION: 1.8.1+
@@ -165,8 +165,8 @@ namespace Idmr.Yogeme
 			}
 			// else whitespace
 		}
-		
-		void cmdClose_Click(object sender, EventArgs e) { Close(); }
+
+		void cmdClose_Click(object sender, EventArgs e) => Close();
 
 		void cmdPrevious_Click(object sender, EventArgs e)
 		{
@@ -262,17 +262,17 @@ namespace Idmr.Yogeme
 		{
 			#region graphics
 			Graphics g = Graphics.FromImage(_preview);
-			Delt offcr21 = ((Delt)_talk.Resources["DELToffcr21"]);
-			Delt ssrobe9 = ((Delt)_talk.Resources["DELTssrobe9"]);
-			Anim eyes = ((Anim)_talk.Resources["ANIMeyes"]);
-			Anim ssface= ((Anim)_talk.Resources["ANIMssface"]);
-			Anim mouth = ((Anim)_talk.Resources["ANIMmouth"]);
+			Delt offcr21 = (Delt)_talk.Resources["DELToffcr21"];
+			Delt ssrobe9 = (Delt)_talk.Resources["DELTssrobe9"];
+			Anim eyes = (Anim)_talk.Resources["ANIMeyes"];
+			Anim ssface= (Anim)_talk.Resources["ANIMssface"];
+			Anim mouth = (Anim)_talk.Resources["ANIMmouth"];
 			switch (_qaSet)
 			{
 				// original graphics are 320x200, shift values come from the appropriate FILM
 				case 0:
-					Delt offbak = ((Delt)_talk.Resources["DELToffbak"]);
-					Delt offtxt = ((Delt)_talk.Resources["DELTofftxt"]);
+					Delt offbak = (Delt)_talk.Resources["DELToffbak"];
+					Delt offtxt = (Delt)_talk.Resources["DELTofftxt"];
 					g.DrawImageUnscaled(offbak.Image, 0, 0);
 					g.DrawImageUnscaled(offtxt.Image, offtxt.Left, offtxt.Top);
 					g.DrawImageUnscaled(offcr21.Image, offcr21.Left, offcr21.Top + 10);
@@ -280,16 +280,16 @@ namespace Idmr.Yogeme
 					g.DrawImageUnscaled(mouth.Frames[0].Image, mouth.Left, mouth.Top);
 					break;
 				case 1:
-					Delt ssbak = ((Delt)_talk.Resources["DELTssbak"]);
-					Delt sstxt = ((Delt)_talk.Resources["DELTsstxt"]);
+					Delt ssbak = (Delt)_talk.Resources["DELTssbak"];
+					Delt sstxt = (Delt)_talk.Resources["DELTsstxt"];
 					g.DrawImageUnscaled(ssbak.Image, 0, 0);
 					g.DrawImageUnscaled(sstxt.Image, sstxt.Left , sstxt.Top);
 					g.DrawImageUnscaled(ssrobe9.Image, ssrobe9.Left - 24, ssrobe9.Top + 12);
 					g.DrawImageUnscaled(ssface.Frames[0].Image, ssface.Left - 24, ssface.Top + 12);
 					break;
 				case 2:
-					Delt doffbak = ((Delt)_talk.Resources["DELTdoffbak"]);
-					Delt dofftxt = ((Delt)_talk.Resources["DELTdofftxt"]);
+					Delt doffbak = (Delt)_talk.Resources["DELTdoffbak"];
+					Delt dofftxt = (Delt)_talk.Resources["DELTdofftxt"];
 					g.DrawImageUnscaled(doffbak.Image, 0, 0);
 					g.DrawImageUnscaled(dofftxt.Image, dofftxt.Left, dofftxt.Top);
 					g.DrawImageUnscaled(offcr21.Image, offcr21.Left, offcr21.Top + 10);
@@ -297,8 +297,8 @@ namespace Idmr.Yogeme
 					g.DrawImageUnscaled(mouth.Frames[0].Image, mouth.Left, mouth.Top);
 					break;
 				case 3:
-					Delt dssbak = ((Delt)_talk.Resources["DELTdssbak"]);
-					Delt dsstxt = ((Delt)_talk.Resources["DELTdsstxt"]);
+					Delt dssbak = (Delt)_talk.Resources["DELTdssbak"];
+					Delt dsstxt = (Delt)_talk.Resources["DELTdsstxt"];
 					g.DrawImageUnscaled(dssbak.Image, 0, 0);
 					g.DrawImageUnscaled(dsstxt.Image, dsstxt.Left, dsstxt.Top);
 					g.DrawImageUnscaled(ssrobe9.Image, ssrobe9.Left - 24, ssrobe9.Top + 12);
@@ -318,12 +318,8 @@ namespace Idmr.Yogeme
 				string q = _currentQuestion;
 				if (q != "" || _currentAnswer != "")
 				{
-                    if (q == "")
-                        q = "(empty question)";      //[JB] Display a placeholder for empty questions.
-                    if(curIndex == _selectedIndex)
-                    {
-                        q = "[" + q + "]";  //[JB] Simulate highlighting of selected question.
-                    }
+                    if (q == "") q = "(empty question)";      //[JB] Display a placeholder for empty questions.
+                    if(curIndex == _selectedIndex) q = "[" + q + "]";  //[JB] Simulate highlighting of selected question.
 					displayString(q, 122, (short)(145 + (4 - used) * 10));
 					_indexes[4 - used] = (byte)_selectedIndex;
 					used++;
@@ -340,13 +336,12 @@ namespace Idmr.Yogeme
 		{
 			get
 			{
-				for (int i = 0; i < 4; i++)
-					if (_opts[i].Checked) return i;
+				for (int i = 0; i < 4; i++) if (_opts[i].Checked) return i;
 				return -1;	// this never happen, but makes the compiler happy
 			}
 		}
 
-		int _offset { get { return (_qaSet % 2) * 5; } }
+		int _offset => (_qaSet % 2) * 5;
 
 		string _currentQuestion
 		{
@@ -366,7 +361,7 @@ namespace Idmr.Yogeme
 			}
 		}
 
-		int _numberOfPages { get { return (_answerLines.Length - 1) / 10 + 1; } }
+		int _numberOfPages => (_answerLines.Length - 1) / 10 + 1;
 		#endregion
 	}
 }
