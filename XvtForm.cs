@@ -1049,6 +1049,7 @@ namespace Idmr.Yogeme
 			registerFgMultiEdit(txtName, "Name", MultiEditRefreshType.ItemText | MultiEditRefreshType.CraftName);
 			registerFgMultiEdit(numCraft, "NumberOfCraft", MultiEditRefreshType.ItemText | MultiEditRefreshType.CraftName | MultiEditRefreshType.CraftCount);
 			registerFgMultiEdit(numWaves, "NumberOfWaves", MultiEditRefreshType.ItemText);
+			registerFgMultiEdit(numWavesDelay, "WavesDelay", 0);
 			// numGG has special logic applied, doesn't update through this
 			registerFgMultiEdit(numGU, "GlobalUnit", MultiEditRefreshType.ItemText);
 			registerFgMultiEdit(chkPreventNumbering, "PreventCraftNumbering", MultiEditRefreshType.ItemText | MultiEditRefreshType.CraftName);
@@ -1139,8 +1140,6 @@ namespace Idmr.Yogeme
 			registerFgMultiEdit(numPitch, "Pitch", 0);
 			registerFgMultiEdit(numYaw, "Yaw", 0);
 			registerFgMultiEdit(numRoll, "Roll", 0);
-
-			registerFgMultiEdit(numWavesDelay, "Unk1", 0);   // These are the only unknowns with individual handlers.
 
 			registerMsgMultiEdit(cboMessAmount, "MessTrigger", 0);
 			registerMsgMultiEdit(cboMessType, "MessTrigger", 0);
@@ -2538,6 +2537,7 @@ namespace Idmr.Yogeme
 						if (fg.SpecialCargoCraft > fg.NumberOfCraft) fg.SpecialCargoCraft = 0;
 						break;
 					case "NumberOfWaves": fg.NumberOfWaves = Convert.ToByte(value); break;
+					case "WavesDelay": fg.WavesDelay = Convert.ToByte(value); break;
 					// "GlobalGroup" has special logic, not handled here.
 					case "GlobalUnit": fg.GlobalUnit = Convert.ToByte(value); break;
 					case "PreventCraftNumbering": fg.PreventCraftNumbering = Convert.ToBoolean(value); break;
@@ -2580,7 +2580,7 @@ namespace Idmr.Yogeme
 						trig = getTriggerFromControls(cboSkipAmount, cboSkipType, cboSkipVar, cboSkipTrig);
 						fg.SkipToOrder4Trigger[_activeSkipTrigger] = trig;  // trig needed for refresh at end
 						break;
-					case "SkipTriggerOr": fg.SkipToO4T1AndOrT2 = Convert.ToBoolean(value); break;
+					case "SkipTriggerOr": fg.SkipToO4T1OrT2 = Convert.ToBoolean(value); break;
 					case "AbortTrigger": fg.AbortTrigger = Convert.ToByte(value); break;
 					case "ArrivalDelayMinutes": fg.ArrivalDelayMinutes = Convert.ToByte(value); break;
 					case "ArrivalDelaySeconds": fg.ArrivalDelaySeconds = Convert.ToByte(value); break;
@@ -2610,8 +2610,8 @@ namespace Idmr.Yogeme
 					case "OrderTarget4Type": fg.Orders[_activeOrder].Target4Type = Convert.ToByte(value); break;
 					case "OrderVar1": fg.Orders[_activeOrder].Variable1 = Convert.ToByte(value); break;
 					case "OrderVar2": fg.Orders[_activeOrder].Variable2 = Convert.ToByte(value); break;
-					case "Order12Or": fg.Orders[_activeOrder].T1AndOrT2 = Convert.ToBoolean(value); break;
-					case "Order34Or": fg.Orders[_activeOrder].T3AndOrT4 = Convert.ToBoolean(value); break;
+					case "Order12Or": fg.Orders[_activeOrder].T1OrT2 = Convert.ToBoolean(value); break;
+					case "Order34Or": fg.Orders[_activeOrder].T3OrT4 = Convert.ToBoolean(value); break;
 					case "OrderThrottle": fg.Orders[_activeOrder].Throttle = Convert.ToByte(value); break;
 					case "OrderSpeed": fg.Orders[_activeOrder].Speed = Convert.ToByte(value); break;
 					case "StopArrivingWhen": fg.StopArrivingWhen = (FlightGroup.WavesEnd)value; break;
@@ -2767,7 +2767,7 @@ namespace Idmr.Yogeme
 			for (_activeOptionCraft = 0; _activeOptionCraft < 10; _activeOptionCraft++) optCraftLabelRefresh();
 			lblOptCraftArr_Click(lblOptCraft[0], new EventArgs());
 			cboOptCat.SelectedIndex = (int)_mission.FlightGroups[_activeFG].OptCraftCategory;
-			optSkipOR.Checked = _mission.FlightGroups[_activeFG].SkipToO4T1AndOrT2;
+			optSkipOR.Checked = _mission.FlightGroups[_activeFG].SkipToO4T1OrT2;
 			optSkipAND.Checked = !optSkipOR.Checked;
 			#endregion
 			//[JB] Need to check special cargo to restore edit box if necessary.
@@ -3021,13 +3021,13 @@ namespace Idmr.Yogeme
 			cboOT3Type.SelectedIndex = order.Target3Type;
 			cboOT4Type.SelectedIndex = -1;
 			cboOT4Type.SelectedIndex = order.Target4Type;
-			optOT3T4OR.Checked = order.T3AndOrT4;
+			optOT3T4OR.Checked = order.T3OrT4;
 			optOT3T4AND.Checked = !optOT3T4OR.Checked;
 			cboOT1Type.SelectedIndex = -1;
 			cboOT1Type.SelectedIndex = order.Target1Type;
 			cboOT2Type.SelectedIndex = -1;
 			cboOT2Type.SelectedIndex = order.Target2Type;
-			optOT1T2OR.Checked = order.T1AndOrT2;
+			optOT1T2OR.Checked = order.T1OrT2;
 			optOT1T2AND.Checked = !optOT1T2OR.Checked;
 			cboOSpeed.SelectedIndex = order.Speed;
 			cboOString.Text = order.Designation;

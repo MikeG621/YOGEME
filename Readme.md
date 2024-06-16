@@ -45,7 +45,7 @@ Extensive updates due to changes in Platform.dll, using the full file format spe
 - (TIE) Added TimeLimit, RndSeed, Global Goal editor note.
 - (TIE) Arr/Dep renames.
 - (TIE) IFF 5 (Red) permanently checked to match game behavior.
-- (TIE) Fixed a big where the Questions wouldn't clear properly when loading a second mission.
+- (TIE) Fixed a bug where the Questions wouldn't clear properly when loading a second mission.
 - (XvT) Added Flightgroup Handicap, Global Goal delay, EoM delay.
 
 ---

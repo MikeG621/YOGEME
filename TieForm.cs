@@ -344,7 +344,7 @@ namespace Idmr.Yogeme
 
 			return brText;
 		}
-		Color getHighlightColor() { return _config.ColorInteractSelected; }
+		Color getHighlightColor() => _config.ColorInteractSelected;
 		/// <summary>Generates a string list of IFF names which provide default names instead of an empty string when no custom names are defined</summary>
 		string[] getIffStrings()
 		{
@@ -825,14 +825,14 @@ namespace Idmr.Yogeme
 			registerFgMultiEdit(cboWarheads, "Missile", 0);
 			registerFgMultiEdit(cboBeam, "Beam", 0);
 
-			registerFgMultiEdit(optArrMS, "ArrivalMethod1", 0);
-			registerFgMultiEdit(cboArrMS, "ArrivalCraft1", 0);
-			registerFgMultiEdit(optArrMSAlt, "ArrivalMethod2", 0);
-			registerFgMultiEdit(cboArrMSAlt, "ArrivalCraft2", 0);
-			registerFgMultiEdit(optDepMS, "DepartureMethod1", 0);
-			registerFgMultiEdit(cboDepMS, "DepartureCraft1", 0);
-			registerFgMultiEdit(optDepMSAlt, "DepartureMethod2", 0);
-			registerFgMultiEdit(cboDepMSAlt, "DepartureCraft2", 0);
+			registerFgMultiEdit(optArrMS, "ArriveViaMothership", 0);
+			registerFgMultiEdit(cboArrMS, "ArrivalMothership", 0);
+			registerFgMultiEdit(optArrMSAlt, "AlternateMothershipUsed", 0);
+			registerFgMultiEdit(cboArrMSAlt, "AlternateMothership", 0);
+			registerFgMultiEdit(optDepMS, "DepartViaMothership", 0);
+			registerFgMultiEdit(cboDepMS, "DepartureMothership", 0);
+			registerFgMultiEdit(optDepMSAlt, "CapturedDepartViaMothership", 0);
+			registerFgMultiEdit(cboDepMSAlt, "CapturedDepartureMothership", 0);
 			registerFgMultiEdit(cboADTrigAmount, "ArrDepTrigger", MultiEditRefreshType.ArrDepLabel);
 			registerFgMultiEdit(cboADTrigType, "ArrDepTrigger", MultiEditRefreshType.ArrDepLabel);
 			registerFgMultiEdit(cboADTrigVar, "ArrDepTrigger", MultiEditRefreshType.ArrDepLabel);
@@ -841,8 +841,8 @@ namespace Idmr.Yogeme
 			registerFgMultiEdit(numArrMin, "ArrivalDelayMinutes", MultiEditRefreshType.ItemText | MultiEditRefreshType.CraftCount);
 			registerFgMultiEdit(numArrSec, "ArrivalDelaySeconds", MultiEditRefreshType.ItemText | MultiEditRefreshType.CraftCount);
 			registerFgMultiEdit(cboAbort, "AbortTrigger", 0);
-			registerFgMultiEdit(numDepMin, "DepartureTimerMinutes", 0);
-			registerFgMultiEdit(numDepSec, "DepartureTimerSeconds", 0);
+			registerFgMultiEdit(numDepMin, "DepartureClockMinutes", 0);
+			registerFgMultiEdit(numDepSec, "DepartureClockSeconds", 0);
 			registerFgMultiEdit(cboDiff, "Difficulty", MultiEditRefreshType.ItemText | MultiEditRefreshType.CraftCount);
 
 			registerFgMultiEdit(numBonGoalP, "BonusPoints", 0);
@@ -1851,7 +1851,6 @@ namespace Idmr.Yogeme
 			foreach (FlightGroup fg in getSelectedFlightgroups())
 			{
 				if (refreshType.HasFlag(MultiEditRefreshType.CraftCount)) craftStart(fg, false);
-				// TODO: add new names
 				switch (name)
 				{
 					case "Name": fg.Name = (string)value; break;
@@ -1896,8 +1895,8 @@ namespace Idmr.Yogeme
 					case "ArrivalDelayMinutes": fg.ArrivalDelayMinutes = Convert.ToByte(value); break;
 					case "ArrivalDelaySeconds": fg.ArrivalDelaySeconds = Convert.ToByte(value); break;
 					case "AbortTrigger": fg.AbortTrigger = Convert.ToByte(value); break;
-					case "DepartureTimerMinutes": fg.DepartureTimerMinutes = Convert.ToByte(value); break;
-					case "DepartureTimerSeconds": fg.DepartureTimerSeconds = Convert.ToByte(value); break;
+					case "DepartureClockMinutes": fg.DepartureTimerMinutes = Convert.ToByte(value); break;
+					case "DepartureClockSeconds": fg.DepartureTimerSeconds = Convert.ToByte(value); break;
 					case "Difficulty": fg.Difficulty = Convert.ToByte(value); break;
 					case "BonusPoints": fg.Goals.BonusPoints = Convert.ToInt16(value); break;
 					case "Pitch": fg.Pitch = Convert.ToInt16(value); break;
@@ -1915,8 +1914,8 @@ namespace Idmr.Yogeme
 					case "OrderTarget2Type": fg.Orders[_activeOrder].Target2Type = Convert.ToByte(value); break;
 					case "OrderTarget3Type": fg.Orders[_activeOrder].Target3Type = Convert.ToByte(value); break;
 					case "OrderTarget4Type": fg.Orders[_activeOrder].Target4Type = Convert.ToByte(value); break;
-					case "Order12Or": fg.Orders[_activeOrder].T1AndOrT2 = Convert.ToBoolean(value); break;
-					case "Order34Or": fg.Orders[_activeOrder].T3AndOrT4 = Convert.ToBoolean(value); break;
+					case "Order12Or": fg.Orders[_activeOrder].T1OrT2 = Convert.ToBoolean(value); break;
+					case "Order34Or": fg.Orders[_activeOrder].T3OrT4 = Convert.ToBoolean(value); break;
 					case "PermaDeath": fg.PermaDeathEnabled = Convert.ToBoolean(value); break;
 					case "PermaDeathID": fg.PermaDeathID = Convert.ToByte(value); break;
 					default: throw new ArgumentException("Unhandled multi-edit property: " + name);
@@ -2516,13 +2515,13 @@ namespace Idmr.Yogeme
 			cboOT3Type.SelectedIndex = _mission.FlightGroups[_activeFG].Orders[_activeOrder].Target3Type;
 			cboOT4Type.SelectedIndex = -1;
 			cboOT4Type.SelectedIndex = _mission.FlightGroups[_activeFG].Orders[_activeOrder].Target4Type;
-			optOT3T4OR.Checked = _mission.FlightGroups[_activeFG].Orders[_activeOrder].T3AndOrT4;
+			optOT3T4OR.Checked = _mission.FlightGroups[_activeFG].Orders[_activeOrder].T3OrT4;
 			optOT3T4AND.Checked = !optOT3T4OR.Checked;
 			cboOT1Type.SelectedIndex = -1;
 			cboOT1Type.SelectedIndex = _mission.FlightGroups[_activeFG].Orders[_activeOrder].Target1Type;
 			cboOT2Type.SelectedIndex = -1;
 			cboOT2Type.SelectedIndex = _mission.FlightGroups[_activeFG].Orders[_activeOrder].Target2Type;
-			optOT1T2OR.Checked = _mission.FlightGroups[_activeFG].Orders[_activeOrder].T1AndOrT2;
+			optOT1T2OR.Checked = _mission.FlightGroups[_activeFG].Orders[_activeOrder].T1OrT2;
 			optOT1T2AND.Checked = !optOT1T2OR.Checked;
 			_loading = btemp;
 		}
