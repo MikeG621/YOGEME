@@ -47,6 +47,7 @@ Extensive updates due to changes in Platform.dll, using the full file format spe
 - (TIE) IFF 5 (Red) permanently checked to match game behavior.
 - (TIE) Fixed a bug where the Questions wouldn't clear properly when loading a second mission.
 - (XvT) Added Flightgroup Handicap, Global Goal delay, EoM delay.
+- (XWA) Mission tab: Added GoalsUnimportant, WinOfficer, FailOfficer
 - (XWA) Mission2 tab: Added the rest of the properties for GlobalCargo and GlobalGroups (which also expanded to 32 total),
 details for GlobalUnits added.
   - Did not expose "ID" property of GlobalCargo or Region, pretty sure that's for internal use.

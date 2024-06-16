@@ -620,6 +620,7 @@ namespace Idmr.Yogeme
 			this.numTeamEomDelay3 = new System.Windows.Forms.NumericUpDown();
 			this.numTeamEomDelay2 = new System.Windows.Forms.NumericUpDown();
 			this.tabMission = new System.Windows.Forms.TabPage();
+			this.chkGoalsUnimportant = new System.Windows.Forms.CheckBox();
 			this.label123 = new System.Windows.Forms.Label();
 			this.txtFailNote = new System.Windows.Forms.TextBox();
 			this.label82 = new System.Windows.Forms.Label();
@@ -628,7 +629,11 @@ namespace Idmr.Yogeme
 			this.txtDescNote = new System.Windows.Forms.TextBox();
 			this.pctLogo = new System.Windows.Forms.PictureBox();
 			this.cboLogo = new System.Windows.Forms.ComboBox();
+			this.cboFailOfficer = new System.Windows.Forms.ComboBox();
+			this.cboWinOfficer = new System.Windows.Forms.ComboBox();
 			this.cboOfficer = new System.Windows.Forms.ComboBox();
+			this.label91 = new System.Windows.Forms.Label();
+			this.label90 = new System.Windows.Forms.Label();
 			this.label130 = new System.Windows.Forms.Label();
 			this.label129 = new System.Windows.Forms.Label();
 			this.chkEnd = new System.Windows.Forms.CheckBox();
@@ -7187,6 +7192,7 @@ namespace Idmr.Yogeme
 			// tabMission
 			// 
 			this.tabMission.BackColor = System.Drawing.SystemColors.Control;
+			this.tabMission.Controls.Add(this.chkGoalsUnimportant);
 			this.tabMission.Controls.Add(this.label123);
 			this.tabMission.Controls.Add(this.txtFailNote);
 			this.tabMission.Controls.Add(this.label82);
@@ -7195,7 +7201,11 @@ namespace Idmr.Yogeme
 			this.tabMission.Controls.Add(this.txtDescNote);
 			this.tabMission.Controls.Add(this.pctLogo);
 			this.tabMission.Controls.Add(this.cboLogo);
+			this.tabMission.Controls.Add(this.cboFailOfficer);
+			this.tabMission.Controls.Add(this.cboWinOfficer);
 			this.tabMission.Controls.Add(this.cboOfficer);
+			this.tabMission.Controls.Add(this.label91);
+			this.tabMission.Controls.Add(this.label90);
 			this.tabMission.Controls.Add(this.label130);
 			this.tabMission.Controls.Add(this.label129);
 			this.tabMission.Controls.Add(this.chkEnd);
@@ -7214,6 +7224,18 @@ namespace Idmr.Yogeme
 			this.tabMission.Size = new System.Drawing.Size(785, 519);
 			this.tabMission.TabIndex = 4;
 			this.tabMission.Text = "Mission";
+			// 
+			// chkGoalsUnimportant
+			// 
+			this.chkGoalsUnimportant.AutoSize = true;
+			this.chkGoalsUnimportant.Location = new System.Drawing.Point(34, 488);
+			this.chkGoalsUnimportant.Name = "chkGoalsUnimportant";
+			this.chkGoalsUnimportant.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+			this.chkGoalsUnimportant.Size = new System.Drawing.Size(111, 17);
+			this.chkGoalsUnimportant.TabIndex = 16;
+			this.chkGoalsUnimportant.Text = "Goals unimportant";
+			this.chkGoalsUnimportant.UseVisualStyleBackColor = true;
+			this.chkGoalsUnimportant.Leave += new System.EventHandler(this.chkGoalsUnimportant_Leave);
 			// 
 			// label123
 			// 
@@ -7271,7 +7293,7 @@ namespace Idmr.Yogeme
 			// 
 			// pctLogo
 			// 
-			this.pctLogo.Location = new System.Drawing.Point(316, 416);
+			this.pctLogo.Location = new System.Drawing.Point(440, 414);
 			this.pctLogo.Name = "pctLogo";
 			this.pctLogo.Size = new System.Drawing.Size(115, 73);
 			this.pctLogo.TabIndex = 13;
@@ -7281,11 +7303,31 @@ namespace Idmr.Yogeme
 			// 
 			this.cboLogo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cboLogo.FormattingEnabled = true;
-			this.cboLogo.Location = new System.Drawing.Point(179, 468);
+			this.cboLogo.Location = new System.Drawing.Point(313, 415);
 			this.cboLogo.Name = "cboLogo";
 			this.cboLogo.Size = new System.Drawing.Size(121, 21);
 			this.cboLogo.TabIndex = 10;
-			this.cboLogo.Leave += new System.EventHandler(this.cboLogo_Leave);
+			this.cboLogo.SelectedIndexChanged += new System.EventHandler(this.cboLogo_SelectedIndexChanged);
+			// 
+			// cboFailOfficer
+			// 
+			this.cboFailOfficer.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboFailOfficer.FormattingEnabled = true;
+			this.cboFailOfficer.Location = new System.Drawing.Point(313, 468);
+			this.cboFailOfficer.Name = "cboFailOfficer";
+			this.cboFailOfficer.Size = new System.Drawing.Size(121, 21);
+			this.cboFailOfficer.TabIndex = 9;
+			this.cboFailOfficer.Leave += new System.EventHandler(this.cboFailOfficer_Leave);
+			// 
+			// cboWinOfficer
+			// 
+			this.cboWinOfficer.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboWinOfficer.FormattingEnabled = true;
+			this.cboWinOfficer.Location = new System.Drawing.Point(179, 468);
+			this.cboWinOfficer.Name = "cboWinOfficer";
+			this.cboWinOfficer.Size = new System.Drawing.Size(121, 21);
+			this.cboWinOfficer.TabIndex = 9;
+			this.cboWinOfficer.Leave += new System.EventHandler(this.cboWinOfficer_Leave);
 			// 
 			// cboOfficer
 			// 
@@ -7297,10 +7339,28 @@ namespace Idmr.Yogeme
 			this.cboOfficer.TabIndex = 9;
 			this.cboOfficer.Leave += new System.EventHandler(this.cboOfficer_Leave);
 			// 
+			// label91
+			// 
+			this.label91.AutoSize = true;
+			this.label91.Location = new System.Drawing.Point(310, 451);
+			this.label91.Name = "label91";
+			this.label91.Size = new System.Drawing.Size(94, 13);
+			this.label91.TabIndex = 11;
+			this.label91.Text = "Fail Debrief Officer";
+			// 
+			// label90
+			// 
+			this.label90.AutoSize = true;
+			this.label90.Location = new System.Drawing.Point(176, 451);
+			this.label90.Name = "label90";
+			this.label90.Size = new System.Drawing.Size(97, 13);
+			this.label90.TabIndex = 11;
+			this.label90.Text = "Win Debrief Officer";
+			// 
 			// label130
 			// 
 			this.label130.AutoSize = true;
-			this.label130.Location = new System.Drawing.Point(176, 452);
+			this.label130.Location = new System.Drawing.Point(310, 399);
 			this.label130.Name = "label130";
 			this.label130.Size = new System.Drawing.Size(82, 13);
 			this.label130.TabIndex = 11;
@@ -7317,12 +7377,13 @@ namespace Idmr.Yogeme
 			// 
 			// chkEnd
 			// 
-			this.chkEnd.Location = new System.Drawing.Point(27, 470);
+			this.chkEnd.AutoSize = true;
+			this.chkEnd.Location = new System.Drawing.Point(24, 470);
 			this.chkEnd.Name = "chkEnd";
 			this.chkEnd.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-			this.chkEnd.Size = new System.Drawing.Size(118, 34);
+			this.chkEnd.Size = new System.Drawing.Size(121, 17);
 			this.chkEnd.TabIndex = 8;
-			this.chkEnd.Text = "End Mission when Goals Complete";
+			this.chkEnd.Text = "End when Complete";
 			this.chkEnd.UseVisualStyleBackColor = true;
 			this.chkEnd.Leave += new System.EventHandler(this.chkEnd_Leave);
 			// 
@@ -8973,5 +9034,10 @@ namespace Idmr.Yogeme
 		private NumericUpDown numGUIndex;
 		private Label label89;
 		private TextBox txtGUName;
+		private CheckBox chkGoalsUnimportant;
+		private ComboBox cboFailOfficer;
+		private ComboBox cboWinOfficer;
+		private Label label91;
+		private Label label90;
 	}
 }

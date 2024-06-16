@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2024 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.15.7
+ * VERSION: 1.15.7+
  */
 
 /* CHANGELOG
+ * [UPD] spec udpates
  * v1.15.7, 240519
  * [FIX] Briefing Logo wasn't accounting for "None" properly
  * v1.15.6, 240311
@@ -1286,6 +1287,8 @@ namespace Idmr.Yogeme
 			cboGlobalTeam.SelectedIndex = 0;
 			cboHangar.Items.AddRange(Enum.GetNames(typeof(Mission.HangarEnum)));
 			cboOfficer.Items.AddRange(Strings.Officer);
+			cboWinOfficer.Items.AddRange(Strings.Officer);
+			cboFailOfficer.Items.AddRange(Strings.Officer);
 			cboLogo.Items.AddRange(Enum.GetNames(typeof(Mission.LogoEnum)));
 			#region Mission2
 			txtIFFs[0] = txtIFF3;
@@ -4961,6 +4964,8 @@ namespace Idmr.Yogeme
 			txtSuccNote.Text = _mission.SuccessfulNotes;
 			cboHangar.SelectedIndex = (int)_mission.MissionType;
 			cboOfficer.SelectedIndex = _mission.Officer;
+			cboWinOfficer.SelectedIndex = _mission.WinOfficer;
+			cboFailOfficer.SelectedIndex = _mission.FailOfficer;
 			try { cboLogo.SelectedIndex = (int)_mission.Logo - 3; }
 			catch { _mission.Logo = Mission.LogoEnum.None; cboLogo.SelectedIndex = 3; }
 			numMissTimeMin.Value = _mission.TimeLimitMin;
@@ -4983,10 +4988,19 @@ namespace Idmr.Yogeme
 		}
 
 		void cboHangar_Leave(object sender, EventArgs e) => _mission.MissionType = Common.Update(this, _mission.MissionType, (Mission.HangarEnum)Convert.ToByte(cboHangar.SelectedIndex));
-		void cboLogo_Leave(object sender, EventArgs e) => _mission.Logo = Common.Update(this, _mission.Logo, (Mission.LogoEnum)Convert.ToByte(cboLogo.SelectedIndex + 3));
+		void cboLogo_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			//TODO: someday, load actual Logo when changed
+			if (_loading) return;
+
+			_mission.Logo = Common.Update(this, _mission.Logo, (Mission.LogoEnum)Convert.ToByte(cboLogo.SelectedIndex + 3));
+		}
 		void cboOfficer_Leave(object sender, EventArgs e) => _mission.Officer = Common.Update(this, _mission.Officer, Convert.ToByte(cboOfficer.SelectedIndex));
+		void cboWinOfficer_Leave(object sender, EventArgs e) => _mission.WinOfficer = Common.Update(this, _mission.WinOfficer, Convert.ToByte(cboWinOfficer.SelectedIndex));
+		void cboFailOfficer_Leave(object sender, EventArgs e) => _mission.FailOfficer = Common.Update(this, _mission.FailOfficer, Convert.ToByte(cboFailOfficer.SelectedIndex));
 
 		void chkEnd_Leave(object sender, EventArgs e) => _mission.EndWhenComplete = Common.Update(this, _mission.EndWhenComplete, chkEnd.Checked);
+		void chkGoalsUnimportant_Leave(object sender, EventArgs e) => _mission.GoalsUnimportant = Common.Update(this, _mission.GoalsUnimportant, chkGoalsUnimportant.Checked);
 
 		void numMissTimeMin_Leave(object sender, EventArgs e) => _mission.TimeLimitMin = Common.Update(this, _mission.TimeLimitMin, Convert.ToByte(numMissTimeMin.Value));
 
@@ -5096,6 +5110,7 @@ namespace Idmr.Yogeme
 		{
 			_mission.MissionNotes = Common.Update(this, _mission.MissionNotes, txtNotes.Text);
 		}
+
 		#endregion
 	}
 }
