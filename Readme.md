@@ -47,7 +47,10 @@ Extensive updates due to changes in Platform.dll, using the full file format spe
 - (TIE) IFF 5 (Red) permanently checked to match game behavior.
 - (TIE) Fixed a bug where the Questions wouldn't clear properly when loading a second mission.
 - (XvT) Added Flightgroup Handicap, Global Goal delay, EoM delay.
-
+- (XWA) Mission2 tab: Added the rest of the properties for GlobalCargo and GlobalGroups (which also expanded to 32 total),
+details for GlobalUnits added.
+  - Did not expose "ID" property of GlobalCargo or Region, pretty sure that's for internal use.
+- (XWA) GlobalUnit names and GlobalCargo will now appear in trigger labels.
 ---
 ### Additional Information
 #### Dependencies
@@ -61,7 +64,7 @@ Extensive updates due to changes in Platform.dll, using the full file format spe
 
 #### v1.15.8, 1 Jun 2024
 - (XWA) Fixed a Hook dialog crash, something I broke back in v1.15. (Microsoft documentation lied to me...) [Issue [#101](https://github.com/MikeG621/YOGEME/issues/101)]
-- 
+
 #### v1.15.7, 19 May 2024
 - (XWA) Briefing logo was off by 1, not accounting for "None" properly.
 

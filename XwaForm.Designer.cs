@@ -114,6 +114,7 @@ namespace Idmr.Yogeme
 			this.lblName = new System.Windows.Forms.Label();
 			this.label24 = new System.Windows.Forms.Label();
 			this.grpCraft3 = new System.Windows.Forms.GroupBox();
+			this.lblWaveDelay = new System.Windows.Forms.Label();
 			this.label17 = new System.Windows.Forms.Label();
 			this.numWaveDelay = new System.Windows.Forms.NumericUpDown();
 			this.chkGU = new System.Windows.Forms.CheckBox();
@@ -643,31 +644,41 @@ namespace Idmr.Yogeme
 			this.label99 = new System.Windows.Forms.Label();
 			this.tabMission2 = new System.Windows.Forms.TabPage();
 			this.groupBox40 = new System.Windows.Forms.GroupBox();
+			this.label28 = new System.Windows.Forms.Label();
+			this.cboGCVolatility = new System.Windows.Forms.ComboBox();
+			this.label21 = new System.Windows.Forms.Label();
+			this.cboGCType = new System.Windows.Forms.ComboBox();
+			this.numGCCount = new System.Windows.Forms.NumericUpDown();
+			this.label29 = new System.Windows.Forms.Label();
 			this.numGCValue = new System.Windows.Forms.NumericUpDown();
 			this.label141 = new System.Windows.Forms.Label();
 			this.numGCVolume = new System.Windows.Forms.NumericUpDown();
 			this.label140 = new System.Windows.Forms.Label();
 			this.txtGlobCargo = new System.Windows.Forms.TextBox();
-			this.numGlobCargo = new System.Windows.Forms.NumericUpDown();
+			this.numGCIndex = new System.Windows.Forms.NumericUpDown();
 			this.label138 = new System.Windows.Forms.Label();
-			this.groupBox39 = new System.Windows.Forms.GroupBox();
-			this.lblGG8 = new System.Windows.Forms.Label();
-			this.lblGG7 = new System.Windows.Forms.Label();
-			this.lblGG4 = new System.Windows.Forms.Label();
-			this.lblGG6 = new System.Windows.Forms.Label();
-			this.lblGG16 = new System.Windows.Forms.Label();
-			this.lblGG3 = new System.Windows.Forms.Label();
-			this.lblGG15 = new System.Windows.Forms.Label();
-			this.lblGG12 = new System.Windows.Forms.Label();
-			this.lblGG5 = new System.Windows.Forms.Label();
-			this.lblGG14 = new System.Windows.Forms.Label();
-			this.lblGG2 = new System.Windows.Forms.Label();
-			this.lblGG13 = new System.Windows.Forms.Label();
-			this.lblGG11 = new System.Windows.Forms.Label();
-			this.lblGG10 = new System.Windows.Forms.Label();
-			this.lblGG9 = new System.Windows.Forms.Label();
-			this.lblGG1 = new System.Windows.Forms.Label();
-			this.txtGlobGroup = new System.Windows.Forms.TextBox();
+			this.grpGlobalUnits = new System.Windows.Forms.GroupBox();
+			this.chkGURandom = new System.Windows.Forms.CheckBox();
+			this.numGUSpecial = new System.Windows.Forms.NumericUpDown();
+			this.label86 = new System.Windows.Forms.Label();
+			this.txtGUCargo = new System.Windows.Forms.TextBox();
+			this.label87 = new System.Windows.Forms.Label();
+			this.cboGULeader = new System.Windows.Forms.ComboBox();
+			this.label88 = new System.Windows.Forms.Label();
+			this.numGUIndex = new System.Windows.Forms.NumericUpDown();
+			this.label89 = new System.Windows.Forms.Label();
+			this.txtGUName = new System.Windows.Forms.TextBox();
+			this.grpGlobalGroups = new System.Windows.Forms.GroupBox();
+			this.chkGGRandom = new System.Windows.Forms.CheckBox();
+			this.numGGSpecial = new System.Windows.Forms.NumericUpDown();
+			this.label85 = new System.Windows.Forms.Label();
+			this.txtGGCargo = new System.Windows.Forms.TextBox();
+			this.label84 = new System.Windows.Forms.Label();
+			this.cboGGLeader = new System.Windows.Forms.ComboBox();
+			this.label83 = new System.Windows.Forms.Label();
+			this.numGGIndex = new System.Windows.Forms.NumericUpDown();
+			this.label81 = new System.Windows.Forms.Label();
+			this.txtGGName = new System.Windows.Forms.TextBox();
 			this.grpRegions = new System.Windows.Forms.GroupBox();
 			this.label137 = new System.Windows.Forms.Label();
 			this.label136 = new System.Windows.Forms.Label();
@@ -817,10 +828,16 @@ namespace Idmr.Yogeme
 			((System.ComponentModel.ISupportInitialize)(this.numMissTimeMin)).BeginInit();
 			this.tabMission2.SuspendLayout();
 			this.groupBox40.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.numGCCount)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numGCValue)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numGCVolume)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.numGlobCargo)).BeginInit();
-			this.groupBox39.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.numGCIndex)).BeginInit();
+			this.grpGlobalUnits.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.numGUSpecial)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.numGUIndex)).BeginInit();
+			this.grpGlobalGroups.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.numGGSpecial)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.numGGIndex)).BeginInit();
 			this.grpRegions.SuspendLayout();
 			this.groupBox37.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.dataOrders)).BeginInit();
@@ -1586,6 +1603,7 @@ namespace Idmr.Yogeme
 			// 
 			// grpCraft3
 			// 
+			this.grpCraft3.Controls.Add(this.lblWaveDelay);
 			this.grpCraft3.Controls.Add(this.label17);
 			this.grpCraft3.Controls.Add(this.numWaveDelay);
 			this.grpCraft3.Controls.Add(this.chkGU);
@@ -1602,6 +1620,14 @@ namespace Idmr.Yogeme
 			this.grpCraft3.Size = new System.Drawing.Size(252, 120);
 			this.grpCraft3.TabIndex = 15;
 			this.grpCraft3.TabStop = false;
+			// 
+			// lblWaveDelay
+			// 
+			this.lblWaveDelay.Location = new System.Drawing.Point(132, 66);
+			this.lblWaveDelay.Name = "lblWaveDelay";
+			this.lblWaveDelay.Size = new System.Drawing.Size(86, 13);
+			this.lblWaveDelay.TabIndex = 45;
+			this.lblWaveDelay.Text = "0:00";
 			// 
 			// label17
 			// 
@@ -1624,6 +1650,7 @@ namespace Idmr.Yogeme
 			this.numWaveDelay.Size = new System.Drawing.Size(48, 20);
 			this.numWaveDelay.TabIndex = 24;
 			this.numWaveDelay.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+			this.numWaveDelay.ValueChanged += new System.EventHandler(this.numWaveDelay_ValueChanged);
 			// 
 			// chkGU
 			// 
@@ -1841,7 +1868,7 @@ namespace Idmr.Yogeme
 			// 
 			// label16
 			// 
-			this.label16.Location = new System.Drawing.Point(8, 264);
+			this.label16.Location = new System.Drawing.Point(8, 235);
 			this.label16.Name = "label16";
 			this.label16.Size = new System.Drawing.Size(72, 16);
 			this.label16.TabIndex = 0;
@@ -1850,7 +1877,7 @@ namespace Idmr.Yogeme
 			// 
 			// numSpacing
 			// 
-			this.numSpacing.Location = new System.Drawing.Point(104, 264);
+			this.numSpacing.Location = new System.Drawing.Point(88, 235);
 			this.numSpacing.Maximum = new decimal(new int[] {
             255,
             0,
@@ -7284,9 +7311,9 @@ namespace Idmr.Yogeme
 			this.label129.AutoSize = true;
 			this.label129.Location = new System.Drawing.Point(176, 399);
 			this.label129.Name = "label129";
-			this.label129.Size = new System.Drawing.Size(79, 13);
+			this.label129.Size = new System.Drawing.Size(76, 13);
 			this.label129.TabIndex = 11;
-			this.label129.Text = "Tactical Officer";
+			this.label129.Text = "Briefing Officer";
 			// 
 			// chkEnd
 			// 
@@ -7408,7 +7435,8 @@ namespace Idmr.Yogeme
 			// 
 			this.tabMission2.BackColor = System.Drawing.SystemColors.Control;
 			this.tabMission2.Controls.Add(this.groupBox40);
-			this.tabMission2.Controls.Add(this.groupBox39);
+			this.tabMission2.Controls.Add(this.grpGlobalUnits);
+			this.tabMission2.Controls.Add(this.grpGlobalGroups);
 			this.tabMission2.Controls.Add(this.grpRegions);
 			this.tabMission2.Controls.Add(this.groupBox37);
 			this.tabMission2.Controls.Add(this.label101);
@@ -7422,23 +7450,98 @@ namespace Idmr.Yogeme
 			// 
 			// groupBox40
 			// 
+			this.groupBox40.Controls.Add(this.label28);
+			this.groupBox40.Controls.Add(this.cboGCVolatility);
+			this.groupBox40.Controls.Add(this.label21);
+			this.groupBox40.Controls.Add(this.cboGCType);
+			this.groupBox40.Controls.Add(this.numGCCount);
+			this.groupBox40.Controls.Add(this.label29);
 			this.groupBox40.Controls.Add(this.numGCValue);
 			this.groupBox40.Controls.Add(this.label141);
 			this.groupBox40.Controls.Add(this.numGCVolume);
 			this.groupBox40.Controls.Add(this.label140);
 			this.groupBox40.Controls.Add(this.txtGlobCargo);
-			this.groupBox40.Controls.Add(this.numGlobCargo);
+			this.groupBox40.Controls.Add(this.numGCIndex);
 			this.groupBox40.Controls.Add(this.label138);
-			this.groupBox40.Location = new System.Drawing.Point(31, 334);
+			this.groupBox40.Location = new System.Drawing.Point(8, 274);
 			this.groupBox40.Name = "groupBox40";
-			this.groupBox40.Size = new System.Drawing.Size(461, 139);
+			this.groupBox40.Size = new System.Drawing.Size(461, 104);
 			this.groupBox40.TabIndex = 5;
 			this.groupBox40.TabStop = false;
 			this.groupBox40.Text = "Global Cargo";
 			// 
+			// label28
+			// 
+			this.label28.AutoSize = true;
+			this.label28.Location = new System.Drawing.Point(142, 52);
+			this.label28.Name = "label28";
+			this.label28.Size = new System.Drawing.Size(45, 13);
+			this.label28.TabIndex = 13;
+			this.label28.Text = "Volatility";
+			// 
+			// cboGCVolatility
+			// 
+			this.cboGCVolatility.FormattingEnabled = true;
+			this.cboGCVolatility.Items.AddRange(new object[] {
+            "Low",
+            "Medium",
+            "High",
+            "Kaboom!"});
+			this.cboGCVolatility.Location = new System.Drawing.Point(193, 49);
+			this.cboGCVolatility.Name = "cboGCVolatility";
+			this.cboGCVolatility.Size = new System.Drawing.Size(83, 21);
+			this.cboGCVolatility.TabIndex = 12;
+			this.cboGCVolatility.Leave += new System.EventHandler(this.cboGCVolatility_Leave);
+			// 
+			// label21
+			// 
+			this.label21.AutoSize = true;
+			this.label21.Location = new System.Drawing.Point(6, 52);
+			this.label21.Name = "label21";
+			this.label21.Size = new System.Drawing.Size(31, 13);
+			this.label21.TabIndex = 11;
+			this.label21.Text = "Type";
+			// 
+			// cboGCType
+			// 
+			this.cboGCType.FormattingEnabled = true;
+			this.cboGCType.Items.AddRange(new object[] {
+            "Solid",
+            "Liquid",
+            "Gas"});
+			this.cboGCType.Location = new System.Drawing.Point(57, 49);
+			this.cboGCType.Name = "cboGCType";
+			this.cboGCType.Size = new System.Drawing.Size(79, 21);
+			this.cboGCType.TabIndex = 10;
+			this.cboGCType.Leave += new System.EventHandler(this.cboGCType_Leave);
+			// 
+			// numGCCount
+			// 
+			this.numGCCount.Location = new System.Drawing.Point(318, 76);
+			this.numGCCount.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
+			this.numGCCount.Name = "numGCCount";
+			this.numGCCount.Size = new System.Drawing.Size(71, 20);
+			this.numGCCount.TabIndex = 9;
+			this.numGCCount.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+			this.numGCCount.Leave += new System.EventHandler(this.numGCCount_Leave);
+			// 
+			// label29
+			// 
+			this.label29.AutoSize = true;
+			this.label29.Location = new System.Drawing.Point(278, 78);
+			this.label29.Name = "label29";
+			this.label29.Size = new System.Drawing.Size(35, 13);
+			this.label29.TabIndex = 8;
+			this.label29.Text = "Count";
+			this.label29.TextAlign = System.Drawing.ContentAlignment.BottomRight;
+			// 
 			// numGCValue
 			// 
-			this.numGCValue.Location = new System.Drawing.Point(229, 95);
+			this.numGCValue.Location = new System.Drawing.Point(182, 76);
 			this.numGCValue.Maximum = new decimal(new int[] {
             255,
             0,
@@ -7453,7 +7556,7 @@ namespace Idmr.Yogeme
 			// label141
 			// 
 			this.label141.AutoSize = true;
-			this.label141.Location = new System.Drawing.Point(189, 97);
+			this.label141.Location = new System.Drawing.Point(142, 78);
 			this.label141.Name = "label141";
 			this.label141.Size = new System.Drawing.Size(34, 13);
 			this.label141.TabIndex = 8;
@@ -7462,7 +7565,7 @@ namespace Idmr.Yogeme
 			// 
 			// numGCVolume
 			// 
-			this.numGCVolume.Location = new System.Drawing.Point(104, 95);
+			this.numGCVolume.Location = new System.Drawing.Point(57, 76);
 			this.numGCVolume.Maximum = new decimal(new int[] {
             255,
             0,
@@ -7477,7 +7580,7 @@ namespace Idmr.Yogeme
 			// label140
 			// 
 			this.label140.AutoSize = true;
-			this.label140.Location = new System.Drawing.Point(56, 97);
+			this.label140.Location = new System.Drawing.Point(9, 78);
 			this.label140.Name = "label140";
 			this.label140.Size = new System.Drawing.Size(42, 13);
 			this.label140.TabIndex = 6;
@@ -7486,36 +7589,36 @@ namespace Idmr.Yogeme
 			// 
 			// txtGlobCargo
 			// 
-			this.txtGlobCargo.Location = new System.Drawing.Point(9, 50);
+			this.txtGlobCargo.Location = new System.Drawing.Point(104, 23);
 			this.txtGlobCargo.MaxLength = 63;
 			this.txtGlobCargo.Name = "txtGlobCargo";
-			this.txtGlobCargo.Size = new System.Drawing.Size(443, 20);
+			this.txtGlobCargo.Size = new System.Drawing.Size(351, 20);
 			this.txtGlobCargo.TabIndex = 2;
 			this.txtGlobCargo.Leave += new System.EventHandler(this.txtGlobCargo_Leave);
 			// 
-			// numGlobCargo
+			// numGCIndex
 			// 
-			this.numGlobCargo.Location = new System.Drawing.Point(57, 24);
-			this.numGlobCargo.Maximum = new decimal(new int[] {
+			this.numGCIndex.Location = new System.Drawing.Point(57, 24);
+			this.numGCIndex.Maximum = new decimal(new int[] {
             16,
             0,
             0,
             0});
-			this.numGlobCargo.Minimum = new decimal(new int[] {
+			this.numGCIndex.Minimum = new decimal(new int[] {
             1,
             0,
             0,
             0});
-			this.numGlobCargo.Name = "numGlobCargo";
-			this.numGlobCargo.Size = new System.Drawing.Size(41, 20);
-			this.numGlobCargo.TabIndex = 1;
-			this.numGlobCargo.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-			this.numGlobCargo.Value = new decimal(new int[] {
+			this.numGCIndex.Name = "numGCIndex";
+			this.numGCIndex.Size = new System.Drawing.Size(41, 20);
+			this.numGCIndex.TabIndex = 1;
+			this.numGCIndex.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+			this.numGCIndex.Value = new decimal(new int[] {
             1,
             0,
             0,
             0});
-			this.numGlobCargo.ValueChanged += new System.EventHandler(this.numGlobCargo_ValueChanged);
+			this.numGCIndex.ValueChanged += new System.EventHandler(this.numGCIndex_ValueChanged);
 			// 
 			// label138
 			// 
@@ -7526,200 +7629,261 @@ namespace Idmr.Yogeme
 			this.label138.TabIndex = 0;
 			this.label138.Text = "Cargo #";
 			// 
-			// groupBox39
+			// grpGlobalUnits
 			// 
-			this.groupBox39.Controls.Add(this.lblGG8);
-			this.groupBox39.Controls.Add(this.lblGG7);
-			this.groupBox39.Controls.Add(this.lblGG4);
-			this.groupBox39.Controls.Add(this.lblGG6);
-			this.groupBox39.Controls.Add(this.lblGG16);
-			this.groupBox39.Controls.Add(this.lblGG3);
-			this.groupBox39.Controls.Add(this.lblGG15);
-			this.groupBox39.Controls.Add(this.lblGG12);
-			this.groupBox39.Controls.Add(this.lblGG5);
-			this.groupBox39.Controls.Add(this.lblGG14);
-			this.groupBox39.Controls.Add(this.lblGG2);
-			this.groupBox39.Controls.Add(this.lblGG13);
-			this.groupBox39.Controls.Add(this.lblGG11);
-			this.groupBox39.Controls.Add(this.lblGG10);
-			this.groupBox39.Controls.Add(this.lblGG9);
-			this.groupBox39.Controls.Add(this.lblGG1);
-			this.groupBox39.Controls.Add(this.txtGlobGroup);
-			this.groupBox39.Location = new System.Drawing.Point(217, 17);
-			this.groupBox39.Name = "groupBox39";
-			this.groupBox39.Size = new System.Drawing.Size(303, 268);
-			this.groupBox39.TabIndex = 4;
-			this.groupBox39.TabStop = false;
-			this.groupBox39.Text = "Global Groups";
+			this.grpGlobalUnits.Controls.Add(this.chkGURandom);
+			this.grpGlobalUnits.Controls.Add(this.numGUSpecial);
+			this.grpGlobalUnits.Controls.Add(this.label86);
+			this.grpGlobalUnits.Controls.Add(this.txtGUCargo);
+			this.grpGlobalUnits.Controls.Add(this.label87);
+			this.grpGlobalUnits.Controls.Add(this.cboGULeader);
+			this.grpGlobalUnits.Controls.Add(this.label88);
+			this.grpGlobalUnits.Controls.Add(this.numGUIndex);
+			this.grpGlobalUnits.Controls.Add(this.label89);
+			this.grpGlobalUnits.Controls.Add(this.txtGUName);
+			this.grpGlobalUnits.Location = new System.Drawing.Point(205, 142);
+			this.grpGlobalUnits.Name = "grpGlobalUnits";
+			this.grpGlobalUnits.Size = new System.Drawing.Size(303, 126);
+			this.grpGlobalUnits.TabIndex = 4;
+			this.grpGlobalUnits.TabStop = false;
+			this.grpGlobalUnits.Text = "Global Units";
 			// 
-			// lblGG8
+			// chkGURandom
 			// 
-			this.lblGG8.BackColor = System.Drawing.Color.RosyBrown;
-			this.lblGG8.Location = new System.Drawing.Point(6, 198);
-			this.lblGG8.Name = "lblGG8";
-			this.lblGG8.Size = new System.Drawing.Size(141, 23);
-			this.lblGG8.TabIndex = 1;
-			this.lblGG8.Text = "Global Group";
-			this.lblGG8.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.chkGURandom.Location = new System.Drawing.Point(142, 99);
+			this.chkGURandom.Name = "chkGURandom";
+			this.chkGURandom.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+			this.chkGURandom.Size = new System.Drawing.Size(72, 24);
+			this.chkGURandom.TabIndex = 12;
+			this.chkGURandom.Text = "Random";
+			this.chkGURandom.CheckedChanged += new System.EventHandler(this.chkGURandom_CheckedChanged);
 			// 
-			// lblGG7
+			// numGUSpecial
 			// 
-			this.lblGG7.BackColor = System.Drawing.Color.RosyBrown;
-			this.lblGG7.Location = new System.Drawing.Point(6, 172);
-			this.lblGG7.Name = "lblGG7";
-			this.lblGG7.Size = new System.Drawing.Size(141, 23);
-			this.lblGG7.TabIndex = 1;
-			this.lblGG7.Text = "Global Group";
-			this.lblGG7.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.numGUSpecial.Location = new System.Drawing.Point(92, 99);
+			this.numGUSpecial.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+			this.numGUSpecial.Name = "numGUSpecial";
+			this.numGUSpecial.Size = new System.Drawing.Size(42, 20);
+			this.numGUSpecial.TabIndex = 11;
+			this.numGUSpecial.Leave += new System.EventHandler(this.numGUSpecial_Leave);
 			// 
-			// lblGG4
+			// label86
 			// 
-			this.lblGG4.BackColor = System.Drawing.Color.RosyBrown;
-			this.lblGG4.Location = new System.Drawing.Point(6, 94);
-			this.lblGG4.Name = "lblGG4";
-			this.lblGG4.Size = new System.Drawing.Size(141, 23);
-			this.lblGG4.TabIndex = 1;
-			this.lblGG4.Text = "Global Group";
-			this.lblGG4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.label86.Location = new System.Drawing.Point(6, 99);
+			this.label86.Name = "label86";
+			this.label86.Size = new System.Drawing.Size(80, 16);
+			this.label86.TabIndex = 10;
+			this.label86.Text = "Special Ship #";
+			this.label86.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
-			// lblGG6
+			// txtGUCargo
 			// 
-			this.lblGG6.BackColor = System.Drawing.Color.RosyBrown;
-			this.lblGG6.Location = new System.Drawing.Point(6, 146);
-			this.lblGG6.Name = "lblGG6";
-			this.lblGG6.Size = new System.Drawing.Size(141, 23);
-			this.lblGG6.TabIndex = 1;
-			this.lblGG6.Text = "Global Group";
-			this.lblGG6.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.txtGUCargo.Location = new System.Drawing.Point(86, 73);
+			this.txtGUCargo.MaxLength = 19;
+			this.txtGUCargo.Name = "txtGUCargo";
+			this.txtGUCargo.Size = new System.Drawing.Size(128, 20);
+			this.txtGUCargo.TabIndex = 9;
+			this.txtGUCargo.Leave += new System.EventHandler(this.txtGUCargo_Leave);
 			// 
-			// lblGG16
+			// label87
 			// 
-			this.lblGG16.BackColor = System.Drawing.Color.RosyBrown;
-			this.lblGG16.Location = new System.Drawing.Point(153, 198);
-			this.lblGG16.Name = "lblGG16";
-			this.lblGG16.Size = new System.Drawing.Size(141, 23);
-			this.lblGG16.TabIndex = 1;
-			this.lblGG16.Text = "Global Group";
-			this.lblGG16.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.label87.Location = new System.Drawing.Point(6, 75);
+			this.label87.Name = "label87";
+			this.label87.Size = new System.Drawing.Size(80, 16);
+			this.label87.TabIndex = 8;
+			this.label87.Text = "Special Cargo";
 			// 
-			// lblGG3
+			// cboGULeader
 			// 
-			this.lblGG3.BackColor = System.Drawing.Color.RosyBrown;
-			this.lblGG3.Location = new System.Drawing.Point(6, 68);
-			this.lblGG3.Name = "lblGG3";
-			this.lblGG3.Size = new System.Drawing.Size(141, 23);
-			this.lblGG3.TabIndex = 1;
-			this.lblGG3.Text = "Global Group";
-			this.lblGG3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.cboGULeader.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboGULeader.FormattingEnabled = true;
+			this.cboGULeader.Location = new System.Drawing.Point(56, 46);
+			this.cboGULeader.Name = "cboGULeader";
+			this.cboGULeader.Size = new System.Drawing.Size(121, 21);
+			this.cboGULeader.TabIndex = 5;
+			this.cboGULeader.Leave += new System.EventHandler(this.cboGULeader_Leave);
 			// 
-			// lblGG15
+			// label88
 			// 
-			this.lblGG15.BackColor = System.Drawing.Color.RosyBrown;
-			this.lblGG15.Location = new System.Drawing.Point(153, 172);
-			this.lblGG15.Name = "lblGG15";
-			this.lblGG15.Size = new System.Drawing.Size(141, 23);
-			this.lblGG15.TabIndex = 1;
-			this.lblGG15.Text = "Global Group";
-			this.lblGG15.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.label88.AutoSize = true;
+			this.label88.Location = new System.Drawing.Point(6, 49);
+			this.label88.Name = "label88";
+			this.label88.Size = new System.Drawing.Size(40, 13);
+			this.label88.TabIndex = 4;
+			this.label88.Text = "Leader";
 			// 
-			// lblGG12
+			// numGUIndex
 			// 
-			this.lblGG12.BackColor = System.Drawing.Color.RosyBrown;
-			this.lblGG12.Location = new System.Drawing.Point(153, 94);
-			this.lblGG12.Name = "lblGG12";
-			this.lblGG12.Size = new System.Drawing.Size(141, 23);
-			this.lblGG12.TabIndex = 1;
-			this.lblGG12.Text = "Global Group";
-			this.lblGG12.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.numGUIndex.Location = new System.Drawing.Point(56, 20);
+			this.numGUIndex.Maximum = new decimal(new int[] {
+            40,
+            0,
+            0,
+            0});
+			this.numGUIndex.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+			this.numGUIndex.Name = "numGUIndex";
+			this.numGUIndex.Size = new System.Drawing.Size(41, 20);
+			this.numGUIndex.TabIndex = 3;
+			this.numGUIndex.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+			this.numGUIndex.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+			this.numGUIndex.ValueChanged += new System.EventHandler(this.numGUIndex_ValueChanged);
 			// 
-			// lblGG5
+			// label89
 			// 
-			this.lblGG5.BackColor = System.Drawing.Color.RosyBrown;
-			this.lblGG5.Location = new System.Drawing.Point(6, 120);
-			this.lblGG5.Name = "lblGG5";
-			this.lblGG5.Size = new System.Drawing.Size(141, 23);
-			this.lblGG5.TabIndex = 1;
-			this.lblGG5.Text = "Global Group";
-			this.lblGG5.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.label89.AutoSize = true;
+			this.label89.Location = new System.Drawing.Point(5, 22);
+			this.label89.Name = "label89";
+			this.label89.Size = new System.Drawing.Size(36, 13);
+			this.label89.TabIndex = 2;
+			this.label89.Text = "Unit #";
 			// 
-			// lblGG14
+			// txtGUName
 			// 
-			this.lblGG14.BackColor = System.Drawing.Color.RosyBrown;
-			this.lblGG14.Location = new System.Drawing.Point(153, 146);
-			this.lblGG14.Name = "lblGG14";
-			this.lblGG14.Size = new System.Drawing.Size(141, 23);
-			this.lblGG14.TabIndex = 1;
-			this.lblGG14.Text = "Global Group";
-			this.lblGG14.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.txtGUName.Location = new System.Drawing.Point(103, 19);
+			this.txtGUName.Name = "txtGUName";
+			this.txtGUName.Size = new System.Drawing.Size(194, 20);
+			this.txtGUName.TabIndex = 0;
+			this.txtGUName.Leave += new System.EventHandler(this.txtGUName_Leave);
 			// 
-			// lblGG2
+			// grpGlobalGroups
 			// 
-			this.lblGG2.BackColor = System.Drawing.Color.RosyBrown;
-			this.lblGG2.Location = new System.Drawing.Point(6, 42);
-			this.lblGG2.Name = "lblGG2";
-			this.lblGG2.Size = new System.Drawing.Size(141, 23);
-			this.lblGG2.TabIndex = 1;
-			this.lblGG2.Text = "lblGG2";
-			this.lblGG2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.grpGlobalGroups.Controls.Add(this.chkGGRandom);
+			this.grpGlobalGroups.Controls.Add(this.numGGSpecial);
+			this.grpGlobalGroups.Controls.Add(this.label85);
+			this.grpGlobalGroups.Controls.Add(this.txtGGCargo);
+			this.grpGlobalGroups.Controls.Add(this.label84);
+			this.grpGlobalGroups.Controls.Add(this.cboGGLeader);
+			this.grpGlobalGroups.Controls.Add(this.label83);
+			this.grpGlobalGroups.Controls.Add(this.numGGIndex);
+			this.grpGlobalGroups.Controls.Add(this.label81);
+			this.grpGlobalGroups.Controls.Add(this.txtGGName);
+			this.grpGlobalGroups.Location = new System.Drawing.Point(204, 10);
+			this.grpGlobalGroups.Name = "grpGlobalGroups";
+			this.grpGlobalGroups.Size = new System.Drawing.Size(303, 126);
+			this.grpGlobalGroups.TabIndex = 4;
+			this.grpGlobalGroups.TabStop = false;
+			this.grpGlobalGroups.Text = "Global Groups";
 			// 
-			// lblGG13
+			// chkGGRandom
 			// 
-			this.lblGG13.BackColor = System.Drawing.Color.RosyBrown;
-			this.lblGG13.Location = new System.Drawing.Point(153, 120);
-			this.lblGG13.Name = "lblGG13";
-			this.lblGG13.Size = new System.Drawing.Size(141, 23);
-			this.lblGG13.TabIndex = 1;
-			this.lblGG13.Text = "Global Group";
-			this.lblGG13.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.chkGGRandom.Location = new System.Drawing.Point(142, 99);
+			this.chkGGRandom.Name = "chkGGRandom";
+			this.chkGGRandom.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+			this.chkGGRandom.Size = new System.Drawing.Size(72, 24);
+			this.chkGGRandom.TabIndex = 12;
+			this.chkGGRandom.Text = "Random";
+			this.chkGGRandom.CheckedChanged += new System.EventHandler(this.chkGGRandom_CheckedChanged);
 			// 
-			// lblGG11
+			// numGGSpecial
 			// 
-			this.lblGG11.BackColor = System.Drawing.Color.RosyBrown;
-			this.lblGG11.Location = new System.Drawing.Point(153, 68);
-			this.lblGG11.Name = "lblGG11";
-			this.lblGG11.Size = new System.Drawing.Size(141, 23);
-			this.lblGG11.TabIndex = 1;
-			this.lblGG11.Text = "Global Group";
-			this.lblGG11.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.numGGSpecial.Location = new System.Drawing.Point(92, 99);
+			this.numGGSpecial.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+			this.numGGSpecial.Name = "numGGSpecial";
+			this.numGGSpecial.Size = new System.Drawing.Size(42, 20);
+			this.numGGSpecial.TabIndex = 11;
+			this.numGGSpecial.Leave += new System.EventHandler(this.numGGSpecial_Leave);
 			// 
-			// lblGG10
+			// label85
 			// 
-			this.lblGG10.BackColor = System.Drawing.Color.RosyBrown;
-			this.lblGG10.Location = new System.Drawing.Point(153, 42);
-			this.lblGG10.Name = "lblGG10";
-			this.lblGG10.Size = new System.Drawing.Size(141, 23);
-			this.lblGG10.TabIndex = 1;
-			this.lblGG10.Text = "Global Group";
-			this.lblGG10.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.label85.Location = new System.Drawing.Point(6, 99);
+			this.label85.Name = "label85";
+			this.label85.Size = new System.Drawing.Size(80, 16);
+			this.label85.TabIndex = 10;
+			this.label85.Text = "Special Ship #";
+			this.label85.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
-			// lblGG9
+			// txtGGCargo
 			// 
-			this.lblGG9.BackColor = System.Drawing.Color.RosyBrown;
-			this.lblGG9.Location = new System.Drawing.Point(153, 16);
-			this.lblGG9.Name = "lblGG9";
-			this.lblGG9.Size = new System.Drawing.Size(141, 23);
-			this.lblGG9.TabIndex = 1;
-			this.lblGG9.Text = "Global Group";
-			this.lblGG9.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.txtGGCargo.Location = new System.Drawing.Point(86, 73);
+			this.txtGGCargo.MaxLength = 19;
+			this.txtGGCargo.Name = "txtGGCargo";
+			this.txtGGCargo.Size = new System.Drawing.Size(128, 20);
+			this.txtGGCargo.TabIndex = 9;
+			this.txtGGCargo.Leave += new System.EventHandler(this.txtGGCargo_Leave);
 			// 
-			// lblGG1
+			// label84
 			// 
-			this.lblGG1.BackColor = System.Drawing.Color.RosyBrown;
-			this.lblGG1.ForeColor = System.Drawing.SystemColors.Highlight;
-			this.lblGG1.Location = new System.Drawing.Point(6, 16);
-			this.lblGG1.Name = "lblGG1";
-			this.lblGG1.Size = new System.Drawing.Size(141, 23);
-			this.lblGG1.TabIndex = 1;
-			this.lblGG1.Text = "lblGG1";
-			this.lblGG1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.label84.Location = new System.Drawing.Point(6, 75);
+			this.label84.Name = "label84";
+			this.label84.Size = new System.Drawing.Size(80, 16);
+			this.label84.TabIndex = 8;
+			this.label84.Text = "Special Cargo";
 			// 
-			// txtGlobGroup
+			// cboGGLeader
 			// 
-			this.txtGlobGroup.Location = new System.Drawing.Point(6, 233);
-			this.txtGlobGroup.Name = "txtGlobGroup";
-			this.txtGlobGroup.Size = new System.Drawing.Size(291, 20);
-			this.txtGlobGroup.TabIndex = 0;
-			this.txtGlobGroup.Leave += new System.EventHandler(this.txtGlobGroup_Leave);
+			this.cboGGLeader.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboGGLeader.FormattingEnabled = true;
+			this.cboGGLeader.Location = new System.Drawing.Point(56, 46);
+			this.cboGGLeader.Name = "cboGGLeader";
+			this.cboGGLeader.Size = new System.Drawing.Size(121, 21);
+			this.cboGGLeader.TabIndex = 5;
+			this.cboGGLeader.Leave += new System.EventHandler(this.cboGGLeader_Leave);
+			// 
+			// label83
+			// 
+			this.label83.AutoSize = true;
+			this.label83.Location = new System.Drawing.Point(6, 49);
+			this.label83.Name = "label83";
+			this.label83.Size = new System.Drawing.Size(40, 13);
+			this.label83.TabIndex = 4;
+			this.label83.Text = "Leader";
+			// 
+			// numGGIndex
+			// 
+			this.numGGIndex.Location = new System.Drawing.Point(56, 20);
+			this.numGGIndex.Maximum = new decimal(new int[] {
+            32,
+            0,
+            0,
+            0});
+			this.numGGIndex.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+			this.numGGIndex.Name = "numGGIndex";
+			this.numGGIndex.Size = new System.Drawing.Size(41, 20);
+			this.numGGIndex.TabIndex = 3;
+			this.numGGIndex.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+			this.numGGIndex.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+			this.numGGIndex.ValueChanged += new System.EventHandler(this.numGGIndex_ValueChanged);
+			// 
+			// label81
+			// 
+			this.label81.AutoSize = true;
+			this.label81.Location = new System.Drawing.Point(5, 22);
+			this.label81.Name = "label81";
+			this.label81.Size = new System.Drawing.Size(46, 13);
+			this.label81.TabIndex = 2;
+			this.label81.Text = "Group #";
+			// 
+			// txtGGName
+			// 
+			this.txtGGName.Location = new System.Drawing.Point(103, 19);
+			this.txtGGName.Name = "txtGGName";
+			this.txtGGName.Size = new System.Drawing.Size(194, 20);
+			this.txtGGName.TabIndex = 0;
+			this.txtGGName.Leave += new System.EventHandler(this.txtGGName_Leave);
 			// 
 			// grpRegions
 			// 
@@ -7731,9 +7895,9 @@ namespace Idmr.Yogeme
 			this.grpRegions.Controls.Add(this.txtRegion3);
 			this.grpRegions.Controls.Add(this.txtRegion2);
 			this.grpRegions.Controls.Add(this.txtRegion1);
-			this.grpRegions.Location = new System.Drawing.Point(8, 157);
+			this.grpRegions.Location = new System.Drawing.Point(8, 142);
 			this.grpRegions.Name = "grpRegions";
-			this.grpRegions.Size = new System.Drawing.Size(191, 128);
+			this.grpRegions.Size = new System.Drawing.Size(191, 126);
 			this.grpRegions.TabIndex = 3;
 			this.grpRegions.TabStop = false;
 			this.grpRegions.Text = "Regions";
@@ -7742,7 +7906,7 @@ namespace Idmr.Yogeme
 			// label137
 			// 
 			this.label137.AutoSize = true;
-			this.label137.Location = new System.Drawing.Point(6, 100);
+			this.label137.Location = new System.Drawing.Point(6, 96);
 			this.label137.Name = "label137";
 			this.label137.Size = new System.Drawing.Size(39, 13);
 			this.label137.TabIndex = 5;
@@ -7751,7 +7915,7 @@ namespace Idmr.Yogeme
 			// label136
 			// 
 			this.label136.AutoSize = true;
-			this.label136.Location = new System.Drawing.Point(6, 74);
+			this.label136.Location = new System.Drawing.Point(6, 71);
 			this.label136.Name = "label136";
 			this.label136.Size = new System.Drawing.Size(39, 13);
 			this.label136.TabIndex = 5;
@@ -7760,7 +7924,7 @@ namespace Idmr.Yogeme
 			// label135
 			// 
 			this.label135.AutoSize = true;
-			this.label135.Location = new System.Drawing.Point(6, 48);
+			this.label135.Location = new System.Drawing.Point(6, 45);
 			this.label135.Name = "label135";
 			this.label135.Size = new System.Drawing.Size(39, 13);
 			this.label135.TabIndex = 5;
@@ -7769,7 +7933,7 @@ namespace Idmr.Yogeme
 			// label134
 			// 
 			this.label134.AutoSize = true;
-			this.label134.Location = new System.Drawing.Point(6, 22);
+			this.label134.Location = new System.Drawing.Point(6, 19);
 			this.label134.Name = "label134";
 			this.label134.Size = new System.Drawing.Size(39, 13);
 			this.label134.TabIndex = 5;
@@ -7777,7 +7941,7 @@ namespace Idmr.Yogeme
 			// 
 			// txtRegion4
 			// 
-			this.txtRegion4.Location = new System.Drawing.Point(50, 97);
+			this.txtRegion4.Location = new System.Drawing.Point(51, 93);
 			this.txtRegion4.MaxLength = 131;
 			this.txtRegion4.Name = "txtRegion4";
 			this.txtRegion4.Size = new System.Drawing.Size(133, 20);
@@ -7785,7 +7949,7 @@ namespace Idmr.Yogeme
 			// 
 			// txtRegion3
 			// 
-			this.txtRegion3.Location = new System.Drawing.Point(50, 71);
+			this.txtRegion3.Location = new System.Drawing.Point(51, 67);
 			this.txtRegion3.MaxLength = 131;
 			this.txtRegion3.Name = "txtRegion3";
 			this.txtRegion3.Size = new System.Drawing.Size(133, 20);
@@ -7793,7 +7957,7 @@ namespace Idmr.Yogeme
 			// 
 			// txtRegion2
 			// 
-			this.txtRegion2.Location = new System.Drawing.Point(50, 45);
+			this.txtRegion2.Location = new System.Drawing.Point(50, 41);
 			this.txtRegion2.MaxLength = 131;
 			this.txtRegion2.Name = "txtRegion2";
 			this.txtRegion2.Size = new System.Drawing.Size(133, 20);
@@ -7801,7 +7965,7 @@ namespace Idmr.Yogeme
 			// 
 			// txtRegion1
 			// 
-			this.txtRegion1.Location = new System.Drawing.Point(50, 19);
+			this.txtRegion1.Location = new System.Drawing.Point(50, 16);
 			this.txtRegion1.MaxLength = 131;
 			this.txtRegion1.Name = "txtRegion1";
 			this.txtRegion1.Size = new System.Drawing.Size(133, 20);
@@ -7817,7 +7981,7 @@ namespace Idmr.Yogeme
 			this.groupBox37.Controls.Add(this.txtIFF5);
 			this.groupBox37.Controls.Add(this.txtIFF4);
 			this.groupBox37.Controls.Add(this.txtIFF3);
-			this.groupBox37.Location = new System.Drawing.Point(8, 11);
+			this.groupBox37.Location = new System.Drawing.Point(6, 10);
 			this.groupBox37.Name = "groupBox37";
 			this.groupBox37.Size = new System.Drawing.Size(192, 126);
 			this.groupBox37.TabIndex = 2;
@@ -7886,7 +8050,7 @@ namespace Idmr.Yogeme
 			// 
 			// txtIFF3
 			// 
-			this.txtIFF3.Location = new System.Drawing.Point(50, 19);
+			this.txtIFF3.Location = new System.Drawing.Point(50, 16);
 			this.txtIFF3.MaxLength = 19;
 			this.txtIFF3.Name = "txtIFF3";
 			this.txtIFF3.Size = new System.Drawing.Size(133, 20);
@@ -8104,11 +8268,18 @@ namespace Idmr.Yogeme
 			this.tabMission2.PerformLayout();
 			this.groupBox40.ResumeLayout(false);
 			this.groupBox40.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.numGCCount)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.numGCValue)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.numGCVolume)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.numGlobCargo)).EndInit();
-			this.groupBox39.ResumeLayout(false);
-			this.groupBox39.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.numGCIndex)).EndInit();
+			this.grpGlobalUnits.ResumeLayout(false);
+			this.grpGlobalUnits.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.numGUSpecial)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.numGUIndex)).EndInit();
+			this.grpGlobalGroups.ResumeLayout(false);
+			this.grpGlobalGroups.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.numGGSpecial)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.numGGIndex)).EndInit();
 			this.grpRegions.ResumeLayout(false);
 			this.grpRegions.PerformLayout();
 			this.groupBox37.ResumeLayout(false);
@@ -8616,8 +8787,7 @@ namespace Idmr.Yogeme
 		private Label label129;
 		private CheckBox chkEnd;
 		private TabPage tabMission2;
-		private GroupBox groupBox39;
-		private Label lblGG1;
+		private GroupBox grpGlobalGroups;
 		private GroupBox grpRegions;
 		private Label label137;
 		private Label label136;
@@ -8638,29 +8808,14 @@ namespace Idmr.Yogeme
 		private TextBox txtIFF3;
 		private Label label101;
 		private TextBox txtNotes;
-		private Label lblGG8;
-		private Label lblGG7;
-		private Label lblGG4;
-		private Label lblGG6;
-		private Label lblGG16;
-		private Label lblGG3;
-		private Label lblGG15;
-		private Label lblGG12;
-		private Label lblGG5;
-		private Label lblGG14;
-		private Label lblGG2;
-		private Label lblGG13;
-		private Label lblGG11;
-		private Label lblGG10;
-		private Label lblGG9;
-		private TextBox txtGlobGroup;
+		private TextBox txtGGName;
 		private GroupBox groupBox40;
 		private NumericUpDown numGCValue;
 		private Label label141;
 		private NumericUpDown numGCVolume;
 		private Label label140;
 		private TextBox txtGlobCargo;
-		private NumericUpDown numGlobCargo;
+		private NumericUpDown numGCIndex;
 		private Label label138;
 		private ComboBox cboGlobSpecCargo;
 		private Button cmdBackdrop;
@@ -8791,5 +8946,32 @@ namespace Idmr.Yogeme
 		private Label label17;
 		private NumericUpDown numWaveDelay;
 		private NumericUpDown numArrRandSec;
+		private Label lblWaveDelay;
+		private Label label28;
+		private ComboBox cboGCVolatility;
+		private Label label21;
+		private ComboBox cboGCType;
+		private NumericUpDown numGCCount;
+		private Label label29;
+		private NumericUpDown numGGIndex;
+		private Label label81;
+		private Label label83;
+		private ComboBox cboGGLeader;
+		private TextBox txtGGCargo;
+		private Label label84;
+		private CheckBox chkGGRandom;
+		private NumericUpDown numGGSpecial;
+		private Label label85;
+		private GroupBox grpGlobalUnits;
+		private CheckBox chkGURandom;
+		private NumericUpDown numGUSpecial;
+		private Label label86;
+		private TextBox txtGUCargo;
+		private Label label87;
+		private ComboBox cboGULeader;
+		private Label label88;
+		private NumericUpDown numGUIndex;
+		private Label label89;
+		private TextBox txtGUName;
 	}
 }
