@@ -284,7 +284,7 @@ namespace Idmr.Yogeme
 		readonly Label[] lblTeam = new Label[10];
 		readonly RadioButton[] optAllies = new RadioButton[30];
 		readonly TextBox[] txtEoM = new TextBox[6];
-		readonly NumericUpDown[] numTeamUnk = new NumericUpDown[6];
+		readonly NumericUpDown[] numEomDelays = new NumericUpDown[3];
 		// Miss2
 		readonly TextBox[] txtIFFs = new TextBox[4];
 		readonly TextBox[] txtRegions = new TextBox[4];
@@ -1062,7 +1062,7 @@ namespace Idmr.Yogeme
 			this._tableOrderRaw.RowChanged += new DataRowChangeEventHandler(tableOrderRaw_RowChanged);
 			chkWP[0] = chkSP1;
 			chkWP[1] = chkSP2;
-			chkWP[2] = chkSP3;
+			chkWP[2] = chkWPCapture;
 			chkWP[3] = chkWPHyp;
 			chkWP[4] = chkWP1;
 			chkWP[5] = chkWP2;
@@ -1237,8 +1237,8 @@ namespace Idmr.Yogeme
 			txtEoM[1] = txtPrimComp2;
 			txtEoM[2] = txtPrimFail1;
 			txtEoM[3] = txtPrimFail2;
-			txtEoM[4] = txtSecComp1;
-			txtEoM[5] = txtSecComp2;
+			txtEoM[4] = txtOutstanding1;
+			txtEoM[5] = txtOutstanding2;
 			optAllies[0] = optAllies1;
 			optAllies[1] = optAllies2;
 			optAllies[2] = optAllies3;
@@ -1274,12 +1274,9 @@ namespace Idmr.Yogeme
 				optAllies[i].CheckedChanged += new EventHandler(optAlliesArr_CheckedChanged);
 				optAllies[i].Tag = i;
 			}
-			numTeamUnk[0] = numTeamEomDelay1;
-			numTeamUnk[1] = numTeamEomDelay2;
-			numTeamUnk[2] = numTeamEomDelay3;
-			numTeamUnk[3] = numTeamEomFG1;
-			numTeamUnk[4] = numTeamEomFG2;
-			numTeamUnk[5] = numTeamEomFG3;
+			numEomDelays[0] = numPMCEomDelay;
+			numEomDelays[1] = numOMCEomDelay;
+			numEomDelays[2] = numPMFEomDelay;
 			for (_activeTeam = 0; _activeTeam < 10; _activeTeam++) teamRefresh();  //[JB] Added so it formats the dropdowns on startup like XvT.
 			_activeTeam = 0;
 			#endregion
@@ -1318,6 +1315,9 @@ namespace Idmr.Yogeme
 			registerColorizedFGList(cboOT2, cboOT2Type);
 			registerColorizedFGList(cboOT3, cboOT3Type);
 			registerColorizedFGList(cboOT4, cboOT4Type);
+			registerColorizedFGList(cboPMCEomFG, null);
+			registerColorizedFGList(cboPMFEomFG, null);
+			registerColorizedFGList(cboOMCEomFG, null);
 			registerColorizedFGList(cboArrMS, null);
 			registerColorizedFGList(cboArrMSAlt, null);
 			registerColorizedFGList(cboDepMS, null);
@@ -1388,12 +1388,11 @@ namespace Idmr.Yogeme
 			registerFgMultiEdit(numGoalActSeq, "GoalTriggerSequence", MultiEditRefreshType.FgGoalLabel);
 			registerFgMultiEdit(numGoalPoints, "GoalTriggerPoints", MultiEditRefreshType.FgGoalLabel);
 			registerFgMultiEdit(numGoalTimeLimit, "GoalTriggerParam", MultiEditRefreshType.FgGoalLabel);  // shares same value as Param
-			registerFgMultiEdit(numUnk42, "GoalTriggerUnk42", 0);
 			registerFgMultiEdit(chkGoalEnable, "GoalTriggerEnabled", MultiEditRefreshType.FgGoalLabel);
 
 			registerFgMultiEdit(numSP1, "WPRegion1", MultiEditRefreshType.Map);
 			registerFgMultiEdit(numSP2, "WPRegion2", MultiEditRefreshType.Map);
-			registerFgMultiEdit(numSP3, "WPRegion3", MultiEditRefreshType.Map);
+			registerFgMultiEdit(numWPCapture, "WPRegion3", MultiEditRefreshType.Map);
 			registerFgMultiEdit(numHYP, "WPRegion4", MultiEditRefreshType.Map);
 			registerFgMultiEdit(numPitch, "Pitch", MultiEditRefreshType.Map);
 			registerFgMultiEdit(numYaw, "Yaw", MultiEditRefreshType.Map);
@@ -1416,6 +1415,7 @@ namespace Idmr.Yogeme
 			registerFgMultiEdit(cboOT4Type, "OrderTarget4Type", MultiEditRefreshType.OrderLabel);
 			registerFgMultiEdit(optOT1T2OR, "Order12Or", MultiEditRefreshType.OrderLabel);
 			registerFgMultiEdit(optOT3T4OR, "Order34Or", MultiEditRefreshType.OrderLabel);
+			registerFgMultiEdit(cboHandicap, "Handicap", 0);
 
 			registerFgMultiEdit(cboOptCat, "OptCategory", 0);
 			registerFgMultiEdit(numOptWaves, "OptNumWaves", MultiEditRefreshType.OptCraftLabel);
@@ -1434,14 +1434,22 @@ namespace Idmr.Yogeme
 			registerFgMultiEdit(cboSkipPara, "SkipTrigger", MultiEditRefreshType.SkipLabel);
 			registerFgMultiEdit(optSkipOR, "SkipTriggerOr", MultiEditRefreshType.SkipLabel);
 
+			registerFgMultiEdit(cboStopArrivingWhen, "StopArriving", 0);
+			registerFgMultiEdit(numArrRandMin, "RandArrMin", 0);
+			registerFgMultiEdit(numArrRandSec, "RandArrSec", 0);
+			registerFgMultiEdit(numDepClockMin, "DepClockMin", 0);
+			registerFgMultiEdit(numDepClockSec, "DepClockSec", 0);
+
 			registerMsgMultiEdit(cboMessColor, "MessColor", MultiEditRefreshType.ItemText);
-			registerMsgMultiEdit(numMessDelay, "MessDelay", 0);
+			registerMsgMultiEdit(numMessDelay, "RawDelay", 0);
 			registerMsgMultiEdit(cboMessFG, "MessFG", 0);
 			registerMsgMultiEdit(cboMessAmount, "MessTrigger", 0);
 			registerMsgMultiEdit(cboMessType, "MessTrigger", 0);
 			registerMsgMultiEdit(cboMessVar, "MessTrigger", 0);
 			registerMsgMultiEdit(cboMessTrig, "MessTrigger", MultiEditRefreshType.ItemText); // Refresh whether grayed out or not.
 			registerMsgMultiEdit(cboMessPara, "MessTrigger", 0);
+			registerMsgMultiEdit(numMessType, "MessType", 0);
+			registerMsgMultiEdit(cboMessSpecial, "MessMeaning", 0);
 			#endregion ControlRegistration
 
 			applySettingsHandler(0, new EventArgs());  //[JB] Configurable colors were added to options.
@@ -1599,7 +1607,7 @@ namespace Idmr.Yogeme
 			MultiEditProperty prop = (MultiEditProperty)((Control)sender).Tag;
 			if (prop.Name != "")
 			{
-				setMessageProperty(/*prop.RefreshType,*/ prop.Name, Common.GetControlValue(sender));
+				setMessageProperty(prop.Name, Common.GetControlValue(sender));
 				Common.Title(this, false);
 			}
 			if (prop.RefreshType.HasFlag(MultiEditRefreshType.ItemText)) messRefreshSelectedItems();
@@ -2947,6 +2955,7 @@ namespace Idmr.Yogeme
 					case "OrderTarget4Type": fg.Orders[orderReg, _activeOrder].Target4Type = Convert.ToByte(value); break;
 					case "Order12Or": fg.Orders[orderReg, _activeOrder].T1OrT2 = Convert.ToBoolean(value); break;
 					case "Order34Or": fg.Orders[orderReg, _activeOrder].T3OrT4 = Convert.ToBoolean(value); break;
+					case "Handicap": fg.Handicap = Convert.ToByte(value); break;
 					case "OptCategory": fg.OptCraftCategory = (FlightGroup.OptionalCraftCategory)Convert.ToByte(value); break;
 					case "OptNumWaves": fg.OptCraft[_activeOptionCraft].NumberOfWaves = Convert.ToByte((int)value - 1); break;
 					case "OptNumCraft": fg.OptCraft[_activeOptionCraft].NumberOfCraft = Convert.ToByte(value); break;  // Take value exactly as is.
@@ -2965,6 +2974,11 @@ namespace Idmr.Yogeme
 						fg.Orders[cboSkipOrder.SelectedIndex / 4, cboSkipOrder.SelectedIndex % 4].SkipTriggers[_activeSkipTrigger] = trig;  // trig needed for refresh at end
 						break;
 					case "SkipTriggerOr": fg.Orders[cboSkipOrder.SelectedIndex / 4, cboSkipOrder.SelectedIndex % 4].SkipT1OrT2 = Convert.ToBoolean(value); break;
+					case "StopArriving": fg.StopArrivingWhen = (FlightGroup.WavesEnd)value; break;
+					case "RandArrMin": fg.RandomArrivalDelayMinutes = Convert.ToByte(value); break;
+					case "RandArrSec": fg.RandomArrivalDelaySeconds = Convert.ToByte(value); break;
+					case "DepClockMin": fg.DepartureClockMin = Convert.ToByte(value); break;
+					case "DepClockSec": fg.DepartureClockSec = Convert.ToByte(value); break;
 					default: throw new ArgumentException("Unhandled multi-edit property: " + name);
 				}
 				if(refreshType.HasFlag(MultiEditRefreshType.CraftCount)) craftStart(fg, true);
@@ -3221,8 +3235,10 @@ namespace Idmr.Yogeme
 			comboReset(cboDepMSAlt, fgList, _mission.FlightGroups[_activeFG].CapturedDepartureMothership);
 			comboReset(cboGGLeader, fgList, _mission.GlobalGroups[_ggIndex].Leader);
 			comboReset(cboGULeader, fgList, _mission.GlobalUnits[_guIndex].Leader);
-			cboMessFG.Items.Clear(); cboMessFG.Items.AddRange(fgList);
-			if (_mission.Messages.Count != 0) cboMessFG.SelectedIndex = _mission.Messages[_activeMessage].OriginatingFG;
+			comboReset(cboMessFG, fgList, _mission.Messages.Count != 0 ? _mission.Messages[_activeMessage].OriginatingFG : -1);
+			comboReset(cboPMCEomFG, fgList, _mission.Teams[_activeTeam].EomSourceFG[0]);
+			comboReset(cboPMFEomFG, fgList, _mission.Teams[_activeTeam].EomSourceFG[1]);
+			comboReset(cboOMCEomFG, fgList, _mission.Teams[_activeTeam].EomSourceFG[2]);
 			parameterRefresh(cboSkipPara);
 			parameterRefresh(cboGoalPara);
 			parameterRefresh(cboADPara);
@@ -3782,7 +3798,6 @@ namespace Idmr.Yogeme
 			lblOVar1.Text = s[1];
 			lblOVar2.Text = s[2];
 			lblOVar3.Text = s[3];
-			//lblOV1Meaning.Visible = (cboOrders.SelectedIndex == 10);
 			numOVar1_ValueChanged(0, new EventArgs()); // Force refresh, since label information is provided to the user.
 			numOVar2_ValueChanged(0, new EventArgs());
 		}
@@ -4066,7 +4081,7 @@ namespace Idmr.Yogeme
 			}
 			numSP1.Value = _mission.FlightGroups[_activeFG].Waypoints[0].Region + 1;
 			numSP2.Value = _mission.FlightGroups[_activeFG].Waypoints[1].Region + 1;
-			numSP3.Value = _mission.FlightGroups[_activeFG].Waypoints[2].Region + 1;
+			numWPCapture.Value = _mission.FlightGroups[_activeFG].Waypoints[2].Region + 1;
 			numHYP.Value = _mission.FlightGroups[_activeFG].Waypoints[3].Region + 1;
 			_tableWPRaw.AcceptChanges();
 			_tableWP.AcceptChanges();
@@ -4489,7 +4504,7 @@ namespace Idmr.Yogeme
 				msgs.Add(_mission.Messages[msgIndex]);
 			return msgs;
 		}
-		void setMessageProperty(/*MultiEditRefreshType refreshType,*/ string name, object value)
+		void setMessageProperty(string name, object value)
 		{
 			int trigRefresh = 0;
 			foreach (Platform.Xwa.Message msg in getSelectedMessages())
@@ -4506,6 +4521,8 @@ namespace Idmr.Yogeme
 					case "MessFG": msg.OriginatingFG = Convert.ToByte(value); break;
 					case "MessSpeakerHeader": msg.SpeakerHeader = Convert.ToBoolean(value); break;
 					case "MessCancelMeaning": msg.CancelMeaning = Convert.ToByte(value); break;
+					case "MessType": msg.Type = Convert.ToInt32(value); break;
+					case "MessMeaning": msg.CancelMeaning = Convert.ToByte(value); break;
 				}
 			}
 		}
@@ -4602,20 +4619,24 @@ namespace Idmr.Yogeme
 			lblMessage.Text = "Message #" + (_activeMessage + 1).ToString() + " of " + _mission.Messages.Count.ToString();
 			bool btemp = _loading;
 			_loading = true;
-			for (int i = 0; i < 6; i++) labelRefresh(_mission.Messages[_activeMessage].Triggers[i], lblMessTrig[i]);
-			txtMessage.Text = _mission.Messages[_activeMessage].MessageString;
-			txtMessNote.Text = _mission.Messages[_activeMessage].Note;
-			cboMessColor.SelectedIndex = _mission.Messages[_activeMessage].Color;
+			var mess = _mission.Messages[_activeMessage];
+			for (int i = 0; i < 6; i++) labelRefresh(mess.Triggers[i], lblMessTrig[i]);
+			txtMessage.Text = mess.MessageString;
+			txtMessNote.Text = mess.Note;
+			cboMessColor.SelectedIndex = mess.Color;
 			for (int i = 0; i < 4; i++)
 			{
-				optMessAndOr[i].Checked = _mission.Messages[_activeMessage].TrigAndOr[i];
+				optMessAndOr[i].Checked = mess.TrigAndOr[i];
 				optMessAndOr[i + 4].Checked = !optMessAndOr[i].Checked;
 			}
-			numMessDelay.Value = _mission.Messages[_activeMessage].RawDelay;
-			for (int i = 0; i < 10; i++) chkSendTo[i].Checked = _mission.Messages[_activeMessage].SentTo[i];
-			txtVoice.Text = _mission.Messages[_activeMessage].VoiceID;
-			cboMessFG.SelectedIndex = _mission.Messages[_activeMessage].OriginatingFG;
-			lblMessTrigArr_Click(0, new EventArgs());  //[JB] Was lblMessTrig[0].  Changed to XvT code of "0").
+			numMessDelay.Value = mess.RawDelay;
+			for (int i = 0; i < 10; i++) chkSendTo[i].Checked = mess.SentTo[i];
+			txtVoice.Text = mess.VoiceID;
+			cboMessFG.SelectedIndex = mess.OriginatingFG;
+			chkMessHeader.Checked = mess.SpeakerHeader;
+			numMessType.Value = mess.Type;
+			cboMessSpecial.SelectedIndex = mess.CancelMeaning;
+			lblMessTrigArr_Click(0, new EventArgs());
 			_loading = btemp;
 		}
 
@@ -4757,9 +4778,7 @@ namespace Idmr.Yogeme
 			txtGlobalFail.Text = _mission.Globals[_activeTeam].Goals[goal].GoalStrings[trig, (int)Globals.GoalState.Failed];
 			numGlobActSeq.Value = _mission.Globals[_activeTeam].Goals[goal].ActiveSequence;
 			numGlobDelay.Value = _mission.Globals[_activeTeam].Goals[goal].RawDelay;
-			numGlobPtsPerTrig1.Value = _mission.Globals[_activeTeam].Goals[goal].RawPointsPerTrigger[0];
-			numGlobPtsPerTrig2.Value = _mission.Globals[_activeTeam].Goals[goal].RawPointsPerTrigger[1];
-			numGlobPtsPerTrig3.Value = _mission.Globals[_activeTeam].Goals[goal].RawPointsPerTrigger[2];
+			numGlobTrigPts.Value = _mission.Globals[_activeTeam].Goals[goal].RawPointsPerTrigger[trig];
 			txtGlobalFail.Visible = (goal < 1);
 			txtGlobalInc.Visible = (goal < 2);
 			_loading = btemp;
@@ -4819,14 +4838,23 @@ namespace Idmr.Yogeme
 			labelRefresh(_mission.Globals[_activeTeam].Goals[_activeGlobalTrigger / 4].Triggers[_activeGlobalTrigger % 4], lblGlobTrig[_activeGlobalTrigger]);
 		}
 
-		//[JB] Added function for inactive control
 		void numGlobActSeq_Leave(object sender, EventArgs e)
 		{
 			_mission.Globals[_activeTeam].Goals[_activeGlobalTrigger / 4].ActiveSequence = Common.Update(this, _mission.Globals[_activeTeam].Goals[_activeGlobalTrigger / 4].ActiveSequence, Convert.ToByte(numGlobActSeq.Value));
 		}
+		void numGlobDelay_ValueChanged(object sender, EventArgs e)
+		{
+			lblGlobDelay.Text = Common.GetFormattedTime(Mission.GetDelaySeconds((byte)numGlobDelay.Value), true);
+			if (_loading) return;
+			_mission.Globals[_activeTeam].Goals[_activeGlobalTrigger / 4].RawDelay = Common.Update(this, _mission.Globals[_activeTeam].Goals[_activeGlobalTrigger / 4].RawDelay, (byte)numGlobDelay.Value);
+		}
 		void numGlobalPoints_Leave(object sender, EventArgs e)
 		{
 			_mission.Globals[_activeTeam].Goals[_activeGlobalTrigger / 4].Points = Common.Update(this, _mission.Globals[_activeTeam].Goals[_activeGlobalTrigger / 4].Points, (short)numGlobalPoints.Value);
+		}
+		void numGlobTrigPts_Leave(object sender, EventArgs e)
+		{
+			_mission.Globals[_activeTeam].Goals[_activeGlobalTrigger / 4].RawPointsPerTrigger[_activeGlobalTrigger % 4] = Common.Update(this, _mission.Globals[_activeTeam].Goals[_activeGlobalTrigger / 4].RawPointsPerTrigger[_activeGlobalTrigger % 4], (sbyte)numGlobTrigPts.Value);
 		}
 
 		void txtGlobalComp_Leave(object sender, EventArgs e)
@@ -4897,21 +4925,28 @@ namespace Idmr.Yogeme
 			for (int i = 0; i < 10; i++) if (i != _activeTeam) setInteractiveLabelColor(lblTeam[i], false);
 			bool btemp = _loading;
 			_loading = true;
-			txtTeamName.Text = _mission.Teams[_activeTeam].Name;
+			var team = _mission.Teams[_activeTeam];
+			txtTeamName.Text = team.Name;
 			for (int i = 0; i < 10; i++)
 			{
-				if (_mission.Teams[_activeTeam].Allies[i] == Team.Allegeance.Hostile) optAllies[i * 3].Checked = true;
-				else if (_mission.Teams[_activeTeam].Allies[i] == Team.Allegeance.Friendly) optAllies[i * 3 + 1].Checked = true;
+				if (team.Allies[i] == Team.Allegeance.Hostile) optAllies[i * 3].Checked = true;
+				else if (team.Allies[i] == Team.Allegeance.Friendly) optAllies[i * 3 + 1].Checked = true;
 				else optAllies[i * 3 + 2].Checked = true;
 			}
-			txtPMCVoiceID.Text = _mission.Teams[_activeTeam].VoiceIDs[0];
-			txtPMFVoiceID.Text = _mission.Teams[_activeTeam].VoiceIDs[1];
-			txtOMCVoiceID.Text = _mission.Teams[_activeTeam].VoiceIDs[2];
-			txtPrimCompNote.Text = _mission.Teams[_activeTeam].EomNotes[0];
-			txtPrimFailNote.Text = _mission.Teams[_activeTeam].EomNotes[1];
-			txtSecCompNote.Text = _mission.Teams[_activeTeam].EomNotes[2];
+			txtPMCVoiceID.Text = team.VoiceIDs[0];
+			txtPMFVoiceID.Text = team.VoiceIDs[1];
+			txtOMCVoiceID.Text = team.VoiceIDs[2];
+			txtPrimCompNote.Text = team.EomNotes[0];
+			txtPrimFailNote.Text = team.EomNotes[1];
+			txtOutstandingNote.Text = team.EomNotes[2];
+			numPMCEomDelay.Value = team.EomRawDelay[0];
+			numPMFEomDelay.Value = team.EomRawDelay[1];
+			numOMCEomDelay.Value = team.EomRawDelay[2];
+			cboPMCEomFG.SelectedIndex = team.EomSourceFG[0];
+			cboPMFEomFG.SelectedIndex = team.EomSourceFG[1];
+			cboOMCEomFG.SelectedIndex = team.EomSourceFG[2];
 			for (int i = 0; i < 6; i++)
-				txtEoM[i].Text = _mission.Teams[_activeTeam].EndOfMissionMessages[i];
+				txtEoM[i].Text = team.EndOfMissionMessages[i];
 			_loading = btemp;
 		}
 		void optAlliesArr_CheckedChanged(object sender, EventArgs e)
@@ -4929,7 +4964,9 @@ namespace Idmr.Yogeme
 			_mission.Teams[_activeTeam].VoiceIDs[2] = Common.Update(this, _mission.Teams[_activeTeam].VoiceIDs[2], txtOMCVoiceID.Text);
 			_mission.Teams[_activeTeam].EndOfMissionMessages[4] = Common.Update(this, _mission.Teams[_activeTeam].EndOfMissionMessages[4], txtEoM[4].Text);
 			_mission.Teams[_activeTeam].EndOfMissionMessages[5] = Common.Update(this, _mission.Teams[_activeTeam].EndOfMissionMessages[5], txtEoM[5].Text);
-			_mission.Teams[_activeTeam].EomNotes[2] = Common.Update(this, _mission.Teams[_activeTeam].EomNotes[2], txtSecCompNote.Text);
+			_mission.Teams[_activeTeam].EomNotes[2] = Common.Update(this, _mission.Teams[_activeTeam].EomNotes[2], txtOutstandingNote.Text);
+			_mission.Teams[_activeTeam].EomSourceFG[2] = Common.Update(this, _mission.Teams[_activeTeam].EomSourceFG[2], (byte)cboOMCEomFG.SelectedIndex);
+			_mission.Teams[_activeTeam].EomRawDelay[2] = Common.Update(this, _mission.Teams[_activeTeam].EomRawDelay[2], (byte)numOMCEomDelay.Value);
 		}
 		void grpTeamPMC_Leave(object sender, EventArgs e)
 		{
@@ -4937,6 +4974,9 @@ namespace Idmr.Yogeme
 			_mission.Teams[_activeTeam].EndOfMissionMessages[0] = Common.Update(this, _mission.Teams[_activeTeam].EndOfMissionMessages[0], txtEoM[0].Text);
 			_mission.Teams[_activeTeam].EndOfMissionMessages[1] = Common.Update(this, _mission.Teams[_activeTeam].EndOfMissionMessages[1], txtEoM[1].Text);
 			_mission.Teams[_activeTeam].EomNotes[0] = Common.Update(this, _mission.Teams[_activeTeam].EomNotes[0], txtPrimCompNote.Text);
+			_mission.Teams[_activeTeam].EomSourceFG[0] = Common.Update(this, _mission.Teams[_activeTeam].EomSourceFG[0], (byte)cboPMCEomFG.SelectedIndex);
+			_mission.Teams[_activeTeam].EomRawDelay[0] = Common.Update(this, _mission.Teams[_activeTeam].EomRawDelay[0], (byte)numPMCEomDelay.Value);
+
 		}
 		void grpTeamPMF_Leave(object sender, EventArgs e)
 		{
@@ -4944,6 +4984,8 @@ namespace Idmr.Yogeme
 			_mission.Teams[_activeTeam].EndOfMissionMessages[2] = Common.Update(this, _mission.Teams[_activeTeam].EndOfMissionMessages[2], txtEoM[2].Text);
 			_mission.Teams[_activeTeam].EndOfMissionMessages[3] = Common.Update(this, _mission.Teams[_activeTeam].EndOfMissionMessages[3], txtEoM[3].Text);
 			_mission.Teams[_activeTeam].EomNotes[1] = Common.Update(this, _mission.Teams[_activeTeam].EomNotes[1], txtPrimFailNote.Text);
+			_mission.Teams[_activeTeam].EomSourceFG[1] = Common.Update(this, _mission.Teams[_activeTeam].EomSourceFG[1], (byte)cboPMFEomFG.SelectedIndex);
+			_mission.Teams[_activeTeam].EomRawDelay[1] = Common.Update(this, _mission.Teams[_activeTeam].EomRawDelay[1], (byte)numPMFEomDelay.Value);
 		}
 
 		void txtTeamName_Leave(object sender, EventArgs e)

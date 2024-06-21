@@ -236,8 +236,6 @@ namespace Idmr.Yogeme
 			this.label46 = new System.Windows.Forms.Label();
 			this.cmdPasteAD = new System.Windows.Forms.Button();
 			this.tabGoals = new System.Windows.Forms.TabPage();
-			this.numUnk42 = new System.Windows.Forms.NumericUpDown();
-			this.label152 = new System.Windows.Forms.Label();
 			this.lblGoalTimeLimitNote = new System.Windows.Forms.Label();
 			this.lblGoalTimeLimitSec = new System.Windows.Forms.Label();
 			this.lblGoalTimeLimit = new System.Windows.Forms.Label();
@@ -279,7 +277,7 @@ namespace Idmr.Yogeme
 			this.cmdCopyOrderWP = new System.Windows.Forms.Button();
 			this.cmdPasteOrderWP = new System.Windows.Forms.Button();
 			this.numHYP = new System.Windows.Forms.NumericUpDown();
-			this.numSP3 = new System.Windows.Forms.NumericUpDown();
+			this.numWPCapture = new System.Windows.Forms.NumericUpDown();
 			this.numSP2 = new System.Windows.Forms.NumericUpDown();
 			this.numSP1 = new System.Windows.Forms.NumericUpDown();
 			this.label76 = new System.Windows.Forms.Label();
@@ -297,7 +295,7 @@ namespace Idmr.Yogeme
 			this.chkWP7 = new System.Windows.Forms.CheckBox();
 			this.chkWP2 = new System.Windows.Forms.CheckBox();
 			this.chkWP1 = new System.Windows.Forms.CheckBox();
-			this.chkSP3 = new System.Windows.Forms.CheckBox();
+			this.chkWPCapture = new System.Windows.Forms.CheckBox();
 			this.chkSP2 = new System.Windows.Forms.CheckBox();
 			this.chkSP1 = new System.Windows.Forms.CheckBox();
 			this.chkWP6 = new System.Windows.Forms.CheckBox();
@@ -307,8 +305,10 @@ namespace Idmr.Yogeme
 			this.label77 = new System.Windows.Forms.Label();
 			this.label78 = new System.Windows.Forms.Label();
 			this.tabOrders = new System.Windows.Forms.TabPage();
+			this.label95 = new System.Windows.Forms.Label();
+			this.cboHandicap = new System.Windows.Forms.ComboBox();
+			this.label104 = new System.Windows.Forms.Label();
 			this.cboOSpeed = new System.Windows.Forms.ComboBox();
-			this.lblOV1Meaning = new System.Windows.Forms.Label();
 			this.lblOVar2Note = new System.Windows.Forms.Label();
 			this.lblOVar1Note = new System.Windows.Forms.Label();
 			this.lblOSpeedNote = new System.Windows.Forms.Label();
@@ -415,13 +415,29 @@ namespace Idmr.Yogeme
 			this.chkOptWAdvTorp = new System.Windows.Forms.CheckBox();
 			this.chkOptWIonPulse = new System.Windows.Forms.CheckBox();
 			this.chkOptWMagPulse = new System.Windows.Forms.CheckBox();
-			this.tabUnk = new System.Windows.Forms.TabPage();
-			this.numArrRandSec = new System.Windows.Forms.NumericUpDown();
-			this.numDepClockMin = new System.Windows.Forms.NumericUpDown();
+			this.tabArrDep2 = new System.Windows.Forms.TabPage();
+			this.grpMoreDep = new System.Windows.Forms.GroupBox();
+			this.label94 = new System.Windows.Forms.Label();
+			this.label93 = new System.Windows.Forms.Label();
+			this.label92 = new System.Windows.Forms.Label();
 			this.numDepClockSec = new System.Windows.Forms.NumericUpDown();
+			this.numDepClockMin = new System.Windows.Forms.NumericUpDown();
+			this.grpMoreArrival = new System.Windows.Forms.GroupBox();
+			this.numArrRandMin = new System.Windows.Forms.NumericUpDown();
+			this.numArrRandSec = new System.Windows.Forms.NumericUpDown();
+			this.lblRandomArrivalDelayMinutes = new System.Windows.Forms.Label();
+			this.lblRandomArrivalDelaySeconds = new System.Windows.Forms.Label();
+			this.lblRandomArrivalDelayDesc = new System.Windows.Forms.Label();
+			this.cboStopArrivingWhen = new System.Windows.Forms.ComboBox();
+			this.lblStopArrivingWhen = new System.Windows.Forms.Label();
 			this.label1 = new System.Windows.Forms.Label();
 			this.lstFG = new System.Windows.Forms.ListBox();
 			this.tabMess = new System.Windows.Forms.TabPage();
+			this.cboMessSpecial = new System.Windows.Forms.ComboBox();
+			this.label106 = new System.Windows.Forms.Label();
+			this.label105 = new System.Windows.Forms.Label();
+			this.chkMessHeader = new System.Windows.Forms.CheckBox();
+			this.numMessType = new System.Windows.Forms.NumericUpDown();
 			this.lblDelay = new System.Windows.Forms.Label();
 			this.cmdMoveMessDown = new System.Windows.Forms.Button();
 			this.cmdMoveMessUp = new System.Windows.Forms.Button();
@@ -474,10 +490,11 @@ namespace Idmr.Yogeme
 			this.label52 = new System.Windows.Forms.Label();
 			this.lstMessages = new System.Windows.Forms.ListBox();
 			this.tabGlob = new System.Windows.Forms.TabPage();
-			this.numGlobPtsPerTrig3 = new System.Windows.Forms.NumericUpDown();
+			this.lblGlobDelay = new System.Windows.Forms.Label();
+			this.label113 = new System.Windows.Forms.Label();
+			this.numGlobTrigPts = new System.Windows.Forms.NumericUpDown();
+			this.label107 = new System.Windows.Forms.Label();
 			this.cboGlobalPara = new System.Windows.Forms.ComboBox();
-			this.numGlobPtsPerTrig2 = new System.Windows.Forms.NumericUpDown();
-			this.numGlobPtsPerTrig1 = new System.Windows.Forms.NumericUpDown();
 			this.label128 = new System.Windows.Forms.Label();
 			this.numGlobActSeq = new System.Windows.Forms.NumericUpDown();
 			this.numGlobDelay = new System.Windows.Forms.NumericUpDown();
@@ -538,33 +555,42 @@ namespace Idmr.Yogeme
 			this.label34 = new System.Windows.Forms.Label();
 			this.label35 = new System.Windows.Forms.Label();
 			this.tabTeam = new System.Windows.Forms.TabPage();
-			this.numTeamEomFG3 = new System.Windows.Forms.NumericUpDown();
 			this.groupBox32 = new System.Windows.Forms.GroupBox();
 			this.grpTeamPMF = new System.Windows.Forms.GroupBox();
+			this.lblPMFDelay = new System.Windows.Forms.Label();
+			this.cboPMFEomFG = new System.Windows.Forms.ComboBox();
+			this.label116 = new System.Windows.Forms.Label();
 			this.label53 = new System.Windows.Forms.Label();
 			this.label23 = new System.Windows.Forms.Label();
 			this.txtPMFVoiceID = new System.Windows.Forms.TextBox();
 			this.txtPrimFail1 = new System.Windows.Forms.TextBox();
 			this.txtPrimFailNote = new System.Windows.Forms.TextBox();
 			this.txtPrimFail2 = new System.Windows.Forms.TextBox();
+			this.numPMFEomDelay = new System.Windows.Forms.NumericUpDown();
 			this.grpTeamOMC = new System.Windows.Forms.GroupBox();
+			this.lblOMCDelay = new System.Windows.Forms.Label();
+			this.label115 = new System.Windows.Forms.Label();
+			this.cboOMCEomFG = new System.Windows.Forms.ComboBox();
 			this.label30 = new System.Windows.Forms.Label();
 			this.label22 = new System.Windows.Forms.Label();
 			this.txtOMCVoiceID = new System.Windows.Forms.TextBox();
-			this.txtSecComp1 = new System.Windows.Forms.TextBox();
-			this.txtSecCompNote = new System.Windows.Forms.TextBox();
-			this.txtSecComp2 = new System.Windows.Forms.TextBox();
+			this.txtOutstanding1 = new System.Windows.Forms.TextBox();
+			this.txtOutstandingNote = new System.Windows.Forms.TextBox();
+			this.txtOutstanding2 = new System.Windows.Forms.TextBox();
+			this.numOMCEomDelay = new System.Windows.Forms.NumericUpDown();
 			this.grpTeamPMC = new System.Windows.Forms.GroupBox();
+			this.lblPMCDelay = new System.Windows.Forms.Label();
+			this.label114 = new System.Windows.Forms.Label();
 			this.label27 = new System.Windows.Forms.Label();
+			this.cboPMCEomFG = new System.Windows.Forms.ComboBox();
 			this.label6 = new System.Windows.Forms.Label();
 			this.txtPMCVoiceID = new System.Windows.Forms.TextBox();
 			this.txtPrimComp1 = new System.Windows.Forms.TextBox();
 			this.txtPrimCompNote = new System.Windows.Forms.TextBox();
 			this.txtPrimComp2 = new System.Windows.Forms.TextBox();
-			this.numTeamEomFG2 = new System.Windows.Forms.NumericUpDown();
+			this.numPMCEomDelay = new System.Windows.Forms.NumericUpDown();
 			this.txtTeamName = new System.Windows.Forms.TextBox();
 			this.label96 = new System.Windows.Forms.Label();
-			this.numTeamEomFG1 = new System.Windows.Forms.NumericUpDown();
 			this.groupBox30 = new System.Windows.Forms.GroupBox();
 			this.panel12 = new System.Windows.Forms.Panel();
 			this.optAllies3 = new System.Windows.Forms.RadioButton();
@@ -616,9 +642,6 @@ namespace Idmr.Yogeme
 			this.lblTeam8 = new System.Windows.Forms.Label();
 			this.lblTeam9 = new System.Windows.Forms.Label();
 			this.lblTeam10 = new System.Windows.Forms.Label();
-			this.numTeamEomDelay1 = new System.Windows.Forms.NumericUpDown();
-			this.numTeamEomDelay3 = new System.Windows.Forms.NumericUpDown();
-			this.numTeamEomDelay2 = new System.Windows.Forms.NumericUpDown();
 			this.tabMission = new System.Windows.Forms.TabPage();
 			this.chkGoalsUnimportant = new System.Windows.Forms.CheckBox();
 			this.label123 = new System.Windows.Forms.Label();
@@ -741,7 +764,6 @@ namespace Idmr.Yogeme
 			this.groupBox11.SuspendLayout();
 			this.groupBox12.SuspendLayout();
 			this.tabGoals.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.numUnk42)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numGoalTimeLimit)).BeginInit();
 			this.grpGoal.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numGoalActSeq)).BeginInit();
@@ -752,7 +774,7 @@ namespace Idmr.Yogeme
 			((System.ComponentModel.ISupportInitialize)(this.numWPOrder)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numWPOrderRegion)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numHYP)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.numSP3)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.numWPCapture)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numSP2)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numSP1)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numRoll)).BeginInit();
@@ -779,11 +801,15 @@ namespace Idmr.Yogeme
 			this.groupBox21.SuspendLayout();
 			this.groupBox20.SuspendLayout();
 			this.groupBox19.SuspendLayout();
-			this.tabUnk.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.numArrRandSec)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.numDepClockMin)).BeginInit();
+			this.tabArrDep2.SuspendLayout();
+			this.grpMoreDep.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numDepClockSec)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.numDepClockMin)).BeginInit();
+			this.grpMoreArrival.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.numArrRandMin)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.numArrRandSec)).BeginInit();
 			this.tabMess.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.numMessType)).BeginInit();
 			this.grpMessCancel.SuspendLayout();
 			this.grpMessages.SuspendLayout();
 			this.panel8.SuspendLayout();
@@ -791,9 +817,7 @@ namespace Idmr.Yogeme
 			this.grpSend.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numMessDelay)).BeginInit();
 			this.tabGlob.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.numGlobPtsPerTrig3)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.numGlobPtsPerTrig2)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.numGlobPtsPerTrig1)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.numGlobTrigPts)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numGlobActSeq)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numGlobDelay)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numGlobalPoints)).BeginInit();
@@ -807,13 +831,13 @@ namespace Idmr.Yogeme
 			this.panel6.SuspendLayout();
 			this.panel5.SuspendLayout();
 			this.tabTeam.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.numTeamEomFG3)).BeginInit();
 			this.groupBox32.SuspendLayout();
 			this.grpTeamPMF.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.numPMFEomDelay)).BeginInit();
 			this.grpTeamOMC.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.numOMCEomDelay)).BeginInit();
 			this.grpTeamPMC.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.numTeamEomFG2)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.numTeamEomFG1)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.numPMCEomDelay)).BeginInit();
 			this.groupBox30.SuspendLayout();
 			this.panel12.SuspendLayout();
 			this.panel20.SuspendLayout();
@@ -825,9 +849,6 @@ namespace Idmr.Yogeme
 			this.panel14.SuspendLayout();
 			this.panel13.SuspendLayout();
 			this.panel11.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.numTeamEomDelay1)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.numTeamEomDelay3)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.numTeamEomDelay2)).BeginInit();
 			this.tabMission.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pctLogo)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numMissTimeMin)).BeginInit();
@@ -1455,11 +1476,11 @@ namespace Idmr.Yogeme
 			this.tabFGMinor.Controls.Add(this.tabWP);
 			this.tabFGMinor.Controls.Add(this.tabOrders);
 			this.tabFGMinor.Controls.Add(this.tapOption);
-			this.tabFGMinor.Controls.Add(this.tabUnk);
+			this.tabFGMinor.Controls.Add(this.tabArrDep2);
 			this.tabFGMinor.Location = new System.Drawing.Point(232, 0);
 			this.tabFGMinor.Name = "tabFGMinor";
 			this.tabFGMinor.SelectedIndex = 0;
-			this.tabFGMinor.Size = new System.Drawing.Size(552, 504);
+			this.tabFGMinor.Size = new System.Drawing.Size(552, 516);
 			this.tabFGMinor.TabIndex = 5;
 			// 
 			// tabCraft
@@ -1474,7 +1495,7 @@ namespace Idmr.Yogeme
 			this.tabCraft.Controls.Add(this.grpCraft4);
 			this.tabCraft.Location = new System.Drawing.Point(4, 22);
 			this.tabCraft.Name = "tabCraft";
-			this.tabCraft.Size = new System.Drawing.Size(544, 478);
+			this.tabCraft.Size = new System.Drawing.Size(544, 490);
 			this.tabCraft.TabIndex = 0;
 			this.tabCraft.Text = "Craft";
 			// 
@@ -1809,7 +1830,7 @@ namespace Idmr.Yogeme
 			this.grpCraft2.Controls.Add(this.cboTeam);
 			this.grpCraft2.Location = new System.Drawing.Point(16, 160);
 			this.grpCraft2.Name = "grpCraft2";
-			this.grpCraft2.Size = new System.Drawing.Size(232, 296);
+			this.grpCraft2.Size = new System.Drawing.Size(232, 269);
 			this.grpCraft2.TabIndex = 14;
 			this.grpCraft2.TabStop = false;
 			// 
@@ -1825,7 +1846,7 @@ namespace Idmr.Yogeme
 			// 
 			// label7
 			// 
-			this.label7.Location = new System.Drawing.Point(8, 20);
+			this.label7.Location = new System.Drawing.Point(6, 19);
 			this.label7.Name = "label7";
 			this.label7.Size = new System.Drawing.Size(64, 16);
 			this.label7.TabIndex = 0;
@@ -1869,7 +1890,7 @@ namespace Idmr.Yogeme
 			this.label15.Name = "label15";
 			this.label15.Size = new System.Drawing.Size(56, 16);
 			this.label15.TabIndex = 0;
-			this.label15.Text = "Formation";
+			this.label15.Text = "Radio";
 			// 
 			// label16
 			// 
@@ -1950,14 +1971,14 @@ namespace Idmr.Yogeme
 			// cboFormation
 			// 
 			this.cboFormation.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.cboFormation.Location = new System.Drawing.Point(88, 184);
+			this.cboFormation.Location = new System.Drawing.Point(88, 208);
 			this.cboFormation.Name = "cboFormation";
 			this.cboFormation.Size = new System.Drawing.Size(136, 21);
 			this.cboFormation.TabIndex = 15;
 			// 
 			// cmdForms
 			// 
-			this.cmdForms.Location = new System.Drawing.Point(160, 248);
+			this.cmdForms.Location = new System.Drawing.Point(160, 233);
 			this.cmdForms.Name = "cmdForms";
 			this.cmdForms.Size = new System.Drawing.Size(64, 24);
 			this.cmdForms.TabIndex = 19;
@@ -1966,16 +1987,17 @@ namespace Idmr.Yogeme
 			// 
 			// label4
 			// 
+			this.label4.AutoSize = true;
 			this.label4.Location = new System.Drawing.Point(8, 212);
 			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(40, 16);
+			this.label4.Size = new System.Drawing.Size(53, 13);
 			this.label4.TabIndex = 0;
-			this.label4.Text = "Radio";
+			this.label4.Text = "Formation";
 			// 
 			// cboRadio
 			// 
 			this.cboRadio.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.cboRadio.Location = new System.Drawing.Point(88, 208);
+			this.cboRadio.Location = new System.Drawing.Point(88, 184);
 			this.cboRadio.Name = "cboRadio";
 			this.cboRadio.Size = new System.Drawing.Size(136, 21);
 			this.cboRadio.TabIndex = 15;
@@ -2275,7 +2297,7 @@ namespace Idmr.Yogeme
 			this.tabArrDep.Controls.Add(this.cmdPasteAD);
 			this.tabArrDep.Location = new System.Drawing.Point(4, 22);
 			this.tabArrDep.Name = "tabArrDep";
-			this.tabArrDep.Size = new System.Drawing.Size(544, 478);
+			this.tabArrDep.Size = new System.Drawing.Size(544, 490);
 			this.tabArrDep.TabIndex = 1;
 			this.tabArrDep.Text = "Arr/Dep";
 			// 
@@ -2917,8 +2939,6 @@ namespace Idmr.Yogeme
 			// 
 			// tabGoals
 			// 
-			this.tabGoals.Controls.Add(this.numUnk42);
-			this.tabGoals.Controls.Add(this.label152);
 			this.tabGoals.Controls.Add(this.lblGoalTimeLimitNote);
 			this.tabGoals.Controls.Add(this.lblGoalTimeLimitSec);
 			this.tabGoals.Controls.Add(this.lblGoalTimeLimit);
@@ -2939,30 +2959,9 @@ namespace Idmr.Yogeme
 			this.tabGoals.Controls.Add(this.numGoalTeam);
 			this.tabGoals.Location = new System.Drawing.Point(4, 22);
 			this.tabGoals.Name = "tabGoals";
-			this.tabGoals.Size = new System.Drawing.Size(544, 478);
+			this.tabGoals.Size = new System.Drawing.Size(544, 490);
 			this.tabGoals.TabIndex = 2;
 			this.tabGoals.Text = "Goals";
-			// 
-			// numUnk42
-			// 
-			this.numUnk42.Location = new System.Drawing.Point(343, 264);
-			this.numUnk42.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
-			this.numUnk42.Name = "numUnk42";
-			this.numUnk42.Size = new System.Drawing.Size(41, 20);
-			this.numUnk42.TabIndex = 22;
-			// 
-			// label152
-			// 
-			this.label152.AutoSize = true;
-			this.label152.Location = new System.Drawing.Point(310, 266);
-			this.label152.Name = "label152";
-			this.label152.Size = new System.Drawing.Size(27, 13);
-			this.label152.TabIndex = 53;
-			this.label152.Text = "Unk";
 			// 
 			// lblGoalTimeLimitNote
 			// 
@@ -3343,7 +3342,7 @@ namespace Idmr.Yogeme
 			this.tabWP.Controls.Add(this.cmdCopyOrderWP);
 			this.tabWP.Controls.Add(this.cmdPasteOrderWP);
 			this.tabWP.Controls.Add(this.numHYP);
-			this.tabWP.Controls.Add(this.numSP3);
+			this.tabWP.Controls.Add(this.numWPCapture);
 			this.tabWP.Controls.Add(this.numSP2);
 			this.tabWP.Controls.Add(this.numSP1);
 			this.tabWP.Controls.Add(this.label76);
@@ -3361,7 +3360,7 @@ namespace Idmr.Yogeme
 			this.tabWP.Controls.Add(this.chkWP7);
 			this.tabWP.Controls.Add(this.chkWP2);
 			this.tabWP.Controls.Add(this.chkWP1);
-			this.tabWP.Controls.Add(this.chkSP3);
+			this.tabWP.Controls.Add(this.chkWPCapture);
 			this.tabWP.Controls.Add(this.chkSP2);
 			this.tabWP.Controls.Add(this.chkSP1);
 			this.tabWP.Controls.Add(this.chkWP6);
@@ -3372,7 +3371,7 @@ namespace Idmr.Yogeme
 			this.tabWP.Controls.Add(this.label78);
 			this.tabWP.Location = new System.Drawing.Point(4, 22);
 			this.tabWP.Name = "tabWP";
-			this.tabWP.Size = new System.Drawing.Size(544, 478);
+			this.tabWP.Size = new System.Drawing.Size(544, 490);
 			this.tabWP.TabIndex = 3;
 			this.tabWP.Text = "Waypoints";
 			// 
@@ -3484,23 +3483,23 @@ namespace Idmr.Yogeme
             0,
             0});
 			// 
-			// numSP3
+			// numWPCapture
 			// 
-			this.numSP3.Location = new System.Drawing.Point(266, 84);
-			this.numSP3.Maximum = new decimal(new int[] {
+			this.numWPCapture.Location = new System.Drawing.Point(266, 84);
+			this.numWPCapture.Maximum = new decimal(new int[] {
             4,
             0,
             0,
             0});
-			this.numSP3.Minimum = new decimal(new int[] {
+			this.numWPCapture.Minimum = new decimal(new int[] {
             1,
             0,
             0,
             0});
-			this.numSP3.Name = "numSP3";
-			this.numSP3.Size = new System.Drawing.Size(31, 20);
-			this.numSP3.TabIndex = 51;
-			this.numSP3.Value = new decimal(new int[] {
+			this.numWPCapture.Name = "numWPCapture";
+			this.numWPCapture.Size = new System.Drawing.Size(31, 20);
+			this.numWPCapture.TabIndex = 51;
+			this.numWPCapture.Value = new decimal(new int[] {
             1,
             0,
             0,
@@ -3723,13 +3722,13 @@ namespace Idmr.Yogeme
 			this.chkWP1.TabIndex = 26;
 			this.chkWP1.Text = "Waypoint 1";
 			// 
-			// chkSP3
+			// chkWPCapture
 			// 
-			this.chkSP3.Location = new System.Drawing.Point(176, 86);
-			this.chkSP3.Name = "chkSP3";
-			this.chkSP3.Size = new System.Drawing.Size(96, 16);
-			this.chkSP3.TabIndex = 24;
-			this.chkSP3.Text = "Rendezvous";
+			this.chkWPCapture.Location = new System.Drawing.Point(176, 86);
+			this.chkWPCapture.Name = "chkWPCapture";
+			this.chkWPCapture.Size = new System.Drawing.Size(96, 16);
+			this.chkWPCapture.TabIndex = 24;
+			this.chkWPCapture.Text = "Capture HYP";
 			// 
 			// chkSP2
 			// 
@@ -3797,8 +3796,10 @@ namespace Idmr.Yogeme
 			// 
 			// tabOrders
 			// 
+			this.tabOrders.Controls.Add(this.label95);
+			this.tabOrders.Controls.Add(this.cboHandicap);
+			this.tabOrders.Controls.Add(this.label104);
 			this.tabOrders.Controls.Add(this.cboOSpeed);
-			this.tabOrders.Controls.Add(this.lblOV1Meaning);
 			this.tabOrders.Controls.Add(this.lblOVar2Note);
 			this.tabOrders.Controls.Add(this.lblOVar1Note);
 			this.tabOrders.Controls.Add(this.lblOSpeedNote);
@@ -3824,9 +3825,43 @@ namespace Idmr.Yogeme
 			this.tabOrders.Controls.Add(this.cmdPasteOrder);
 			this.tabOrders.Location = new System.Drawing.Point(4, 22);
 			this.tabOrders.Name = "tabOrders";
-			this.tabOrders.Size = new System.Drawing.Size(544, 478);
+			this.tabOrders.Size = new System.Drawing.Size(544, 490);
 			this.tabOrders.TabIndex = 4;
 			this.tabOrders.Text = "Orders";
+			// 
+			// label95
+			// 
+			this.label95.AutoSize = true;
+			this.label95.Location = new System.Drawing.Point(202, 470);
+			this.label95.Name = "label95";
+			this.label95.Size = new System.Drawing.Size(103, 13);
+			this.label95.TabIndex = 43;
+			this.label95.Text = "(applies to all orders)";
+			// 
+			// cboHandicap
+			// 
+			this.cboHandicap.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboHandicap.FormattingEnabled = true;
+			this.cboHandicap.Items.AddRange(new object[] {
+            "None",
+            "FavorRebels",
+            "EvenOnly",
+            "FavorImperials",
+            "FavorEvenRebels",
+            "FavorEvenImperials"});
+			this.cboHandicap.Location = new System.Drawing.Point(75, 467);
+			this.cboHandicap.Name = "cboHandicap";
+			this.cboHandicap.Size = new System.Drawing.Size(121, 21);
+			this.cboHandicap.TabIndex = 42;
+			// 
+			// label104
+			// 
+			this.label104.AutoSize = true;
+			this.label104.Location = new System.Drawing.Point(16, 470);
+			this.label104.Name = "label104";
+			this.label104.Size = new System.Drawing.Size(53, 13);
+			this.label104.TabIndex = 41;
+			this.label104.Text = "Handicap";
 			// 
 			// cboOSpeed
 			// 
@@ -3834,45 +3869,37 @@ namespace Idmr.Yogeme
 			this.cboOSpeed.FormattingEnabled = true;
 			this.cboOSpeed.Items.AddRange(new object[] {
             "default"});
-			this.cboOSpeed.Location = new System.Drawing.Point(60, 237);
+			this.cboOSpeed.Location = new System.Drawing.Point(168, 206);
 			this.cboOSpeed.MaxDropDownItems = 12;
 			this.cboOSpeed.Name = "cboOSpeed";
 			this.cboOSpeed.Size = new System.Drawing.Size(58, 21);
 			this.cboOSpeed.TabIndex = 39;
 			this.cboOSpeed.SelectedIndexChanged += new System.EventHandler(this.cboOSpeed_SelectedIndexChanged);
 			// 
-			// lblOV1Meaning
-			// 
-			this.lblOV1Meaning.AutoSize = true;
-			this.lblOV1Meaning.Location = new System.Drawing.Point(307, 211);
-			this.lblOV1Meaning.Name = "lblOV1Meaning";
-			this.lblOV1Meaning.Size = new System.Drawing.Size(100, 13);
-			this.lblOV1Meaning.TabIndex = 37;
-			this.lblOV1Meaning.Text = "Leading Above Left";
-			this.lblOV1Meaning.Visible = false;
-			// 
 			// lblOVar2Note
 			// 
-			this.lblOVar2Note.Location = new System.Drawing.Point(416, 230);
+			this.lblOVar2Note.Location = new System.Drawing.Point(416, 226);
 			this.lblOVar2Note.Name = "lblOVar2Note";
 			this.lblOVar2Note.Size = new System.Drawing.Size(120, 16);
 			this.lblOVar2Note.TabIndex = 38;
 			this.lblOVar2Note.Text = "lblOVar2Note";
+			this.lblOVar2Note.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			this.lblOVar2Note.Visible = false;
 			// 
 			// lblOVar1Note
 			// 
-			this.lblOVar1Note.Location = new System.Drawing.Point(238, 230);
+			this.lblOVar1Note.Location = new System.Drawing.Point(246, 227);
 			this.lblOVar1Note.Name = "lblOVar1Note";
 			this.lblOVar1Note.Size = new System.Drawing.Size(120, 16);
 			this.lblOVar1Note.TabIndex = 38;
 			this.lblOVar1Note.Text = "lblOVar1Note";
+			this.lblOVar1Note.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			this.lblOVar1Note.Visible = false;
 			// 
 			// lblOSpeedNote
 			// 
 			this.lblOSpeedNote.AutoSize = true;
-			this.lblOSpeedNote.Location = new System.Drawing.Point(124, 240);
+			this.lblOSpeedNote.Location = new System.Drawing.Point(176, 230);
 			this.lblOSpeedNote.Name = "lblOSpeedNote";
 			this.lblOSpeedNote.Size = new System.Drawing.Size(37, 13);
 			this.lblOSpeedNote.TabIndex = 37;
@@ -3913,7 +3940,7 @@ namespace Idmr.Yogeme
 			// label57
 			// 
 			this.label57.AutoSize = true;
-			this.label57.Location = new System.Drawing.Point(16, 239);
+			this.label57.Location = new System.Drawing.Point(124, 208);
 			this.label57.Name = "label57";
 			this.label57.Size = new System.Drawing.Size(41, 13);
 			this.label57.TabIndex = 33;
@@ -3965,7 +3992,7 @@ namespace Idmr.Yogeme
 			this.grpSecOrder.Controls.Add(this.cboOT4Type);
 			this.grpSecOrder.Controls.Add(this.cboOT4);
 			this.grpSecOrder.Controls.Add(this.optOT3T4AND);
-			this.grpSecOrder.Location = new System.Drawing.Point(16, 373);
+			this.grpSecOrder.Location = new System.Drawing.Point(16, 367);
 			this.grpSecOrder.Name = "grpSecOrder";
 			this.grpSecOrder.Size = new System.Drawing.Size(512, 98);
 			this.grpSecOrder.TabIndex = 27;
@@ -4044,7 +4071,7 @@ namespace Idmr.Yogeme
 			this.grpPrimOrder.Controls.Add(this.cboOT2Type);
 			this.grpPrimOrder.Controls.Add(this.cboOT2);
 			this.grpPrimOrder.Controls.Add(this.optOT1T2AND);
-			this.grpPrimOrder.Location = new System.Drawing.Point(16, 269);
+			this.grpPrimOrder.Location = new System.Drawing.Point(16, 265);
 			this.grpPrimOrder.Name = "grpPrimOrder";
 			this.grpPrimOrder.Size = new System.Drawing.Size(512, 98);
 			this.grpPrimOrder.TabIndex = 26;
@@ -4116,7 +4143,7 @@ namespace Idmr.Yogeme
 			// 
 			// numOVar3
 			// 
-			this.numOVar3.Location = new System.Drawing.Point(464, 248);
+			this.numOVar3.Location = new System.Drawing.Point(490, 245);
 			this.numOVar3.Maximum = new decimal(new int[] {
             255,
             0,
@@ -4128,7 +4155,7 @@ namespace Idmr.Yogeme
 			// 
 			// numOVar1
 			// 
-			this.numOVar1.Location = new System.Drawing.Point(261, 207);
+			this.numOVar1.Location = new System.Drawing.Point(320, 204);
 			this.numOVar1.Maximum = new decimal(new int[] {
             255,
             0,
@@ -4141,7 +4168,7 @@ namespace Idmr.Yogeme
 			// 
 			// lblOVar3
 			// 
-			this.lblOVar3.Location = new System.Drawing.Point(344, 248);
+			this.lblOVar3.Location = new System.Drawing.Point(370, 245);
 			this.lblOVar3.Name = "lblOVar3";
 			this.lblOVar3.Size = new System.Drawing.Size(120, 16);
 			this.lblOVar3.TabIndex = 25;
@@ -4150,7 +4177,7 @@ namespace Idmr.Yogeme
 			// 
 			// lblOVar1
 			// 
-			this.lblOVar1.Location = new System.Drawing.Point(141, 209);
+			this.lblOVar1.Location = new System.Drawing.Point(200, 206);
 			this.lblOVar1.Name = "lblOVar1";
 			this.lblOVar1.Size = new System.Drawing.Size(120, 16);
 			this.lblOVar1.TabIndex = 25;
@@ -4172,7 +4199,7 @@ namespace Idmr.Yogeme
             "80",
             "90",
             "100"});
-			this.cboOThrottle.Location = new System.Drawing.Point(70, 210);
+			this.cboOThrottle.Location = new System.Drawing.Point(70, 206);
 			this.cboOThrottle.Name = "cboOThrottle";
 			this.cboOThrottle.Size = new System.Drawing.Size(48, 21);
 			this.cboOThrottle.TabIndex = 19;
@@ -4180,7 +4207,7 @@ namespace Idmr.Yogeme
 			// label51
 			// 
 			this.label51.AutoSize = true;
-			this.label51.Location = new System.Drawing.Point(11, 212);
+			this.label51.Location = new System.Drawing.Point(11, 208);
 			this.label51.Name = "label51";
 			this.label51.Size = new System.Drawing.Size(54, 13);
 			this.label51.TabIndex = 21;
@@ -4195,7 +4222,7 @@ namespace Idmr.Yogeme
 			this.groupBox15.Controls.Add(this.lblOrder4);
 			this.groupBox15.Location = new System.Drawing.Point(8, 82);
 			this.groupBox15.Name = "groupBox15";
-			this.groupBox15.Size = new System.Drawing.Size(528, 120);
+			this.groupBox15.Size = new System.Drawing.Size(528, 116);
 			this.groupBox15.TabIndex = 20;
 			this.groupBox15.TabStop = false;
 			// 
@@ -4203,7 +4230,7 @@ namespace Idmr.Yogeme
 			// 
 			this.lblOrder1.BackColor = System.Drawing.Color.RosyBrown;
 			this.lblOrder1.ForeColor = System.Drawing.SystemColors.Highlight;
-			this.lblOrder1.Location = new System.Drawing.Point(8, 16);
+			this.lblOrder1.Location = new System.Drawing.Point(8, 12);
 			this.lblOrder1.Name = "lblOrder1";
 			this.lblOrder1.Size = new System.Drawing.Size(512, 24);
 			this.lblOrder1.TabIndex = 0;
@@ -4213,7 +4240,7 @@ namespace Idmr.Yogeme
 			// lblOrder2
 			// 
 			this.lblOrder2.BackColor = System.Drawing.Color.RosyBrown;
-			this.lblOrder2.Location = new System.Drawing.Point(8, 40);
+			this.lblOrder2.Location = new System.Drawing.Point(8, 36);
 			this.lblOrder2.Name = "lblOrder2";
 			this.lblOrder2.Size = new System.Drawing.Size(512, 24);
 			this.lblOrder2.TabIndex = 0;
@@ -4223,7 +4250,7 @@ namespace Idmr.Yogeme
 			// lblOrder3
 			// 
 			this.lblOrder3.BackColor = System.Drawing.Color.RosyBrown;
-			this.lblOrder3.Location = new System.Drawing.Point(8, 64);
+			this.lblOrder3.Location = new System.Drawing.Point(8, 60);
 			this.lblOrder3.Name = "lblOrder3";
 			this.lblOrder3.Size = new System.Drawing.Size(512, 24);
 			this.lblOrder3.TabIndex = 0;
@@ -4233,7 +4260,7 @@ namespace Idmr.Yogeme
 			// lblOrder4
 			// 
 			this.lblOrder4.BackColor = System.Drawing.Color.RosyBrown;
-			this.lblOrder4.Location = new System.Drawing.Point(8, 88);
+			this.lblOrder4.Location = new System.Drawing.Point(8, 84);
 			this.lblOrder4.Name = "lblOrder4";
 			this.lblOrder4.Size = new System.Drawing.Size(512, 24);
 			this.lblOrder4.TabIndex = 0;
@@ -4251,7 +4278,7 @@ namespace Idmr.Yogeme
 			// 
 			// lblOVar2
 			// 
-			this.lblOVar2.Location = new System.Drawing.Point(352, 209);
+			this.lblOVar2.Location = new System.Drawing.Point(376, 205);
 			this.lblOVar2.Name = "lblOVar2";
 			this.lblOVar2.Size = new System.Drawing.Size(112, 16);
 			this.lblOVar2.TabIndex = 24;
@@ -4260,7 +4287,7 @@ namespace Idmr.Yogeme
 			// 
 			// numOVar2
 			// 
-			this.numOVar2.Location = new System.Drawing.Point(464, 207);
+			this.numOVar2.Location = new System.Drawing.Point(488, 203);
 			this.numOVar2.Maximum = new decimal(new int[] {
             255,
             0,
@@ -4294,7 +4321,7 @@ namespace Idmr.Yogeme
 			this.tapOption.Controls.Add(this.groupBox19);
 			this.tapOption.Location = new System.Drawing.Point(4, 22);
 			this.tapOption.Name = "tapOption";
-			this.tapOption.Size = new System.Drawing.Size(544, 478);
+			this.tapOption.Size = new System.Drawing.Size(544, 490);
 			this.tapOption.TabIndex = 6;
 			this.tapOption.Text = "Options";
 			// 
@@ -4999,55 +5026,173 @@ namespace Idmr.Yogeme
 			this.chkOptWMagPulse.TabIndex = 0;
 			this.chkOptWMagPulse.Text = "Mag Pulse";
 			// 
-			// tabUnk
+			// tabArrDep2
 			// 
-			this.tabUnk.Controls.Add(this.numArrRandSec);
-			this.tabUnk.Controls.Add(this.numDepClockMin);
-			this.tabUnk.Controls.Add(this.numDepClockSec);
-			this.tabUnk.Location = new System.Drawing.Point(4, 22);
-			this.tabUnk.Name = "tabUnk";
-			this.tabUnk.Size = new System.Drawing.Size(544, 478);
-			this.tabUnk.TabIndex = 5;
-			this.tabUnk.Text = "Unknowns";
+			this.tabArrDep2.Controls.Add(this.grpMoreDep);
+			this.tabArrDep2.Controls.Add(this.grpMoreArrival);
+			this.tabArrDep2.Location = new System.Drawing.Point(4, 22);
+			this.tabArrDep2.Name = "tabArrDep2";
+			this.tabArrDep2.Size = new System.Drawing.Size(544, 490);
+			this.tabArrDep2.TabIndex = 5;
+			this.tabArrDep2.Text = "More Arr/Dep";
 			// 
-			// numArrRandSec
+			// grpMoreDep
 			// 
-			this.numArrRandSec.Location = new System.Drawing.Point(314, 40);
-			this.numArrRandSec.Maximum = new decimal(new int[] {
-            255,
+			this.grpMoreDep.Controls.Add(this.label94);
+			this.grpMoreDep.Controls.Add(this.label93);
+			this.grpMoreDep.Controls.Add(this.label92);
+			this.grpMoreDep.Controls.Add(this.numDepClockSec);
+			this.grpMoreDep.Controls.Add(this.numDepClockMin);
+			this.grpMoreDep.Location = new System.Drawing.Point(273, 15);
+			this.grpMoreDep.Name = "grpMoreDep";
+			this.grpMoreDep.Size = new System.Drawing.Size(256, 81);
+			this.grpMoreDep.TabIndex = 14;
+			this.grpMoreDep.TabStop = false;
+			this.grpMoreDep.Text = "Departure";
+			// 
+			// label94
+			// 
+			this.label94.AutoSize = true;
+			this.label94.Location = new System.Drawing.Point(143, 42);
+			this.label94.Margin = new System.Windows.Forms.Padding(1, 0, 3, 0);
+			this.label94.Name = "label94";
+			this.label94.Size = new System.Drawing.Size(26, 13);
+			this.label94.TabIndex = 8;
+			this.label94.Text = "Sec";
+			// 
+			// label93
+			// 
+			this.label93.AutoSize = true;
+			this.label93.Location = new System.Drawing.Point(69, 42);
+			this.label93.Margin = new System.Windows.Forms.Padding(1, 0, 3, 0);
+			this.label93.Name = "label93";
+			this.label93.Size = new System.Drawing.Size(24, 13);
+			this.label93.TabIndex = 7;
+			this.label93.Text = "Min";
+			// 
+			// label92
+			// 
+			this.label92.AutoSize = true;
+			this.label92.Location = new System.Drawing.Point(22, 24);
+			this.label92.Name = "label92";
+			this.label92.Size = new System.Drawing.Size(113, 13);
+			this.label92.TabIndex = 0;
+			this.label92.Text = "Depart at mission time:";
+			// 
+			// numDepClockSec
+			// 
+			this.numDepClockSec.Location = new System.Drawing.Point(99, 40);
+			this.numDepClockSec.Maximum = new decimal(new int[] {
+            60,
             0,
             0,
             0});
-			this.numArrRandSec.Name = "numArrRandSec";
-			this.numArrRandSec.Size = new System.Drawing.Size(48, 20);
-			this.numArrRandSec.TabIndex = 12;
-			this.numArrRandSec.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+			this.numDepClockSec.Name = "numDepClockSec";
+			this.numDepClockSec.Size = new System.Drawing.Size(40, 20);
+			this.numDepClockSec.TabIndex = 6;
+			this.numDepClockSec.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
 			// 
 			// numDepClockMin
 			// 
-			this.numDepClockMin.Location = new System.Drawing.Point(314, 93);
+			this.numDepClockMin.Location = new System.Drawing.Point(25, 40);
 			this.numDepClockMin.Maximum = new decimal(new int[] {
             255,
             0,
             0,
             0});
 			this.numDepClockMin.Name = "numDepClockMin";
-			this.numDepClockMin.Size = new System.Drawing.Size(48, 20);
+			this.numDepClockMin.Size = new System.Drawing.Size(40, 20);
 			this.numDepClockMin.TabIndex = 6;
 			this.numDepClockMin.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
 			// 
-			// numDepClockSec
+			// grpMoreArrival
 			// 
-			this.numDepClockSec.Location = new System.Drawing.Point(314, 149);
-			this.numDepClockSec.Maximum = new decimal(new int[] {
+			this.grpMoreArrival.Controls.Add(this.numArrRandMin);
+			this.grpMoreArrival.Controls.Add(this.numArrRandSec);
+			this.grpMoreArrival.Controls.Add(this.lblRandomArrivalDelayMinutes);
+			this.grpMoreArrival.Controls.Add(this.lblRandomArrivalDelaySeconds);
+			this.grpMoreArrival.Controls.Add(this.lblRandomArrivalDelayDesc);
+			this.grpMoreArrival.Controls.Add(this.cboStopArrivingWhen);
+			this.grpMoreArrival.Controls.Add(this.lblStopArrivingWhen);
+			this.grpMoreArrival.Location = new System.Drawing.Point(11, 15);
+			this.grpMoreArrival.Name = "grpMoreArrival";
+			this.grpMoreArrival.Size = new System.Drawing.Size(256, 225);
+			this.grpMoreArrival.TabIndex = 13;
+			this.grpMoreArrival.TabStop = false;
+			this.grpMoreArrival.Text = "Arrival";
+			// 
+			// numArrRandMin
+			// 
+			this.numArrRandMin.Location = new System.Drawing.Point(36, 185);
+			this.numArrRandMin.Margin = new System.Windows.Forms.Padding(3, 3, 1, 3);
+			this.numArrRandMin.Maximum = new decimal(new int[] {
             255,
             0,
             0,
             0});
-			this.numDepClockSec.Name = "numDepClockSec";
-			this.numDepClockSec.Size = new System.Drawing.Size(48, 20);
-			this.numDepClockSec.TabIndex = 6;
-			this.numDepClockSec.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+			this.numArrRandMin.Name = "numArrRandMin";
+			this.numArrRandMin.Size = new System.Drawing.Size(42, 20);
+			this.numArrRandMin.TabIndex = 2;
+			this.numArrRandMin.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+			// 
+			// numArrRandSec
+			// 
+			this.numArrRandSec.Location = new System.Drawing.Point(128, 185);
+			this.numArrRandSec.Maximum = new decimal(new int[] {
+            60,
+            0,
+            0,
+            0});
+			this.numArrRandSec.Name = "numArrRandSec";
+			this.numArrRandSec.Size = new System.Drawing.Size(40, 20);
+			this.numArrRandSec.TabIndex = 3;
+			this.numArrRandSec.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+			// 
+			// lblRandomArrivalDelayMinutes
+			// 
+			this.lblRandomArrivalDelayMinutes.AutoSize = true;
+			this.lblRandomArrivalDelayMinutes.Location = new System.Drawing.Point(80, 187);
+			this.lblRandomArrivalDelayMinutes.Margin = new System.Windows.Forms.Padding(1, 0, 3, 0);
+			this.lblRandomArrivalDelayMinutes.Name = "lblRandomArrivalDelayMinutes";
+			this.lblRandomArrivalDelayMinutes.Size = new System.Drawing.Size(24, 13);
+			this.lblRandomArrivalDelayMinutes.TabIndex = 3;
+			this.lblRandomArrivalDelayMinutes.Text = "Min";
+			// 
+			// lblRandomArrivalDelaySeconds
+			// 
+			this.lblRandomArrivalDelaySeconds.AutoSize = true;
+			this.lblRandomArrivalDelaySeconds.Location = new System.Drawing.Point(172, 187);
+			this.lblRandomArrivalDelaySeconds.Margin = new System.Windows.Forms.Padding(1, 0, 3, 0);
+			this.lblRandomArrivalDelaySeconds.Name = "lblRandomArrivalDelaySeconds";
+			this.lblRandomArrivalDelaySeconds.Size = new System.Drawing.Size(26, 13);
+			this.lblRandomArrivalDelaySeconds.TabIndex = 3;
+			this.lblRandomArrivalDelaySeconds.Text = "Sec";
+			// 
+			// lblRandomArrivalDelayDesc
+			// 
+			this.lblRandomArrivalDelayDesc.Location = new System.Drawing.Point(17, 78);
+			this.lblRandomArrivalDelayDesc.Name = "lblRandomArrivalDelayDesc";
+			this.lblRandomArrivalDelayDesc.Size = new System.Drawing.Size(228, 104);
+			this.lblRandomArrivalDelayDesc.TabIndex = 2;
+			this.lblRandomArrivalDelayDesc.Text = resources.GetString("lblRandomArrivalDelayDesc.Text");
+			// 
+			// cboStopArrivingWhen
+			// 
+			this.cboStopArrivingWhen.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboStopArrivingWhen.FormattingEnabled = true;
+			this.cboStopArrivingWhen.Location = new System.Drawing.Point(20, 40);
+			this.cboStopArrivingWhen.Name = "cboStopArrivingWhen";
+			this.cboStopArrivingWhen.Size = new System.Drawing.Size(208, 21);
+			this.cboStopArrivingWhen.TabIndex = 1;
+			// 
+			// lblStopArrivingWhen
+			// 
+			this.lblStopArrivingWhen.AutoSize = true;
+			this.lblStopArrivingWhen.Location = new System.Drawing.Point(17, 24);
+			this.lblStopArrivingWhen.Name = "lblStopArrivingWhen";
+			this.lblStopArrivingWhen.Size = new System.Drawing.Size(98, 13);
+			this.lblStopArrivingWhen.TabIndex = 0;
+			this.lblStopArrivingWhen.Text = "Stop arriving when:";
 			// 
 			// label1
 			// 
@@ -5078,6 +5223,11 @@ namespace Idmr.Yogeme
 			// tabMess
 			// 
 			this.tabMess.BackColor = System.Drawing.SystemColors.Control;
+			this.tabMess.Controls.Add(this.cboMessSpecial);
+			this.tabMess.Controls.Add(this.label106);
+			this.tabMess.Controls.Add(this.label105);
+			this.tabMess.Controls.Add(this.chkMessHeader);
+			this.tabMess.Controls.Add(this.numMessType);
 			this.tabMess.Controls.Add(this.lblDelay);
 			this.tabMess.Controls.Add(this.cmdMoveMessDown);
 			this.tabMess.Controls.Add(this.cmdMoveMessUp);
@@ -5108,6 +5258,65 @@ namespace Idmr.Yogeme
 			this.tabMess.Size = new System.Drawing.Size(785, 519);
 			this.tabMess.TabIndex = 1;
 			this.tabMess.Text = "Messages";
+			// 
+			// cboMessSpecial
+			// 
+			this.cboMessSpecial.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboMessSpecial.FormattingEnabled = true;
+			this.cboMessSpecial.Items.AddRange(new object[] {
+            "Ignore",
+            "Stop",
+            "Finished",
+            "Both"});
+			this.cboMessSpecial.Location = new System.Drawing.Point(672, 465);
+			this.cboMessSpecial.Name = "cboMessSpecial";
+			this.cboMessSpecial.Size = new System.Drawing.Size(105, 21);
+			this.cboMessSpecial.TabIndex = 49;
+			// 
+			// label106
+			// 
+			this.label106.AutoSize = true;
+			this.label106.Location = new System.Drawing.Point(669, 449);
+			this.label106.Name = "label106";
+			this.label106.Size = new System.Drawing.Size(89, 13);
+			this.label106.TabIndex = 48;
+			this.label106.Text = "Special Meaning:";
+			// 
+			// label105
+			// 
+			this.label105.AutoSize = true;
+			this.label105.Location = new System.Drawing.Point(691, 405);
+			this.label105.Name = "label105";
+			this.label105.Size = new System.Drawing.Size(31, 13);
+			this.label105.TabIndex = 47;
+			this.label105.Text = "Type";
+			// 
+			// chkMessHeader
+			// 
+			this.chkMessHeader.AutoSize = true;
+			this.chkMessHeader.Location = new System.Drawing.Point(669, 429);
+			this.chkMessHeader.Name = "chkMessHeader";
+			this.chkMessHeader.Size = new System.Drawing.Size(104, 17);
+			this.chkMessHeader.TabIndex = 46;
+			this.chkMessHeader.Text = "Speaker Header";
+			this.chkMessHeader.UseVisualStyleBackColor = true;
+			// 
+			// numMessType
+			// 
+			this.numMessType.Location = new System.Drawing.Point(730, 403);
+			this.numMessType.Maximum = new decimal(new int[] {
+            65000,
+            0,
+            0,
+            0});
+			this.numMessType.Minimum = new decimal(new int[] {
+            65000,
+            0,
+            0,
+            -2147483648});
+			this.numMessType.Name = "numMessType";
+			this.numMessType.Size = new System.Drawing.Size(52, 20);
+			this.numMessType.TabIndex = 45;
 			// 
 			// lblDelay
 			// 
@@ -5179,7 +5388,7 @@ namespace Idmr.Yogeme
 			this.grpMessCancel.Size = new System.Drawing.Size(314, 118);
 			this.grpMessCancel.TabIndex = 37;
 			this.grpMessCancel.TabStop = false;
-			this.grpMessCancel.Text = "Cancel Message when...";
+			this.grpMessCancel.Text = "Special (Cancel) Trigger";
 			// 
 			// optMessC1AND2
 			// 
@@ -5622,10 +5831,11 @@ namespace Idmr.Yogeme
 			// tabGlob
 			// 
 			this.tabGlob.BackColor = System.Drawing.SystemColors.Control;
-			this.tabGlob.Controls.Add(this.numGlobPtsPerTrig3);
+			this.tabGlob.Controls.Add(this.lblGlobDelay);
+			this.tabGlob.Controls.Add(this.label113);
+			this.tabGlob.Controls.Add(this.numGlobTrigPts);
+			this.tabGlob.Controls.Add(this.label107);
 			this.tabGlob.Controls.Add(this.cboGlobalPara);
-			this.tabGlob.Controls.Add(this.numGlobPtsPerTrig2);
-			this.tabGlob.Controls.Add(this.numGlobPtsPerTrig1);
 			this.tabGlob.Controls.Add(this.label128);
 			this.tabGlob.Controls.Add(this.numGlobActSeq);
 			this.tabGlob.Controls.Add(this.numGlobDelay);
@@ -5655,18 +5865,50 @@ namespace Idmr.Yogeme
 			this.tabGlob.TabIndex = 2;
 			this.tabGlob.Text = "Globals";
 			// 
-			// numGlobPtsPerTrig3
+			// lblGlobDelay
 			// 
-			this.numGlobPtsPerTrig3.Location = new System.Drawing.Point(599, 476);
-			this.numGlobPtsPerTrig3.Maximum = new decimal(new int[] {
-            255,
+			this.lblGlobDelay.Location = new System.Drawing.Point(625, 378);
+			this.lblGlobDelay.Name = "lblGlobDelay";
+			this.lblGlobDelay.Size = new System.Drawing.Size(86, 13);
+			this.lblGlobDelay.TabIndex = 50;
+			this.lblGlobDelay.Text = "0:00";
+			// 
+			// label113
+			// 
+			this.label113.AutoSize = true;
+			this.label113.Location = new System.Drawing.Point(533, 378);
+			this.label113.Name = "label113";
+			this.label113.Size = new System.Drawing.Size(34, 13);
+			this.label113.TabIndex = 49;
+			this.label113.Text = "Delay";
+			// 
+			// numGlobTrigPts
+			// 
+			this.numGlobTrigPts.Location = new System.Drawing.Point(704, 231);
+			this.numGlobTrigPts.Maximum = new decimal(new int[] {
+            127,
             0,
             0,
             0});
-			this.numGlobPtsPerTrig3.Name = "numGlobPtsPerTrig3";
-			this.numGlobPtsPerTrig3.Size = new System.Drawing.Size(48, 20);
-			this.numGlobPtsPerTrig3.TabIndex = 13;
-			this.numGlobPtsPerTrig3.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+			this.numGlobTrigPts.Minimum = new decimal(new int[] {
+            128,
+            0,
+            0,
+            -2147483648});
+			this.numGlobTrigPts.Name = "numGlobTrigPts";
+			this.numGlobTrigPts.Size = new System.Drawing.Size(48, 20);
+			this.numGlobTrigPts.TabIndex = 48;
+			this.numGlobTrigPts.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+			this.numGlobTrigPts.Leave += new System.EventHandler(this.numGlobTrigPts_Leave);
+			// 
+			// label107
+			// 
+			this.label107.AutoSize = true;
+			this.label107.Location = new System.Drawing.Point(631, 232);
+			this.label107.Name = "label107";
+			this.label107.Size = new System.Drawing.Size(72, 13);
+			this.label107.TabIndex = 47;
+			this.label107.Text = "Trigger Points";
 			// 
 			// cboGlobalPara
 			// 
@@ -5677,32 +5919,6 @@ namespace Idmr.Yogeme
 			this.cboGlobalPara.Size = new System.Drawing.Size(106, 21);
 			this.cboGlobalPara.TabIndex = 46;
 			this.cboGlobalPara.SelectedIndexChanged += new System.EventHandler(this.cboGlobalPara_SelectedIndexChanged);
-			// 
-			// numGlobPtsPerTrig2
-			// 
-			this.numGlobPtsPerTrig2.Location = new System.Drawing.Point(545, 476);
-			this.numGlobPtsPerTrig2.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
-			this.numGlobPtsPerTrig2.Name = "numGlobPtsPerTrig2";
-			this.numGlobPtsPerTrig2.Size = new System.Drawing.Size(48, 20);
-			this.numGlobPtsPerTrig2.TabIndex = 13;
-			this.numGlobPtsPerTrig2.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-			// 
-			// numGlobPtsPerTrig1
-			// 
-			this.numGlobPtsPerTrig1.Location = new System.Drawing.Point(491, 476);
-			this.numGlobPtsPerTrig1.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
-			this.numGlobPtsPerTrig1.Name = "numGlobPtsPerTrig1";
-			this.numGlobPtsPerTrig1.Size = new System.Drawing.Size(48, 20);
-			this.numGlobPtsPerTrig1.TabIndex = 13;
-			this.numGlobPtsPerTrig1.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
 			// 
 			// label128
 			// 
@@ -5730,7 +5946,7 @@ namespace Idmr.Yogeme
 			// 
 			// numGlobDelay
 			// 
-			this.numGlobDelay.Location = new System.Drawing.Point(424, 476);
+			this.numGlobDelay.Location = new System.Drawing.Point(571, 376);
 			this.numGlobDelay.Maximum = new decimal(new int[] {
             255,
             0,
@@ -5740,6 +5956,7 @@ namespace Idmr.Yogeme
 			this.numGlobDelay.Size = new System.Drawing.Size(48, 20);
 			this.numGlobDelay.TabIndex = 13;
 			this.numGlobDelay.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+			this.numGlobDelay.ValueChanged += new System.EventHandler(this.numGlobDelay_ValueChanged);
 			// 
 			// label112
 			// 
@@ -5782,11 +5999,11 @@ namespace Idmr.Yogeme
 			// label32
 			// 
 			this.label32.AutoSize = true;
-			this.label32.Location = new System.Drawing.Point(529, 231);
+			this.label32.Location = new System.Drawing.Point(421, 231);
 			this.label32.Name = "label32";
-			this.label32.Size = new System.Drawing.Size(36, 13);
+			this.label32.Size = new System.Drawing.Size(61, 13);
 			this.label32.TabIndex = 31;
-			this.label32.Text = "Points";
+			this.label32.Text = "Goal Points";
 			this.label32.TextAlign = System.Drawing.ContentAlignment.BottomRight;
 			// 
 			// numGlobalPoints
@@ -5796,7 +6013,7 @@ namespace Idmr.Yogeme
             0,
             0,
             0});
-			this.numGlobalPoints.Location = new System.Drawing.Point(571, 229);
+			this.numGlobalPoints.Location = new System.Drawing.Point(488, 229);
 			this.numGlobalPoints.Maximum = new decimal(new int[] {
             3175,
             0,
@@ -6305,34 +6522,15 @@ namespace Idmr.Yogeme
 			// tabTeam
 			// 
 			this.tabTeam.BackColor = System.Drawing.SystemColors.Control;
-			this.tabTeam.Controls.Add(this.numTeamEomFG3);
 			this.tabTeam.Controls.Add(this.groupBox32);
-			this.tabTeam.Controls.Add(this.numTeamEomFG2);
 			this.tabTeam.Controls.Add(this.txtTeamName);
 			this.tabTeam.Controls.Add(this.label96);
-			this.tabTeam.Controls.Add(this.numTeamEomFG1);
 			this.tabTeam.Controls.Add(this.groupBox30);
-			this.tabTeam.Controls.Add(this.numTeamEomDelay1);
-			this.tabTeam.Controls.Add(this.numTeamEomDelay3);
-			this.tabTeam.Controls.Add(this.numTeamEomDelay2);
 			this.tabTeam.Location = new System.Drawing.Point(4, 22);
 			this.tabTeam.Name = "tabTeam";
 			this.tabTeam.Size = new System.Drawing.Size(785, 519);
 			this.tabTeam.TabIndex = 3;
 			this.tabTeam.Text = "Teams";
-			// 
-			// numTeamEomFG3
-			// 
-			this.numTeamEomFG3.Location = new System.Drawing.Point(162, 426);
-			this.numTeamEomFG3.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
-			this.numTeamEomFG3.Name = "numTeamEomFG3";
-			this.numTeamEomFG3.Size = new System.Drawing.Size(48, 20);
-			this.numTeamEomFG3.TabIndex = 21;
-			this.numTeamEomFG3.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
 			// 
 			// groupBox32
 			// 
@@ -6341,19 +6539,23 @@ namespace Idmr.Yogeme
 			this.groupBox32.Controls.Add(this.grpTeamPMC);
 			this.groupBox32.Location = new System.Drawing.Point(378, 37);
 			this.groupBox32.Name = "groupBox32";
-			this.groupBox32.Size = new System.Drawing.Size(400, 468);
+			this.groupBox32.Size = new System.Drawing.Size(400, 447);
 			this.groupBox32.TabIndex = 18;
 			this.groupBox32.TabStop = false;
 			this.groupBox32.Text = "End of Mission Messages";
 			// 
 			// grpTeamPMF
 			// 
+			this.grpTeamPMF.Controls.Add(this.lblPMFDelay);
+			this.grpTeamPMF.Controls.Add(this.cboPMFEomFG);
+			this.grpTeamPMF.Controls.Add(this.label116);
 			this.grpTeamPMF.Controls.Add(this.label53);
 			this.grpTeamPMF.Controls.Add(this.label23);
 			this.grpTeamPMF.Controls.Add(this.txtPMFVoiceID);
 			this.grpTeamPMF.Controls.Add(this.txtPrimFail1);
 			this.grpTeamPMF.Controls.Add(this.txtPrimFailNote);
 			this.grpTeamPMF.Controls.Add(this.txtPrimFail2);
+			this.grpTeamPMF.Controls.Add(this.numPMFEomDelay);
 			this.grpTeamPMF.Location = new System.Drawing.Point(10, 300);
 			this.grpTeamPMF.Name = "grpTeamPMF";
 			this.grpTeamPMF.Size = new System.Drawing.Size(384, 132);
@@ -6361,6 +6563,32 @@ namespace Idmr.Yogeme
 			this.grpTeamPMF.TabStop = false;
 			this.grpTeamPMF.Text = "Primary Mission Failed";
 			this.grpTeamPMF.Leave += new System.EventHandler(this.grpTeamPMF_Leave);
+			// 
+			// lblPMFDelay
+			// 
+			this.lblPMFDelay.Location = new System.Drawing.Point(106, 22);
+			this.lblPMFDelay.Name = "lblPMFDelay";
+			this.lblPMFDelay.Size = new System.Drawing.Size(86, 13);
+			this.lblPMFDelay.TabIndex = 51;
+			this.lblPMFDelay.Text = "0:00";
+			// 
+			// cboPMFEomFG
+			// 
+			this.cboPMFEomFG.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboPMFEomFG.FormattingEnabled = true;
+			this.cboPMFEomFG.Location = new System.Drawing.Point(257, 106);
+			this.cboPMFEomFG.Name = "cboPMFEomFG";
+			this.cboPMFEomFG.Size = new System.Drawing.Size(121, 21);
+			this.cboPMFEomFG.TabIndex = 22;
+			// 
+			// label116
+			// 
+			this.label116.AutoSize = true;
+			this.label116.Location = new System.Drawing.Point(13, 22);
+			this.label116.Name = "label116";
+			this.label116.Size = new System.Drawing.Size(37, 13);
+			this.label116.TabIndex = 41;
+			this.label116.Text = "Delay:";
 			// 
 			// label53
 			// 
@@ -6374,7 +6602,7 @@ namespace Idmr.Yogeme
 			// label23
 			// 
 			this.label23.AutoSize = true;
-			this.label23.Location = new System.Drawing.Point(202, 22);
+			this.label23.Location = new System.Drawing.Point(219, 22);
 			this.label23.Name = "label23";
 			this.label23.Size = new System.Drawing.Size(48, 13);
 			this.label23.TabIndex = 13;
@@ -6382,10 +6610,10 @@ namespace Idmr.Yogeme
 			// 
 			// txtPMFVoiceID
 			// 
-			this.txtPMFVoiceID.Location = new System.Drawing.Point(256, 19);
+			this.txtPMFVoiceID.Location = new System.Drawing.Point(273, 19);
 			this.txtPMFVoiceID.MaxLength = 17;
 			this.txtPMFVoiceID.Name = "txtPMFVoiceID";
-			this.txtPMFVoiceID.Size = new System.Drawing.Size(112, 20);
+			this.txtPMFVoiceID.Size = new System.Drawing.Size(95, 20);
 			this.txtPMFVoiceID.TabIndex = 12;
 			// 
 			// txtPrimFail1
@@ -6403,7 +6631,7 @@ namespace Idmr.Yogeme
 			this.txtPrimFailNote.Location = new System.Drawing.Point(54, 106);
 			this.txtPrimFailNote.MaxLength = 100;
 			this.txtPrimFailNote.Name = "txtPrimFailNote";
-			this.txtPrimFailNote.Size = new System.Drawing.Size(314, 20);
+			this.txtPrimFailNote.Size = new System.Drawing.Size(195, 20);
 			this.txtPrimFailNote.TabIndex = 15;
 			// 
 			// txtPrimFail2
@@ -6416,14 +6644,31 @@ namespace Idmr.Yogeme
 			this.txtPrimFail2.Size = new System.Drawing.Size(352, 20);
 			this.txtPrimFail2.TabIndex = 15;
 			// 
+			// numPMFEomDelay
+			// 
+			this.numPMFEomDelay.Location = new System.Drawing.Point(52, 20);
+			this.numPMFEomDelay.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+			this.numPMFEomDelay.Name = "numPMFEomDelay";
+			this.numPMFEomDelay.Size = new System.Drawing.Size(48, 20);
+			this.numPMFEomDelay.TabIndex = 15;
+			this.numPMFEomDelay.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+			// 
 			// grpTeamOMC
 			// 
+			this.grpTeamOMC.Controls.Add(this.lblOMCDelay);
+			this.grpTeamOMC.Controls.Add(this.label115);
+			this.grpTeamOMC.Controls.Add(this.cboOMCEomFG);
 			this.grpTeamOMC.Controls.Add(this.label30);
 			this.grpTeamOMC.Controls.Add(this.label22);
 			this.grpTeamOMC.Controls.Add(this.txtOMCVoiceID);
-			this.grpTeamOMC.Controls.Add(this.txtSecComp1);
-			this.grpTeamOMC.Controls.Add(this.txtSecCompNote);
-			this.grpTeamOMC.Controls.Add(this.txtSecComp2);
+			this.grpTeamOMC.Controls.Add(this.txtOutstanding1);
+			this.grpTeamOMC.Controls.Add(this.txtOutstandingNote);
+			this.grpTeamOMC.Controls.Add(this.txtOutstanding2);
+			this.grpTeamOMC.Controls.Add(this.numOMCEomDelay);
 			this.grpTeamOMC.Location = new System.Drawing.Point(10, 162);
 			this.grpTeamOMC.Name = "grpTeamOMC";
 			this.grpTeamOMC.Size = new System.Drawing.Size(384, 132);
@@ -6431,6 +6676,32 @@ namespace Idmr.Yogeme
 			this.grpTeamOMC.TabStop = false;
 			this.grpTeamOMC.Text = "Outstanding Mission Complete";
 			this.grpTeamOMC.Leave += new System.EventHandler(this.grpTeamOMC_Leave);
+			// 
+			// lblOMCDelay
+			// 
+			this.lblOMCDelay.Location = new System.Drawing.Point(106, 21);
+			this.lblOMCDelay.Name = "lblOMCDelay";
+			this.lblOMCDelay.Size = new System.Drawing.Size(86, 13);
+			this.lblOMCDelay.TabIndex = 51;
+			this.lblOMCDelay.Text = "0:00";
+			// 
+			// label115
+			// 
+			this.label115.AutoSize = true;
+			this.label115.Location = new System.Drawing.Point(13, 19);
+			this.label115.Name = "label115";
+			this.label115.Size = new System.Drawing.Size(37, 13);
+			this.label115.TabIndex = 41;
+			this.label115.Text = "Delay:";
+			// 
+			// cboOMCEomFG
+			// 
+			this.cboOMCEomFG.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboOMCEomFG.FormattingEnabled = true;
+			this.cboOMCEomFG.Location = new System.Drawing.Point(257, 106);
+			this.cboOMCEomFG.Name = "cboOMCEomFG";
+			this.cboOMCEomFG.Size = new System.Drawing.Size(121, 21);
+			this.cboOMCEomFG.TabIndex = 22;
 			// 
 			// label30
 			// 
@@ -6444,7 +6715,7 @@ namespace Idmr.Yogeme
 			// label22
 			// 
 			this.label22.AutoSize = true;
-			this.label22.Location = new System.Drawing.Point(202, 22);
+			this.label22.Location = new System.Drawing.Point(219, 22);
 			this.label22.Name = "label22";
 			this.label22.Size = new System.Drawing.Size(48, 13);
 			this.label22.TabIndex = 13;
@@ -6452,48 +6723,65 @@ namespace Idmr.Yogeme
 			// 
 			// txtOMCVoiceID
 			// 
-			this.txtOMCVoiceID.Location = new System.Drawing.Point(256, 19);
+			this.txtOMCVoiceID.Location = new System.Drawing.Point(273, 19);
 			this.txtOMCVoiceID.MaxLength = 17;
 			this.txtOMCVoiceID.Name = "txtOMCVoiceID";
-			this.txtOMCVoiceID.Size = new System.Drawing.Size(112, 20);
+			this.txtOMCVoiceID.Size = new System.Drawing.Size(95, 20);
 			this.txtOMCVoiceID.TabIndex = 12;
 			// 
-			// txtSecComp1
+			// txtOutstanding1
 			// 
-			this.txtSecComp1.BackColor = System.Drawing.Color.Black;
-			this.txtSecComp1.ForeColor = System.Drawing.Color.DodgerBlue;
-			this.txtSecComp1.Location = new System.Drawing.Point(16, 45);
-			this.txtSecComp1.MaxLength = 64;
-			this.txtSecComp1.Name = "txtSecComp1";
-			this.txtSecComp1.Size = new System.Drawing.Size(352, 20);
-			this.txtSecComp1.TabIndex = 12;
+			this.txtOutstanding1.BackColor = System.Drawing.Color.Black;
+			this.txtOutstanding1.ForeColor = System.Drawing.Color.DodgerBlue;
+			this.txtOutstanding1.Location = new System.Drawing.Point(16, 45);
+			this.txtOutstanding1.MaxLength = 64;
+			this.txtOutstanding1.Name = "txtOutstanding1";
+			this.txtOutstanding1.Size = new System.Drawing.Size(352, 20);
+			this.txtOutstanding1.TabIndex = 12;
 			// 
-			// txtSecCompNote
+			// txtOutstandingNote
 			// 
-			this.txtSecCompNote.Location = new System.Drawing.Point(54, 106);
-			this.txtSecCompNote.MaxLength = 100;
-			this.txtSecCompNote.Name = "txtSecCompNote";
-			this.txtSecCompNote.Size = new System.Drawing.Size(314, 20);
-			this.txtSecCompNote.TabIndex = 13;
+			this.txtOutstandingNote.Location = new System.Drawing.Point(54, 106);
+			this.txtOutstandingNote.MaxLength = 100;
+			this.txtOutstandingNote.Name = "txtOutstandingNote";
+			this.txtOutstandingNote.Size = new System.Drawing.Size(195, 20);
+			this.txtOutstandingNote.TabIndex = 13;
 			// 
-			// txtSecComp2
+			// txtOutstanding2
 			// 
-			this.txtSecComp2.BackColor = System.Drawing.Color.Black;
-			this.txtSecComp2.ForeColor = System.Drawing.Color.DodgerBlue;
-			this.txtSecComp2.Location = new System.Drawing.Point(16, 77);
-			this.txtSecComp2.MaxLength = 64;
-			this.txtSecComp2.Name = "txtSecComp2";
-			this.txtSecComp2.Size = new System.Drawing.Size(352, 20);
-			this.txtSecComp2.TabIndex = 13;
+			this.txtOutstanding2.BackColor = System.Drawing.Color.Black;
+			this.txtOutstanding2.ForeColor = System.Drawing.Color.DodgerBlue;
+			this.txtOutstanding2.Location = new System.Drawing.Point(16, 77);
+			this.txtOutstanding2.MaxLength = 64;
+			this.txtOutstanding2.Name = "txtOutstanding2";
+			this.txtOutstanding2.Size = new System.Drawing.Size(352, 20);
+			this.txtOutstanding2.TabIndex = 13;
+			// 
+			// numOMCEomDelay
+			// 
+			this.numOMCEomDelay.Location = new System.Drawing.Point(52, 19);
+			this.numOMCEomDelay.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+			this.numOMCEomDelay.Name = "numOMCEomDelay";
+			this.numOMCEomDelay.Size = new System.Drawing.Size(48, 20);
+			this.numOMCEomDelay.TabIndex = 13;
+			this.numOMCEomDelay.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
 			// 
 			// grpTeamPMC
 			// 
+			this.grpTeamPMC.Controls.Add(this.lblPMCDelay);
+			this.grpTeamPMC.Controls.Add(this.label114);
 			this.grpTeamPMC.Controls.Add(this.label27);
+			this.grpTeamPMC.Controls.Add(this.cboPMCEomFG);
 			this.grpTeamPMC.Controls.Add(this.label6);
 			this.grpTeamPMC.Controls.Add(this.txtPMCVoiceID);
 			this.grpTeamPMC.Controls.Add(this.txtPrimComp1);
 			this.grpTeamPMC.Controls.Add(this.txtPrimCompNote);
 			this.grpTeamPMC.Controls.Add(this.txtPrimComp2);
+			this.grpTeamPMC.Controls.Add(this.numPMCEomDelay);
 			this.grpTeamPMC.Location = new System.Drawing.Point(8, 24);
 			this.grpTeamPMC.Name = "grpTeamPMC";
 			this.grpTeamPMC.Size = new System.Drawing.Size(384, 132);
@@ -6501,6 +6789,23 @@ namespace Idmr.Yogeme
 			this.grpTeamPMC.TabStop = false;
 			this.grpTeamPMC.Text = "Primary Mission Complete";
 			this.grpTeamPMC.Leave += new System.EventHandler(this.grpTeamPMC_Leave);
+			// 
+			// lblPMCDelay
+			// 
+			this.lblPMCDelay.Location = new System.Drawing.Point(112, 22);
+			this.lblPMCDelay.Name = "lblPMCDelay";
+			this.lblPMCDelay.Size = new System.Drawing.Size(86, 13);
+			this.lblPMCDelay.TabIndex = 51;
+			this.lblPMCDelay.Text = "0:00";
+			// 
+			// label114
+			// 
+			this.label114.AutoSize = true;
+			this.label114.Location = new System.Drawing.Point(15, 21);
+			this.label114.Name = "label114";
+			this.label114.Size = new System.Drawing.Size(37, 13);
+			this.label114.TabIndex = 41;
+			this.label114.Text = "Delay:";
 			// 
 			// label27
 			// 
@@ -6511,10 +6816,19 @@ namespace Idmr.Yogeme
 			this.label27.TabIndex = 14;
 			this.label27.Text = "Note";
 			// 
+			// cboPMCEomFG
+			// 
+			this.cboPMCEomFG.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboPMCEomFG.FormattingEnabled = true;
+			this.cboPMCEomFG.Location = new System.Drawing.Point(257, 106);
+			this.cboPMCEomFG.Name = "cboPMCEomFG";
+			this.cboPMCEomFG.Size = new System.Drawing.Size(121, 21);
+			this.cboPMCEomFG.TabIndex = 22;
+			// 
 			// label6
 			// 
 			this.label6.AutoSize = true;
-			this.label6.Location = new System.Drawing.Point(202, 22);
+			this.label6.Location = new System.Drawing.Point(221, 22);
 			this.label6.Name = "label6";
 			this.label6.Size = new System.Drawing.Size(48, 13);
 			this.label6.TabIndex = 13;
@@ -6522,10 +6836,10 @@ namespace Idmr.Yogeme
 			// 
 			// txtPMCVoiceID
 			// 
-			this.txtPMCVoiceID.Location = new System.Drawing.Point(256, 19);
+			this.txtPMCVoiceID.Location = new System.Drawing.Point(275, 19);
 			this.txtPMCVoiceID.MaxLength = 17;
 			this.txtPMCVoiceID.Name = "txtPMCVoiceID";
-			this.txtPMCVoiceID.Size = new System.Drawing.Size(112, 20);
+			this.txtPMCVoiceID.Size = new System.Drawing.Size(93, 20);
 			this.txtPMCVoiceID.TabIndex = 12;
 			// 
 			// txtPrimComp1
@@ -6543,7 +6857,7 @@ namespace Idmr.Yogeme
 			this.txtPrimCompNote.Location = new System.Drawing.Point(54, 106);
 			this.txtPrimCompNote.MaxLength = 100;
 			this.txtPrimCompNote.Name = "txtPrimCompNote";
-			this.txtPrimCompNote.Size = new System.Drawing.Size(314, 20);
+			this.txtPrimCompNote.Size = new System.Drawing.Size(197, 20);
 			this.txtPrimCompNote.TabIndex = 11;
 			// 
 			// txtPrimComp2
@@ -6556,18 +6870,18 @@ namespace Idmr.Yogeme
 			this.txtPrimComp2.Size = new System.Drawing.Size(352, 20);
 			this.txtPrimComp2.TabIndex = 11;
 			// 
-			// numTeamEomFG2
+			// numPMCEomDelay
 			// 
-			this.numTeamEomFG2.Location = new System.Drawing.Point(108, 426);
-			this.numTeamEomFG2.Maximum = new decimal(new int[] {
+			this.numPMCEomDelay.Location = new System.Drawing.Point(58, 20);
+			this.numPMCEomDelay.Maximum = new decimal(new int[] {
             255,
             0,
             0,
             0});
-			this.numTeamEomFG2.Name = "numTeamEomFG2";
-			this.numTeamEomFG2.Size = new System.Drawing.Size(48, 20);
-			this.numTeamEomFG2.TabIndex = 19;
-			this.numTeamEomFG2.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+			this.numPMCEomDelay.Name = "numPMCEomDelay";
+			this.numPMCEomDelay.Size = new System.Drawing.Size(48, 20);
+			this.numPMCEomDelay.TabIndex = 11;
+			this.numPMCEomDelay.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
 			// 
 			// txtTeamName
 			// 
@@ -6587,19 +6901,6 @@ namespace Idmr.Yogeme
 			this.label96.TabIndex = 4;
 			this.label96.Text = "Name:";
 			this.label96.TextAlign = System.Drawing.ContentAlignment.BottomRight;
-			// 
-			// numTeamEomFG1
-			// 
-			this.numTeamEomFG1.Location = new System.Drawing.Point(50, 426);
-			this.numTeamEomFG1.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
-			this.numTeamEomFG1.Name = "numTeamEomFG1";
-			this.numTeamEomFG1.Size = new System.Drawing.Size(48, 20);
-			this.numTeamEomFG1.TabIndex = 17;
-			this.numTeamEomFG1.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
 			// 
 			// groupBox30
 			// 
@@ -7150,45 +7451,6 @@ namespace Idmr.Yogeme
 			this.lblTeam10.Text = "Team 10: Team 10";
 			this.lblTeam10.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
-			// numTeamEomDelay1
-			// 
-			this.numTeamEomDelay1.Location = new System.Drawing.Point(50, 388);
-			this.numTeamEomDelay1.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
-			this.numTeamEomDelay1.Name = "numTeamEomDelay1";
-			this.numTeamEomDelay1.Size = new System.Drawing.Size(48, 20);
-			this.numTeamEomDelay1.TabIndex = 11;
-			this.numTeamEomDelay1.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-			// 
-			// numTeamEomDelay3
-			// 
-			this.numTeamEomDelay3.Location = new System.Drawing.Point(162, 388);
-			this.numTeamEomDelay3.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
-			this.numTeamEomDelay3.Name = "numTeamEomDelay3";
-			this.numTeamEomDelay3.Size = new System.Drawing.Size(48, 20);
-			this.numTeamEomDelay3.TabIndex = 15;
-			this.numTeamEomDelay3.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-			// 
-			// numTeamEomDelay2
-			// 
-			this.numTeamEomDelay2.Location = new System.Drawing.Point(108, 388);
-			this.numTeamEomDelay2.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
-			this.numTeamEomDelay2.Name = "numTeamEomDelay2";
-			this.numTeamEomDelay2.Size = new System.Drawing.Size(48, 20);
-			this.numTeamEomDelay2.TabIndex = 13;
-			this.numTeamEomDelay2.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-			// 
 			// tabMission
 			// 
 			this.tabMission.BackColor = System.Drawing.SystemColors.Control;
@@ -7711,10 +7973,11 @@ namespace Idmr.Yogeme
 			// 
 			// chkGURandom
 			// 
-			this.chkGURandom.Location = new System.Drawing.Point(142, 99);
+			this.chkGURandom.AutoSize = true;
+			this.chkGURandom.Location = new System.Drawing.Point(140, 100);
 			this.chkGURandom.Name = "chkGURandom";
 			this.chkGURandom.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-			this.chkGURandom.Size = new System.Drawing.Size(72, 24);
+			this.chkGURandom.Size = new System.Drawing.Size(66, 17);
 			this.chkGURandom.TabIndex = 12;
 			this.chkGURandom.Text = "Random";
 			this.chkGURandom.CheckedChanged += new System.EventHandler(this.chkGURandom_CheckedChanged);
@@ -7839,10 +8102,11 @@ namespace Idmr.Yogeme
 			// 
 			// chkGGRandom
 			// 
-			this.chkGGRandom.Location = new System.Drawing.Point(142, 99);
+			this.chkGGRandom.AutoSize = true;
+			this.chkGGRandom.Location = new System.Drawing.Point(140, 100);
 			this.chkGGRandom.Name = "chkGGRandom";
 			this.chkGGRandom.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-			this.chkGGRandom.Size = new System.Drawing.Size(72, 24);
+			this.chkGGRandom.Size = new System.Drawing.Size(66, 17);
 			this.chkGGRandom.TabIndex = 12;
 			this.chkGGRandom.Text = "Random";
 			this.chkGGRandom.CheckedChanged += new System.EventHandler(this.chkGGRandom_CheckedChanged);
@@ -8188,6 +8452,7 @@ namespace Idmr.Yogeme
 			((System.ComponentModel.ISupportInitialize)(this.numGG)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.numGU)).EndInit();
 			this.grpCraft2.ResumeLayout(false);
+			this.grpCraft2.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numSpacing)).EndInit();
 			this.grpCraft4.ResumeLayout(false);
 			this.grpCraft4.PerformLayout();
@@ -8211,7 +8476,6 @@ namespace Idmr.Yogeme
 			this.groupBox12.PerformLayout();
 			this.tabGoals.ResumeLayout(false);
 			this.tabGoals.PerformLayout();
-			((System.ComponentModel.ISupportInitialize)(this.numUnk42)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.numGoalTimeLimit)).EndInit();
 			this.grpGoal.ResumeLayout(false);
 			this.grpGoal.PerformLayout();
@@ -8224,7 +8488,7 @@ namespace Idmr.Yogeme
 			((System.ComponentModel.ISupportInitialize)(this.numWPOrder)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.numWPOrderRegion)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.numHYP)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.numSP3)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.numWPCapture)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.numSP2)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.numSP1)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.numRoll)).EndInit();
@@ -8256,12 +8520,18 @@ namespace Idmr.Yogeme
 			this.groupBox21.ResumeLayout(false);
 			this.groupBox20.ResumeLayout(false);
 			this.groupBox19.ResumeLayout(false);
-			this.tabUnk.ResumeLayout(false);
-			((System.ComponentModel.ISupportInitialize)(this.numArrRandSec)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.numDepClockMin)).EndInit();
+			this.tabArrDep2.ResumeLayout(false);
+			this.grpMoreDep.ResumeLayout(false);
+			this.grpMoreDep.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numDepClockSec)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.numDepClockMin)).EndInit();
+			this.grpMoreArrival.ResumeLayout(false);
+			this.grpMoreArrival.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.numArrRandMin)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.numArrRandSec)).EndInit();
 			this.tabMess.ResumeLayout(false);
 			this.tabMess.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.numMessType)).EndInit();
 			this.grpMessCancel.ResumeLayout(false);
 			this.grpMessages.ResumeLayout(false);
 			this.panel8.ResumeLayout(false);
@@ -8270,9 +8540,7 @@ namespace Idmr.Yogeme
 			((System.ComponentModel.ISupportInitialize)(this.numMessDelay)).EndInit();
 			this.tabGlob.ResumeLayout(false);
 			this.tabGlob.PerformLayout();
-			((System.ComponentModel.ISupportInitialize)(this.numGlobPtsPerTrig3)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.numGlobPtsPerTrig2)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.numGlobPtsPerTrig1)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.numGlobTrigPts)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.numGlobActSeq)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.numGlobDelay)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.numGlobalPoints)).EndInit();
@@ -8287,16 +8555,16 @@ namespace Idmr.Yogeme
 			this.panel5.ResumeLayout(false);
 			this.tabTeam.ResumeLayout(false);
 			this.tabTeam.PerformLayout();
-			((System.ComponentModel.ISupportInitialize)(this.numTeamEomFG3)).EndInit();
 			this.groupBox32.ResumeLayout(false);
 			this.grpTeamPMF.ResumeLayout(false);
 			this.grpTeamPMF.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.numPMFEomDelay)).EndInit();
 			this.grpTeamOMC.ResumeLayout(false);
 			this.grpTeamOMC.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.numOMCEomDelay)).EndInit();
 			this.grpTeamPMC.ResumeLayout(false);
 			this.grpTeamPMC.PerformLayout();
-			((System.ComponentModel.ISupportInitialize)(this.numTeamEomFG2)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.numTeamEomFG1)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.numPMCEomDelay)).EndInit();
 			this.groupBox30.ResumeLayout(false);
 			this.panel12.ResumeLayout(false);
 			this.panel12.PerformLayout();
@@ -8318,9 +8586,6 @@ namespace Idmr.Yogeme
 			this.panel13.PerformLayout();
 			this.panel11.ResumeLayout(false);
 			this.panel11.PerformLayout();
-			((System.ComponentModel.ISupportInitialize)(this.numTeamEomDelay1)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.numTeamEomDelay3)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.numTeamEomDelay2)).EndInit();
 			this.tabMission.ResumeLayout(false);
 			this.tabMission.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pctLogo)).EndInit();
@@ -8569,7 +8834,7 @@ namespace Idmr.Yogeme
 		private CheckBox chkWP7;
 		private CheckBox chkWP2;
 		private CheckBox chkWP1;
-		private CheckBox chkSP3;
+		private CheckBox chkWPCapture;
 		private CheckBox chkSP2;
 		private CheckBox chkSP1;
 		private CheckBox chkWP6;
@@ -8668,7 +8933,7 @@ namespace Idmr.Yogeme
 		private CheckBox chkOptWAdvMissile;
 		private CheckBox chkOptWAdvTorp;
 		private CheckBox chkOptWMagPulse;
-		private TabPage tabUnk;
+		private TabPage tabArrDep2;
 		private Label label1;
 		private ListBox lstFG;
 		private TabPage tabMess;
@@ -8772,8 +9037,8 @@ namespace Idmr.Yogeme
 		private TextBox txtPrimFail1;
 		private TextBox txtPrimFail2;
 		private GroupBox grpTeamOMC;
-		private TextBox txtSecComp1;
-		private TextBox txtSecComp2;
+		private TextBox txtOutstanding1;
+		private TextBox txtOutstanding2;
 		private GroupBox grpTeamPMC;
 		private TextBox txtPrimComp1;
 		private TextBox txtPrimComp2;
@@ -8804,7 +9069,7 @@ namespace Idmr.Yogeme
 		private DataGrid dataO_Raw;
 		private DataGrid dataO;
 		private NumericUpDown numHYP;
-		private NumericUpDown numSP3;
+		private NumericUpDown numWPCapture;
 		private NumericUpDown numSP2;
 		private NumericUpDown numSP1;
 		private Label label25;
@@ -8836,10 +9101,7 @@ namespace Idmr.Yogeme
 		private NumericUpDown numBackdrop;
 		private Label label122;
 		private ComboBox cboGlobCargo;
-		private NumericUpDown numGlobPtsPerTrig1;
 		private NumericUpDown numGlobDelay;
-		private NumericUpDown numGlobPtsPerTrig3;
-		private NumericUpDown numGlobPtsPerTrig2;
 		private Label label128;
 		private NumericUpDown numGlobActSeq;
 		private ComboBox cboLogo;
@@ -8923,12 +9185,9 @@ namespace Idmr.Yogeme
 		private RadioButton optAllies9;
 		private RadioButton optAllies7;
 		private RadioButton optAllies8;
-		private NumericUpDown numTeamEomFG3;
-		private NumericUpDown numTeamEomFG2;
-		private NumericUpDown numTeamEomFG1;
-		private NumericUpDown numTeamEomDelay3;
-		private NumericUpDown numTeamEomDelay2;
-		private NumericUpDown numTeamEomDelay1;
+		private NumericUpDown numPMFEomDelay;
+		private NumericUpDown numOMCEomDelay;
+		private NumericUpDown numPMCEomDelay;
 		private Label label143;
 		private Label lblGC;
 		private MenuItem menuLST;
@@ -8943,7 +9202,7 @@ namespace Idmr.Yogeme
 		private Label label53;
 		private TextBox txtPrimFailNote;
 		private Label label30;
-		private TextBox txtSecCompNote;
+		private TextBox txtOutstandingNote;
 		private Label label27;
 		private TextBox txtPrimCompNote;
 		private PictureBox pctLogo;
@@ -8973,7 +9232,6 @@ namespace Idmr.Yogeme
         private MenuItem menuNewXwing;
         private MenuItem menuHyperbuoy;
 		private MenuItem menuSuperBackdrops;
-		private Label lblOV1Meaning;
         private Label lblDelay;
         private Button cmdMissionCraft;
         private ComboBox cboPilot;
@@ -8985,8 +9243,6 @@ namespace Idmr.Yogeme
         private NumericUpDown numGoalTimeLimit;
         private Label lblGoalTimeLimitNote;
         private ComboBox cboOSpeed;
-		private NumericUpDown numUnk42;
-		private Label label152;
 		private MenuItem menuHooks;
 		private MenuItem menuLibrary;
 		private ToolBarButton toolWav;
@@ -9039,5 +9295,37 @@ namespace Idmr.Yogeme
 		private ComboBox cboWinOfficer;
 		private Label label91;
 		private Label label90;
+		private GroupBox grpMoreArrival;
+		private NumericUpDown numArrRandMin;
+		private Label lblRandomArrivalDelayMinutes;
+		private Label lblRandomArrivalDelaySeconds;
+		private Label lblRandomArrivalDelayDesc;
+		private ComboBox cboStopArrivingWhen;
+		private Label lblStopArrivingWhen;
+		private GroupBox grpMoreDep;
+		private Label label94;
+		private Label label93;
+		private Label label92;
+		private Label label95;
+		private ComboBox cboHandicap;
+		private Label label104;
+		private ComboBox cboMessSpecial;
+		private Label label106;
+		private Label label105;
+		private CheckBox chkMessHeader;
+		private NumericUpDown numMessType;
+		private NumericUpDown numGlobTrigPts;
+		private Label label107;
+		private Label lblGlobDelay;
+		private Label label113;
+		private ComboBox cboPMFEomFG;
+		private ComboBox cboOMCEomFG;
+		private ComboBox cboPMCEomFG;
+		private Label label116;
+		private Label label115;
+		private Label label114;
+		private Label lblPMFDelay;
+		private Label lblOMCDelay;
+		private Label lblPMCDelay;
 	}
 }

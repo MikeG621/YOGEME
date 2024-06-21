@@ -52,6 +52,11 @@ Extensive updates due to changes in Platform.dll, using the full file format spe
 details for GlobalUnits added.
   - Did not expose "ID" property of GlobalCargo or Region, pretty sure that's for internal use.
 - (XWA) GlobalUnit names and GlobalCargo will now appear in trigger labels.
+- (XWA) Radio and Formation drop-downs swapped positions.
+- (XWA) Rendzvous WP renamed to "Capture HYP".
+- (XWA) Added Flightgroup Handicap, "More Arr/Dep" tab
+- (XWA) Added Messages Type, Speaker Header, Special Meaning. Don't know what they do.
+- (XWA) Added Global Goals Trigger Points and Delay
 ---
 ### Additional Information
 #### Dependencies
