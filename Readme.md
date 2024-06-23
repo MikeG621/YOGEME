@@ -42,11 +42,13 @@ Extensive updates due to changes in Platform.dll, using the full file format spe
 - (Briefing) Labels for Unk1/2 StartLength/EventLength and the Unknowns group deleted.
 - (Briefing) X-wing page events now edited directly instead of copying back and forth to a separate array first.
 - (Hyper dialog) Update per spec, enum use to remove magic numbers.
+- (TIE) Test respects the "DetectMission" setting.
 - (TIE) Added TimeLimit, RndSeed, Global Goal editor note.
 - (TIE) Arr/Dep renames.
 - (TIE) IFF 5 (Red) permanently checked to match game behavior.
 - (TIE) Fixed a bug where the Questions wouldn't clear properly when loading a second mission.
 - (XvT) Added Flightgroup Handicap, Global Goal delay, EoM delay.
+- (XvT) Test respects the "DetectMission" setting.
 - (XWA) Mission tab: Added GoalsUnimportant, WinOfficer, FailOfficer
 - (XWA) Mission2 tab: Added the rest of the properties for GlobalCargo and GlobalGroups (which also expanded to 32 total),
 details for GlobalUnits added.
@@ -57,6 +59,7 @@ details for GlobalUnits added.
 - (XWA) Added Flightgroup Handicap, "More Arr/Dep" tab
 - (XWA) Added Messages Type, Speaker Header, Special Meaning. Don't know what they do.
 - (XWA) Added Global Goals Trigger Points and Delay
+- (XWA) Test respects the "DetectMission" setting.
 ---
 ### Additional Information
 #### Dependencies

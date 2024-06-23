@@ -8,6 +8,7 @@
 
 /* CHANGELOG
  * [UPD] spec updates, cleanup
+ * [FIX] Test now respects XvtDetectMission setting
  * v1.15.5, 231222
  * [NEW #97] GlobalSummary dialog
  * [UPD] SaveAs XWA now uses Platform
@@ -1881,10 +1882,10 @@ namespace Idmr.Yogeme
 			menuSave_Click("menuTest_Click", new EventArgs());
 			if (_mission.MissionPath == "\\NewMission.tie") return;
 
-			string path = Directory.GetParent(_mission.MissionPath).Parent.FullName + "\\";
+			string path = (!_config.XvtDetectMission ? (_mission.IsBop ? _config.BopPath : _config.XvtPath) : Directory.GetParent(_mission.MissionPath).Parent.FullName + "\\");
 			string xvtPath;
 			string bopPath;
-			if (!File.Exists(path + "Z_XVT__.exe"))
+			if (!File.Exists(path + "Z_XVT__.exe") && _config.XvtDetectMission)
 			{
 				System.Diagnostics.Debug.WriteLine("XvT/BoP not detected at MissionPath, default used");
 				path = (_mission.IsBop ? _config.BopPath : _config.XvtPath) + "\\";

@@ -10,6 +10,7 @@
  * [UPD] Spec updates (TimeLimit, RndSeed, Vars, WinBonus, Rescue, EomDelay, GlobalDelay, WaveDelay, ArrDep renames)
  * [UPD] IFF5 (Red) Hostile permanently checked
  * [FIX] Questions not clearing properly when loading a second mission
+ * [FIX] Test now respects TieDetectMission setting
  * v1.15.5, 231222
  * [NEW #97] GlobalSummary dialog
  * [UPD] SaveAs upgrades now use Platform
@@ -1585,8 +1586,8 @@ namespace Idmr.Yogeme
 			menuSave_Click("menuTest_Click", new EventArgs());
 			if (_mission.MissionPath == "\\NewMission.tie") return;
 
-			string path = Directory.GetParent(_mission.MissionPath).Parent.FullName + "\\";
-			if (!File.Exists(path + "TIE95.exe"))
+			string path = (_config.TieDetectMission ? Directory.GetParent(_mission.MissionPath).Parent.FullName + "\\" : _config.TiePath);
+			if (!File.Exists(path + "TIE95.exe") && _config.TieDetectMission)
 			{
 				System.Diagnostics.Debug.WriteLine("TIE not detected at MissionPath, default used");
 				path = _config.TiePath + "\\";
