@@ -8,7 +8,7 @@
 
 /* CHANGELOG
  * [FIX] Test now respects XwaDetectMission setting
- * [UPD] spec udpates
+ * [UPD] spec updates
  * v1.15.7, 240519
  * [FIX] Briefing Logo wasn't accounting for "None" properly
  * v1.15.6, 240311
@@ -335,96 +335,79 @@ namespace Idmr.Yogeme
 			if (varType == -1) return;
 			cbo.Items.Clear();
 			string[] temp;
-			switch (varType)
+			switch ((Mission.Trigger.TypeList)varType)
 			{
-				case 0:
+				case Mission.Trigger.TypeList.None:
+				case Mission.Trigger.TypeList.AllCraft:
 					cbo.Items.Add("None");
 					break;
-				case 1: // Flight Group
+				case Mission.Trigger.TypeList.FlightGroup:
+				case Mission.Trigger.TypeList.NotFG:
 					cbo.Items.AddRange(_mission.FlightGroups.GetList());
 					break;
-				case 2: // Ship Type
+				case Mission.Trigger.TypeList.ShipType:
+				case Mission.Trigger.TypeList.NotShipType:
 					cbo.Items.AddRange(Strings.CraftType);
 					break;
-				case 3: // Ship Class
+				case Mission.Trigger.TypeList.ShipClass:
+				case Mission.Trigger.TypeList.NotShipClass:
 					cbo.Items.AddRange(Strings.ShipClass);
 					break;
-				case 4: // Object Type
+				case Mission.Trigger.TypeList.ObjectType:
+				case Mission.Trigger.TypeList.NotObjectType:
 					cbo.Items.AddRange(Strings.ObjectType);
 					break;
-				case 5: // IFF
+				case Mission.Trigger.TypeList.IFF:
+				case Mission.Trigger.TypeList.NotIFF:
 					cbo.Items.AddRange(getIffStrings());
 					break;
-				case 6: // Ship Orders
+				case Mission.Trigger.TypeList.ShipOrders:
 					cbo.Items.AddRange(Strings.Orders);
 					break;
-				case 7: // Craft when
+				case Mission.Trigger.TypeList.CraftWhen:
 					cbo.Items.AddRange(Strings.CraftWhen);
 					break;
-				case 8:  //Global Group
-				case 20: //All Global Groups except
+				case Mission.Trigger.TypeList.GlobalGroup:
+				case Mission.Trigger.TypeList.NotGlobalGroup:
 					temp = new string[256];
 					for(int i = 0; i < 256; i++)
 						temp[i] = ((i < _mission.GlobalGroups.Length && _mission.GlobalGroups[i].Name != "") ? i.ToString() + ": " + _mission.GlobalGroups[i].Name : i.ToString());
 					cbo.Items.AddRange(temp);
 					break;
-				case 9: // Rating
+				case Mission.Trigger.TypeList.AILevel:
 					cbo.Items.AddRange(Strings.Rating);
 					break;
-				case 10: // Craft with status
+				case Mission.Trigger.TypeList.Status:
 					cbo.Items.AddRange(Strings.Status);
 					break;
-				//case 11: // All
-				case 12: // Team
+				case Mission.Trigger.TypeList.Team:
+				case Mission.Trigger.TypeList.NotTeam:
 					temp = _mission.Teams.GetList();
 					for (int i = 0; i < temp.Length; i++)
-						if (temp[i] == "") temp[i] = "Team " + (i + 1).ToString();  //[JB] Modified to replace empty strings.
+						if (temp[i] == "") temp[i] = "Team " + (i + 1).ToString();
 					cbo.Items.AddRange(temp);
 					break;
-				//case 13: Player
-				case 14: // After delay
+				case Mission.Trigger.TypeList.BeforeTime:
 					temp = new string[256];
 					for (int i = 0; i < 256; i++) temp[i] = Common.GetFormattedTime(i * 5, false);
 					cbo.Items.AddRange(temp);
 					break;
-				case 15: // All Flight Groups except
-					cbo.Items.AddRange(_mission.FlightGroups.GetList());
-					break;
-				case 16: // All ship types except
-					cbo.Items.AddRange(Strings.CraftType);
-					break;
-				case 17: // All ship classes except
-					cbo.Items.AddRange(Strings.ShipClass);
-					break;
-				case 18: // All object types except
-					cbo.Items.AddRange(Strings.ObjectType);
-					break;
-				case 19: // All IFFs except
-					cbo.Items.AddRange(getIffStrings());
-					break;
-				case 21: // All Teams except
-					temp = _mission.Teams.GetList();
-					for (int i = 0; i < temp.Length; i++)
-						if (temp[i] == "") temp[i] = "Team " + (i + 1).ToString();  //[JB] Modified to replace empty strings.
-					cbo.Items.AddRange(temp);
-					break;
-				//case 13: All players except
-				case 23: //Global Unit
-				case 24: //All Global Units except
+				case Mission.Trigger.TypeList.GlobalUnit:
+				case Mission.Trigger.TypeList.NotGlobalUnit:
 					temp = new string[256];
 					for (int i = 0; i < 256; i++)
 						temp[i] = ((i < _mission.GlobalUnits.Length && _mission.GlobalUnits[i].Name != "") ? i.ToString() + ": " + _mission.GlobalUnits[i].Name : i.ToString());
 					cbo.Items.AddRange(temp);
 					break;
-				case 25: // Global Cargo
-				case 26: // All Global Cargos except
+				case Mission.Trigger.TypeList.GlobalCargo:
+				case Mission.Trigger.TypeList.NotGlobalCargo:
 					temp = new string[256];
 					for (int i = 0; i < 256; i++)
 						temp[i] = ((i < _mission.GlobalCargos.Length && _mission.GlobalCargos[i].Cargo != "") ? i.ToString() + ": " + _mission.GlobalCargos[i].Cargo : i.ToString());
 					cbo.Items.AddRange(temp);
 					break;
-				case 27: //Message #
-					temp = new string[256];  //[JB] Modified to display a one-based list of numbers, with message previews.
+				case Mission.Trigger.TypeList.MessageNum:
+					temp = new string[256];
 					for (int i = 0; i < 64; i++)
 					{
 						temp[i] = "#" + (i + 1).ToString();
@@ -435,6 +418,8 @@ namespace Idmr.Yogeme
 					for (int i = 64; i < 256; i++) temp[i] = i.ToString();
 					cbo.Items.AddRange(temp);
 					break;
+				//case 13: Player
+				//case 13: All players except
 				default:
 					temp = new string[256];
 					for (int i = 0; i < 256; i++) temp[i] = i.ToString();
