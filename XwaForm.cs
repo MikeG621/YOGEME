@@ -3694,16 +3694,13 @@ namespace Idmr.Yogeme
 					break;
 				case FlightGroup.Order.CommandList.DropOff:
 					if (var >= 1 && var <= _mission.FlightGroups.Count)   //Variable is FG #, one based.
-					{
 						text = _mission.FlightGroups[var - 1].ToString(false);
-					}
 					else
 					{
 						text = "None specified.";
 						warning = true;
 					}
-					if (ActiveControl == numOVar2)
-						orderLabelRefresh(); //Instant update the order.
+					if (ActiveControl == numOVar2) orderLabelRefresh(); //Instant update the order.
 					break;
 			}
 			lblOVar2Note.Text = text;
@@ -3813,12 +3810,11 @@ namespace Idmr.Yogeme
 		/// <remarks>Useful to keep the map synced to the main form's waypoint tab.</remarks>
 		void refreshMap(int fgIndex)
 		{
-			if (_fMap != null && !_fMap.IsDisposed)
-			{
-				if (fgIndex < 0) _fMap.Import(_mission.FlightGroups);
-				else if (fgIndex < _mission.FlightGroups.Count) _fMap.UpdateFlightGroup(fgIndex, _mission.FlightGroups[fgIndex]);
-				_fMap.MapPaint();
-			}
+			if (_fMap == null || _fMap.IsDisposed) return;
+			
+			if (fgIndex < 0) _fMap.Import(_mission.FlightGroups);
+			else if (fgIndex < _mission.FlightGroups.Count) _fMap.UpdateFlightGroup(fgIndex, _mission.FlightGroups[fgIndex]);
+			_fMap.MapPaint();
 		}
 		void refreshWaypointTab()
 		{
