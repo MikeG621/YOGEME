@@ -439,7 +439,7 @@ namespace Idmr.Yogeme
 		{
 			bool btemp = _loading;
 			_loading = true;
-			if ((trigger == (byte)Mission.Trigger.ConditionList.InProximity) || trigger == (byte)Mission.Trigger.ConditionList.NotInProximity) && cbo.Items.Count < 30)
+			if ((trigger == (byte)Mission.Trigger.ConditionList.InProximity || trigger == (byte)Mission.Trigger.ConditionList.NotInProximity) && cbo.Items.Count < 30)
 			{
 				int dist = cbo.SelectedIndex;
 				cbo.Items.Clear();
