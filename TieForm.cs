@@ -2458,7 +2458,18 @@ namespace Idmr.Yogeme
 					if (variable == 0) { text = "Zero, no loops!"; warning = true; }
 					else if (variable >= 128) { text = ((sbyte)variable).ToString() + ", no loops"; warning = true; }
 					break;
-				// TODO: Escort?
+				case FlightGroup.Order.CommandList.Escort:
+					if (variable < 9) text = "Above";
+					else if (variable > 17) text = "Below";
+					if (variable % 3 == 0) text += " Left";
+					else if (variable % 3 == 2) text += " Right";
+					if (variable == 13 || variable == 27) text = "Coincident";    // the only one that won't be caught otherwise
+					variable = (byte)(variable % 9);
+					if (variable < 3 && numOVar1.Value != 27) text = "Leading " + text;
+					else if (variable > 5) text = "Trailing " + text;
+					text = text.Replace("  ", " ");
+					if (numOVar1.Value > 27) text = "Invalid";
+					break;
 			}
 			lblOVar1Note.Text = text;
 			lblOVar1Note.Visible = (text != "");
