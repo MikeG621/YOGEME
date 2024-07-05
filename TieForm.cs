@@ -2025,20 +2025,19 @@ namespace Idmr.Yogeme
 			comboReset(cboArrMSAlt, fgList, _activeFG.AlternateMothership);
 			comboReset(cboDepMS, fgList, _activeFG.DepartureMothership);
 			comboReset(cboDepMSAlt, fgList, _activeFG.CapturedDepartureMothership);
-			//if (cboADTrigType.SelectedIndex == 1) comboReset(cboADTrigVar, fgList, _activeArrDepTrigger.Variable);
-			// TODO: switch these to lbl_Clicks like other platforms
-			if (cboOT1Type.SelectedIndex == 1) comboReset(cboOT1, fgList, _activeOrder.Target1);
-			if (cboOT2Type.SelectedIndex == 1) comboReset(cboOT2, fgList, _activeOrder.Target2);
-			if (cboOT3Type.SelectedIndex == 1) comboReset(cboOT3, fgList, _activeOrder.Target3);
-			if (cboOT4Type.SelectedIndex == 1) comboReset(cboOT4, fgList, _activeOrder.Target4);
 			if (cboMessType.SelectedIndex == 1) comboReset(cboMessVar, fgList, cboMessVar.SelectedIndex);
 			// Refresh trigger labels
 			for (int i = 0; i < 3; i++) labelRefresh(_activeFG.ArrDepTriggers[i], lblADTrig[i]);
 			lblADTrigArr_Click(lblADTrig[_activeArrDepTriggerIndex], new EventArgs());
 			byte restore = _activeOrderIndex;
 			for (_activeOrderIndex = 0; _activeOrderIndex < 3; _activeOrderIndex++) orderLabelRefresh();
-			_activeOrderIndex = restore;
-			// Global goals and messages are handled when switching tabs. See updateMissionTabs()
+			lblOrderArr_Click(lblOrder[restore], new EventArgs());
+			if (_mission.Messages.Count > 0)
+			{
+				var lbl = _activeMessageTrigIndex == 0 ? lblMess1 : lblMess2;
+				labelRefresh(_activeMessTrig, lbl);
+				lblMessArr_Click(lbl, new EventArgs());
+			}
 
 			_loading = temp;
 			listRefreshItem(_activeFGIndex);
@@ -2060,32 +2059,30 @@ namespace Idmr.Yogeme
 					continue;
 				}
 
-				// I'm also checking Type=20, just in case the "all GG except" is hiding in there somewhere, although at this point it's not documented
-				// TODO: need to conform that NotGG doesn't exist
 				foreach (Mission.Trigger adt in fg.ArrDepTriggers)
-					if ((adt.VariableType == typeGG || adt.VariableType == 20) && adt.Variable == gg)
+					if (adt.VariableType == typeGG && adt.Variable == gg)
 					{
 						if (update) adt.Variable = (byte)numGlobal.Value;
 						else refCount++;
 					}
 				foreach (FlightGroup.Order order in fg.Orders)
 				{
-					if ((order.Target1Type == typeGG || order.Target1Type == 20) && order.Target1 == gg)
+					if (order.Target1Type == typeGG && order.Target1 == gg)
 					{
 						if (update) order.Target1 = (byte)numGlobal.Value;
 						else refCount++;
 					}
-					if ((order.Target2Type == typeGG || order.Target2Type == 20) && order.Target2 == gg)
+					if (order.Target2Type == typeGG && order.Target2 == gg)
 					{
 						if (update) order.Target2 = (byte)numGlobal.Value;
 						else refCount++;
 					}
-					if ((order.Target3Type == typeGG || order.Target3Type == 20) && order.Target3 == gg)
+					if (order.Target3Type == typeGG && order.Target3 == gg)
 					{
 						if (update) order.Target3 = (byte)numGlobal.Value;
 						else refCount++;
 					}
-					if ((order.Target4Type == typeGG || order.Target4Type == 20) && order.Target4 == gg)
+					if (order.Target4Type == typeGG && order.Target4 == gg)
 					{
 						if (update) order.Target4 = (byte)numGlobal.Value;
 						else refCount++;
@@ -2094,14 +2091,14 @@ namespace Idmr.Yogeme
 			}
 			foreach (Globals.Goal goal in _mission.GlobalGoals.Goals)
 				foreach (Mission.Trigger trig in goal.Triggers)
-					if ((trig.VariableType == typeGG || trig.VariableType == 20) && trig.Variable == gg)
+					if (trig.VariableType == typeGG && trig.Variable == gg)
 					{
 						if (update) trig.Variable = (byte)numGlobal.Value;
 						else refCount++;
 					}
 			foreach (Platform.Tie.Message msg in _mission.Messages)
 				foreach (Mission.Trigger trig in msg.Triggers)
-					if ((trig.VariableType == typeGG || trig.VariableType == 20) && trig.Variable == gg)
+					if (trig.VariableType == typeGG && trig.Variable == gg)
 					{
 						if (update) trig.Variable = (byte)numGlobal.Value;
 						else refCount++;
