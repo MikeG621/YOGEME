@@ -411,7 +411,6 @@ namespace Idmr.Yogeme
 			int command = 0;
 			int throttle = 0;
 			int speed = 0;
-			// TODO: use enums
 			switch (_platform)
 			{
 				case Settings.Platform.XWING:
@@ -443,21 +442,22 @@ namespace Idmr.Yogeme
 			}
 			if (_platform != Settings.Platform.XWING)
 			{
-				switch (command)
+				var cmd = (Platform.Xwa.FlightGroup.Order.CommandList)command;
+				switch (cmd)
 				{
-					case 0:     // Hold Steady
-					case 0x5:   // Disabled
-					case 0x6:   // Await Boarding
-					case 0x13:  // Wait
-					case 0x14:  // Wait
-					case 0x16:  // SS Await Return
-					case 0x17:  // SS Launch
-					case 0x1C:  // various empty orders (hold steady)
-					case 0x1E:
-					case 0x21:
-					case 0x22:
-					case 0x23: 
-					case 0x24:  // Self-Destruct
+					case Platform.Xwa.FlightGroup.Order.CommandList.HoldSteady:
+					case Platform.Xwa.FlightGroup.Order.CommandList.Disabled:
+					case Platform.Xwa.FlightGroup.Order.CommandList.AwaitBoarding:
+					case Platform.Xwa.FlightGroup.Order.CommandList.Wait:
+					case Platform.Xwa.FlightGroup.Order.CommandList.SSWait:
+					case Platform.Xwa.FlightGroup.Order.CommandList.SSAwaitReturn:
+					case Platform.Xwa.FlightGroup.Order.CommandList.SSLaunch:
+					case Platform.Xwa.FlightGroup.Order.CommandList.Hold1C:
+					case Platform.Xwa.FlightGroup.Order.CommandList.Hold1E:
+					case Platform.Xwa.FlightGroup.Order.CommandList.Hold21:
+					case Platform.Xwa.FlightGroup.Order.CommandList.Hold22:
+					case Platform.Xwa.FlightGroup.Order.CommandList.Hold23: 
+					case Platform.Xwa.FlightGroup.Order.CommandList.SelfDestruct:
 						speed = 0;
 						throttle = 0;
 						break;

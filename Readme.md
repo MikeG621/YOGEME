@@ -41,6 +41,7 @@ Extensive updates due to changes in Platform.dll, using the full file format spe
 - (Briefing) Unknown 3 now labeled "Tile", still unknown effect. Confirmed no effect in TIE.
 - (Briefing) Labels for Unk1/2 StartLength/EventLength and the Unknowns group deleted.
 - (Briefing) X-wing page events now edited directly instead of copying back and forth to a separate array first.
+- (Briefing) Text tag, FG tag, and masking colors now defined at launch instead of during every paint.
 - (Hyper dialog) Update per spec, enum use to remove magic numbers.
 - (TIE) Test respects the "DetectMission" setting.
 - (TIE) Added TimeLimit, RndSeed, Global Goal editor note.

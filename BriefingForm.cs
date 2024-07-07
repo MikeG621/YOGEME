@@ -8,6 +8,8 @@
 
 /* CHANGELOG
  * [UPD] Updates due to Platform
+ * [UPD] Text tag, FG tag and mask colors defined at ctor instead of inline
+ * [NEW] TextTag and ShipTag structs to replace int[,] for _textTags and _fgTags
  * v1.15.3, 231111
  * [FIX #92] Event overflow due to XWA move
  * v1.14, 230804
@@ -95,21 +97,25 @@ namespace Idmr.Yogeme
 		Platform.Xwa.Briefing _xwaBriefing;
 		bool _loading = false;
 		readonly Color _normalColor;
-		//readonly Color _highlightColor; // TODO this is currently unused, maybe at some point work highlighting in
+		//readonly Color _highlightColor; // TODO: this is currently unused, maybe at some point work highlighting in
 		readonly Color _titleColor;
 		short[,] _events;   // this will contain the event listing for use, raw data is in Briefing.Events[]
 		short _zoomX = 48;
 		short _zoomY;
 		short _mapX, _mapY; // mapX and mapY will be different, namely the grid coordinates of the center, like how TIE handles it
 		Bitmap _map;
-		readonly int[,] _fgTags = new int[8, 2];    // [#, 0=FG/Icon 1=Time]
-		int[,] _textTags = new int[8, 4];   // [#, X, Y, color]
+		readonly ShipTag[] _fgTags = new ShipTag[8];
+		TextTag[] _textTags = new TextTag[8];
+		TextTag[] _ttBackup;
+		readonly Color[] _tagColors;
+		readonly Color[] _iffColors;
+		readonly Color[] _iffBackColors;
+		readonly Color[] _maskColors;
 		readonly DataTable _tableTags = new DataTable("Tags");
 		readonly DataTable _tableStrings = new DataTable("Strings");
 		readonly int _timerInterval;
 		BaseBriefing.EventType _eventType = BaseBriefing.EventType.None;
 		short _tempX, _tempY;
-		int[,] _tempTags;
 		readonly Settings.Platform _platform;
 		string[] _tags;
 		string[] _strings;
@@ -123,7 +129,7 @@ namespace Idmr.Yogeme
 		Point _popupPreviewMap;
 		bool _isMiddleDrag = false;
 		Point _popupMiddle;
-		bool _mapPaintScheduled = false;      //True if a paint is scheduled, that is a paint request is called while a paint is already in progress.
+		bool _mapPaintScheduled = false;
 
 		int _previousTimeIndex = 0;           //Tracks the previous time index of the briefing so we can detect when the user is manually scrolling through arbitrary times.
 		static int[] _xvtTagSizeCache = null;
@@ -132,7 +138,7 @@ namespace Idmr.Yogeme
 #pragma warning restore IDE1006 // Naming Styles
 		#endregion
 
-		static public string[] SharedTeamNames = new string[10]; //[JB] The other platforms need a way to communicate the team names to the briefing
+		static public string[] SharedTeamNames = new string[10];
 
 		public BriefingForm(Platform.Tie.FlightGroupCollection fg, Platform.Tie.Briefing briefing, EventHandler onModifiedCallback)
 		{
@@ -140,6 +146,32 @@ namespace Idmr.Yogeme
 			_platform = Settings.Platform.TIE;
 			_titleColor = Color.FromArgb(0xFC, 0xFC, 0x54);
 			_normalColor = Color.FromArgb(0xFC, 0xFC, 0xFC);
+			_tagColors = new Color[] {
+				Color.FromArgb(0, 0xAC, 0),			// green
+				Color.FromArgb(0xAC, 0, 0),			// red
+				Color.FromArgb(0xAC, 0, 0xAC),		// purple
+				Color.FromArgb(0, 0x2C, 0xAC),		// blue
+				Color.FromArgb(0xA8, 0, 0),			// red2
+				Color.FromArgb(0xFC, 0x54, 0x54),	// light red
+				Color.FromArgb(0x44, 0x44, 0x44),	// gray
+				Color.FromArgb(0xCC, 0xCC, 0xCC)	// white
+			};
+			_iffColors = new Color[] {
+				Color.FromArgb(0, 0xE0, 0),		// green
+				Color.FromArgb(0xE0, 0, 0),		// red
+				Color.FromArgb(0, 0x78, 0xE0),	// blue
+				Color.FromArgb(0xE0, 0, 0xE0),	// purple
+				Color.FromArgb(0xE0, 0, 0),		// red2
+				Color.FromArgb(0xE0, 0, 0xE0)	// purple2
+			};
+			_iffBackColors = new Color[] {
+				Color.FromArgb(0, 0x78, 0),		// green
+				Color.FromArgb(0x78, 0, 0),		// red
+				Color.FromArgb(0, 0x10, 0x78),	// blue
+				Color.FromArgb(0x78, 0, 0x78),	// purple
+				Color.FromArgb(0x78, 0, 0),		// red2
+				Color.FromArgb(0x78, 0, 0x78)	// purple2
+			};
 			//_highlightColor = Color.FromArgb(0x00, 0xA8, 0x00);
 			_zoomY = _zoomX;            // in most cases, these will remain the same
 			_tieBriefing = briefing;
@@ -190,9 +222,77 @@ namespace Idmr.Yogeme
 			_platform = Settings.Platform.XvT;
 			_titleColor = Color.FromArgb(0xFC, 0xFC, 0x00);
 			_normalColor = Color.FromArgb(0xF8, 0xFC, 0xF8);
+			_tagColors = new Color[] {
+				Color.FromArgb(0, 0xAC, 0),	// green
+				Color.FromArgb(0xA8, 0, 0),	// red
+				Color.FromArgb(0xA8, 0xAC, 0),	// yellow
+				Color.FromArgb(0, 0x2C, 0xA8),	// blue
+				Color.FromArgb(0xA8, 0, 0xA8),	// purple
+				Color.Black
+			};
+			_iffColors = new Color[] {
+				Color.FromArgb(0, 0xE0, 0),		// green
+				Color.FromArgb(0xE0, 0, 0),		// red
+				Color.FromArgb(0, 0, 0xE0),		// blue
+				Color.FromArgb(0xE0, 0xE0, 0),	// yellow
+				Color.FromArgb(0xE0, 0, 0),		// red2
+				Color.FromArgb(0xE0, 0, 0xE0)	// purple2
+			};
+			_iffBackColors = new Color[] {
+				Color.FromArgb(0, 0x78, 0),		// green
+				Color.FromArgb(0x78, 0, 0),		// red
+				Color.FromArgb(0, 0, 0x78),		// blue
+				Color.FromArgb(0x78, 0x78, 0),	// yellow
+				Color.FromArgb(0x78, 0, 0),		// red2
+				Color.FromArgb(0x78, 0, 0x78)	// purple2
+			};
+			_maskColors = new Color[] {
+				// green
+				Color.FromArgb(0x38, 0xD4, 0),
+				Color.FromArgb(0x18, 0xA8, 0),
+				Color.FromArgb(8, 0x7C, 0),
+				Color.FromArgb(0, 0x54, 0),
+				Color.Black,
+				Color.FromArgb(0, 1, 0),
+				// red
+				Color.FromArgb(0xF8, 0x24, 0),
+				Color.FromArgb(0xC0, 0x10, 0),
+				Color.FromArgb(0x80, 4, 0),
+				Color.FromArgb(0x48, 0, 0),
+				Color.Black,
+				Color.FromArgb(1, 0, 0),
+				// blue
+				Color.FromArgb(0x58, 0xDC, 0xF8),
+				Color.FromArgb(0x28, 0x84, 0xC0),
+				Color.FromArgb(8, 0x3C, 0x90),
+				Color.FromArgb(0, 8, 0x58),
+				Color.Black,
+				Color.FromArgb(0, 0, 1),
+				// yellow
+				Color.FromArgb(0xD8, 0xFC, 0),
+				Color.FromArgb(0xD0, 0xCC, 0),
+				Color.FromArgb(0xA8, 0x9C, 0),
+				Color.FromArgb(0x80, 0x74, 0),
+				Color.Black,
+				Color.FromArgb(1, 1, 0),
+				// red
+				Color.FromArgb(0xF8, 0x24, 0),
+				Color.FromArgb(0xC0, 0x10, 0),
+				Color.FromArgb(0x80, 4, 0),
+				Color.FromArgb(0x48, 0, 0),
+				Color.Black,
+				Color.FromArgb(1, 0, 0),
+				// purple
+				Color.FromArgb(0x90, 0x88, 0xF0),
+				Color.FromArgb(0x70, 0x5C, 0xB0),
+				Color.FromArgb(0x50, 0x30, 0x78),
+				Color.FromArgb(0x30, 8, 0x40),
+				Color.Black,
+				Color.FromArgb(1, 0, 1)
+			};
 			//_highlightColor = Color.FromArgb(0x40, 0xC4, 0x40);
 			_zoomY = _zoomX;
-			_xvtBriefingCollection = briefing; //[JB] Added
+			_xvtBriefingCollection = briefing;
 			_currentCollectionIndex = 0;
 			_xvtBriefing = briefing[0];
 			_maxEvents = Platform.Xvt.Briefing.EventQuantityLimit;
@@ -255,8 +355,7 @@ namespace Idmr.Yogeme
 			cboTextTag.SelectedIndex = 0;
 			cboColorTag.SelectedIndex = 0;
 
-			//[JB] Set values for team selection dropdown
-			for (int i = 0; i < _xvtBriefingCollection.Count; i++)  //XvT has 8 briefings
+			for (int i = 0; i < _xvtBriefingCollection.Count; i++)
 			{
 				string s = "Briefing " + (i + 1);
 				cboBriefIndex1.Items.Add(s);
@@ -279,6 +378,38 @@ namespace Idmr.Yogeme
 			_platform = Settings.Platform.XWA;
 			_titleColor = Color.FromArgb(0x63, 0x82, 0xFF);
 			_normalColor = Color.FromArgb(0xFF, 0xFF, 0xFF);
+			_tagColors = new Color[] {
+				Color.FromArgb(0, 0xE3, 0),	// green
+				Color.FromArgb(0xE7, 0, 0),	// red
+				Color.FromArgb(0xE7, 0xE3, 0),	// yellow
+				Color.FromArgb(0x63, 0x61, 0xE7),	// purple
+				Color.FromArgb(0xDE, 0, 0xDE),	// pink
+				Color.FromArgb(0, 4, 0xA5)	// blue
+			};
+			_iffColors = new Color[] {
+				Color.FromArgb(0, 0xE0, 0),		// green
+				Color.FromArgb(0xE0, 0, 0),		// red
+				Color.FromArgb(0x60, 0x60, 0xE0),	// blue
+				Color.FromArgb(0xE0, 0xE0, 0),	// yellow
+				Color.FromArgb(0xE0, 0, 0),		// red2
+				Color.FromArgb(0xE0, 0, 0xE0)	// purple
+			};
+			_iffBackColors = new Color[] {
+				Color.FromArgb(0, 0x78, 0),		// green
+				Color.FromArgb(0x78, 0, 0),		// red
+				Color.FromArgb(0x20, 0x20, 0x78),	// blue
+				Color.FromArgb(0x78, 0x78, 0),	// yellow
+				Color.FromArgb(0x78, 0, 0),		// red2
+				Color.FromArgb(0x78, 0, 0x78)	// purple
+			};
+			_maskColors = new Color[] {
+				Color.FromArgb(0x40, 0xBC, 0x20),	// green
+				Color.FromArgb(0xF8, 0x54, 0x50),	// red
+				Color.FromArgb(0x68, 0x8C, 0xF8),	// blue
+				Color.FromArgb(0xE8, 0xD0, 0x40),	// yellow
+				Color.FromArgb(0xF8, 0x54, 0x50),	// red2
+				Color.FromArgb(0xF8, 0x80, 0xF8)	// purple
+			};
 			//_highlightColor = _titleColor;
 			_zoomX = 32;
 			_zoomY = _zoomX;
@@ -361,8 +492,7 @@ namespace Idmr.Yogeme
 			cboNCraft.Items.AddRange(Platform.Xwa.Strings.CraftType);
 			#endregion
 			// Try loading directly from the installation.  If it fails, load the default image strip.
-			if (!loadXwaIcons(56))
-				importIcons(Application.StartupPath + "\\images\\XWA_BRF.bmp", 56);
+			if (!loadXwaIcons(56)) importIcons(Application.StartupPath + "\\images\\XWA_BRF.bmp", 56);
 			_tags = _xwaBriefing.BriefingTag;
 			_strings = _xwaBriefing.BriefingString;
 			importStrings();
@@ -398,8 +528,7 @@ namespace Idmr.Yogeme
 			cboNCraft.SelectedIndex = 0;
 			cboIconIff.SelectedIndex = 0;
 
-			//[JB] Set values for team selection dropdown
-			for (int i = 0; i < _xwaBriefingCollection.Count; i++)  //XvT has 8 briefings
+			for (int i = 0; i < _xwaBriefingCollection.Count; i++)
 			{
 				string s = "Briefing " + (i + 1);
 				cboBriefIndex1.Items.Add(s);
@@ -420,11 +549,7 @@ namespace Idmr.Yogeme
 		/// <summary>Handles redundant code for each of the 3 platform modes.</summary>
 		void postLoadInit()
 		{
-			//[JB] Now that we're done loading, force refresh of the cmdUp and cmdDown buttons.
-			if (lstEvents.Items.Count > 0)
-			{
-				lstEvents.SelectedIndex = 0;
-			}
+			if (lstEvents.Items.Count > 0) lstEvents.SelectedIndex = 0;
 			else
 			{
 				cmdUp.Enabled = false;
@@ -519,19 +644,18 @@ namespace Idmr.Yogeme
 					}
 				}
 				catch (ArgumentOutOfRangeException) { break; }	// if briefing is corrupted leading to an overflow, just kick out
-				// okay, now that's in a usable format, list the event in lstEvents
 				lstEvents.Items.Add("");
 				updateList(i);
 			}
 		}
 		void importStrings()
 		{
-			if (_tableTags.Columns.Count == 0)  //[JB] If switching Briefing indexes, the table columns are already initialized, so check to make sure.
+			if (_tableTags.Columns.Count == 0)
 			{
 				_tableTags.Columns.Add("tag");
 				_tableStrings.Columns.Add("string");
 			}
-			_tableTags.Clear();  //Erase existing strings in case switching Briefings.
+			_tableTags.Clear();
 			_tableStrings.Clear();
 			for (int i = 0; i < _tags.Length; i++)
 			{
@@ -557,10 +681,7 @@ namespace Idmr.Yogeme
 			_briefData = new BriefData[fg.Count];
 			cboFG.Items.Clear();
 			cboFGTag.Items.Clear();
-			for (int i = 0; i < fg.Count; i++)
-			{
-				fillBriefData(i, fg[i].CraftType, fg[i].Waypoints[14], null, fg[i].IFF, fg[i].Name);
-			}
+			for (int i = 0; i < fg.Count; i++) fillBriefData(i, fg[i].CraftType, fg[i].Waypoints[14], null, fg[i].IFF, fg[i].Name);
 		}
 		public void Import(Platform.Xvt.FlightGroupCollection fg)
 		{
@@ -570,44 +691,36 @@ namespace Idmr.Yogeme
 			for (int i = 0; i < fg.Count; i++)
 			{
 				var wps = new BaseFlightGroup.BaseWaypoint[8];
-				for (int k = 0; k < 8; k++)
-					wps[k] = fg[i].Waypoints[14 + k];
+				for (int k = 0; k < 8; k++) wps[k] = fg[i].Waypoints[14 + k];
 				fillBriefData(i, fg[i].CraftType, fg[i].Waypoints[14], wps, fg[i].IFF, fg[i].Name);
 			}
 		}
 		public void Save()
 		{
-			BaseBriefing brief = (_platform == Settings.Platform.TIE ? _tieBriefing : (_platform == Settings.Platform.XvT ? _xvtBriefing : (BaseBriefing)_xwaBriefing));
-			brief.Events.Clear();
+			_baseBrf.Events.Clear();
 			for (int evnt = 0; evnt < _maxEvents; evnt++)
 			{
 				if (_events[evnt, 1] == 0 || _events[evnt, 1] == (short)BaseBriefing.EventType.EndBriefing) break;
 
-				brief.Events.Add(new BaseBriefing.Event((BaseBriefing.EventType)_events[evnt, 1]) { Time = _events[evnt, 0] });
-				for (int i = 0; i < BaseBriefing.EventParameters.GetCount(brief.Events[evnt].Type); i++)
-					brief.Events[evnt].Variables[i] = _events[evnt, i + 2];
+				_baseBrf.Events.Add(new BaseBriefing.Event((BaseBriefing.EventType)_events[evnt, 1]) { Time = _events[evnt, 0] });
+				for (int i = 0; i < BaseBriefing.EventParameters.GetCount(_baseBrf.Events[evnt].Type); i++) _baseBrf.Events[evnt].Variables[i] = _events[evnt, i + 2];
 			}
-			brief.Tile = (short)numTile.Value;
+			_baseBrf.Tile = (short)numTile.Value;
 			onModified?.Invoke("Save", new EventArgs());
 		}
 
-		void tabBrief_SelectedIndexChanged(object sender, EventArgs e)
-		{
-			if (tabBrief.SelectedIndex != 0) hsbTimer.Value = 1;
-			else hsbTimer.Value = 0;    // force refresh, since pct doesn't want to update when hidden
-		}
+		void tabBrief_SelectedIndexChanged(object sender, EventArgs e) => hsbTimer.Value = (tabBrief.SelectedIndex != 0 ? 1 : 0);  // force refresh, since pct doesn't want to update when hidden
 
 		#region frmBrief
-		void frmBrief_Activated(object sender, EventArgs e) { MapPaint(); }
+		void frmBrief_Activated(object sender, EventArgs e) => MapPaint();
 		void frmBrief_FormClosed(object sender, FormClosedEventArgs e)
 		{
-			tabBrief.Focus();       //[JB] Leave any focused controls so that events don't refresh the disposed map.
+			tabBrief.Focus();
 			_map.Dispose();
 		}
 		void frmBrief_FormClosing(object sender, FormClosingEventArgs e)
 		{
 			Save();
-			//[JB] Stop and deactivate the timers.
 			//Important! There's an issue where the event can trigger after the map is disposed, even after calling Stop(). The event must be unregistered.
 			tmrPopup.Stop();
 			tmrPopup.Tick -= tmrPopup_Tick;
@@ -617,10 +730,10 @@ namespace Idmr.Yogeme
 		}
 		void frmBrief_Load(object sender, EventArgs e)
 		{
-			for (int i = 0; i < 8; i++) _fgTags[i, 0] = -1;
-			for (int i = 0; i < 8; i++) _textTags[i, 0] = -1;
+			for (int i = 0; i < 8; i++) _fgTags[i].Slot = -1;
+			for (int i = 0; i < 8; i++) _textTags[i].StringIndex = -1;
 			_map = new Bitmap(pctBrief.Width, pctBrief.Height, PixelFormat.Format24bppRgb);
-			hsbTimer.Value = 1;  //[JB] Need to force another update, since this function wipes the tags after the init is complete.
+			hsbTimer.Value = 1;
 			hsbTimer.Value = 0;
 		}
 		#endregion	frmBrief
@@ -649,26 +762,25 @@ namespace Idmr.Yogeme
 		void cmdFF_Click(object sender, EventArgs e)
 		{
 			if (hsbTimer.Value == hsbTimer.Maximum - 11) return;
-			int newSpeed = tmrBrief.Interval / 2;  //[JB] Clicking FF repeatedly will keep speeding it up.
+
+			int newSpeed = tmrBrief.Interval / 2;
 			if (newSpeed < 125 / _timerInterval) newSpeed = 125 / _timerInterval;    //Limit to 8x speed.
-			tmrBrief.Interval = newSpeed;  //500 / _timerInterval;
+			tmrBrief.Interval = newSpeed;
 			startTimer();
 		}
 		void cmdNext_Click(object sender, EventArgs e)
 		{
 			int i;
 			for (i = 0; i < _maxEvents; i++)
-			{
-				if (_events[i, 0] <= hsbTimer.Value || (_events[i, 1] != 1 && _events[i, 1] != 3)) continue;    // find next stop point after current position
-				break;
-			}
+				if (_events[i, 0] > hsbTimer.Value && (_events[i, 1] == (short)BaseBriefing.EventType.SkipMarker || _events[i, 1] == (short)BaseBriefing.EventType.PageBreak)) break;
 			if (i == _maxEvents) hsbTimer.Value = hsbTimer.Maximum - 11;    // tmr_Tick takes care of halting
 			else hsbTimer.Value = _events[i, 0];
 		}
-		void cmdPause_Click(object sender, EventArgs e) { stopTimer(); }
+		void cmdPause_Click(object sender, EventArgs e) => stopTimer();
 		void cmdPlay_Click(object sender, EventArgs e)
 		{
-			if (hsbTimer.Value == hsbTimer.Maximum - 11) return;    // prevent starting if already at the end
+			if (hsbTimer.Value == hsbTimer.Maximum - 11) return;
+
 			tmrBrief.Interval = 1000 / _timerInterval;
 			startTimer();
 		}
@@ -676,15 +788,12 @@ namespace Idmr.Yogeme
 		{
 			for (int i = 0; i < 8; i++)
 			{
-				_fgTags[i, 0] = -1;
-				_fgTags[i, 1] = 0;
-			}
-			for (int i = 0; i < 8; i++)
-			{
-				_textTags[i, 0] = -1;
-				_textTags[i, 1] = 0;
-				_textTags[i, 2] = 0;
-				_textTags[i, 3] = 0;
+				_fgTags[i].Slot = -1;
+				_fgTags[i].StartTime = 0;
+				_textTags[i].StringIndex = -1;
+				_textTags[i].X = 0;
+				_textTags[i].Y = 0;
+				_textTags[i].ColorIndex = 0;
 			}
 			_previousTimeIndex = 0;
 			hsbTimer.Value = 0;
@@ -694,15 +803,12 @@ namespace Idmr.Yogeme
 			stopTimer();
 			for (int i = 0; i < 8; i++)
 			{
-				_fgTags[i, 0] = -1;
-				_fgTags[i, 1] = 0;
-			}
-			for (int i = 0; i < 8; i++)
-			{
-				_textTags[i, 0] = -1;
-				_textTags[i, 1] = 0;
-				_textTags[i, 2] = 0;
-				_textTags[i, 3] = 0;
+				_fgTags[i].Slot = -1;
+				_fgTags[i].StartTime = 0;
+				_textTags[i].StringIndex = -1;
+				_textTags[i].X = 0;
+				_textTags[i].Y = 0;
+				_textTags[i].ColorIndex = 0;
 			}
 			hsbTimer.Value = 0;
 		}
@@ -710,23 +816,22 @@ namespace Idmr.Yogeme
 		void hsbTimer_ValueChanged(object sender, EventArgs e)
 		{
 			bool paint = false;
-			if (hsbTimer.Value != 0 && ((hsbTimer.Value - _previousTimeIndex >= 2) || hsbTimer.Value <= _previousTimeIndex))  //A non-incremental or reverse change (if incremental the timer should be +1 to previous), the user most likely manually moved the scrollbar.  Iterate through all past events and rebuild the briefing state.
+			if (hsbTimer.Value != 0 && ((hsbTimer.Value - _previousTimeIndex >= 2) || hsbTimer.Value <= _previousTimeIndex))
 			{
+				// A non-incremental or reverse change (if incremental the timer should be +1 to previous), the user most likely manually moved the scrollbar.
+				// Iterate through all past events and rebuild the briefing state.
 				resetBriefing();
 				stopTimer();
 				for (int i = 0; i < _maxEvents; i++)
 				{
-					//Process everything up to the current time index.
 					if (_events[i, 0] > hsbTimer.Value || _events[i, 1] == (int)BaseBriefing.EventType.None || _events[i, 1] == (int)BaseBriefing.EventType.EndBriefing) break;
-					paint |= processEvent(i, true);  //paint stays enabled once enabled.
+					paint |= processEvent(i, true);
 				}
 			}
 
 			_previousTimeIndex = hsbTimer.Value;
-			if (hsbTimer.Value == 0)
-			{
-				resetBriefing();  //[JB] Moved code to function.
-			}
+			if (hsbTimer.Value == 0) resetBriefing();
+			
 			if (_regionDelay != -1)
 			{
 				_message = "";
@@ -737,15 +842,15 @@ namespace Idmr.Yogeme
 			for (int i = 0; i < _maxEvents; i++)
 			{
 				if (_events[i, 0] < hsbTimer.Value) continue;
+
 				if (_events[i, 0] > hsbTimer.Value || _events[i, 1] == (int)BaseBriefing.EventType.None || _events[i, 1] == (int)BaseBriefing.EventType.EndBriefing) break;
-				paint |= processEvent(i, false);  //paint stays enabled once enabled.
+				paint |= processEvent(i, false);
 			}
-			for (int h = 0; h < 8; h++) if (hsbTimer.Value - _fgTags[h, 1] < 13) paint = true;
+			for (int h = 0; h < 8; h++) if (hsbTimer.Value - _fgTags[h].StartTime < 13) paint = true;
 			lblTime.Text = string.Format("{0:Time: 0.00}", (decimal)hsbTimer.Value / _timerInterval);
 			if (hsbTimer.Value == (hsbTimer.Maximum - 11) || hsbTimer.Value == 0) stopTimer();
-			if (paint) MapPaint();  // prevent MapPaint from running if no change
-			if (tmrBrief.Interval != (1000 / _timerInterval))  //[JB] Show playback speed if playing fast-forward
-				lblTime.Text += "  (" + (1000 / _timerInterval) / tmrBrief.Interval + "x)";
+			if (paint) MapPaint();
+			if (tmrBrief.Interval != (1000 / _timerInterval)) lblTime.Text += "  (" + (1000 / _timerInterval) / tmrBrief.Interval + "x)";
 		}
 
 		void tmrBrief_Tick(object sender, EventArgs e)
@@ -763,16 +868,15 @@ namespace Idmr.Yogeme
 		void tmrPopup_Tick(object sender, EventArgs e)
 		{
 			if (_popupPreviewActive) return;
+
 			tmrPopup.Stop();
 			lblPopupInfo.Visible = false;
 			lblPopupInfo.Text = "";
 		}
 		void tmrMapRedraw_Tick(object sender, EventArgs e)
 		{
-			//[JB] Wrapper that handles the calling of the actual map rendering.
 			if (_mapPaintScheduled)
 			{
-				//[JB] Code formerly in the MapPaint(), performs the rendering.
 				if (_platform == Settings.Platform.TIE) tiePaint();
 				else if (_platform == Settings.Platform.XvT) xvtPaint();
 				else if (_platform == Settings.Platform.XWA) xwaPaint();
@@ -785,24 +889,15 @@ namespace Idmr.Yogeme
 
 		public void MapPaint()
 		{
-			//[JB] I modified this function to instead serve as a wrapper that handles the map rendering.  It seems to reduce immediate performance for the sake of consistency and not clogging CPU cycles during rapid re-draw attempts. 
-			if (!_mapPaintScheduled)
-			{
-				if (!tmrMapRedraw.Enabled)         //The timer is stopped, start it up.
-				{
-					tmrMapRedraw.Start();
-					//_mapPaintRedrawTimer.Interval = 17;    //Was trying to aim for ~60 FPS, but according to MSDN, the minimum accuracy is 55 ms.
-				}
-				_mapPaintScheduled = true;
-			}
+			if (_mapPaintScheduled) return;
+			
+			if (!tmrMapRedraw.Enabled) tmrMapRedraw.Start();
+			_mapPaintScheduled = true;
 		}
 
 		void drawGrid(int x, int y, Graphics g)
 		{
-			Pen pn = new Pen(Color.FromArgb(0x50, 0, 0))
-			{
-				Width = 1
-			};
+			Pen pn = new Pen(Color.FromArgb(0x50, 0, 0)) { Width = 1 };
 			if (_platform == Settings.Platform.TIE)
 			{
 				pn.Color = Color.FromArgb(0x48, 0, 0);
@@ -818,16 +913,15 @@ namespace Idmr.Yogeme
 			int x2 = (x + w) / (_zoomX * mod);
 			int y2 = (y + h) / (_zoomX * mod);
 			int min = x1, max = x2;
-			if (y1 < min)
-				min = y1;
-			if (y2 > max)
-				max = y2;
+			if (y1 < min) min = y1;
+			if (y2 > max) max = y2;
 
 			if (_zoomX >= 32)
 			{
-				for (int i = min; i < max; i++)  //[JB] Fixed line drawing if the map is moved far away from center.
+				for (int i = min; i < max; i++)
 				{
-					if (i % 4 == 0) continue;                       // don't draw where there'll be maj lines
+					if (i % 4 == 0) continue; // don't draw where there'll be maj lines
+
 					g.DrawLine(pn, 0, _zoomY * i * mod + y - 1, w, _zoomY * i * mod + y - 1);   //min lines, every zoom pixels
 					g.DrawLine(pn, 0, y - 1 - _zoomY * i * mod, w, y - 1 - _zoomY * i * mod);
 					g.DrawLine(pn, _zoomX * i * mod + x, 0, _zoomX * i * mod + x, h);
@@ -839,13 +933,14 @@ namespace Idmr.Yogeme
 				for (int i = min; i < max; i++)
 				{
 					if (i % 2 == 0) continue;
+
 					g.DrawLine(pn, 0, _zoomY * 2 * i * mod + y - 1, w, _zoomY * 2 * i * mod + y - 1);   //min lines, every zoomx2 pixels
 					g.DrawLine(pn, 0, y - 1 - _zoomY * 2 * i * mod, w, y - 1 - _zoomY * 2 * i * mod);
 					g.DrawLine(pn, _zoomX * 2 * i * mod + x, 0, _zoomX * 2 * i * mod + x, h);
 					g.DrawLine(pn, x - _zoomX * 2 * i * mod, 0, x - _zoomX * 2 * i * mod, h);
 				}
 			}
-			// else if (j < 16) just don't draw them
+			// else if (zoom < 16) just don't draw them
 			pn.Color = Color.FromArgb(0x90, 0, 0);
 			if (_platform == Settings.Platform.TIE) pn.Color = Color.FromArgb(0x78, 0, 0);
 			g.DrawLine(pn, 0, y - 1, w, y - 1); // origin lines
@@ -895,25 +990,22 @@ namespace Idmr.Yogeme
 			for (i = 0; i < _maxEvents; i++)
 			{
 				if (_events[i, 0] < hsbTimer.Value) continue;
+
 				if (_events[i, 0] > hsbTimer.Value) return (i + 10000); // did not find existing, return next available + marker
-				if (_events[i, 1] == (int)eventType) return i;  // found existing
+				if (_events[i, 1] == (int)eventType) return i;
 			}
-			return (i + 10000); // actually somehow got through the entire loop. odds of this happening is likely zero, but some moron will do it eventually
+			return (i + 10000); // actually somehow got through the entire loop
 		}
-		int findNext() { return findNext(hsbTimer.Value); }
+		int findNext() => findNext(hsbTimer.Value);
 		int findNext(int time)
 		{
 			int i;
-			for (i = 0; i < _maxEvents; i++)
-			{
-				if (_events[i, 0] < time) continue;
-				if (_events[i, 0] > time) break;
-			}
+			for (i = 0; i < _maxEvents; i++) if (_events[i, 0] > time) break;
 			return i;
 		}
 		Bitmap flatMask(Bitmap craftImage, byte iff, byte intensity)
 		{
-			// okay, this one is just for FG tags.  flat image, I only care about the shape.
+			// this is just for FG tags.  flat image, I only care about the shape.
 			Bitmap bmpNew = new Bitmap(craftImage);
 			BitmapData bmData = GraphicsFunctions.GetBitmapData(bmpNew, PixelFormat.Format24bppRgb);
 			byte[] pix = new byte[bmData.Stride * bmData.Height];
@@ -956,8 +1048,7 @@ namespace Idmr.Yogeme
 		}
 		int[] getTagSize(int craft)
 		{
-			if (_xvtTagSizeCache == null)
-				_xvtTagSizeCache = new int[imgCraft.Images.Count];
+			if (_xvtTagSizeCache == null) _xvtTagSizeCache = new int[imgCraft.Images.Count];
 
 			int[] size = new int[2];
 			if (craft >= 0 && craft < _xvtTagSizeCache.Length)
@@ -973,9 +1064,7 @@ namespace Idmr.Yogeme
 					int left = imgCraft.Images[craft].Width, right = 0;
 					int top = imgCraft.Images[craft].Height, bottom = 0;
 					for (int y = 0; y < bmpNew.Height; y++)
-					{
 						for (int x = 0, pos = bmData.Stride * y; x < bmpNew.Width; x++)
-						{
 							if (pix[pos + x * 3] != 0 || pix[pos + x * 3 + 1] != 0 || pix[pos + x * 3 + 2] != 0)
 							{
 								if (x < left) left = x;
@@ -983,8 +1072,6 @@ namespace Idmr.Yogeme
 								if (y < top) top = y;
 								if (y > bottom) bottom = y;
 							}
-						}
-					}
 					//Pack in the result. High word for width, low word for height.
 					_xvtTagSizeCache[craft] = ((right - left + 1) << 16) | (bottom - top + 1);
 				}
@@ -993,7 +1080,7 @@ namespace Idmr.Yogeme
 			}
 			return size;    // size of base craft image as [width,height]
 		}
-		void imageQuad(int x, int y, int spacing, Bitmap craftImage, Graphics g)
+		void drawImageQuad(int x, int y, int spacing, Bitmap craftImage, Graphics g)
 		{
 			g.DrawImageUnscaled(craftImage, x + spacing, y + spacing);
 			g.DrawImageUnscaled(craftImage, x + spacing, y - spacing);
@@ -1008,35 +1095,33 @@ namespace Idmr.Yogeme
 		}
 		void popupPreviewStop()
 		{
-			if (_popupPreviewActive)
-			{
-				_mapX = (short)_popupPreviewMap.X;  //Restore prior map settings
-				_mapY = (short)_popupPreviewMap.Y;
-				_zoomX = (short)_popupPreviewZoom.X;
-				_zoomY = (short)_popupPreviewZoom.Y;
+			if (!_popupPreviewActive) return;
+			
+			_mapX = (short)_popupPreviewMap.X;  //Restore prior map settings
+			_mapY = (short)_popupPreviewMap.Y;
+			_zoomX = (short)_popupPreviewZoom.X;
+			_zoomY = (short)_popupPreviewZoom.Y;
 
-				_popupPreviewActive = false;
-				MapPaint();
-			}
+			_popupPreviewActive = false;
+			MapPaint();
 		}
 		void popupPreviewStart()
 		{
-			if (!_popupPreviewActive)
-			{
-				pctBrief.Focus();  //Need to force focus so it generates MouseWheel events
-				_popupPreviewMap.X = _mapX;  //Backup existing map settings
-				_popupPreviewMap.Y = _mapY;
-				_popupPreviewZoom.X = _zoomX;
-				_popupPreviewZoom.Y = _zoomY;
+			if (_popupPreviewActive) return;
+			
+			pctBrief.Focus();  //Need to force focus so it generates MouseWheel events
+			_popupPreviewMap.X = _mapX;  //Backup existing map settings
+			_popupPreviewMap.Y = _mapY;
+			_popupPreviewZoom.X = _zoomX;
+			_popupPreviewZoom.Y = _zoomY;
 
-				_popupPreviewActive = true;
-				MapPaint();
-			}
+			_popupPreviewActive = true;
+			MapPaint();
 		}
 		bool processEvent(int evtIndex, bool rebuild)
 		{
 			bool paint = false;
-			int i = evtIndex;  //[JB] I just moved the old code here.  No changes except to prevent hiding of text/caption panels during rebuild, since it causes heavy flickering while scrolling.
+			int i = evtIndex;
 			if (_events[i, 1] == (int)BaseBriefing.EventType.PageBreak)
 			{
 				if (_platform == Settings.Platform.TIE) lblTitle.Text = "";
@@ -1072,8 +1157,8 @@ namespace Idmr.Yogeme
 					lblCaption.ForeColor = _normalColor;
 					lblCaption.Text = _strings[_events[i, 2]].Replace("$", "\r\n");
 				}
-                _page++;
-            }
+				_page++;
+			}
 			else if (_events[i, 1] == (int)BaseBriefing.EventType.MoveMap)
 			{
 				_mapX = _events[i, 2];
@@ -1089,7 +1174,7 @@ namespace Idmr.Yogeme
 			{
 				_zoomX = _events[i, 2];
 				_zoomY = _events[i, 3];
-				if (_zoomX < 1) _zoomX = 1;  //[JB] Prevent divide by zero when drawing the grid
+				if (_zoomX < 1) _zoomX = 1;
 				if (_zoomY < 1) _zoomY = 1;
 				paint = true;
 			}
@@ -1097,36 +1182,36 @@ namespace Idmr.Yogeme
 			{
 				for (int h = 0; h < 8; h++)
 				{
-					_fgTags[h, 0] = -1;
-					_fgTags[h, 1] = 0;
+					_fgTags[h].Slot = -1;
+					_fgTags[h].StartTime = 0;
 				}
 				paint = true;
 			}
 			else if (_events[i, 1] >= (int)BaseBriefing.EventType.FGTag1 && _events[i, 1] <= (int)BaseBriefing.EventType.FGTag8)
 			{
 				int v = _events[i, 1] - (int)BaseBriefing.EventType.FGTag1;
-				_fgTags[v, 0] = _events[i, 2];  // FG number
-				_fgTags[v, 1] = _events[i, 0];  // time started, for MapPaint
+				_fgTags[v].Slot = _events[i, 2];
+				_fgTags[v].StartTime = _events[i, 0];
 				paint = true;
 			}
 			else if (_events[i, 1] == (int)BaseBriefing.EventType.ClearTextTags)
 			{
 				for (int h = 0; h < 8; h++)
 				{
-					_textTags[h, 0] = -1;
-					_textTags[h, 1] = 0;
-					_textTags[h, 2] = 0;
-					_textTags[h, 3] = 0;
+					_textTags[h].StringIndex = -1;
+					_textTags[h].X = 0;
+					_textTags[h].Y = 0;
+					_textTags[h].ColorIndex = 0;
 				}
 				paint = true;
 			}
 			else if (_events[i, 1] >= (int)BaseBriefing.EventType.TextTag1 && _events[i, 1] <= (int)BaseBriefing.EventType.TextTag8)
 			{
 				int v = _events[i, 1] - (int)BaseBriefing.EventType.TextTag1;
-				_textTags[v, 0] = _events[i, 2];    // tag#
-				_textTags[v, 1] = _events[i, 3];    // X
-				_textTags[v, 2] = _events[i, 4];    // Y
-				_textTags[v, 3] = _events[i, 5];    // color
+				_textTags[v].StringIndex = _events[i, 2];
+				_textTags[v].X = _events[i, 3];
+				_textTags[v].Y = _events[i, 4];
+				_textTags[v].ColorIndex = _events[i, 5];
 				paint = true;
 			}
 			else if (_events[i, 1] == (int)BaseBriefing.EventType.XwaSetIcon)
@@ -1135,16 +1220,14 @@ namespace Idmr.Yogeme
 				_briefData[_events[i, 2]].IFF = (byte)_events[i, 4];
 				_briefData[_events[i, 2]].Name = "Icon #" + _events[i, 2].ToString();
 				_briefData[_events[i, 2]].Waypoint = new short[4];
-				if (_events[i, 3] != 0) _briefData[_events[i, 2]].Waypoint[3] = 1;
-				else _briefData[_events[i, 2]].Waypoint[3] = 0;
+				_briefData[_events[i, 2]].Waypoint[3] = (short)(_events[i, 3] != 0 ? 1 : 0);
 				paint = true;
 			}
 			else if (_events[i, 1] == (int)BaseBriefing.EventType.XwaShipInfo)
 			{
 				if (_events[i, 2] == 1)
 				{
-					if (_briefData[_events[i, 3]].Craft >= 0) _message = "Ship Info: " + Platform.Xwa.Strings.CraftType[_briefData[_events[i, 3]].Craft + 1];
-					else _message = "Ship Info: <flight group not found>";
+					_message = "Ship Info: " + (_briefData[_events[i, 3]].Craft >= 0 ? Platform.Xwa.Strings.CraftType[_briefData[_events[i, 3]].Craft + 1] : "<flight group not found>");
 					if (!rebuild)
 					{
 						lblTitle.Visible = false;
@@ -1159,33 +1242,27 @@ namespace Idmr.Yogeme
 				}
 				paint = true;
 			}
-			else if (_events[i, 1] == (int)BaseBriefing.EventType.XwaMoveIcon)
+			else if (_events[i, 1] == (int)BaseBriefing.EventType.XwaMoveIcon && Common.IsValidArray(_briefData[_events[i, 2]].Waypoint, 1))
 			{
-				if (Common.IsValidArray(_briefData[_events[i, 2]].Waypoint, 1))
-				{
-					_briefData[_events[i, 2]].Waypoint[0] = _events[i, 3];
-					_briefData[_events[i, 2]].Waypoint[1] = _events[i, 4];
-					paint = true;
-				}
+				_briefData[_events[i, 2]].Waypoint[0] = _events[i, 3];
+				_briefData[_events[i, 2]].Waypoint[1] = _events[i, 4];
+				paint = true;
 			}
-			else if (_events[i, 1] == (int)BaseBriefing.EventType.XwaRotateIcon)
+			else if (_events[i, 1] == (int)BaseBriefing.EventType.XwaRotateIcon && Common.IsValidArray(_briefData[_events[i, 2]].Waypoint, 2))
 			{
-				if (Common.IsValidArray(_briefData[_events[i, 2]].Waypoint, 2))
-				{
-					_briefData[_events[i, 2]].Waypoint[2] = _events[i, 3];
-					paint = true;
-				}
+				_briefData[_events[i, 2]].Waypoint[2] = _events[i, 3];
+				paint = true;
 			}
 			else if (_events[i, 1] == (int)BaseBriefing.EventType.XwaChangeRegion)
 			{
 				for (int h = 0; h < 8; h++)
 				{
-					_fgTags[h, 0] = -1;
-					_fgTags[h, 1] = 0;
-					_textTags[h, 0] = -1;
-					_textTags[h, 1] = 0;
-					_textTags[h, 2] = 0;
-					_textTags[h, 3] = 0;
+					_fgTags[h].Slot = -1;
+					_fgTags[h].StartTime = 0;
+					_textTags[h].StringIndex = -1;
+					_textTags[h].X = 0;
+					_textTags[h].Y = 0;
+					_textTags[h].ColorIndex = 0;
 				}
 				_briefData = new BriefData[_briefData.Length];
 
@@ -1207,27 +1284,27 @@ namespace Idmr.Yogeme
 			_page = 0;
 			_mapX = 0;
 			_mapY = 0;
-			_zoomX = 48;
-			if (_platform == Settings.Platform.XvT || _platform == Settings.Platform.BoP || _platform == Settings.Platform.XWA) _zoomX = 32;  //[JB] Default for XvT is also 32
+			_zoomX = 32;
+			if (_platform == Settings.Platform.TIE) _zoomX = 48;
 			_zoomY = _zoomX;
 			for (int h = 0; h < 8; h++)
 			{
-				_fgTags[h, 0] = -1;
-				_fgTags[h, 1] = 0;
+				_fgTags[h].Slot = -1;
+				_fgTags[h].StartTime = 0;
 			}
 			for (int h = 0; h < 8; h++)
 			{
-				_textTags[h, 0] = -1;
-				_textTags[h, 1] = 0;
-				_textTags[h, 2] = 0;
-				_textTags[h, 3] = 0;
+				_textTags[h].StringIndex = -1;
+				_textTags[h].X = 0;
+				_textTags[h].Y = 0;
+				_textTags[h].ColorIndex = 0;
 			}
 			if (_platform == Settings.Platform.XWA) _briefData = new BriefData[_briefData.Length];
 			_message = "";
+			if (_platform == Settings.Platform.TIE) lblTitle.Text = "";
+			lblCaption.Text = "";
 			lblTitle.Visible = true;
 			lblCaption.Visible = true;
-			if (_platform == Settings.Platform.TIE) lblTitle.Text = "";  //[JB] Clear these to force refresh, otherwise it holds old strings, even if the event list is wiped clean.
-			lblCaption.Text = "";
 		}
 		void tieMask(Bitmap craftImage, byte iff)
 		{
@@ -1262,7 +1339,7 @@ namespace Idmr.Yogeme
 				for (int x = 0, pos = bmData.Stride * y; x < craftImage.Width; x++)
 				{
 					pix[pos + x * 3 + 2] = (byte)(pix[pos + x * 3] * rgb[0]);
-					pix[pos + x * 3 + 1] = (rgb[1] == 2 ? pix[pos + x * 3 + 1] : (byte)(pix[pos + x * 3] * rgb[1]));
+					pix[pos + x * 3 + 1] = (byte)(rgb[1] == 2 ? pix[pos + x * 3 + 1] : (pix[pos + x * 3] * rgb[1]));
 					pix[pos + x * 3] = (byte)(pix[pos + x * 3] * rgb[2]);
 				}
 			}
@@ -1273,165 +1350,116 @@ namespace Idmr.Yogeme
 		void tiePaint()
 		{
 			if (_loading) return;
+
 			int w = pctBrief.Width;
 			int h = pctBrief.Height;
 			int X = 2 * (-_zoomX * _mapX / 256) + w / 2;    // values are written out like this to force even numbers
 			int Y = 2 * (-_zoomY * _mapY / 256) + h / 2;
-			Pen pn = new Pen(Color.FromArgb(0x48, 0, 0))
-			{
-				Width = 2
-			};
-			Graphics g3;
-			g3 = Graphics.FromImage(_map);      //graphics obj, load from the memory bitmap
-			g3.Clear(SystemColors.Control);     //clear it
+			Pen pn = new Pen(Color.FromArgb(0x48, 0, 0)) { Width = 2 };
+			Graphics g;
+			g = Graphics.FromImage(_map);
+			g.Clear(SystemColors.Control);
 			SolidBrush sb = new SolidBrush(Color.Black);
-			g3.FillRectangle(sb, 0, 0, w, h);
-			g3.DrawLine(pn, 0, 1, w, 1);
-			g3.DrawLine(pn, 0, h - 3, w, h - 3);
-			g3.DrawLine(pn, 1, 0, 1, h);
-			g3.DrawLine(pn, w - 1, 0, w - 1, h);
-			drawGrid(X, Y, g3);
+			g.FillRectangle(sb, 0, 0, w, h);
+			g.DrawLine(pn, 0, 1, w, 1);
+			g.DrawLine(pn, 0, h - 3, w, h - 3);
+			g.DrawLine(pn, 1, 0, 1, h);
+			g.DrawLine(pn, w - 1, 0, w - 1, h);
+			drawGrid(X, Y, g);
 			Bitmap bmptemp;
 			#region FG tags
-			Bitmap bmptemp2;
 			for (int i = 0; i < 8; i++)
 			{
-				if (_fgTags[i, 0] == -1 || _briefData[_fgTags[i, 0]].Waypoint[3] != 1) continue;
-				sb = new SolidBrush(Color.FromArgb(0xE0, 0, 0));    // defaults to Red
-				SolidBrush sb2 = new SolidBrush(Color.FromArgb(0x78, 0, 0));
-				byte IFF = _briefData[_fgTags[i, 0]].IFF;
-				int wpX = 2 * (int)Math.Round((double)_zoomX * _briefData[_fgTags[i, 0]].Waypoint[0] / 256, 0) + X;
-				int wpY = 2 * (int)Math.Round((double)_zoomY * -_briefData[_fgTags[i, 0]].Waypoint[1] / 256, 0) + Y;  //[JB] Invert Y axis of waypoint
-				int frame = hsbTimer.Value - _fgTags[i, 1];
-				if (_fgTags[i, 1] == 0) frame = 12; // if tagged at t=0, just the box
-				try { bmptemp = new Bitmap(imgCraft.Images[_briefData[_fgTags[i, 0]].Craft]); }
+				if (_fgTags[i].Slot == -1 || _briefData[_fgTags[i].Slot].Waypoint[3] != 1) continue;
+
+				byte iff = _briefData[_fgTags[i].Slot].IFF;
+				sb.Color = _iffColors[iff < _iffColors.Length ? iff : 1]; // default to red
+				SolidBrush sb2 = new SolidBrush(sb.Color = _iffBackColors[iff < _iffBackColors.Length ? iff : 1]);
+				int wpX = 2 * (int)Math.Round((double)_zoomX * _briefData[_fgTags[i].Slot].Waypoint[0] / 256, 0) + X;
+				int wpY = 2 * (int)Math.Round((double)_zoomY * -_briefData[_fgTags[i].Slot].Waypoint[1] / 256, 0) + Y;
+				int frame = hsbTimer.Value - _fgTags[i].StartTime;
+				if (_fgTags[i].StartTime == 0) frame = 12; // if tagged at t=0, just the box
+				try { bmptemp = new Bitmap(imgCraft.Images[_briefData[_fgTags[i].Slot].Craft]); }
 				catch { bmptemp = new Bitmap(imgCraft.Images[0]); }
 				switch (frame)
 				{
 					case 0:
-						bmptemp2 = flatMask(bmptemp, IFF, 0xFC);
-						imageQuad(wpX - 16, wpY - 16, 32, bmptemp2, g3);
+						drawImageQuad(wpX - 16, wpY - 16, 32, flatMask(bmptemp, iff, 0xFC), g);
 						break;
 					case 1:
-						bmptemp2 = flatMask(bmptemp, IFF, 0xC8);
-						imageQuad(wpX - 16, wpY - 16, 32, bmptemp2, g3);
-						bmptemp2 = flatMask(bmptemp, IFF, 0xFC);
-						imageQuad(wpX - 16, wpY - 16, 28, bmptemp2, g3);
+						drawImageQuad(wpX - 16, wpY - 16, 32, flatMask(bmptemp, iff, 0xC8), g);
+						drawImageQuad(wpX - 16, wpY - 16, 28, flatMask(bmptemp, iff, 0xFC), g);
 						break;
 					case 2:
-						bmptemp2 = flatMask(bmptemp, IFF, 0x94);
-						imageQuad(wpX - 16, wpY - 16, 32, bmptemp2, g3);
-						bmptemp2 = flatMask(bmptemp, IFF, 0xC8);
-						imageQuad(wpX - 16, wpY - 16, 28, bmptemp2, g3);
-						bmptemp2 = flatMask(bmptemp, IFF, 0xFC);
-						imageQuad(wpX - 16, wpY - 16, 24, bmptemp2, g3);
+						drawImageQuad(wpX - 16, wpY - 16, 32, flatMask(bmptemp, iff, 0x94), g);
+						drawImageQuad(wpX - 16, wpY - 16, 28, flatMask(bmptemp, iff, 0xC8), g);
+						drawImageQuad(wpX - 16, wpY - 16, 24, flatMask(bmptemp, iff, 0xFC), g);
 						break;
 					case 3:
-						bmptemp2 = flatMask(bmptemp, IFF, 0x60);
-						imageQuad(wpX - 16, wpY - 16, 32, bmptemp2, g3);
-						bmptemp2 = flatMask(bmptemp, IFF, 0x94);
-						imageQuad(wpX - 16, wpY - 16, 28, bmptemp2, g3);
-						bmptemp2 = flatMask(bmptemp, IFF, 0xC8);
-						imageQuad(wpX - 16, wpY - 16, 24, bmptemp2, g3);
-						bmptemp2 = flatMask(bmptemp, IFF, 0xFC);
-						imageQuad(wpX - 16, wpY - 16, 20, bmptemp2, g3);
+						drawImageQuad(wpX - 16, wpY - 16, 32, flatMask(bmptemp, iff, 0x60), g);
+						drawImageQuad(wpX - 16, wpY - 16, 28, flatMask(bmptemp, iff, 0x94), g);
+						drawImageQuad(wpX - 16, wpY - 16, 24, flatMask(bmptemp, iff, 0xC8), g);
+						drawImageQuad(wpX - 16, wpY - 16, 20, flatMask(bmptemp, iff, 0xFC), g);
 						break;
 					case 4:
-						bmptemp2 = flatMask(bmptemp, IFF, 0x60);
-						imageQuad(wpX - 16, wpY - 16, 28, bmptemp2, g3);
-						bmptemp2 = flatMask(bmptemp, IFF, 0x94);
-						imageQuad(wpX - 16, wpY - 16, 24, bmptemp2, g3);
-						bmptemp2 = flatMask(bmptemp, IFF, 0xC8);
-						imageQuad(wpX - 16, wpY - 16, 20, bmptemp2, g3);
-						bmptemp2 = flatMask(bmptemp, IFF, 0xFC);
-						imageQuad(wpX - 16, wpY - 16, 16, bmptemp2, g3);
+						drawImageQuad(wpX - 16, wpY - 16, 28, flatMask(bmptemp, iff, 0x60), g);
+						drawImageQuad(wpX - 16, wpY - 16, 24, flatMask(bmptemp, iff, 0x94), g);
+						drawImageQuad(wpX - 16, wpY - 16, 20, flatMask(bmptemp, iff, 0xC8), g);
+						drawImageQuad(wpX - 16, wpY - 16, 16, flatMask(bmptemp, iff, 0xFC), g);
 						break;
 					case 5:
-						bmptemp2 = flatMask(bmptemp, IFF, 0x60);
-						imageQuad(wpX - 16, wpY - 16, 24, bmptemp2, g3);
-						bmptemp2 = flatMask(bmptemp, IFF, 0x94);
-						imageQuad(wpX - 16, wpY - 16, 20, bmptemp2, g3);
-						bmptemp2 = flatMask(bmptemp, IFF, 0xC8);
-						imageQuad(wpX - 16, wpY - 16, 16, bmptemp2, g3);
-						bmptemp2 = flatMask(bmptemp, IFF, 0xFC);
-						imageQuad(wpX - 16, wpY - 16, 12, bmptemp2, g3);
+						drawImageQuad(wpX - 16, wpY - 16, 24, flatMask(bmptemp, iff, 0x60), g);
+						drawImageQuad(wpX - 16, wpY - 16, 20, flatMask(bmptemp, iff, 0x94), g);
+						drawImageQuad(wpX - 16, wpY - 16, 16, flatMask(bmptemp, iff, 0xC8), g);
+						drawImageQuad(wpX - 16, wpY - 16, 12, flatMask(bmptemp, iff, 0xFC), g);
 						break;
 					case 6:
-						bmptemp2 = flatMask(bmptemp, IFF, 0x60);
-						imageQuad(wpX - 16, wpY - 16, 20, bmptemp2, g3);
-						bmptemp2 = flatMask(bmptemp, IFF, 0x94);
-						imageQuad(wpX - 16, wpY - 16, 16, bmptemp2, g3);
-						bmptemp2 = flatMask(bmptemp, IFF, 0xC8);
-						imageQuad(wpX - 16, wpY - 16, 12, bmptemp2, g3);
-						bmptemp2 = flatMask(bmptemp, IFF, 0xFC);
-						imageQuad(wpX - 16, wpY - 16, 8, bmptemp2, g3);
+						drawImageQuad(wpX - 16, wpY - 16, 20, flatMask(bmptemp, iff, 0x60), g);
+						drawImageQuad(wpX - 16, wpY - 16, 16, flatMask(bmptemp, iff, 0x94), g);
+						drawImageQuad(wpX - 16, wpY - 16, 12, flatMask(bmptemp, iff, 0xC8), g);
+						drawImageQuad(wpX - 16, wpY - 16, 8, flatMask(bmptemp, iff, 0xFC), g);
 						break;
 					case 7:
-						bmptemp2 = flatMask(bmptemp, IFF, 0x60);
-						imageQuad(wpX - 16, wpY - 16, 16, bmptemp2, g3);
-						bmptemp2 = flatMask(bmptemp, IFF, 0x94);
-						imageQuad(wpX - 16, wpY - 16, 12, bmptemp2, g3);
-						bmptemp2 = flatMask(bmptemp, IFF, 0xC8);
-						imageQuad(wpX - 16, wpY - 16, 8, bmptemp2, g3);
-						bmptemp2 = flatMask(bmptemp, IFF, 0xFC);
-						imageQuad(wpX - 16, wpY - 16, 4, bmptemp2, g3);
+						drawImageQuad(wpX - 16, wpY - 16, 16, flatMask(bmptemp, iff, 0x60), g);
+						drawImageQuad(wpX - 16, wpY - 16, 12, flatMask(bmptemp, iff, 0x94), g);
+						drawImageQuad(wpX - 16, wpY - 16, 8, flatMask(bmptemp, iff, 0xC8), g);
+						drawImageQuad(wpX - 16, wpY - 16, 4, flatMask(bmptemp, iff, 0xFC), g);
 						break;
 					case 8:
-						bmptemp2 = flatMask(bmptemp, IFF, 0x60);
-						imageQuad(wpX - 16, wpY - 16, 12, bmptemp2, g3);
-						bmptemp2 = flatMask(bmptemp, IFF, 0x94);
-						imageQuad(wpX - 16, wpY - 16, 8, bmptemp2, g3);
-						bmptemp2 = flatMask(bmptemp, IFF, 0xC8);
-						imageQuad(wpX - 16, wpY - 16, 4, bmptemp2, g3);
+						drawImageQuad(wpX - 16, wpY - 16, 12, flatMask(bmptemp, iff, 0x60), g);
+						drawImageQuad(wpX - 16, wpY - 16, 8, flatMask(bmptemp, iff, 0x94), g);
+						drawImageQuad(wpX - 16, wpY - 16, 4, flatMask(bmptemp, iff, 0xC8), g);
 						break;
 					case 9:
-						bmptemp2 = flatMask(bmptemp, IFF, 0x60);
-						imageQuad(wpX - 16, wpY - 16, 8, bmptemp2, g3);
-						bmptemp2 = flatMask(bmptemp, IFF, 0x94);
-						imageQuad(wpX - 16, wpY - 16, 4, bmptemp2, g3);
+						drawImageQuad(wpX - 16, wpY - 16, 8, flatMask(bmptemp, iff, 0x60), g);
+						drawImageQuad(wpX - 16, wpY - 16, 4, flatMask(bmptemp, iff, 0x94), g);
 						break;
 					case 10:
-						bmptemp2 = flatMask(bmptemp, IFF, 0x60);
-						imageQuad(wpX - 16, wpY - 16, 4, bmptemp2, g3);
+						drawImageQuad(wpX - 16, wpY - 16, 4, flatMask(bmptemp, iff, 0x60), g);
 						break;
 					case 11:
-						if (IFF == 0) { sb.Color = Color.FromArgb(0, 0xE0, 0); sb2.Color = Color.FromArgb(0, 0x78, 0); }    // green
-						else if (IFF == 2) { sb.Color = Color.FromArgb(0, 0x78, 0xE0); sb2.Color = Color.FromArgb(0, 0x10, 0x78); } // blue
-						else if (IFF == 3 || IFF == 5) { sb.Color = Color.FromArgb(0xE0, 0, 0xE0); sb2.Color = Color.FromArgb(0x78, 0, 0x78); } // purple
-						g3.FillRectangle(sb, wpX - 8, wpY - 8, 18, 18);
-						g3.FillRectangle(sb2, wpX - 6, wpY - 6, 14, 14);
+						g.FillRectangle(sb, wpX - 8, wpY - 8, 18, 18);
+						g.FillRectangle(sb2, wpX - 6, wpY - 6, 14, 14);
 						break;
 					default:
 						// 12 or greater, just the box
-						if (IFF == 0) { sb.Color = Color.FromArgb(0, 0xE0, 0); sb2.Color = Color.FromArgb(0, 0x78, 0); }    // green
-						else if (IFF == 2) { sb.Color = Color.FromArgb(0, 0x78, 0xE0); sb2.Color = Color.FromArgb(0, 0x10, 0x78); } // blue
-						else if (IFF == 3 || IFF == 5) { sb.Color = Color.FromArgb(0xE0, 0, 0xE0); sb2.Color = Color.FromArgb(0x78, 0, 0x78); } // purple
-						g3.FillRectangle(sb, wpX - 12, wpY - 12, 26, 26);
-						g3.FillRectangle(sb2, wpX - 10, wpY - 10, 22, 22);
+						g.FillRectangle(sb, wpX - 12, wpY - 12, 26, 26);
+						g.FillRectangle(sb2, wpX - 10, wpY - 10, 22, 22);
 						break;
 				}
 			}
-			#endregion // FG tags
-			#region text tags
+			#endregion FG tags
 			for (int i = 0; i < 8; i++)
 			{
-				if (_textTags[i, 0] == -1) continue;
-				sb = new SolidBrush(Color.FromArgb(0xAC, 0, 0));    // default to red
-				int clr = _textTags[i, 3];
-				if (clr == 0) sb.Color = Color.FromArgb(0, 0xAC, 0);    // green
-				// else if (clr == 1) sb.Color = Color.FramArgb(0xAC,0,0);	// red
-				else if (clr == 2) sb.Color = Color.FromArgb(0xAC, 0, 0xAC);    // purple
-				else if (clr == 3) sb.Color = Color.FromArgb(0, 0x2C, 0xAC);    // blue
-				else if (clr == 4) sb.Color = Color.FromArgb(0xA8, 0, 0);   // red2
-				else if (clr == 5) sb.Color = Color.FromArgb(0xFC, 0x54, 0x54); // light red
-				else if (clr == 6) sb.Color = Color.FromArgb(0x44, 0x44, 0x44); // gray
-				else if (clr == 7) sb.Color = Color.FromArgb(0xCC, 0xCC, 0xCC); // white
-				g3.DrawString(_tags[_textTags[i, 0]], new Font("MS Reference Sans Serif", 10), sb, 2 * (int)Math.Round((double)_zoomX * _textTags[i, 1] / 256, 0) + X, 2 * (int)Math.Round((double)_zoomY * _textTags[i, 2] / 256, 0) + Y);
+				if (_textTags[i].StringIndex == -1) continue;
+
+				sb.Color = _tagColors[_textTags[i].ColorIndex < _tagColors.Length ? _textTags[i].ColorIndex : 1]; // default to red
+				g.DrawString(_tags[_textTags[i].StringIndex], new Font("MS Reference Sans Serif", 10), sb, 2 * (int)Math.Round((double)_zoomX * _textTags[i].X / 256, 0) + X, 2 * (int)Math.Round((double)_zoomY * _textTags[i].Y / 256, 0) + Y);
 			}
-			#endregion // text tags
 			for (int i = 0; i < _briefData.Length; i++)
 			{
 				if (_briefData[i].Waypoint[3] != 1) continue;
+
 				if (_zoomX >= 32)
 				{
 					try { bmptemp = new Bitmap(imgCraft.Images[_briefData[i].Craft]); }
@@ -1445,11 +1473,11 @@ namespace Idmr.Yogeme
 				tieMask(bmptemp, _briefData[i].IFF);
 				// simple base-256 grid coords * zoom to get pixel location, * 2 to enlarge, + map offset, - pic size/2 to center
 				// forced to even numbers
-				g3.DrawImageUnscaled(bmptemp, 2 * (int)Math.Round((double)_zoomX * _briefData[i].Waypoint[0] / 256, 0) + X - 16, 2 * (int)Math.Round((double)_zoomY * -_briefData[i].Waypoint[1] / 256, 0) + Y - 16);  //[JB] Invert Y axis of waypoint, fixed Y zoom.
+				g.DrawImageUnscaled(bmptemp, 2 * (int)Math.Round((double)_zoomX * _briefData[i].Waypoint[0] / 256, 0) + X - 16, 2 * (int)Math.Round((double)_zoomY * -_briefData[i].Waypoint[1] / 256, 0) + Y - 16);  //[JB] Invert Y axis of waypoint, fixed Y zoom.
 			}
-			g3.DrawString("#" + _page, new Font("Arial", 8), new SolidBrush(Color.White), w - 20, 4);
-			pctBrief.Invalidate();      // since it's drawing to memory, this refreshes the pct.  Removes the flicker when zooming
-			g3.Dispose();
+			g.DrawString("#" + _page, new Font("Arial", 8), new SolidBrush(Color.White), w - 20, 4);
+			pctBrief.Invalidate();
+			g.Dispose();
 		}
 		Bitmap xvtMask(Bitmap craftImage, byte iff, byte frame)
 		{
@@ -1468,75 +1496,9 @@ namespace Idmr.Yogeme
 			p[2] = (byte)(0x70 * (intensity + 1) / 256);
 			p[3] = (byte)(0x58 * (intensity + 1) / 256);
 			#endregion
-			#region define IFF color distribution
-			byte[] mask = new byte[3];
-			byte[,] rgb = new byte[5, 3];
-			switch (iff)
-			{
-				case 0:     // green
-					mask[1] = 1;
-					rgb[0, 0] = 0x38;
-					rgb[0, 1] = 0xD4;
-					rgb[1, 0] = 0x18;
-					rgb[1, 1] = 0xA8;
-					rgb[2, 0] = 8;
-					rgb[2, 1] = 0x7C;
-					rgb[3, 1] = 0x54;
-					break;
-				case 2:     // blue
-					mask[2] = 1;
-					rgb[0, 0] = 0x58;
-					rgb[0, 1] = 0xDC;
-					rgb[0, 2] = 0xF8;
-					rgb[1, 0] = 0x28;
-					rgb[1, 1] = 0x84;
-					rgb[1, 2] = 0xC0;
-					rgb[2, 0] = 8;
-					rgb[2, 1] = 0x3C;
-					rgb[2, 2] = 0x90;
-					rgb[3, 1] = 8;
-					rgb[3, 2] = 0x58;
-					break;
-				case 3:     // yellow
-					mask[0] = 1;
-					mask[1] = 1;
-					rgb[0, 0] = 0xF8;
-					rgb[0, 1] = 0xFC;
-					rgb[1, 0] = 0xD0;
-					rgb[1, 1] = 0xCC;
-					rgb[2, 0] = 0xA8;
-					rgb[2, 1] = 0x9C;
-					rgb[3, 0] = 0x80;
-					rgb[3, 1] = 0x74;
-					break;
-				case 5:     // purple
-					mask[0] = 1;
-					mask[2] = 1;
-					rgb[0, 0] = 0x90;
-					rgb[0, 1] = 0x88;
-					rgb[0, 2] = 0xF0;
-					rgb[1, 0] = 0x70;
-					rgb[1, 1] = 0x5C;
-					rgb[1, 2] = 0xB0;
-					rgb[2, 0] = 0x50;
-					rgb[2, 1] = 0x30;
-					rgb[2, 2] = 0x78;
-					rgb[3, 0] = 0x30;
-					rgb[3, 1] = 8;
-					rgb[3, 2] = 0x40;
-					break;
-				default:    // red
-					mask[0] = 1;
-					rgb[0, 0] = 0xF8;
-					rgb[0, 1] = 0x24;
-					rgb[1, 0] = 0xC0;
-					rgb[1, 1] = 0x10;
-					rgb[2, 0] = 0x80;
-					rgb[2, 1] = 4;
-					rgb[3, 0] = 0x48;
-					break;
-			}
-			#endregion
+			Color useMask = _maskColors[iff * 6 + 5];
+			Color[] clr = new Color[5];
+			for (int i = 0; i < 5; i++) clr[i] = _maskColors[iff * 6 + i];
 			byte b;
 			for (int y = 0; y < bmpNew.Height; y++)
 			{
@@ -1544,17 +1506,17 @@ namespace Idmr.Yogeme
 				{
 					// stupid thing returns BGR instead of RGB
 					b = pix[pos + x * 3 + 1];
+					int index = 4 - (b / 0x28);
 					if (frame == 0)
 					{
-						pix[pos + x * 3] = rgb[4 - (b / 0x28), 2];
-						pix[pos + x * 3 + 1] = rgb[4 - (b / 0x28), 1];
-						pix[pos + x * 3 + 2] = rgb[4 - (b / 0x28), 0];
+						pix[pos + x * 3] = clr[index].B;
+						pix[pos + x * 3 + 1] = clr[index].G;
+						pix[pos + x * 3 + 2] = clr[index].R;
 						continue;
 					}
-					b = p[4 - (b / 0x28)];
-					pix[pos + x * 3] = (byte)(b * mask[2]);
-					pix[pos + x * 3 + 1] = (byte)(b * mask[1]);
-					pix[pos + x * 3 + 2] = (byte)(b * mask[0]);
+					pix[pos + x * 3] = (byte)(p[index] * useMask.B);
+					pix[pos + x * 3 + 1] = (byte)(p[index] * useMask.G);
+					pix[pos + x * 3 + 2] = (byte)(p[index] * useMask.R);
 				}
 			}
 			GraphicsFunctions.CopyBytesToImage(pix, bmData);
@@ -1565,174 +1527,129 @@ namespace Idmr.Yogeme
 		void xvtPaint()
 		{
 			if (_loading) return;
+
 			int w = pctBrief.Width;
 			int h = pctBrief.Height;
-			int X = 2 * (-_zoomX * _mapX / 256) + w / 2;    // values are written out like this to force even numbers
+			int X = 2 * (-_zoomX * _mapX / 256) + w / 2;
 			int Y = 2 * (-_zoomY * _mapY / 256) + h / 2;    //[JB] mapX(-320) and mapY(+200) offsets better approximate the viewport as it appears in game, although it slightly messes up the point calculations used elsewhere
-			Graphics g3;
-			g3 = Graphics.FromImage(_map);      //graphics obj, load from the memory bitmap
-			g3.Clear(SystemColors.Control);     //clear it
+			Graphics g;
+			g = Graphics.FromImage(_map);
+			g.Clear(SystemColors.Control);
 			SolidBrush sb = new SolidBrush(Color.Black);
-			g3.FillRectangle(sb, 0, 0, w, h);
-			drawGrid(X, Y, g3);
+			g.FillRectangle(sb, 0, 0, w, h);
+			drawGrid(X, Y, g);
 			Bitmap bmptemp;
 			#region FG tags
-			Bitmap bmptemp2;
-			int briefIndex = cboBriefIndex1.SelectedIndex;  //[JB]  Modified the XvT code to use new WaypointArr so that it can access the briefing waypoint slots above Briefing #1
+			int briefIndex = cboBriefIndex1.SelectedIndex;
 			if (briefIndex < 0) briefIndex = 0;
 			BaseFlightGroup.BaseWaypoint wp;
 			for (int i = 0; i < 8; i++)
 			{
-				if (_fgTags[i, 0] == -1) continue;
-				wp = _briefData[_fgTags[i, 0]].WaypointArr[briefIndex];  //[JB] Modified so it can use the correct briefing waypoint.  All code that accesses waypoint in this function changed to access this.
-				if (wp[3] != 1) continue;
-				sb = new SolidBrush(Color.FromArgb(0xE0, 0, 0));    // defaults to Red
-				SolidBrush sb2 = new SolidBrush(Color.FromArgb(0x78, 0, 0));
-				byte IFF = _briefData[_fgTags[i, 0]].IFF;
+				if (_fgTags[i].Slot == -1) continue;
+
+				wp = _briefData[_fgTags[i].Slot].WaypointArr[briefIndex];
+				if (!wp.Enabled) continue;
+
+				byte iff = _briefData[_fgTags[i].Slot].IFF;
+				sb.Color = _iffColors[iff < _iffColors.Length ? iff : 1]; // default to red
+				SolidBrush sb2 = new SolidBrush(sb.Color = _iffBackColors[iff < _iffBackColors.Length ? iff : 1]);
 				int wpX = (int)Math.Round((double)_zoomX * wp[0] / 256, 0) + X;
-				int wpY = (int)Math.Round((double)_zoomY * -wp[1] / 256, 0) + Y; //[JB] Invert Y axis
-				int frame = hsbTimer.Value - _fgTags[i, 1];
-				if (_fgTags[i, 1] == 0) frame = 12; // if tagged at t=0, just the box
-				int[] pos = getTagSize(_briefData[_fgTags[i, 0]].Craft);
-				try { bmptemp = new Bitmap(imgCraft.Images[_briefData[_fgTags[i, 0]].Craft]); }
+				int wpY = (int)Math.Round((double)_zoomY * -wp[1] / 256, 0) + Y;
+				int frame = hsbTimer.Value - _fgTags[i].StartTime;
+				if (_fgTags[i].StartTime == 0) frame = 12; // if tagged at t=0, just the box
+				int[] pos = getTagSize(_briefData[_fgTags[i].Slot].Craft);
+				try { bmptemp = new Bitmap(imgCraft.Images[_briefData[_fgTags[i].Slot].Craft]); }
 				catch { bmptemp = new Bitmap(imgCraft.Images[0]); }
 				switch (frame)
 				{
 					case 0:
-						bmptemp2 = xvtMask(bmptemp, IFF, 1);
-						imageQuad(wpX - 11, wpY - 11, 16, bmptemp2, g3);
+						drawImageQuad(wpX - 11, wpY - 11, 16, xvtMask(bmptemp, iff, 1), g);
 						break;
 					case 1:
-						bmptemp2 = xvtMask(bmptemp, IFF, 2);
-						imageQuad(wpX - 11, wpY - 11, 16, bmptemp2, g3);
-						bmptemp2 = xvtMask(bmptemp, IFF, 1);
-						imageQuad(wpX - 11, wpY - 11, 14, bmptemp2, g3);
+						drawImageQuad(wpX - 11, wpY - 11, 16, xvtMask(bmptemp, iff, 2), g);
+						drawImageQuad(wpX - 11, wpY - 11, 14, xvtMask(bmptemp, iff, 1), g);
 						break;
 					case 2:
-						bmptemp2 = xvtMask(bmptemp, IFF, 3);
-						imageQuad(wpX - 11, wpY - 11, 16, bmptemp2, g3);
-						bmptemp2 = xvtMask(bmptemp, IFF, 2);
-						imageQuad(wpX - 11, wpY - 11, 14, bmptemp2, g3);
-						bmptemp2 = xvtMask(bmptemp, IFF, 1);
-						imageQuad(wpX - 11, wpY - 11, 12, bmptemp2, g3);
+						drawImageQuad(wpX - 11, wpY - 11, 16, xvtMask(bmptemp, iff, 3), g);
+						drawImageQuad(wpX - 11, wpY - 11, 14, xvtMask(bmptemp, iff, 2), g);
+						drawImageQuad(wpX - 11, wpY - 11, 12, xvtMask(bmptemp, iff, 1), g);
 						break;
 					case 3:
-						bmptemp2 = xvtMask(bmptemp, IFF, 4);
-						imageQuad(wpX - 11, wpY - 11, 16, bmptemp2, g3);
-						bmptemp2 = xvtMask(bmptemp, IFF, 3);
-						imageQuad(wpX - 11, wpY - 11, 14, bmptemp2, g3);
-						bmptemp2 = xvtMask(bmptemp, IFF, 2);
-						imageQuad(wpX - 11, wpY - 11, 12, bmptemp2, g3);
-						bmptemp2 = xvtMask(bmptemp, IFF, 1);
-						imageQuad(wpX - 11, wpY - 11, 10, bmptemp2, g3);
+						drawImageQuad(wpX - 11, wpY - 11, 16, xvtMask(bmptemp, iff, 4), g);
+						drawImageQuad(wpX - 11, wpY - 11, 14, xvtMask(bmptemp, iff, 3), g);
+						drawImageQuad(wpX - 11, wpY - 11, 12, xvtMask(bmptemp, iff, 2), g);
+						drawImageQuad(wpX - 11, wpY - 11, 10, xvtMask(bmptemp, iff, 1), g);
 						break;
 					case 4:
-						bmptemp2 = xvtMask(bmptemp, IFF, 4);
-						imageQuad(wpX - 11, wpY - 11, 14, bmptemp2, g3);
-						bmptemp2 = xvtMask(bmptemp, IFF, 3);
-						imageQuad(wpX - 11, wpY - 11, 12, bmptemp2, g3);
-						bmptemp2 = xvtMask(bmptemp, IFF, 2);
-						imageQuad(wpX - 11, wpY - 11, 10, bmptemp2, g3);
-						bmptemp2 = xvtMask(bmptemp, IFF, 1);
-						imageQuad(wpX - 11, wpY - 11, 8, bmptemp2, g3);
+						drawImageQuad(wpX - 11, wpY - 11, 14, xvtMask(bmptemp, iff, 4), g);
+						drawImageQuad(wpX - 11, wpY - 11, 12, xvtMask(bmptemp, iff, 3), g);
+						drawImageQuad(wpX - 11, wpY - 11, 10, xvtMask(bmptemp, iff, 2), g);
+						drawImageQuad(wpX - 11, wpY - 11, 8, xvtMask(bmptemp, iff, 1), g);
 						break;
 					case 5:
-						bmptemp2 = xvtMask(bmptemp, IFF, 4);
-						imageQuad(wpX - 11, wpY - 11, 12, bmptemp2, g3);
-						bmptemp2 = xvtMask(bmptemp, IFF, 3);
-						imageQuad(wpX - 11, wpY - 11, 10, bmptemp2, g3);
-						bmptemp2 = xvtMask(bmptemp, IFF, 2);
-						imageQuad(wpX - 11, wpY - 11, 8, bmptemp2, g3);
-						bmptemp2 = xvtMask(bmptemp, IFF, 1);
-						imageQuad(wpX - 11, wpY - 11, 6, bmptemp2, g3);
+						drawImageQuad(wpX - 11, wpY - 11, 12, xvtMask(bmptemp, iff, 4), g);
+						drawImageQuad(wpX - 11, wpY - 11, 10, xvtMask(bmptemp, iff, 3), g);
+						drawImageQuad(wpX - 11, wpY - 11, 8, xvtMask(bmptemp, iff, 2), g);
+						drawImageQuad(wpX - 11, wpY - 11, 6, xvtMask(bmptemp, iff, 1), g);
 						break;
 					case 6:
-						bmptemp2 = xvtMask(bmptemp, IFF, 4);
-						imageQuad(wpX - 11, wpY - 11, 10, bmptemp2, g3);
-						bmptemp2 = xvtMask(bmptemp, IFF, 3);
-						imageQuad(wpX - 11, wpY - 11, 8, bmptemp2, g3);
-						bmptemp2 = xvtMask(bmptemp, IFF, 2);
-						imageQuad(wpX - 11, wpY - 11, 6, bmptemp2, g3);
-						bmptemp2 = xvtMask(bmptemp, IFF, 1);
-						imageQuad(wpX - 11, wpY - 11, 4, bmptemp2, g3);
+						drawImageQuad(wpX - 11, wpY - 11, 10, xvtMask(bmptemp, iff, 4), g);
+						drawImageQuad(wpX - 11, wpY - 11, 8, xvtMask(bmptemp, iff, 3), g);
+						drawImageQuad(wpX - 11, wpY - 11, 6, xvtMask(bmptemp, iff, 2), g);
+						drawImageQuad(wpX - 11, wpY - 11, 4, xvtMask(bmptemp, iff, 1), g);
 						break;
 					case 7:
-						bmptemp2 = xvtMask(bmptemp, IFF, 4);
-						imageQuad(wpX - 11, wpY - 11, 8, bmptemp2, g3);
-						bmptemp2 = xvtMask(bmptemp, IFF, 3);
-						imageQuad(wpX - 11, wpY - 11, 6, bmptemp2, g3);
-						bmptemp2 = xvtMask(bmptemp, IFF, 2);
-						imageQuad(wpX - 11, wpY - 11, 4, bmptemp2, g3);
-						bmptemp2 = xvtMask(bmptemp, IFF, 1);
-						imageQuad(wpX - 11, wpY - 11, 2, bmptemp2, g3);
+						drawImageQuad(wpX - 11, wpY - 11, 8, xvtMask(bmptemp, iff, 4), g);
+						drawImageQuad(wpX - 11, wpY - 11, 6, xvtMask(bmptemp, iff, 3), g);
+						drawImageQuad(wpX - 11, wpY - 11, 4, xvtMask(bmptemp, iff, 2), g);
+						drawImageQuad(wpX - 11, wpY - 11, 2, xvtMask(bmptemp, iff, 1), g);
 						break;
 					case 8:
-						bmptemp2 = xvtMask(bmptemp, IFF, 4);
-						imageQuad(wpX - 11, wpY - 11, 6, bmptemp2, g3);
-						bmptemp2 = xvtMask(bmptemp, IFF, 3);
-						imageQuad(wpX - 11, wpY - 11, 4, bmptemp2, g3);
-						bmptemp2 = xvtMask(bmptemp, IFF, 2);
-						imageQuad(wpX - 11, wpY - 11, 2, bmptemp2, g3);
+						drawImageQuad(wpX - 11, wpY - 11, 6, xvtMask(bmptemp, iff, 4), g);
+						drawImageQuad(wpX - 11, wpY - 11, 4, xvtMask(bmptemp, iff, 3), g);
+						drawImageQuad(wpX - 11, wpY - 11, 2, xvtMask(bmptemp, iff, 2), g);
 						break;
 					case 9:
-						bmptemp2 = xvtMask(bmptemp, IFF, 4);
-						imageQuad(wpX - 11, wpY - 11, 4, bmptemp2, g3);
-						bmptemp2 = xvtMask(bmptemp, IFF, 3);
-						imageQuad(wpX - 11, wpY - 11, 2, bmptemp2, g3);
+						drawImageQuad(wpX - 11, wpY - 11, 4, xvtMask(bmptemp, iff, 4), g);
+						drawImageQuad(wpX - 11, wpY - 11, 2, xvtMask(bmptemp, iff, 3), g);
 						break;
 					case 10:
-						bmptemp2 = xvtMask(bmptemp, IFF, 4);
-						imageQuad(wpX - 11, wpY - 11, 2, bmptemp2, g3);
+						drawImageQuad(wpX - 11, wpY - 11, 2, xvtMask(bmptemp, iff, 4), g);
 						break;
 					case 11:
-						if (IFF == 0) { sb.Color = Color.FromArgb(0, 0xE0, 0); sb2.Color = Color.FromArgb(0, 0x78, 0); }    // green
-						else if (IFF == 2) { sb.Color = Color.FromArgb(0, 0, 0xE0); sb2.Color = Color.FromArgb(0, 0, 0x78); }   // blue
-						else if (IFF == 3) { sb.Color = Color.FromArgb(0xE0, 0xE0, 0); sb2.Color = Color.FromArgb(0x78, 0x78, 0); } // yellow
-						else if (IFF == 5) { sb.Color = Color.FromArgb(0xE0, 0, 0xE0); sb2.Color = Color.FromArgb(0x78, 0, 0x78); } // purple
-						g3.FillRectangle(sb, wpX - (pos[0] / 2), wpY - (pos[1] / 2), pos[0], pos[1]);
-						g3.FillRectangle(sb2, wpX - (pos[0] / 2 - 1), wpY - (pos[1] / 2 - 1), pos[0] - 2, pos[1] - 2);
+						g.FillRectangle(sb, wpX - (pos[0] / 2), wpY - (pos[1] / 2), pos[0], pos[1]);
+						g.FillRectangle(sb2, wpX - (pos[0] / 2 - 1), wpY - (pos[1] / 2 - 1), pos[0] - 2, pos[1] - 2);
 						break;
 					default:
 						// 12 or greater, just the box
-						if (IFF == 0) { sb.Color = Color.FromArgb(0, 0xE0, 0); sb2.Color = Color.FromArgb(0, 0x78, 0); }    // green
-						else if (IFF == 2) { sb.Color = Color.FromArgb(0, 0, 0xE0); sb2.Color = Color.FromArgb(0, 0, 0x78); }   // blue
-						else if (IFF == 3) { sb.Color = Color.FromArgb(0xE0, 0xE0, 0); sb2.Color = Color.FromArgb(0x78, 0x78, 0); } // yellow
-						else if (IFF == 5) { sb.Color = Color.FromArgb(0xE0, 0, 0xE0); sb2.Color = Color.FromArgb(0x78, 0, 0x78); } // purple
-						g3.FillRectangle(sb, wpX - (pos[0] / 2 + 2), wpY - (pos[1] / 2 + 2), pos[0] + 4, pos[1] + 4);
-						g3.FillRectangle(sb2, wpX - (pos[0] / 2 + 1), wpY - (pos[1] / 2 + 1), pos[0] + 2, pos[1] + 2);
+						g.FillRectangle(sb, wpX - (pos[0] / 2 + 2), wpY - (pos[1] / 2 + 2), pos[0] + 4, pos[1] + 4);
+						g.FillRectangle(sb2, wpX - (pos[0] / 2 + 1), wpY - (pos[1] / 2 + 1), pos[0] + 2, pos[1] + 2);
 						break;
 				}
 			}
-			#endregion // FG tags
-			#region text tags
+			#endregion FG tags
 			for (int i = 0; i < 8; i++)
 			{
-				if (_textTags[i, 0] == -1) continue;
-				sb = new SolidBrush(Color.FromArgb(0xA8, 0, 0));    // default to red
-				int clr = _textTags[i, 3];
-				if (clr == 0) sb.Color = Color.FromArgb(0, 0xAC, 0);    // green
-				//else if (clr == 1) sb.Color = Color.FromArgb(0xA8, 0, 0);	// red
-				else if (clr == 2) sb.Color = Color.FromArgb(0xA8, 0xAC, 0);    // yellow
-				else if (clr == 3) sb.Color = Color.FromArgb(0, 0x2C, 0xA8);    // blue
-				else if (clr == 4) sb.Color = Color.FromArgb(0xA8, 0, 0xA8);    // purple
-				else if (clr == 5) sb.Color = Color.Black;  // black, although this is just dumb against a near-black BG
-				g3.DrawString(_tags[_textTags[i, 0]], new Font("MS Reference Sans Serif", 6), sb, (int)Math.Round((double)_zoomX * _textTags[i, 1] / 256, 0) + X, (int)Math.Round((double)_zoomY * _textTags[i, 2] / 256, 0) + Y);
+				if (_textTags[i].StringIndex == -1) continue;
+
+				sb.Color = _tagColors[_textTags[i].ColorIndex < _tagColors.Length ? _textTags[i].ColorIndex : 1]; // default to red
+				g.DrawString(_tags[_textTags[i].StringIndex], new Font("MS Reference Sans Serif", 6), sb, (int)Math.Round((double)_zoomX * _textTags[i].X / 256, 0) + X, (int)Math.Round((double)_zoomY * _textTags[i].Y / 256, 0) + Y);
 			}
-			#endregion // text tags
 			for (int i = 0; i < _briefData.Length; i++)
 			{
 				wp = _briefData[i].WaypointArr[briefIndex];
-				if (wp[3] != 1) continue;
+				if (!wp.Enabled) continue;
+
 				try { bmptemp = new Bitmap(imgCraft.Images[_briefData[i].Craft]); }
 				catch { bmptemp = new Bitmap(imgCraft.Images[0]); }
 				bmptemp = xvtMask(bmptemp, _briefData[i].IFF, 0);
 				int[] pos = getTagSize(_briefData[i].Craft);
 				// simple base-256 grid coords * zoom to get pixel location, + map offset, - pic size/2 to center
-				g3.DrawImageUnscaled(bmptemp, (int)Math.Round((double)_zoomX * wp[0] / 256, 0) + X - 11 + (pos[0] % 2), (int)Math.Round((double)_zoomY * -wp[1] / 256, 0) + Y - 11); //[JB] Invert Y axis. Also fixed Y axis zoom (was using X).
+				g.DrawImageUnscaled(bmptemp, (int)Math.Round((double)_zoomX * wp[0] / 256, 0) + X - 11 + (pos[0] % 2), (int)Math.Round((double)_zoomY * -wp[1] / 256, 0) + Y - 11); //[JB] Invert Y axis. Also fixed Y axis zoom (was using X).
 			}
-			g3.DrawString("#" + _page, new Font("Arial", 8), new SolidBrush(Color.White), w - 20, 4);
-			pctBrief.Invalidate();      // since it's drawing to memory, this refreshes the pct.  Removes the flicker when zooming
-			g3.Dispose();
+			g.DrawString("#" + _page, new Font("Arial", 8), new SolidBrush(Color.White), w - 20, 4);
+			pctBrief.Invalidate();
+			g.Dispose();
 		}
 		Bitmap xwaMask(Bitmap craftImage, byte iff)
 		{
@@ -1740,44 +1657,16 @@ namespace Idmr.Yogeme
 			BitmapData bmData = bmpNew.LockBits(new Rectangle(0, 0, bmpNew.Width, bmpNew.Height), ImageLockMode.ReadWrite, PixelFormat.Format24bppRgb);
 			byte[] pix = new byte[bmData.Stride * bmData.Height];
 			GraphicsFunctions.CopyImageToBytes(bmData, pix);
-			#region define IFF color distribution
-			byte[] rgb = new byte[3];
-			switch (iff)
-			{
-				case 0:     // green
-					rgb[0] = 0x40;
-					rgb[1] = 0xBC;
-					rgb[2] = 0x20;
-					break;
-				case 2:     // blue
-					rgb[0] = 0x68;
-					rgb[1] = 0x8C;
-					rgb[2] = 0xF8;
-					break;
-				case 3:     // yellow
-					rgb[0] = 0xE8;
-					rgb[1] = 0xD0;
-					rgb[2] = 0x40;
-					break;
-				case 5:     // purple
-					rgb[0] = 0xF8;
-					rgb[1] = 0x80;
-					rgb[2] = 0xF8;
-					break;
-				default:    // red
-					rgb[0] = 0xF8;
-					rgb[1] = 0x54;
-					rgb[2] = 0x50;
-					break;
-			}
-			#endregion
+			byte r = _maskColors[iff < _maskColors.Length ? iff : 1].R;	// default to red
+			byte g = _maskColors[iff < _maskColors.Length ? iff : 1].G;
+			byte b = _maskColors[iff < _maskColors.Length ? iff : 1].B;
 			for (int y = 0; y < bmpNew.Height; y++)
 			{
 				for (int x = 0, pos = y * bmData.Stride; x < bmpNew.Width; x++)
 				{
-					pix[pos + x * 3] = (byte)((pix[pos + x * 3] * rgb[2]) / 256);
-					pix[pos + x * 3 + 1] = (byte)((pix[pos + x * 3 + 1] * rgb[1]) / 256);
-					pix[pos + x * 3 + 2] = (byte)((pix[pos + x * 3 + 2] * rgb[0]) / 256);
+					pix[pos + x * 3] = (byte)(pix[pos + x * 3] * b / 256);
+					pix[pos + x * 3 + 1] = (byte)(pix[pos + x * 3 + 1] * g / 256);
+					pix[pos + x * 3 + 2] = (byte)(pix[pos + x * 3 + 2] * r / 256);
 				}
 			}
 			GraphicsFunctions.CopyBytesToImage(pix, bmData);
@@ -1788,162 +1677,150 @@ namespace Idmr.Yogeme
 		void xwaPaint()
 		{
 			if (_loading) return;
+
 			int w = pctBrief.Width;
 			int h = pctBrief.Height;
-			int X = 2 * (-_zoomX * _mapX / 256) + w / 2;    // values are written out like this to force even numbers
+			int X = 2 * (-_zoomX * _mapX / 256) + w / 2;
 			int Y = 2 * (-_zoomY * _mapY / 256) + h / 2;
-			Graphics g3;
-			g3 = Graphics.FromImage(_map);      //graphics obj, load from the memory bitmap
-			g3.Clear(SystemColors.Control);     //clear it
+			Graphics g;
+			g = Graphics.FromImage(_map);
+			g.Clear(SystemColors.Control);
 			SolidBrush sb = new SolidBrush(Color.FromArgb(0x18, 0x18, 0x18));
-			g3.FillRectangle(sb, 0, 0, w, h);
+			g.FillRectangle(sb, 0, 0, w, h);
 			if (_message != "")
 			{
 				sb.Color = Color.FromArgb(0xE7, 0xE3, 0);   // yellow
-				StringFormat sf = new StringFormat
-				{
-					Alignment = StringAlignment.Center
-				};
-				g3.DrawString(_message, new Font("Arial", 12, FontStyle.Bold), sb, w / 2, h / 2, sf);
-				pctBrief.Invalidate();      // since it's drawing to memory, this refreshes the pct.  Removes the flicker when zooming
-				g3.Dispose();
+				StringFormat sf = new StringFormat { Alignment = StringAlignment.Center };
+				g.DrawString(_message, new Font("Arial", 12, FontStyle.Bold), sb, w / 2, h / 2, sf);
+				pctBrief.Invalidate();
+				g.Dispose();
 				return;
 			}
-			drawGrid(X, Y, g3);
+			drawGrid(X, Y, g);
 			Bitmap bmptemp;
 			#region FG tags
 			for (int i = 0; i < 8; i++)
 			{
-				if (_fgTags[i, 0] == -1 || _briefData[_fgTags[i, 0]].Waypoint == null || _briefData[_fgTags[i, 0]].Waypoint[3] != 1) continue;  //[JB] Added null check to fix crash.
-				sb = new SolidBrush(Color.FromArgb(0xE0, 0, 0));    // defaults to Red
-				SolidBrush sb2 = new SolidBrush(Color.FromArgb(0x78, 0, 0));
-				byte IFF = _briefData[_fgTags[i, 0]].IFF;
-				if (IFF == 0) { sb.Color = Color.FromArgb(0, 0xE0, 0); sb2.Color = Color.FromArgb(0, 0x78, 0); }    // green
-				else if (IFF == 2) { sb.Color = Color.FromArgb(0x60, 0x60, 0xE0); sb2.Color = Color.FromArgb(0x20, 0x20, 0x78); }   // blue
-				else if (IFF == 3) { sb.Color = Color.FromArgb(0xE0, 0xE0, 0); sb2.Color = Color.FromArgb(0x78, 0x78, 0); } // yellow
-				else if (IFF == 5) { sb.Color = Color.FromArgb(0xE0, 0, 0xE0); sb2.Color = Color.FromArgb(0x78, 0, 0x78); } // purple
-				int wpX = (int)Math.Round((double)_zoomX * _briefData[_fgTags[i, 0]].Waypoint[0] / 256, 0) + X;
-				int wpY = (int)Math.Round((double)_zoomY * _briefData[_fgTags[i, 0]].Waypoint[1] / 256, 0) + Y;
-				int frame = hsbTimer.Value - _fgTags[i, 1];
-				if (_fgTags[i, 1] == 0) frame = 12; // if tagged at t=0, just the box
-				byte r = sb.Color.R, b = sb.Color.B, g = sb.Color.G;
-				try { bmptemp = new Bitmap(imgCraft.Images[_briefData[_fgTags[i, 0]].Craft]); }
+				if (_fgTags[i].Slot == -1 || _briefData[_fgTags[i].Slot].Waypoint == null || _briefData[_fgTags[i].Slot].Waypoint[3] != 1) continue;
+
+				byte iff = _briefData[_fgTags[i].Slot].IFF;
+				sb.Color = _iffColors[iff < _iffColors.Length ? iff : 1]; // default to red
+				SolidBrush sb2 = new SolidBrush(sb.Color = _iffBackColors[iff < _iffBackColors.Length ? iff : 1]);
+				int wpX = (int)Math.Round((double)_zoomX * _briefData[_fgTags[i].Slot].Waypoint[0] / 256, 0) + X;
+				int wpY = (int)Math.Round((double)_zoomY * _briefData[_fgTags[i].Slot].Waypoint[1] / 256, 0) + Y;
+				int frame = hsbTimer.Value - _fgTags[i].StartTime;
+				if (_fgTags[i].StartTime == 0) frame = 12; // if tagged at t=0, just the box
+				byte r = sb.Color.R, b = sb.Color.B, gn = sb.Color.G;
+				try { bmptemp = new Bitmap(imgCraft.Images[_briefData[_fgTags[i].Slot].Craft]); }
 				catch { bmptemp = new Bitmap(imgCraft.Images[0]); } // if it breaks, use an X-wing
-				bmptemp = xwaMask(bmptemp, IFF);
-				if (_briefData[_fgTags[i, 0]].Waypoint[2] == 1) bmptemp.RotateFlip(RotateFlipType.Rotate270FlipNone);
-				else if (_briefData[_fgTags[i, 0]].Waypoint[2] == 2) bmptemp.RotateFlip(RotateFlipType.Rotate180FlipNone);
-				else if (_briefData[_fgTags[i, 0]].Waypoint[2] == 3) bmptemp.RotateFlip(RotateFlipType.Rotate90FlipNone);
-				else if (_briefData[_fgTags[i, 0]].Waypoint[2] == 4) bmptemp.RotateFlip(RotateFlipType.RotateNoneFlipX);
+				bmptemp = xwaMask(bmptemp, iff);
+				if (_briefData[_fgTags[i].Slot].Waypoint[2] == 1) bmptemp.RotateFlip(RotateFlipType.Rotate270FlipNone);
+				else if (_briefData[_fgTags[i].Slot].Waypoint[2] == 2) bmptemp.RotateFlip(RotateFlipType.Rotate180FlipNone);
+				else if (_briefData[_fgTags[i].Slot].Waypoint[2] == 3) bmptemp.RotateFlip(RotateFlipType.Rotate90FlipNone);
+				else if (_briefData[_fgTags[i].Slot].Waypoint[2] == 4) bmptemp.RotateFlip(RotateFlipType.RotateNoneFlipX);
 				switch (frame)
 				{
 					case 0:
-						imageQuad(wpX - 28, wpY - 28, 16, bmptemp, g3);
+						drawImageQuad(wpX - 28, wpY - 28, 16, bmptemp, g);
 						break;
 					case 1:
-						imageQuad(wpX - 28, wpY - 28, 16, bmptemp, g3);
-						imageQuad(wpX - 28, wpY - 28, 14, bmptemp, g3);
+						drawImageQuad(wpX - 28, wpY - 28, 16, bmptemp, g);
+						drawImageQuad(wpX - 28, wpY - 28, 14, bmptemp, g);
 						break;
 					case 2:
-						imageQuad(wpX - 28, wpY - 28, 16, bmptemp, g3);
-						imageQuad(wpX - 28, wpY - 28, 14, bmptemp, g3);
-						imageQuad(wpX - 28, wpY - 28, 12, bmptemp, g3);
+						drawImageQuad(wpX - 28, wpY - 28, 16, bmptemp, g);
+						drawImageQuad(wpX - 28, wpY - 28, 14, bmptemp, g);
+						drawImageQuad(wpX - 28, wpY - 28, 12, bmptemp, g);
 						break;
 					case 3:
-						imageQuad(wpX - 28, wpY - 28, 16, bmptemp, g3);
-						imageQuad(wpX - 28, wpY - 28, 14, bmptemp, g3);
-						imageQuad(wpX - 28, wpY - 28, 12, bmptemp, g3);
-						imageQuad(wpX - 28, wpY - 28, 10, bmptemp, g3);
+						drawImageQuad(wpX - 28, wpY - 28, 16, bmptemp, g);
+						drawImageQuad(wpX - 28, wpY - 28, 14, bmptemp, g);
+						drawImageQuad(wpX - 28, wpY - 28, 12, bmptemp, g);
+						drawImageQuad(wpX - 28, wpY - 28, 10, bmptemp, g);
 						break;
 					case 4:
-						imageQuad(wpX - 28, wpY - 28, 14, bmptemp, g3);
-						imageQuad(wpX - 28, wpY - 28, 12, bmptemp, g3);
-						imageQuad(wpX - 28, wpY - 28, 10, bmptemp, g3);
-						imageQuad(wpX - 28, wpY - 28, 8, bmptemp, g3);
+						drawImageQuad(wpX - 28, wpY - 28, 14, bmptemp, g);
+						drawImageQuad(wpX - 28, wpY - 28, 12, bmptemp, g);
+						drawImageQuad(wpX - 28, wpY - 28, 10, bmptemp, g);
+						drawImageQuad(wpX - 28, wpY - 28, 8, bmptemp, g);
 						break;
 					case 5:
-						imageQuad(wpX - 28, wpY - 28, 12, bmptemp, g3);
-						imageQuad(wpX - 28, wpY - 28, 10, bmptemp, g3);
-						imageQuad(wpX - 28, wpY - 28, 8, bmptemp, g3);
-						imageQuad(wpX - 28, wpY - 28, 6, bmptemp, g3);
+						drawImageQuad(wpX - 28, wpY - 28, 12, bmptemp, g);
+						drawImageQuad(wpX - 28, wpY - 28, 10, bmptemp, g);
+						drawImageQuad(wpX - 28, wpY - 28, 8, bmptemp, g);
+						drawImageQuad(wpX - 28, wpY - 28, 6, bmptemp, g);
 						break;
 					case 6:
-						imageQuad(wpX - 28, wpY - 28, 10, bmptemp, g3);
-						imageQuad(wpX - 28, wpY - 28, 8, bmptemp, g3);
-						imageQuad(wpX - 28, wpY - 28, 6, bmptemp, g3);
-						imageQuad(wpX - 28, wpY - 28, 4, bmptemp, g3);
+						drawImageQuad(wpX - 28, wpY - 28, 10, bmptemp, g);
+						drawImageQuad(wpX - 28, wpY - 28, 8, bmptemp, g);
+						drawImageQuad(wpX - 28, wpY - 28, 6, bmptemp, g);
+						drawImageQuad(wpX - 28, wpY - 28, 4, bmptemp, g);
 						break;
 					case 7:
-						imageQuad(wpX - 28, wpY - 28, 8, bmptemp, g3);
-						imageQuad(wpX - 28, wpY - 28, 6, bmptemp, g3);
-						imageQuad(wpX - 28, wpY - 28, 4, bmptemp, g3);
-						imageQuad(wpX - 28, wpY - 28, 2, bmptemp, g3);
+						drawImageQuad(wpX - 28, wpY - 28, 8, bmptemp, g);
+						drawImageQuad(wpX - 28, wpY - 28, 6, bmptemp, g);
+						drawImageQuad(wpX - 28, wpY - 28, 4, bmptemp, g);
+						drawImageQuad(wpX - 28, wpY - 28, 2, bmptemp, g);
 						break;
 					case 8:
-						g3.FillRectangle(sb2, wpX - 12, wpY - 11, 25, 22);
-						imageQuad(wpX - 28, wpY - 28, 6, bmptemp, g3);
-						imageQuad(wpX - 28, wpY - 28, 4, bmptemp, g3);
-						imageQuad(wpX - 28, wpY - 28, 2, bmptemp, g3);
+						g.FillRectangle(sb2, wpX - 12, wpY - 11, 25, 22);
+						drawImageQuad(wpX - 28, wpY - 28, 6, bmptemp, g);
+						drawImageQuad(wpX - 28, wpY - 28, 4, bmptemp, g);
+						drawImageQuad(wpX - 28, wpY - 28, 2, bmptemp, g);
 						break;
 					case 9:
 						if (r == 0xE0) r = 0x90;
 						else if (r == 0x60) r = 0x30;
-						if (g == 0xE0) r = 0x94;
+						if (gn == 0xE0) r = 0x94;
 						if (b == 0xE0) b = 0x90;
 						else if (b == 0x60) b = 0x30;
-						sb.Color = Color.FromArgb(r, g, b);
+						sb.Color = Color.FromArgb(r, gn, b);
 						// TODO: these aren't fixed sizes
-						g3.FillRectangle(sb, wpX - 13, wpY - 12, 27, 24);
-						g3.FillRectangle(sb2, wpX - 12, wpY - 11, 25, 22);
-						imageQuad(wpX - 28, wpY - 28, 4, bmptemp, g3);
-						imageQuad(wpX - 28, wpY - 28, 2, bmptemp, g3);
+						g.FillRectangle(sb, wpX - 13, wpY - 12, 27, 24);
+						g.FillRectangle(sb2, wpX - 12, wpY - 11, 25, 22);
+						drawImageQuad(wpX - 28, wpY - 28, 4, bmptemp, g);
+						drawImageQuad(wpX - 28, wpY - 28, 2, bmptemp, g);
 						break;
 					case 10:
 						if (r == 0xE0) r = 0xA8;
 						else if (r == 0x60) r = 0x40;
-						if (g == 0xE0) r = 0xAC;
+						if (gn == 0xE0) r = 0xAC;
 						if (b == 0xE0) b = 0xA8;
 						else if (b == 0x60) b = 0x40;
-						sb.Color = Color.FromArgb(r, g, b);
-						g3.FillRectangle(sb, wpX - 14, wpY - 13, 29, 26);
-						g3.FillRectangle(sb2, wpX - 13, wpY - 12, 27, 24);
-						imageQuad(wpX - 28, wpY - 28, 2, bmptemp, g3);
+						sb.Color = Color.FromArgb(r, gn, b);
+						g.FillRectangle(sb, wpX - 14, wpY - 13, 29, 26);
+						g.FillRectangle(sb2, wpX - 13, wpY - 12, 27, 24);
+						drawImageQuad(wpX - 28, wpY - 28, 2, bmptemp, g);
 						break;
 					case 11:
 						if (r == 0xE0) r = 0xC8;
 						else if (r == 0x60) r = 0x50;
-						if (g == 0xE0) r = 0xC8;
+						if (gn == 0xE0) r = 0xC8;
 						if (b == 0xE0) b = 0xC8;
 						else if (b == 0x60) b = 0x50;
-						sb.Color = Color.FromArgb(r, g, b);
-						g3.FillRectangle(sb, wpX - 15, wpY - 14, 31, 28);
-						g3.FillRectangle(sb2, wpX - 14, wpY - 13, 29, 26);
+						sb.Color = Color.FromArgb(r, gn, b);
+						g.FillRectangle(sb, wpX - 15, wpY - 14, 31, 28);
+						g.FillRectangle(sb2, wpX - 14, wpY - 13, 29, 26);
 						break;
 					default:
 						// 12 or greater, just the box
-						g3.FillRectangle(sb, wpX - 17, wpY - 16, 35, 32);
-						g3.FillRectangle(sb2, wpX - 16, wpY - 15, 33, 30);
+						g.FillRectangle(sb, wpX - 17, wpY - 16, 35, 32);
+						g.FillRectangle(sb2, wpX - 16, wpY - 15, 33, 30);
 						break;
 				}
 			}
-			#endregion // FG tags
-			#region text tags
+			#endregion FG tags
 			for (int i = 0; i < 8; i++)
 			{
-				if (_textTags[i, 0] == -1) continue;
-				sb = new SolidBrush(Color.FromArgb(0xE7, 0, 0));    // default to red
-				int clr = _textTags[i, 3];
-				if (clr == 0) sb.Color = Color.FromArgb(0, 0xE3, 0);    // green
-				//else if (clr == 1) sb.Color = Color.FromArgb(0xE7, 0, 0);	// red
-				else if (clr == 2) sb.Color = Color.FromArgb(0xE7, 0xE3, 0);    // yellow
-				else if (clr == 3) sb.Color = Color.FromArgb(0x63, 0x61, 0xE7); // purple
-				else if (clr == 4) sb.Color = Color.FromArgb(0xDE, 0, 0xDE);    // pink
-				else if (clr == 5) sb.Color = Color.FromArgb(0, 4, 0xA5);   // blue
-				g3.DrawString(_tags[_textTags[i, 0]], new Font("Arial", 9, FontStyle.Bold), sb, (int)Math.Round((double)_zoomX * _textTags[i, 1] / 256, 0) + X, (int)Math.Round((double)_zoomY * _textTags[i, 2] / 256, 0) + Y);
+				if (_textTags[i].StringIndex == -1) continue;
+
+				sb.Color = _tagColors[_textTags[i].ColorIndex < _tagColors.Length ? _textTags[i].ColorIndex : 1]; // default to red
+				g.DrawString(_tags[_textTags[i].StringIndex], new Font("Arial", 9, FontStyle.Bold), sb, (int)Math.Round((double)_zoomX * _textTags[i].X / 256, 0) + X, (int)Math.Round((double)_zoomY * _textTags[i].Y / 256, 0) + Y);
 			}
-			#endregion
 			for (int i = 0; i < _briefData.Length; i++)
 			{
 				if (_briefData[i].Waypoint == null || _briefData[i].Waypoint[3] != 1) continue;
+
 				try { bmptemp = new Bitmap(imgCraft.Images[_briefData[i].Craft]); }
 				catch { bmptemp = new Bitmap(imgCraft.Images[0]); }
 				bmptemp = xwaMask(bmptemp, _briefData[i].IFF);
@@ -1952,27 +1829,29 @@ namespace Idmr.Yogeme
 				else if (_briefData[i].Waypoint[2] == 3) bmptemp.RotateFlip(RotateFlipType.Rotate90FlipNone);
 				else if (_briefData[i].Waypoint[2] == 4) bmptemp.RotateFlip(RotateFlipType.RotateNoneFlipX);
 				// simple base-256 grid coords * zoom to get pixel location, + map offset, - pic size/2 to center
-				g3.DrawImageUnscaled(bmptemp, (int)Math.Round((double)_zoomX * _briefData[i].Waypoint[0] / 256, 0) + X - 28, (int)Math.Round((double)_zoomY * _briefData[i].Waypoint[1] / 256, 0) + Y - 28);  //[JB] Fixed Y zoom.
+				g.DrawImageUnscaled(bmptemp, (int)Math.Round((double)_zoomX * _briefData[i].Waypoint[0] / 256, 0) + X - 28, (int)Math.Round((double)_zoomY * _briefData[i].Waypoint[1] / 256, 0) + Y - 28);  //[JB] Fixed Y zoom.
 			}
-			g3.DrawString("#" + _page, new Font("Arial", 8), new SolidBrush(Color.White), w - 20, 4);
-			pctBrief.Invalidate();      // since it's drawing to memory, this refreshes the pct.  Removes the flicker when zooming
-			g3.Dispose();
+			g.DrawString("#" + _page, new Font("Arial", 8), new SolidBrush(Color.White), w - 20, 4);
+			pctBrief.Invalidate();
+			g.Dispose();
 		}
 
 		void cboColorTag_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			_textTags[(int)numText.Value - 1, 3] = cboColorTag.SelectedIndex;
+			_textTags[(int)numText.Value - 1].ColorIndex = cboColorTag.SelectedIndex;
 			MapPaint();
 		}
 		void cboIconIff_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (_loading) return;
+
 			_briefData[_icon].IFF = (byte)cboIconIff.SelectedIndex;
 			MapPaint();
 		}
 		void cboMoveIcon_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (_loading) return;
+
 			if (_tempX != -621 && _tempY != -621)
 			{
 				// here, temp is the OLD location of the icon
@@ -2002,6 +1881,7 @@ namespace Idmr.Yogeme
 		void cboNCraft_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (_loading) return;
+
 			_briefData[_icon].Craft = cboNCraft.SelectedIndex - 1;
 			if (cboNCraft.SelectedIndex == 0) _briefData[_icon].Waypoint[3] = 0;
 			MapPaint();
@@ -2009,6 +1889,7 @@ namespace Idmr.Yogeme
 		void cboNewIcon_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (_loading) return;
+
 			_briefData[_icon] = _tempBD;
 			_icon = (short)cboNewIcon.SelectedIndex;
 			_tempBD = _briefData[_icon];
@@ -2026,6 +1907,7 @@ namespace Idmr.Yogeme
 		void cboRCraft_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (_loading) return;
+
 			try { _briefData[_icon].Waypoint[2] = _tempX; }
 			catch (NullReferenceException) { /* do nothing */ }
 			_icon = (short)cboRCraft.SelectedIndex;
@@ -2040,13 +1922,14 @@ namespace Idmr.Yogeme
 		void cboRotateAmount_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (_loading) return;
+
 			try { _briefData[_icon].Waypoint[2] = (short)cboRotateAmount.SelectedIndex; }
 			catch (NullReferenceException) { /* do nothing*/ }
 			MapPaint();
 		}
 		void cboTextTag_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			_textTags[(int)numText.Value - 1, 0] = cboTextTag.SelectedIndex;
+			_textTags[(int)numText.Value - 1].StringIndex = cboTextTag.SelectedIndex;
 			MapPaint();
 		}
 
@@ -2066,7 +1949,7 @@ namespace Idmr.Yogeme
 			vsbBRF.Visible = false;
 			lblInstruction.Visible = false;
 			if (_eventType == BaseBriefing.EventType.CaptionText && sender.ToString() != "OK") { _page--; }
-			else if (_eventType == BaseBriefing.EventType.TextTag1 && sender.ToString() != "OK") { _textTags = _tempTags; }
+			else if (_eventType == BaseBriefing.EventType.TextTag1 && sender.ToString() != "OK") { _textTags = _ttBackup; }
 			else if (_eventType == BaseBriefing.EventType.MoveMap && sender.ToString() != "OK")
 			{
 				_mapX = _tempX;
@@ -2117,22 +2000,21 @@ namespace Idmr.Yogeme
 		}
 		void cmdOk_Click(object sender, EventArgs e)
 		{
-			BaseBriefing brief = (_platform == Settings.Platform.TIE ? _tieBriefing : (_platform == Settings.Platform.XvT ? _xvtBriefing : (BaseBriefing)_xwaBriefing));
-			if (!hasAvailableEventSpace(2 + BaseBriefing.EventParameters.GetCount(_eventType))) //Check space for a full event
+			if (!hasAvailableEventSpace(2 + BaseBriefing.EventParameters.GetCount(_eventType)))
 			{
 				MessageBox.Show("Event list is full, cannot add more.", "Error");
 				cmdCancel_Click(0, new EventArgs());
 				return;
 			}
 
-			if (_eventType == BaseBriefing.EventType.ClearFGTags) if (optText.Checked) _eventType = BaseBriefing.EventType.ClearTextTags;
+			if (_eventType == BaseBriefing.EventType.ClearFGTags && optText.Checked) _eventType = BaseBriefing.EventType.ClearTextTags;
 			int i = -1;
 			switch (_eventType)
 			{
 				case BaseBriefing.EventType.SkipMarker:
-                    #region skip marker
                     i = findExisting(_eventType);
                     if (i < 10000) { break; }  // no further action, existing found
+
                     i -= 10000;
                     try
                     {
@@ -2145,6 +2027,7 @@ namespace Idmr.Yogeme
                         for (int n = i + 2; n > i; n--)
                         {
                             if (_events[n - 1, 1] == 0) continue;
+
                             for (int h = 0; h < 6; h++) _events[n, h] = _events[n - 1, h];
                         }
                     }
@@ -2152,15 +2035,14 @@ namespace Idmr.Yogeme
                     _events[i, 1] = (short)_eventType;
                     for (int n = 2; n < 6; n++) _events[i, n] = 0;
                     break;
-                    #endregion
 				case BaseBriefing.EventType.PageBreak:
-					#region page break
 					i = findExisting(_eventType);
-					if (i < 10000) { break; }  // no further action, existing break found
+					if (i < 10000) { break; }
+
 					i -= 10000;
 					try
 					{
-						lstEvents.SelectedIndex = i;    // this will throw for last event
+						lstEvents.SelectedIndex = i;
 						insertEvent();
 					}
 					catch (ArgumentOutOfRangeException)
@@ -2178,11 +2060,9 @@ namespace Idmr.Yogeme
 					if (_platform == Settings.Platform.TIE) lblTitle.Text = "";
 					lblCaption.Text = "";
 					break;
-				#endregion
 				case BaseBriefing.EventType.TitleText:
-					#region title
 					i = findExisting(_eventType);
-					if (i >= 10000)  //[JB] Need to change all these conditional checks to >= 10000.  If the event list is empty, none will be found, returning exactly 10000 (which isn't caught) and produces an out of bounds exception trying to insert at _events[10000,0]
+					if (i >= 10000)
 					{
 						i -= 10000; // if one wasn't found, remove marker, create it.
 						try
@@ -2196,6 +2076,7 @@ namespace Idmr.Yogeme
 							for (int n = i + 2; n > i; n--)
 							{
 								if (_events[n - 1, 1] == 0) continue;
+
 								for (int h = 0; h < 6; h++) _events[n, h] = _events[n - 1, h];
 							}
 						}
@@ -2217,13 +2098,11 @@ namespace Idmr.Yogeme
 						lblTitle.Text = _strings[_events[i, 2]];
 					}
 					break;
-				#endregion
 				case BaseBriefing.EventType.CaptionText:
-					#region caption
 					i = findExisting(_eventType);
 					if (i >= 10000)
 					{
-						i -= 10000; // if one wasn't found, remove marker, create it.
+						i -= 10000;
 						try
 						{
 							lstEvents.SelectedIndex = i;
@@ -2235,6 +2114,7 @@ namespace Idmr.Yogeme
 							for (int n = i + 2; n > i; n--)
 							{
 								if (_events[n - 1, 1] == 0) continue;
+
 								for (int h = 0; h < 6; h++) _events[n, h] = _events[n - 1, h];
 							}
 						}
@@ -2256,13 +2136,11 @@ namespace Idmr.Yogeme
 						lblCaption.Text = _strings[_events[i, 2]];
 					}
                     break;
-				#endregion
 				case BaseBriefing.EventType.MoveMap:
-					#region move
 					i = findExisting(_eventType);
 					if (i >= 10000)
 					{
-						i -= 10000; // if one wasn't found, remove marker, create it.
+						i -= 10000;
 						try
 						{
 							lstEvents.SelectedIndex = i;
@@ -2284,13 +2162,11 @@ namespace Idmr.Yogeme
 					_events[i, 3] = _mapY;
 					// don't need to repaint, done while adjusting values
 					break;
-				#endregion
 				case BaseBriefing.EventType.ZoomMap:
-					#region zoom
 					i = findExisting(_eventType);
 					if (i >= 10000)
 					{
-						i -= 10000; // if one wasn't found, remove marker, create it.
+						i -= 10000;
 						try
 						{
 							lstEvents.SelectedIndex = i;
@@ -2302,6 +2178,7 @@ namespace Idmr.Yogeme
 							for (int n = i + 2; n > i; n--)
 							{
 								if (_events[n - 1, 1] == 0) continue;
+
 								for (int h = 0; h < 6; h++) _events[n, h] = _events[n - 1, h];
 							}
 						}
@@ -2312,15 +2189,14 @@ namespace Idmr.Yogeme
 					_events[i, 3] = _zoomY;
 					// don't need to repaint, done while adjusting values
 					break;
-				#endregion
 				case BaseBriefing.EventType.ClearFGTags:
-					#region clear FG
 					i = findExisting(_eventType);
-					if (i < 10000) break;   // no further action, existing break found
+					if (i < 10000) break;
+
 					i -= 10000;
 					try
 					{
-						lstEvents.SelectedIndex = i;    // this will throw for last event
+						lstEvents.SelectedIndex = i;
 						insertEvent();
 					}
 					catch (ArgumentOutOfRangeException)
@@ -2329,6 +2205,7 @@ namespace Idmr.Yogeme
 						for (int n = i + 2; n > i; n--)
 						{
 							if (_events[n - 1, 1] == 0) continue;
+
 							for (int h = 0; h < 6; h++) _events[n, h] = _events[n - 1, h];
 						}
 					}
@@ -2337,18 +2214,16 @@ namespace Idmr.Yogeme
 					for (int n = 2; n < 6; n++) _events[i, n] = 0;
 					for (int n = 0; n < 8; n++)
 					{
-						_fgTags[n, 0] = -1;
-						_fgTags[n, 1] = 0;
+						_fgTags[n].Slot = -1;
+						_fgTags[n].StartTime = 0;
 					}
 					break;
-				#endregion
 				case BaseBriefing.EventType.FGTag1:
-					#region FG
 					_eventType = (BaseBriefing.EventType)((int)_eventType + numFG.Value - 1);
 					i = findExisting(_eventType);
 					if (i >= 10000)
 					{
-						i -= 10000; // if one wasn't found, remove marker, create it.
+						i -= 10000;
 						try
 						{
 							lstEvents.SelectedIndex = i;
@@ -2360,6 +2235,7 @@ namespace Idmr.Yogeme
 							for (int n = i + 2; n > i; n--)
 							{
 								if (_events[n - 1, 1] == 0) continue;
+
 								for (int h = 0; h < 6; h++) _events[n, h] = _events[n - 1, h];
 							}
 						}
@@ -2368,19 +2244,18 @@ namespace Idmr.Yogeme
 					_events[i, 1] = (short)_eventType;
 					_events[i, 2] = (short)cboFGTag.SelectedIndex;
 					for (int n = 3; n < 6; n++) _events[i, n] = 0;
-					_fgTags[(int)_eventType - 9, 0] = _events[i, 2];
-					_fgTags[(int)_eventType - 9, 1] = _events[i, 0];
+					_fgTags[(int)_eventType - 9].Slot = _events[i, 2];
+					_fgTags[(int)_eventType - 9].StartTime = _events[i, 0];
 					MapPaint();
 					break;
-				#endregion
 				case BaseBriefing.EventType.ClearTextTags:
-					#region clear text
 					i = findExisting(_eventType);
-					if (i < 10000) break;   // no further action, existing break found
+					if (i < 10000) break;
+
 					i -= 10000;
 					try
 					{
-						lstEvents.SelectedIndex = i;    // this will throw for last event
+						lstEvents.SelectedIndex = i;
 						insertEvent();
 					}
 					catch (ArgumentOutOfRangeException)
@@ -2389,6 +2264,7 @@ namespace Idmr.Yogeme
 						for (int n = i + 2; n > i; n--)
 						{
 							if (_events[n - 1, 1] == 0) continue;
+
 							for (int h = 0; h < 6; h++) _events[n, h] = _events[n - 1, h];
 						}
 					}
@@ -2397,13 +2273,11 @@ namespace Idmr.Yogeme
 					for (int n = 2; n < 6; n++) _events[i, n] = 0;
 					for (int n = 0; n < 8; n++)
 					{
-						_textTags[n, 0] = -1;
-						_textTags[n, 1] = 0;
+						_textTags[n].StringIndex = -1;
+						_textTags[n].X = 0;
 					}
 					break;
-				#endregion
 				case BaseBriefing.EventType.TextTag1:
-					#region text
 					_eventType = (BaseBriefing.EventType)((int)_eventType + numText.Value - 1);
 					// can't use FindExisting, due to extra parameter
 					i = findExisting(_eventType);
@@ -2415,7 +2289,7 @@ namespace Idmr.Yogeme
 							i = 0;
 							break;
 						}
-						i -= 10000; // if one wasn't found, remove marker, create it.
+						i -= 10000;
 						try
 						{
 							lstEvents.SelectedIndex = i;
@@ -2427,6 +2301,7 @@ namespace Idmr.Yogeme
 							for (int n = i + 2; n > i; n--)
 							{
 								if (_events[n - 1, 1] == 0) continue;
+
 								for (int h = 0; h < 6; h++) _events[n, h] = _events[n - 1, h];
 							}
 						}
@@ -2448,20 +2323,18 @@ namespace Idmr.Yogeme
 					_events[i, 5] = (short)cboColorTag.SelectedIndex;
 					// don't need to repaint or restore/edit from backup, as it's taken care of during placement
 					break;
-				#endregion
 				case BaseBriefing.EventType.XwaSetIcon:
-					#region new icon
 					if (_tempX == -621 && _tempY == -621 && cboNCraft.SelectedIndex == 0)
 					{
 						MessageBox.Show("No craft location selected!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 						i = 0;
 						break;
 					}
-					// start with the NewIcon command
+
 					i = findNext();
 					try
 					{
-						lstEvents.SelectedIndex = i;    // this will throw for last event
+						lstEvents.SelectedIndex = i;
 						insertEvent();
 					}
 					catch (ArgumentOutOfRangeException)
@@ -2470,6 +2343,7 @@ namespace Idmr.Yogeme
 						for (int n = i + 2; n > i; n--)
 						{
 							if (_events[n - 1, 1] == 0) continue;
+
 							for (int h = 0; h < 6; h++) _events[n, h] = _events[n - 1, h];
 						}
 					}
@@ -2480,13 +2354,13 @@ namespace Idmr.Yogeme
 					_events[i, 4] = (short)cboIconIff.SelectedIndex;
 					_events[i, 5] = 0;
 					updateList(i);
-					// and now the MoveIcon 
+					// add initial MoveIcon 
 					if (cboNCraft.SelectedIndex != 0)
 					{
 						i = findNext();
 						try
 						{
-							lstEvents.SelectedIndex = i;    // this will throw for last event
+							lstEvents.SelectedIndex = i;
 							insertEvent();
 						}
 						catch (ArgumentOutOfRangeException)
@@ -2495,6 +2369,7 @@ namespace Idmr.Yogeme
 							for (int n = i + 2; n > i; n--)
 							{
 								if (_events[n - 1, 1] == 0) continue;
+
 								for (int h = 0; h < 6; h++) _events[n, h] = _events[n - 1, h];
 							}
 						}
@@ -2506,16 +2381,14 @@ namespace Idmr.Yogeme
 						_events[i, 5] = 0;
 					}
 					break;
-				#endregion
 				case BaseBriefing.EventType.XwaShipInfo:
-					#region info
 					i = findExisting(_eventType);
 					if (i >= 10000)
 					{
 						i -= 10000;
 						try
 						{
-							lstEvents.SelectedIndex = i;    // this will throw for last event
+							lstEvents.SelectedIndex = i;
 							insertEvent();
 						}
 						catch (ArgumentOutOfRangeException)
@@ -2524,6 +2397,7 @@ namespace Idmr.Yogeme
 							for (int n = i + 2; n > i; n--)
 							{
 								if (_events[n - 1, 1] == 0) continue;
+
 								for (int h = 0; h < 6; h++) _events[n, h] = _events[n - 1, h];
 							}
 						}
@@ -2534,21 +2408,20 @@ namespace Idmr.Yogeme
 					_events[i, 3] = (short)cboInfoCraft.SelectedIndex;
 					for (int n = 4; n < 6; n++) _events[i, n] = 0;
 					break;
-				#endregion
 				case BaseBriefing.EventType.XwaMoveIcon:
-					#region move icon
 					if (_tempX == -621 && _tempY == -621)
 					{
 						MessageBox.Show("No craft location or valid icon selected!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 						i = 0;
 						break;
 					}
+
 					if (numMoveTime.Value == 0)
 					{
-						i = findNext();     // could be lots of Moves at one time
+						i = findNext();
 						try
 						{
-							lstEvents.SelectedIndex = i;    // this will throw for last event
+							lstEvents.SelectedIndex = i;
 							insertEvent();
 						}
 						catch (ArgumentOutOfRangeException)
@@ -2557,6 +2430,7 @@ namespace Idmr.Yogeme
 							for (int n = i + 2; n > i; n--)
 							{
 								if (_events[n - 1, 1] == 0) continue;
+
 								for (int h = 0; h < 6; h++) _events[n, h] = _events[n - 1, h];
 							}
 						}
@@ -2576,13 +2450,14 @@ namespace Idmr.Yogeme
                             cmdCancel_Click(0, new EventArgs());
                             return;
                         }
+
                         int t0 = hsbTimer.Value, x = _briefData[_icon].Waypoint[0], y = _briefData[_icon].Waypoint[1];
                         for (int j = 0; j <= total; j++)
 						{
 							i = findNext(j + t0);
 							try
 							{
-								lstEvents.SelectedIndex = i;    // this will throw for last event
+								lstEvents.SelectedIndex = i;
 								insertEvent();
 							}
 							catch (ArgumentOutOfRangeException)
@@ -2591,6 +2466,7 @@ namespace Idmr.Yogeme
 								for (int n = i + 2; n > i; n--)
 								{
 									if (_events[n - 1, 1] == 0) continue;
+
 									for (int h = 0; h < 6; h++) _events[n, h] = _events[n - 1, h];
 								}
 							}
@@ -2604,13 +2480,11 @@ namespace Idmr.Yogeme
 						}
 					}
 					break;
-				#endregion
 				case BaseBriefing.EventType.XwaRotateIcon:
-					#region rotate
-					i = findNext();     // could be lots of Rotates at one time
+					i = findNext();
 					try
 					{
-						lstEvents.SelectedIndex = i;    // this will throw for last event
+						lstEvents.SelectedIndex = i;
 						insertEvent();
 					}
 					catch (ArgumentOutOfRangeException)
@@ -2619,6 +2493,7 @@ namespace Idmr.Yogeme
 						for (int n = i + 2; n > i; n--)
 						{
 							if (_events[n - 1, 1] == 0) continue;
+
 							for (int h = 0; h < 6; h++) _events[n, h] = _events[n - 1, h];
 						}
 					}
@@ -2628,16 +2503,14 @@ namespace Idmr.Yogeme
 					_events[i, 3] = (short)cboRotateAmount.SelectedIndex;
 					for (int n = 4; n < 6; n++) _events[i, n] = 0;
 					break;
-				#endregion
 				case BaseBriefing.EventType.XwaChangeRegion:
-					#region region
 					i = findExisting(_eventType);
 					if (i >= 10000)
 					{
 						i -= 10000;
 						try
 						{
-							lstEvents.SelectedIndex = i;    // this will throw for last event
+							lstEvents.SelectedIndex = i;
 							insertEvent();
 						}
 						catch (ArgumentOutOfRangeException)
@@ -2646,6 +2519,7 @@ namespace Idmr.Yogeme
 							for (int n = i + 2; n > i; n--)
 							{
 								if (_events[n - 1, 1] == 0) continue;
+
 								for (int h = 0; h < 6; h++) _events[n, h] = _events[n - 1, h];
 							}
 						}
@@ -2655,7 +2529,6 @@ namespace Idmr.Yogeme
 					_events[i, 2] = (short)(numNewRegion.Value - 1);
 					for (int n = 3; n < 6; n++) _events[i, n] = 0;
 					break;
-				#endregion
 				default:    // this shouldn't be possible
 					break;
 			}
@@ -2740,7 +2613,7 @@ namespace Idmr.Yogeme
 			lblTitle.Visible = false;
 			lblCaption.Visible = false;
 			lblInstruction.Visible = true;
-			_tempTags = _textTags;
+			_ttBackup = _textTags;
 			_tempX = -621;
 			_tempY = -621;
 			enableOkCancel(true);
@@ -2776,7 +2649,6 @@ namespace Idmr.Yogeme
 			MapPaint();
 		}
 
-		/// <summary>Feature to quickly navigate forward through tbe briefing, landing on the next caption.</summary>
 		void lblCaption_Click(object sender, EventArgs e)
 		{
 			int time = hsbTimer.Value;
@@ -2804,23 +2676,20 @@ namespace Idmr.Yogeme
 
 		void numText_ValueChanged(object sender, EventArgs e)
 		{
-			_textTags = _tempTags;  // restore and re-edit
-			_textTags[(int)numText.Value - 1, 0] = cboTextTag.SelectedIndex;
-			_textTags[(int)numText.Value - 1, 1] = _tempX;
-			_textTags[(int)numText.Value - 1, 2] = _tempY;
-			_textTags[(int)numText.Value - 1, 3] = cboColorTag.SelectedIndex;
+			_textTags = _ttBackup;  // restore and re-edit
+			_textTags[(int)numText.Value - 1].StringIndex = cboTextTag.SelectedIndex;
+			_textTags[(int)numText.Value - 1].X = _tempX;
+			_textTags[(int)numText.Value - 1].Y = _tempY;
+			_textTags[(int)numText.Value - 1].ColorIndex = cboColorTag.SelectedIndex;
 			MapPaint();
 		}
 
 		void pctBrief_MouseUp(object sender, MouseEventArgs e)
 		{
-			if (e.Button != MouseButtons.Left)
-			{
-				if (e.Button == MouseButtons.Middle)
-					_isMiddleDrag = false;
-
-				popupPreviewStop();
-			}
+			if (e.Button == MouseButtons.Left) return;
+			
+			if (e.Button == MouseButtons.Middle) _isMiddleDrag = false;
+			popupPreviewStop();
 		}
 		void pctBrief_MouseDown(object sender, MouseEventArgs e)
 		{
@@ -2841,13 +2710,13 @@ namespace Idmr.Yogeme
 			if (_eventType == BaseBriefing.EventType.TextTag1)
 			{
 				int mod = (_platform != Settings.Platform.TIE ? 2 : 1);
-				_textTags = _tempTags;  // restore backup before messing with it again
+				_textTags = _ttBackup;  // restore backup before messing with it again
 				_tempX = (short)(128 * e.X / _zoomX * mod - 64 * w / _zoomX * mod + _mapX);
 				_tempY = (short)(128 * e.Y / _zoomY * mod - 64 * h / _zoomY * mod + _mapY);
-				_textTags[(int)numText.Value - 1, 0] = cboTextTag.SelectedIndex;
-				_textTags[(int)numText.Value - 1, 1] = _tempX;
-				_textTags[(int)numText.Value - 1, 2] = _tempY;
-				_textTags[(int)numText.Value - 1, 3] = cboColorTag.SelectedIndex;
+				_textTags[(int)numText.Value - 1].StringIndex = cboTextTag.SelectedIndex;
+				_textTags[(int)numText.Value - 1].X = _tempX;
+				_textTags[(int)numText.Value - 1].Y = _tempY;
+				_textTags[(int)numText.Value - 1].ColorIndex = cboColorTag.SelectedIndex;
 				MapPaint();
 			}
 			else if (_eventType == BaseBriefing.EventType.XwaSetIcon)
@@ -2879,59 +2748,55 @@ namespace Idmr.Yogeme
 		}
 		void pctBrief_MouseMove(object sender, MouseEventArgs e)
 		{
-			if (_popupPreviewActive)
+			if (!_popupPreviewActive) return;
+			
+			int w = pctBrief.Width;
+			int h = pctBrief.Height;
+			if (_isMiddleDrag)
 			{
-				int w = pctBrief.Width;
-				int h = pctBrief.Height;
-				if (_isMiddleDrag)
-				{
-					double scx = (w / _zoomX) * 0.75;  //[JB] zoom level is pixels per km.  Modified to be more consistent across zoom levels.
-					double scy = (h / _zoomY) * 0.75;
+				double scx = (w / _zoomX) * 0.75;
+				double scy = (h / _zoomY) * 0.75;
 
-					int ox = (int)((e.X - _popupMiddle.X) * scx);
-					int oy = (int)((e.Y - _popupMiddle.Y) * scy);
-					_mapX += (short)ox;
-					_mapY += (short)oy;
-					_popupMiddle.X = e.X;
-					_popupMiddle.Y = e.Y;
-					MapPaint();
-				}
-				int mod = (_platform != Settings.Platform.TIE ? 2 : 1);
-				int xu = 128 * e.X / _zoomX * mod - 64 * w / _zoomX * mod + _mapX;
-				int yu = 128 * e.Y / _zoomY * mod - 64 * h / _zoomY * mod + _mapY;
-				double xkm = Math.Round((xu * 0.00625), 2);
-				double ykm = Math.Round((-yu * 0.00625), 2);
-				string s = "PREVIEW ONLY\nZoom: " + _zoomX + " , " + _zoomY;
-				s += "\nMap Offset: " + _mapX + " , " + _mapY;
-				s += "\nMap Coords: " + xu + " , " + yu;
-				if (_platform != Settings.Platform.XWA)
-					s += "\nWaypoint Coords (km): " + xkm.ToString() + " , " + ykm.ToString();
-				popupUpdate(s);
-				if (e.Delta > 0)
-				{
-					_zoomX += 2;
-					_zoomY += 2;
-					if (_zoomX > 128) _zoomX = 128;
-					if (_zoomY > 128) _zoomY = 128;
-					MapPaint();
-				}
-				else if (e.Delta < 0)
-				{
-					_zoomX -= 2;
-					_zoomY -= 2;
-					if (_zoomX < 1) _zoomX = 1;
-					if (_zoomY < 1) _zoomY = 1;
-					MapPaint();
-				}
+				int ox = (int)((e.X - _popupMiddle.X) * scx);
+				int oy = (int)((e.Y - _popupMiddle.Y) * scy);
+				_mapX += (short)ox;
+				_mapY += (short)oy;
+				_popupMiddle.X = e.X;
+				_popupMiddle.Y = e.Y;
+				MapPaint();
+			}
+			int mod = (_platform != Settings.Platform.TIE ? 2 : 1);
+			int xu = 128 * e.X / _zoomX * mod - 64 * w / _zoomX * mod + _mapX;
+			int yu = 128 * e.Y / _zoomY * mod - 64 * h / _zoomY * mod + _mapY;
+			double xkm = Math.Round((xu * 0.00625), 2);
+			double ykm = Math.Round((-yu * 0.00625), 2);
+			string s = "PREVIEW ONLY\nZoom: " + _zoomX + " , " + _zoomY;
+			s += "\nMap Offset: " + _mapX + " , " + _mapY;
+			s += "\nMap Coords: " + xu + " , " + yu;
+			if (_platform != Settings.Platform.XWA) s += "\nWaypoint Coords (km): " + xkm.ToString() + " , " + ykm.ToString();
+			popupUpdate(s);
+			if (e.Delta > 0)
+			{
+				_zoomX += 2;
+				_zoomY += 2;
+				if (_zoomX > 128) _zoomX = 128;
+				if (_zoomY > 128) _zoomY = 128;
+				MapPaint();
+			}
+			else if (e.Delta < 0)
+			{
+				_zoomX -= 2;
+				_zoomY -= 2;
+				if (_zoomX < 1) _zoomX = 1;
+				if (_zoomY < 1) _zoomY = 1;
+				MapPaint();
 			}
 		}
 		void pctBrief_Paint(object sender, PaintEventArgs e)
 		{
-			Graphics objGraphics;
-			//You can't modify e.Graphics directly.
-			objGraphics = e.Graphics;
-			// Draw the contents of the bitmap on the form.
-			objGraphics.DrawImage(_map, 0, 0, _map.Width, _map.Height);
+			Graphics g;
+			g = e.Graphics;
+			g.DrawImage(_map, 0, 0, _map.Width, _map.Height);
 		}
 
 		void txtLength_TextChanged(object sender, EventArgs e)
@@ -2942,36 +2807,36 @@ namespace Idmr.Yogeme
 				case Settings.Platform.TIE:
 					try
 					{
-						t_Length = (short)Math.Round(Convert.ToDecimal(txtLength.Text) * _timerInterval, 0);    // this is the line that could throw
+						t_Length = (short)Math.Round(Convert.ToDecimal(txtLength.Text) * _timerInterval, 0);
 						_tieBriefing.Length = t_Length;
 						onModified?.Invoke("LengthChange", new EventArgs());
 						hsbTimer.Maximum = _tieBriefing.Length + 11;
-						if (Math.Round((decimal)_tieBriefing.Length / _timerInterval, 2) != Convert.ToDecimal(txtLength.Text))    // so things like .51 become .5, without
-							txtLength.Text = Convert.ToString(Math.Round((decimal)_tieBriefing.Length / _timerInterval, 2));  // wiping out just a decimal
+						if (Math.Round((decimal)_tieBriefing.Length / _timerInterval, 2) != Convert.ToDecimal(txtLength.Text))
+							txtLength.Text = Convert.ToString(Math.Round((decimal)_tieBriefing.Length / _timerInterval, 2));
 					}
 					catch { txtLength.Text = Convert.ToString(Math.Round((decimal)_tieBriefing.Length / _timerInterval, 2)); }
 					break;
 				case Settings.Platform.XvT:
 					try
 					{
-						t_Length = (short)Math.Round(Convert.ToDecimal(txtLength.Text) * _timerInterval, 0);    // this is the line that could throw
+						t_Length = (short)Math.Round(Convert.ToDecimal(txtLength.Text) * _timerInterval, 0);
 						_xvtBriefing.Length = t_Length;
 						onModified?.Invoke("LengthChange", new EventArgs());
 						hsbTimer.Maximum = _xvtBriefing.Length + 11;
-						if (Math.Round((decimal)_xvtBriefing.Length / _timerInterval, 2) != Convert.ToDecimal(txtLength.Text))    // so things like .51 become .5, without
-							txtLength.Text = Convert.ToString(Math.Round((decimal)_xvtBriefing.Length / _timerInterval, 2));  // wiping out just a decimal
+						if (Math.Round((decimal)_xvtBriefing.Length / _timerInterval, 2) != Convert.ToDecimal(txtLength.Text))
+							txtLength.Text = Convert.ToString(Math.Round((decimal)_xvtBriefing.Length / _timerInterval, 2));
 					}
 					catch { txtLength.Text = Convert.ToString(Math.Round((decimal)_xvtBriefing.Length / _timerInterval, 2)); }
 					break;
 				case Settings.Platform.XWA:
 					try
 					{
-						t_Length = (short)Math.Round(Convert.ToDecimal(txtLength.Text) * _timerInterval, 0);    // this is the line that could throw
+						t_Length = (short)Math.Round(Convert.ToDecimal(txtLength.Text) * _timerInterval, 0);
 						_xwaBriefing.Length = t_Length;
 						onModified?.Invoke("LengthChange", new EventArgs());
 						hsbTimer.Maximum = _xwaBriefing.Length + 11;
-						if (Math.Round((decimal)_xwaBriefing.Length / _timerInterval, 2) != Convert.ToDecimal(txtLength.Text))    // so things like .51 become .5, without
-							txtLength.Text = Convert.ToString(Math.Round((decimal)_xwaBriefing.Length / _timerInterval, 2));  // wiping out just a decimal
+						if (Math.Round((decimal)_xwaBriefing.Length / _timerInterval, 2) != Convert.ToDecimal(txtLength.Text))
+							txtLength.Text = Convert.ToString(Math.Round((decimal)_xwaBriefing.Length / _timerInterval, 2));
 					}
 					catch { txtLength.Text = Convert.ToString(Math.Round((decimal)_xwaBriefing.Length / _timerInterval, 2)); }
 					break;
@@ -3007,23 +2872,18 @@ namespace Idmr.Yogeme
 			}
 		}
 
-		void dataS_CurrentCellChanged(object sender, EventArgs e)
-		{
-			if (_platform == Settings.Platform.XWA) txtNotes.Text = _xwaBriefing.BriefingStringsNotes[dataS.CurrentCell.RowNumber];
-		}
+		void dataS_CurrentCellChanged(object sender, EventArgs e) { if (_platform == Settings.Platform.XWA) txtNotes.Text = _xwaBriefing.BriefingStringsNotes[dataS.CurrentCell.RowNumber]; }
 
 		void tableStrings_RowChanged(object sender, DataRowChangeEventArgs e)
 		{
 			if (!_loading && onModified != null) onModified("StringsChanged", new EventArgs());
 			int i = 0;
 			for (int j = 0; j < _strings.Length; j++)
-			{
 				if (_tableStrings.Rows[j].Equals(e.Row))
 				{
 					i = j;
 					break;
 				}
-			}
 			_strings[i] = _tableStrings.Rows[i][0].ToString();
 			loadStrings();
 		}
@@ -3032,13 +2892,11 @@ namespace Idmr.Yogeme
 			if (!_loading && onModified != null) onModified("TagsChanged", new EventArgs());
 			int i = 0;
 			for (int j = 0; j < _tags.Length; j++)
-			{
 				if (_tableTags.Rows[j].Equals(e.Row))
 				{
 					i = j;
 					break;
 				}
-			}
 			_tags[i] = _tableTags.Rows[i][0].ToString();
 			loadTags();
 		}
@@ -3050,36 +2908,11 @@ namespace Idmr.Yogeme
 		}
 		#endregion	tabStrings
 		#region tabEvents
-
-		int convertEventToCboEventIndex(short eventValue)
-		{
-			int index;
-            if (cboEvent.Items[0].ToString() == "Skip Marker")
-            {
-                if (eventValue == 1) index = 0;
-                else index = eventValue - 2;
-            }
-            else index = eventValue - 3;
-			return index;
-        }
-		short convertCboEventIndexToEvent(int index)
-		{
-			short eventValue;
-            if (cboEvent.Items[0].ToString() == "Skip Marker")
-            {
-                if (index == 0) eventValue = 1;
-                else eventValue = (short)(index + 2);
-            }
-            else eventValue = (short)(index + 3);
-			return eventValue;
-        }
+		int convertEventToCboEventIndex(short eventValue) => cboEvent.Items[0].ToString() == "Skip Marker" ? (eventValue == 1 ? 0 : eventValue - 2) : eventValue - 3;
+		short convertCboEventIndexToEvent(int index) => (short)(cboEvent.Items[0].ToString() == "Skip Marker" ? (index == 0 ? 1 : index + 2) : index + 3);
 		/// <summary>Tally briefing events and make sure there's enough space in the raw briefing array.</summary>
-		bool hasAvailableEventSpace(int requestedParams)
-		{
-			BaseBriefing brief = (_platform == Settings.Platform.TIE ? _tieBriefing : (_platform == Settings.Platform.XvT ? _xvtBriefing : (BaseBriefing)_xwaBriefing));
-			return brief.EventsLength + requestedParams < _maxEvents * 2;
-		}
-        void insertEvent()
+		bool hasAvailableEventSpace(int requestedParams) => _baseBrf.EventsLength + requestedParams < _maxEvents * 2;
+		void insertEvent()
 		{
 			// create a new item @ SelectedIndex, 
 			int i = lstEvents.SelectedIndex;
@@ -3088,6 +2921,7 @@ namespace Idmr.Yogeme
 			for (int j = _maxEvents - 1; j > i; j--)
 			{
 				if (_events[j - 1, 1] == 0) continue;
+
 				for (int h = 0; h < 6; h++) _events[j, h] = _events[j - 1, h];
 			}
 			_events[i, 0] = _events[i + 1, 0];
@@ -3112,24 +2946,13 @@ namespace Idmr.Yogeme
 		/// <summary>Shifts briefing events by swapping the contents of the origin index in a linear path until it occupies the end index.</summary>
 		void shiftEvents(int origin, int end)
 		{
-			if (end > origin)  //swap downward
-			{
-				for (int i = origin; i < end; i++)
-				{
-					swapEvent(i, i + 1);
-				}
-			}
-			else if (end < origin)  //swap upward
-			{
-				for (int i = origin; i > end; i--)
-				{
-					swapEvent(i, i - 1);
-				}
-			}
+			if (end > origin) for (int i = origin; i < end; i++) swapEvent(i, i + 1); //swap downward
+			else if (end < origin) for (int i = origin; i > end; i--) swapEvent(i, i - 1); //swap upward
 		}
 		void updateList(int index)
 		{
 			if (index == -1) return;
+
 			string temp = string.Format("{0,-8:0.00}", (decimal)_events[index, 0] / _timerInterval);
 			temp += cboEvent.Items[convertEventToCboEventIndex(_events[index, 1])].ToString();
 			if (_events[index, 1] == (int)BaseBriefing.EventType.TitleText || _events[index, 1] == (int)BaseBriefing.EventType.CaptionText && _events[index, 2] != -1)
@@ -3147,7 +2970,7 @@ namespace Idmr.Yogeme
 					fgIndex = 0;
 					_events[index, 2] = 0;
 				}
-				temp += ": " + ((_platform != Settings.Platform.XWA) ? _briefData[fgIndex].Name : "Icon #" + fgIndex);   //[JB] Modified XWA to show Icon # since it doesn't have FG names.
+				temp += ": " + ((_platform != Settings.Platform.XWA) ? _briefData[fgIndex].Name : "Icon #" + fgIndex);
 			}
 			else if (_events[index, 1] >= (int)BaseBriefing.EventType.TextTag1 && _events[index, 1] <= (int)BaseBriefing.EventType.TextTag8)
 			{
@@ -3169,12 +2992,12 @@ namespace Idmr.Yogeme
 				_loading = true;
 				lstEvents.SelectedIndex = index;
 				_loading = false;
-				MapPaint();     // to update things like tags, strings, etc
+				MapPaint();
 			}
 		}
 		void updateParameters()
 		{
-			Control currentControl = ActiveControl;  //[JB] Maintain the current control's focus.  Basically a hack to maintain tab order since refreshing other controls will steal focus.  I want it to at least maintain tab order between the X/Y num boxes.
+			Control currentControl = ActiveControl;
 			int i = lstEvents.SelectedIndex;
 			_loading = true;
 			cboIFF.Enabled = false;
@@ -3294,6 +3117,7 @@ namespace Idmr.Yogeme
 		{
 			int i = lstEvents.SelectedIndex;
 			if (i == -1 || _loading) return;
+
 			if (_events[i, 1] >= (int)BaseBriefing.EventType.TextTag1 && _events[i, 1] <= (int)BaseBriefing.EventType.TextTag8)
 			{
 				_events[i, 5] = (short)cboColor.SelectedIndex;
@@ -3305,6 +3129,7 @@ namespace Idmr.Yogeme
 		{
 			int i = lstEvents.SelectedIndex;
 			if (i == -1 || _loading) return;
+
 			if (_events[i, 1] == (int)BaseBriefing.EventType.XwaSetIcon)
 			{
 				_events[i, 3] = (short)cboCraft.SelectedIndex;
@@ -3317,7 +3142,6 @@ namespace Idmr.Yogeme
 			int i = lstEvents.SelectedIndex;
 			if (_loading || i == -1 || cboEvent.SelectedIndex == -1) return;
 
-            BaseBriefing brief = (_platform == Settings.Platform.TIE ? _tieBriefing : (_platform == Settings.Platform.XvT ? _xvtBriefing : (BaseBriefing)_xwaBriefing));
 			int oldEventSize = 2 + BaseBriefing.EventParameters.GetCount(_events[i, 1]);
 			int newEventSize = 2 + BaseBriefing.EventParameters.GetCount(convertCboEventIndexToEvent(cboEvent.SelectedIndex));
 			if (!hasAvailableEventSpace(newEventSize - oldEventSize))
@@ -3334,6 +3158,7 @@ namespace Idmr.Yogeme
 		{
 			int i = lstEvents.SelectedIndex;
 			if (i == -1 || _loading) return;
+
 			if ((_events[i, 1] >= (int)BaseBriefing.EventType.FGTag1 && _events[i, 1] <= (int)BaseBriefing.EventType.FGTag8) || _events[i, 1] == (int)BaseBriefing.EventType.XwaSetIcon
 				|| _events[i, 1] == (int)BaseBriefing.EventType.XwaMoveIcon || _events[i, 1] == (int)BaseBriefing.EventType.XwaRotateIcon)
 			{
@@ -3351,6 +3176,7 @@ namespace Idmr.Yogeme
 		{
 			int i = lstEvents.SelectedIndex;
 			if (i == -1 || _loading) return;
+
 			if (_events[i, 1] == (int)BaseBriefing.EventType.XwaSetIcon)
 			{
 				onModified?.Invoke("ChangeIFF", new EventArgs());
@@ -3362,6 +3188,7 @@ namespace Idmr.Yogeme
 		{
 			int i = lstEvents.SelectedIndex;
 			if (i == -1 || _loading) return;
+
 			if (_events[i, 1] == (int)BaseBriefing.EventType.XwaRotateIcon)
 			{
 				onModified?.Invoke("RotateIcon", new EventArgs());
@@ -3373,6 +3200,7 @@ namespace Idmr.Yogeme
 		{
 			int i = lstEvents.SelectedIndex;
 			if (i == -1 || _loading) return;
+
 			if (_events[i, 1] == (int)BaseBriefing.EventType.TitleText || _events[i, 1] == (int)BaseBriefing.EventType.CaptionText)
 			{
 				onModified?.Invoke("ChangeString", new EventArgs());
@@ -3384,6 +3212,7 @@ namespace Idmr.Yogeme
 		{
 			int i = lstEvents.SelectedIndex;
 			if (i == -1 || _loading) return;
+
 			if (_events[i, 1] >= (int)BaseBriefing.EventType.TextTag1 && _events[i, 1] <= (int)BaseBriefing.EventType.TextTag8)
 			{
 				onModified?.Invoke("ChangeTag", new EventArgs());
@@ -3396,10 +3225,12 @@ namespace Idmr.Yogeme
 		{
 			int i = lstEvents.SelectedIndex;
 			if (i == -1) return;
+
 			lstEvents.Items.RemoveAt(i);
 			for (int j = i; j < _maxEvents - 1; j++)
 			{
 				if (_events[j, 1] == 0) break;
+
 				for (int h = 0; h < 6; h++) _events[j, h] = _events[j + 1, h];
 			}
 			onModified?.Invoke("EventDelete", new EventArgs());
@@ -3409,7 +3240,8 @@ namespace Idmr.Yogeme
 		void cmdDown_Click(object sender, EventArgs e)
 		{
 			int i = lstEvents.SelectedIndex;
-			if (i == lstEvents.Items.Count - 1 || i == -1) return; //[JB] Fixed crash if using commands before an event is selected
+			if (i == lstEvents.Items.Count - 1 || i == -1) return;
+
 			short[] t = new short[6];
 			for (int j = 0; j < 6; j++) t[j] = _events[i + 1, j];
 			for (int j = 0; j < 6; j++) _events[i + 1, j] = _events[i, j];
@@ -3422,11 +3254,12 @@ namespace Idmr.Yogeme
 		}
 		void cmdNew_Click(object sender, EventArgs e)
 		{
-			if (hasAvailableEventSpace(6) == false)  //Check space for a full event
+			if (hasAvailableEventSpace(6) == false)
 			{
 				MessageBox.Show("Event list is full, cannot add more.", "Error");
 				return;
 			}
+
 			insertEvent();
 			//[JB] Changed to insert after current element.  insertEvents() inserts before, and can't be modified without breaking all the other places that use it.
 			//Instead: insert before, then swap.
@@ -3438,15 +3271,13 @@ namespace Idmr.Yogeme
 				updateList(index);
 				lstEvents.SelectedIndex = index + 1;
 			}
-			else
-			{
-				updateList(lstEvents.SelectedIndex);  //If only one item exists, refresh that.
-			}
+			else updateList(lstEvents.SelectedIndex);
 		}
 		void cmdUp_Click(object sender, EventArgs e)
 		{
 			int i = lstEvents.SelectedIndex;
 			if (i == -1) return;
+
 			short[] t = new short[6];
 			for (int j = 0; j < 6; j++) t[j] = _events[i - 1, j];
 			for (int j = 0; j < 6; j++) _events[i - 1, j] = _events[i, j];
@@ -3462,22 +3293,15 @@ namespace Idmr.Yogeme
 		{
 			int i = lstEvents.SelectedIndex;
 			if (i == -1 || _loading) return;
+
 			_loading = true;
 			numTime.Value = _events[i, 0];
 			cboEvent.SelectedIndex = convertEventToCboEventIndex(_events[i, 1]);
 			_loading = false;
 			updateParameters();
-			try
-			{
-				if (_events[i - 1, 0] == _events[i, 0]) cmdUp.Enabled = true;
-				else cmdUp.Enabled = false;
-			}
+			try { cmdUp.Enabled = (_events[i - 1, 0] == _events[i, 0]); }
 			catch { cmdUp.Enabled = false; }
-			try
-			{
-				if (_events[i + 1, 0] == _events[i, 0]) cmdDown.Enabled = true;
-				else cmdDown.Enabled = false;
-			}
+			try { cmdDown.Enabled = (_events[i + 1, 0] == _events[i, 0]); }
 			catch { cmdDown.Enabled = false; }
 		}
 
@@ -3485,6 +3309,7 @@ namespace Idmr.Yogeme
 		{
 			int i = lstEvents.SelectedIndex;
 			if (i == -1 || _loading) return;
+
 			if (_events[i, 1] == (int)BaseBriefing.EventType.XwaChangeRegion)
 			{
 				onModified?.Invoke("ChangeRegion", new EventArgs());
@@ -3498,6 +3323,7 @@ namespace Idmr.Yogeme
 			int size = lstEvents.Items.Count;
 			int index = lstEvents.SelectedIndex;
 			if (_loading || index == -1) return;
+
 			_loading = true;
 			onModified?.Invoke("ChangeTime", new EventArgs());
 			short diff = (short)(numTime.Value - _events[index, 0]);
@@ -3517,16 +3343,16 @@ namespace Idmr.Yogeme
 				int p = index;
 				if (diff > 0)  //Positive change, moving down in the list
 				{
-					if (index < size - 1 && _events[index, 0] != _events[index + 1, 0])  //If equal time to next entry, no need to sort
+					if (index < size - 1 && _events[index, 0] != _events[index + 1, 0])
 					{
-						p = index + 1;  //Step over to prevent comparing to self
+						p = index + 1;
 						while (p < size && _events[p, 0] < _events[index, 0]) p++;  //Search until a greater time index is found
 						p--;  //If found, insert before.  If not found (p=size) adjusts to last slot in array.
 					}
 				}
 				else if (diff < 0)  //Negative change, moving up in the list
 				{
-					if (index > 0 && _events[index, 0] != _events[index - 1, 0])    //If equal time to previous entry, no need to sort
+					if (index > 0 && _events[index, 0] != _events[index - 1, 0])
 					{
 						p = index - 1;
 						while (p >= 0 && _events[p, 0] > _events[index, 0]) p--;   //Search until a lesser time index is found
@@ -3544,23 +3370,16 @@ namespace Idmr.Yogeme
 			}
 
 			_loading = false;
-			try
-			{
-				if (_events[index - 1, 0] == _events[index, 0]) cmdUp.Enabled = true;
-				else cmdUp.Enabled = false;
-			}
+			try { cmdUp.Enabled = (_events[index - 1, 0] == _events[index, 0]); }
 			catch { cmdUp.Enabled = false; }
-			try
-			{
-				if (_events[index + 1, 0] == _events[index, 0]) cmdDown.Enabled = true;
-				else cmdDown.Enabled = false;
-			}
+			try { cmdDown.Enabled = (_events[index + 1, 0] == _events[index, 0]); }
 			catch { cmdDown.Enabled = false; }
 		}
 		void numX_ValueChanged(object sender, EventArgs e)
 		{
 			int i = lstEvents.SelectedIndex;
 			if (i == -1 || _loading) return;
+
 			if (_events[i, 1] == (int)BaseBriefing.EventType.MoveMap || _events[i, 1] == (int)BaseBriefing.EventType.ZoomMap)
 			{
 				onModified?.Invoke("ChangeX", new EventArgs());
@@ -3578,6 +3397,7 @@ namespace Idmr.Yogeme
 		{
 			int i = lstEvents.SelectedIndex;
 			if (i == -1 || _loading) return;
+
 			if (_events[i, 1] == (int)BaseBriefing.EventType.MoveMap || _events[i, 1] == (int)BaseBriefing.EventType.ZoomMap)
 			{
 				onModified?.Invoke("ChangeY", new EventArgs());
@@ -3596,6 +3416,7 @@ namespace Idmr.Yogeme
 		{
 			int i = lstEvents.SelectedIndex;
 			if (i == -1 || _loading) return;
+
 			if (_events[i, 1] == (int)BaseBriefing.EventType.XwaShipInfo)
 			{
 				onModified?.Invoke("ToggleInfo", new EventArgs());
@@ -3608,14 +3429,10 @@ namespace Idmr.Yogeme
 		/// <summary>Performs the necessary data saving and swapping when selecting a new Briefing.</summary>
 		void changeBriefingIndex(int briefIndex)
 		{
-			if (_loading) return;
+			if (_loading || briefIndex == _currentCollectionIndex) return;
 
-			if (briefIndex == _currentCollectionIndex) return;
-			if (briefIndex > cboBriefIndex1.Items.Count)
-				briefIndex = cboBriefIndex1.Items.Count - briefIndex;
-
+			if (briefIndex > cboBriefIndex1.Items.Count) briefIndex = cboBriefIndex1.Items.Count - briefIndex;
 			Save();  //Save current changes before switching
-
 			_currentCollectionIndex = briefIndex;
 			if (_platform == Settings.Platform.XvT)
 			{
@@ -3661,9 +3478,7 @@ namespace Idmr.Yogeme
 				cboIconIff.SelectedIndex = 0;
 			}
 
-			//Refresh controls
-			if (lstEvents.Items.Count > 0)
-				lstEvents.SelectedIndex = 0;
+			if (lstEvents.Items.Count > 0) lstEvents.SelectedIndex = 0;
 			if (tabBrief.SelectedIndex == 0) //Only update the map if the tab is visible.
 			{
 				hsbTimer.Value = 1;
@@ -3682,8 +3497,7 @@ namespace Idmr.Yogeme
 			for (int i = 0; i < 10; i++)
 			{
 				bool team = (_platform == Settings.Platform.XvT) ? _xvtBriefing.Team[i] : _xwaBriefing.Team[i];
-				if (team)
-					lstTeams.SelectedIndex = i;
+				if (team) lstTeams.SelectedIndex = i;
 			}
 			_loading = temp;
 		}
@@ -3691,43 +3505,35 @@ namespace Idmr.Yogeme
 		/// <remarks>The title is a convenient location to display this information regardless of which tab is selected.</remarks>
 		void updateTitle()
 		{
-			if (_platform == Settings.Platform.TIE)
-				return;
+			if (_platform == Settings.Platform.TIE) return;
+
 			int teamIndex = cboBriefIndex1.SelectedIndex;
 			if (teamIndex < 0) teamIndex = 0;
 			string title = Text;
 			string update = "Briefing #" + (teamIndex + 1);
 			string team = "";
 			int pos = title.IndexOf("   [");
-			if (pos >= 0)
-				title = title.Remove(pos);
+			if (pos >= 0) title = title.Remove(pos);
 
 			if (_platform == Settings.Platform.XvT)
 			{
 				for (int i = 0; i < _xvtBriefing.Team.Length; i++)
-				{
 					if (_xvtBriefing.Team[i])
 					{
-						if (team.Length > 0)
-							team += ", ";
+						if (team.Length > 0) team += ", ";
 						team += SharedTeamNames[i];
 					}
-				}
 			}
 			else if (_platform == Settings.Platform.XWA)
 			{
 				for (int i = 0; i < _xwaBriefing.Team.Length; i++)
-				{
 					if (_xwaBriefing.Team[i])
 					{
-						if (team.Length > 0)
-							team += ", ";
+						if (team.Length > 0) team += ", ";
 						team += SharedTeamNames[i];
 					}
-				}
 			}
-			if (team == "")
-				team = "NO TEAMS";
+			if (team == "") team = "NO TEAMS";
 
 			title += "   [" + update + " for: " + team + "]";
 			Text = title;
@@ -3737,86 +3543,93 @@ namespace Idmr.Yogeme
 		void cboBriefIndex1_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (_loading) return;
+
 			_loading = true;
 			cboBriefIndex2.SelectedIndex = cboBriefIndex1.SelectedIndex;
 			_loading = false;
-
 			changeBriefingIndex(cboBriefIndex1.SelectedIndex);
 		}
 
         void cboBriefIndex2_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (_loading) return;
+
 			_loading = true;
 			cboBriefIndex1.SelectedIndex = cboBriefIndex2.SelectedIndex;
 			_loading = false;
-
 			changeBriefingIndex(cboBriefIndex2.SelectedIndex);
 		}
 
 		void lstTeams_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			if (_loading)
-				return;
+			if (_loading) return;
 
 			int index = cboBriefIndex1.SelectedIndex;
-			if (index == -1)
-				return;
-
-			if (_platform == Settings.Platform.TIE)
-				return;
+			if (index == -1 || _platform == Settings.Platform.TIE) return;
 
 			bool[] teams = (_platform == Settings.Platform.XvT ? _xvtBriefing.Team : _xwaBriefing.Team);
-
 			ListBox.SelectedIndexCollection sel = lstTeams.SelectedIndices;
-
 			for (int i = 0; i < 10; i++)
 			{
 				bool found = false;
 				for (int k = 0; k < sel.Count; k++)
-				{
 					if (sel[k] == i)
 					{
 						teams[i] = true;
 						found = true;
 
 						//Each team can only see one briefing, so iterate through the other briefings and deselect them.
-						if (_platform == Settings.Platform.XvT)
-						{
-							for (int j = 0; j < _xvtBriefingCollection.Count; j++)
-							{
-								if (j != index)
-									_xvtBriefingCollection[j].Team[i] = false;
-							}
-						}
-						if (_platform == Settings.Platform.XWA)
-						{
-							for (int j = 0; j < _xwaBriefingCollection.Count; j++)
-							{
-								if (j != index)
-									_xwaBriefingCollection[j].Team[i] = false;
-							}
-						}
+						if (_platform == Settings.Platform.XvT) for (int j = 0; j < _xvtBriefingCollection.Count; j++) if (j != index) _xvtBriefingCollection[j].Team[i] = false;
+						if (_platform == Settings.Platform.XWA) for (int j = 0; j < _xwaBriefingCollection.Count; j++) if (j != index) _xwaBriefingCollection[j].Team[i] = false;
 						break;
 					}
-				}
-				if (!found)
-					teams[i] = false;
+				if (!found) teams[i] = false;
 			}
 			onModified?.Invoke("ChangeTeams", new EventArgs());
 			updateTitle();
 		}
 		#endregion tabTeams
+
+		BaseBriefing _baseBrf => (_platform == Settings.Platform.TIE ? _tieBriefing : (_platform == Settings.Platform.XvT ? _xvtBriefing : (BaseBriefing)_xwaBriefing));
 	}
 
+	/// <summary>Represents details for a single FG/Icon.</summary>
 	public struct BriefData
 	{
+		/// <summary>Gets or sets the craft type.</summary>
 		public int Craft;
+		/// <summary>Gets or sets the values to make up a Waypoint.</summary>
 		public short[] Waypoint;
-		public BaseFlightGroup.BaseWaypoint[] WaypointArr;  //[JB] Augmented with a list of briefing waypoints for multi-briefing platforms like XvT.  But the normal short[] array is retained for compatibility and ease of use with existing code.  The augmented data is only used when specifically needed.
+		/// <summary>Gets or sets the waypoints.</summary>
+		public BaseFlightGroup.BaseWaypoint[] WaypointArr;
+		/// <summary>Gets or sets the IFF.</summary>
 		public byte IFF;
+		/// <summary>Gets or sets the FG Name.</summary>
 		public string Name;
 	}
+
+	/// <summary>Represents details for a single FG/Icon tag.</summary>
+	struct ShipTag
+	{
+		/// <summary>The FlightGroup or Icon index.</summary>
+		public short Slot;
+		/// <summary>The event time the tag was applied.</summary>
+		public short StartTime;
+	}
+
+	/// <summary>Represents details for a single Text tag.</summary>
+	struct TextTag
+	{
+		/// <summary>The string index to display.</summary>
+		public int StringIndex;
+		/// <summary>Map X value.</summary>
+		public short X;
+		/// <summary>Map Y value.</summary>
+		public short Y;
+		/// <summary>Color value.</summary>
+		public int ColorIndex;
+	}
+
 	/*
 	 * Okay, here's how the BRF.dat files work:
 	 * first SHORT is number of entries
