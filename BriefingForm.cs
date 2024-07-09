@@ -99,7 +99,7 @@ namespace Idmr.Yogeme
 		readonly Color _normalColor;
 		//readonly Color _highlightColor; // TODO: this is currently unused, maybe at some point work highlighting in
 		readonly Color _titleColor;
-		short[,] _events;   // this will contain the event listing for use, raw data is in Briefing.Events[]
+		BaseBriefing.Event[] _events;   // this will contain the event listing for use, raw data is in Briefing.Events[]
 		short _zoomX = 48;
 		short _zoomY;
 		short _mapX, _mapY; // mapX and mapY will be different, namely the grid coordinates of the center, like how TIE handles it
@@ -176,7 +176,7 @@ namespace Idmr.Yogeme
 			_zoomY = _zoomX;            // in most cases, these will remain the same
 			_tieBriefing = briefing;
 			_maxEvents = Platform.Tie.Briefing.EventQuantityLimit;
-			_events = new short[_maxEvents, 6];
+			_events = new BaseBriefing.Event[_maxEvents];
 			InitializeComponent();
 			Text = "YOGEME Briefing Editor - TIE";
 			#region layout edit
@@ -296,7 +296,7 @@ namespace Idmr.Yogeme
 			_currentCollectionIndex = 0;
 			_xvtBriefing = briefing[0];
 			_maxEvents = Platform.Xvt.Briefing.EventQuantityLimit;
-			_events = new short[_maxEvents, 6];
+			_events = new BaseBriefing.Event[_maxEvents];
 			InitializeComponent();
 			Text = "YOGEME Briefing Editor - XvT/BoP";
 			Import(fg);
@@ -417,7 +417,7 @@ namespace Idmr.Yogeme
 			_currentCollectionIndex = 0;
 			_xwaBriefing = briefing[0];
 			_maxEvents = Platform.Xwa.Briefing.EventQuantityLimit;
-			_events = new short[_maxEvents, 6];
+			_events = new BaseBriefing.Event[_maxEvents];
 			InitializeComponent();
 			Text = "YOGEME Briefing Editor - XWA";
 			#region XWA layout change
@@ -632,15 +632,13 @@ namespace Idmr.Yogeme
 			{
 				try
 				{
-					_events[i, 0] = rawEvents[i].Time;
-					_events[i, 1] = (short)rawEvents[i].Type;
-					if (_events[i, 1] == 0 || _events[i, 1] == (short)BaseBriefing.EventType.EndBriefing) break;
+					_events[i] = rawEvents[i].Clone();
+					if (_events[i].Type == BaseBriefing.EventType.None || _events[i].Type == BaseBriefing.EventType.EndBriefing) break;
 
-					for (int j = 0; j < BaseBriefing.EventParameters.GetCount(_events[i, 1]); j++) _events[i, j + 2] = rawEvents[i].Variables[j];
-					if (_platform == Settings.Platform.XWA && _events[i, 1] == (short)BaseBriefing.EventType.XwaMoveIcon && _briefData[_events[i, 2]].Waypoint != null && _briefData[_events[i, 2]].Waypoint[0] == 0 && _briefData[_events[i, 2]].Waypoint[1] == 0)
+					if (_platform == Settings.Platform.XWA && _events[i].Type == BaseBriefing.EventType.XwaMoveIcon && _briefData[_events[i].Variables[0]].Waypoint != null && _briefData[_events[i].Variables[0]].Waypoint[0] == 0 && _briefData[_events[i].Variables[0]].Waypoint[1] == 0)
 					{   // this prevents Exception if Move instruction is before NewIcon, and only assigns initial position
-						_briefData[_events[i, 2]].Waypoint[0] = _events[i, 3];
-						_briefData[_events[i, 2]].Waypoint[1] = _events[i, 4];
+						_briefData[_events[i].Variables[0]].Waypoint[0] = _events[i].Variables[1];
+						_briefData[_events[i].Variables[0]].Waypoint[1] = _events[i].Variables[2];
 					}
 				}
 				catch (ArgumentOutOfRangeException) { break; }	// if briefing is corrupted leading to an overflow, just kick out
@@ -700,10 +698,9 @@ namespace Idmr.Yogeme
 			_baseBrf.Events.Clear();
 			for (int evnt = 0; evnt < _maxEvents; evnt++)
 			{
-				if (_events[evnt, 1] == 0 || _events[evnt, 1] == (short)BaseBriefing.EventType.EndBriefing) break;
+				if (_events[evnt].Type == BaseBriefing.EventType.None || _events[evnt].Type == BaseBriefing.EventType.EndBriefing) break;
 
-				_baseBrf.Events.Add(new BaseBriefing.Event((BaseBriefing.EventType)_events[evnt, 1]) { Time = _events[evnt, 0] });
-				for (int i = 0; i < BaseBriefing.EventParameters.GetCount(_baseBrf.Events[evnt].Type); i++) _baseBrf.Events[evnt].Variables[i] = _events[evnt, i + 2];
+				_baseBrf.Events.Add(_events[evnt].Clone());
 			}
 			_baseBrf.Tile = (short)numTile.Value;
 			onModified?.Invoke("Save", new EventArgs());
@@ -772,9 +769,9 @@ namespace Idmr.Yogeme
 		{
 			int i;
 			for (i = 0; i < _maxEvents; i++)
-				if (_events[i, 0] > hsbTimer.Value && (_events[i, 1] == (short)BaseBriefing.EventType.SkipMarker || _events[i, 1] == (short)BaseBriefing.EventType.PageBreak)) break;
+				if (_events[i].Time > hsbTimer.Value && (_events[i].Type == BaseBriefing.EventType.SkipMarker || _events[i].Type == BaseBriefing.EventType.PageBreak)) break;
 			if (i == _maxEvents) hsbTimer.Value = hsbTimer.Maximum - 11;    // tmr_Tick takes care of halting
-			else hsbTimer.Value = _events[i, 0];
+			else hsbTimer.Value = _events[i].Time;
 		}
 		void cmdPause_Click(object sender, EventArgs e) => stopTimer();
 		void cmdPlay_Click(object sender, EventArgs e)
@@ -824,7 +821,7 @@ namespace Idmr.Yogeme
 				stopTimer();
 				for (int i = 0; i < _maxEvents; i++)
 				{
-					if (_events[i, 0] > hsbTimer.Value || _events[i, 1] == (int)BaseBriefing.EventType.None || _events[i, 1] == (int)BaseBriefing.EventType.EndBriefing) break;
+					if (_events[i].Time > hsbTimer.Value || _events[i].Type == BaseBriefing.EventType.None || _events[i].Type == BaseBriefing.EventType.EndBriefing) break;
 					paint |= processEvent(i, true);
 				}
 			}
@@ -841,9 +838,9 @@ namespace Idmr.Yogeme
 			}
 			for (int i = 0; i < _maxEvents; i++)
 			{
-				if (_events[i, 0] < hsbTimer.Value) continue;
+				if (_events[i].Time < hsbTimer.Value) continue;
 
-				if (_events[i, 0] > hsbTimer.Value || _events[i, 1] == (int)BaseBriefing.EventType.None || _events[i, 1] == (int)BaseBriefing.EventType.EndBriefing) break;
+				if (_events[i].Time > hsbTimer.Value || _events[i].Type == BaseBriefing.EventType.None || _events[i].Type == BaseBriefing.EventType.EndBriefing) break;
 				paint |= processEvent(i, false);
 			}
 			for (int h = 0; h < 8; h++) if (hsbTimer.Value - _fgTags[h].StartTime < 13) paint = true;
@@ -989,18 +986,18 @@ namespace Idmr.Yogeme
 			int i;
 			for (i = 0; i < _maxEvents; i++)
 			{
-				if (_events[i, 0] < hsbTimer.Value) continue;
+				if (_events[i].Time < hsbTimer.Value) continue;
 
-				if (_events[i, 0] > hsbTimer.Value) return (i + 10000); // did not find existing, return next available + marker
-				if (_events[i, 1] == (int)eventType) return i;
+				if (_events[i].Time > hsbTimer.Value) return (i + 10000); // did not find existing, return next available + marker
+				if (_events[i].Type == eventType) return i;
 			}
-			return (i + 10000); // actually somehow got through the entire loop
+			return i + 10000; // actually somehow got through the entire loop
 		}
 		int findNext() => findNext(hsbTimer.Value);
 		int findNext(int time)
 		{
 			int i;
-			for (i = 0; i < _maxEvents; i++) if (_events[i, 0] > time) break;
+			for (i = 0; i < _maxEvents; i++) if (_events[i].Time > time) break;
 			return i;
 		}
 		Bitmap flatMask(Bitmap craftImage, byte iff, byte intensity)
@@ -1122,47 +1119,47 @@ namespace Idmr.Yogeme
 		{
 			bool paint = false;
 			int i = evtIndex;
-			if (_events[i, 1] == (int)BaseBriefing.EventType.PageBreak)
+			if (_events[i].Type == BaseBriefing.EventType.PageBreak)
 			{
 				if (_platform == Settings.Platform.TIE) lblTitle.Text = "";
 				lblCaption.Text = "";
 				paint = true;
 			}
-			else if (_events[i, 1] == (int)BaseBriefing.EventType.TitleText && _platform == Settings.Platform.TIE)  // XvT and XWA use .LST files
+			else if (_events[i].Type == BaseBriefing.EventType.TitleText && _platform == Settings.Platform.TIE)  // XvT and XWA use .LST files
 			{
-				if (_strings[_events[i, 2]].StartsWith(">"))
+				if (_strings[_events[i].Variables[0]].StartsWith(">"))
 				{
 					lblTitle.TextAlign = ContentAlignment.TopCenter;
 					lblTitle.ForeColor = _titleColor;
-					lblTitle.Text = _strings[_events[i, 2]].Replace(">", "");
+					lblTitle.Text = _strings[_events[i].Variables[0]].Replace(">", "");
 				}
 				else
 				{
 					lblTitle.TextAlign = ContentAlignment.TopLeft;
 					lblTitle.ForeColor = _normalColor;
-					lblTitle.Text = _strings[_events[i, 2]];
+					lblTitle.Text = _strings[_events[i].Variables[0]];
 				}
 			}
-			else if (_events[i, 1] == (int)BaseBriefing.EventType.CaptionText && _events[i, 2] != -1)
+			else if (_events[i].Type == BaseBriefing.EventType.CaptionText && _events[i].Variables[0] != -1)
 			{
-				if (_strings[_events[i, 2]].StartsWith(">"))
+				if (_strings[_events[i].Variables[0]].StartsWith(">"))
 				{
 					lblCaption.TextAlign = ContentAlignment.TopCenter;
 					lblCaption.ForeColor = _titleColor;
-					lblCaption.Text = _strings[_events[i, 2]].Replace(">", "").Replace("$", "\r\n");
+					lblCaption.Text = _strings[_events[i].Variables[0]].Replace(">", "").Replace("$", "\r\n");
 				}
 				else
 				{
 					lblCaption.TextAlign = ContentAlignment.TopLeft;
 					lblCaption.ForeColor = _normalColor;
-					lblCaption.Text = _strings[_events[i, 2]].Replace("$", "\r\n");
+					lblCaption.Text = _strings[_events[i].Variables[0]].Replace("$", "\r\n");
 				}
 				_page++;
 			}
-			else if (_events[i, 1] == (int)BaseBriefing.EventType.MoveMap)
+			else if (_events[i].Type == BaseBriefing.EventType.MoveMap)
 			{
-				_mapX = _events[i, 2];
-				_mapY = _events[i, 3];
+				_mapX = _events[i].Variables[0];
+				_mapY = _events[i].Variables[1];
 				if (_platform == Settings.Platform.XvT || _platform == Settings.Platform.BoP || _platform == Settings.Platform.XWA)
 				{
 					_mapX /= 2;
@@ -1170,15 +1167,15 @@ namespace Idmr.Yogeme
 				}
 				paint = true;
 			}
-			else if (_events[i, 1] == (int)BaseBriefing.EventType.ZoomMap)
+			else if (_events[i].Type == BaseBriefing.EventType.ZoomMap)
 			{
-				_zoomX = _events[i, 2];
-				_zoomY = _events[i, 3];
+				_zoomX = _events[i].Variables[0];
+				_zoomY = _events[i].Variables[1];
 				if (_zoomX < 1) _zoomX = 1;
 				if (_zoomY < 1) _zoomY = 1;
 				paint = true;
 			}
-			else if (_events[i, 1] == (int)BaseBriefing.EventType.ClearFGTags)
+			else if (_events[i].Type == BaseBriefing.EventType.ClearFGTags)
 			{
 				for (int h = 0; h < 8; h++)
 				{
@@ -1187,14 +1184,14 @@ namespace Idmr.Yogeme
 				}
 				paint = true;
 			}
-			else if (_events[i, 1] >= (int)BaseBriefing.EventType.FGTag1 && _events[i, 1] <= (int)BaseBriefing.EventType.FGTag8)
+			else if (_events[i].IsFGTag)
 			{
-				int v = _events[i, 1] - (int)BaseBriefing.EventType.FGTag1;
-				_fgTags[v].Slot = _events[i, 2];
-				_fgTags[v].StartTime = _events[i, 0];
+				int v = (int)_events[i].Type - (int)BaseBriefing.EventType.FGTag1;
+				_fgTags[v].Slot = _events[i].Variables[0];
+				_fgTags[v].StartTime = _events[i].Time;
 				paint = true;
 			}
-			else if (_events[i, 1] == (int)BaseBriefing.EventType.ClearTextTags)
+			else if (_events[i].Type == BaseBriefing.EventType.ClearTextTags)
 			{
 				for (int h = 0; h < 8; h++)
 				{
@@ -1205,29 +1202,29 @@ namespace Idmr.Yogeme
 				}
 				paint = true;
 			}
-			else if (_events[i, 1] >= (int)BaseBriefing.EventType.TextTag1 && _events[i, 1] <= (int)BaseBriefing.EventType.TextTag8)
+			else if (_events[i].IsTextTag)
 			{
-				int v = _events[i, 1] - (int)BaseBriefing.EventType.TextTag1;
-				_textTags[v].StringIndex = _events[i, 2];
-				_textTags[v].X = _events[i, 3];
-				_textTags[v].Y = _events[i, 4];
-				_textTags[v].ColorIndex = _events[i, 5];
+				int v = (int)_events[i].Type - (int)BaseBriefing.EventType.TextTag1;
+				_textTags[v].StringIndex = _events[i].Variables[0];
+				_textTags[v].X = _events[i].Variables[1];
+				_textTags[v].Y = _events[i].Variables[2];
+				_textTags[v].ColorIndex = _events[i].Variables[3];
 				paint = true;
 			}
-			else if (_events[i, 1] == (int)BaseBriefing.EventType.XwaSetIcon)
+			else if (_events[i].Type == BaseBriefing.EventType.XwaSetIcon)
 			{
-				_briefData[_events[i, 2]].Craft = _events[i, 3] - 1;
-				_briefData[_events[i, 2]].IFF = (byte)_events[i, 4];
-				_briefData[_events[i, 2]].Name = "Icon #" + _events[i, 2].ToString();
-				_briefData[_events[i, 2]].Waypoint = new short[4];
-				_briefData[_events[i, 2]].Waypoint[3] = (short)(_events[i, 3] != 0 ? 1 : 0);
+				_briefData[_events[i].Variables[0]].Craft = _events[i].Variables[1] - 1;
+				_briefData[_events[i].Variables[0]].IFF = (byte)_events[i].Variables[2];
+				_briefData[_events[i].Variables[0]].Name = "Icon #" + _events[i].Variables[0].ToString();
+				_briefData[_events[i].Variables[0]].Waypoint = new short[4];
+				_briefData[_events[i].Variables[0]].Waypoint[3] = (short)(_events[i].Variables[1] != 0 ? 1 : 0);
 				paint = true;
 			}
-			else if (_events[i, 1] == (int)BaseBriefing.EventType.XwaShipInfo)
+			else if (_events[i].Type == BaseBriefing.EventType.XwaShipInfo)
 			{
-				if (_events[i, 2] == 1)
+				if (_events[i].Variables[0] == 1)
 				{
-					_message = "Ship Info: " + (_briefData[_events[i, 3]].Craft >= 0 ? Platform.Xwa.Strings.CraftType[_briefData[_events[i, 3]].Craft + 1] : "<flight group not found>");
+					_message = "Ship Info: " + (_briefData[_events[i].Variables[1]].Craft >= 0 ? Platform.Xwa.Strings.CraftType[_briefData[_events[i].Variables[1]].Craft + 1] : "<flight group not found>");
 					if (!rebuild)
 					{
 						lblTitle.Visible = false;
@@ -1242,18 +1239,18 @@ namespace Idmr.Yogeme
 				}
 				paint = true;
 			}
-			else if (_events[i, 1] == (int)BaseBriefing.EventType.XwaMoveIcon && Common.IsValidArray(_briefData[_events[i, 2]].Waypoint, 1))
+			else if (_events[i].Type == BaseBriefing.EventType.XwaMoveIcon && Common.IsValidArray(_briefData[_events[i].Variables[0]].Waypoint, 1))
 			{
-				_briefData[_events[i, 2]].Waypoint[0] = _events[i, 3];
-				_briefData[_events[i, 2]].Waypoint[1] = _events[i, 4];
+				_briefData[_events[i].Variables[0]].Waypoint[0] = _events[i].Variables[1];
+				_briefData[_events[i].Variables[0]].Waypoint[1] = _events[i].Variables[2];
 				paint = true;
 			}
-			else if (_events[i, 1] == (int)BaseBriefing.EventType.XwaRotateIcon && Common.IsValidArray(_briefData[_events[i, 2]].Waypoint, 2))
+			else if (_events[i].Type == BaseBriefing.EventType.XwaRotateIcon && Common.IsValidArray(_briefData[_events[i].Variables[0]].Waypoint, 2))
 			{
-				_briefData[_events[i, 2]].Waypoint[2] = _events[i, 3];
+				_briefData[_events[i].Variables[0]].Waypoint[2] = _events[i].Variables[1];
 				paint = true;
 			}
-			else if (_events[i, 1] == (int)BaseBriefing.EventType.XwaChangeRegion)
+			else if (_events[i].Type == BaseBriefing.EventType.XwaChangeRegion)
 			{
 				for (int h = 0; h < 8; h++)
 				{
@@ -1266,7 +1263,7 @@ namespace Idmr.Yogeme
 				}
 				_briefData = new BriefData[_briefData.Length];
 
-				_message = "Region " + (_events[i, 2] + 1);
+				_message = "Region " + (_events[i].Variables[0] + 1);
 				_regionDelay = _timerInterval * 3;
 
 				if (!rebuild)
@@ -2000,6 +1997,7 @@ namespace Idmr.Yogeme
 		}
 		void cmdOk_Click(object sender, EventArgs e)
 		{
+			// TODO: see if this could be refactored
 			if (!hasAvailableEventSpace(2 + BaseBriefing.EventParameters.GetCount(_eventType)))
 			{
 				MessageBox.Show("Event list is full, cannot add more.", "Error");
@@ -2026,14 +2024,13 @@ namespace Idmr.Yogeme
                         lstEvents.Items.Add("");
                         for (int n = i + 2; n > i; n--)
                         {
-                            if (_events[n - 1, 1] == 0) continue;
+                            if (_events[n - 1].Type == BaseBriefing.EventType.None) continue;
 
-                            for (int h = 0; h < 6; h++) _events[n, h] = _events[n - 1, h];
+                            _events[n] = _events[n - 1].Clone();
                         }
                     }
-                    _events[i, 0] = (short)hsbTimer.Value;
-                    _events[i, 1] = (short)_eventType;
-                    for (int n = 2; n < 6; n++) _events[i, n] = 0;
+                    _events[i].Time = (short)hsbTimer.Value;
+                    _events[i].Type = _eventType;
                     break;
 				case BaseBriefing.EventType.PageBreak:
 					i = findExisting(_eventType);
@@ -2050,13 +2047,13 @@ namespace Idmr.Yogeme
 						lstEvents.Items.Add("");
 						for (int n = i + 2; n > i; n--)
 						{
-							if (_events[n - 1, 1] == 0) continue;
-							for (int h = 0; h < 6; h++) _events[n, h] = _events[n - 1, h];
+							if (_events[n - 1].Type == BaseBriefing.EventType.None) continue;
+
+							_events[n] = _events[n - 1].Clone();
 						}
 					}
-					_events[i, 0] = (short)hsbTimer.Value;
-					_events[i, 1] = (short)_eventType;
-					for (int n = 2; n < 6; n++) _events[i, n] = 0;
+					_events[i].Time = (short)hsbTimer.Value;
+					_events[i].Type = _eventType;
 					if (_platform == Settings.Platform.TIE) lblTitle.Text = "";
 					lblCaption.Text = "";
 					break;
@@ -2075,27 +2072,26 @@ namespace Idmr.Yogeme
 							lstEvents.Items.Add("");
 							for (int n = i + 2; n > i; n--)
 							{
-								if (_events[n - 1, 1] == 0) continue;
+								if (_events[n - 1].Type == BaseBriefing.EventType.None) continue;
 
-								for (int h = 0; h < 6; h++) _events[n, h] = _events[n - 1, h];
+								_events[n] = _events[n - 1].Clone();
 							}
 						}
 					}
-					_events[i, 0] = (short)hsbTimer.Value;
-					_events[i, 1] = (short)_eventType;
-					_events[i, 2] = (short)cboText.SelectedIndex;
-					for (int n = 3; n < 6; n++) _events[i, n] = 0;
-					if (_strings[_events[i, 2]].StartsWith(">"))
+					_events[i].Time = (short)hsbTimer.Value;
+					_events[i].Type = _eventType;
+					_events[i].Variables[0] = (short)cboText.SelectedIndex;
+					if (_strings[_events[i].Variables[0]].StartsWith(">"))
 					{
 						lblTitle.TextAlign = ContentAlignment.TopCenter;
 						lblTitle.ForeColor = _titleColor;
-						lblTitle.Text = _strings[_events[i, 2]].Replace(">", "");
+						lblTitle.Text = _strings[_events[i].Variables[0]].Replace(">", "");
 					}
 					else
 					{
 						lblTitle.TextAlign = ContentAlignment.TopLeft;
 						lblTitle.ForeColor = _normalColor;
-						lblTitle.Text = _strings[_events[i, 2]];
+						lblTitle.Text = _strings[_events[i].Variables[0]];
 					}
 					break;
 				case BaseBriefing.EventType.CaptionText:
@@ -2113,27 +2109,26 @@ namespace Idmr.Yogeme
 							lstEvents.Items.Add("");
 							for (int n = i + 2; n > i; n--)
 							{
-								if (_events[n - 1, 1] == 0) continue;
+								if (_events[n - 1].Type == BaseBriefing.EventType.None) continue;
 
-								for (int h = 0; h < 6; h++) _events[n, h] = _events[n - 1, h];
+								_events[n] = _events[n - 1].Clone();
 							}
 						}
 					}
-					_events[i, 0] = (short)hsbTimer.Value;
-					_events[i, 1] = (short)_eventType;
-					_events[i, 2] = (short)cboText.SelectedIndex;
-					for (int n = 3; n < 6; n++) _events[i, n] = 0;
-					if (_strings[_events[i, 2]].StartsWith(">"))
+					_events[i].Time = (short)hsbTimer.Value;
+					_events[i].Type = _eventType;
+					_events[i].Variables[0] = (short)cboText.SelectedIndex;
+					if (_strings[_events[i].Variables[0]].StartsWith(">"))
 					{
 						lblCaption.TextAlign = ContentAlignment.TopCenter;
 						lblCaption.ForeColor = _titleColor;
-						lblCaption.Text = _strings[_events[i, 2]].Replace(">", "");
+						lblCaption.Text = _strings[_events[i].Variables[0]].Replace(">", "");
 					}
 					else
 					{
 						lblCaption.TextAlign = ContentAlignment.TopLeft;
 						lblCaption.ForeColor = _normalColor;
-						lblCaption.Text = _strings[_events[i, 2]];
+						lblCaption.Text = _strings[_events[i].Variables[0]];
 					}
                     break;
 				case BaseBriefing.EventType.MoveMap:
@@ -2151,15 +2146,16 @@ namespace Idmr.Yogeme
 							lstEvents.Items.Add("");
 							for (int n = i + 2; n > i; n--)
 							{
-								if (_events[n - 1, 1] == 0) continue;
-								for (int h = 0; h < 6; h++) _events[n, h] = _events[n - 1, h];
+								if (_events[n - 1].Type == BaseBriefing.EventType.None) continue;
+
+								_events[n] = _events[n - 1].Clone();
 							}
 						}
 					}
-					_events[i, 0] = (short)hsbTimer.Value;
-					_events[i, 1] = (short)_eventType;
-					_events[i, 2] = _mapX;
-					_events[i, 3] = _mapY;
+					_events[i].Time = (short)hsbTimer.Value;
+					_events[i].Type = _eventType;
+					_events[i].Variables[0] = _mapX;
+					_events[i].Variables[1] = _mapY;
 					// don't need to repaint, done while adjusting values
 					break;
 				case BaseBriefing.EventType.ZoomMap:
@@ -2177,16 +2173,16 @@ namespace Idmr.Yogeme
 							lstEvents.Items.Add("");
 							for (int n = i + 2; n > i; n--)
 							{
-								if (_events[n - 1, 1] == 0) continue;
+								if (_events[n - 1].Type == BaseBriefing.EventType.None) continue;
 
-								for (int h = 0; h < 6; h++) _events[n, h] = _events[n - 1, h];
+								_events[n] = _events[n - 1].Clone();
 							}
 						}
 					}
-					_events[i, 0] = (short)hsbTimer.Value;
-					_events[i, 1] = (short)_eventType;
-					_events[i, 2] = _zoomX;
-					_events[i, 3] = _zoomY;
+					_events[i].Time = (short)hsbTimer.Value;
+					_events[i].Type = _eventType;
+					_events[i].Variables[0] = _zoomX;
+					_events[i].Variables[1] = _zoomY;
 					// don't need to repaint, done while adjusting values
 					break;
 				case BaseBriefing.EventType.ClearFGTags:
@@ -2204,14 +2200,13 @@ namespace Idmr.Yogeme
 						lstEvents.Items.Add("");
 						for (int n = i + 2; n > i; n--)
 						{
-							if (_events[n - 1, 1] == 0) continue;
+							if (_events[n - 1].Type == BaseBriefing.EventType.None) continue;
 
-							for (int h = 0; h < 6; h++) _events[n, h] = _events[n - 1, h];
+							_events[n] = _events[n - 1].Clone();
 						}
 					}
-					_events[i, 0] = (short)hsbTimer.Value;
-					_events[i, 1] = (short)_eventType;
-					for (int n = 2; n < 6; n++) _events[i, n] = 0;
+					_events[i].Time = (short)hsbTimer.Value;
+					_events[i].Type = _eventType;
 					for (int n = 0; n < 8; n++)
 					{
 						_fgTags[n].Slot = -1;
@@ -2234,18 +2229,17 @@ namespace Idmr.Yogeme
 							lstEvents.Items.Add("");
 							for (int n = i + 2; n > i; n--)
 							{
-								if (_events[n - 1, 1] == 0) continue;
+								if (_events[n - 1].Type == BaseBriefing.EventType.None) continue;
 
-								for (int h = 0; h < 6; h++) _events[n, h] = _events[n - 1, h];
+								_events[n] = _events[n - 1].Clone();
 							}
 						}
 					}
-					_events[i, 0] = (short)hsbTimer.Value;
-					_events[i, 1] = (short)_eventType;
-					_events[i, 2] = (short)cboFGTag.SelectedIndex;
-					for (int n = 3; n < 6; n++) _events[i, n] = 0;
-					_fgTags[(int)_eventType - 9].Slot = _events[i, 2];
-					_fgTags[(int)_eventType - 9].StartTime = _events[i, 0];
+					_events[i].Time = (short)hsbTimer.Value;
+					_events[i].Type = _eventType;
+					_events[i].Variables[0] = (short)cboFGTag.SelectedIndex;
+					_fgTags[(int)_eventType - 9].Slot = _events[i].Variables[0];
+					_fgTags[(int)_eventType - 9].StartTime = _events[i].Time;
 					MapPaint();
 					break;
 				case BaseBriefing.EventType.ClearTextTags:
@@ -2263,14 +2257,13 @@ namespace Idmr.Yogeme
 						lstEvents.Items.Add("");
 						for (int n = i + 2; n > i; n--)
 						{
-							if (_events[n - 1, 1] == 0) continue;
+							if (_events[n - 1].Type == BaseBriefing.EventType.None) continue;
 
-							for (int h = 0; h < 6; h++) _events[n, h] = _events[n - 1, h];
+							_events[n] = _events[n - 1].Clone();
 						}
 					}
-					_events[i, 0] = (short)hsbTimer.Value;
-					_events[i, 1] = (short)_eventType;
-					for (int n = 2; n < 6; n++) _events[i, n] = 0;
+					_events[i].Time = (short)hsbTimer.Value;
+					_events[i].Type = _eventType;
 					for (int n = 0; n < 8; n++)
 					{
 						_textTags[n].StringIndex = -1;
@@ -2300,9 +2293,9 @@ namespace Idmr.Yogeme
 							lstEvents.Items.Add("");
 							for (int n = i + 2; n > i; n--)
 							{
-								if (_events[n - 1, 1] == 0) continue;
+								if (_events[n - 1].Type == BaseBriefing.EventType.None) continue;
 
-								for (int h = 0; h < 6; h++) _events[n, h] = _events[n - 1, h];
+								_events[n] = _events[n - 1].Clone();
 							}
 						}
 					}
@@ -2311,16 +2304,16 @@ namespace Idmr.Yogeme
 						// found existing, just see if we change location or not
 						if (_tempX == -621 && _tempY == -621)
 						{
-							_tempX = _events[i, 3];
-							_tempY = _events[i, 4];
+							_tempX = _events[i].Variables[1];
+							_tempY = _events[i].Variables[2];
 						}
 					}
-					_events[i, 0] = (short)hsbTimer.Value;
-					_events[i, 1] = (short)_eventType;
-					_events[i, 2] = (short)cboTextTag.SelectedIndex;
-					_events[i, 3] = _tempX;
-					_events[i, 4] = _tempY;
-					_events[i, 5] = (short)cboColorTag.SelectedIndex;
+					_events[i].Time = (short)hsbTimer.Value;
+					_events[i].Type = _eventType;
+					_events[i].Variables[0] = (short)cboTextTag.SelectedIndex;
+					_events[i].Variables[1] = _tempX;
+					_events[i].Variables[2] = _tempY;
+					_events[i].Variables[3] = (short)cboColorTag.SelectedIndex;
 					// don't need to repaint or restore/edit from backup, as it's taken care of during placement
 					break;
 				case BaseBriefing.EventType.XwaSetIcon:
@@ -2342,17 +2335,17 @@ namespace Idmr.Yogeme
 						lstEvents.Items.Add("");
 						for (int n = i + 2; n > i; n--)
 						{
-							if (_events[n - 1, 1] == 0) continue;
+							if (_events[n - 1].Type == BaseBriefing.EventType.None) continue;
 
-							for (int h = 0; h < 6; h++) _events[n, h] = _events[n - 1, h];
+							_events[n] = _events[n - 1].Clone();
 						}
 					}
-					_events[i, 0] = (short)hsbTimer.Value;
-					_events[i, 1] = (short)_eventType;
-					_events[i, 2] = _icon;
-					_events[i, 3] = (short)cboNCraft.SelectedIndex;
-					_events[i, 4] = (short)cboIconIff.SelectedIndex;
-					_events[i, 5] = 0;
+					_events[i].Time = (short)hsbTimer.Value;
+					_events[i].Type = _eventType;
+					_events[i].Variables[0] = _icon;
+					_events[i].Variables[1] = (short)cboNCraft.SelectedIndex;
+					_events[i].Variables[2] = (short)cboIconIff.SelectedIndex;
+					_events[i].Variables[3] = 0;
 					updateList(i);
 					// add initial MoveIcon 
 					if (cboNCraft.SelectedIndex != 0)
@@ -2368,17 +2361,17 @@ namespace Idmr.Yogeme
 							lstEvents.Items.Add("");
 							for (int n = i + 2; n > i; n--)
 							{
-								if (_events[n - 1, 1] == 0) continue;
+								if (_events[n - 1].Type == BaseBriefing.EventType.None) continue;
 
-								for (int h = 0; h < 6; h++) _events[n, h] = _events[n - 1, h];
+								_events[n] = _events[n - 1].Clone();
 							}
 						}
-						_events[i, 0] = (short)hsbTimer.Value;
-						_events[i, 1] = (short)BaseBriefing.EventType.XwaMoveIcon;
-						_events[i, 2] = _icon;
-						_events[i, 3] = _tempX;
-						_events[i, 4] = _tempY;
-						_events[i, 5] = 0;
+						_events[i].Time = (short)hsbTimer.Value;
+						_events[i].Type = BaseBriefing.EventType.XwaMoveIcon;
+						_events[i].Variables[0] = _icon;
+						_events[i].Variables[1] = _tempX;
+						_events[i].Variables[2] = _tempY;
+						_events[i].Variables[3] = 0;
 					}
 					break;
 				case BaseBriefing.EventType.XwaShipInfo:
@@ -2396,17 +2389,16 @@ namespace Idmr.Yogeme
 							lstEvents.Items.Add("");
 							for (int n = i + 2; n > i; n--)
 							{
-								if (_events[n - 1, 1] == 0) continue;
+								if (_events[n - 1].Type == BaseBriefing.EventType.None) continue;
 
-								for (int h = 0; h < 6; h++) _events[n, h] = _events[n - 1, h];
+								_events[n] = _events[n - 1].Clone();
 							}
 						}
 					}
-					_events[i, 0] = (short)hsbTimer.Value;
-					_events[i, 1] = (short)_eventType;
-					_events[i, 2] = (short)(optInfoOn.Checked ? 1 : 0);
-					_events[i, 3] = (short)cboInfoCraft.SelectedIndex;
-					for (int n = 4; n < 6; n++) _events[i, n] = 0;
+					_events[i].Time = (short)hsbTimer.Value;
+					_events[i].Type = _eventType;
+					_events[i].Variables[0] = (short)(optInfoOn.Checked ? 1 : 0);
+					_events[i].Variables[1] = (short)cboInfoCraft.SelectedIndex;
 					break;
 				case BaseBriefing.EventType.XwaMoveIcon:
 					if (_tempX == -621 && _tempY == -621)
@@ -2429,17 +2421,17 @@ namespace Idmr.Yogeme
 							lstEvents.Items.Add("");
 							for (int n = i + 2; n > i; n--)
 							{
-								if (_events[n - 1, 1] == 0) continue;
+								if (_events[n - 1].Type == BaseBriefing.EventType.None) continue;
 
-								for (int h = 0; h < 6; h++) _events[n, h] = _events[n - 1, h];
+								_events[n] = _events[n - 1].Clone();
 							}
 						}
-						_events[i, 0] = (short)hsbTimer.Value;
-						_events[i, 1] = (short)_eventType;
-						_events[i, 2] = _icon;
-						_events[i, 3] = _briefData[_icon].Waypoint[0];
-						_events[i, 4] = _briefData[_icon].Waypoint[1];
-						_events[i, 5] = 0;
+						_events[i].Time = (short)hsbTimer.Value;
+						_events[i].Type = _eventType;
+						_events[i].Variables[0] = _icon;
+						_events[i].Variables[1] = _briefData[_icon].Waypoint[0];
+						_events[i].Variables[2] = _briefData[_icon].Waypoint[1];
+						_events[i].Variables[3] = 0;
 					}
 					else
 					{
@@ -2465,17 +2457,17 @@ namespace Idmr.Yogeme
 								lstEvents.Items.Add("");
 								for (int n = i + 2; n > i; n--)
 								{
-									if (_events[n - 1, 1] == 0) continue;
+									if (_events[n - 1].Type == BaseBriefing.EventType.None) continue;
 
-									for (int h = 0; h < 6; h++) _events[n, h] = _events[n - 1, h];
+									_events[n] = _events[n - 1].Clone();
 								}
 							}
-							_events[i, 0] = (short)(j + t0);
-							_events[i, 1] = (short)_eventType;
-							_events[i, 2] = _icon;
-							_events[i, 3] = (short)((x - _tempX) * j / total + _tempX);
-							_events[i, 4] = (short)((y - _tempY) * j / total + _tempY);
-							_events[i, 5] = 0;
+							_events[i].Time = (short)(j + t0);
+							_events[i].Type = _eventType;
+							_events[i].Variables[0] = _icon;
+							_events[i].Variables[1] = (short)((x - _tempX) * j / total + _tempX);
+							_events[i].Variables[2] = (short)((y - _tempY) * j / total + _tempY);
+							_events[i].Variables[3] = 0;
 							updateList(i);
 						}
 					}
@@ -2492,16 +2484,15 @@ namespace Idmr.Yogeme
 						lstEvents.Items.Add("");
 						for (int n = i + 2; n > i; n--)
 						{
-							if (_events[n - 1, 1] == 0) continue;
+							if (_events[n - 1].Type == BaseBriefing.EventType.None) continue;
 
-							for (int h = 0; h < 6; h++) _events[n, h] = _events[n - 1, h];
+							_events[n] = _events[n - 1].Clone();
 						}
 					}
-					_events[i, 0] = (short)hsbTimer.Value;
-					_events[i, 1] = (short)_eventType;
-					_events[i, 2] = _icon;
-					_events[i, 3] = (short)cboRotateAmount.SelectedIndex;
-					for (int n = 4; n < 6; n++) _events[i, n] = 0;
+					_events[i].Time = (short)hsbTimer.Value;
+					_events[i].Type = _eventType;
+					_events[i].Variables[0] = _icon;
+					_events[i].Variables[1] = (short)cboRotateAmount.SelectedIndex;
 					break;
 				case BaseBriefing.EventType.XwaChangeRegion:
 					i = findExisting(_eventType);
@@ -2518,16 +2509,15 @@ namespace Idmr.Yogeme
 							lstEvents.Items.Add("");
 							for (int n = i + 2; n > i; n--)
 							{
-								if (_events[n - 1, 1] == 0) continue;
+								if (_events[n - 1].Type == BaseBriefing.EventType.None) continue;
 
-								for (int h = 0; h < 6; h++) _events[n, h] = _events[n - 1, h];
+								_events[n] = _events[n - 1].Clone();
 							}
 						}
 					}
-					_events[i, 0] = (short)hsbTimer.Value;
-					_events[i, 1] = (short)_eventType;
-					_events[i, 2] = (short)(numNewRegion.Value - 1);
-					for (int n = 3; n < 6; n++) _events[i, n] = 0;
+					_events[i].Time = (short)hsbTimer.Value;
+					_events[i].Type = _eventType;
+					_events[i].Variables[0] = (short)(numNewRegion.Value - 1);
 					break;
 				default:    // this shouldn't be possible
 					break;
@@ -2654,20 +2644,18 @@ namespace Idmr.Yogeme
 			int time = hsbTimer.Value;
 			for (int i = 0; i < _maxEvents; i++)
 			{
-				int etime = _events[i, 0];
-				int eevt = _events[i, 1];
-				if (eevt == (int)BaseBriefing.EventType.None || eevt == (int)BaseBriefing.EventType.EndBriefing)
+				if (_events[i].Type == BaseBriefing.EventType.None || _events[i].Type == BaseBriefing.EventType.EndBriefing)
 				{
 					hsbTimer.Value = 1;
 					hsbTimer.Value = 0;
 					return;
 				}
-				if (etime > time && eevt == (int)BaseBriefing.EventType.CaptionText)
+				if (_events[i].Time > time && _events[i].Type == BaseBriefing.EventType.CaptionText)
 				{
-					if (etime < hsbTimer.Maximum)
+					if (_events[i].Time < hsbTimer.Maximum)
 					{
-						hsbTimer.Value = etime;
-						hsbTimer.Value = etime + 1;
+						hsbTimer.Value = _events[i].Time;
+						hsbTimer.Value = _events[i].Time + 1;
 					}
 					return;
 				}
@@ -2920,27 +2908,22 @@ namespace Idmr.Yogeme
 			lstEvents.Items.Insert(i, "");
 			for (int j = _maxEvents - 1; j > i; j--)
 			{
-				if (_events[j - 1, 1] == 0) continue;
+				if (_events[j - 1].Type == BaseBriefing.EventType.None) continue;
 
-				for (int h = 0; h < 6; h++) _events[j, h] = _events[j - 1, h];
+				_events[j] = _events[j - 1].Clone();
 			}
-			_events[i, 0] = _events[i + 1, 0];
-			if (_events[i, 0] == 9999) _events[i, 0] = 0;
-			_events[i, 1] = 3;
-			for (int j = 2; j < 6; j++) _events[i, j] = 0;
+			_events[i].Time = _events[i + 1].Time;
+			if (_events[i].Time == 9999) _events[i].Time = 0;
+			_events[i].Type = BaseBriefing.EventType.PageBreak;
 			lstEvents.SelectedIndex = i;
 			onModified?.Invoke("EventAdd", new EventArgs());
 		}
 		/// <summary>Swaps one briefing event index with another.</summary>
 		void swapEvent(int index1, int index2)
 		{
-			short t;
-			for (int j = 0; j < 6; j++)
-			{
-				t = _events[index1, j];
-				_events[index1, j] = _events[index2, j];
-				_events[index2, j] = t;
-			}
+			var t = _events[index1];
+			_events[index1] = _events[index2];
+			_events[index2] = t;
 			onModified?.Invoke("SwapEvent", new EventArgs());
 		}
 		/// <summary>Shifts briefing events by swapping the contents of the origin index in a linear path until it occupies the end index.</summary>
@@ -2953,39 +2936,39 @@ namespace Idmr.Yogeme
 		{
 			if (index == -1) return;
 
-			string temp = string.Format("{0,-8:0.00}", (decimal)_events[index, 0] / _timerInterval);
-			temp += cboEvent.Items[convertEventToCboEventIndex(_events[index, 1])].ToString();
-			if (_events[index, 1] == (int)BaseBriefing.EventType.TitleText || _events[index, 1] == (int)BaseBriefing.EventType.CaptionText && _events[index, 2] != -1)
+			string temp = string.Format("{0,-8:0.00}", (decimal)_events[index].Time / _timerInterval);
+			temp += cboEvent.Items[convertEventToCboEventIndex((short)_events[index].Type)].ToString();
+			if (_events[index].Type == BaseBriefing.EventType.TitleText || _events[index].Type == BaseBriefing.EventType.CaptionText && _events[index].Variables[0] != -1)
 			{
-				if (_strings[_events[index, 2]].Length > 30) temp += ": \"" + _strings[_events[index, 2]].Substring(0, 30) + "...\"";
-				else temp += ": \"" + _strings[_events[index, 2]] + '\"';
+				if (_strings[_events[index].Variables[0]].Length > 30) temp += ": \"" + _strings[_events[index].Variables[0]].Substring(0, 30) + "...\"";
+				else temp += ": \"" + _strings[_events[index].Variables[0]] + '\"';
 			}
-			else if (_events[index, 1] == (int)BaseBriefing.EventType.MoveMap || _events[index, 1] == (int)BaseBriefing.EventType.ZoomMap) { temp += ": X:" + _events[index, 2] + " Y:" + _events[index, 3]; }
-			else if (_events[index, 1] >= (int)BaseBriefing.EventType.FGTag1 && _events[index, 1] <= (int)BaseBriefing.EventType.FGTag8)
+			else if (_events[index].Type == BaseBriefing.EventType.MoveMap || _events[index].Type == BaseBriefing.EventType.ZoomMap) { temp += ": X:" + _events[index].Variables[0] + " Y:" + _events[index].Variables[1]; }
+			else if (_events[index].IsFGTag)
 			{
 				//[JB] This fixed a potential crash while I working on functionality to delete FGs.  Not sure if still needed.
-				int fgIndex = _events[index, 2];
+				int fgIndex = _events[index].Variables[0];
 				if (fgIndex >= _briefData.Length)
 				{
 					fgIndex = 0;
-					_events[index, 2] = 0;
+					_events[index].Variables[0] = 0;
 				}
 				temp += ": " + ((_platform != Settings.Platform.XWA) ? _briefData[fgIndex].Name : "Icon #" + fgIndex);
 			}
-			else if (_events[index, 1] >= (int)BaseBriefing.EventType.TextTag1 && _events[index, 1] <= (int)BaseBriefing.EventType.TextTag8)
+			else if (_events[index].IsTextTag)
 			{
-				if (_tags[_events[index, 2]].Length > 30) temp += ": \"" + _tags[_events[index, 2]].Substring(0, 30) + "...\"";
-				else temp += ": \"" + _tags[_events[index, 2]] + '\"';
+				if (_tags[_events[index].Variables[0]].Length > 30) temp += ": \"" + _tags[_events[index].Variables[0]].Substring(0, 30) + "...\"";
+				else temp += ": \"" + _tags[_events[index].Variables[0]] + '\"';
 			}
-			else if (_events[index, 1] == (int)BaseBriefing.EventType.XwaSetIcon) { temp += " #" + _events[index, 2] + ": Craft: " + Platform.Xwa.Strings.CraftType[_events[index, 3]] + " IFF: " + cboIFF.Items[_events[index, 4]].ToString(); }
-			else if (_events[index, 1] == (int)BaseBriefing.EventType.XwaShipInfo)
+			else if (_events[index].Type == BaseBriefing.EventType.XwaSetIcon) { temp += " #" + _events[index].Variables[0] + ": Craft: " + Platform.Xwa.Strings.CraftType[_events[index].Variables[1]] + " IFF: " + cboIFF.Items[_events[index].Variables[2]].ToString(); }
+			else if (_events[index].Type == BaseBriefing.EventType.XwaShipInfo)
 			{
-				if (_events[index, 2] == 1) temp += ": Icon # " + _events[index, 3] + " State: On";
-				else temp += ": Icon # " + _events[index, 3] + " State: Off";
+				if (_events[index].Variables[0] == 1) temp += ": Icon # " + _events[index].Variables[1] + " State: On";
+				else temp += ": Icon # " + _events[index].Variables[1] + " State: Off";
 			}
-			else if (_events[index, 1] == (int)BaseBriefing.EventType.XwaMoveIcon) { temp += " #" + _events[index, 2] + ": X:" + _events[index, 3] + " Y:" + _events[index, 4]; }
-			else if (_events[index, 1] == (int)BaseBriefing.EventType.XwaRotateIcon) { temp += " #" + _events[index, 2] + ": " + cboRotate.Items[_events[index, 3]]; }
-			else if (_events[index, 1] == (int)BaseBriefing.EventType.XwaChangeRegion) { temp += " #" + (_events[index, 2] + 1); }
+			else if (_events[index].Type == BaseBriefing.EventType.XwaMoveIcon) { temp += " #" + _events[index].Variables[0] + ": X:" + _events[index].Variables[1] + " Y:" + _events[index].Variables[2]; }
+			else if (_events[index].Type == BaseBriefing.EventType.XwaRotateIcon) { temp += " #" + _events[index].Variables[0] + ": " + cboRotate.Items[_events[index].Variables[1]]; }
+			else if (_events[index].Type == BaseBriefing.EventType.XwaChangeRegion) { temp += " #" + (_events[index].Variables[0] + 1); }
 			lstEvents.Items[index] = temp;
 			if (!_loading)
 			{
@@ -3012,101 +2995,93 @@ namespace Idmr.Yogeme
 			numRegion.Enabled = false;
 			cboCraft.Enabled = false;
 			cboRotate.Enabled = false;
-			if (_events[i, 1] == (int)BaseBriefing.EventType.TitleText || _events[i, 1] == (int)BaseBriefing.EventType.CaptionText)
+			if (_events[i].Type == BaseBriefing.EventType.TitleText || _events[i].Type == BaseBriefing.EventType.CaptionText)
 			{
-				try { cboString.SelectedIndex = _events[i, 2]; }
+				try { cboString.SelectedIndex = _events[i].Variables[0]; }
 				catch
 				{
 					cboString.SelectedIndex = 0;
-					_events[i, 2] = 0;
+					_events[i].Variables[0] = 0;
 				}
-				_events[i, 3] = 0;
-				_events[i, 4] = 0;
-				_events[i, 5] = 0;
 				cboString.Enabled = true;
 			}
-			else if (_events[i, 1] == (int)BaseBriefing.EventType.MoveMap || _events[i, 1] == (int)BaseBriefing.EventType.ZoomMap)
+			else if (_events[i].Type == BaseBriefing.EventType.MoveMap || _events[i].Type == BaseBriefing.EventType.ZoomMap)
 			{
-				numX.Value = _events[i, 2];
-				numY.Value = _events[i, 3];
-				_events[i, 4] = 0;
-				_events[i, 5] = 0;
+				numX.Value = _events[i].Variables[0];
+				numY.Value = _events[i].Variables[1];
 				numX.Enabled = true;
 				numY.Enabled = true;
 			}
-			else if (_events[i, 1] >= (int)BaseBriefing.EventType.FGTag1 && _events[i, 1] <= (int)BaseBriefing.EventType.FGTag8)
+			else if (_events[i].IsFGTag)
 			{
-				try { cboFG.SelectedIndex = _events[i, 2]; }
+				try { cboFG.SelectedIndex = _events[i].Variables[0]; }
 				catch
 				{
 					cboFG.SelectedIndex = 0;
-					_events[i, 2] = 0;
+					_events[i].Variables[0] = 0;
 				}
-				_events[i, 3] = 0;
-				_events[i, 4] = 0;
-				_events[i, 5] = 0;
 				cboFG.Enabled = true;
 			}
-			else if (_events[i, 1] >= (int)BaseBriefing.EventType.TextTag1 && _events[i, 1] <= (int)BaseBriefing.EventType.TextTag8)
+			else if (_events[i].IsTextTag)
 			{
 				try
 				{
-					cboTag.SelectedIndex = _events[i, 2];
-					cboColor.SelectedIndex = _events[i, 5];
+					cboTag.SelectedIndex = _events[i].Variables[0];
+					cboColor.SelectedIndex = _events[i].Variables[3];
 				}
 				catch
 				{
 					cboTag.SelectedIndex = 0;
 					cboColor.SelectedIndex = 0;
-					_events[i, 2] = 0;
-					_events[i, 3] = 0;
-					_events[i, 4] = 0;
-					_events[i, 5] = 0;
+					_events[i].Variables[0] = 0;
+					_events[i].Variables[1] = 0;
+					_events[i].Variables[2] = 0;
+					_events[i].Variables[3] = 0;
 				}
-				numX.Value = _events[i, 3];
-				numY.Value = _events[i, 4];
+				numX.Value = _events[i].Variables[1];
+				numY.Value = _events[i].Variables[2];
 				cboTag.Enabled = true;
 				cboColor.Enabled = true;
 				numX.Enabled = true;
 				numY.Enabled = true;
 			}
-			else if (_events[i, 1] == (int)BaseBriefing.EventType.XwaSetIcon)
+			else if (_events[i].Type == BaseBriefing.EventType.XwaSetIcon)
 			{
-				cboFG.SelectedIndex = _events[i, 2];
-				cboCraft.SelectedIndex = _events[i, 3];
-				cboIFF.SelectedIndex = _events[i, 4];
+				cboFG.SelectedIndex = _events[i].Variables[0];
+				cboCraft.SelectedIndex = _events[i].Variables[1];
+				cboIFF.SelectedIndex = _events[i].Variables[2];
 				cboCraft.Enabled = true;
 				cboIFF.Enabled = true;
 				cboFG.Enabled = true;
 			}
-			else if (_events[i, 1] == (int)BaseBriefing.EventType.XwaShipInfo)
+			else if (_events[i].Type == BaseBriefing.EventType.XwaShipInfo)
 			{
-				optOn.Checked = Convert.ToBoolean(_events[i, 2]);
+				optOn.Checked = Convert.ToBoolean(_events[i].Variables[0]);
 				optOff.Checked = !optOn.Checked;
-				cboFG.SelectedIndex = _events[i, 3];
+				cboFG.SelectedIndex = _events[i].Variables[1];
 				cboFG.Enabled = true;
 				optOff.Enabled = true;
 				optOn.Enabled = true;
 			}
-			else if (_events[i, 1] == (int)BaseBriefing.EventType.XwaMoveIcon)
+			else if (_events[i].Type == BaseBriefing.EventType.XwaMoveIcon)
 			{
-				cboFG.SelectedIndex = _events[i, 2];
-				numX.Value = _events[i, 3];
-				numY.Value = _events[i, 4];
+				cboFG.SelectedIndex = _events[i].Variables[0];
+				numX.Value = _events[i].Variables[1];
+				numY.Value = _events[i].Variables[2];
 				cboFG.Enabled = true;
 				numX.Enabled = true;
 				numY.Enabled = true;
 			}
-			else if (_events[i, 1] == (int)BaseBriefing.EventType.XwaRotateIcon)
+			else if (_events[i].Type == BaseBriefing.EventType.XwaRotateIcon)
 			{
-				cboFG.SelectedIndex = _events[i, 2];
-				cboRotate.SelectedIndex = _events[i, 3];
+				cboFG.SelectedIndex = _events[i].Variables[0];
+				cboRotate.SelectedIndex = _events[i].Variables[1];
 				cboFG.Enabled = true;
 				cboRotate.Enabled = true;
 			}
-			else if (_events[i, 1] == (int)BaseBriefing.EventType.XwaChangeRegion)
+			else if (_events[i].Type == BaseBriefing.EventType.XwaChangeRegion)
 			{
-				numRegion.Value = _events[i, 2] + 1;
+				numRegion.Value = _events[i].Variables[0] + 1;
 				numRegion.Enabled = true;
 			}
 			_loading = false;
@@ -3118,9 +3093,9 @@ namespace Idmr.Yogeme
 			int i = lstEvents.SelectedIndex;
 			if (i == -1 || _loading) return;
 
-			if (_events[i, 1] >= (int)BaseBriefing.EventType.TextTag1 && _events[i, 1] <= (int)BaseBriefing.EventType.TextTag8)
+			if (_events[i].IsTextTag)
 			{
-				_events[i, 5] = (short)cboColor.SelectedIndex;
+				_events[i].Variables[3] = (short)cboColor.SelectedIndex;
 				onModified?.Invoke("TagColor", new EventArgs());
 			}
 			updateList(i);
@@ -3130,9 +3105,9 @@ namespace Idmr.Yogeme
 			int i = lstEvents.SelectedIndex;
 			if (i == -1 || _loading) return;
 
-			if (_events[i, 1] == (int)BaseBriefing.EventType.XwaSetIcon)
+			if (_events[i].Type == BaseBriefing.EventType.XwaSetIcon)
 			{
-				_events[i, 3] = (short)cboCraft.SelectedIndex;
+				_events[i].Variables[1] = (short)cboCraft.SelectedIndex;
 				onModified?.Invoke("NewIcon", new EventArgs());
 			}
 			updateList(i);
@@ -3142,7 +3117,7 @@ namespace Idmr.Yogeme
 			int i = lstEvents.SelectedIndex;
 			if (_loading || i == -1 || cboEvent.SelectedIndex == -1) return;
 
-			int oldEventSize = 2 + BaseBriefing.EventParameters.GetCount(_events[i, 1]);
+			int oldEventSize = 2 + BaseBriefing.EventParameters.GetCount(_events[i].Type);
 			int newEventSize = 2 + BaseBriefing.EventParameters.GetCount(convertCboEventIndexToEvent(cboEvent.SelectedIndex));
 			if (!hasAvailableEventSpace(newEventSize - oldEventSize))
 			{
@@ -3150,7 +3125,7 @@ namespace Idmr.Yogeme
 				return;
 			}
 			onModified?.Invoke("ChangeEvent", new EventArgs());
-			_events[i, 1] = convertCboEventIndexToEvent(cboEvent.SelectedIndex);
+			_events[i].Type = (BaseBriefing.EventType)convertCboEventIndexToEvent(cboEvent.SelectedIndex);
 			updateParameters();
 			updateList(i);
 		}
@@ -3159,16 +3134,16 @@ namespace Idmr.Yogeme
 			int i = lstEvents.SelectedIndex;
 			if (i == -1 || _loading) return;
 
-			if ((_events[i, 1] >= (int)BaseBriefing.EventType.FGTag1 && _events[i, 1] <= (int)BaseBriefing.EventType.FGTag8) || _events[i, 1] == (int)BaseBriefing.EventType.XwaSetIcon
-				|| _events[i, 1] == (int)BaseBriefing.EventType.XwaMoveIcon || _events[i, 1] == (int)BaseBriefing.EventType.XwaRotateIcon)
+			if (_events[i].IsFGTag || _events[i].Type == BaseBriefing.EventType.XwaSetIcon
+				|| _events[i].Type == BaseBriefing.EventType.XwaMoveIcon || _events[i].Type == BaseBriefing.EventType.XwaRotateIcon)
 			{
 				onModified?.Invoke("ChangeFG", new EventArgs());
-				_events[i, 2] = (short)cboFG.SelectedIndex;
+				_events[i].Variables[0] = (short)cboFG.SelectedIndex;
 			}
-			else if (_events[i, 1] == (int)BaseBriefing.EventType.XwaShipInfo)
+			else if (_events[i].Type == BaseBriefing.EventType.XwaShipInfo)
 			{
 				onModified?.Invoke("ChangeFG", new EventArgs());
-				_events[i, 3] = (short)cboFG.SelectedIndex;
+				_events[i].Variables[1] = (short)cboFG.SelectedIndex;
 			}
 			updateList(i);
 		}
@@ -3177,10 +3152,10 @@ namespace Idmr.Yogeme
 			int i = lstEvents.SelectedIndex;
 			if (i == -1 || _loading) return;
 
-			if (_events[i, 1] == (int)BaseBriefing.EventType.XwaSetIcon)
+			if (_events[i].Type == BaseBriefing.EventType.XwaSetIcon)
 			{
 				onModified?.Invoke("ChangeIFF", new EventArgs());
-				_events[i, 4] = (short)cboIFF.SelectedIndex;
+				_events[i].Variables[2] = (short)cboIFF.SelectedIndex;
 			}
 			updateList(i);
 		}
@@ -3189,10 +3164,10 @@ namespace Idmr.Yogeme
 			int i = lstEvents.SelectedIndex;
 			if (i == -1 || _loading) return;
 
-			if (_events[i, 1] == (int)BaseBriefing.EventType.XwaRotateIcon)
+			if (_events[i].Type == BaseBriefing.EventType.XwaRotateIcon)
 			{
 				onModified?.Invoke("RotateIcon", new EventArgs());
-				_events[i, 3] = (short)cboRotate.SelectedIndex;
+				_events[i].Variables[1] = (short)cboRotate.SelectedIndex;
 			}
 			updateList(i);
 		}
@@ -3201,10 +3176,10 @@ namespace Idmr.Yogeme
 			int i = lstEvents.SelectedIndex;
 			if (i == -1 || _loading) return;
 
-			if (_events[i, 1] == (int)BaseBriefing.EventType.TitleText || _events[i, 1] == (int)BaseBriefing.EventType.CaptionText)
+			if (_events[i].Type == BaseBriefing.EventType.TitleText || _events[i].Type == BaseBriefing.EventType.CaptionText)
 			{
 				onModified?.Invoke("ChangeString", new EventArgs());
-				_events[i, 2] = (short)cboString.SelectedIndex;
+				_events[i].Variables[0] = (short)cboString.SelectedIndex;
 			}
 			updateList(i);
 		}
@@ -3213,10 +3188,10 @@ namespace Idmr.Yogeme
 			int i = lstEvents.SelectedIndex;
 			if (i == -1 || _loading) return;
 
-			if (_events[i, 1] >= (int)BaseBriefing.EventType.TextTag1 && _events[i, 1] <= (int)BaseBriefing.EventType.TextTag8)
+			if (_events[i].IsTextTag)
 			{
 				onModified?.Invoke("ChangeTag", new EventArgs());
-				_events[i, 2] = (short)cboTag.SelectedIndex;
+				_events[i].Variables[0] = (short)cboTag.SelectedIndex;
 			}
 			updateList(i);
 		}
@@ -3229,9 +3204,9 @@ namespace Idmr.Yogeme
 			lstEvents.Items.RemoveAt(i);
 			for (int j = i; j < _maxEvents - 1; j++)
 			{
-				if (_events[j, 1] == 0) break;
+				if (_events[j].Type == BaseBriefing.EventType.None) break;
 
-				for (int h = 0; h < 6; h++) _events[j, h] = _events[j + 1, h];
+				_events[j] = _events[j + 1].Clone();
 			}
 			onModified?.Invoke("EventDelete", new EventArgs());
 			try { lstEvents.SelectedIndex = i; }
@@ -3242,10 +3217,9 @@ namespace Idmr.Yogeme
 			int i = lstEvents.SelectedIndex;
 			if (i == lstEvents.Items.Count - 1 || i == -1) return;
 
-			short[] t = new short[6];
-			for (int j = 0; j < 6; j++) t[j] = _events[i + 1, j];
-			for (int j = 0; j < 6; j++) _events[i + 1, j] = _events[i, j];
-			for (int j = 0; j < 6; j++) _events[i, j] = t[j];
+			var t = _events[i + 1].Clone();
+			_events[i + 1] = _events[i].Clone();
+			_events[i] = t;
 			string item = lstEvents.Items[i].ToString();
 			lstEvents.Items[i] = lstEvents.Items[i + 1];
 			lstEvents.Items[i + 1] = item;
@@ -3278,10 +3252,9 @@ namespace Idmr.Yogeme
 			int i = lstEvents.SelectedIndex;
 			if (i == -1) return;
 
-			short[] t = new short[6];
-			for (int j = 0; j < 6; j++) t[j] = _events[i - 1, j];
-			for (int j = 0; j < 6; j++) _events[i - 1, j] = _events[i, j];
-			for (int j = 0; j < 6; j++) _events[i, j] = t[j];
+			var t = _events[i - 1].Clone();
+			_events[i - 1] = _events[i].Clone();
+			_events[i] = t;
 			string item = lstEvents.Items[i].ToString();
 			lstEvents.Items[i] = lstEvents.Items[i - 1];
 			lstEvents.Items[i - 1] = item;
@@ -3295,13 +3268,13 @@ namespace Idmr.Yogeme
 			if (i == -1 || _loading) return;
 
 			_loading = true;
-			numTime.Value = _events[i, 0];
-			cboEvent.SelectedIndex = convertEventToCboEventIndex(_events[i, 1]);
+			numTime.Value = _events[i].Time;
+			cboEvent.SelectedIndex = convertEventToCboEventIndex((short)_events[i].Type);
 			_loading = false;
 			updateParameters();
-			try { cmdUp.Enabled = (_events[i - 1, 0] == _events[i, 0]); }
+			try { cmdUp.Enabled = (_events[i - 1].Time == _events[i].Time); }
 			catch { cmdUp.Enabled = false; }
-			try { cmdDown.Enabled = (_events[i + 1, 0] == _events[i, 0]); }
+			try { cmdDown.Enabled = (_events[i + 1].Time == _events[i].Time); }
 			catch { cmdDown.Enabled = false; }
 		}
 
@@ -3310,10 +3283,10 @@ namespace Idmr.Yogeme
 			int i = lstEvents.SelectedIndex;
 			if (i == -1 || _loading) return;
 
-			if (_events[i, 1] == (int)BaseBriefing.EventType.XwaChangeRegion)
+			if (_events[i].Type == BaseBriefing.EventType.XwaChangeRegion)
 			{
 				onModified?.Invoke("ChangeRegion", new EventArgs());
-				_events[i, 2] = (short)(numRegion.Value - 1);
+				_events[i].Variables[0] = (short)(numRegion.Value - 1);
 			}
 			updateList(i);
 		}
@@ -3326,15 +3299,15 @@ namespace Idmr.Yogeme
 
 			_loading = true;
 			onModified?.Invoke("ChangeTime", new EventArgs());
-			short diff = (short)(numTime.Value - _events[index, 0]);
-			_events[index, 0] = (short)numTime.Value;
+			short diff = (short)(numTime.Value - _events[index].Time);
+			_events[index].Time = (short)numTime.Value;
 
 			if (chkShift.Checked)
 			{
 				updateList(index);
 				for (int i = index + 1; i < lstEvents.Items.Count; i++)
 				{
-					_events[i, 0] += diff;
+					_events[i].Time += diff;
 					updateList(i);
 				}
 			}
@@ -3343,19 +3316,19 @@ namespace Idmr.Yogeme
 				int p = index;
 				if (diff > 0)  //Positive change, moving down in the list
 				{
-					if (index < size - 1 && _events[index, 0] != _events[index + 1, 0])
+					if (index < size - 1 && _events[index].Time != _events[index + 1].Time)
 					{
 						p = index + 1;
-						while (p < size && _events[p, 0] < _events[index, 0]) p++;  //Search until a greater time index is found
+						while (p < size && _events[p].Time< _events[index].Time) p++;  //Search until a greater time index is found
 						p--;  //If found, insert before.  If not found (p=size) adjusts to last slot in array.
 					}
 				}
 				else if (diff < 0)  //Negative change, moving up in the list
 				{
-					if (index > 0 && _events[index, 0] != _events[index - 1, 0])
+					if (index > 0 && _events[index].Time != _events[index - 1].Time)
 					{
 						p = index - 1;
-						while (p >= 0 && _events[p, 0] > _events[index, 0]) p--;   //Search until a lesser time index is found
+						while (p >= 0 && _events[p].Time > _events[index].Time) p--;   //Search until a lesser time index is found
 						p++;  //If found, insert after.  If not found (p=-1) adjusts to first slot in array.
 					}
 				}
@@ -3370,9 +3343,9 @@ namespace Idmr.Yogeme
 			}
 
 			_loading = false;
-			try { cmdUp.Enabled = (_events[index - 1, 0] == _events[index, 0]); }
+			try { cmdUp.Enabled = (_events[index - 1].Time == _events[index].Time); }
 			catch { cmdUp.Enabled = false; }
-			try { cmdDown.Enabled = (_events[index + 1, 0] == _events[index, 0]); }
+			try { cmdDown.Enabled = (_events[index + 1].Time == _events[index].Time); }
 			catch { cmdDown.Enabled = false; }
 		}
 		void numX_ValueChanged(object sender, EventArgs e)
@@ -3380,16 +3353,15 @@ namespace Idmr.Yogeme
 			int i = lstEvents.SelectedIndex;
 			if (i == -1 || _loading) return;
 
-			if (_events[i, 1] == (int)BaseBriefing.EventType.MoveMap || _events[i, 1] == (int)BaseBriefing.EventType.ZoomMap)
+			if (_events[i].Type == BaseBriefing.EventType.MoveMap || _events[i].Type == BaseBriefing.EventType.ZoomMap)
 			{
 				onModified?.Invoke("ChangeX", new EventArgs());
-				_events[i, 2] = (short)numX.Value;
+				_events[i].Variables[0] = (short)numX.Value;
 			}
-			else if ((_events[i, 1] >= (int)BaseBriefing.EventType.TextTag1 && _events[i, 1] <= (int)BaseBriefing.EventType.TextTag8)
-				|| _events[i, 1] == (int)BaseBriefing.EventType.XwaMoveIcon)
+			else if (_events[i].IsTextTag || _events[i].Type == BaseBriefing.EventType.XwaMoveIcon)
 			{
 				onModified?.Invoke("ChangeX", new EventArgs());
-				_events[i, 3] = (short)numX.Value;
+				_events[i].Variables[1] = (short)numX.Value;
 			}
 			updateList(i);
 		}
@@ -3398,16 +3370,15 @@ namespace Idmr.Yogeme
 			int i = lstEvents.SelectedIndex;
 			if (i == -1 || _loading) return;
 
-			if (_events[i, 1] == (int)BaseBriefing.EventType.MoveMap || _events[i, 1] == (int)BaseBriefing.EventType.ZoomMap)
+			if (_events[i].Type == BaseBriefing.EventType.MoveMap || _events[i].Type == BaseBriefing.EventType.ZoomMap)
 			{
 				onModified?.Invoke("ChangeY", new EventArgs());
-				_events[i, 3] = (short)numY.Value;
+				_events[i].Variables[1] = (short)numY.Value;
 			}
-			else if ((_events[i, 1] >= (int)BaseBriefing.EventType.TextTag1 && _events[i, 1] <= (int)BaseBriefing.EventType.TextTag8)
-				|| _events[i, 1] == (int)BaseBriefing.EventType.XwaMoveIcon)
+			else if (_events[i].IsTextTag || _events[i].Type == BaseBriefing.EventType.XwaMoveIcon)
 			{
 				onModified?.Invoke("ChangeY", new EventArgs());
-				_events[i, 4] = (short)numY.Value;
+				_events[i].Variables[2] = (short)numY.Value;
 			}
 			updateList(i);
 		}
@@ -3417,10 +3388,10 @@ namespace Idmr.Yogeme
 			int i = lstEvents.SelectedIndex;
 			if (i == -1 || _loading) return;
 
-			if (_events[i, 1] == (int)BaseBriefing.EventType.XwaShipInfo)
+			if (_events[i].Type == BaseBriefing.EventType.XwaShipInfo)
 			{
 				onModified?.Invoke("ToggleInfo", new EventArgs());
-				_events[i, 2] = (short)(optOn.Checked ? 1 : 0);
+				_events[i].Variables[0] = (short)(optOn.Checked ? 1 : 0);
 			}
 			updateList(i);
 		}
@@ -3438,11 +3409,11 @@ namespace Idmr.Yogeme
 			{
 				_xvtBriefing = _xvtBriefingCollection[briefIndex];
 				//These select lines copied from the constructor to re-load and re-init particular data sets and controls.
-				_events = new short[_maxEvents, 6];
+				_events = new BaseBriefing.Event[_maxEvents];
 				_tags = _xvtBriefing.BriefingTag;
 				_strings = _xvtBriefing.BriefingString;
 				importStrings();
-				txtLength.Text = Convert.ToString(Math.Round(((decimal)_xvtBriefing.Length / _timerInterval), 2));
+				txtLength.Text = Convert.ToString(Math.Round((decimal)_xvtBriefing.Length / _timerInterval, 2));
 				lstEvents.Items.Clear();
 				importEvents(_xvtBriefing.Events);
 				numTile.Value = _xvtBriefing.Tile;
@@ -3455,11 +3426,11 @@ namespace Idmr.Yogeme
 			{
 				_xwaBriefing = _xwaBriefingCollection[briefIndex];
 				//These select lines copied from the constructor to re-load and re-init particular data sets and controls.
-				_events = new short[_maxEvents, 6];
+				_events = new BaseBriefing.Event[_maxEvents];
 				_tags = _xwaBriefing.BriefingTag;
 				_strings = _xwaBriefing.BriefingString;
 				importStrings();
-				txtLength.Text = Convert.ToString(Math.Round(((decimal)_xwaBriefing.Length / _timerInterval), 2));
+				txtLength.Text = Convert.ToString(Math.Round((decimal)_xwaBriefing.Length / _timerInterval, 2));
 				lstEvents.Items.Clear();
 				importEvents(_xwaBriefing.Events);
 				numTile.Value = _xwaBriefing.Tile;
