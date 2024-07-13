@@ -99,7 +99,7 @@ namespace Idmr.Yogeme
 		readonly Color _normalColor;
 		//readonly Color _highlightColor; // TODO: this is currently unused, maybe at some point work highlighting in
 		readonly Color _titleColor;
-		BaseBriefing.Event[] _events;   // this will contain the event listing for use, raw data is in Briefing.Events[]
+		BaseBriefing.EventCollection _events;   // this will contain the event listing for use, raw data is in Briefing.Events[]
 		short _zoomX = 48;
 		short _zoomY;
 		short _mapX, _mapY; // mapX and mapY will be different, namely the grid coordinates of the center, like how TIE handles it
@@ -176,7 +176,7 @@ namespace Idmr.Yogeme
 			_zoomY = _zoomX;            // in most cases, these will remain the same
 			_tieBriefing = briefing;
 			_maxEvents = Platform.Tie.Briefing.EventQuantityLimit;
-			_events = new BaseBriefing.Event[_maxEvents];
+			_events = new BaseBriefing.EventCollection(MissionFile.Platform.TIE);
 			InitializeComponent();
 			Text = "YOGEME Briefing Editor - TIE";
 			#region layout edit
@@ -296,7 +296,7 @@ namespace Idmr.Yogeme
 			_currentCollectionIndex = 0;
 			_xvtBriefing = briefing[0];
 			_maxEvents = Platform.Xvt.Briefing.EventQuantityLimit;
-			_events = new BaseBriefing.Event[_maxEvents];
+			_events = new BaseBriefing.EventCollection(MissionFile.Platform.XvT);
 			InitializeComponent();
 			Text = "YOGEME Briefing Editor - XvT/BoP";
 			Import(fg);
@@ -417,7 +417,7 @@ namespace Idmr.Yogeme
 			_currentCollectionIndex = 0;
 			_xwaBriefing = briefing[0];
 			_maxEvents = Platform.Xwa.Briefing.EventQuantityLimit;
-			_events = new BaseBriefing.Event[_maxEvents];
+			_events = new BaseBriefing.EventCollection(MissionFile.Platform.XWA);
 			InitializeComponent();
 			Text = "YOGEME Briefing Editor - XWA";
 			#region XWA layout change
@@ -632,8 +632,8 @@ namespace Idmr.Yogeme
 			{
 				try
 				{
-					_events[i] = rawEvents[i].Clone();
-					if (_events[i].Type == BaseBriefing.EventType.None || _events[i].Type == BaseBriefing.EventType.EndBriefing) break;
+					_events.Add(rawEvents[i].Clone());
+					if (_events[i].IsEndEvent) break;
 
 					if (_platform == Settings.Platform.XWA && _events[i].Type == BaseBriefing.EventType.XwaMoveIcon && _briefData[_events[i].Variables[0]].Waypoint != null && _briefData[_events[i].Variables[0]].Waypoint[0] == 0 && _briefData[_events[i].Variables[0]].Waypoint[1] == 0)
 					{   // this prevents Exception if Move instruction is before NewIcon, and only assigns initial position
@@ -698,7 +698,7 @@ namespace Idmr.Yogeme
 			_baseBrf.Events.Clear();
 			for (int evnt = 0; evnt < _maxEvents; evnt++)
 			{
-				if (_events[evnt].Type == BaseBriefing.EventType.None || _events[evnt].Type == BaseBriefing.EventType.EndBriefing) break;
+				if (_events[evnt].IsEndEvent) break;
 
 				_baseBrf.Events.Add(_events[evnt].Clone());
 			}
@@ -821,7 +821,7 @@ namespace Idmr.Yogeme
 				stopTimer();
 				for (int i = 0; i < _maxEvents; i++)
 				{
-					if (_events[i].Time > hsbTimer.Value || _events[i].Type == BaseBriefing.EventType.None || _events[i].Type == BaseBriefing.EventType.EndBriefing) break;
+					if (_events[i].Time > hsbTimer.Value || _events[i].IsEndEvent) break;
 					paint |= processEvent(i, true);
 				}
 			}
@@ -840,7 +840,7 @@ namespace Idmr.Yogeme
 			{
 				if (_events[i].Time < hsbTimer.Value) continue;
 
-				if (_events[i].Time > hsbTimer.Value || _events[i].Type == BaseBriefing.EventType.None || _events[i].Type == BaseBriefing.EventType.EndBriefing) break;
+				if (_events[i].Time > hsbTimer.Value || _events[i].IsEndEvent) break;
 				paint |= processEvent(i, false);
 			}
 			for (int h = 0; h < 8; h++) if (hsbTimer.Value - _fgTags[h].StartTime < 13) paint = true;
@@ -2014,7 +2014,7 @@ namespace Idmr.Yogeme
                     if (i < 10000) { break; }  // no further action, existing found
 
                     i -= 10000;
-                    try
+                    /*try
                     {
                         lstEvents.SelectedIndex = i;    // this will throw for last event
                         insertEvent();
@@ -2028,16 +2028,15 @@ namespace Idmr.Yogeme
 
                             _events[n] = _events[n - 1].Clone();
                         }
-                    }
-                    _events[i].Time = (short)hsbTimer.Value;
-                    _events[i].Type = _eventType;
+                    }*/
+					_events.Insert(i, new BaseBriefing.Event(_eventType) { Time = (short)hsbTimer.Value });
                     break;
 				case BaseBriefing.EventType.PageBreak:
 					i = findExisting(_eventType);
 					if (i < 10000) { break; }
 
 					i -= 10000;
-					try
+					/*try
 					{
 						lstEvents.SelectedIndex = i;
 						insertEvent();
@@ -2051,9 +2050,8 @@ namespace Idmr.Yogeme
 
 							_events[n] = _events[n - 1].Clone();
 						}
-					}
-					_events[i].Time = (short)hsbTimer.Value;
-					_events[i].Type = _eventType;
+					}*/
+					_events.Insert(i, new BaseBriefing.Event(_eventType) { Time = (short)hsbTimer.Value });
 					if (_platform == Settings.Platform.TIE) lblTitle.Text = "";
 					lblCaption.Text = "";
 					break;
@@ -2062,7 +2060,7 @@ namespace Idmr.Yogeme
 					if (i >= 10000)
 					{
 						i -= 10000; // if one wasn't found, remove marker, create it.
-						try
+						/*try
 						{
 							lstEvents.SelectedIndex = i;
 							insertEvent();
@@ -2076,10 +2074,9 @@ namespace Idmr.Yogeme
 
 								_events[n] = _events[n - 1].Clone();
 							}
-						}
+						}*/
+						_events.Insert(i, new BaseBriefing.Event(_eventType) { Time = (short)hsbTimer.Value });
 					}
-					_events[i].Time = (short)hsbTimer.Value;
-					_events[i].Type = _eventType;
 					_events[i].Variables[0] = (short)cboText.SelectedIndex;
 					if (_strings[_events[i].Variables[0]].StartsWith(">"))
 					{
@@ -2099,7 +2096,7 @@ namespace Idmr.Yogeme
 					if (i >= 10000)
 					{
 						i -= 10000;
-						try
+						/*try
 						{
 							lstEvents.SelectedIndex = i;
 							insertEvent();
@@ -2113,10 +2110,9 @@ namespace Idmr.Yogeme
 
 								_events[n] = _events[n - 1].Clone();
 							}
-						}
+						}*/
+						_events.Insert(i, new BaseBriefing.Event(_eventType) { Time = (short)hsbTimer.Value });
 					}
-					_events[i].Time = (short)hsbTimer.Value;
-					_events[i].Type = _eventType;
 					_events[i].Variables[0] = (short)cboText.SelectedIndex;
 					if (_strings[_events[i].Variables[0]].StartsWith(">"))
 					{
@@ -2136,7 +2132,7 @@ namespace Idmr.Yogeme
 					if (i >= 10000)
 					{
 						i -= 10000;
-						try
+						/*try
 						{
 							lstEvents.SelectedIndex = i;
 							insertEvent();
@@ -2150,10 +2146,9 @@ namespace Idmr.Yogeme
 
 								_events[n] = _events[n - 1].Clone();
 							}
-						}
+						}*/
+						_events.Insert(i, new BaseBriefing.Event(_eventType) { Time = (short)hsbTimer.Value });
 					}
-					_events[i].Time = (short)hsbTimer.Value;
-					_events[i].Type = _eventType;
 					_events[i].Variables[0] = _mapX;
 					_events[i].Variables[1] = _mapY;
 					// don't need to repaint, done while adjusting values
@@ -2163,7 +2158,7 @@ namespace Idmr.Yogeme
 					if (i >= 10000)
 					{
 						i -= 10000;
-						try
+						/*try
 						{
 							lstEvents.SelectedIndex = i;
 							insertEvent();
@@ -2177,10 +2172,9 @@ namespace Idmr.Yogeme
 
 								_events[n] = _events[n - 1].Clone();
 							}
-						}
+						}*/
+						_events.Insert(i, new BaseBriefing.Event(_eventType) { Time = (short)hsbTimer.Value });
 					}
-					_events[i].Time = (short)hsbTimer.Value;
-					_events[i].Type = _eventType;
 					_events[i].Variables[0] = _zoomX;
 					_events[i].Variables[1] = _zoomY;
 					// don't need to repaint, done while adjusting values
@@ -2190,7 +2184,7 @@ namespace Idmr.Yogeme
 					if (i < 10000) break;
 
 					i -= 10000;
-					try
+					/*try
 					{
 						lstEvents.SelectedIndex = i;
 						insertEvent();
@@ -2204,9 +2198,8 @@ namespace Idmr.Yogeme
 
 							_events[n] = _events[n - 1].Clone();
 						}
-					}
-					_events[i].Time = (short)hsbTimer.Value;
-					_events[i].Type = _eventType;
+					}*/
+					_events.Insert(i, new BaseBriefing.Event(_eventType) { Time = (short)hsbTimer.Value });
 					for (int n = 0; n < 8; n++)
 					{
 						_fgTags[n].Slot = -1;
@@ -2219,7 +2212,7 @@ namespace Idmr.Yogeme
 					if (i >= 10000)
 					{
 						i -= 10000;
-						try
+						/*try
 						{
 							lstEvents.SelectedIndex = i;
 							insertEvent();
@@ -2233,10 +2226,9 @@ namespace Idmr.Yogeme
 
 								_events[n] = _events[n - 1].Clone();
 							}
-						}
+						}*/
+						_events.Insert(i, new BaseBriefing.Event(_eventType) { Time = (short)hsbTimer.Value });
 					}
-					_events[i].Time = (short)hsbTimer.Value;
-					_events[i].Type = _eventType;
 					_events[i].Variables[0] = (short)cboFGTag.SelectedIndex;
 					_fgTags[(int)_eventType - 9].Slot = _events[i].Variables[0];
 					_fgTags[(int)_eventType - 9].StartTime = _events[i].Time;
@@ -2247,7 +2239,7 @@ namespace Idmr.Yogeme
 					if (i < 10000) break;
 
 					i -= 10000;
-					try
+					/*try
 					{
 						lstEvents.SelectedIndex = i;
 						insertEvent();
@@ -2261,9 +2253,8 @@ namespace Idmr.Yogeme
 
 							_events[n] = _events[n - 1].Clone();
 						}
-					}
-					_events[i].Time = (short)hsbTimer.Value;
-					_events[i].Type = _eventType;
+					}*/
+					_events.Insert(i, new BaseBriefing.Event(_eventType) { Time = (short)hsbTimer.Value });
 					for (int n = 0; n < 8; n++)
 					{
 						_textTags[n].StringIndex = -1;
@@ -2283,7 +2274,7 @@ namespace Idmr.Yogeme
 							break;
 						}
 						i -= 10000;
-						try
+						/*try
 						{
 							lstEvents.SelectedIndex = i;
 							insertEvent();
@@ -2297,7 +2288,8 @@ namespace Idmr.Yogeme
 
 								_events[n] = _events[n - 1].Clone();
 							}
-						}
+						}*/
+						_events.Insert(i, new BaseBriefing.Event(_eventType) { Time = (short)hsbTimer.Value });
 					}
 					else
 					{
@@ -2308,8 +2300,6 @@ namespace Idmr.Yogeme
 							_tempY = _events[i].Variables[2];
 						}
 					}
-					_events[i].Time = (short)hsbTimer.Value;
-					_events[i].Type = _eventType;
 					_events[i].Variables[0] = (short)cboTextTag.SelectedIndex;
 					_events[i].Variables[1] = _tempX;
 					_events[i].Variables[2] = _tempY;
@@ -2325,7 +2315,7 @@ namespace Idmr.Yogeme
 					}
 
 					i = findNext();
-					try
+					/*try
 					{
 						lstEvents.SelectedIndex = i;
 						insertEvent();
@@ -2339,9 +2329,8 @@ namespace Idmr.Yogeme
 
 							_events[n] = _events[n - 1].Clone();
 						}
-					}
-					_events[i].Time = (short)hsbTimer.Value;
-					_events[i].Type = _eventType;
+					}*/
+					_events.Insert(i, new BaseBriefing.Event(_eventType) { Time = (short)hsbTimer.Value });
 					_events[i].Variables[0] = _icon;
 					_events[i].Variables[1] = (short)cboNCraft.SelectedIndex;
 					_events[i].Variables[2] = (short)cboIconIff.SelectedIndex;
@@ -2351,7 +2340,7 @@ namespace Idmr.Yogeme
 					if (cboNCraft.SelectedIndex != 0)
 					{
 						i = findNext();
-						try
+						/*try
 						{
 							lstEvents.SelectedIndex = i;
 							insertEvent();
@@ -2365,9 +2354,8 @@ namespace Idmr.Yogeme
 
 								_events[n] = _events[n - 1].Clone();
 							}
-						}
-						_events[i].Time = (short)hsbTimer.Value;
-						_events[i].Type = BaseBriefing.EventType.XwaMoveIcon;
+						}*/
+						_events.Insert(i, new BaseBriefing.Event(_eventType) { Time = (short)hsbTimer.Value });
 						_events[i].Variables[0] = _icon;
 						_events[i].Variables[1] = _tempX;
 						_events[i].Variables[2] = _tempY;
@@ -2379,7 +2367,7 @@ namespace Idmr.Yogeme
 					if (i >= 10000)
 					{
 						i -= 10000;
-						try
+						/*try
 						{
 							lstEvents.SelectedIndex = i;
 							insertEvent();
@@ -2393,10 +2381,9 @@ namespace Idmr.Yogeme
 
 								_events[n] = _events[n - 1].Clone();
 							}
-						}
+						}*/
+						_events.Insert(i, new BaseBriefing.Event(_eventType) { Time = (short)hsbTimer.Value });
 					}
-					_events[i].Time = (short)hsbTimer.Value;
-					_events[i].Type = _eventType;
 					_events[i].Variables[0] = (short)(optInfoOn.Checked ? 1 : 0);
 					_events[i].Variables[1] = (short)cboInfoCraft.SelectedIndex;
 					break;
@@ -2411,7 +2398,7 @@ namespace Idmr.Yogeme
 					if (numMoveTime.Value == 0)
 					{
 						i = findNext();
-						try
+						/*try
 						{
 							lstEvents.SelectedIndex = i;
 							insertEvent();
@@ -2425,9 +2412,8 @@ namespace Idmr.Yogeme
 
 								_events[n] = _events[n - 1].Clone();
 							}
-						}
-						_events[i].Time = (short)hsbTimer.Value;
-						_events[i].Type = _eventType;
+						}*/
+						_events.Insert(i, new BaseBriefing.Event(_eventType) { Time = (short)hsbTimer.Value });
 						_events[i].Variables[0] = _icon;
 						_events[i].Variables[1] = _briefData[_icon].Waypoint[0];
 						_events[i].Variables[2] = _briefData[_icon].Waypoint[1];
@@ -2447,7 +2433,7 @@ namespace Idmr.Yogeme
                         for (int j = 0; j <= total; j++)
 						{
 							i = findNext(j + t0);
-							try
+							/*try
 							{
 								lstEvents.SelectedIndex = i;
 								insertEvent();
@@ -2461,9 +2447,8 @@ namespace Idmr.Yogeme
 
 									_events[n] = _events[n - 1].Clone();
 								}
-							}
-							_events[i].Time = (short)(j + t0);
-							_events[i].Type = _eventType;
+							}*/
+							_events.Insert(i, new BaseBriefing.Event(_eventType) { Time = (short)(j + t0) });
 							_events[i].Variables[0] = _icon;
 							_events[i].Variables[1] = (short)((x - _tempX) * j / total + _tempX);
 							_events[i].Variables[2] = (short)((y - _tempY) * j / total + _tempY);
@@ -2474,7 +2459,7 @@ namespace Idmr.Yogeme
 					break;
 				case BaseBriefing.EventType.XwaRotateIcon:
 					i = findNext();
-					try
+					/*try
 					{
 						lstEvents.SelectedIndex = i;
 						insertEvent();
@@ -2488,9 +2473,8 @@ namespace Idmr.Yogeme
 
 							_events[n] = _events[n - 1].Clone();
 						}
-					}
-					_events[i].Time = (short)hsbTimer.Value;
-					_events[i].Type = _eventType;
+					}*/
+					_events.Insert(i, new BaseBriefing.Event(_eventType) { Time = (short)hsbTimer.Value });
 					_events[i].Variables[0] = _icon;
 					_events[i].Variables[1] = (short)cboRotateAmount.SelectedIndex;
 					break;
@@ -2499,7 +2483,7 @@ namespace Idmr.Yogeme
 					if (i >= 10000)
 					{
 						i -= 10000;
-						try
+						/*try
 						{
 							lstEvents.SelectedIndex = i;
 							insertEvent();
@@ -2513,10 +2497,9 @@ namespace Idmr.Yogeme
 
 								_events[n] = _events[n - 1].Clone();
 							}
-						}
+						}*/
+						_events.Insert(i, new BaseBriefing.Event(_eventType) { Time = (short)hsbTimer.Value });
 					}
-					_events[i].Time = (short)hsbTimer.Value;
-					_events[i].Type = _eventType;
 					_events[i].Variables[0] = (short)(numNewRegion.Value - 1);
 					break;
 				default:    // this shouldn't be possible
@@ -2644,7 +2627,7 @@ namespace Idmr.Yogeme
 			int time = hsbTimer.Value;
 			for (int i = 0; i < _maxEvents; i++)
 			{
-				if (_events[i].Type == BaseBriefing.EventType.None || _events[i].Type == BaseBriefing.EventType.EndBriefing)
+				if (_events[i].IsEndEvent)
 				{
 					hsbTimer.Value = 1;
 					hsbTimer.Value = 0;
@@ -2906,15 +2889,15 @@ namespace Idmr.Yogeme
 			int i = lstEvents.SelectedIndex;
 			if (i == -1) i = 0;
 			lstEvents.Items.Insert(i, "");
-			for (int j = _maxEvents - 1; j > i; j--)
+			/*for (int j = _maxEvents - 1; j > i; j--)
 			{
 				if (_events[j - 1].Type == BaseBriefing.EventType.None) continue;
 
 				_events[j] = _events[j - 1].Clone();
 			}
 			_events[i].Time = _events[i + 1].Time;
-			if (_events[i].Time == 9999) _events[i].Time = 0;
-			_events[i].Type = BaseBriefing.EventType.PageBreak;
+			if (_events[i].Time == 9999) _events[i].Time = 0;*/
+			_events.Insert(i, new BaseBriefing.Event(BaseBriefing.EventType.PageBreak));
 			lstEvents.SelectedIndex = i;
 			onModified?.Invoke("EventAdd", new EventArgs());
 		}
@@ -3202,12 +3185,7 @@ namespace Idmr.Yogeme
 			if (i == -1) return;
 
 			lstEvents.Items.RemoveAt(i);
-			for (int j = i; j < _maxEvents - 1; j++)
-			{
-				if (_events[j].Type == BaseBriefing.EventType.None) break;
-
-				_events[j] = _events[j + 1].Clone();
-			}
+			_events.RemoveAt(i);
 			onModified?.Invoke("EventDelete", new EventArgs());
 			try { lstEvents.SelectedIndex = i; }
 			catch { lstEvents.SelectedIndex = i - 1; }
@@ -3233,7 +3211,7 @@ namespace Idmr.Yogeme
 				MessageBox.Show("Event list is full, cannot add more.", "Error");
 				return;
 			}
-
+			// TODO: this can be retooled as addEvent()
 			insertEvent();
 			//[JB] Changed to insert after current element.  insertEvents() inserts before, and can't be modified without breaking all the other places that use it.
 			//Instead: insert before, then swap.
@@ -3409,7 +3387,7 @@ namespace Idmr.Yogeme
 			{
 				_xvtBriefing = _xvtBriefingCollection[briefIndex];
 				//These select lines copied from the constructor to re-load and re-init particular data sets and controls.
-				_events = new BaseBriefing.Event[_maxEvents];
+				_events.Clear();
 				_tags = _xvtBriefing.BriefingTag;
 				_strings = _xvtBriefing.BriefingString;
 				importStrings();
@@ -3426,7 +3404,7 @@ namespace Idmr.Yogeme
 			{
 				_xwaBriefing = _xwaBriefingCollection[briefIndex];
 				//These select lines copied from the constructor to re-load and re-init particular data sets and controls.
-				_events = new BaseBriefing.Event[_maxEvents];
+				_events.Clear();
 				_tags = _xwaBriefing.BriefingTag;
 				_strings = _xwaBriefing.BriefingString;
 				importStrings();
