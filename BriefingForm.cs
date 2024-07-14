@@ -99,7 +99,7 @@ namespace Idmr.Yogeme
 		readonly Color _normalColor;
 		//readonly Color _highlightColor; // TODO: this is currently unused, maybe at some point work highlighting in
 		readonly Color _titleColor;
-		BaseBriefing.EventCollection _events;   // this will contain the event listing for use, raw data is in Briefing.Events[]
+		readonly BaseBriefing.EventCollection _events;   // this will contain the event listing for use, raw data is in Briefing.Events[]
 		short _zoomX = 48;
 		short _zoomY;
 		short _mapX, _mapY; // mapX and mapY will be different, namely the grid coordinates of the center, like how TIE handles it
@@ -1997,7 +1997,6 @@ namespace Idmr.Yogeme
 		}
 		void cmdOk_Click(object sender, EventArgs e)
 		{
-			// TODO: see if this could be refactored
 			if (!hasAvailableEventSpace(2 + BaseBriefing.EventParameters.GetCount(_eventType)))
 			{
 				MessageBox.Show("Event list is full, cannot add more.", "Error");
@@ -2013,70 +2012,19 @@ namespace Idmr.Yogeme
                     i = findExisting(_eventType);
                     if (i < 10000) { break; }  // no further action, existing found
 
-                    i -= 10000;
-                    /*try
-                    {
-                        lstEvents.SelectedIndex = i;    // this will throw for last event
-                        insertEvent();
-                    }
-                    catch (ArgumentOutOfRangeException)
-                    {
-                        lstEvents.Items.Add("");
-                        for (int n = i + 2; n > i; n--)
-                        {
-                            if (_events[n - 1].Type == BaseBriefing.EventType.None) continue;
-
-                            _events[n] = _events[n - 1].Clone();
-                        }
-                    }*/
-					_events.Insert(i, new BaseBriefing.Event(_eventType) { Time = (short)hsbTimer.Value });
-                    break;
+					i = _events.Insert(i - 10000, new BaseBriefing.Event(_eventType) { Time = (short)hsbTimer.Value });
+					break;
 				case BaseBriefing.EventType.PageBreak:
 					i = findExisting(_eventType);
 					if (i < 10000) { break; }
 
-					i -= 10000;
-					/*try
-					{
-						lstEvents.SelectedIndex = i;
-						insertEvent();
-					}
-					catch (ArgumentOutOfRangeException)
-					{
-						lstEvents.Items.Add("");
-						for (int n = i + 2; n > i; n--)
-						{
-							if (_events[n - 1].Type == BaseBriefing.EventType.None) continue;
-
-							_events[n] = _events[n - 1].Clone();
-						}
-					}*/
-					_events.Insert(i, new BaseBriefing.Event(_eventType) { Time = (short)hsbTimer.Value });
+					i = _events.Insert(i - 10000, new BaseBriefing.Event(_eventType) { Time = (short)hsbTimer.Value });
 					if (_platform == Settings.Platform.TIE) lblTitle.Text = "";
 					lblCaption.Text = "";
 					break;
 				case BaseBriefing.EventType.TitleText:
 					i = findExisting(_eventType);
-					if (i >= 10000)
-					{
-						i -= 10000; // if one wasn't found, remove marker, create it.
-						/*try
-						{
-							lstEvents.SelectedIndex = i;
-							insertEvent();
-						}
-						catch (ArgumentOutOfRangeException)
-						{
-							lstEvents.Items.Add("");
-							for (int n = i + 2; n > i; n--)
-							{
-								if (_events[n - 1].Type == BaseBriefing.EventType.None) continue;
-
-								_events[n] = _events[n - 1].Clone();
-							}
-						}*/
-						_events.Insert(i, new BaseBriefing.Event(_eventType) { Time = (short)hsbTimer.Value });
-					}
+					if (i >= 10000) i = _events.Insert(i - 10000, new BaseBriefing.Event(_eventType) { Time = (short)hsbTimer.Value });
 					_events[i].Variables[0] = (short)cboText.SelectedIndex;
 					if (_strings[_events[i].Variables[0]].StartsWith(">"))
 					{
@@ -2093,26 +2041,7 @@ namespace Idmr.Yogeme
 					break;
 				case BaseBriefing.EventType.CaptionText:
 					i = findExisting(_eventType);
-					if (i >= 10000)
-					{
-						i -= 10000;
-						/*try
-						{
-							lstEvents.SelectedIndex = i;
-							insertEvent();
-						}
-						catch (ArgumentOutOfRangeException)
-						{
-							lstEvents.Items.Add("");
-							for (int n = i + 2; n > i; n--)
-							{
-								if (_events[n - 1].Type == BaseBriefing.EventType.None) continue;
-
-								_events[n] = _events[n - 1].Clone();
-							}
-						}*/
-						_events.Insert(i, new BaseBriefing.Event(_eventType) { Time = (short)hsbTimer.Value });
-					}
+					if (i >= 10000) i = _events.Insert(i - 10000, new BaseBriefing.Event(_eventType) { Time = (short)hsbTimer.Value });
 					_events[i].Variables[0] = (short)cboText.SelectedIndex;
 					if (_strings[_events[i].Variables[0]].StartsWith(">"))
 					{
@@ -2129,52 +2058,14 @@ namespace Idmr.Yogeme
                     break;
 				case BaseBriefing.EventType.MoveMap:
 					i = findExisting(_eventType);
-					if (i >= 10000)
-					{
-						i -= 10000;
-						/*try
-						{
-							lstEvents.SelectedIndex = i;
-							insertEvent();
-						}
-						catch (ArgumentOutOfRangeException)
-						{
-							lstEvents.Items.Add("");
-							for (int n = i + 2; n > i; n--)
-							{
-								if (_events[n - 1].Type == BaseBriefing.EventType.None) continue;
-
-								_events[n] = _events[n - 1].Clone();
-							}
-						}*/
-						_events.Insert(i, new BaseBriefing.Event(_eventType) { Time = (short)hsbTimer.Value });
-					}
+					if (i >= 10000) i = _events.Insert(i - 10000, new BaseBriefing.Event(_eventType) { Time = (short)hsbTimer.Value });
 					_events[i].Variables[0] = _mapX;
 					_events[i].Variables[1] = _mapY;
 					// don't need to repaint, done while adjusting values
 					break;
 				case BaseBriefing.EventType.ZoomMap:
 					i = findExisting(_eventType);
-					if (i >= 10000)
-					{
-						i -= 10000;
-						/*try
-						{
-							lstEvents.SelectedIndex = i;
-							insertEvent();
-						}
-						catch (ArgumentOutOfRangeException)
-						{
-							lstEvents.Items.Add("");
-							for (int n = i + 2; n > i; n--)
-							{
-								if (_events[n - 1].Type == BaseBriefing.EventType.None) continue;
-
-								_events[n] = _events[n - 1].Clone();
-							}
-						}*/
-						_events.Insert(i, new BaseBriefing.Event(_eventType) { Time = (short)hsbTimer.Value });
-					}
+					if (i >= 10000) i = _events.Insert(i - 10000, new BaseBriefing.Event(_eventType) { Time = (short)hsbTimer.Value });
 					_events[i].Variables[0] = _zoomX;
 					_events[i].Variables[1] = _zoomY;
 					// don't need to repaint, done while adjusting values
@@ -2183,23 +2074,7 @@ namespace Idmr.Yogeme
 					i = findExisting(_eventType);
 					if (i < 10000) break;
 
-					i -= 10000;
-					/*try
-					{
-						lstEvents.SelectedIndex = i;
-						insertEvent();
-					}
-					catch (ArgumentOutOfRangeException)
-					{
-						lstEvents.Items.Add("");
-						for (int n = i + 2; n > i; n--)
-						{
-							if (_events[n - 1].Type == BaseBriefing.EventType.None) continue;
-
-							_events[n] = _events[n - 1].Clone();
-						}
-					}*/
-					_events.Insert(i, new BaseBriefing.Event(_eventType) { Time = (short)hsbTimer.Value });
+					i = _events.Insert(i - 10000, new BaseBriefing.Event(_eventType) { Time = (short)hsbTimer.Value });
 					for (int n = 0; n < 8; n++)
 					{
 						_fgTags[n].Slot = -1;
@@ -2209,26 +2084,7 @@ namespace Idmr.Yogeme
 				case BaseBriefing.EventType.FGTag1:
 					_eventType = (BaseBriefing.EventType)((int)_eventType + numFG.Value - 1);
 					i = findExisting(_eventType);
-					if (i >= 10000)
-					{
-						i -= 10000;
-						/*try
-						{
-							lstEvents.SelectedIndex = i;
-							insertEvent();
-						}
-						catch (ArgumentOutOfRangeException)
-						{
-							lstEvents.Items.Add("");
-							for (int n = i + 2; n > i; n--)
-							{
-								if (_events[n - 1].Type == BaseBriefing.EventType.None) continue;
-
-								_events[n] = _events[n - 1].Clone();
-							}
-						}*/
-						_events.Insert(i, new BaseBriefing.Event(_eventType) { Time = (short)hsbTimer.Value });
-					}
+					if (i >= 10000) i = _events.Insert(i - 10000, new BaseBriefing.Event(_eventType) { Time = (short)hsbTimer.Value });
 					_events[i].Variables[0] = (short)cboFGTag.SelectedIndex;
 					_fgTags[(int)_eventType - 9].Slot = _events[i].Variables[0];
 					_fgTags[(int)_eventType - 9].StartTime = _events[i].Time;
@@ -2238,23 +2094,7 @@ namespace Idmr.Yogeme
 					i = findExisting(_eventType);
 					if (i < 10000) break;
 
-					i -= 10000;
-					/*try
-					{
-						lstEvents.SelectedIndex = i;
-						insertEvent();
-					}
-					catch (ArgumentOutOfRangeException)
-					{
-						lstEvents.Items.Add("");
-						for (int n = i + 2; n > i; n--)
-						{
-							if (_events[n - 1].Type == BaseBriefing.EventType.None) continue;
-
-							_events[n] = _events[n - 1].Clone();
-						}
-					}*/
-					_events.Insert(i, new BaseBriefing.Event(_eventType) { Time = (short)hsbTimer.Value });
+					i = _events.Insert(i - 10000, new BaseBriefing.Event(_eventType) { Time = (short)hsbTimer.Value });
 					for (int n = 0; n < 8; n++)
 					{
 						_textTags[n].StringIndex = -1;
@@ -2263,7 +2103,6 @@ namespace Idmr.Yogeme
 					break;
 				case BaseBriefing.EventType.TextTag1:
 					_eventType = (BaseBriefing.EventType)((int)_eventType + numText.Value - 1);
-					// can't use FindExisting, due to extra parameter
 					i = findExisting(_eventType);
 					if (i >= 10000)
 					{
@@ -2273,23 +2112,7 @@ namespace Idmr.Yogeme
 							i = 0;
 							break;
 						}
-						i -= 10000;
-						/*try
-						{
-							lstEvents.SelectedIndex = i;
-							insertEvent();
-						}
-						catch (ArgumentOutOfRangeException)
-						{
-							lstEvents.Items.Add("");
-							for (int n = i + 2; n > i; n--)
-							{
-								if (_events[n - 1].Type == BaseBriefing.EventType.None) continue;
-
-								_events[n] = _events[n - 1].Clone();
-							}
-						}*/
-						_events.Insert(i, new BaseBriefing.Event(_eventType) { Time = (short)hsbTimer.Value });
+						i = _events.Insert(i - 10000, new BaseBriefing.Event(_eventType) { Time = (short)hsbTimer.Value });
 					}
 					else
 					{
@@ -2315,22 +2138,7 @@ namespace Idmr.Yogeme
 					}
 
 					i = findNext();
-					/*try
-					{
-						lstEvents.SelectedIndex = i;
-						insertEvent();
-					}
-					catch (ArgumentOutOfRangeException)
-					{
-						lstEvents.Items.Add("");
-						for (int n = i + 2; n > i; n--)
-						{
-							if (_events[n - 1].Type == BaseBriefing.EventType.None) continue;
-
-							_events[n] = _events[n - 1].Clone();
-						}
-					}*/
-					_events.Insert(i, new BaseBriefing.Event(_eventType) { Time = (short)hsbTimer.Value });
+					i = _events.Insert(i, new BaseBriefing.Event(_eventType) { Time = (short)hsbTimer.Value });
 					_events[i].Variables[0] = _icon;
 					_events[i].Variables[1] = (short)cboNCraft.SelectedIndex;
 					_events[i].Variables[2] = (short)cboIconIff.SelectedIndex;
@@ -2340,22 +2148,7 @@ namespace Idmr.Yogeme
 					if (cboNCraft.SelectedIndex != 0)
 					{
 						i = findNext();
-						/*try
-						{
-							lstEvents.SelectedIndex = i;
-							insertEvent();
-						}
-						catch (ArgumentOutOfRangeException)
-						{
-							lstEvents.Items.Add("");
-							for (int n = i + 2; n > i; n--)
-							{
-								if (_events[n - 1].Type == BaseBriefing.EventType.None) continue;
-
-								_events[n] = _events[n - 1].Clone();
-							}
-						}*/
-						_events.Insert(i, new BaseBriefing.Event(_eventType) { Time = (short)hsbTimer.Value });
+						i = _events.Insert(i, new BaseBriefing.Event(_eventType) { Time = (short)hsbTimer.Value });
 						_events[i].Variables[0] = _icon;
 						_events[i].Variables[1] = _tempX;
 						_events[i].Variables[2] = _tempY;
@@ -2364,26 +2157,7 @@ namespace Idmr.Yogeme
 					break;
 				case BaseBriefing.EventType.XwaShipInfo:
 					i = findExisting(_eventType);
-					if (i >= 10000)
-					{
-						i -= 10000;
-						/*try
-						{
-							lstEvents.SelectedIndex = i;
-							insertEvent();
-						}
-						catch (ArgumentOutOfRangeException)
-						{
-							lstEvents.Items.Add("");
-							for (int n = i + 2; n > i; n--)
-							{
-								if (_events[n - 1].Type == BaseBriefing.EventType.None) continue;
-
-								_events[n] = _events[n - 1].Clone();
-							}
-						}*/
-						_events.Insert(i, new BaseBriefing.Event(_eventType) { Time = (short)hsbTimer.Value });
-					}
+					if (i >= 10000) i = _events.Insert(i - 10000, new BaseBriefing.Event(_eventType) { Time = (short)hsbTimer.Value });
 					_events[i].Variables[0] = (short)(optInfoOn.Checked ? 1 : 0);
 					_events[i].Variables[1] = (short)cboInfoCraft.SelectedIndex;
 					break;
@@ -2398,22 +2172,7 @@ namespace Idmr.Yogeme
 					if (numMoveTime.Value == 0)
 					{
 						i = findNext();
-						/*try
-						{
-							lstEvents.SelectedIndex = i;
-							insertEvent();
-						}
-						catch (ArgumentOutOfRangeException)
-						{
-							lstEvents.Items.Add("");
-							for (int n = i + 2; n > i; n--)
-							{
-								if (_events[n - 1].Type == BaseBriefing.EventType.None) continue;
-
-								_events[n] = _events[n - 1].Clone();
-							}
-						}*/
-						_events.Insert(i, new BaseBriefing.Event(_eventType) { Time = (short)hsbTimer.Value });
+						i = _events.Insert(i, new BaseBriefing.Event(_eventType) { Time = (short)hsbTimer.Value });
 						_events[i].Variables[0] = _icon;
 						_events[i].Variables[1] = _briefData[_icon].Waypoint[0];
 						_events[i].Variables[2] = _briefData[_icon].Waypoint[1];
@@ -2433,22 +2192,7 @@ namespace Idmr.Yogeme
                         for (int j = 0; j <= total; j++)
 						{
 							i = findNext(j + t0);
-							/*try
-							{
-								lstEvents.SelectedIndex = i;
-								insertEvent();
-							}
-							catch (ArgumentOutOfRangeException)
-							{
-								lstEvents.Items.Add("");
-								for (int n = i + 2; n > i; n--)
-								{
-									if (_events[n - 1].Type == BaseBriefing.EventType.None) continue;
-
-									_events[n] = _events[n - 1].Clone();
-								}
-							}*/
-							_events.Insert(i, new BaseBriefing.Event(_eventType) { Time = (short)(j + t0) });
+							i = _events.Insert(i, new BaseBriefing.Event(_eventType) { Time = (short)(j + t0) });
 							_events[i].Variables[0] = _icon;
 							_events[i].Variables[1] = (short)((x - _tempX) * j / total + _tempX);
 							_events[i].Variables[2] = (short)((y - _tempY) * j / total + _tempY);
@@ -2459,47 +2203,13 @@ namespace Idmr.Yogeme
 					break;
 				case BaseBriefing.EventType.XwaRotateIcon:
 					i = findNext();
-					/*try
-					{
-						lstEvents.SelectedIndex = i;
-						insertEvent();
-					}
-					catch (ArgumentOutOfRangeException)
-					{
-						lstEvents.Items.Add("");
-						for (int n = i + 2; n > i; n--)
-						{
-							if (_events[n - 1].Type == BaseBriefing.EventType.None) continue;
-
-							_events[n] = _events[n - 1].Clone();
-						}
-					}*/
-					_events.Insert(i, new BaseBriefing.Event(_eventType) { Time = (short)hsbTimer.Value });
+					i = _events.Insert(i, new BaseBriefing.Event(_eventType) { Time = (short)hsbTimer.Value });
 					_events[i].Variables[0] = _icon;
 					_events[i].Variables[1] = (short)cboRotateAmount.SelectedIndex;
 					break;
 				case BaseBriefing.EventType.XwaChangeRegion:
 					i = findExisting(_eventType);
-					if (i >= 10000)
-					{
-						i -= 10000;
-						/*try
-						{
-							lstEvents.SelectedIndex = i;
-							insertEvent();
-						}
-						catch (ArgumentOutOfRangeException)
-						{
-							lstEvents.Items.Add("");
-							for (int n = i + 2; n > i; n--)
-							{
-								if (_events[n - 1].Type == BaseBriefing.EventType.None) continue;
-
-								_events[n] = _events[n - 1].Clone();
-							}
-						}*/
-						_events.Insert(i, new BaseBriefing.Event(_eventType) { Time = (short)hsbTimer.Value });
-					}
+					if (i >= 10000) i = _events.Insert(i - 10000, new BaseBriefing.Event(_eventType) { Time = (short)hsbTimer.Value });
 					_events[i].Variables[0] = (short)(numNewRegion.Value - 1);
 					break;
 				default:    // this shouldn't be possible
@@ -2883,21 +2593,12 @@ namespace Idmr.Yogeme
 		short convertCboEventIndexToEvent(int index) => (short)(cboEvent.Items[0].ToString() == "Skip Marker" ? (index == 0 ? 1 : index + 2) : index + 3);
 		/// <summary>Tally briefing events and make sure there's enough space in the raw briefing array.</summary>
 		bool hasAvailableEventSpace(int requestedParams) => _baseBrf.EventsLength + requestedParams < _maxEvents * 2;
-		void insertEvent()
+		void newEventAtCurrent()
 		{
-			// create a new item @ SelectedIndex, 
 			int i = lstEvents.SelectedIndex;
 			if (i == -1) i = 0;
 			lstEvents.Items.Insert(i, "");
-			/*for (int j = _maxEvents - 1; j > i; j--)
-			{
-				if (_events[j - 1].Type == BaseBriefing.EventType.None) continue;
-
-				_events[j] = _events[j - 1].Clone();
-			}
-			_events[i].Time = _events[i + 1].Time;
-			if (_events[i].Time == 9999) _events[i].Time = 0;*/
-			_events.Insert(i, new BaseBriefing.Event(BaseBriefing.EventType.PageBreak));
+			i = _events.Insert(i, new BaseBriefing.Event(BaseBriefing.EventType.PageBreak));
 			lstEvents.SelectedIndex = i;
 			onModified?.Invoke("EventAdd", new EventArgs());
 		}
@@ -3211,10 +2912,7 @@ namespace Idmr.Yogeme
 				MessageBox.Show("Event list is full, cannot add more.", "Error");
 				return;
 			}
-			// TODO: this can be retooled as addEvent()
-			insertEvent();
-			//[JB] Changed to insert after current element.  insertEvents() inserts before, and can't be modified without breaking all the other places that use it.
-			//Instead: insert before, then swap.
+			newEventAtCurrent();
 			if (lstEvents.SelectedIndex + 1 < lstEvents.Items.Count)
 			{
 				int index = lstEvents.SelectedIndex;
