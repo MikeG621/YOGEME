@@ -34,13 +34,13 @@ namespace Idmr.Yogeme
 			InitializeComponent();
 			_mission = mission;
 			lstBuoys.Items.Clear();
-			for(int i = 0; i < _mission.FlightGroups.Count; i++)
+			for (int i = 0; i < _mission.FlightGroups.Count; i++)
 			{
 				if (_mission.FlightGroups[i].PlayerNumber == 1)
 				{
 					System.Diagnostics.Debug.WriteLine("player found");
 					_iff = _mission.FlightGroups[i].IFF;
-                    _team = _mission.FlightGroups[i].Team;
+					_team = _mission.FlightGroups[i].Team;
 				}
 				if (_mission.FlightGroups[i].CraftType == 0x55)
 					lstBuoys.Items.Add(getBuoyText(_mission.FlightGroups[i]));
@@ -88,17 +88,17 @@ namespace Idmr.Yogeme
 			to.CraftType = 0x55;
 			to.Name = "To " + cboTo.Text;
 			to.IFF = _iff;
-            to.EnableDesignation1 = _team;
+			to.EnableDesignation1 = _team;
 			to.Designation1 = (byte)(0x10 + cboTo.SelectedIndex);
 			to.Waypoints[0].Region = (byte)cboFrom.SelectedIndex;
 			to.DepartureTimerSeconds = 5;
 			int index = (int)FlightGroup.ArrDepTriggerIndex.Departure1;
-            to.ArrDepTriggers[index].Amount = (byte)Mission.Trigger.AmountList.Percent100;
-            to.ArrDepTriggers[index].VariableType = (byte)Mission.Trigger.TypeList.CraftWhen;
-            to.ArrDepTriggers[index].Variable = 9;              // Player's craft
+			to.ArrDepTriggers[index].Amount = (byte)Mission.Trigger.AmountList.Percent100;
+			to.ArrDepTriggers[index].VariableType = (byte)Mission.Trigger.TypeList.CraftWhen;
+			to.ArrDepTriggers[index].Variable = 9; // Player's craft
 			to.ArrDepTriggers[index].Condition = (byte)Mission.Trigger.ConditionList.DepartedRegion;
 			to.ArrDepTriggers[index].Parameter = (short)(cboFrom.SelectedIndex + 1);
-            to.Orders[(byte)cboFrom.SelectedIndex, 0].Command = (byte)FlightGroup.Order.CommandList.Beacon;  //[JB] Not required, but looks nice and follows standard convention.
+			to.Orders[(byte)cboFrom.SelectedIndex, 0].Command = (byte)FlightGroup.Order.CommandList.Beacon;
 			_mission.FlightGroups.Add(to);
 			lstBuoys.Items.Add(getBuoyText(to));
 
@@ -106,17 +106,17 @@ namespace Idmr.Yogeme
 			from.CraftType = 0x55;
 			from.Name = "From " + cboFrom.Text;
 			from.IFF = _iff;
-            from.EnableDesignation1 = _team;
+			from.EnableDesignation1 = _team;
 			from.Designation1 = (byte)(0xC + cboFrom.SelectedIndex);
 			from.Waypoints[0].Region = (byte)cboTo.SelectedIndex;
 			from.DepartureTimerSeconds = 5;
-            from.ArrDepTriggers[index].Amount = (byte)Mission.Trigger.AmountList.Percent100;
+			from.ArrDepTriggers[index].Amount = (byte)Mission.Trigger.AmountList.Percent100;
 			from.ArrDepTriggers[index].VariableType = (byte)Mission.Trigger.TypeList.CraftWhen;
-			from.ArrDepTriggers[index].Variable = 9;            // Player's craft
+			from.ArrDepTriggers[index].Variable = 9; // Player's craft
 			from.ArrDepTriggers[index].Condition = (byte)Mission.Trigger.ConditionList.ArrivedInRegion;
 			from.ArrDepTriggers[index].Parameter = (short)(cboTo.SelectedIndex + 1);
-            from.Orders[(byte)cboTo.SelectedIndex, 0].Command = (byte)FlightGroup.Order.CommandList.Beacon;
-            _mission.FlightGroups.Add(from);
+			from.Orders[(byte)cboTo.SelectedIndex, 0].Command = (byte)FlightGroup.Order.CommandList.Beacon;
+			_mission.FlightGroups.Add(from);
 			lstBuoys.Items.Add(getBuoyText(from));
 
 			if (chkReturn.Checked)
@@ -125,23 +125,23 @@ namespace Idmr.Yogeme
 				to.CraftType = 0x55;
 				to.Name = "To " + cboFrom.Text;
 				to.IFF = _iff;
-                to.EnableDesignation1 = _team;
-                to.Designation1 = (byte)(0x10 + cboFrom.SelectedIndex);
+				to.EnableDesignation1 = _team;
+				to.Designation1 = (byte)(0x10 + cboFrom.SelectedIndex);
 				to.Waypoints[0].Region = (byte)cboTo.SelectedIndex;
 				index = (int)FlightGroup.ArrDepTriggerIndex.Arrival1;
 				to.ArrDepTriggers[index].Amount = (byte)Mission.Trigger.AmountList.AtLeast1;
 				to.ArrDepTriggers[index].VariableType = (byte)Mission.Trigger.TypeList.CraftWhen;
-				to.ArrDepTriggers[index].Variable = 9;          // Player's craft
+				to.ArrDepTriggers[index].Variable = 9; // Player's craft
 				to.ArrDepTriggers[index].Condition = (byte)Mission.Trigger.ConditionList.ArrivedInRegion;
 				to.ArrDepTriggers[index].Parameter = (short)(cboTo.SelectedIndex + 1);
 				index = (int)FlightGroup.ArrDepTriggerIndex.Departure1;
 				to.DepartureTimerSeconds = 5;
-                to.ArrDepTriggers[index].Amount = (byte)Mission.Trigger.AmountList.Percent100;
+				to.ArrDepTriggers[index].Amount = (byte)Mission.Trigger.AmountList.Percent100;
 				to.ArrDepTriggers[index].VariableType = (byte)Mission.Trigger.TypeList.CraftWhen;
-				to.ArrDepTriggers[index].Variable = 9;          // Player's craft
+				to.ArrDepTriggers[index].Variable = 9; // Player's craft
 				to.ArrDepTriggers[index].Condition = (byte)Mission.Trigger.ConditionList.DepartedRegion;
 				to.ArrDepTriggers[index].Parameter = (short)(cboTo.SelectedIndex + 1);
-                to.Orders[(byte)cboTo.SelectedIndex, 0].Command = (byte)FlightGroup.Order.CommandList.Beacon;
+				to.Orders[(byte)cboTo.SelectedIndex, 0].Command = (byte)FlightGroup.Order.CommandList.Beacon;
 				_mission.FlightGroups.Add(to);
 				lstBuoys.Items.Add(getBuoyText(to));
 
@@ -149,23 +149,23 @@ namespace Idmr.Yogeme
 				from.CraftType = 0x55;
 				from.Name = "From " + cboTo.Text;
 				from.IFF = _iff;
-                from.EnableDesignation1 = _team;
-                from.Designation1 = (byte)(0xC + cboTo.SelectedIndex);
+				from.EnableDesignation1 = _team;
+				from.Designation1 = (byte)(0xC + cboTo.SelectedIndex);
 				from.Waypoints[0].Region = (byte)cboFrom.SelectedIndex;
 				index = (int)FlightGroup.ArrDepTriggerIndex.Arrival1;
 				from.ArrDepTriggers[index].Amount = (byte)Mission.Trigger.AmountList.AtLeast1;
 				from.ArrDepTriggers[index].VariableType = (byte)Mission.Trigger.TypeList.CraftWhen;
-				from.ArrDepTriggers[index].Variable = 9;        // Player's craft
+				from.ArrDepTriggers[index].Variable = 9; // Player's craft
 				from.ArrDepTriggers[index].Condition = (byte)Mission.Trigger.ConditionList.ArrivedInRegion;
 				from.ArrDepTriggers[index].Parameter = (short)(cboTo.SelectedIndex + 1);
 				index = (int)FlightGroup.ArrDepTriggerIndex.Departure1;
 				from.DepartureTimerSeconds = 5;
-                from.ArrDepTriggers[index].Amount = (byte)Mission.Trigger.AmountList.Percent100;
+				from.ArrDepTriggers[index].Amount = (byte)Mission.Trigger.AmountList.Percent100;
 				from.ArrDepTriggers[index].VariableType = (byte)Mission.Trigger.TypeList.CraftWhen;
-				from.ArrDepTriggers[index].Variable = 9;        // Player's craft
+				from.ArrDepTriggers[index].Variable = 9; // Player's craft
 				from.ArrDepTriggers[index].Condition = (byte)Mission.Trigger.ConditionList.ArrivedInRegion;
 				from.ArrDepTriggers[index].Parameter = (short)(cboFrom.SelectedIndex + 1);
-                from.Orders[(byte)cboFrom.SelectedIndex, 0].Command = (byte)FlightGroup.Order.CommandList.Beacon;
+				from.Orders[(byte)cboFrom.SelectedIndex, 0].Command = (byte)FlightGroup.Order.CommandList.Beacon;
 				_mission.FlightGroups.Add(from);
 				lstBuoys.Items.Add(getBuoyText(from));
 			}

@@ -28,12 +28,10 @@
 			this.lblVersion = new System.Windows.Forms.Label();
 			this.label2 = new System.Windows.Forms.Label();
 			this.label3 = new System.Windows.Forms.Label();
-			this.lnkGE = new System.Windows.Forms.LinkLabel();
+			this.lnkCopyright = new System.Windows.Forms.LinkLabel();
 			this.lnkIdmr = new System.Windows.Forms.LinkLabel();
-			this.label4 = new System.Windows.Forms.Label();
 			this.label5 = new System.Windows.Forms.Label();
 			this.cmdClose = new System.Windows.Forms.Button();
-			this.lnkMail = new System.Windows.Forms.LinkLabel();
 			this.label6 = new System.Windows.Forms.Label();
 			((System.ComponentModel.ISupportInitialize)(this.pctBanner)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
@@ -97,39 +95,31 @@
 			this.label3.TabIndex = 4;
 			this.label3.Text = "Copyright by";
 			// 
-			// lnkGE
+			// lnkCopyright
 			// 
-			this.lnkGE.AutoSize = true;
-			this.lnkGE.LinkColor = System.Drawing.Color.Blue;
-			this.lnkGE.Location = new System.Drawing.Point(91, 126);
-			this.lnkGE.Name = "lnkGE";
-			this.lnkGE.Size = new System.Drawing.Size(179, 13);
-			this.lnkGE.TabIndex = 5;
-			this.lnkGE.TabStop = true;
-			this.lnkGE.Text = "The Galactic Empire: Empire Reborn";
-			this.lnkGE.VisitedLinkColor = System.Drawing.Color.Blue;
-			this.lnkGE.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkGE_LinkClicked);
+			this.lnkCopyright.AutoSize = true;
+			this.lnkCopyright.LinkColor = System.Drawing.Color.Blue;
+			this.lnkCopyright.Location = new System.Drawing.Point(107, 126);
+			this.lnkCopyright.Name = "lnkCopyright";
+			this.lnkCopyright.Size = new System.Drawing.Size(82, 13);
+			this.lnkCopyright.TabIndex = 5;
+			this.lnkCopyright.TabStop = true;
+			this.lnkCopyright.Text = "Michael Gaisser";
+			this.lnkCopyright.VisitedLinkColor = System.Drawing.Color.Blue;
+			this.lnkCopyright.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkCopyright_LinkClicked);
 			// 
 			// lnkIdmr
 			// 
 			this.lnkIdmr.AutoSize = true;
 			this.lnkIdmr.LinkColor = System.Drawing.Color.Blue;
-			this.lnkIdmr.Location = new System.Drawing.Point(91, 110);
+			this.lnkIdmr.Location = new System.Drawing.Point(107, 110);
 			this.lnkIdmr.Name = "lnkIdmr";
-			this.lnkIdmr.Size = new System.Drawing.Size(219, 13);
+			this.lnkIdmr.Size = new System.Drawing.Size(233, 13);
 			this.lnkIdmr.TabIndex = 5;
 			this.lnkIdmr.TabStop = true;
-			this.lnkIdmr.Text = "The Imperial Department of Military Research";
+			this.lnkIdmr.Text = "GE:ER Imperial Department of Military Research";
 			this.lnkIdmr.VisitedLinkColor = System.Drawing.Color.Blue;
 			this.lnkIdmr.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkIdmr_LinkClicked);
-			// 
-			// label4
-			// 
-			this.label4.Location = new System.Drawing.Point(20, 142);
-			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(162, 13);
-			this.label4.TabIndex = 6;
-			this.label4.Text = "Lead Designer: Imperial Officer";
 			// 
 			// label5
 			// 
@@ -143,26 +133,13 @@
 			// cmdClose
 			// 
 			this.cmdClose.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.cmdClose.Location = new System.Drawing.Point(78, 231);
+			this.cmdClose.Location = new System.Drawing.Point(203, 196);
 			this.cmdClose.Name = "cmdClose";
 			this.cmdClose.Size = new System.Drawing.Size(75, 23);
 			this.cmdClose.TabIndex = 0;
 			this.cmdClose.Text = "Close";
 			this.cmdClose.UseVisualStyleBackColor = true;
 			this.cmdClose.Click += new System.EventHandler(this.cmdClose_Click);
-			// 
-			// lnkMail
-			// 
-			this.lnkMail.AutoSize = true;
-			this.lnkMail.LinkColor = System.Drawing.Color.Blue;
-			this.lnkMail.Location = new System.Drawing.Point(178, 142);
-			this.lnkMail.Name = "lnkMail";
-			this.lnkMail.Size = new System.Drawing.Size(59, 13);
-			this.lnkMail.TabIndex = 7;
-			this.lnkMail.TabStop = true;
-			this.lnkMail.Text = "Jagged Fel";
-			this.lnkMail.VisitedLinkColor = System.Drawing.Color.Blue;
-			this.lnkMail.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkMail_LinkClicked);
 			// 
 			// label6
 			// 
@@ -172,7 +149,7 @@
 			this.label6.Size = new System.Drawing.Size(428, 13);
 			this.label6.TabIndex = 8;
 			this.label6.Text = "Many thanks to the programmers and modders before me who made much of this possib" +
-				"le";
+    "le";
 			// 
 			// AboutDialog
 			// 
@@ -180,14 +157,12 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.cmdClose;
-			this.ClientSize = new System.Drawing.Size(495, 282);
+			this.ClientSize = new System.Drawing.Size(495, 231);
 			this.Controls.Add(this.label6);
-			this.Controls.Add(this.lnkMail);
 			this.Controls.Add(this.cmdClose);
 			this.Controls.Add(this.label5);
-			this.Controls.Add(this.label4);
 			this.Controls.Add(this.lnkIdmr);
-			this.Controls.Add(this.lnkGE);
+			this.Controls.Add(this.lnkCopyright);
 			this.Controls.Add(this.label3);
 			this.Controls.Add(this.label2);
 			this.Controls.Add(this.lblVersion);
@@ -217,12 +192,10 @@
 		private System.Windows.Forms.Label lblVersion;
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.Label label3;
-		private System.Windows.Forms.LinkLabel lnkGE;
+		private System.Windows.Forms.LinkLabel lnkCopyright;
 		private System.Windows.Forms.LinkLabel lnkIdmr;
-		private System.Windows.Forms.Label label4;
 		private System.Windows.Forms.Label label5;
 		private System.Windows.Forms.Button cmdClose;
-		private System.Windows.Forms.LinkLabel lnkMail;
 		private System.Windows.Forms.Label label6;
 	}
 }

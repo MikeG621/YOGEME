@@ -37,31 +37,32 @@ This will leave behind a single config file in AppData with your user settings.
 
 ## Latest Release
 #### WIP
+- (About) Minor updates to links and layout.
+- (Briefing) X-wing page events now edited directly instead of copying back and forth to a separate array first.
+- (TIE) IFF 5 (Red) permanently checked to match game behavior.
+- (TIE) Fixed a bug where the Questions wouldn't clear properly when loading a second mission.
+- (TIE-XWA) Test respects the "DetectMission" setting.
+- (XWA) Radio and Formation drop-downs swapped positions for consistency between platforms.
+- Various cleanups throughout
+
 Extensive updates due to changes in Platform.dll, using the full file format spec.
 - (Briefing) Unknown 3 now labeled "Tile", still unknown effect. Confirmed no effect in TIE.
 - (Briefing) Labels for Unk1/2 StartLength/EventLength and the Unknowns group deleted.
-- (Briefing) X-wing page events now edited directly instead of copying back and forth to a separate array first.
 - (Briefing) Text tag, FG tag, and masking colors now defined at launch instead of during every paint.
 - (Briefing) Event handling redone
 - (Hyper dialog) Update per spec, enum use to remove magic numbers.
-- (TIE) Test respects the "DetectMission" setting.
 - (TIE) Added TimeLimit, RndSeed, Global Goal editor note.
 - (TIE) Arr/Dep renames.
-- (TIE) IFF 5 (Red) permanently checked to match game behavior.
-- (TIE) Fixed a bug where the Questions wouldn't clear properly when loading a second mission.
 - (XvT) Added Flightgroup Handicap, Global Goal delay, EoM delay.
-- (XvT) Test respects the "DetectMission" setting.
 - (XWA) Mission tab: Added GoalsUnimportant, WinOfficer, FailOfficer
 - (XWA) Mission2 tab: Added the rest of the properties for GlobalCargo and GlobalGroups (which also expanded to 32 total),
 details for GlobalUnits added.
   - Did not expose "ID" property of GlobalCargo or Region, pretty sure that's for internal use.
 - (XWA) GlobalUnit names and GlobalCargo will now appear in trigger labels.
-- (XWA) Radio and Formation drop-downs swapped positions.
 - (XWA) Rendzvous WP renamed to "Capture HYP".
 - (XWA) Added Flightgroup Handicap, "More Arr/Dep" tab
 - (XWA) Added Messages Type, Speaker Header, Special Meaning. Don't know what they do.
 - (XWA) Added Global Goals Trigger Points and Delay
-- (XWA) Test respects the "DetectMission" setting.
 ---
 ### Additional Information
 #### Dependencies

@@ -40,7 +40,7 @@ namespace Idmr.Yogeme
 		readonly Mission _mission;
 		readonly string _lstFile;
 		string[] _messages;
-		readonly List<System.Windows.Media.MediaPlayer> _activeSounds = new List<System.Windows.Media.MediaPlayer>();	// prevents early GC
+		readonly List<System.Windows.Media.MediaPlayer> _activeSounds = new List<System.Windows.Media.MediaPlayer>();   // prevents early GC
 		readonly string _frontend;
 		readonly string _wave;
 		readonly int _battleNumber;
@@ -96,18 +96,13 @@ namespace Idmr.Yogeme
 
 		void backupPrePost()
 		{
-			if (Directory.GetFiles(_frontend, _prefix + "*" + _bakExt).Length == 0)
-			{
-				string[] waves = Directory.GetFiles(_frontend, _prefix + "*" + _wavExt);
-				for (int i = 0; i < waves.Length; i++) File.Copy(waves[i], waves[i] + _bakExt);
-			}
+			if (Directory.GetFiles(_frontend, _prefix + "*" + _bakExt).Length != 0) return;
+			
+			string[] waves = Directory.GetFiles(_frontend, _prefix + "*" + _wavExt);
+			for (int i = 0; i < waves.Length; i++) File.Copy(waves[i], waves[i] + _bakExt);
 		}
 
-		void stopPlayback()
-		{
-			// this should really only have 1 entry at any time
-			for (int i = 0; i < _activeSounds.Count; i++) _activeSounds[i].Stop();
-		}
+		void stopPlayback() { for (int i = 0; i < _activeSounds.Count; i++) _activeSounds[i].Stop(); } // this should really only have 1 entry at any time
 
 		#region controls
 		void cmdClose_Click(object sender, EventArgs e) => Close();
@@ -119,8 +114,8 @@ namespace Idmr.Yogeme
 			else if (cmd.Name == "cmdPlayEom") txt = txtEom;
 			else if (cmd.Name == "cmdPlayBriefing") txt = txtBriefing;
 			else txt = txtPrePostWav;
-
 			if (!File.Exists(_wave + txt.Text)) return;
+
 			var plr = new System.Windows.Media.MediaPlayer();
 			plr.MediaEnded += mediaPlayer_MediaEnded;
 			plr.Open(new Uri(_wave + txt.Text));
@@ -139,20 +134,19 @@ namespace Idmr.Yogeme
 		{
 			bool isEom = ((Button)sender).Name == "cmdEom";
 			var lst = (isEom ? lstEom : lstMessages);
-
 			if (lst.SelectedIndex == -1) return;
-			var txt = (isEom ? txtEom : txtMessage);
 
 			DialogResult res = opnWav.ShowDialog();
 			if (res != DialogResult.OK) return;
+
 			if (opnWav.FileName.IndexOf(opnWav.InitialDirectory, StringComparison.InvariantCultureIgnoreCase) == -1)
 			{
 				MessageBox.Show("WAV file must be within the \"\\Wave\\\" directory.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return;
 			}
 
+			var txt = (isEom ? txtEom : txtMessage);
 			txt.Text = opnWav.FileName.Substring(opnWav.InitialDirectory.Length);
-
 			if (_messages == null)
 			{
 				_messages = new string[70];
@@ -207,7 +201,6 @@ namespace Idmr.Yogeme
 			if (res != DialogResult.OK) return;
 
 			backupPrePost();
-
 			lstPrePost.Items.Add("Message #" + (lstPrePost.Items.Count + 1));
 			lstPrePost.SelectedIndex = lstPrePost.Items.Count - 1;
 			File.Copy(opnWav.FileName, _wave + txtPrePostWav.Text, true);
@@ -215,7 +208,6 @@ namespace Idmr.Yogeme
 		void cmdDown_Click(object sender, EventArgs e)
 		{
 			backupPrePost();
-
 			int index = lstPrePost.SelectedIndex + 1;
 			if (index == lstPrePost.Items.Count) return; // shouldn't be possible
 
@@ -224,13 +216,11 @@ namespace Idmr.Yogeme
 			File.Copy(wave + (index + 1).ToString("D2") + _wavExt, wave + index.ToString("D2") + _wavExt, true);
 			File.Copy(wave + _tmpExt, wave + (index + 1).ToString("D2") + ".WAVE", true);
 			File.Delete(wave + _tmpExt);
-
 			lstPrePost.SelectedIndex++;
 		}
 		void cmdPrePost_Click(object sender, EventArgs e)
 		{
 			bool isBriefing = ((Button)sender).Name == "cmdBriefing";
-
 			if ((isBriefing && lstBriefing.SelectedIndex == -1) || (!isBriefing && (lstPrePostCategories.SelectedIndex == -1 || lstPrePost.SelectedIndex == -1))) return;
 
 			DialogResult res = opnWav.ShowDialog();
@@ -239,7 +229,6 @@ namespace Idmr.Yogeme
 			string wave = _wave + (isBriefing ? txtBriefing.Text : txtPrePostWav.Text);
 			if (isBriefing && File.Exists(wave) && !File.Exists(wave + _bakExt)) File.Copy(wave, wave + _bakExt);
 			else if (!isBriefing) backupPrePost();
-
 			File.Copy(opnWav.FileName, wave, true);
 		}
 		void cmdRemove_Click(object sender, EventArgs e)
@@ -248,18 +237,15 @@ namespace Idmr.Yogeme
 
 			stopPlayback();
 			backupPrePost();
-
 			int index = lstPrePost.SelectedIndex + 1;
 			string wave = _frontend + _prefix + _battleNumber.ToString("D2") + _missionNumber.ToString("D2");
 			for (; index < lstPrePost.Items.Count; index++) File.Copy(wave + (index + 1).ToString("D2") + _wavExt, wave + index.ToString("D2") + _wavExt, true);
 			File.Delete(wave + index.ToString("D2") + _wavExt);
-
 			lstPrePost.Items.RemoveAt(lstPrePost.Items.Count - 1);
 		}
 		void cmdUp_Click(object sender, EventArgs e)
 		{
 			backupPrePost();
-
 			int index = lstPrePost.SelectedIndex + 1;
 			if (index == 0) return; // shouldn't be possible
 
@@ -268,7 +254,6 @@ namespace Idmr.Yogeme
 			File.Copy(wave + (index - 1).ToString("D2") + _wavExt, wave + index.ToString("D2") + _wavExt, true);
 			File.Copy(wave + _tmpExt, wave + (index - 1).ToString("D2") + _wavExt, true);
 			File.Delete(wave + _tmpExt);
-
 			lstPrePost.SelectedIndex--;
 		}
 
@@ -279,7 +264,6 @@ namespace Idmr.Yogeme
 			stopPlayback();
 			lblBriefing.Text = _mission.Briefings[0].BriefingString[lstBriefing.SelectedIndex];
 			lblBriefingNote.Text = _mission.Briefings[0].BriefingStringsNotes[lstBriefing.SelectedIndex];
-
 			txtBriefing.Text = _frontend.Substring(_wave.Length) + "B" + _battleNumber.ToString("D2") + _missionNumber.ToString("D2") + (lstBriefing.SelectedIndex + 1).ToString("D2") + _wavExt;
 			cmdPlayBriefing.Visible = File.Exists(_wave + txtBriefing.Text);
 		}
@@ -295,10 +279,8 @@ namespace Idmr.Yogeme
 
 			stopPlayback();
 			txtPrePostWav.Text = _frontend.Substring(_wave.Length) + _prefix + _battleNumber.ToString("D2") + _missionNumber.ToString("D2") + (lstPrePost.SelectedIndex + 1).ToString("D2") + _wavExt;
-
 			cmdUp.Enabled = lstPrePost.SelectedIndex != 0;
 			cmdDown.Enabled = lstPrePost.SelectedIndex != lstPrePost.Items.Count - 1;
-
 			if (_prefix == "N")
 			{
 				lblPrePostNote.Text = "N/A";
@@ -325,17 +307,13 @@ namespace Idmr.Yogeme
 			cmdUp.Enabled = false;
 			cmdDown.Enabled = false;
 			cmdRemove.Enabled = false;
-
 			if (lstPrePostCategories.SelectedIndex == -1) return;
 
 			stopPlayback();
 			lstPrePost.Items.Clear();
-
-
 			int index = 1;
 			while (File.Exists(_frontend + _prefix + _battleNumber.ToString("D2") + _missionNumber.ToString("D2") + index.ToString("D2") + _wavExt)) { lstPrePost.Items.Add("Message #" + index++); }
 			cmdAdd.Enabled = true;
-
 			if (lstPrePostCategories.SelectedIndex == 0 && lstPrePost.Items.Count == 0)
 			{
 				string off = "??", officer = "Unknown";
@@ -344,7 +322,7 @@ namespace Idmr.Yogeme
 					case 0: off = "DE"; officer = "Devers"; break;
 					case 1: off = "KU"; officer = "Kupalo"; break;
 					case 2: off = "ZL"; officer = "Zaletta"; break;
-					case 8: off = "MC"; officer = "Emkay";  break;
+					case 8: off = "MC"; officer = "Emkay"; break;
 				}
 				txtPrePost.Text = "(None defined, randomly selected based on Briefing Officer, " + officer + ")";
 				txtPrePostWav.Text = "FrontEnd\\N01" + off + "##.WAV";

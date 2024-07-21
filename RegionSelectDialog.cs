@@ -1,6 +1,6 @@
 ﻿/*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
- * Copyright (C) 2007-2064 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2024 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
  * VERSION: 1.4.1+
@@ -25,7 +25,7 @@ namespace Idmr.Yogeme
 		/// <exception cref="ArgumentException">Length of <paramref name="regions"/> is not <b>4</b>.</exception>
 		public RegionSelectDialog(Mission.Region[] regions)
 		{
-			if (regions.Length != 4) throw new ArgumentException("regionNames must have length of 4.");
+			if (regions.Length != 4) throw new ArgumentException("regions must have length of 4.");
 
 			InitializeComponent();
 			optRegion1.Text = regions[0].Name;

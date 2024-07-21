@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2024 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.13.9
+ * VERSION: 1.13.9+
  */
 
 /* CHANGELOG
+ * [UPD] allow is now optional
  * v1.13.9, 220907
  * - Release
  */
@@ -17,14 +18,7 @@ namespace Idmr.Yogeme
 {
     public partial class ErrorDialog : Form
     {
-        public ErrorDialog(string message)
-        {
-            InitializeComponent();
-
-            lblMessage.Text = message;
-            chkIgnore.Visible = false;
-        }
-        public ErrorDialog(string message, bool allowIgnore)
+        public ErrorDialog(string message, bool allowIgnore = false)
         {
             InitializeComponent();
 
@@ -34,6 +28,6 @@ namespace Idmr.Yogeme
 
         public bool IgnoreErrors => chkIgnore.Checked;
 
-		void cmdOk_Click(object sender, System.EventArgs e) => Close();
-	}
+        void cmdOk_Click(object sender, System.EventArgs e) => Close();
+    }
 }

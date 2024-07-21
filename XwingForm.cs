@@ -648,7 +648,7 @@ namespace Idmr.Yogeme
 		#region event handlers
 		void briefingModifiedCallback(object sender, EventArgs e)
 		{
-			Common.Title(this, _loading);
+			Common.MarkDirty(this, _loading);
 		}
 
 		void colorizedComboBox_DrawItem(object sender, DrawItemEventArgs e)
@@ -717,7 +717,7 @@ namespace Idmr.Yogeme
 			if (prop.Name != "")
 			{
 				setFlightgroupProperty(prop.RefreshType, prop.Name, Common.GetControlValue(sender));
-				Common.Title(this, false);  // Since we're not loading, any change marks as dirty.
+				Common.MarkDirty(this);  // Since we're not loading, any change marks as dirty.
 			}
 			if (prop.RefreshType.HasFlag(MultiEditRefreshType.ItemText)) listRefreshSelectedItems();
 			if (prop.RefreshType.HasFlag(MultiEditRefreshType.CraftName)) updateFGList();
@@ -895,7 +895,7 @@ namespace Idmr.Yogeme
 		void menuCut_Click(object sender, EventArgs e)
 		{
 			if(Common.Cut(ActiveControl))
-				Common.Title(this, false);
+				Common.MarkDirty(this);
 		}
 		void menuER_Click(object sender, EventArgs e)
 		{
@@ -940,7 +940,7 @@ namespace Idmr.Yogeme
 		}
 		void menuIDMR_Click(object sender, EventArgs e)
 		{
-			Common.LaunchIdmr();
+			Common.LaunchGithub();
 		}
 		void menuMap_Click(object sender, EventArgs e)
 		{
@@ -951,7 +951,7 @@ namespace Idmr.Yogeme
 		}
 		void mapForm_DataChangedCallback(object sender, EventArgs e)
 		{
-			Common.Title(this, false);
+			Common.MarkDirty(this);
 			if (tabFGMinor.SelectedIndex == 3)  //Update waypoints tab.
 				refreshWaypointTab();
 		}
@@ -1048,7 +1048,7 @@ namespace Idmr.Yogeme
 					}
 					lstFG_SelectedIndexChanged(0, new EventArgs());
 					listRefreshSelectedItems();
-					Common.Title(this, false);
+					Common.MarkDirty(this);
 				}
 				catch { /* do nothing */ }
 			}
@@ -1069,11 +1069,11 @@ namespace Idmr.Yogeme
 					}
 					lstFG_SelectedIndexChanged(0, new EventArgs());
 					listRefreshSelectedItems();
-					Common.Title(this, false);
+					Common.MarkDirty(this);
 				}
 				catch { /* do nothing */ }
 			}
-			else if (Common.Paste(ActiveControl, obj)) Common.Title(this, false);
+			else if (Common.Paste(ActiveControl, obj)) Common.MarkDirty(this);
 			else if (ActiveControl.GetType() == typeof(DataGridTextBox))
 			{
 				try
@@ -1350,7 +1350,7 @@ namespace Idmr.Yogeme
 			}
 			catch { /* do nothing */ }
 
-			Common.Title(this, false);
+			Common.MarkDirty(this);
 			updateMissionTabs();
 			lstFG_SelectedIndexChanged(0, new EventArgs());
 			if (!lstFG.Focused) lstFG.Focus();
@@ -1660,7 +1660,7 @@ namespace Idmr.Yogeme
 			_fBrief?.Close();
 			refreshMap(-1);
 			updateFGList();
-			Common.Title(this, false);
+			Common.MarkDirty(this);
 			checkMove(0); // Refresh buttons
 		}
 
@@ -1704,7 +1704,7 @@ namespace Idmr.Yogeme
 			_activeFG = slot; //listRefreshAll() seems to change _activeFG somehow, so reset to proper index.
 			lstFG.ClearSelected();
 			lstFG.SelectedIndex = _activeFG;
-			Common.Title(this, _loading);
+			Common.MarkDirty(this, _loading);
 			refreshMap(-1);
 			try
 			{

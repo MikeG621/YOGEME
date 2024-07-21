@@ -601,7 +601,7 @@ namespace Idmr.Yogeme
 				{
 					x += getValue(_activeDataArray, (_activeAxisDataCount * 0) + formDataIndex) * (craftSpacingX / 2);
 					y += getValue(_activeDataArray, (_activeAxisDataCount * 1) + formDataIndex) * (craftSpacingY / 2);
-					z += -getValue(_activeDataArray,(_activeAxisDataCount * 2) + formDataIndex) * (craftSpacingZ / 4);
+					z += -getValue(_activeDataArray, (_activeAxisDataCount * 2) + formDataIndex) * (craftSpacingZ / 4);
 				}
 				if (_platform != Settings.Platform.TIE)
 				{
@@ -708,7 +708,7 @@ namespace Idmr.Yogeme
 			Pen p = new Pen(Color.FromArgb(55, 55, 55));
 			g.DrawLine(p, halfWidth, 0, halfWidth, pctFormation.Height);
 			g.DrawLine(p, 0, halfHeight, pctFormation.Width, halfHeight);
-			g.DrawString("Top (X - Y)", DefaultFont, Brushes.LightGray, 30, 3); 
+			g.DrawString("Top (X - Y)", DefaultFont, Brushes.LightGray, 30, 3);
 			g.DrawString("Side (Y - Z)", DefaultFont, Brushes.LightGray, halfWidth + 30, halfHeight + 3);
 			g.DrawString("Behind (X - Z)", DefaultFont, Brushes.LightGray, 30, halfHeight + 3);
 
@@ -737,7 +737,7 @@ namespace Idmr.Yogeme
 				{
 					x += quartWidth;
 					y += quartHeight;
-					g.DrawLine(pd, x - length, y, x + length, y); 
+					g.DrawLine(pd, x - length, y, x + length, y);
 					g.DrawLine(pd, x, y - length, x, y + length);
 				}
 
@@ -746,7 +746,7 @@ namespace Idmr.Yogeme
 				{
 					x += quartWidth + halfWidth;
 					y += quartHeight + halfHeight;
-					g.DrawLine(pd, x - length, y, x + length, y); 
+					g.DrawLine(pd, x - length, y, x + length, y);
 					g.DrawLine(pd, x, y - length, x, y + length);
 				}
 
@@ -755,7 +755,7 @@ namespace Idmr.Yogeme
 				{
 					x += quartWidth;
 					y += quartHeight + halfHeight;
-					g.DrawLine(pd, x - length, y, x + length, y); 
+					g.DrawLine(pd, x - length, y, x + length, y);
 					g.DrawLine(pd, x, y - length, x, y + length);
 				}
 			}

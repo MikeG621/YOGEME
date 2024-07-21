@@ -1,12 +1,13 @@
 ﻿/*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, TIE through XWA
- * Copyright (C) 2007-2014 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2024 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.2.3
+ * VERSION: 1.2.3+
  */
 
 /* CHANGELOG
+ * [UPD] updated
  * v1.2.3, 141214
  * [UPD] change to MPL
  * v1.1.1, 120814
@@ -15,6 +16,7 @@
  * - Release
  */
 
+using System.Diagnostics;
 using System.Windows.Forms;
 
 namespace Idmr.Yogeme
@@ -31,10 +33,9 @@ namespace Idmr.Yogeme
 
 		void cmdClose_Click(object sender, System.EventArgs e) => Close();
 
-		void lnkGE_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) => Common.LaunchER();
-		void lnkIdmr_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) => Common.LaunchIdmr();
-		void lnkMail_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) => Common.EmailJagged();
+		void lnkCopyright_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) => Process.Start("mailto:mjgaisser@gmail.com?subject=YOGEME");
+		void lnkIdmr_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) => Common.LaunchGithub();
 
-		void pctBanner_Click(object sender, System.EventArgs e) => Common.LaunchIdmr();
+		void pctBanner_Click(object sender, System.EventArgs e) => Common.LaunchGithub();
 	}
 }

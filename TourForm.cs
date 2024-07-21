@@ -60,7 +60,7 @@ namespace Idmr.Yogeme
 			int missIndex = lstMiss.SelectedIndex;
 			if (missIndex == -1 || missIndex == lstMiss.Items.Count - 1) return;
 
-			string strTemp = _tour.Strings[2 + missIndex];	//description
+			string strTemp = _tour.Strings[2 + missIndex];  //description
 			_tour.Strings[2 + missIndex] = _tour.Strings[2 + missIndex + 1];
 			_tour.Strings[2 + missIndex + 1] = strTemp;
 
@@ -68,9 +68,9 @@ namespace Idmr.Yogeme
 			strTemp = arrTemp[missIndex];
 			arrTemp[missIndex] = arrTemp[missIndex + 1];
 			arrTemp[missIndex + 1] = strTemp;
-			_tour.Strings[1] = string.Join("\0", arrTemp); 
+			_tour.Strings[1] = string.Join("\0", arrTemp);
 
-			arrTemp = _tour.Strings[0].Split('\0');	// mission
+			arrTemp = _tour.Strings[0].Split('\0'); // mission
 			strTemp = arrTemp[missIndex];
 			arrTemp[missIndex] = arrTemp[missIndex + 1];
 			arrTemp[missIndex + 1] = strTemp;
@@ -105,7 +105,7 @@ namespace Idmr.Yogeme
 		}
 		void cmdNext_Click(object sender, EventArgs e)
 		{
-			if (_tourIndex < 5) _tourIndex++;	// LFD suggests there's up to 8, but there's only details for 5
+			if (_tourIndex < 5) _tourIndex++;   // LFD suggests there's up to 8, but there's only details for 5
 			loadTour();
 		}
 		void cmdOK_Click(object sender, EventArgs e)

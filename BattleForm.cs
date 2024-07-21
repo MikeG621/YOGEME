@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2024 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.8.1
+ * VERSION: 1.8.1+
  */
 
 /* CHANGELOG
+ * [UPD] cleanup
  * v1.8.1, 201213
  * [UPS] Settings passed in
  * v1.6.4, 200119
@@ -36,7 +37,7 @@ namespace Idmr.Yogeme
 	public partial class BattleForm : Form
 	{
 		string _battlePath; // path to selected Battle#.lfd
-		readonly string _installPath;	// TIE95 install directory
+		readonly string _installPath;   // TIE95 install directory
 		int _battleIndex = 1;
 		int _numMiss;
 		string[] _missionFiles = new string[8];
@@ -52,7 +53,6 @@ namespace Idmr.Yogeme
 		public BattleForm(Settings config)
 		{
 			InitializeComponent();
-			//this.Height = 342;
 			if (!config.TieInstalled)
 			{
 				MessageBox.Show("TIE95 installation not found, Battle function not available", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -62,24 +62,22 @@ namespace Idmr.Yogeme
 			else
 			{
 				_installPath = config.TiePath;
-				// dummy bitmap to create a 256 color palette
-				//palette definition
 				Pltt standard = (Pltt)(new LfdFile(_installPath + "\\RESOURCE\\EMPIRE.LFD").Resources["PLTTstandard"]);
 				LfdFile tourdesk = new LfdFile(_installPath + "\\RESOURCE\\TOURDESK.LFD");
 				Pltt toddesk = (Pltt)tourdesk.Resources["PLTTtoddesk"];
-				_systemPalette = Pltt.ConvertToPalette(new Pltt[]{standard, toddesk});
+				_systemPalette = Pltt.ConvertToPalette(new Pltt[] { standard, toddesk });
 				Delt galaxy = (Delt)tourdesk.Resources["DELTgalaxy"];
 				galaxy.Palette = _systemPalette;
 				_galaxyImage = galaxy.Image;
 				picGalaxy.Image = _galaxyImage;
 				picGalaxy.Size = _galaxyImage.Size;
-				numFrameLeft.Maximum = _galaxyImage.Width-1;
-				numFrameTop.Maximum = _galaxyImage.Height-1;
+				numFrameLeft.Maximum = _galaxyImage.Width - 1;
+				numFrameTop.Maximum = _galaxyImage.Height - 1;
 			}
 			_battlePath = _installPath + "\\RESOURCE\\Battle1.lfd";
 			opnMission.InitialDirectory = _installPath + "\\MISSION";
 			try { loadFile(_battlePath); }
-			catch(Exception x)
+			catch (Exception x)
 			{
 				MessageBox.Show(x.Message + " Battle function not available", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return;
@@ -89,14 +87,14 @@ namespace Idmr.Yogeme
 		/// <summary>Draws the red frame on the galaxy map signifiying where the system is located</summary>
 		void drawFrame()
 		{
-			int L = (int)numFrameLeft.Value, T = (int)numFrameTop.Value, W = (int)numFrameWidth.Value, H = (int)numFrameHeight.Value;
+			int l = (int)numFrameLeft.Value, t = (int)numFrameTop.Value, w = (int)numFrameWidth.Value, h = (int)numFrameHeight.Value;
 			Pen pnFrame = new Pen(Color.Red);
-			picGalaxy.Refresh();		//removes previous frame
-			Graphics g = picGalaxy.CreateGraphics();	//lets us draw on it, but not permanently
-			g.DrawLine(pnFrame, L, T, L+W, T);
-			g.DrawLine(pnFrame, L+W, T, L+W, T+H);
-			g.DrawLine(pnFrame, L+W, T+H, L, T+H);
-			g.DrawLine(pnFrame, L, T+H, L, T);
+			picGalaxy.Refresh();
+			Graphics g = picGalaxy.CreateGraphics();
+			g.DrawLine(pnFrame, l, t, l + w, t);
+			g.DrawLine(pnFrame, l + w, t, l + w, t + h);
+			g.DrawLine(pnFrame, l + w, t + h, l, t + h);
+			g.DrawLine(pnFrame, l, t + h, l, t);
 			g.Dispose();
 		}
 
@@ -127,12 +125,12 @@ namespace Idmr.Yogeme
 			txtBTitle1.Text = strTemp[0];
 			txtBTitle2.Text = strTemp[1];
 			txtCTitle1.Text = strTemp[2];
-			if (strTemp.Length == 4) txtCTitle2.Text = strTemp[3];	// TFW's fault, either left off, or only appends '\0', not '\0\0'
-			// System
+			if (strTemp.Length == 4) txtCTitle2.Text = strTemp[3];  // TFW's fault, either left off, or only appends '\0', not '\0\0'
+																	// System
 			strTemp = txt.Strings[2].Split('\0');
 			_deltName = strTemp[0];
 			txtSystem.Text = strTemp[1];
-			#region Image Frame
+			// Image Frame
 			_loading = true;
 			string[] str_frame = strTemp[2].Split(' ');
 			numFrameTop.Value = Convert.ToInt32(str_frame[0]);
@@ -141,19 +139,18 @@ namespace Idmr.Yogeme
 			numFrameWidth.Value = Convert.ToInt32(str_frame[3]);
 			_loading = false;
 			drawFrame();
-			#endregion
 			// Missions
 			strTemp = txt.Strings[3].Split('\0');
-			for (int i=0;i<strTemp.Length;i++) _missionFiles[i] = strTemp[i];
-			for(int i=0;i<_numMiss;i++) lstMiss.Items.Add(_missionFiles[i]);
+			for (int i = 0; i < strTemp.Length; i++) _missionFiles[i] = strTemp[i];
+			for (int i = 0; i < _numMiss; i++) lstMiss.Items.Add(_missionFiles[i]);
 			// Descriptions
-			for(int i=0;i<_numMiss;i++)
+			for (int i = 0; i < _numMiss; i++)
 			{
-				_missionDescriptions[i] = txt.Strings[4+i];
-				_missionDescriptions[i] = _missionDescriptions[i].TrimEnd('\0').Replace("\0","\r\n");
+				_missionDescriptions[i] = txt.Strings[4 + i];
+				_missionDescriptions[i] = _missionDescriptions[i].TrimEnd('\0').Replace("\0", "\r\n");
 			}
 			txtDesc.Text = _missionDescriptions[0];
-			#region System image
+			// System image
 			try
 			{
 				Delt delSystem = (Delt)_battle.Resources[1];
@@ -162,22 +159,22 @@ namespace Idmr.Yogeme
 				picSystem.Image = _systemImage;
 				picSystem.Size = _systemImage.Size;
 			}
-			catch(Exception x) { MessageBox.Show(x.Message + "  System image unavailable.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); }
-			#endregion
+			catch (Exception x) { MessageBox.Show(x.Message + "  System image unavailable.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); }
 		}
 
 		#region Main
 		void cmdNext_Click(object sender, EventArgs e)
 		{
-			if (_battleIndex == 13) return;		//TIE95 has 13 battles, although it may be possible to add more, dunno
+			if (_battleIndex == 13) return;     //TIE95 has 13 battles, although it may be possible to add more, dunno
+
 			try
 			{
 				_battleIndex++;
 				_battlePath = _installPath + "\\RESOURCE\\Battle" + _battleIndex + ".lfd";
 				loadFile(_battlePath);
 			}
-			catch(Exception x)
-			{	//if YOGEME can't load the next battle file, reload the previous
+			catch (Exception x)
+			{
 				MessageBox.Show(x.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				_battleIndex--;
 				_battlePath = _installPath + "\\RESOURCE\\Battle" + _battleIndex + ".lfd";
@@ -187,14 +184,15 @@ namespace Idmr.Yogeme
 		void cmdPrev_Click(object sender, EventArgs e)
 		{
 			if (_battleIndex == 1) return;
+
 			try
 			{
 				_battleIndex--;
 				_battlePath = _installPath + "\\RESOURCE\\Battle" + _battleIndex + ".lfd";
 				loadFile(_battlePath);
 			}
-			catch(Exception x)
-			{	// reload last successful battle file
+			catch (Exception x)
+			{
 				MessageBox.Show(x.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				_battleIndex++;
 				_battlePath = _installPath + "\\RESOURCE\\Battle" + _battleIndex + ".lfd";
@@ -206,11 +204,11 @@ namespace Idmr.Yogeme
 			Text tex = (Text)_battle.Resources[0];
 			Delt del = (Delt)_battle.Resources[1];
 			del.Image = _systemImage;
-			tex.NumberOfStrings = (short)(_numMiss+4);
+			tex.NumberOfStrings = (short)(_numMiss + 4);
 			tex.Strings[0] = txtBattle.Text + '\0' + txtCutscene.Text;
 			tex.Strings[1] = txtBTitle1.Text + '\0' + txtBTitle2.Text + '\0' + txtCTitle1.Text + '\0' + txtCTitle2.Text;
 			tex.Strings[2] = _deltName + '\0' + txtSystem.Text + '\0' + numFrameTop.Value + ' ' + numFrameHeight.Value + ' ' + numFrameLeft.Value + ' ' + numFrameWidth.Value;
-			tex.Strings[3] = string.Join("\0",_missionFiles);
+			tex.Strings[3] = string.Join("\0", _missionFiles);
 			for (int i = 0; i < _numMiss; i++) tex.Strings[4 + i] = _missionDescriptions[i].Replace("\r\n", "\0");
 			try { _battle.Write(); }
 			catch (Exception x) { System.Diagnostics.Debug.WriteLine("Battle save failure"); throw x; }
@@ -224,17 +222,17 @@ namespace Idmr.Yogeme
 		}
 		void cmdMoveDown_Click(object sender, EventArgs e)
 		{
-			int i = lstMiss.SelectedIndex+1;
+			int i = lstMiss.SelectedIndex + 1;
 			if (i == -1 || i == _numMiss) return;
 
 			string strTemp = _missionFiles[i - 1];
-			_missionFiles[i-1] = _missionFiles[i];
+			_missionFiles[i - 1] = _missionFiles[i];
 			_missionFiles[i] = strTemp;
-			strTemp = _missionDescriptions[i-1];
-			_missionDescriptions[i-1] = _missionDescriptions[i];
+			strTemp = _missionDescriptions[i - 1];
+			_missionDescriptions[i - 1] = _missionDescriptions[i];
 			_missionDescriptions[i] = strTemp;
-			lstMiss.Items.Insert(i-1, _missionFiles[i-1]);
-			lstMiss.Items.RemoveAt(i+1);
+			lstMiss.Items.Insert(i - 1, _missionFiles[i - 1]);
+			lstMiss.Items.RemoveAt(i + 1);
 			lstMiss.SelectedIndex = i;
 		}
 		void cmdMoveUp_Click(object sender, EventArgs e)
@@ -243,24 +241,23 @@ namespace Idmr.Yogeme
 			if (i <= 0) return;
 
 			string strTemp = _missionFiles[i - 1];
-			_missionFiles[i-1] = _missionFiles[i];
+			_missionFiles[i - 1] = _missionFiles[i];
 			_missionFiles[i] = strTemp;
-			strTemp = _missionDescriptions[i-1];
-			_missionDescriptions[i-1] = _missionDescriptions[i];
+			strTemp = _missionDescriptions[i - 1];
+			_missionDescriptions[i - 1] = _missionDescriptions[i];
 			_missionDescriptions[i] = strTemp;
-			lstMiss.Items.Insert(i-1, _missionFiles[i-1]);
-			lstMiss.Items.RemoveAt(i+1);
-			lstMiss.SelectedIndex = i-1;
+			lstMiss.Items.Insert(i - 1, _missionFiles[i - 1]);
+			lstMiss.Items.RemoveAt(i + 1);
+			lstMiss.SelectedIndex = i - 1;
 		}
 		void cmdRemove_Click(object sender, EventArgs e)
 		{
 			if (lstMiss.SelectedIndex != -1)
 			{
-				int i;
-				for (i=lstMiss.SelectedIndex;i<7;i++)
+				for (int i = lstMiss.SelectedIndex; i < 7; i++)
 				{
-					_missionDescriptions[i] = _missionDescriptions[i+1];
-					_missionFiles[i] = _missionFiles[i+1];
+					_missionDescriptions[i] = _missionDescriptions[i + 1];
+					_missionFiles[i] = _missionFiles[i + 1];
 				}
 				lstMiss.Items.RemoveAt(lstMiss.SelectedIndex);
 				txtDesc.Text = "";
@@ -273,8 +270,8 @@ namespace Idmr.Yogeme
 		void opnMission_FileOk(object sender, System.ComponentModel.CancelEventArgs e)
 		{
 			string strMission = opnMission.FileName;
-			strMission = strMission.Remove(0, strMission.LastIndexOf("\\")+1);
-			strMission = strMission.Remove(strMission.Length-4, 4);
+			strMission = strMission.Remove(0, strMission.LastIndexOf("\\") + 1);
+			strMission = strMission.Remove(strMission.Length - 4, 4);
 			_missionFiles[_numMiss] = strMission;
 			_missionDescriptions[_numMiss] = "";
 			lstMiss.Items.Add(strMission);
@@ -305,22 +302,21 @@ namespace Idmr.Yogeme
 
 		void picGalaxy_MouseDown(object sender, MouseEventArgs e)
 		{
-			int L = (int)numFrameLeft.Value, T = (int)numFrameTop.Value, W = (int)numFrameWidth.Value, H = (int)numFrameHeight.Value;
-			if (e.X >= L && e.X <= (L+W) && e.Y >= T && e.Y <= (T+H)) _dragging = true;
+			int l = (int)numFrameLeft.Value, t = (int)numFrameTop.Value, w = (int)numFrameWidth.Value, h = (int)numFrameHeight.Value;
+			if (e.X >= l && e.X <= (l + w) && e.Y >= t && e.Y <= (t + h)) _dragging = true;
 		}
 		void picGalaxy_MouseMove(object sender, MouseEventArgs e)
 		{
-			if (_dragging)
-			{
-				int L = e.X - (int)numFrameWidth.Value / 2;
-				int T = e.Y - (int)numFrameHeight.Value / 2;
-				if (L < 0) L = 0;
-				if (T < 0) T = 0;
-				if ((L + numFrameWidth.Value) > numFrameLeft.Maximum) L = (int)numFrameLeft.Maximum - (int)numFrameWidth.Value;
-				if ((T + numFrameHeight.Value) > numFrameTop.Maximum) T = (int)numFrameTop.Maximum - (int)numFrameHeight.Value;
-				numFrameLeft.Value = L;
-				numFrameTop.Value = T;
-			}
+			if (!_dragging) return;
+
+			int l = e.X - (int)numFrameWidth.Value / 2;
+			int t = e.Y - (int)numFrameHeight.Value / 2;
+			if (l < 0) l = 0;
+			if (t < 0) t = 0;
+			if ((l + numFrameWidth.Value) > numFrameLeft.Maximum) l = (int)numFrameLeft.Maximum - (int)numFrameWidth.Value;
+			if ((t + numFrameHeight.Value) > numFrameTop.Maximum) t = (int)numFrameTop.Maximum - (int)numFrameHeight.Value;
+			numFrameLeft.Value = l;
+			numFrameTop.Value = t;
 		}
 		void picGalaxy_MouseUp(object sender, MouseEventArgs e) => _dragging = false;
 

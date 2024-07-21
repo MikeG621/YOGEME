@@ -1189,7 +1189,7 @@ namespace Idmr.Yogeme
 			setInteractiveLabelColor(lblSkipTrig2, _activeSkipTriggerIndex == 1);
 		}
 
-		void briefingModifiedCallback(object sender, EventArgs e) => Common.Title(this, _loading);
+		void briefingModifiedCallback(object sender, EventArgs e) => Common.MarkDirty(this, _loading);
 
 		void colorizedComboBox_DrawItem(object sender, DrawItemEventArgs e)
 		{
@@ -1251,7 +1251,7 @@ namespace Idmr.Yogeme
 			if (prop.Name != "")
 			{
 				setFlightgroupProperty(prop.RefreshType, prop.Name, Common.GetControlValue(sender));
-				Common.Title(this, false);  // Since we're not loading, any change marks as dirty.
+				Common.MarkDirty(this);  // Since we're not loading, any change marks as dirty.
 			}
 			if (prop.RefreshType.HasFlag(MultiEditRefreshType.ItemText)) listRefreshSelectedItems();
 			if (prop.RefreshType.HasFlag(MultiEditRefreshType.CraftName)) updateFGList();
@@ -1266,7 +1266,7 @@ namespace Idmr.Yogeme
 			if (prop.Name != "")
 			{
 				setMessageProperty(prop.Name, Common.GetControlValue(sender));
-				Common.Title(this, false);
+				Common.MarkDirty(this);
 			}
 			if (prop.RefreshType.HasFlag(MultiEditRefreshType.ItemText)) messRefreshSelectedItems();
 		}
@@ -1382,7 +1382,7 @@ namespace Idmr.Yogeme
 		void menuAbout_Click(object sender, EventArgs e) => new AboutDialog().ShowDialog();
 		void menuBrief_Click(object sender, EventArgs e)
 		{
-			Common.Title(this, false);
+			Common.MarkDirty(this);
 			try { _fBrief.Close(); }
 			catch { /* do nothing */ }
 			_fBrief = new BriefingForm(_mission.FlightGroups, _mission.Briefings, briefingModifiedCallback);
@@ -1473,7 +1473,7 @@ namespace Idmr.Yogeme
 			data.SetData("yogeme", false, stream);
 			Clipboard.SetDataObject(data, true);
 		}
-		void menuCut_Click(object sender, EventArgs e) { if (Common.Cut(ActiveControl)) Common.Title(this, false); }
+		void menuCut_Click(object sender, EventArgs e) { if (Common.Cut(ActiveControl)) Common.MarkDirty(this); }
 		void menuER_Click(object sender, EventArgs e) => Common.LaunchER();
 		void menuExit_Click(object sender, EventArgs e) => Close();
 		void menuGlobalSummary_Click(object sender, EventArgs e) => new GlobalSummaryDialog(_mission.FlightGroups).Show();
@@ -1501,7 +1501,7 @@ namespace Idmr.Yogeme
 			}
 		}
 		void menuHelpInfo_Click(object sender, EventArgs e) => Common.LaunchHelp();
-		void menuIDMR_Click(object sender, EventArgs e) => Common.LaunchIdmr();
+		void menuIDMR_Click(object sender, EventArgs e) => Common.LaunchGithub();
 		void menuLST_Click(object sender, EventArgs e)
 		{
 			try { _fLST.Close(); }
@@ -1519,7 +1519,7 @@ namespace Idmr.Yogeme
 		}
 		void mapForm_DataChangedCallback(object sender, EventArgs e)
 		{
-			Common.Title(this, false);
+			Common.MarkDirty(this);
 			if (tabFGMinor.SelectedIndex == 3) refreshWaypointTab();
 		}
 		void menuNewXwing_Click(object sender, EventArgs e)
@@ -1636,7 +1636,7 @@ namespace Idmr.Yogeme
 					}
 					lblADTrigArr_Click(_activeArrDepTriggerIndex, new EventArgs());
 					labelRefresh(_activeArrDepTrigger, lblADTrig[_activeArrDepTriggerIndex]);
-					Common.Title(this, false);
+					Common.MarkDirty(this);
 				}
 				catch { /* do nothing */ }
 			}
@@ -1648,7 +1648,7 @@ namespace Idmr.Yogeme
 						fg.Orders[_activeOrderIndex] = new FlightGroup.Order(ord);
 					lblOrderArr_Click(_activeOrderIndex, new EventArgs());
 					orderLabelRefresh();
-					Common.Title(this, false);
+					Common.MarkDirty(this);
 				}
 				catch { /* do nothing */ }
 			}
@@ -1661,7 +1661,7 @@ namespace Idmr.Yogeme
 						fg.Goals[_activeFGGoalIndex] = new FlightGroup.Goal(g);
 					lblGoalArr_Click(_activeFGGoalIndex, new EventArgs());
 					goalLabelRefresh();
-					Common.Title(this, false);
+					Common.MarkDirty(this);
 				}
 				catch { /* do nothing */ }
 			}
@@ -1674,13 +1674,13 @@ namespace Idmr.Yogeme
 						fg.SkipToOrder4Trigger[j] = new Mission.Trigger(trig);
 					lblSkipTrigArr_Click(j, new EventArgs());
 					labelRefresh(_activeFG.SkipToOrder4Trigger[j], (j == 0 ? lblSkipTrig1 : lblSkipTrig2));
-					Common.Title(this, false);
+					Common.MarkDirty(this);
 				}
 				catch { /* do nothing */ }
 			}
 			else if (Common.Paste(ActiveControl, obj))
 			{
-				Common.Title(this, false);
+				Common.MarkDirty(this);
 			}
 			else if (ActiveControl.GetType() == typeof(DataGridTextBox))
 			{
@@ -1706,7 +1706,7 @@ namespace Idmr.Yogeme
 						msg.Triggers[_activeMessageTriggerIndex] = new Mission.Trigger(trig);
 					lblMessTrigArr_Click(_activeMessageTriggerIndex, new EventArgs());
 					labelRefresh(trig, lblMessTrig[_activeMessageTriggerIndex]);
-					Common.Title(this, false);
+					Common.MarkDirty(this);
 				}
 				catch { /* do nothing */ }
 			}
@@ -1750,7 +1750,7 @@ namespace Idmr.Yogeme
 						{
 							_activeGGTrigger.GoalTrigger = trig ?? throw new FormatException();
 							lblGlobTrigArr_Click(_activeGlobalTriggerIndex, new EventArgs());
-							Common.Title(this, false);
+							Common.MarkDirty(this);
 						}
 						catch { /* do nothing */ }
 						break;
@@ -1760,7 +1760,7 @@ namespace Idmr.Yogeme
 							_mission.Teams[_activeTeamIndex] = (Team)obj ?? throw new FormatException();
 							teamRefresh();
 							lblTeamArr_Click(lblTeam[_activeTeamIndex], new EventArgs());
-							Common.Title(this, false);
+							Common.MarkDirty(this);
 						}
 						catch { /* do nothing */ }
 						break;
@@ -2104,7 +2104,7 @@ namespace Idmr.Yogeme
 				_fBrief.MapPaint();
 			}
 			catch { /* do nothing */ }
-			Common.Title(this, false);
+			Common.MarkDirty(this);
 			
 			lstMessages_SelectedIndexChanged(0, new EventArgs());
 			cboGlobalTeam_SelectedIndexChanged(0, new EventArgs());
@@ -2208,7 +2208,7 @@ namespace Idmr.Yogeme
 				_fBrief.MapPaint();
 			}
 			catch { /* do nothing */ }
-			Common.Title(this, _loading);
+			Common.MarkDirty(this, _loading);
 			return true;
 		}
 		/// <summary>Scans all Flight Groups to detect duplicate names, to provide helpful craft numbering within the editor so that the user can easily tell duplicates apart in triggers.</summary>
@@ -2578,7 +2578,7 @@ namespace Idmr.Yogeme
 			_fBrief?.Close();
 			refreshMap(-1);
 			updateFGList();
-			Common.Title(this, false);
+			Common.MarkDirty(this);
 			Common.UpdateMoveButtons(cmdMoveFGUp, cmdMoveFGDown, lstFG);
 		}
 
@@ -2799,7 +2799,7 @@ namespace Idmr.Yogeme
 		}
 		void numSC_ValueChanged(object sender, EventArgs e)
 		{
-			Common.Title(this, _loading);
+			Common.MarkDirty(this, _loading);
 			if (_activeFG.RandSpecCargo) { numSC.Value = 0; return; }
 
 			lblNotUsed.Visible = (numSC.Value == 0 || numSC.Value > _activeFG.NumberOfCraft);
@@ -3072,7 +3072,7 @@ namespace Idmr.Yogeme
 
 			foreach (FlightGroup fg in getSelectedFlightgroups())
 				for (int i = 0; i < lstGoalTeams.Items.Count; i++) fg.Goals[_activeFGGoalIndex].SetEnabledForTeam(i, lstGoalTeams.GetSelected(i));
-			Common.Title(this, true);
+			Common.MarkDirty(this, true);
 		}
 
 		void numGoalTimeLimit_ValueChanged(object sender, EventArgs e)
@@ -3373,7 +3373,7 @@ namespace Idmr.Yogeme
 			lstMessages.Items.Add(_activeMessage.MessageString);
 			lstMessages.ClearSelected();
 			lstMessages.SelectedIndex = _activeMessageIndex;
-			Common.Title(this, _loading);
+			Common.MarkDirty(this, _loading);
 			return true;
 		}
 		void deleteMess()
@@ -3386,7 +3386,7 @@ namespace Idmr.Yogeme
 				_mission.Messages.RemoveAt(selection[si]);
 				lstMessages.Items.RemoveAt(selection[si]);
 			}
-			Common.Title(this, false);
+			Common.MarkDirty(this);
 			if (_mission.Messages.Count == 0)
 			{
 				lstMessages.Items.Clear();
@@ -3466,7 +3466,7 @@ namespace Idmr.Yogeme
 			_activeMessageIndex += direction;
 
 			Common.SetSelectedIndices(lstMessages, selection, ref _noRefresh);
-			Common.Title(this, false);
+			Common.MarkDirty(this);
 			Common.UpdateMoveButtons(cmdMoveMessUp, cmdMoveMessDown, lstMessages);
 		}
 
@@ -3803,7 +3803,7 @@ namespace Idmr.Yogeme
 		void optXvT_CheckedChanged(object sender, EventArgs e)
 		{
 			setBop(!optXvT.Checked);
-			Common.Title(this, _loading);
+			Common.MarkDirty(this, _loading);
 		}
 
 		void txtIFFArr_Leave(object sender, EventArgs e)

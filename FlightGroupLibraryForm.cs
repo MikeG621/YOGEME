@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using System.IO;
+using Idmr.Platform;
 
 namespace Idmr.Yogeme
 {
@@ -26,7 +27,7 @@ namespace Idmr.Yogeme
 	{
 		const int _libraryHeaderId = 0x4C474659;      // "YFGL" header signature.
 		const int _libraryVersion = 1;
-		
+
 		Settings.Platform _platform = Settings.Platform.None;
 		readonly object _flightGroupCollection = null;
 		readonly EventHandler _onAddEvent;
@@ -217,23 +218,14 @@ namespace Idmr.Yogeme
 			string path = getFullPath(filename);
 			if (File.Exists(path))
 			{
-				try
-				{
-					using (FileStream fs = new FileStream(path, FileMode.Open))
-					{
-						using (BinaryReader br = new BinaryReader(fs))
-						{
-							loadLibraryFromStream(fs, br);
-						}
-					}
-				}
+				try { using (BinaryReader br = new BinaryReader(new FileStream(path, FileMode.Open))) loadLibraryFromStream(br); }
 				catch (Exception x) { MessageBox.Show("Error loading FG library!" + Environment.NewLine + x.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); }
 			}
 		}
 
 		/// <summary>Loads the contents of a library from an open file stream.</summary>
-		void loadLibraryFromStream(FileStream fs, BinaryReader br)
-		{	// removed the try block, redundant
+		void loadLibraryFromStream(BinaryReader br)
+		{
 			int fileId = br.ReadInt32();
 			int fileVersion = br.ReadInt32();
 			int filePlatform = br.ReadInt32();
@@ -254,7 +246,7 @@ namespace Idmr.Yogeme
 				for (int j = 0; j < craftCount; j++)
 				{
 					System.Runtime.Serialization.IFormatter formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
-					object fg = formatter.Deserialize(fs);
+					object fg = formatter.Deserialize(br.BaseStream);
 					group.Add(fg);
 				}
 				if (i > 0) _groupList.Add(group);
@@ -287,7 +279,6 @@ namespace Idmr.Yogeme
 		void refreshGroupList()
 		{
 			if (_groupNames.Count < 1 || _groupList.Count < 1) resetDefaultLibrary();
-
 			if (_groupNames[0] != "Default") _groupNames[0] = "Default";
 
 			int prevSelection = lstLibraryGroup.SelectedIndex;
@@ -364,24 +355,22 @@ namespace Idmr.Yogeme
 			string filename = getFullPath(getLibraryFileName());
 			try
 			{
-				using (FileStream fs = new FileStream(filename, FileMode.OpenOrCreate))
+
+				using (BinaryWriter br = new BinaryWriter(new FileStream(filename, FileMode.OpenOrCreate)))
 				{
-					using (BinaryWriter br = new BinaryWriter(fs))
+					br.Write(_libraryHeaderId);
+					br.Write(_libraryVersion);
+					br.Write((int)_platform);
+					br.Write(_groupList.Count);
+					for (int i = 0; i < _groupList.Count; i++)
 					{
-						br.Write(_libraryHeaderId);
-						br.Write(_libraryVersion);
-						br.Write((int)_platform);
-						br.Write(_groupList.Count);
-						for (int i = 0; i < _groupList.Count; i++)
+						br.Write(_groupNames[i]);
+						br.Write(_groupList[i].Count);
+						br.Write((int)0);  // Reserved for future expansion data if needed.
+						for (int j = 0; j < _groupList[i].Count; j++)
 						{
-							br.Write(_groupNames[i]);
-							br.Write(_groupList[i].Count);
-							br.Write((int)0);  // Reserved for future expansion data if needed.
-							for (int j = 0; j < _groupList[i].Count; j++)
-							{
-								System.Runtime.Serialization.IFormatter formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
-								formatter.Serialize(fs, _groupList[i][j]);
-							}
+							System.Runtime.Serialization.IFormatter formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+							formatter.Serialize(br.BaseStream, _groupList[i][j]);
 						}
 					}
 				}
@@ -390,7 +379,7 @@ namespace Idmr.Yogeme
 		}
 
 		/// <summary>Scans a BaseFlightGroup's arrival/departure motherships for FG reference problems.</summary>
-		void scanMothershipProblems(Platform.BaseFlightGroup bfg, bool scrubProblems, List<string> output)
+		void scanMothershipProblems(BaseFlightGroup bfg, bool scrubProblems, List<string> output)
 		{
 			if (bfg.ArriveViaMothership)
 			{
@@ -399,7 +388,7 @@ namespace Idmr.Yogeme
 			}
 			if (bfg.AlternateMothershipUsed)
 			{
-				logProblem("Alternate Arrival mothership is FG:" + bfg.AlternateMothership, output);
+				logProblem("Alternate mothership is FG:" + bfg.AlternateMothership, output);
 				if (scrubProblems) { bfg.AlternateMothershipUsed = false; bfg.AlternateMothership = 0; }
 			}
 			if (bfg.DepartViaMothership)
@@ -409,7 +398,7 @@ namespace Idmr.Yogeme
 			}
 			if (bfg.CapturedDepartViaMothership)
 			{
-				logProblem("Alternate Departure mothership is FG:" + bfg.CapturedDepartureMothership, output);
+				logProblem("Captured mothership is FG:" + bfg.CapturedDepartureMothership, output);
 				if (scrubProblems) { bfg.CapturedDepartViaMothership = false; bfg.CapturedDepartureMothership = 0; }
 			}
 		}
@@ -423,7 +412,10 @@ namespace Idmr.Yogeme
 		List<string> scanProblems(object fg, bool scrubProblems, bool compileProblems)
 		{
 			List<string> errors = (compileProblems ? new List<string>() : null);
-			Platform.BaseFlightGroup bfg = (Platform.BaseFlightGroup)fg;
+			BaseFlightGroup bfg = (BaseFlightGroup)fg;
+			byte fgType = (byte)Platform.Xwa.Mission.Trigger.TypeList.FlightGroup;
+			byte notFgType = (byte)Platform.Xwa.Mission.Trigger.TypeList.NotFG;
+			byte falseCond = (byte)Platform.Xwa.Mission.Trigger.ConditionList.False;
 			// Begin the list with a craft name indicating the object we're checking.
 			errors?.Add(bfg.ToString());
 			switch (_platform)
@@ -470,7 +462,7 @@ namespace Idmr.Yogeme
 					for (int i = 0; i < tie.ArrDepTriggers.Length; i++)
 					{
 						Platform.Tie.Mission.Trigger trig = tie.ArrDepTriggers[i];
-						if (trig.Condition != 0 && trig.Condition != 10 && trig.VariableType == 1)
+						if (trig.Condition != 0 && trig.Condition != falseCond && trig.VariableType == fgType)
 						{
 							logProblem("ArrDep trigger #" + (i + 1) + " references FG:" + trig.Variable, errors);
 							if (scrubProblems) { trig.Condition = 0; trig.Variable = 0; trig.VariableType = 0; }
@@ -479,10 +471,10 @@ namespace Idmr.Yogeme
 					for (int i = 0; i < tie.Orders.Length; i++)
 					{
 						Platform.Tie.FlightGroup.Order order = tie.Orders[i];
-						if (order.Target1Type == 1) { logProblem("Order #" + (i + 1) + " Target1 references FG:" + order.Target1, errors); if (scrubProblems) { order.Target1 = 0; order.Target1Type = 0; } }
-						if (order.Target2Type == 1) { logProblem("Order #" + (i + 1) + " Target2 references FG:" + order.Target2, errors); if (scrubProblems) { order.Target2 = 0; order.Target2Type = 0; } }
-						if (order.Target3Type == 1) { logProblem("Order #" + (i + 1) + " Target3 references FG:" + order.Target3, errors); if (scrubProblems) { order.Target3 = 0; order.Target3Type = 0; } }
-						if (order.Target4Type == 1) { logProblem("Order #" + (i + 1) + " Target4 references FG:" + order.Target4, errors); if (scrubProblems) { order.Target4 = 0; order.Target4Type = 0; } }
+						if (order.Target1Type == fgType) { logProblem("Order #" + (i + 1) + " Target1 references FG:" + order.Target1, errors); if (scrubProblems) { order.Target1 = 0; order.Target1Type = 0; } }
+						if (order.Target2Type == fgType) { logProblem("Order #" + (i + 1) + " Target2 references FG:" + order.Target2, errors); if (scrubProblems) { order.Target2 = 0; order.Target2Type = 0; } }
+						if (order.Target3Type == fgType) { logProblem("Order #" + (i + 1) + " Target3 references FG:" + order.Target3, errors); if (scrubProblems) { order.Target3 = 0; order.Target3Type = 0; } }
+						if (order.Target4Type == fgType) { logProblem("Order #" + (i + 1) + " Target4 references FG:" + order.Target4, errors); if (scrubProblems) { order.Target4 = 0; order.Target4Type = 0; } }
 					}
 					break;
 				case Settings.Platform.XvT:
@@ -492,7 +484,7 @@ namespace Idmr.Yogeme
 					for (int i = 0; i < xvt.ArrDepTriggers.Length; i++)
 					{
 						Platform.Xvt.Mission.Trigger trig = xvt.ArrDepTriggers[i];
-						if (trig.Condition != 0 && trig.Condition != 10 && (trig.VariableType == 1 || trig.VariableType == 0xF))
+						if (trig.Condition != 0 && trig.Condition != falseCond && (trig.VariableType == fgType || trig.VariableType == notFgType))
 						{
 							logProblem("ArrDep trigger #" + (i + 1) + " references FG:" + trig.Variable, errors);
 							if (scrubProblems) { trig.Condition = 0; trig.Variable = 0; trig.VariableType = 0; }
@@ -501,15 +493,15 @@ namespace Idmr.Yogeme
 					for (int i = 0; i < xvt.Orders.Length; i++)
 					{
 						Platform.Xvt.FlightGroup.Order order = xvt.Orders[i];
-						if (order.Target1Type == 1 || order.Target1Type == 0xF) { logProblem("Order #" + (i + 1) + " Target1 references FG:" + order.Target1, errors); if (scrubProblems) { order.Target1 = 0; order.Target1Type = 0; } }
-						if (order.Target2Type == 1 || order.Target2Type == 0xF) { logProblem("Order #" + (i + 1) + " Target2 references FG:" + order.Target2, errors); if (scrubProblems) { order.Target2 = 0; order.Target2Type = 0; } }
-						if (order.Target3Type == 1 || order.Target3Type == 0xF) { logProblem("Order #" + (i + 1) + " Target3 references FG:" + order.Target3, errors); if (scrubProblems) { order.Target3 = 0; order.Target3Type = 0; } }
-						if (order.Target4Type == 1 || order.Target4Type == 0xF) { logProblem("Order #" + (i + 1) + " Target4 references FG:" + order.Target4, errors); if (scrubProblems) { order.Target4 = 0; order.Target4Type = 0; } }
+						if (order.Target1Type == fgType || order.Target1Type == notFgType) { logProblem("Order #" + (i + 1) + " Target1 references FG:" + order.Target1, errors); if (scrubProblems) { order.Target1 = 0; order.Target1Type = 0; } }
+						if (order.Target2Type == fgType || order.Target2Type == notFgType) { logProblem("Order #" + (i + 1) + " Target2 references FG:" + order.Target2, errors); if (scrubProblems) { order.Target2 = 0; order.Target2Type = 0; } }
+						if (order.Target3Type == fgType || order.Target3Type == notFgType) { logProblem("Order #" + (i + 1) + " Target3 references FG:" + order.Target3, errors); if (scrubProblems) { order.Target3 = 0; order.Target3Type = 0; } }
+						if (order.Target4Type == fgType || order.Target4Type == notFgType) { logProblem("Order #" + (i + 1) + " Target4 references FG:" + order.Target4, errors); if (scrubProblems) { order.Target4 = 0; order.Target4Type = 0; } }
 					}
 					for (int i = 0; i < xvt.SkipToOrder4Trigger.Length; i++)
 					{
 						Platform.Xvt.Mission.Trigger trig = xvt.SkipToOrder4Trigger[i];
-						if (trig.Condition != 0 && trig.Condition != 10 && (trig.VariableType == 1 || trig.VariableType == 0xF))
+						if (trig.Condition != 0 && trig.Condition != falseCond && (trig.VariableType == fgType || trig.VariableType == notFgType))
 						{
 							logProblem("Skip trigger #" + (i + 1) + " references FG:" + trig.Variable, errors);
 							if (scrubProblems) { trig.Condition = 0; trig.Variable = 0; trig.VariableType = 0; }
@@ -522,7 +514,7 @@ namespace Idmr.Yogeme
 					for (int i = 0; i < xwa.ArrDepTriggers.Length; i++)
 					{
 						Platform.Xwa.Mission.Trigger trig = xwa.ArrDepTriggers[i];
-						if (trig.Condition != 0 && trig.Condition != 10 && (trig.VariableType == 1 || trig.VariableType == 0xF))
+						if (trig.Condition != 0 && trig.Condition != falseCond && (trig.VariableType == fgType || trig.VariableType == notFgType))
 						{
 							logProblem("ArrDep trigger #" + (i + 1) + " references FG:" + trig.Variable, errors);
 							if (scrubProblems) { trig.Condition = 0; trig.Variable = 0; trig.VariableType = 0; }
@@ -538,14 +530,14 @@ namespace Idmr.Yogeme
 						for (int i = 0; i < 4; i++)
 						{
 							Platform.Xwa.FlightGroup.Order order = xwa.Orders[reg, i];
-							if (order.Target1Type == 1 || order.Target1Type == 0xF) { logProblem("Region #" + (reg + 1) + " Order #" + (i + 1) + " Target1 references FG:" + order.Target1, errors); if (scrubProblems) { order.Target1Type = 0; } }
-							if (order.Target2Type == 1 || order.Target2Type == 0xF) { logProblem("Region #" + (reg + 1) + " Order #" + (i + 1) + " Target2 references FG:" + order.Target2, errors); if (scrubProblems) { order.Target2Type = 0; } }
-							if (order.Target3Type == 1 || order.Target3Type == 0xF) { logProblem("Region #" + (reg + 1) + " Order #" + (i + 1) + " Target3 references FG:" + order.Target3, errors); if (scrubProblems) { order.Target3Type = 0; } }
-							if (order.Target4Type == 1 || order.Target4Type == 0xF) { logProblem("Region #" + (reg + 1) + " Order #" + (i + 1) + " Target4 references FG:" + order.Target4, errors); if (scrubProblems) { order.Target4Type = 0; } }
+							if (order.Target1Type == fgType || order.Target1Type == notFgType) { logProblem("Region #" + (reg + 1) + " Order #" + (i + 1) + " Target1 references FG:" + order.Target1, errors); if (scrubProblems) { order.Target1Type = 0; } }
+							if (order.Target2Type == fgType || order.Target2Type == notFgType) { logProblem("Region #" + (reg + 1) + " Order #" + (i + 1) + " Target2 references FG:" + order.Target2, errors); if (scrubProblems) { order.Target2Type = 0; } }
+							if (order.Target3Type == fgType || order.Target3Type == notFgType) { logProblem("Region #" + (reg + 1) + " Order #" + (i + 1) + " Target3 references FG:" + order.Target3, errors); if (scrubProblems) { order.Target3Type = 0; } }
+							if (order.Target4Type == fgType || order.Target4Type == notFgType) { logProblem("Region #" + (reg + 1) + " Order #" + (i + 1) + " Target4 references FG:" + order.Target4, errors); if (scrubProblems) { order.Target4Type = 0; } }
 							for (int k = 0; k < order.SkipTriggers.Length; k++)
 							{
 								Platform.Xwa.Mission.Trigger trig = order.SkipTriggers[k];
-								if (trig.Condition != 0 && trig.Condition != 10 && (trig.VariableType == 1 || trig.VariableType == 0xF))
+								if (trig.Condition != 0 && trig.Condition != falseCond && (trig.VariableType == fgType || trig.VariableType == notFgType))
 								{
 									logProblem("Region #" + (reg + 1) + " Order #" + (i + 1) + " Skip trigger #" + (k + 1) + " references FG:" + trig.Variable, errors);
 									if (scrubProblems) { trig.Condition = 0; trig.Variable = 0; trig.VariableType = 0; }
@@ -560,7 +552,7 @@ namespace Idmr.Yogeme
 					}
 					break;
 			}
-			
+
 			//Remove the name if no errors were logged.
 			if (errors != null && errors.Count == 1) errors.Clear();
 			return errors;
@@ -769,11 +761,10 @@ namespace Idmr.Yogeme
 		}
 		void form_FormClosing(object sender, FormClosingEventArgs e)
 		{
-			if (_isDirty)
-			{
-				saveLibrary();
-				_isDirty = false;
-			}
+			if (!_isDirty) return;
+
+			saveLibrary();
+			_isDirty = false;
 		}
 		void form_SizeChanged(object sender, EventArgs e)
 		{

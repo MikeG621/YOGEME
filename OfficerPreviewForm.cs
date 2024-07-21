@@ -110,25 +110,20 @@ namespace Idmr.Yogeme
 			// offcr21, eyes, mouth, ssrobe9 and ssface technically change between brf and dbrf, but not really
 			((LfdReader.Font)_empire.Resources[_fontID]).SetColor(_normalText);
 			#endregion
-			#region array declarations
 			_opts[0] = optPreOff;
 			_opts[1] = optPreSec;
 			_opts[2] = optPostOff;
 			_opts[3] = optPostSec;
 			for (int i = 0; i < 4; i++) _opts[i].CheckedChanged += new EventHandler(optsArr_CheckedChanged);
-			#endregion
 			_activeColor = _normalText;
-			if (officer < 0 || officer >= 4)
-                officer = 0;
+			if (officer < 0 || officer >= 4) officer = 0;
 			_opts[officer].Checked = true;
-            if (question >= 0 && question <= 4)
-            {
-                _selectedIndex = -1;  //Prevent "selecting" the wrong question when drawing the selection highlight.
-                loadBackAndQuestions();
-                for (int i = 0; i < _indexes.Length; i++)
-                    if (question == _indexes[i])
-                        displayQuestion(i);  //This will set the actual _selectedIndex
-            }
+			if (question >= 0 && question <= 4)
+			{
+				_selectedIndex = -1;  //Prevent "selecting" the wrong question when drawing the selection highlight.
+				loadBackAndQuestions();
+				for (int i = 0; i < _indexes.Length; i++) if (question == _indexes[i]) displayQuestion(i);  //This will set the actual _selectedIndex
+			}
 		}
 
 		#region controls
@@ -143,25 +138,22 @@ namespace Idmr.Yogeme
 		{
 			Graphics g = e.Graphics;
 			// blow image up to 640x400
-			g.DrawImage(_preview, 0, 0, _preview.Width*2, _preview.Height*2);
+			g.DrawImage(_preview, 0, 0, _preview.Width * 2, _preview.Height * 2);
 		}
 
 		void pctPreview_MouseUp(object sender, MouseEventArgs e)
 		{
-			if (e.X > 244 && e.X < 622 && e.Y < 390)
+			if (e.X <= 244 || e.X >= 622 || e.Y >= 390) return; // whitespace
+			
+			if (e.Y < 232)  // encompasses answer and page blocks
 			{
-				if (e.Y < 232)	// encompasses answer and page blocks
-				{
-                    //[JB] Expanded to allow right-click navigation backwards.
-                    if (e.Button == MouseButtons.Right && cmdPrevious.Enabled) cmdPrevious_Click("pctPreview_MouseUp", new EventArgs());
-                    if (e.Button != MouseButtons.Right && cmdNext.Enabled) cmdNext_Click("pctPreview_MouseUp", new EventArgs());
-                }
-				else if (e.Y > 290)	// questions
-				{
-					int question = (e.Y - 290) / 20;	// the question line clicked, 0-4
-                    displayQuestion(question);  //[JB] Moved code to function so that initializing the form can call it too.
-				}
-				// else whitespace
+				if (e.Button == MouseButtons.Right && cmdPrevious.Enabled) cmdPrevious_Click("pctPreview_MouseUp", new EventArgs());
+				if (e.Button != MouseButtons.Right && cmdNext.Enabled) cmdNext_Click("pctPreview_MouseUp", new EventArgs());
+			}
+			else if (e.Y > 290) // questions
+			{
+				int question = (e.Y - 290) / 20;    // the question line clicked, 0-4
+				displayQuestion(question);
 			}
 			// else whitespace
 		}
@@ -189,11 +181,12 @@ namespace Idmr.Yogeme
 		void loadPage()
 		{
 			loadBackAndQuestions();
-			changeAnswerColor(_activeColor);	// this allows highlighting across pages
+			changeAnswerColor(_activeColor);    // this allows highlighting across pages
 			int offset = (_page - 1) * 10;
 			for (int i = 0; i < 10; i++)
 			{
 				if (i + offset == _answerLines.Length) break;
+
 				displayString(_answerLines[i + offset], 122, (short)(6 + i * 10));
 			}
 			((LfdReader.Font)_empire.Resources[_fontID]).SetColor(_normalText);
@@ -204,6 +197,7 @@ namespace Idmr.Yogeme
 		void displayQuestion(int question)
 		{
 			if (_indexes[question] == 255) return;  // blank Q/A set
+
 			_selectedIndex = _indexes[question];
 			_answerLines = _currentAnswer.Split(new string[] { "\r\n" }, StringSplitOptions.None);
 			_page = 1;
@@ -265,7 +259,7 @@ namespace Idmr.Yogeme
 			Delt offcr21 = (Delt)_talk.Resources["DELToffcr21"];
 			Delt ssrobe9 = (Delt)_talk.Resources["DELTssrobe9"];
 			Anim eyes = (Anim)_talk.Resources["ANIMeyes"];
-			Anim ssface= (Anim)_talk.Resources["ANIMssface"];
+			Anim ssface = (Anim)_talk.Resources["ANIMssface"];
 			Anim mouth = (Anim)_talk.Resources["ANIMmouth"];
 			switch (_qaSet)
 			{
@@ -283,7 +277,7 @@ namespace Idmr.Yogeme
 					Delt ssbak = (Delt)_talk.Resources["DELTssbak"];
 					Delt sstxt = (Delt)_talk.Resources["DELTsstxt"];
 					g.DrawImageUnscaled(ssbak.Image, 0, 0);
-					g.DrawImageUnscaled(sstxt.Image, sstxt.Left , sstxt.Top);
+					g.DrawImageUnscaled(sstxt.Image, sstxt.Left, sstxt.Top);
 					g.DrawImageUnscaled(ssrobe9.Image, ssrobe9.Left - 24, ssrobe9.Top + 12);
 					g.DrawImageUnscaled(ssface.Frames[0].Image, ssface.Left - 24, ssface.Top + 12);
 					break;
@@ -307,9 +301,9 @@ namespace Idmr.Yogeme
 			}
 			g.Dispose();
 			#endregion graphics
-			
+
 			int used = 0;
-            int curIndex = _selectedIndex;
+			int curIndex = _selectedIndex;
 			Color active = _activeColor;
 			((LfdReader.Font)_empire.Resources[_fontID]).SetColor(_normalText);
 			for (_selectedIndex = 4; _selectedIndex > -1; _selectedIndex--)
@@ -318,26 +312,26 @@ namespace Idmr.Yogeme
 				string q = _currentQuestion;
 				if (q != "" || _currentAnswer != "")
 				{
-                    if (q == "") q = "(empty question)";      //[JB] Display a placeholder for empty questions.
-                    if(curIndex == _selectedIndex) q = "[" + q + "]";  //[JB] Simulate highlighting of selected question.
+					if (q == "") q = "(empty question)";      //[JB] Display a placeholder for empty questions.
+					if (curIndex == _selectedIndex) q = "[" + q + "]";  //[JB] Simulate highlighting of selected question.
 					displayString(q, 122, (short)(145 + (4 - used) * 10));
 					_indexes[4 - used] = (byte)_selectedIndex;
 					used++;
 				}
 			}
 			_activeColor = active;
-            _selectedIndex = curIndex;  //[JB] Restore selected index.  This allows highlighting to remain functional.
+			_selectedIndex = curIndex;  //[JB] Restore selected index.  This allows highlighting to remain functional.
 			pctPreview.Invalidate();
 		}
 		#endregion methods
-		
+
 		#region properties
 		int _qaSet
 		{
 			get
 			{
 				for (int i = 0; i < 4; i++) if (_opts[i].Checked) return i;
-				return -1;	// this never happen, but makes the compiler happy
+				return -1;  // this never happen, but makes the compiler happy
 			}
 		}
 

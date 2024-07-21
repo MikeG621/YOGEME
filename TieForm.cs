@@ -937,7 +937,7 @@ namespace Idmr.Yogeme
 			setInteractiveLabelColor(lblMess2, _activeMessageTrigIndex == 1);
 		}
 
-		void briefingModifiedCallback(object sender, EventArgs e) => Common.Title(this, _loading);
+		void briefingModifiedCallback(object sender, EventArgs e) => Common.MarkDirty(this, _loading);
 
 		void colorizedComboBox_DrawItem(object sender, DrawItemEventArgs e)
 		{
@@ -999,7 +999,7 @@ namespace Idmr.Yogeme
 			if (prop.Name != "")
 			{
 				setFlightgroupProperty(prop.RefreshType, prop.Name, Common.GetControlValue(sender));
-				Common.Title(this, false);  // Since we're not loading, any change marks as dirty.
+				Common.MarkDirty(this);  // Since we're not loading, any change marks as dirty.
 			}
 			if (prop.RefreshType.HasFlag(MultiEditRefreshType.ItemText)) listRefreshSelectedItems();
 			if (prop.RefreshType.HasFlag(MultiEditRefreshType.CraftName)) updateFGList();
@@ -1014,7 +1014,7 @@ namespace Idmr.Yogeme
 			if (prop.Name != "")
 			{
 				setMessageProperty(prop.Name, Common.GetControlValue(sender));
-				Common.Title(this, false);
+				Common.MarkDirty(this);
 			}
 			if (prop.RefreshType.HasFlag(MultiEditRefreshType.ItemText)) messRefreshSelectedItems();
 		}
@@ -1214,7 +1214,7 @@ namespace Idmr.Yogeme
 			data.SetData("yogeme", false, stream);
 			Clipboard.SetDataObject(data, true);
 		}
-		void menuCut_Click(object sender, EventArgs e) { if (Common.Cut(ActiveControl)) Common.Title(this, false); }
+		void menuCut_Click(object sender, EventArgs e) { if (Common.Cut(ActiveControl)) Common.MarkDirty(this); }
 		void menuDelete_Click(object sender, EventArgs e)
 		{
 			if (tabMain.SelectedIndex == 0 && (sender.ToString() == "toolbar" || lstFG.Focused)) deleteFG();
@@ -1243,7 +1243,7 @@ namespace Idmr.Yogeme
 			}
 		}
 		void menuHelpInfo_Click(object sender, EventArgs e) => Common.LaunchHelp();
-		void menuIDMR_Click(object sender, EventArgs e) => Common.LaunchIdmr();
+		void menuIDMR_Click(object sender, EventArgs e) => Common.LaunchGithub();
 		void menuMap_Click(object sender, EventArgs e)
 		{
 			try { _fMap.Close(); }
@@ -1253,7 +1253,7 @@ namespace Idmr.Yogeme
 		}
 		void mapForm_DataChangedCallback(object sender, EventArgs e)
 		{
-			Common.Title(this, false);
+			Common.MarkDirty(this);
 			if (tabFGMinor.SelectedIndex == 3) refreshWaypointTab();
 		}
 		void menuNewXwing_Click(object sender, EventArgs e)
@@ -1357,7 +1357,7 @@ namespace Idmr.Yogeme
 					}
 					lblADTrigArr_Click(_activeArrDepTriggerIndex, new EventArgs());
 					labelRefresh(_activeArrDepTrigger, lblADTrig[_activeArrDepTriggerIndex]);
-					Common.Title(this, false);
+					Common.MarkDirty(this);
 				}
 				catch { /* do nothing */ }
 			}
@@ -1368,11 +1368,11 @@ namespace Idmr.Yogeme
 					foreach (FlightGroup fg in getSelectedFlightgroups()) fg.Orders[_activeOrderIndex] = new FlightGroup.Order(ord);
 					lblOrderArr_Click(_activeOrderIndex, new EventArgs());
 					orderLabelRefresh();
-					Common.Title(this, false);
+					Common.MarkDirty(this);
 				}
 				catch { /* do nothing */ }
 			}
-			else if (Common.Paste(ActiveControl, obj)) { Common.Title(this, false); }
+			else if (Common.Paste(ActiveControl, obj)) { Common.MarkDirty(this); }
 			else if (ActiveControl.GetType() == typeof(DataGridTextBox))
 			{
 				try
@@ -1396,7 +1396,7 @@ namespace Idmr.Yogeme
 					foreach (Platform.Tie.Message msg in getSelectedMessages()) msg.Triggers[_activeMessageTrigIndex] = new Mission.Trigger(trig);
 					lblMessArr_Click(_activeMessageTrigIndex, new EventArgs());
 					labelRefresh(trig, _activeMessageTrigIndex == 0 ? lblMess1 : lblMess2);
-					Common.Title(this, false);
+					Common.MarkDirty(this);
 				}
 				catch { /* do nothing */ }
 			}
@@ -1440,7 +1440,7 @@ namespace Idmr.Yogeme
 							_activeGlobalGoal.Triggers[_activeGlobalGoalIndex % 2] = trig ?? throw new FormatException();
 
 							lblGlobArr_Click(_activeGlobalGoalIndex, new EventArgs());
-							Common.Title(this, false);
+							Common.MarkDirty(this);
 						}
 						catch { /* do nothing */ }
 						break;
@@ -1717,7 +1717,7 @@ namespace Idmr.Yogeme
 				_fBrief.MapPaint();
 			}
 			catch { /* do nothing */ }
-			Common.Title(this, false);
+			Common.MarkDirty(this);
 
 			lstMessages_SelectedIndexChanged(0, new EventArgs());
 			lstFG_SelectedIndexChanged(0, new EventArgs());
@@ -1877,7 +1877,7 @@ namespace Idmr.Yogeme
 			_fBrief?.Close();
 			refreshMap(-1);
 			updateFGList();
-			Common.Title(this, false);
+			Common.MarkDirty(this);
 			Common.UpdateMoveButtons(cmdMoveFGUp, cmdMoveFGDown, lstFG);
 		}
 		void listRefreshItem(int index, bool mapUpdate = true)
@@ -1907,7 +1907,7 @@ namespace Idmr.Yogeme
 			updateFGList();
 			lstFG.ClearSelected();
 			lstFG.SelectedIndex = _activeFGIndex;
-			Common.Title(this, _loading);
+			Common.MarkDirty(this, _loading);
 			refreshMap(-1);
 			try
 			{
@@ -2614,7 +2614,7 @@ namespace Idmr.Yogeme
 				_mission.Messages.RemoveAt(selection[si]);
 				lstMessages.Items.RemoveAt(selection[si]);
 			}
-			Common.Title(this, false);
+			Common.MarkDirty(this);
 			if (_mission.Messages.Count == 0)
 			{
 				lstMessages.Items.Clear();
@@ -2691,7 +2691,7 @@ namespace Idmr.Yogeme
 			_activeMessageIndex += direction;
 
 			Common.SetSelectedIndices(lstMessages, selection, ref _noRefresh);  // Apply adjusted indices
-			Common.Title(this, false);
+			Common.MarkDirty(this);
 			Common.UpdateMoveButtons(cmdMoveMessUp, cmdMoveMessDown, lstMessages);
 		}
 		bool newMess()
@@ -2706,7 +2706,7 @@ namespace Idmr.Yogeme
 			lstMessages.Items.Add(_activeMessage.MessageString);
 			lstMessages.ClearSelected();
 			lstMessages.SelectedIndex = _activeMessageIndex;
-			Common.Title(this, _loading);
+			Common.MarkDirty(this, _loading);
 			return true;
 		}
 		void cmdMoveMessUp_Click(object sender, EventArgs e) => moveMessages(-1);
@@ -3018,7 +3018,7 @@ namespace Idmr.Yogeme
 				if (txtAnswer.Text != output)
 				{
 					txtAnswer.Text = output;
-					Common.Title(this, false);
+					Common.MarkDirty(this);
 				}
 			}
 			catch (Exception x) { MessageBox.Show(x.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); }

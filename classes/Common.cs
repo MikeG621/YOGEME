@@ -8,6 +8,7 @@
 
 /* CHANGELOG
  * [UPD] use actual types for comparison instead of strings
+ * [UPD] Title() renamed to MarkDirty(), "loading" made optional
  * v1.15.5, 231222
  * [UPD] Removed RunConverter due to being obsolete
  * v1.13.1, 220208
@@ -57,51 +58,14 @@ namespace Idmr.Yogeme
 	/// <summary>Functions that apply to all platforms</summary>
 	public static class Common
 	{
-		/// <summary>Launch a browser at the EmpireReborn site</summary>
+		/// <summary>Launch a browser at the EmpireReborn site.</summary>
 		public static void LaunchER() => Process.Start("http://empirereborn.net");
 
-		/// <summary>Launch a browser at the IDMR site</summary>
-		public static void LaunchIdmr() => Process.Start("https://github.com/MikeG621/YOGEME/releases");
+		/// <summary>Launch a browser at the YOGEME site.</summary>
+		public static void LaunchGithub() => Process.Start("https://github.com/MikeG621/YOGEME/releases");
 
+		/// <summary>Launch the help file.</summary>
 		public static void LaunchHelp() => Process.Start(Application.StartupPath + "\\yogeme.chm");
-		public static void EmailJagged() => Process.Start("mailto:mjgaisser@gmail.com?subject=YOGEME");
-
-		/// <summary>Processes properly formatted custom craft list files to be used in YOGEME.</summary>
-		/// <param name="filePath">The full path to the shiplist file.</param>
-		/// <param name="types">The output array of craft types.</param>
-		/// <param name="abbrvs">The output array of craft type abbreviations.</param>
-		/// <exception cref="ApplicationException">Throw if an error occurs processing the file.</exception>
-		/// <remarks>Each line of the file must be in the format "<b>CraftType</b>,<b>Abbrv</b>" without quotes, such as "X-Wing,X-W".</remarks>
-		public static void ProcessCraftList(string filePath, out string[] types, out string[] abbrvs)
-		{
-			if (!File.Exists(filePath))
-			{
-				types = null;
-				abbrvs = null;
-				return;
-			}
-			StreamReader sr = null;
-			try
-			{
-				sr = File.OpenText(filePath);
-				string contents = "";
-				string s = null;
-				while ((s = sr.ReadLine()) != null) contents += s + "\r\n";
-				sr.Close();
-
-				string[] fullList = contents.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
-				types = new string[fullList.Length];
-				abbrvs = new string[fullList.Length];
-				for (int i = 0; i < fullList.Length; i++)
-				{
-					string[] line = fullList[i].Split(',');
-					types[i] = line[0];
-					abbrvs[i] = line[1];
-				}
-			}
-			catch (Exception x) { throw new ApplicationException(x.Message); }
-			finally { sr?.Close(); }
-		}
 
 		/// <summary>Run MissionVerify.exe on open mission</summary>
 		/// <remarks>MissionVerify part is take from <see cref="Settings.VerifyLocation"/></remarks>
@@ -133,7 +97,7 @@ namespace Idmr.Yogeme
 		/// <summary>Adds an asterisk to the window title</summary>
 		/// <param name="form">The relevant window.</param>
 		/// <param name="loading">Must be <b>false</b> to have an effect.</param>
-		public static void Title(Form form, bool loading) { if (form.Text.IndexOf("*") == -1 && !loading) form.Text += "*"; }
+		public static void MarkDirty(Form form, bool loading = false) { if (form.Text.IndexOf("*") == -1 && !loading) form.Text += "*"; }
 
 		/// <summary>Adds an asterisk to the window title if change detected</summary>
 		/// <typeparam name="T">Type of value</typeparam>
@@ -143,8 +107,7 @@ namespace Idmr.Yogeme
 		/// <returns><paramref name="newValue"/></returns>
         public static T Update<T>(Form form, T oldValue, T newValue)
 		{
-			if (form.Text.IndexOf("*") == -1 && oldValue.ToString() != newValue.ToString())
-                form.Text += "*";
+			if (oldValue.ToString() != newValue.ToString()) MarkDirty(form);
 			return newValue;
 		}
 

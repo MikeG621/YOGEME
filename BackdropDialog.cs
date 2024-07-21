@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2024 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.14.1
+ * VERSION: 1.14.1+
  */
 
 /* CHANGELOG
+ * [UPD] cleanup
  * v1.14.1, 230814
  * [FIX #85] Now looks for hook INI or TXT at mission location
  * v1.14, 230804
@@ -105,15 +106,16 @@ namespace Idmr.Yogeme
 			_platform = platform;
 			if (_platform == MissionFile.Platform.Invalid || _platform == MissionFile.Platform.XWA) throw new ArgumentException("Invalid platform, must be TIE, XvT or BoP");
 			if (!platformInstalled(config)) throw new ApplicationException("Platform installation not found, feature unavailable.");
+
 			_index = index;
 			if ((_platform == MissionFile.Platform.TIE || _platform == MissionFile.Platform.XvT) && (_index < 0 || _index > 7)) _index = 0;
 			if (_platform == MissionFile.Platform.BoP && (_index < 0 || _index > 16)) _index = 0;
 			InitializeComponent();
-			if (_planets != null) _planets = null;	// allow GC if you've changed platforms, although that'll only work if you open this again
-            try  { createThumbnails(); }
-            catch { MessageBox.Show("Failed to load backdrop graphics. The game's files could not be found. Check whether the game is installed and its path has been added to the platform settings.", "Error"); }
+			if (_planets != null) _planets = null;  // allow GC if you've changed platforms, although that'll only work if you open this again
+			try { createThumbnails(); }
+			catch { MessageBox.Show("Failed to load backdrop graphics. The game's files could not be found. Check whether the game is installed and its path has been added to the platform settings.", "Error"); }
 			numBackdrop.Maximum = _numBackdrops - 1;
-            numBackdrop.Value = _index;
+			numBackdrop.Value = _index;
 			numBackdrop_ValueChanged("init", new EventArgs());
 		}
 		/// <summary>Constructor for XWA</summary>
@@ -129,6 +131,7 @@ namespace Idmr.Yogeme
 			if (_shadow < 0 || _shadow > 6) _shadow = 0;
 			InitializeComponent();
 			if (!platformInstalled(config)) throw new ApplicationException("Platform installation not found, feature unavailable.");
+
 			createThumbnails();
 			vsbThumbs.Enabled = true;
 			numBackdrop.Maximum = _numBackdrops - 1;
@@ -152,8 +155,9 @@ namespace Idmr.Yogeme
 			if (_shadow < 0 || _shadow > 6) _shadow = 0;
 			InitializeComponent();
 			if (!platformInstalled(config)) throw new ApplicationException("Platform installation not found, feature unavailable.");
-			if (File.Exists(filePath.ToLower().Replace(".tie", "_Resdata.txt"))) _fileName = filePath.ToLower().Replace(".tie", "_Resdata.txt");
-			else _fileName = filePath.ToLower().Replace(".tie", ".ini");
+
+			if (File.Exists(Path.GetFileNameWithoutExtension(filePath) + "_Resdata.txt")) _fileName = Path.GetFileNameWithoutExtension(filePath) + "_Resdata.txt";
+			else _fileName = Path.GetFileNameWithoutExtension(filePath) + ".ini";
 			createThumbnails();
 			vsbThumbs.Enabled = true;
 			numBackdrop.Maximum = _numBackdrops - 1;
@@ -271,18 +275,18 @@ namespace Idmr.Yogeme
 			thumbs[102] = thmb102;
 			thumbs[103] = thmb103;
 			#endregion
-			for (int i = 0; i < 104; i++)
+			for (int i = 0; i < thumbs.Length; i++)
 			{
 				thumbs[i].Tag = i;
 				thumbs[i].SizeMode = PictureBoxSizeMode.Zoom;
 			}
 			// TODO: also look for customs in TIE-BoP
 			if (_platform == MissionFile.Platform.TIE || _platform == MissionFile.Platform.XvT)
-				for (int i = 1; i <= 8; i++) setThumbnail(_backdropDirectory + "PLANET" + i.ToString() + ".ACT", i - 1);
+				for (int i = 1; i <= 8; i++) setThumbnail(_backdropDirectory + "PLANET" + i + ".ACT", i - 1);
 			else if (_platform == MissionFile.Platform.BoP)
 			{
-				for (int i = 1; i <= 8; i++) setThumbnail(_backdropDirectory.Remove(_backdropDirectory.Length - 24, 15) + "PLANET" + i.ToString() + ".ACT", i - 1);
-				for (int i = 9; i <= 12; i++) setThumbnail(_backdropDirectory + "PLANET" + i.ToString() + ".ACT", i - 1);
+				for (int i = 1; i <= 8; i++) setThumbnail(_backdropDirectory.Remove(_backdropDirectory.Length - 24, 15) + "PLANET" + i + ".ACT", i - 1);
+				for (int i = 9; i <= 12; i++) setThumbnail(_backdropDirectory + "PLANET" + i + ".ACT", i - 1);
 				setThumbnail(_backdropDirectory + "SUN1B.ACT", 12);
 				setThumbnail(_backdropDirectory + "SUN1C.ACT", 13);
 				setThumbnail(_backdropDirectory + "SUN2B.ACT", 14);
@@ -297,16 +301,16 @@ namespace Idmr.Yogeme
 					_planets = new DatFile();
 					_planets.Groups.AutoSort = false;
 					_planets.Groups.Add(-1);
-					setThumbnail("planet.dat", 0, 24);
+					setThumbnailXwa("planet.dat", 0, 24);
 					_planets.Groups.Add(-2);
-					setThumbnail("planet.dat", 25, 35);
-					setThumbnail("wrapback.dat", 60, 2);
-					setThumbnail("dsfire.dat", 62, 1);
-					setThumbnail("nebula.dat", 63, 10);
-					setThumbnail("galaxy.dat", 73, 10);
-					setThumbnail("backdrop.dat", 83, 11);
-					setThumbnail("wrapback.dat", 94, 4);
-					setThumbnail("nebula.dat", 98, 5);
+					setThumbnailXwa("planet.dat", 25, 35);
+					setThumbnailXwa("wrapback.dat", 60, 2);
+					setThumbnailXwa("dsfire.dat", 62, 1);
+					setThumbnailXwa("nebula.dat", 63, 10);
+					setThumbnailXwa("galaxy.dat", 73, 10);
+					setThumbnailXwa("backdrop.dat", 83, 11);
+					setThumbnailXwa("wrapback.dat", 94, 4);
+					setThumbnailXwa("nebula.dat", 98, 5);
 				}
 				for (int i = 1; i < _planets.NumberOfGroups; i++)
 				{
@@ -314,7 +318,7 @@ namespace Idmr.Yogeme
 					thumbs[i].Image = _planets.Groups[i].Subs[0].Image;
 					thumbs[i].BackColor = System.Drawing.Color.Black;
 				}
-                StreamReader sr;
+				StreamReader sr;
 				System.Collections.Generic.List<string> resdata = new System.Collections.Generic.List<string>(50);
 				DatFile temp;
 				string line;
@@ -326,7 +330,7 @@ namespace Idmr.Yogeme
 					sr.Close();
 				}
 				catch { MessageBox.Show("Could not open resource file:\n" + _installDirectory + "\\RESDATA.TXT", "Error"); }
-				for (int i = 0; i < resdata.Count - 38; i++)	// 38 original entries, customs must be at top
+				for (int i = 0; i < resdata.Count - 38; i++)    // 38 original entries, customs must be at top
 				{
 					try
 					{
@@ -406,30 +410,30 @@ namespace Idmr.Yogeme
 			}
 		}
 		/// <summary>TIE and XvT/BoP</summary>
-		/// <param name="file">ACT File</param>
+		/// <param name="actFile">ACT File</param>
 		/// <param name="index">Thumbs index</param>
-		void setThumbnail(string file, int index)
+		void setThumbnail(string actFile, int index)
 		{
-			ImageFormat.Act.ActImage act = new ImageFormat.Act.ActImage(file);
+			ImageFormat.Act.ActImage act = new ImageFormat.Act.ActImage(actFile);
 			thumbs[index].Image = act.Frames[0].Image;
 			thumbs[index].BackColor = System.Drawing.Color.Black;
 		}
 		/// <summary>XWA</summary>
-		/// <param name="file">DAT file</param>
+		/// <param name="datFile">DAT file</param>
 		/// <param name="index">Starting thumbs index</param>
 		/// <param name="count">Number of groups to read</param>
-		void setThumbnail(string file, int index, int count)
+		void setThumbnailXwa(string datFile, int index, int count)
 		{
-            try  //[JB] Added try/catch to generate a more user-friendly message.
-            {
-			    DatFile temp = new DatFile(_backdropDirectory + file);
-			    int offset = 0;
-			    if (index == 25) offset = 24;
-			    else if (index == 94) offset = 2;
-			    else if (index == 98) offset = 10;
-			    for (int i = index; i < count+index; i++) _planets.Groups.Add(temp.Groups[i - index + offset]);
-            }
-            catch { throw new ArgumentException("Cannot open resource file:\n" + _backdropDirectory + file + "\n\nCheck your platform installation path."); }
+			try
+			{
+				DatFile temp = new DatFile(_backdropDirectory + datFile);
+				int offset = 0;
+				if (index == 25) offset = 24;
+				else if (index == 94) offset = 2;
+				else if (index == 98) offset = 10;
+				for (int i = index; i < count + index; i++) _planets.Groups.Add(temp.Groups[i - index + offset]);
+			}
+			catch { throw new ArgumentException("Cannot open resource file:\n" + _backdropDirectory + datFile + "\n\nCheck your platform installation path."); }
 		}
 		bool platformInstalled(Settings config)
 		{
@@ -442,7 +446,7 @@ namespace Idmr.Yogeme
 					if (!config.BopInstalled) return false;
 					_installDirectory = config.BopPath;
 					_backdropDirectory = _installDirectory + dir;
-					_numBackdrops = 17;	// 8, then 38 lines, then 9
+					_numBackdrops = 17; // 8, then 38 lines, then 9
 					break;
 				case MissionFile.Platform.TIE:
 					if (!config.TieInstalled) return false;
@@ -473,9 +477,9 @@ namespace Idmr.Yogeme
 					label4.Left += size;
 					label5.Left += size;
 					label5.Visible = true;
-                    label6.Left += size;
+					label6.Left += size;
 					label6.Visible = true;
-                    lblColor.Left += size;
+					lblColor.Left += size;
 					lblColor.Visible = true;
 					pctSample.Left += size;
 					pctSample.Visible = true;
@@ -503,8 +507,7 @@ namespace Idmr.Yogeme
 			pctBackdrop.Image = _planets.Groups[_index].Subs[(int)numShadow.Value].Image;
 			_shadow = (int)numShadow.Value;
 			lblImage.Text = pctBackdrop.Image.Width + "x" + pctBackdrop.Image.Height;
-			if (pctBackdrop.Image.Width > 512 || pctBackdrop.Image.Height > 512) pctBackdrop.SizeMode = PictureBoxSizeMode.Zoom;
-			else pctBackdrop.SizeMode = PictureBoxSizeMode.Normal;
+			pctBackdrop.SizeMode = (pctBackdrop.Image.Width > 512 || pctBackdrop.Image.Height > 512) ? PictureBoxSizeMode.Zoom : PictureBoxSizeMode.Normal;
 		}
 
 		void numBackdrop_ValueChanged(object sender, EventArgs e)
@@ -514,10 +517,10 @@ namespace Idmr.Yogeme
 				try
 				{
 					if (_shadow >= _planets.Groups[(int)numBackdrop.Value].NumberOfSubs)
-                    {
-                        _shadow = 0;  //[JB] Need to set shadow or else the catch() will throw an exception since it's out of range.
-                        numShadow.Value = 0;
-                    }
+					{
+						_shadow = 0;  //[JB] Need to set shadow or else the catch() will throw an exception since it's out of range.
+						numShadow.Value = 0;
+					}
 					pctBackdrop.Image = _planets.Groups[(int)numBackdrop.Value].Subs[_shadow].Image;
 					_index = (int)numBackdrop.Value;
 					numShadow.Maximum = _planets.Groups[_index].NumberOfSubs - 1;
@@ -528,8 +531,7 @@ namespace Idmr.Yogeme
 					numBackdrop.Value = _index;
 				}
 				lblImage.Text = pctBackdrop.Image.Width + "x" + pctBackdrop.Image.Height;
-				if (pctBackdrop.Image.Width > 512 || pctBackdrop.Image.Height > 512) pctBackdrop.SizeMode = PictureBoxSizeMode.Zoom;
-				else pctBackdrop.SizeMode = PictureBoxSizeMode.Normal;
+				pctBackdrop.SizeMode = (pctBackdrop.Image.Width > 512 || pctBackdrop.Image.Height > 512) ? PictureBoxSizeMode.Zoom : PictureBoxSizeMode.Normal;
 			}
 			else
 			{
@@ -555,11 +557,12 @@ namespace Idmr.Yogeme
 			numBackdrop.Value = index;
 		}
 
-		void vsbThumbs_ValueChanged(object sender, EventArgs e) { for (int i = 0; i < 104; i++) thumbs[i].Top = (i / 6 - vsbThumbs.Value) * 48; }
+		void vsbThumbs_ValueChanged(object sender, EventArgs e) { for (int i = 0; i < thumbs.Length; i++) thumbs[i].Top = (i / 6 - vsbThumbs.Value) * 48; }
 
 		void pctBackdrop_MouseMove(object sender, MouseEventArgs e)
 		{
 			if (_platform != MissionFile.Platform.XWA) return;
+
 			int mouseX, mouseY;
 			mouseX = e.X;
 			mouseY = e.Y;
@@ -598,6 +601,7 @@ namespace Idmr.Yogeme
 		void pctBackdrop_Click(object sender, EventArgs e)
 		{
 			if (_platform != MissionFile.Platform.XWA) return;
+
 			try
 			{
 				Color color = _planets.Groups[_index].Subs[_shadow].Image.GetPixel(_mouseX, _mouseY);

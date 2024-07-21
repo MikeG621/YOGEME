@@ -76,21 +76,11 @@ namespace Idmr.Yogeme
             {
 				switch (_config.LastPlatform)
 				{
-					case Settings.Platform.XWING:
-						new XwingForm(_config, _config.RecentMissions[1]).Show();
-						break;
-					case Settings.Platform.TIE:
-						new TieForm(_config, _config.RecentMissions[1]).Show();
-						break;
-					case Settings.Platform.XvT:
-						new XvtForm(_config, _config.RecentMissions[1]).Show();
-						break;
-					case Settings.Platform.BoP:
-						new XvtForm(_config, _config.RecentMissions[1]).Show();
-						break;
-					case Settings.Platform.XWA:
-						new XwaForm(_config, _config.RecentMissions[1]).Show();
-						break;
+					case Settings.Platform.XWING: new XwingForm(_config, _config.RecentMissions[1]).Show(); break;
+					case Settings.Platform.TIE: new TieForm(_config, _config.RecentMissions[1]).Show(); break;
+					case Settings.Platform.XvT: new XvtForm(_config, _config.RecentMissions[1]).Show(); break;
+					case Settings.Platform.BoP: new XvtForm(_config, _config.RecentMissions[1]).Show(); break;
+					case Settings.Platform.XWA: new XwaForm(_config, _config.RecentMissions[1]).Show(); break;
 				}
 			}
 		}

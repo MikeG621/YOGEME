@@ -570,7 +570,7 @@ namespace Idmr.Yogeme
 						string s = sr.ReadLine();
 						if (s.IndexOf(";") >= 0) s = s.Remove(s.IndexOf(";"));  // Comment.
 						s = s.Trim();  // Strip newlines or spaces preceeding comment.
-						if (s == "") 	continue;
+						if (s == "") continue;
 
 						if (_currentPlatform == Settings.Platform.XWING)
 						{

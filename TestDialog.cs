@@ -22,7 +22,7 @@ namespace Idmr.Yogeme
 {
 	public partial class TestDialog : Form
 	{
-		Settings _config;
+		readonly Settings _config;
 
 		public TestDialog(Settings settings)
 		{

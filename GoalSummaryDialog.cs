@@ -16,15 +16,15 @@ using System.Windows.Forms;
 
 namespace Idmr.Yogeme
 {
-	public partial class GoalSummaryDialog : Form
+    public partial class GoalSummaryDialog : Form
     {
         public GoalSummaryDialog(string displayText)
         {
             InitializeComponent();
             txtSummary.Text = displayText;
-            txtSummary.Select(0,0);
+            txtSummary.Select(0, 0);
         }
 
-		void cmdClose_Click(object sender, EventArgs e) => Close();
-	}
+        void cmdClose_Click(object sender, EventArgs e) => Close();
+    }
 }
