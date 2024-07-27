@@ -394,6 +394,16 @@
 			this.cmdRemWeap = new System.Windows.Forms.Button();
 			this.cmdAddWeap = new System.Windows.Forms.Button();
 			this.lstWeapons = new System.Windows.Forms.ListBox();
+			this.chkRatePenalty = new System.Windows.Forms.CheckBox();
+			this.numRatePenalty = new System.Windows.Forms.NumericUpDown();
+			this.numTransferWeapLimit = new System.Windows.Forms.NumericUpDown();
+			this.chkTransferWeapLimit = new System.Windows.Forms.CheckBox();
+			this.numTransferShieldLimit = new System.Windows.Forms.NumericUpDown();
+			this.chkTransferShieldLimit = new System.Windows.Forms.CheckBox();
+			this.numMaxTorpPass = new System.Windows.Forms.NumericUpDown();
+			this.chkMaxTorpPass = new System.Windows.Forms.CheckBox();
+			this.numMaxTorpTarget = new System.Windows.Forms.NumericUpDown();
+			this.chkMaxTorpTarget = new System.Windows.Forms.CheckBox();
 			((System.ComponentModel.ISupportInitialize)(this.numFamHeadingZ)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numFamPosZ)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numFamHeadingXY)).BeginInit();
@@ -498,6 +508,11 @@
 			((System.ComponentModel.ISupportInitialize)(this.numDecharge)).BeginInit();
 			this.pnlWeapProfiles.SuspendLayout();
 			this.pnlWeapRateOrProfiles.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.numRatePenalty)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.numTransferWeapLimit)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.numTransferShieldLimit)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.numMaxTorpPass)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.numMaxTorpTarget)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// cmdOK
@@ -4510,7 +4525,7 @@
 			this.pnlWeaponRate.Controls.Add(this.lstWeapons);
 			this.pnlWeaponRate.Location = new System.Drawing.Point(1564, 42);
 			this.pnlWeaponRate.Name = "pnlWeaponRate";
-			this.pnlWeaponRate.Size = new System.Drawing.Size(375, 351);
+			this.pnlWeaponRate.Size = new System.Drawing.Size(375, 469);
 			this.pnlWeaponRate.TabIndex = 66;
 			// 
 			// label84
@@ -4525,8 +4540,17 @@
 			// 
 			// pnlWeapRates
 			// 
+			this.pnlWeapRates.Controls.Add(this.chkMaxTorpTarget);
+			this.pnlWeapRates.Controls.Add(this.chkMaxTorpPass);
+			this.pnlWeapRates.Controls.Add(this.chkTransferShieldLimit);
+			this.pnlWeapRates.Controls.Add(this.chkTransferWeapLimit);
 			this.pnlWeapRates.Controls.Add(this.numImpactAngle);
+			this.pnlWeapRates.Controls.Add(this.numMaxTorpTarget);
+			this.pnlWeapRates.Controls.Add(this.numMaxTorpPass);
+			this.pnlWeapRates.Controls.Add(this.numTransferShieldLimit);
+			this.pnlWeapRates.Controls.Add(this.numTransferWeapLimit);
 			this.pnlWeapRates.Controls.Add(this.numImpactSpeed);
+			this.pnlWeapRates.Controls.Add(this.numRatePenalty);
 			this.pnlWeapRates.Controls.Add(this.numTransfer);
 			this.pnlWeapRates.Controls.Add(this.numRecharge);
 			this.pnlWeapRates.Controls.Add(this.numDecharge);
@@ -4536,14 +4560,15 @@
 			this.pnlWeapRates.Controls.Add(this.chkImpact);
 			this.pnlWeapRates.Controls.Add(this.chkTransfer);
 			this.pnlWeapRates.Controls.Add(this.chkWeapRecharge);
+			this.pnlWeapRates.Controls.Add(this.chkRatePenalty);
 			this.pnlWeapRates.Location = new System.Drawing.Point(6, 192);
 			this.pnlWeapRates.Name = "pnlWeapRates";
-			this.pnlWeapRates.Size = new System.Drawing.Size(190, 142);
+			this.pnlWeapRates.Size = new System.Drawing.Size(190, 261);
 			this.pnlWeapRates.TabIndex = 30;
 			// 
 			// numImpactAngle
 			// 
-			this.numImpactAngle.Location = new System.Drawing.Point(134, 116);
+			this.numImpactAngle.Location = new System.Drawing.Point(134, 236);
 			this.numImpactAngle.Name = "numImpactAngle";
 			this.numImpactAngle.Size = new System.Drawing.Size(49, 20);
 			this.numImpactAngle.TabIndex = 22;
@@ -4555,7 +4580,7 @@
 			// 
 			// numImpactSpeed
 			// 
-			this.numImpactSpeed.Location = new System.Drawing.Point(134, 93);
+			this.numImpactSpeed.Location = new System.Drawing.Point(134, 213);
 			this.numImpactSpeed.Name = "numImpactSpeed";
 			this.numImpactSpeed.Size = new System.Drawing.Size(49, 20);
 			this.numImpactSpeed.TabIndex = 20;
@@ -4567,9 +4592,9 @@
 			// 
 			// numTransfer
 			// 
-			this.numTransfer.Location = new System.Drawing.Point(134, 46);
+			this.numTransfer.Location = new System.Drawing.Point(134, 48);
 			this.numTransfer.Maximum = new decimal(new int[] {
-            255,
+            65535,
             0,
             0,
             0});
@@ -4586,7 +4611,7 @@
 			// 
 			this.numRecharge.Location = new System.Drawing.Point(134, 25);
 			this.numRecharge.Maximum = new decimal(new int[] {
-            255,
+            65535,
             0,
             0,
             0});
@@ -4603,7 +4628,7 @@
 			// 
 			this.numDecharge.Location = new System.Drawing.Point(134, 2);
 			this.numDecharge.Maximum = new decimal(new int[] {
-            255,
+            65535,
             0,
             0,
             0});
@@ -4629,7 +4654,7 @@
 			// chkImpactAngle
 			// 
 			this.chkImpactAngle.AutoSize = true;
-			this.chkImpactAngle.Location = new System.Drawing.Point(3, 117);
+			this.chkImpactAngle.Location = new System.Drawing.Point(3, 237);
 			this.chkImpactAngle.Name = "chkImpactAngle";
 			this.chkImpactAngle.Size = new System.Drawing.Size(123, 17);
 			this.chkImpactAngle.TabIndex = 21;
@@ -4639,7 +4664,7 @@
 			// chkImpactSpeed
 			// 
 			this.chkImpactSpeed.AutoSize = true;
-			this.chkImpactSpeed.Location = new System.Drawing.Point(3, 94);
+			this.chkImpactSpeed.Location = new System.Drawing.Point(3, 214);
 			this.chkImpactSpeed.Name = "chkImpactSpeed";
 			this.chkImpactSpeed.Size = new System.Drawing.Size(127, 17);
 			this.chkImpactSpeed.TabIndex = 19;
@@ -4651,7 +4676,7 @@
 			this.chkImpact.AutoSize = true;
 			this.chkImpact.Checked = true;
 			this.chkImpact.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.chkImpact.Location = new System.Drawing.Point(3, 71);
+			this.chkImpact.Location = new System.Drawing.Point(3, 191);
 			this.chkImpact.Name = "chkImpact";
 			this.chkImpact.Size = new System.Drawing.Size(124, 17);
 			this.chkImpact.TabIndex = 18;
@@ -4810,6 +4835,146 @@
 			this.lstWeapons.Name = "lstWeapons";
 			this.lstWeapons.Size = new System.Drawing.Size(366, 108);
 			this.lstWeapons.TabIndex = 1;
+			// 
+			// chkRatePenalty
+			// 
+			this.chkRatePenalty.AutoSize = true;
+			this.chkRatePenalty.Location = new System.Drawing.Point(3, 72);
+			this.chkRatePenalty.Name = "chkRatePenalty";
+			this.chkRatePenalty.Size = new System.Drawing.Size(129, 17);
+			this.chkRatePenalty.TabIndex = 23;
+			this.chkRatePenalty.Text = "Transfer Rate Penalty";
+			this.chkRatePenalty.UseVisualStyleBackColor = true;
+			// 
+			// numRatePenalty
+			// 
+			this.numRatePenalty.Location = new System.Drawing.Point(134, 71);
+			this.numRatePenalty.Maximum = new decimal(new int[] {
+            65535,
+            0,
+            0,
+            0});
+			this.numRatePenalty.Name = "numRatePenalty";
+			this.numRatePenalty.Size = new System.Drawing.Size(49, 20);
+			this.numRatePenalty.TabIndex = 17;
+			// 
+			// numTransferWeapLimit
+			// 
+			this.numTransferWeapLimit.Location = new System.Drawing.Point(134, 95);
+			this.numTransferWeapLimit.Maximum = new decimal(new int[] {
+            65535,
+            0,
+            0,
+            0});
+			this.numTransferWeapLimit.Name = "numTransferWeapLimit";
+			this.numTransferWeapLimit.Size = new System.Drawing.Size(49, 20);
+			this.numTransferWeapLimit.TabIndex = 17;
+			this.numTransferWeapLimit.Value = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+			// 
+			// chkTransferWeapLimit
+			// 
+			this.chkTransferWeapLimit.AutoSize = true;
+			this.chkTransferWeapLimit.Location = new System.Drawing.Point(3, 96);
+			this.chkTransferWeapLimit.Name = "chkTransferWeapLimit";
+			this.chkTransferWeapLimit.Size = new System.Drawing.Size(121, 17);
+			this.chkTransferWeapLimit.TabIndex = 23;
+			this.chkTransferWeapLimit.Text = "Transfer Weap Limit";
+			this.chkTransferWeapLimit.UseVisualStyleBackColor = true;
+			// 
+			// numTransferShieldLimit
+			// 
+			this.numTransferShieldLimit.Location = new System.Drawing.Point(134, 119);
+			this.numTransferShieldLimit.Maximum = new decimal(new int[] {
+            65535,
+            0,
+            0,
+            0});
+			this.numTransferShieldLimit.Name = "numTransferShieldLimit";
+			this.numTransferShieldLimit.Size = new System.Drawing.Size(49, 20);
+			this.numTransferShieldLimit.TabIndex = 17;
+			this.numTransferShieldLimit.Value = new decimal(new int[] {
+            800,
+            0,
+            0,
+            0});
+			// 
+			// chkTransferShieldLimit
+			// 
+			this.chkTransferShieldLimit.AutoSize = true;
+			this.chkTransferShieldLimit.Location = new System.Drawing.Point(3, 120);
+			this.chkTransferShieldLimit.Name = "chkTransferShieldLimit";
+			this.chkTransferShieldLimit.Size = new System.Drawing.Size(121, 17);
+			this.chkTransferShieldLimit.TabIndex = 23;
+			this.chkTransferShieldLimit.Text = "Transfer Shield Limit";
+			this.chkTransferShieldLimit.UseVisualStyleBackColor = true;
+			// 
+			// numMaxTorpPass
+			// 
+			this.numMaxTorpPass.Location = new System.Drawing.Point(134, 143);
+			this.numMaxTorpPass.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+			this.numMaxTorpPass.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            -2147483648});
+			this.numMaxTorpPass.Name = "numMaxTorpPass";
+			this.numMaxTorpPass.Size = new System.Drawing.Size(49, 20);
+			this.numMaxTorpPass.TabIndex = 17;
+			this.numMaxTorpPass.Value = new decimal(new int[] {
+            6,
+            0,
+            0,
+            0});
+			// 
+			// chkMaxTorpPass
+			// 
+			this.chkMaxTorpPass.AutoSize = true;
+			this.chkMaxTorpPass.Location = new System.Drawing.Point(3, 144);
+			this.chkMaxTorpPass.Name = "chkMaxTorpPass";
+			this.chkMaxTorpPass.Size = new System.Drawing.Size(115, 17);
+			this.chkMaxTorpPass.TabIndex = 23;
+			this.chkMaxTorpPass.Text = "Max Torp per Pass";
+			this.chkMaxTorpPass.UseVisualStyleBackColor = true;
+			// 
+			// numMaxTorpTarget
+			// 
+			this.numMaxTorpTarget.Location = new System.Drawing.Point(134, 167);
+			this.numMaxTorpTarget.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+			this.numMaxTorpTarget.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            -2147483648});
+			this.numMaxTorpTarget.Name = "numMaxTorpTarget";
+			this.numMaxTorpTarget.Size = new System.Drawing.Size(49, 20);
+			this.numMaxTorpTarget.TabIndex = 17;
+			this.numMaxTorpTarget.Value = new decimal(new int[] {
+            16,
+            0,
+            0,
+            0});
+			// 
+			// chkMaxTorpTarget
+			// 
+			this.chkMaxTorpTarget.AutoSize = true;
+			this.chkMaxTorpTarget.Location = new System.Drawing.Point(3, 168);
+			this.chkMaxTorpTarget.Name = "chkMaxTorpTarget";
+			this.chkMaxTorpTarget.Size = new System.Drawing.Size(123, 17);
+			this.chkMaxTorpTarget.TabIndex = 23;
+			this.chkMaxTorpTarget.Text = "Max Torp per Target";
+			this.chkMaxTorpTarget.UseVisualStyleBackColor = true;
 			// 
 			// XwaHookDialog
 			// 
@@ -4979,6 +5144,11 @@
 			this.pnlWeapProfiles.PerformLayout();
 			this.pnlWeapRateOrProfiles.ResumeLayout(false);
 			this.pnlWeapRateOrProfiles.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.numRatePenalty)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.numTransferWeapLimit)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.numTransferShieldLimit)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.numMaxTorpPass)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.numMaxTorpTarget)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -5351,5 +5521,15 @@
 		private System.Windows.Forms.NumericUpDown numTransfer;
 		private System.Windows.Forms.NumericUpDown numRecharge;
 		private System.Windows.Forms.Label label84;
+		private System.Windows.Forms.CheckBox chkRatePenalty;
+		private System.Windows.Forms.NumericUpDown numRatePenalty;
+		private System.Windows.Forms.CheckBox chkTransferShieldLimit;
+		private System.Windows.Forms.CheckBox chkTransferWeapLimit;
+		private System.Windows.Forms.NumericUpDown numTransferShieldLimit;
+		private System.Windows.Forms.NumericUpDown numTransferWeapLimit;
+		private System.Windows.Forms.CheckBox chkMaxTorpTarget;
+		private System.Windows.Forms.CheckBox chkMaxTorpPass;
+		private System.Windows.Forms.NumericUpDown numMaxTorpTarget;
+		private System.Windows.Forms.NumericUpDown numMaxTorpPass;
 	}
 }

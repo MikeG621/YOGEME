@@ -10,6 +10,7 @@
  * [UPD] ArrDep renames
  * [FIX] FamilyCamera controls weren't doing anything
  * [FIX] reset() called in ctor primarily so Camera and FamilyCamera init properly
+ * [NEW] WeaponRate: EnergyTransferRatePenalty, ..WeaponLimit, ..ShieldLimit, MaxTorpedoCountPerPass, ...PerTarget
  * v1.15.8, 240601
  * [FIX #101] Cleanup in v1.15 broke File.Delete, exception for empty string isn't just 2.1 and older per the documentation...
  * v1.15.6, 240314
@@ -1132,7 +1133,7 @@ namespace Idmr.Yogeme
 			{
 				var writeMode = ReadMode.None;
 				for (int i = 0; i < lstWeapons.Items.Count; i++)
-					if (lstWeapons.Items[i].ToString().Contains("Rate") || lstWeapons.Items[i].ToString().Contains("Impact"))
+					if (lstWeapons.Items[i].ToString().Contains("Rate") || lstWeapons.Items[i].ToString().Contains("Impact") || lstWeapons.Items[i].ToString().Contains("MaxTorpedo") || lstWeapons.Items[i].ToString().Contains("EnergyTransfer"))
 					{
 						if (writeMode == ReadMode.None)
 						{
@@ -2289,6 +2290,11 @@ namespace Idmr.Yogeme
 				if (chkWeapDecharge.Checked) lstWeapons.Items.Add("DechargeRate" + rate + numDecharge.Value);
 				if (chkWeapRecharge.Checked) lstWeapons.Items.Add("RechargeRate" + rate + numRecharge.Value);
 				if (chkTransfer.Checked) lstWeapons.Items.Add("EnergyTransferRate" + rate + numTransfer.Value);
+				if (chkRatePenalty.Checked) lstWeapons.Items.Add("EnergyTransferRatePenalty" + rate + numRatePenalty.Value);
+				if (chkTransferWeapLimit.Checked) lstWeapons.Items.Add("EnergyTransferWeaponLimit" + rate + numTransferWeapLimit.Value);
+				if (chkTransferShieldLimit.Checked) lstWeapons.Items.Add("EnergyTransferShieldLimit" + rate + numTransferShieldLimit.Value);
+				if (chkMaxTorpPass.Checked) lstWeapons.Items.Add("MaxTorpedoCountPerPass" + rate + numMaxTorpPass.Value);
+				if (chkMaxTorpTarget.Checked) lstWeapons.Items.Add("MaxTorpedoCountPerTarget" + rate + numMaxTorpTarget.Value);
 				if (!chkImpact.Checked) lstWeapons.Items.Add("IsImpactSpinningEnabled" + rate + 0);
 				if (chkImpactSpeed.Checked && numImpactSpeed.Value != 100) lstWeapons.Items.Add("ImpactSpinningSpeedFactorPercent" + rate + numImpactSpeed.Value);
 				if (chkImpactAngle.Checked && numImpactAngle.Value != 100) lstWeapons.Items.Add("ImpactSpinningAngleFactorPercent" + rate + numImpactAngle.Value);

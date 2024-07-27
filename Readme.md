@@ -63,6 +63,7 @@ details for GlobalUnits added.
 - (XWA) Added Flightgroup Handicap, "More Arr/Dep" tab
 - (XWA) Added Messages Type, Speaker Header, Special Meaning. Don't know what they do.
 - (XWA) Added Global Goals Trigger Points and Delay
+- (XWA) Hooks: Added new options to WeaponRates
 ---
 ### Additional Information
 #### Dependencies
