@@ -134,7 +134,7 @@
 			this.label34 = new System.Windows.Forms.Label();
 			this.label33 = new System.Windows.Forms.Label();
 			this.label32 = new System.Windows.Forms.Label();
-			this.panel1 = new System.Windows.Forms.Panel();
+			this.pnlRoofCrane = new System.Windows.Forms.Panel();
 			this.optRoofCraneAxisZ = new System.Windows.Forms.RadioButton();
 			this.optRoofCraneAxisY = new System.Windows.Forms.RadioButton();
 			this.optRoofCraneAxisX = new System.Windows.Forms.RadioButton();
@@ -404,6 +404,28 @@
 			this.chkMaxTorpPass = new System.Windows.Forms.CheckBox();
 			this.numMaxTorpTarget = new System.Windows.Forms.NumericUpDown();
 			this.chkMaxTorpTarget = new System.Windows.Forms.CheckBox();
+			this.pnlWarheadCounts = new System.Windows.Forms.Panel();
+			this.label85 = new System.Windows.Forms.Label();
+			this.numBombs = new System.Windows.Forms.NumericUpDown();
+			this.numRockets = new System.Windows.Forms.NumericUpDown();
+			this.label86 = new System.Windows.Forms.Label();
+			this.numMissiles = new System.Windows.Forms.NumericUpDown();
+			this.label87 = new System.Windows.Forms.Label();
+			this.numTorpedos = new System.Windows.Forms.NumericUpDown();
+			this.label88 = new System.Windows.Forms.Label();
+			this.numAdvMissiles = new System.Windows.Forms.NumericUpDown();
+			this.label89 = new System.Windows.Forms.Label();
+			this.numAdvTorpedos = new System.Windows.Forms.NumericUpDown();
+			this.label90 = new System.Windows.Forms.Label();
+			this.numMagPulse = new System.Windows.Forms.NumericUpDown();
+			this.label91 = new System.Windows.Forms.Label();
+			this.numIonPulse = new System.Windows.Forms.NumericUpDown();
+			this.label92 = new System.Windows.Forms.Label();
+			this.numAdvMagPulse = new System.Windows.Forms.NumericUpDown();
+			this.label93 = new System.Windows.Forms.Label();
+			this.numClusterBombs = new System.Windows.Forms.NumericUpDown();
+			this.label94 = new System.Windows.Forms.Label();
+			this.optWarheadCounts = new System.Windows.Forms.RadioButton();
 			((System.ComponentModel.ISupportInitialize)(this.numFamHeadingZ)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numFamPosZ)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numFamHeadingXY)).BeginInit();
@@ -424,7 +446,7 @@
 			((System.ComponentModel.ISupportInitialize)(this.numRoofCranePositionZ)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numRoofCranePositionY)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numRoofCranePositionX)).BeginInit();
-			this.panel1.SuspendLayout();
+			this.pnlRoofCrane.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numIntensity)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numInvertedHangarFloor)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numRoofCraneHighOffset)).BeginInit();
@@ -513,6 +535,17 @@
 			((System.ComponentModel.ISupportInitialize)(this.numTransferShieldLimit)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numMaxTorpPass)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numMaxTorpTarget)).BeginInit();
+			this.pnlWarheadCounts.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.numBombs)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.numRockets)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.numMissiles)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.numTorpedos)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.numAdvMissiles)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.numAdvTorpedos)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.numMagPulse)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.numIonPulse)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.numAdvMagPulse)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.numClusterBombs)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// cmdOK
@@ -1469,7 +1502,7 @@
 			this.tabHangarObjects.Controls.Add(this.label34);
 			this.tabHangarObjects.Controls.Add(this.label33);
 			this.tabHangarObjects.Controls.Add(this.label32);
-			this.tabHangarObjects.Controls.Add(this.panel1);
+			this.tabHangarObjects.Controls.Add(this.pnlRoofCrane);
 			this.tabHangarObjects.Controls.Add(this.numIntensity);
 			this.tabHangarObjects.Controls.Add(this.numInvertedHangarFloor);
 			this.tabHangarObjects.Controls.Add(this.numRoofCraneHighOffset);
@@ -1692,15 +1725,15 @@
 			this.label32.TabIndex = 66;
 			this.label32.Text = "Roof Crane Axis:";
 			// 
-			// panel1
+			// pnlRoofCrane
 			// 
-			this.panel1.Controls.Add(this.optRoofCraneAxisZ);
-			this.panel1.Controls.Add(this.optRoofCraneAxisY);
-			this.panel1.Controls.Add(this.optRoofCraneAxisX);
-			this.panel1.Location = new System.Drawing.Point(103, 176);
-			this.panel1.Name = "panel1";
-			this.panel1.Size = new System.Drawing.Size(118, 23);
-			this.panel1.TabIndex = 65;
+			this.pnlRoofCrane.Controls.Add(this.optRoofCraneAxisZ);
+			this.pnlRoofCrane.Controls.Add(this.optRoofCraneAxisY);
+			this.pnlRoofCrane.Controls.Add(this.optRoofCraneAxisX);
+			this.pnlRoofCrane.Location = new System.Drawing.Point(103, 176);
+			this.pnlRoofCrane.Name = "pnlRoofCrane";
+			this.pnlRoofCrane.Size = new System.Drawing.Size(118, 23);
+			this.pnlRoofCrane.TabIndex = 65;
 			// 
 			// optRoofCraneAxisZ
 			// 
@@ -4514,6 +4547,7 @@
 			// 
 			// pnlWeaponRate
 			// 
+			this.pnlWeaponRate.Controls.Add(this.pnlWarheadCounts);
 			this.pnlWeaponRate.Controls.Add(this.label84);
 			this.pnlWeaponRate.Controls.Add(this.pnlWeapRates);
 			this.pnlWeaponRate.Controls.Add(this.txtWeapProfile);
@@ -4525,18 +4559,16 @@
 			this.pnlWeaponRate.Controls.Add(this.lstWeapons);
 			this.pnlWeaponRate.Location = new System.Drawing.Point(1564, 42);
 			this.pnlWeaponRate.Name = "pnlWeaponRate";
-			this.pnlWeaponRate.Size = new System.Drawing.Size(375, 469);
+			this.pnlWeaponRate.Size = new System.Drawing.Size(375, 705);
 			this.pnlWeaponRate.TabIndex = 66;
 			// 
 			// label84
 			// 
 			this.label84.Location = new System.Drawing.Point(202, 193);
 			this.label84.Name = "label84";
-			this.label84.Size = new System.Drawing.Size(167, 141);
+			this.label84.Size = new System.Drawing.Size(167, 99);
 			this.label84.TabIndex = 31;
-			this.label84.Text = "Select an FG, then Rates or Profiles.  For Rates, check which options to add. See" +
-    " hook readme for defaults, YOGEME will not omit default selections except for Im" +
-    "pact.";
+			this.label84.Text = resources.GetString("label84.Text");
 			// 
 			// pnlWeapRates
 			// 
@@ -4768,11 +4800,12 @@
 			// 
 			// pnlWeapRateOrProfiles
 			// 
+			this.pnlWeapRateOrProfiles.Controls.Add(this.optWarheadCounts);
 			this.pnlWeapRateOrProfiles.Controls.Add(this.optWeapProfiles);
 			this.pnlWeapRateOrProfiles.Controls.Add(this.optWeapRate);
 			this.pnlWeapRateOrProfiles.Location = new System.Drawing.Point(3, 141);
 			this.pnlWeapRateOrProfiles.Name = "pnlWeapRateOrProfiles";
-			this.pnlWeapRateOrProfiles.Size = new System.Drawing.Size(126, 24);
+			this.pnlWeapRateOrProfiles.Size = new System.Drawing.Size(193, 24);
 			this.pnlWeapRateOrProfiles.TabIndex = 9;
 			// 
 			// optWeapProfiles
@@ -4797,6 +4830,7 @@
 			this.optWeapRate.TabStop = true;
 			this.optWeapRate.Text = "Rates";
 			this.optWeapRate.UseVisualStyleBackColor = true;
+			this.optWeapRate.CheckedChanged += new System.EventHandler(this.optWeapRate_CheckedChanged);
 			// 
 			// cboWeapFG
 			// 
@@ -4976,6 +5010,356 @@
 			this.chkMaxTorpTarget.Text = "Max Torp per Target";
 			this.chkMaxTorpTarget.UseVisualStyleBackColor = true;
 			// 
+			// pnlWarheadCounts
+			// 
+			this.pnlWarheadCounts.Controls.Add(this.label94);
+			this.pnlWarheadCounts.Controls.Add(this.label93);
+			this.pnlWarheadCounts.Controls.Add(this.label92);
+			this.pnlWarheadCounts.Controls.Add(this.label91);
+			this.pnlWarheadCounts.Controls.Add(this.label90);
+			this.pnlWarheadCounts.Controls.Add(this.label89);
+			this.pnlWarheadCounts.Controls.Add(this.label88);
+			this.pnlWarheadCounts.Controls.Add(this.label87);
+			this.pnlWarheadCounts.Controls.Add(this.label86);
+			this.pnlWarheadCounts.Controls.Add(this.label85);
+			this.pnlWarheadCounts.Controls.Add(this.numClusterBombs);
+			this.pnlWarheadCounts.Controls.Add(this.numAdvMagPulse);
+			this.pnlWarheadCounts.Controls.Add(this.numIonPulse);
+			this.pnlWarheadCounts.Controls.Add(this.numMagPulse);
+			this.pnlWarheadCounts.Controls.Add(this.numAdvTorpedos);
+			this.pnlWarheadCounts.Controls.Add(this.numAdvMissiles);
+			this.pnlWarheadCounts.Controls.Add(this.numTorpedos);
+			this.pnlWarheadCounts.Controls.Add(this.numMissiles);
+			this.pnlWarheadCounts.Controls.Add(this.numRockets);
+			this.pnlWarheadCounts.Controls.Add(this.numBombs);
+			this.pnlWarheadCounts.Location = new System.Drawing.Point(101, 460);
+			this.pnlWarheadCounts.Name = "pnlWarheadCounts";
+			this.pnlWarheadCounts.Size = new System.Drawing.Size(190, 234);
+			this.pnlWarheadCounts.TabIndex = 32;
+			this.pnlWarheadCounts.Visible = false;
+			// 
+			// label85
+			// 
+			this.label85.AutoSize = true;
+			this.label85.Location = new System.Drawing.Point(3, 4);
+			this.label85.Name = "label85";
+			this.label85.Size = new System.Drawing.Size(73, 13);
+			this.label85.TabIndex = 0;
+			this.label85.Text = "Space Bombs";
+			// 
+			// numBombs
+			// 
+			this.numBombs.Location = new System.Drawing.Point(134, 2);
+			this.numBombs.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+			this.numBombs.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            -2147483648});
+			this.numBombs.Name = "numBombs";
+			this.numBombs.Size = new System.Drawing.Size(49, 20);
+			this.numBombs.TabIndex = 17;
+			this.numBombs.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            -2147483648});
+			// 
+			// numRockets
+			// 
+			this.numRockets.Location = new System.Drawing.Point(134, 25);
+			this.numRockets.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+			this.numRockets.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            -2147483648});
+			this.numRockets.Name = "numRockets";
+			this.numRockets.Size = new System.Drawing.Size(49, 20);
+			this.numRockets.TabIndex = 17;
+			this.numRockets.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            -2147483648});
+			// 
+			// label86
+			// 
+			this.label86.AutoSize = true;
+			this.label86.Location = new System.Drawing.Point(3, 27);
+			this.label86.Name = "label86";
+			this.label86.Size = new System.Drawing.Size(81, 13);
+			this.label86.TabIndex = 0;
+			this.label86.Text = "Heavy Rockets";
+			// 
+			// numMissiles
+			// 
+			this.numMissiles.Location = new System.Drawing.Point(134, 48);
+			this.numMissiles.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+			this.numMissiles.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            -2147483648});
+			this.numMissiles.Name = "numMissiles";
+			this.numMissiles.Size = new System.Drawing.Size(49, 20);
+			this.numMissiles.TabIndex = 17;
+			this.numMissiles.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            -2147483648});
+			// 
+			// label87
+			// 
+			this.label87.AutoSize = true;
+			this.label87.Location = new System.Drawing.Point(3, 50);
+			this.label87.Name = "label87";
+			this.label87.Size = new System.Drawing.Size(43, 13);
+			this.label87.TabIndex = 0;
+			this.label87.Text = "Missiles";
+			// 
+			// numTorpedos
+			// 
+			this.numTorpedos.Location = new System.Drawing.Point(134, 71);
+			this.numTorpedos.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+			this.numTorpedos.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            -2147483648});
+			this.numTorpedos.Name = "numTorpedos";
+			this.numTorpedos.Size = new System.Drawing.Size(49, 20);
+			this.numTorpedos.TabIndex = 17;
+			this.numTorpedos.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            -2147483648});
+			// 
+			// label88
+			// 
+			this.label88.AutoSize = true;
+			this.label88.Location = new System.Drawing.Point(3, 73);
+			this.label88.Name = "label88";
+			this.label88.Size = new System.Drawing.Size(52, 13);
+			this.label88.TabIndex = 0;
+			this.label88.Text = "Torpedos";
+			// 
+			// numAdvMissiles
+			// 
+			this.numAdvMissiles.Location = new System.Drawing.Point(134, 94);
+			this.numAdvMissiles.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+			this.numAdvMissiles.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            -2147483648});
+			this.numAdvMissiles.Name = "numAdvMissiles";
+			this.numAdvMissiles.Size = new System.Drawing.Size(49, 20);
+			this.numAdvMissiles.TabIndex = 17;
+			this.numAdvMissiles.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            -2147483648});
+			// 
+			// label89
+			// 
+			this.label89.AutoSize = true;
+			this.label89.Location = new System.Drawing.Point(3, 96);
+			this.label89.Name = "label89";
+			this.label89.Size = new System.Drawing.Size(65, 13);
+			this.label89.TabIndex = 0;
+			this.label89.Text = "Adv Missiles";
+			// 
+			// numAdvTorpedos
+			// 
+			this.numAdvTorpedos.Location = new System.Drawing.Point(134, 117);
+			this.numAdvTorpedos.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+			this.numAdvTorpedos.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            -2147483648});
+			this.numAdvTorpedos.Name = "numAdvTorpedos";
+			this.numAdvTorpedos.Size = new System.Drawing.Size(49, 20);
+			this.numAdvTorpedos.TabIndex = 17;
+			this.numAdvTorpedos.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            -2147483648});
+			// 
+			// label90
+			// 
+			this.label90.AutoSize = true;
+			this.label90.Location = new System.Drawing.Point(3, 119);
+			this.label90.Name = "label90";
+			this.label90.Size = new System.Drawing.Size(74, 13);
+			this.label90.TabIndex = 0;
+			this.label90.Text = "Adv Torpedos";
+			// 
+			// numMagPulse
+			// 
+			this.numMagPulse.Location = new System.Drawing.Point(134, 140);
+			this.numMagPulse.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+			this.numMagPulse.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            -2147483648});
+			this.numMagPulse.Name = "numMagPulse";
+			this.numMagPulse.Size = new System.Drawing.Size(49, 20);
+			this.numMagPulse.TabIndex = 17;
+			this.numMagPulse.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            -2147483648});
+			// 
+			// label91
+			// 
+			this.label91.AutoSize = true;
+			this.label91.Location = new System.Drawing.Point(3, 142);
+			this.label91.Name = "label91";
+			this.label91.Size = new System.Drawing.Size(57, 13);
+			this.label91.TabIndex = 0;
+			this.label91.Text = "Mag Pulse";
+			// 
+			// numIonPulse
+			// 
+			this.numIonPulse.Location = new System.Drawing.Point(134, 162);
+			this.numIonPulse.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+			this.numIonPulse.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            -2147483648});
+			this.numIonPulse.Name = "numIonPulse";
+			this.numIonPulse.Size = new System.Drawing.Size(49, 20);
+			this.numIonPulse.TabIndex = 17;
+			this.numIonPulse.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            -2147483648});
+			// 
+			// label92
+			// 
+			this.label92.AutoSize = true;
+			this.label92.Location = new System.Drawing.Point(3, 164);
+			this.label92.Name = "label92";
+			this.label92.Size = new System.Drawing.Size(51, 13);
+			this.label92.TabIndex = 0;
+			this.label92.Text = "Ion Pulse";
+			// 
+			// numAdvMagPulse
+			// 
+			this.numAdvMagPulse.Location = new System.Drawing.Point(134, 185);
+			this.numAdvMagPulse.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+			this.numAdvMagPulse.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            -2147483648});
+			this.numAdvMagPulse.Name = "numAdvMagPulse";
+			this.numAdvMagPulse.Size = new System.Drawing.Size(49, 20);
+			this.numAdvMagPulse.TabIndex = 17;
+			this.numAdvMagPulse.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            -2147483648});
+			// 
+			// label93
+			// 
+			this.label93.AutoSize = true;
+			this.label93.Location = new System.Drawing.Point(3, 187);
+			this.label93.Name = "label93";
+			this.label93.Size = new System.Drawing.Size(79, 13);
+			this.label93.TabIndex = 0;
+			this.label93.Text = "Adv Mag Pulse";
+			// 
+			// numClusterBombs
+			// 
+			this.numClusterBombs.Location = new System.Drawing.Point(134, 208);
+			this.numClusterBombs.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+			this.numClusterBombs.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            -2147483648});
+			this.numClusterBombs.Name = "numClusterBombs";
+			this.numClusterBombs.Size = new System.Drawing.Size(49, 20);
+			this.numClusterBombs.TabIndex = 17;
+			this.numClusterBombs.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            -2147483648});
+			// 
+			// label94
+			// 
+			this.label94.AutoSize = true;
+			this.label94.Location = new System.Drawing.Point(3, 210);
+			this.label94.Name = "label94";
+			this.label94.Size = new System.Drawing.Size(74, 13);
+			this.label94.TabIndex = 0;
+			this.label94.Text = "Cluster Bombs";
+			// 
+			// optWarheadCounts
+			// 
+			this.optWarheadCounts.AutoSize = true;
+			this.optWarheadCounts.Location = new System.Drawing.Point(121, 2);
+			this.optWarheadCounts.Name = "optWarheadCounts";
+			this.optWarheadCounts.Size = new System.Drawing.Size(58, 17);
+			this.optWarheadCounts.TabIndex = 7;
+			this.optWarheadCounts.TabStop = true;
+			this.optWarheadCounts.Text = "Counts";
+			this.optWarheadCounts.UseVisualStyleBackColor = true;
+			this.optWarheadCounts.CheckedChanged += new System.EventHandler(this.optWarheadCounts_CheckedChanged);
+			// 
 			// XwaHookDialog
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -5027,8 +5411,8 @@
 			((System.ComponentModel.ISupportInitialize)(this.numRoofCranePositionZ)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.numRoofCranePositionY)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.numRoofCranePositionX)).EndInit();
-			this.panel1.ResumeLayout(false);
-			this.panel1.PerformLayout();
+			this.pnlRoofCrane.ResumeLayout(false);
+			this.pnlRoofCrane.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numIntensity)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.numInvertedHangarFloor)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.numRoofCraneHighOffset)).EndInit();
@@ -5149,6 +5533,18 @@
 			((System.ComponentModel.ISupportInitialize)(this.numTransferShieldLimit)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.numMaxTorpPass)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.numMaxTorpTarget)).EndInit();
+			this.pnlWarheadCounts.ResumeLayout(false);
+			this.pnlWarheadCounts.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.numBombs)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.numRockets)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.numMissiles)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.numTorpedos)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.numAdvMissiles)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.numAdvTorpedos)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.numMagPulse)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.numIonPulse)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.numAdvMagPulse)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.numClusterBombs)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -5449,7 +5845,7 @@
         private System.Windows.Forms.Label label34;
         private System.Windows.Forms.Label label33;
         private System.Windows.Forms.Label label32;
-        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Panel pnlRoofCrane;
         private System.Windows.Forms.RadioButton optRoofCraneAxisZ;
         private System.Windows.Forms.RadioButton optRoofCraneAxisY;
         private System.Windows.Forms.RadioButton optRoofCraneAxisX;
@@ -5531,5 +5927,27 @@
 		private System.Windows.Forms.CheckBox chkMaxTorpPass;
 		private System.Windows.Forms.NumericUpDown numMaxTorpTarget;
 		private System.Windows.Forms.NumericUpDown numMaxTorpPass;
+		private System.Windows.Forms.Panel pnlWarheadCounts;
+		private System.Windows.Forms.Label label85;
+		private System.Windows.Forms.Label label89;
+		private System.Windows.Forms.Label label88;
+		private System.Windows.Forms.Label label87;
+		private System.Windows.Forms.Label label86;
+		private System.Windows.Forms.NumericUpDown numAdvMissiles;
+		private System.Windows.Forms.NumericUpDown numTorpedos;
+		private System.Windows.Forms.NumericUpDown numMissiles;
+		private System.Windows.Forms.NumericUpDown numRockets;
+		private System.Windows.Forms.NumericUpDown numBombs;
+		private System.Windows.Forms.Label label94;
+		private System.Windows.Forms.Label label93;
+		private System.Windows.Forms.Label label92;
+		private System.Windows.Forms.Label label91;
+		private System.Windows.Forms.Label label90;
+		private System.Windows.Forms.NumericUpDown numClusterBombs;
+		private System.Windows.Forms.NumericUpDown numAdvMagPulse;
+		private System.Windows.Forms.NumericUpDown numIonPulse;
+		private System.Windows.Forms.NumericUpDown numMagPulse;
+		private System.Windows.Forms.NumericUpDown numAdvTorpedos;
+		private System.Windows.Forms.RadioButton optWarheadCounts;
 	}
 }

@@ -10,7 +10,7 @@
  * [UPD] ArrDep renames
  * [FIX] FamilyCamera controls weren't doing anything
  * [FIX] reset() called in ctor primarily so Camera and FamilyCamera init properly
- * [NEW] WeaponRate: EnergyTransferRatePenalty, ..WeaponLimit, ..ShieldLimit, MaxTorpedoCountPerPass, ...PerTarget
+ * [NEW] WeaponRate: EnergyTransferRatePenalty, ..WeaponLimit, ..ShieldLimit, MaxTorpedoCountPerPass, ...PerTarget, WarheadTypeCount
  * v1.15.8, 240601
  * [FIX #101] Cleanup in v1.15 broke File.Delete, exception for empty string isn't just 2.1 and older per the documentation...
  * v1.15.6, 240314
@@ -123,6 +123,7 @@ namespace Idmr.Yogeme
 		readonly string _warheadProfilesFile = "";
 		readonly string _energyProfilesFile = "";
 		readonly string _linkingProfilesFile = "";
+		readonly string _warheadTypeCountFile = "";
 		readonly string _installDirectory = "";
 		readonly string _mis = "Missions\\";
 		readonly string _res = "Resdata\\";
@@ -133,7 +134,7 @@ namespace Idmr.Yogeme
 			None = -1, Backdrop, Mission, Sounds, Interdiction, Objects,
 			HangarObjects, HangarCamera, FamilyHangarCamera, HangarMap, FamilyHangarMap,
 			Skins, Shield, Hyper, Concourse, HullIcon, Stats,
-			WeaponRate, WeapProfile, WarheadProfile, EnergyProfile, LinkingProfile
+			WeaponRate, WeapProfile, WarheadProfile, EnergyProfile, LinkingProfile, WarheadTypeCount
 		}
 		bool _loading = false;
 		readonly int[,] _cameras = new int[5, 3];
@@ -146,7 +147,7 @@ namespace Idmr.Yogeme
 		readonly int[] _defaultRoofCranePosition = new int[3] { -1400, 786, -282 };
 		readonly Panel[] _panels = new Panel[12];
 		readonly List<string> _unknown = new List<string>();
-		readonly List<string>[] _comments = new List<string>[21];
+		readonly List<string>[] _comments = new List<string>[22];
 		string _preComments = "";
 		readonly bool[] _skipIffs = new bool[255];
 		readonly bool _initialLoad = true;
@@ -189,6 +190,7 @@ namespace Idmr.Yogeme
 				_panels[i].Left = 395;
 				_panels[i].Top = 45;
 			}
+			pnlWarheadCounts.Location = pnlWeapRates.Location;
 			_chkRegions[0] = chkIntRegion1;
 			_chkRegions[1] = chkIntRegion2;
 			_chkRegions[2] = chkIntRegion3;
@@ -372,56 +374,17 @@ namespace Idmr.Yogeme
 				_warheadProfilesFile = checkFile("_WarheadProfiles.txt");
 				_energyProfilesFile = checkFile("_EnergyProfiles.txt");
 				_linkingProfilesFile = checkFile("_LinkingProfiles.txt");
+				_warheadTypeCountFile = checkFile("_WarheadTypeCount.txt");
 			}
 			string line;
 
 			#region individual files
-			if (_bdFile != "")
-			{
-				using (var sr = new StreamReader(_bdFile))
-					while ((line = sr.ReadLine()) != null)
-					{
-						line = removeComment(line);
-						if (line == "") continue;
-
-						lstBackdrops.Items.Add(line);
-					}
-			}
-			if (_missionTxtFile != "")
-			{
-				using (var sr = new StreamReader(_missionTxtFile))
-					while ((line = sr.ReadLine()) != null)
-					{
-						line = removeComment(line);
-						if (line == "") continue;
-
-						parseMission(line);
-					}
-			}
-			if (_soundFile != "")
-			{
-				using (var sr = new StreamReader(_soundFile))
-					while ((line = sr.ReadLine()) != null)
-					{
-						line = removeComment(line);
-						if (line == "") continue;
-
-						lstSounds.Items.Add(line);
-					}
-			}
-			if (_interdictionFile != "")
-			{
-				using (var sr = new StreamReader(_interdictionFile))
-					while ((line = sr.ReadLine()) != null)
-					{
-						line = removeComment(line);
-						if (line == "") continue;
-
-						parseInterdiction(line);
-					}
-			}
+			if (_bdFile != "") loadIntoListBox(_bdFile, lstBackdrops);
+			if (_missionTxtFile != "") parseSection(_missionTxtFile, parseMission);
+			if (_soundFile != "") loadIntoListBox(_soundFile, lstSounds);
+			if (_interdictionFile != "") parseSection(_interdictionFile, parseInterdiction);
 			if (_objFile != "")
-			{
+			{	// unique, so not factored out
 				using (var sr = new StreamReader(_objFile))
 					while ((line = sr.ReadLine()) != null)
 					{
@@ -436,332 +399,44 @@ namespace Idmr.Yogeme
 			{
 				if (_hangarObjectsFileSI != "")
 				{
-					using (var sr = new StreamReader(_hangarObjectsFileSI))
-						while ((line = sr.ReadLine()) != null)
-						{
-							line = removeComment(line);
-							if (line == "") continue;
-
-							parseHangarObjects(line);
-						}
+					parseSection(_hangarObjectsFileSI, parseHangarObjects);
 					checkIndicies();
 				}
-				if (_hangarCameraFileSI != "")
-				{
-					using (var sr = new StreamReader(_hangarCameraFileSI))
-						while ((line = sr.ReadLine()) != null)
-						{
-							line = removeComment(line);
-							if (line == "") continue;
-
-							parseHangarCamera(line);
-						}
-				}
-				if (_famHangarCameraFileSI != "")
-				{
-					using (var sr = new StreamReader(_famHangarCameraFileSI))
-						while ((line = sr.ReadLine()) != null)
-						{
-							line = removeComment(line);
-							if (line == "") continue;
-
-							parseFamilyHangarCamera(line);
-						}
-				}
-				if (_hangarMapFileSI != "")
-				{
-					using (var sr = new StreamReader(_hangarMapFileSI))
-					{
-						MapEntry entry = new MapEntry();
-						while ((line = sr.ReadLine()) != null)
-						{
-							line = removeComment(line);
-							if (line == "") continue;
-
-							if (entry.Parse(line))
-								lstMap.Items.Add(entry.ToString());
-						}
-					}
-				}
-				if (_famHangarMapFileSI != "")
-				{
-					using (var sr = new StreamReader(_famHangarMapFileSI))
-					{
-						MapEntry entry = new MapEntry();
-						while ((line = sr.ReadLine()) != null)
-						{
-							line = removeComment(line);
-							if (line == "") continue;
-
-							if (entry.Parse(line))
-								lstFamilyMap.Items.Add(entry.ToString());
-						}
-					}
-				}
+				if (_hangarCameraFileSI != "") parseSection(_hangarCameraFileSI, parseHangarCamera);
+				if (_famHangarCameraFileSI != "") parseSection(_famHangarCameraFileSI, parseFamilyHangarCamera);
+				if (_hangarMapFileSI != "") loadMapIntoListBox(_hangarMapFileSI, lstMap);
+				if (_famHangarMapFileSI != "") loadMapIntoListBox(_famHangarMapFileSI, lstFamilyMap);
 				if (_hangarObjectsFileS != "")
 				{
-					using (var sr = new StreamReader(_hangarObjectsFileS))
-						while ((line = sr.ReadLine()) != null)
-						{
-							line = removeComment(line);
-							if (line == "") continue;
-
-							parseHangarObjects(line);
-						}
+					parseSection(_hangarObjectsFileS, parseHangarObjects);
 					checkIndicies();
 				}
-				if (_hangarCameraFileS != "")
-				{
-					using (var sr = new StreamReader(_hangarCameraFileS))
-						while ((line = sr.ReadLine()) != null)
-						{
-							line = removeComment(line);
-							if (line == "") continue;
-
-							parseHangarCamera(line);
-						}
-				}
-				if (_famHangarCameraFileS != "")
-				{
-					using (var sr = new StreamReader(_famHangarCameraFileS))
-						while ((line = sr.ReadLine()) != null)
-						{
-							line = removeComment(line);
-							if (line == "") continue;
-
-							parseFamilyHangarCamera(line);
-						}
-				}
-				if (_hangarMapFileS != "")
-				{
-					using (var sr = new StreamReader(_hangarMapFileS))
-					{
-						MapEntry entry = new MapEntry();
-						while ((line = sr.ReadLine()) != null)
-						{
-							line = removeComment(line);
-							if (line == "") continue;
-
-							if (entry.Parse(line))
-								lstMap.Items.Add(entry.ToString());
-						}
-					}
-				}
-				if (_famHangarMapFileS != "")
-				{
-					using (var sr = new StreamReader(_famHangarMapFileS))
-					{
-						MapEntry entry = new MapEntry();
-						while ((line = sr.ReadLine()) != null)
-						{
-							line = removeComment(line);
-							if (line == "") continue;
-
-							if (entry.Parse(line))
-								lstFamilyMap.Items.Add(entry.ToString());
-						}
-					}
-				}
+				if (_hangarCameraFileS != "") parseSection(_hangarCameraFileS, parseHangarCamera);
+				if (_famHangarCameraFileS != "") parseSection(_famHangarCameraFileS, parseFamilyHangarCamera);
+				if (_hangarMapFileS != "") loadMapIntoListBox(_hangarMapFileS, lstMap);
+				if (_famHangarMapFileS != "") loadMapIntoListBox(_famHangarMapFileS , lstFamilyMap);
 			}
 			if (_hangarObjectsFile != "")
 			{
-				using (var sr = new StreamReader(_hangarObjectsFile))
-					while ((line = sr.ReadLine()) != null)
-					{
-						line = removeComment(line);
-						if (line == "") continue;
-
-						parseHangarObjects(line);
-					}
+				parseSection(_hangarObjectsFile, parseHangarObjects);
 				checkIndicies();
 			}
-			if (_hangarCameraFile != "")
-			{
-				using (var sr = new StreamReader(_hangarCameraFile))
-					while ((line = sr.ReadLine()) != null)
-					{
-						line = removeComment(line);
-						if (line == "") continue;
-
-						parseHangarCamera(line);
-					}
-			}
-			if (_famHangarCameraFile != "")
-			{
-				using (var sr = new StreamReader(_famHangarCameraFile))
-					while ((line = sr.ReadLine()) != null)
-					{
-						line = removeComment(line);
-						if (line == "") continue;
-
-						parseFamilyHangarCamera(line);
-					}
-			}
-			if (_hangarMapFile != "")
-			{
-				using (var sr = new StreamReader(_hangarMapFile))
-				{
-					MapEntry entry = new MapEntry();
-					while ((line = sr.ReadLine()) != null)
-					{
-						line = removeComment(line);
-						if (line == "") continue;
-
-						if (entry.Parse(line))
-							lstMap.Items.Add(entry.ToString());
-					}
-				}
-			}
-			if (_famHangarMapFile != "")
-			{
-				using (var sr = new StreamReader(_famHangarMapFile))
-				{
-					MapEntry entry = new MapEntry();
-					while ((line = sr.ReadLine()) != null)
-					{
-						line = removeComment(line);
-						if (line == "") continue;
-
-						if (entry.Parse(line))
-							lstFamilyMap.Items.Add(entry.ToString());
-					}
-				}
-			}
-			if (_32bppFile != "")
-			{
-				using (var sr = new StreamReader(_32bppFile))
-					while ((line = sr.ReadLine()) != null)
-					{
-						line = removeComment(line);
-						if (line == "") continue;
-
-						lstSkins.Items.Add(line);
-					}
-			}
-			if (_shieldFile != "")
-			{
-				using (var sr = new StreamReader(_shieldFile))
-					while ((line = sr.ReadLine()) != null)
-					{
-						line = removeComment(line);
-						if (line == "") continue;
-
-						parseShield(line);
-					}
-			}
-			if (_hyperFile != "")
-			{
-				using (var sr = new StreamReader(_hyperFile))
-					while ((line = sr.ReadLine()) != null)
-					{
-						line = removeComment(line);
-						if (line == "") continue;
-
-						parseHyper(line);
-					}
-			}
-			if (_concourseFile != "")
-			{
-				using (var sr = new StreamReader(_concourseFile))
-					while ((line = sr.ReadLine()) != null)
-					{
-						line = removeComment(line);
-						if (line == "") continue;
-
-						parseConcourse(line);
-					}
-			}
-			if (_hullIconFile != "")
-			{
-				using (var sr = new StreamReader(_hullIconFile))
-				{
-					while ((line = sr.ReadLine()) != null)
-					{
-						line = removeComment(line);
-						if (line == "") continue;
-
-						parseHullIcon(line);
-					}
-				}
-			}
-			if (_statsFile != "")
-			{
-				using (var sr = new StringReader(_statsFile))
-				{
-					while ((line = sr.ReadLine()) != null)
-					{
-						line = removeComment(line);
-						if (line == "") continue;
-
-						lstStats.Items.Add(line);
-					}
-				}
-			}
-			if (_weapRatesFile != "")
-			{
-				using (var sr = new StringReader(_weapRatesFile))
-				{
-					while ((line = sr.ReadLine()) != null)
-					{
-						line = removeComment(line);
-						if (line == "") continue;
-
-						lstWeapons.Items.Add(line);
-					}
-				}
-			}
-			if (_weapProfilesFile != "")
-			{
-				using (var sr = new StringReader(_weapProfilesFile))
-				{
-					while ((line = sr.ReadLine()) != null)
-					{
-						line = removeComment(line);
-						if (line == "") continue;
-
-						lstWeapons.Items.Add(line);
-					}
-				}
-			}
-			if (_warheadProfilesFile != "")
-			{
-				using (var sr = new StringReader(_warheadProfilesFile))
-				{
-					while ((line = sr.ReadLine()) != null)
-					{
-						line = removeComment(line);
-						if (line == "") continue;
-
-						lstWeapons.Items.Add(line);
-					}
-				}
-			}
-			if (_energyProfilesFile != "")
-			{
-				using (var sr = new StringReader(_energyProfilesFile))
-				{
-					while ((line = sr.ReadLine()) != null)
-					{
-						line = removeComment(line);
-						if (line == "") continue;
-
-						lstWeapons.Items.Add(line);
-					}
-				}
-			}
-			if (_linkingProfilesFile != "")
-			{
-				using (var sr = new StringReader(_linkingProfilesFile))
-				{
-					while ((line = sr.ReadLine()) != null)
-					{
-						line = removeComment(line);
-						if (line == "") continue;
-
-						lstWeapons.Items.Add(line);
-					}
-				}
-			}
+			if (_hangarCameraFile != "") parseSection(_hangarCameraFile, parseHangarCamera);
+			if (_famHangarCameraFile != "") parseSection(_famHangarCameraFile, parseFamilyHangarCamera);
+			if (_hangarMapFile != "") loadMapIntoListBox(_hangarMapFile, lstMap);
+			if (_famHangarMapFile != "") loadMapIntoListBox(_famHangarMapFile, lstFamilyMap);
+			if (_32bppFile != "") loadIntoListBox(_32bppFile, lstSkins);
+			if (_shieldFile != "") parseSection(_shieldFile, parseShield);
+			if (_hyperFile != "") parseSection(_hyperFile, parseHyper);
+			if (_concourseFile != "") parseSection(_concourseFile, parseConcourse);
+			if (_hullIconFile != "") parseSection(_hullIconFile, parseHullIcon);
+			if (_statsFile != "") loadIntoListBox(_statsFile, lstStats);
+			if (_weapRatesFile != "") loadIntoListBox(_weapRatesFile, lstWeapons);
+			if (_weapProfilesFile != "") loadIntoListBox(_weapProfilesFile, lstWeapons);
+			if (_warheadProfilesFile != "") loadIntoListBox(_warheadProfilesFile, lstWeapons);
+			if (_energyProfilesFile != "") loadIntoListBox(_energyProfilesFile, lstWeapons);
+			if (_linkingProfilesFile != "") loadIntoListBox(_linkingProfilesFile, lstWeapons);
+			if (_warheadTypeCountFile != "") loadIntoListBox(_warheadTypeCountFile, lstWeapons);
 			#endregion
 
 			if (File.Exists(_fileName))
@@ -1133,14 +808,14 @@ namespace Idmr.Yogeme
 			{
 				var writeMode = ReadMode.None;
 				for (int i = 0; i < lstWeapons.Items.Count; i++)
-					if (lstWeapons.Items[i].ToString().Contains("Rate") || lstWeapons.Items[i].ToString().Contains("Impact") || lstWeapons.Items[i].ToString().Contains("MaxTorpedo") || lstWeapons.Items[i].ToString().Contains("EnergyTransfer"))
+					if (lstWeapons.Items[i].ToString().StartsWith("WR:"))
 					{
 						if (writeMode == ReadMode.None)
 						{
 							writeMode = ReadMode.WeaponRate;
 							contents += "[WeaponRates]\r\n";
 						}
-						contents += lstWeapons.Items[i] + "\r\n";
+						contents += lstWeapons.Items[i].ToString().Substring(4) + "\r\n";
 					}
 				if (writeMode == ReadMode.WeaponRate)
 				{
@@ -1211,6 +886,22 @@ namespace Idmr.Yogeme
 					contents += "\r\n";
 					insertComments(ref contents, (int)ReadMode.LinkingProfile);
 				}
+				writeMode = ReadMode.None;
+				for (int i =0; i < lstWeapons.Items.Count; i++)
+					if (lstWeapons.Items[i].ToString().StartsWith("WarheadTypeCount"))
+					{
+						if (writeMode == ReadMode.None)
+						{
+							writeMode = ReadMode.WarheadTypeCount;
+							contents += "[WarheadTypeCount]\r\n";
+						}
+						contents += lstWeapons.Items[i] + "\r\n";
+					}
+				if (writeMode == ReadMode.WarheadTypeCount)
+				{
+					contents += "\r\n";
+					insertComments(ref contents, (int)ReadMode.WarheadTypeCount);
+				}
 			}
 			for (int i = 0; i < _unknown.Count; i++) contents += _unknown[i] + "\r\n";
 			txtHook.Text = contents;
@@ -1223,6 +914,34 @@ namespace Idmr.Yogeme
 			text = text.Substring(0, text.Length - 2);  // trim off the extra "\r\n"
 			for (int i = 0; i < _comments[index].Count; i++) text += _comments[index][i] + "\r\n";
 			text += "\r\n";
+		}
+
+		static void loadIntoListBox(string fileName, ListBox lst)
+		{
+			string line;
+			using (var sr = new StringReader(fileName))
+				while ((line = sr.ReadLine()) != null)
+				{
+					line = removeComment(line);
+					if (line == "") continue;
+
+					lst.Items.Add(line);
+				}
+		}
+		static void loadMapIntoListBox(string fileName, ListBox lst)
+		{
+			string line;
+			using (var sr = new StreamReader(fileName))
+			{
+				MapEntry entry = new MapEntry();
+				while ((line = sr.ReadLine()) != null)
+				{
+					line = removeComment(line);
+					if (line == "") continue;
+
+					if (entry.Parse(line)) lst.Items.Add(entry.ToString());
+				}
+			}
 		}
 
 		void parseContents()
@@ -1282,6 +1001,7 @@ namespace Idmr.Yogeme
 					else if (lineLower == "[warheadprofiles]") readMode = ReadMode.WarheadProfile;
 					else if (lineLower == "[energyprofiles]") readMode = ReadMode.EnergyProfile;
 					else if (lineLower == "[linkingprofiles]") readMode = ReadMode.LinkingProfile;
+					else if (lineLower == "[warheadtypecount]") readMode = ReadMode.WarheadTypeCount;
 					else if (_commandOpt != "")
 					{
 						if (lineLower == "[hangarobjects_" + _commandOpt + "_" + _commandIff + "]") readMode = ReadMode.HangarObjects;
@@ -1328,14 +1048,27 @@ namespace Idmr.Yogeme
 				else if (readMode == ReadMode.Concourse) parseConcourse(line);
 				else if (readMode == ReadMode.HullIcon) parseHullIcon(line);
 				else if (readMode == ReadMode.Stats) lstStats.Items.Add(line);
-				else if (readMode == ReadMode.WeaponRate || readMode == ReadMode.WeapProfile || readMode == ReadMode.WarheadProfile
-					|| readMode == ReadMode.EnergyProfile || readMode == ReadMode.LinkingProfile) lstWeapons.Items.Add(line);
+				else if (readMode == ReadMode.WeaponRate) lstWeapons.Items.Add("WR: " + line);
+				else if (readMode == ReadMode.WeapProfile || readMode == ReadMode.WarheadProfile
+					|| readMode == ReadMode.EnergyProfile || readMode == ReadMode.LinkingProfile || readMode == ReadMode.WarheadTypeCount) lstWeapons.Items.Add(line);
 				else if (readMode == ReadMode.None && !isPre) _unknown.Add(txtHook.Lines[i]);
 			}
 			checkIndicies();
 		}
+		static void parseSection(string fileName, Action<string> parseFunction)
+		{
+			string line;
+			using (var sr = new StreamReader(fileName))
+				while ((line = sr.ReadLine()) != null)
+				{
+					line = removeComment(line);
+					if (line == "") continue;
 
-		string removeComment(string line)
+					parseFunction(line);
+				}
+		}
+
+		static string removeComment(string line)
 		{
 			if (line.IndexOf(";") != -1) line = line.Substring(0, line.IndexOf(";"));
 			if (line.IndexOf("#") != -1) line = line.Substring(0, line.IndexOf("#"));
@@ -2286,26 +2019,49 @@ namespace Idmr.Yogeme
 			}
 			else if (optWeapRate.Checked)
 			{
-				string rate = "_fg_" + cboWeapFG.SelectedIndex.ToString() + " = ";
-				if (chkWeapDecharge.Checked) lstWeapons.Items.Add("DechargeRate" + rate + numDecharge.Value);
-				if (chkWeapRecharge.Checked) lstWeapons.Items.Add("RechargeRate" + rate + numRecharge.Value);
-				if (chkTransfer.Checked) lstWeapons.Items.Add("EnergyTransferRate" + rate + numTransfer.Value);
-				if (chkRatePenalty.Checked) lstWeapons.Items.Add("EnergyTransferRatePenalty" + rate + numRatePenalty.Value);
-				if (chkTransferWeapLimit.Checked) lstWeapons.Items.Add("EnergyTransferWeaponLimit" + rate + numTransferWeapLimit.Value);
-				if (chkTransferShieldLimit.Checked) lstWeapons.Items.Add("EnergyTransferShieldLimit" + rate + numTransferShieldLimit.Value);
-				if (chkMaxTorpPass.Checked) lstWeapons.Items.Add("MaxTorpedoCountPerPass" + rate + numMaxTorpPass.Value);
-				if (chkMaxTorpTarget.Checked) lstWeapons.Items.Add("MaxTorpedoCountPerTarget" + rate + numMaxTorpTarget.Value);
-				if (!chkImpact.Checked) lstWeapons.Items.Add("IsImpactSpinningEnabled" + rate + 0);
-				if (chkImpactSpeed.Checked && numImpactSpeed.Value != 100) lstWeapons.Items.Add("ImpactSpinningSpeedFactorPercent" + rate + numImpactSpeed.Value);
-				if (chkImpactAngle.Checked && numImpactAngle.Value != 100) lstWeapons.Items.Add("ImpactSpinningAngleFactorPercent" + rate + numImpactAngle.Value);
+				string prefix = "WR: ";
+				string fg = "_fg_" + cboWeapFG.SelectedIndex.ToString() + " = ";
+				if (chkWeapDecharge.Checked) lstWeapons.Items.Add($"{prefix}DechargeRate{fg}{numDecharge.Value}");
+				if (chkWeapRecharge.Checked) lstWeapons.Items.Add($"{prefix}RechargeRate{fg}{numRecharge.Value}");
+				if (chkTransfer.Checked) lstWeapons.Items.Add($"{prefix}EnergyTransferRate{fg}{numTransfer.Value}");
+				if (chkRatePenalty.Checked) lstWeapons.Items.Add($"{prefix}EnergyTransferRatePenalty{fg}{numRatePenalty.Value}");
+				if (chkTransferWeapLimit.Checked) lstWeapons.Items.Add($"{prefix}EnergyTransferWeaponLimit{fg}{numTransferWeapLimit.Value}");
+				if (chkTransferShieldLimit.Checked) lstWeapons.Items.Add($"{prefix}EnergyTransferShieldLimit{fg}{numTransferShieldLimit.Value}");
+				if (chkMaxTorpPass.Checked) lstWeapons.Items.Add($"{prefix}MaxTorpedoCountPerPass{fg}{numMaxTorpPass.Value}");
+				if (chkMaxTorpTarget.Checked) lstWeapons.Items.Add($"{prefix}MaxTorpedoCountPerTarget{fg}{numMaxTorpTarget.Value}");
+				if (!chkImpact.Checked) lstWeapons.Items.Add($"{prefix}IsImpactSpinningEnabled{fg}0");
+				if (chkImpactSpeed.Checked && numImpactSpeed.Value != 100) lstWeapons.Items.Add($"{prefix}ImpactSpinningSpeedFactorPercent{fg}{numImpactSpeed.Value}");
+				if (chkImpactAngle.Checked && numImpactAngle.Value != 100) lstWeapons.Items.Add($"{prefix}ImpactSpinningAngleFactorPercent{fg}{numImpactAngle.Value}");
+			}
+			else if (optWarheadCounts.Checked)
+			{
+				string prefix = "WarheadTypeCount_fg_" + cboWeapFG.SelectedIndex.ToString() + "_";
+				if (numBombs.Value != -1) lstWeapons.Items.Add($"{prefix}SpaceBombs = {numBombs.Value}");
+				if (numRockets.Value != -1) lstWeapons.Items.Add($"{prefix}HeavyRockets = {numRockets.Value}");
+				if (numMissiles.Value != -1) lstWeapons.Items.Add($"{prefix}Missiles = {numMissiles.Value}");
+				if (numTorpedos.Value != -1) lstWeapons.Items.Add($"{prefix}ProtonTorpedos = {numTorpedos.Value}");
+				if (numAdvMissiles.Value != -1) lstWeapons.Items.Add($"{prefix}AdvancedMissiles = {numAdvMissiles.Value}");
+				if (numAdvTorpedos.Value != -1) lstWeapons.Items.Add($"{prefix}AdvancedTorpedos = {numAdvTorpedos.Value}");
+				if (numMagPulse.Value != -1) lstWeapons.Items.Add($"{prefix}MagPulse = {numMagPulse.Value}");
+				if (numIonPulse.Value != -1) lstWeapons.Items.Add($"{prefix}IonPulse = {numIonPulse.Value}");
+				if (numAdvMagPulse.Value != -1) lstWeapons.Items.Add($"{prefix}AdvancedMagPulse = {numAdvMagPulse.Value}");
+				if (numClusterBombs.Value != -1) lstWeapons.Items.Add($"{prefix}ClusterBombs = {numClusterBombs.Value}");
 			}
 		}
 		private void cmdRemWeap_Click(object sender, EventArgs e) { if (lstWeapons.SelectedIndex != -1) lstWeapons.Items.RemoveAt(lstWeapons.SelectedIndex); }
 
+		private void optWarheadCounts_CheckedChanged(object sender, EventArgs e)
+		{
+			pnlWarheadCounts.Visible = optWarheadCounts.Checked;
+			pnlWeapRates.Visible = !optWarheadCounts.Checked;
+		}
+		private void optWeapRate_CheckedChanged(object sender, EventArgs e)
+		{
+			pnlWeapRates.Enabled = optWeapRate.Checked;
+		}
 		private void optWeapProfiles_CheckedChanged(object sender, EventArgs e)
 		{
 			pnlWeapProfiles.Enabled = optWeapProfiles.Checked;
-			pnlWeapRates.Enabled = !optWeapProfiles.Checked;
 			txtWeapProfile.Enabled = optWeapProfiles.Checked;
 		}
 		#endregion

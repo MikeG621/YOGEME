@@ -133,6 +133,9 @@
     <value>To replace an OPT within the mission, select "Craft" and then "Add" to select the original and new OPT files.
 To define a profile, select the appropriate Profile type, enter the profile name, select a FG or Marking index if appropriate, then "Add", selecting the OPT if needed.</value>
   </data>
+  <data name="label84.Text" xml:space="preserve">
+    <value>Select an FG, then Rates, Counts, or Profiles.  For Rates, check which options to add. For Counts, select the warhead limit. See hook readme for defaults, YOGEME will not omit default selections except for Impact.</value>
+  </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
