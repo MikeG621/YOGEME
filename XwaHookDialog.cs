@@ -1158,6 +1158,17 @@ namespace Idmr.Yogeme
 			chkDisableWarhead.Checked = false;
 			chkDisableCollision.Checked = false;
 			lstStats.Items.Clear();
+			chkWeapDecharge.Checked = false;
+			chkWeapRecharge.Checked = false;
+			chkTransfer.Checked = false;
+			chkRatePenalty.Checked = false;
+			chkTransferShieldLimit.Checked = false;
+			chkTransferWeapLimit.Checked = false;
+			chkMaxTorpPass.Checked = false;
+			chkMaxTorpTarget.Checked = false;
+			chkImpact.Checked = true;
+			chkImpactAngle.Checked = false;
+			chkImpactSpeed.Checked = false;
 			lstWeapons.Items.Clear();
 		}
 
