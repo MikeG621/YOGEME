@@ -55,11 +55,11 @@ namespace Idmr.Yogeme
 		readonly byte[] _indexes = new byte[5];
 		readonly string _fontID = "FONTfont8";
 
-		public OfficerPreviewForm(Questions questions, int officer, int question, Settings config)
+		public OfficerPreviewForm(Questions questions, int officer, int question)
 		{
 			try
 			{
-				string path = config.TiePath + "\\RESOURCE\\";
+				string path = Settings.GetInstance().TiePath + "\\RESOURCE\\";
 				_empire = new LfdFile(path + "EMPIRE.LFD");
 				_talk = new LfdFile(path + "TALK.LFD");
 			}

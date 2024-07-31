@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2024 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.15.6
+ * VERSION: 1.15.6+
  */
 
 /* CHANGELOG
+ * [UPD] cleanup
  * v1.15.6, 240311
  * [UPD] Permanently enable SBD chk, even if not detected
  * v1.13.12, 230116
@@ -51,12 +52,12 @@ namespace Idmr.Yogeme
 #pragma warning disable IDE1006 // Naming Styles
 		readonly CheckBox[] chkWP = new CheckBox[22];
 #pragma warning restore IDE1006 // Naming Styles
-		readonly Settings _config;
+		readonly Settings _config = Settings.GetInstance();
 		readonly EventHandler _closeCallback;
 
 		/// <summary>Initialize and load the user's settings</summary>
 		/// <param name="config">The Settings config of the current user</param>
-		public OptionsDialog(Settings config, EventHandler callback)
+		public OptionsDialog(EventHandler callback)
 		{
 			InitializeComponent();
 			chkWP[0] = chkSP1;
@@ -81,7 +82,6 @@ namespace Idmr.Yogeme
 			chkWP[19] = chkBRF6;
 			chkWP[20] = chkBRF7;
 			chkWP[21] = chkBRF8;
-			_config = config;
 			switch (_config.Startup)
 			{
 				case Settings.StartupMode.Normal:

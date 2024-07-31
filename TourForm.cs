@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2024 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.12
+ * VERSION: 1.12+
  */
 
 /* CHANGELOG
+ * [UPD] cleanup
  * v1.12, 220103
  * - Release
  */
@@ -25,9 +26,10 @@ namespace Idmr.Yogeme
 		Text _tour;
 		int _tourIndex;
 
-		public TourForm(Settings config)
+		public TourForm()
 		{
 			InitializeComponent();
+			var config = Settings.GetInstance();
 			if (!config.XwingInstalled)
 			{
 				MessageBox.Show("X-wing installation not found, Tour function not available", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);

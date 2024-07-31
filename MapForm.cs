@@ -160,18 +160,18 @@ namespace Idmr.Yogeme
 		EventHandler onDataModified = null;
 #pragma warning restore IDE1006 // Naming Styles
 		bool _isClosing = false;              //Need a flag during form close to check whether external MapPaint() calls should be ignored.
-		Settings _settings = null;
+		readonly Settings _settings = Settings.GetInstance();
 		bool _hasFocus;
 		enum WaypointVisibility { Absent, Present, OtherRegion };
 		#endregion vars
 
 		#region ctors
 		/// <param name="fg">XwingFlights array</param>
-		public MapForm(Settings settings, Platform.Xwing.FlightGroupCollection fg, EventHandler dataModifiedCallback)
+		public MapForm(Platform.Xwing.FlightGroupCollection fg, EventHandler dataModifiedCallback)
 		{
 			_platform = Settings.Platform.XWING;
 			InitializeComponent();
-			if (settings.XwingOverrideExternal)
+			if (_settings.XwingOverrideExternal)
 			{
 				//Since the XW craft list is mapped to use TIE's list for the sake of the map, replace TIE's strings. Must be done prior to import.
 				Platform.Tie.Strings.OverrideShipList(null, null);
@@ -200,11 +200,11 @@ namespace Idmr.Yogeme
 				Close();
 			}
 			onDataModified = dataModifiedCallback;
-			startup(settings);
+			startup();
 		}
 
 		/// <param name="fg">TFlights array</param>
-		public MapForm(Settings settings, Platform.Tie.FlightGroupCollection fg, EventHandler dataModifiedCallback)
+		public MapForm(Platform.Tie.FlightGroupCollection fg, EventHandler dataModifiedCallback)
 		{
 			_platform = Settings.Platform.TIE;
 			InitializeComponent();
@@ -216,11 +216,11 @@ namespace Idmr.Yogeme
 				Close();
 			}
 			onDataModified = dataModifiedCallback;
-			startup(settings);
+			startup();
 		}
 
 		/// <param name="fg">XFlights array</param>
-		public MapForm(Settings settings, bool isBoP, Platform.Xvt.FlightGroupCollection fg, EventHandler dataModifiedCallback)
+		public MapForm(bool isBoP, Platform.Xvt.FlightGroupCollection fg, EventHandler dataModifiedCallback)
 		{
 			_platform = isBoP ? Settings.Platform.BoP : Settings.Platform.XvT;
 			InitializeComponent();
@@ -232,11 +232,11 @@ namespace Idmr.Yogeme
 				Close();
 			}
 			onDataModified = dataModifiedCallback;
-			startup(settings);
+			startup();
 		}
 
 		/// <param name="fg">WFlights array</param>
-		public MapForm(Settings settings, Platform.Xwa.FlightGroupCollection fg, EventHandler dataModifiedCallback)
+		public MapForm(Platform.Xwa.FlightGroupCollection fg, EventHandler dataModifiedCallback)
 		{
 			_platform = Settings.Platform.XWA;
 			InitializeComponent();
@@ -248,7 +248,7 @@ namespace Idmr.Yogeme
 				Close();
 			}
 			onDataModified = dataModifiedCallback;
-			startup(settings);
+			startup();
 		}
         #endregion ctors
 
@@ -1393,11 +1393,10 @@ namespace Idmr.Yogeme
 		}
 
 		/// <summary>Intialization routine, loads settings and config per platform</summary>
-		void startup(Settings config)
+		void startup()
 		{
-			_settings = config;
 			if (_wireframeManager == null) _wireframeManager = new WireframeManager();
-			_wireframeManager.SetPlatform(_platform, _settings);
+			_wireframeManager.SetPlatform(_platform);
 
 			#region checkbox array
 			chkWP[0] = chkSP1;

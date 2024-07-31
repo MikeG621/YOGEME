@@ -231,7 +231,7 @@ namespace Idmr.Yogeme
 	public partial class XwaForm : Form
 	{
 		#region vars and stuff
-		readonly Settings _config;
+		readonly Settings _config = Settings.GetInstance();
 		bool _loading;
 		bool _noRefresh = false;
 		MapForm _fMap;
@@ -293,9 +293,8 @@ namespace Idmr.Yogeme
 #pragma warning restore IDE1006 // Naming Styles
 		#endregion
 
-		public XwaForm(Settings settings)
+		public XwaForm()
 		{
-			_config = settings;
 			InitializeComponent();
 			_loading = true;
 			initializeMission();
@@ -303,9 +302,8 @@ namespace Idmr.Yogeme
 			lstFG.SelectedIndex = 0;
 			_loading = false;
 		}
-		public XwaForm(Settings settings, string path)
+		public XwaForm(string path)
 		{
-			_config = settings;
 			InitializeComponent();
 			_loading = true;
 			initializeMission();
@@ -594,7 +592,7 @@ namespace Idmr.Yogeme
 			Strings.OverrideShipList(null, null);
 			try
 			{
-				CraftDataManager.GetInstance().LoadPlatform(Settings.Platform.XWA, _config, Strings.CraftType, Strings.CraftAbbrv, fileMission);
+				CraftDataManager.GetInstance().LoadPlatform(Settings.Platform.XWA, Strings.CraftType, Strings.CraftAbbrv, fileMission);
 				Strings.OverrideShipList(CraftDataManager.GetInstance().GetLongNames(), CraftDataManager.GetInstance().GetShortNames());
 			}
 			catch (Exception x) { MessageBox.Show("Error processing custom XWA ship list, using defaults.\n\n" + x.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); }
@@ -733,25 +731,25 @@ namespace Idmr.Yogeme
 					{
 						case Platform.MissionFile.Platform.Xwing:
 							_applicationExit = false;
-							new XwingForm(_config, fileMission).Show();
+							new XwingForm(fileMission).Show();
 							Close();
 							fs.Close(); //[JB] Files were being left open, which could cause access violations.  Need to close stream before returning.
 							return false;
 						case Platform.MissionFile.Platform.TIE:
 							_applicationExit = false;
-							new TieForm(_config, fileMission).Show();
+							new TieForm(fileMission).Show();
 							Close();
 							fs.Close();
 							return false;
 						case Platform.MissionFile.Platform.XvT:
 							_applicationExit = false;
-							new XvtForm(_config, fileMission).Show();
+							new XvtForm(fileMission).Show();
 							Close();
 							fs.Close();
 							return false;
 						case Platform.MissionFile.Platform.BoP:
 							_applicationExit = false;
-							new XvtForm(_config, fileMission).Show();
+							new XvtForm(fileMission).Show();
 							Close();
 							fs.Close();
 							return false;
@@ -890,7 +888,7 @@ namespace Idmr.Yogeme
 			Text = "Ye Olde Galactic Empire Mission Editor - XWA - " + _mission.MissionFileName;
 			_config.LastMission = fileMission;
 			refreshRecent();
-			if (_config.Verify) Common.RunVerify(_mission.MissionPath, _config);
+			if (_config.Verify) Common.RunVerify(_mission.MissionPath);
 			else
 			{
 				// Checking this since this is rather critical.
@@ -1826,7 +1824,7 @@ namespace Idmr.Yogeme
 		void menuHelpInfo_Click(object sender, EventArgs e) => Common.LaunchHelp();
 		void menuHooks_Click(object sender, EventArgs e)
 		{
-			try { new XwaHookDialog(_mission, _config).ShowDialog(); }
+			try { new XwaHookDialog(_mission).ShowDialog(); }
 			catch (ObjectDisposedException) { /* do nothing */ }
 		}
 		void menuHyperbuoy_Click(object sender, EventArgs e)
@@ -1848,14 +1846,14 @@ namespace Idmr.Yogeme
 		void menuIDMR_Click(object sender, EventArgs e) => Common.LaunchGithub();
 		void menuLST_Click(object sender, EventArgs e)
 		{
-			_fLST = new LstForm(Settings.Platform.XWA, _config);
+			_fLST = new LstForm(Settings.Platform.XWA);
 			_fLST.Show();
 		}
 		void menuMap_Click(object sender, EventArgs e)
 		{
 			try { _fMap.Close(); }
 			catch { /* do nothing */ }
-			_fMap = new MapForm(_config, _mission.FlightGroups, mapForm_DataChangedCallback);
+			_fMap = new MapForm(_mission.FlightGroups, mapForm_DataChangedCallback);
 			_fMap.Show();
 		}
 		void mapForm_DataChangedCallback(object sender, EventArgs e)
@@ -1882,7 +1880,7 @@ namespace Idmr.Yogeme
 			promptSave();
 			closeForms();
 			_applicationExit = false;
-			new XwingForm(_config).Show();
+			new XwingForm().Show();
 			Close();
 		}
 		void menuNewBoP_Click(object sender, EventArgs e) => menuNewXvT_Click("BoP", new EventArgs());
@@ -1891,7 +1889,7 @@ namespace Idmr.Yogeme
 			promptSave();
 			closeForms();
 			_applicationExit = false;
-			new TieForm(_config).Show();
+			new TieForm().Show();
 			Close();
 		}
 		void menuNewXvT_Click(object sender, EventArgs e)
@@ -1899,7 +1897,7 @@ namespace Idmr.Yogeme
 			promptSave();
 			closeForms();
 			_applicationExit = false;
-			new XvtForm(_config, sender.ToString() == "BoP").Show();
+			new XvtForm(sender.ToString() == "BoP").Show();
 			Close();
 		}
 		void menuNewXWA_Click(object sender, EventArgs e)
@@ -1930,7 +1928,7 @@ namespace Idmr.Yogeme
 				opnXWA.InitialDirectory = _config.GetWorkingPath();
 			}
 		}
-		void menuOptions_Click(object sender, EventArgs e) => new OptionsDialog(_config, applySettingsHandler).ShowDialog();
+		void menuOptions_Click(object sender, EventArgs e) => new OptionsDialog(applySettingsHandler).ShowDialog();
 		void menuPaste_Click(object sender, EventArgs e)
 		{
 			System.Runtime.Serialization.IFormatter formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
@@ -2270,7 +2268,7 @@ namespace Idmr.Yogeme
 		{
 			if (_config.ConfirmTest)
 			{
-				DialogResult res = new TestDialog(_config).ShowDialog();
+				DialogResult res = new TestDialog().ShowDialog();
 				if (res == DialogResult.Cancel) return;
 			}
 			
@@ -2288,7 +2286,7 @@ namespace Idmr.Yogeme
 			string fileName = (!localMission ? path + "Missions\\" + _mission.MissionFileName : _mission.MissionPath);
 			
 
-			if (_config.VerifyTest && !_config.Verify) Common.RunVerify(_mission.MissionPath, _config);
+			if (_config.VerifyTest && !_config.Verify) Common.RunVerify(_mission.MissionPath);
 			int index = 0;
 			while (File.Exists(path + "test" + index + "0.plt")) index++;
 			string pilot = "test" + index + "0.plt";
@@ -2377,7 +2375,7 @@ namespace Idmr.Yogeme
 		void menuVerify_Click(object sender, EventArgs e)
 		{
 			menuSave_Click("Verify", new EventArgs());
-			if (!_config.Verify) Common.RunVerify(_mission.MissionPath, _config);    //prevents from doing this twice due to Save
+			if (!_config.Verify) Common.RunVerify(_mission.MissionPath);    //prevents from doing this twice due to Save
 		}
 		void menuWav_Click(object sender, EventArgs e)
 		{
@@ -2399,7 +2397,7 @@ namespace Idmr.Yogeme
 			}
 			else
 			{
-				_fWav = new XwaWavForm(_config, _mission);
+				_fWav = new XwaWavForm(_mission);
 				if (!_fWav.IsDisposed) _fWav.Show();
 			}
 		}
@@ -3352,8 +3350,8 @@ namespace Idmr.Yogeme
 			{
 				BackdropDialog dlg = null;
 				// HACK: backdrop index fix
-				if (_hookBackdropInstalled) dlg = new BackdropDialog(_activeFG.Backdrop, _activeFG.GlobalCargo - 1, _mission.MissionPath, _config);
-				else dlg = new BackdropDialog(_activeFG.Backdrop, _activeFG.GlobalCargo - 1, _config);
+				if (_hookBackdropInstalled) dlg = new BackdropDialog(_activeFG.Backdrop, _activeFG.GlobalCargo - 1, _mission.MissionPath);
+				else dlg = new BackdropDialog(_activeFG.Backdrop, _activeFG.GlobalCargo - 1);
 				if (dlg.ShowDialog() == DialogResult.OK)
 				{
 					cboGlobCargo.SelectedIndex = dlg.Shadow;

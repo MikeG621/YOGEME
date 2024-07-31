@@ -7,6 +7,8 @@
  */
 
 /* CHANGELOG
+ * [UPD] class is now a Singleton
+ * [UPD] LoadSettings and CheckPlatforms now private, weren't used elsewhere anyway
  * [UPD] Defaults now initialized directly instead of load function
  * v1.13.12, 230116
  * [NEW] RememberSelectedOrder
@@ -73,6 +75,8 @@ namespace Idmr.Yogeme
 {
 	public class Settings
 	{
+		static readonly Settings _instance = new Settings();
+
 		#region defaults
 		string _verifyLocation = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location), "MissionVerify.exe");
 		string _xwingPath = "";
@@ -95,21 +99,23 @@ namespace Idmr.Yogeme
 		public enum MapOpts { None = 0, FGTags = 1, Traces = 2, TraceDistance = 4, TraceTime = 8, TraceHideFade = 16, TraceSelected = 32 }
 
 		/// <summary>Creates a new Settings object and loads saved settings</summary>
-		public Settings()
+		private Settings()
 		{
 			for (int i = 0; i < 6; i++) _recentMissions[i] = "";
-			LoadSettings();
+			loadSettings();
 		}
+
+		public static Settings GetInstance() => _instance;
 
 		/// <summary>Loads saved settings</summary>
 		/// <remarks>If no saved settings exist, will save defaults in the user's settings file</remarks>
-		public void LoadSettings()
+		void loadSettings()
 		{
 			RegistryKey key = Registry.CurrentUser.OpenSubKey("Software\\IDMR\\MissionEditor");
 			string settingsFile = _settingsDir + "\\Settings.dat";
 			if (key == null && !File.Exists(settingsFile))
 			{
-				CheckPlatforms();
+				checkPlatforms();
 				SaveSettings();
 			}
 			else if (File.Exists(settingsFile))
@@ -228,7 +234,7 @@ namespace Idmr.Yogeme
 
 				fs.Close();
 				#endregion
-				CheckPlatforms();
+				checkPlatforms();
 			}
 			else
 			{
@@ -261,11 +267,12 @@ namespace Idmr.Yogeme
 				_xwaPath = (string)key.GetValue("XWAInstall", "");
 				key.Close();
 				#endregion
-				CheckPlatforms();
+				checkPlatforms();
 			}
 		}
+
 		/// <summary>Searches Registry for platform installations, will not reflect uninstalls</summary>
-		public void CheckPlatforms()
+		void checkPlatforms()
 		{
 			RegistryKey keyplat;
 			#region original registry
@@ -432,6 +439,7 @@ namespace Idmr.Yogeme
 			#endregion
 			if (XwaInstalled) SuperBackdropsInstalled = (File.Exists(_xwaPath + "\\DTMSBReadme.rtf") || File.Exists(_xwaPath + "\\Backup\\SBPReadme_v3.1.rtf") || Directory.Exists(_xwaPath + "\\Readme\\SuperBackdropPatch") || (Directory.Exists(_xwaPath + "\\Readme\\Upgrades") && Directory.GetFiles(_xwaPath + "\\Readme\\Upgrades", "SuperBackdrop*").Length != 0) || File.Exists(_xwaPath + "\\Resdata\\Planet2.dat"));
 		}
+
 		/// <summary>Saves current settings to user's settings file</summary>
 		/// <remarks>Registry use has been deprecated</remarks>
 		public void SaveSettings()

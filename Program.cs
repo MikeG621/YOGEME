@@ -1,12 +1,13 @@
 ﻿/*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
- * Copyright (C) 2007-2018 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2024 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.11.1
+ * VERSION: 1.11.1+
  */
 
 /* CHANGELOG
+ * [UPD] updates due to Settings
  * v1.11.1, 210814
  * [FIX] Set InvariantCulture to prevent text read errors [JB]
  * v1.5, 180910
@@ -57,26 +58,26 @@ namespace Idmr.Yogeme
 		static void Main(string[] Args)
 		{
 			Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
-			Settings config = new Settings();
-            if (Args.Length != 1 && config.Startup == Settings.StartupMode.Normal) Application.Run(new StartForm(config));
+			Settings config = Settings.GetInstance();
+            if (Args.Length != 1 && config.Startup == Settings.StartupMode.Normal) Application.Run(new StartForm());
 			else if (Args.Length != 1 && config.Startup == Settings.StartupMode.LastPlatform)
 			{
 				switch (config.LastPlatform)	//open the last platform directly
 				{
 					case Settings.Platform.XWING:
-						new XwingForm(config).Show();
+						new XwingForm().Show();
 						break;
 					case Settings.Platform.TIE:
-						new TieForm(config).Show();
+						new TieForm().Show();
 						break;
 					case Settings.Platform.XvT:
-						new XvtForm(config, false).Show();
+						new XvtForm(false).Show();
 						break;
 					case Settings.Platform.BoP:
-						new XvtForm(config, true).Show(); ;
+						new XvtForm(true).Show(); ;
 						break;
 					case Settings.Platform.XWA:
-						new XwaForm(config).Show();
+						new XwaForm().Show();
 						break;
 				}
 			}
@@ -87,19 +88,19 @@ namespace Idmr.Yogeme
 					switch (config.LastPlatform)
 					{
 						case Settings.Platform.XWING:
-							new XwingForm(config, config.LastMission).Show();
+							new XwingForm(config.LastMission).Show();
 							break;
 						case Settings.Platform.TIE:
-							new TieForm(config, config.LastMission).Show();
+							new TieForm(config.LastMission).Show();
 							break;
 						case Settings.Platform.XvT:
-							new XvtForm(config, config.LastMission).Show();
+							new XvtForm(config.LastMission).Show();
 							break;
 						case Settings.Platform.BoP:
-							new XvtForm(config, config.LastMission).Show();
+							new XvtForm(config.LastMission).Show();
 							break;
 						case Settings.Platform.XWA:
-							new XwaForm(config, config.LastMission).Show();
+							new XwaForm(config.LastMission).Show();
 							break;
 					}
 				}
@@ -108,19 +109,19 @@ namespace Idmr.Yogeme
 					switch (config.RecentPlatforms[1])
 					{
 						case Settings.Platform.XWING:
-							new XwingForm(config, config.RecentMissions[1]).Show();
+							new XwingForm(config.RecentMissions[1]).Show();
 							break;
 						case Settings.Platform.TIE:
-							new TieForm(config, config.RecentMissions[1]).Show();
+							new TieForm(config.RecentMissions[1]).Show();
 							break;
 						case Settings.Platform.XvT:
-							new XvtForm(config, config.RecentMissions[1]).Show();
+							new XvtForm(config.RecentMissions[1]).Show();
 							break;
 						case Settings.Platform.BoP:
-							new XvtForm(config, config.RecentMissions[1]).Show();
+							new XvtForm(config.RecentMissions[1]).Show();
 							break;
 						case Settings.Platform.XWA:
-							new XwaForm(config, config.RecentMissions[1]).Show();
+							new XwaForm(config.RecentMissions[1]).Show();
 							break;
 					}
 				}
@@ -130,19 +131,19 @@ namespace Idmr.Yogeme
 					switch (config.LastPlatform)
 					{
 						case Settings.Platform.XWING:
-							new XwingForm(config).Show();
+							new XwingForm().Show();
 							break;
 						case Settings.Platform.TIE:
-							new TieForm(config).Show();
+							new TieForm().Show();
 							break;
 						case Settings.Platform.XvT:
-							new XvtForm(config, false).Show();
+							new XvtForm(false).Show();
 							break;
 						case Settings.Platform.BoP:
-							new XvtForm(config, true).Show();
+							new XvtForm(true).Show();
 							break;
 						case Settings.Platform.XWA:
-							new XwaForm(config).Show();
+							new XwaForm().Show();
 							break;
 					}
 				}
@@ -154,11 +155,11 @@ namespace Idmr.Yogeme
 					MessageBox.Show("Available arguments:\n\tnone\t\t\tStart normally\n\t/?\t\tShows this help\n\t[path]\t\tLoads mission as declared by [path]\n\t/Xwing\t\tLoads Xwing config directly\n\t/TIE\t\tLoads TIE config directly\n\t/XvT\t\tLoads XvT config directly\n\t/BoP\t\tLoads BoP config directly\n\t/XWA\t\tLoads XWA config directly", "Program use");
 					return;
 				}
-                else if (Args[0].ToUpper() == "/XWING") new XwingForm(config).Show();
-                else if (Args[0].ToUpper() == "/TIE") new TieForm(config).Show();
-                else if (Args[0].ToUpper() == "/XVT") new XvtForm(config, false).Show();
-                else if (Args[0].ToUpper() == "/BOP") new XvtForm(config, true).Show();
-                else if (Args[0].ToUpper() == "/XWA") new XwaForm(config).Show();
+                else if (Args[0].ToUpper() == "/XWING") new XwingForm().Show();
+                else if (Args[0].ToUpper() == "/TIE") new TieForm().Show();
+                else if (Args[0].ToUpper() == "/XVT") new XvtForm(false).Show();
+                else if (Args[0].ToUpper() == "/BOP") new XvtForm(true).Show();
+                else if (Args[0].ToUpper() == "/XWA") new XwaForm().Show();
                 else
                 {
                     try
@@ -170,19 +171,19 @@ namespace Idmr.Yogeme
                         switch (t)
                         {
                             case 12:
-                                new XvtForm(config, Args[0]).Show();
+                                new XvtForm(Args[0]).Show();
                                 break;
                             case 14:
-                                new XvtForm(config, Args[0]).Show();
+                                new XvtForm(Args[0]).Show();
                                 break;
                             case 18:
-                                new XwaForm(config, Args[0]).Show();
+                                new XwaForm(Args[0]).Show();
                                 break;
                             case -1:
-                                new TieForm(config, Args[0]).Show();
+                                new TieForm(Args[0]).Show();
                                 break;
                             case 2:
-                                new XwingForm(config, Args[0]).Show();
+                                new XwingForm(Args[0]).Show();
                                 break;
                             default:
                                 throw new Exception("File is either invalid or corrupted.\nPlease ensure the correct file was selected.");
@@ -192,7 +193,7 @@ namespace Idmr.Yogeme
                     catch (Exception e)
                     {
                         MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        Application.Run(new StartForm(config));
+                        Application.Run(new StartForm());
                     }
                 }
 			}

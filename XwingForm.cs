@@ -81,7 +81,7 @@ namespace Idmr.Yogeme
 	public partial class XwingForm : Form
 	{
 		#region vars and stuff
-		readonly Settings _config;
+		readonly Settings _config = Settings.GetInstance();
 		Mission _mission;
 		bool _applicationExit;              //for frmTIE_Closing, confirms application exit vs switching platforms
 		int _activeFG = 0;          //counter to keep track of current FG being displayed
@@ -121,9 +121,8 @@ namespace Idmr.Yogeme
 #pragma warning restore IDE1006 // Naming Styles
 		#endregion
 
-		public XwingForm(Settings settings)
+		public XwingForm()
 		{
-			_config = settings;
 			InitializeComponent();
 			_loading = true;
 			initializeMission();
@@ -131,9 +130,8 @@ namespace Idmr.Yogeme
 			lstFG.SelectedIndex = 0;
 			_loading = false;
 		}
-		public XwingForm(Settings settings, string path)
+		public XwingForm(string path)
 		{   //this is the command line and "Open..." support
-			_config = settings;
 			InitializeComponent();
 			_loading = true;
 			initializeMission();
@@ -277,7 +275,7 @@ namespace Idmr.Yogeme
 			Strings.OverrideShipList(null, null); //Restore defaults.
 			try
 			{
-				CraftDataManager.GetInstance().LoadPlatform(Settings.Platform.XWING, _config, Strings.CraftType, Strings.CraftAbbrv, fileMission);
+				CraftDataManager.GetInstance().LoadPlatform(Settings.Platform.XWING, Strings.CraftType, Strings.CraftAbbrv, fileMission);
 				Strings.OverrideShipList(CraftDataManager.GetInstance().GetLongNames(), CraftDataManager.GetInstance().GetShortNames());
 			}
 			catch (Exception x) { MessageBox.Show("Error processing custom XW ship list, using defaults.\n\n" + x.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); }
@@ -316,25 +314,25 @@ namespace Idmr.Yogeme
 							break;
 						case Platform.MissionFile.Platform.TIE:
 							_applicationExit = false;
-							new TieForm(_config, fileMission).Show();
+							new TieForm(fileMission).Show();
 							Close();
 							fs.Close(); //[JB] Files were being left open, which could cause access violations.  Need to close stream before returning.
 							return false;
 						case Platform.MissionFile.Platform.XvT:
 							_applicationExit = false;
-							new XvtForm(_config, fileMission).Show();
+							new XvtForm(fileMission).Show();
 							Close();
 							fs.Close();
 							return false;
 						case Platform.MissionFile.Platform.BoP:
 							_applicationExit = false;
-							new XvtForm(_config, fileMission).Show();
+							new XvtForm(fileMission).Show();
 							Close();
 							fs.Close();
 							return false;
 						case Platform.MissionFile.Platform.XWA:
 							_applicationExit = false;
-							new XwaForm(_config, fileMission).Show();
+							new XwaForm(fileMission).Show();
 							Close();
 							fs.Close();
 							return false;
@@ -946,7 +944,7 @@ namespace Idmr.Yogeme
 		{
 			try { _fMap.Close(); }
 			catch { /* do nothing */ }
-			_fMap = new MapForm(_config, _mission.FlightGroups, mapForm_DataChangedCallback);
+			_fMap = new MapForm(_mission.FlightGroups, mapForm_DataChangedCallback);
 			_fMap.Show();
 		}
 		void mapForm_DataChangedCallback(object sender, EventArgs e)
@@ -978,7 +976,7 @@ namespace Idmr.Yogeme
 			promptSave();
 			closeForms();
 			_applicationExit = false;
-			new TieForm(_config).Show();
+			new TieForm().Show();
 			Close();
 		}
 		void menuNewXvT_Click(object sender, EventArgs e)
@@ -986,7 +984,7 @@ namespace Idmr.Yogeme
 			promptSave();
 			closeForms();
 			_applicationExit = false;
-			new XvtForm(_config, sender.ToString() == "BoP").Show();
+			new XvtForm(sender.ToString() == "BoP").Show();
 			Close();
 		}
 		void menuNewXWA_Click(object sender, EventArgs e)
@@ -994,7 +992,7 @@ namespace Idmr.Yogeme
 			promptSave();
 			closeForms();
 			_applicationExit = false;
-			new XwaForm(_config).Show();
+			new XwaForm().Show();
 			Close();
 		}
 		void menuOpen_Click(object sender, EventArgs e)
@@ -1011,7 +1009,7 @@ namespace Idmr.Yogeme
 		}
 		void menuOptions_Click(object sender, EventArgs e)
 		{
-			new OptionsDialog(_config, null).ShowDialog();  //X-wing doesn't use interact labels, no callback event
+			new OptionsDialog(null).ShowDialog();  //X-wing doesn't use interact labels, no callback event
 		}
 		void menuPaste_Click(object sender, EventArgs e)
 		{
@@ -1206,7 +1204,7 @@ namespace Idmr.Yogeme
 		}
 		private void menuTour_Click(object sender, EventArgs e)
 		{
-			_fTour = new TourForm(_config);
+			_fTour = new TourForm();
 			try { _fTour.Show(); }
 			catch (ObjectDisposedException) { _fTour = null; }
 		}

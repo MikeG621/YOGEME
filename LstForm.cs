@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2024 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.13.8
+ * VERSION: 1.13.8+
  */
 
 /* CHANGELOG
+ * [UPD] cleanup
  * v1.13.8, 220828
  * [ADD #70] XWA's COMBAT.LST for Justagai's MP Hook
  * v1.8.1, 201213
@@ -35,12 +36,12 @@ namespace Idmr.Yogeme
 
 		/// <summary>Initialize the form, gather file listings from all categories</summary>
 		/// <param name="plat">Platform identifier</param>
-		public LstForm(Settings.Platform platform, Settings config)
+		public LstForm(Settings.Platform platform)
 		{
 			InitializeComponent();
-			if (platform == Settings.Platform.XvT) _installPath = config.XvtPath;
-			else if (platform == Settings.Platform.BoP) _installPath = config.BopPath;
-			else if (platform == Settings.Platform.XWA) _installPath = config.XwaPath;
+			if (platform == Settings.Platform.XvT) _installPath = Settings.GetInstance().XvtPath;
+			else if (platform == Settings.Platform.BoP) _installPath = Settings.GetInstance().BopPath;
+			else if (platform == Settings.Platform.XWA) _installPath = Settings.GetInstance().XwaPath;
 			if (!Directory.Exists(_installPath))
 			{
 				MessageBox.Show("Error reading install path for platform, LST editor unavailable", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);

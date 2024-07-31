@@ -101,11 +101,11 @@ namespace Idmr.Yogeme
 		/// <param name="index">Backdrop index, set to 0 if out of range</param>
 		/// <exception cref="ArgumentException">Invalid value for <paramref name="platform"/>.</exception>
 		/// <exception cref="ApplicationException">The designated <paramref name="platform"/> installation is not detected.</exception>
-		public BackdropDialog(MissionFile.Platform platform, int index, Settings config)
+		public BackdropDialog(MissionFile.Platform platform, int index)
 		{
 			_platform = platform;
 			if (_platform == MissionFile.Platform.Invalid || _platform == MissionFile.Platform.XWA) throw new ArgumentException("Invalid platform, must be TIE, XvT or BoP");
-			if (!platformInstalled(config)) throw new ApplicationException("Platform installation not found, feature unavailable.");
+			if (!platformInstalled()) throw new ApplicationException("Platform installation not found, feature unavailable.");
 
 			_index = index;
 			if ((_platform == MissionFile.Platform.TIE || _platform == MissionFile.Platform.XvT) && (_index < 0 || _index > 7)) _index = 0;
@@ -122,7 +122,7 @@ namespace Idmr.Yogeme
 		/// <param name="index">Backdrop index, set to 0 if out of range</param>
 		/// <param name="shadow">Shadow or backdrop variant, set to 0 if out of range</param>
 		/// <exception cref="ApplicationException">Platform installation not found.</exception>
-		public BackdropDialog(int index, int shadow, Settings config)
+		public BackdropDialog(int index, int shadow)
 		{
 			_platform = MissionFile.Platform.XWA;
 			_index = index;
@@ -130,7 +130,7 @@ namespace Idmr.Yogeme
 			_shadow = shadow;
 			if (_shadow < 0 || _shadow > 6) _shadow = 0;
 			InitializeComponent();
-			if (!platformInstalled(config)) throw new ApplicationException("Platform installation not found, feature unavailable.");
+			if (!platformInstalled()) throw new ApplicationException("Platform installation not found, feature unavailable.");
 
 			createThumbnails();
 			vsbThumbs.Enabled = true;
@@ -145,7 +145,7 @@ namespace Idmr.Yogeme
 		/// <param name="shadow">Shadow or backdrop variant, set to 0 if out of range</param>
 		/// <param name="filePath">Full path of mission for hook implementation</param>
 		/// <exception cref="ApplicationException">Platform installation not found.</exception>
-		public BackdropDialog(int index, int shadow, string filePath, Settings config)
+		public BackdropDialog(int index, int shadow, string filePath)
 		{
 			_platform = MissionFile.Platform.XWA;
 			_hookInstalled = true;
@@ -154,7 +154,7 @@ namespace Idmr.Yogeme
 			_shadow = shadow;
 			if (_shadow < 0 || _shadow > 6) _shadow = 0;
 			InitializeComponent();
-			if (!platformInstalled(config)) throw new ApplicationException("Platform installation not found, feature unavailable.");
+			if (!platformInstalled()) throw new ApplicationException("Platform installation not found, feature unavailable.");
 
 			if (File.Exists(Path.GetFileNameWithoutExtension(filePath) + "_Resdata.txt")) _fileName = Path.GetFileNameWithoutExtension(filePath) + "_Resdata.txt";
 			else _fileName = Path.GetFileNameWithoutExtension(filePath) + ".ini";
@@ -435,9 +435,10 @@ namespace Idmr.Yogeme
 			}
 			catch { throw new ArgumentException("Cannot open resource file:\n" + _backdropDirectory + datFile + "\n\nCheck your platform installation path."); }
 		}
-		bool platformInstalled(Settings config)
+		bool platformInstalled()
 		{
 			string dir = "\\IVFILES\\";
+			var config = Settings.GetInstance();
 			//string file = "SPEC640.LST";
 			// TODO: guide install off of mission path?
 			switch (_platform)

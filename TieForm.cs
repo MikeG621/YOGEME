@@ -165,7 +165,7 @@ namespace Idmr.Yogeme
 	public partial class TieForm : Form
 	{
 		#region vars and stuff
-		readonly Settings _config;
+		readonly Settings _config = Settings.GetInstance();
 		Mission _mission;
 		bool _applicationExit;              //for frmTIE_Closing, confirms application exit vs switching platforms
 		int _activeFGIndex = 0;          //counter to keep track of current FG being displayed
@@ -204,9 +204,8 @@ namespace Idmr.Yogeme
 
 		/// <summary>Initialize with a blank mission.</summary>
 		/// <param name="settings"></param>
-		public TieForm(Settings settings)
+		public TieForm()
 		{
-			_config = settings;
 			InitializeComponent();
 			_loading = true;
 			initializeMission();
@@ -218,9 +217,8 @@ namespace Idmr.Yogeme
 		/// <param name="settings"></param>
 		/// <param name="path"></param>
 		/// <remarks>This is for command line and "Open..." support.</remarks>>
-		public TieForm(Settings settings, string path)
+		public TieForm(string path)
 		{
-			_config = settings;
 			InitializeComponent();
 			_loading = true;
 			initializeMission();
@@ -394,7 +392,7 @@ namespace Idmr.Yogeme
 			Strings.OverrideShipList(null, null); //Restore defaults.
 			try
 			{
-				CraftDataManager.GetInstance().LoadPlatform(Settings.Platform.TIE, _config, Strings.CraftType, Strings.CraftAbbrv, fileMission);
+				CraftDataManager.GetInstance().LoadPlatform(Settings.Platform.TIE, Strings.CraftType, Strings.CraftAbbrv, fileMission);
 				Strings.OverrideShipList(CraftDataManager.GetInstance().GetLongNames(), CraftDataManager.GetInstance().GetShortNames());
 			}
 			catch (Exception x) { MessageBox.Show("Error processing custom TIE ship list, using defaults.\n\n" + x.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); }
@@ -425,7 +423,7 @@ namespace Idmr.Yogeme
 					{
 						case Platform.MissionFile.Platform.Xwing:
 							_applicationExit = false;
-							new XwingForm(_config, fileMission).Show();
+							new XwingForm(fileMission).Show();
 							Close();
 							fs.Close();
 							return false;
@@ -433,19 +431,19 @@ namespace Idmr.Yogeme
 							break;
 						case Platform.MissionFile.Platform.XvT:
 							_applicationExit = false;
-							new XvtForm(_config, fileMission).Show();
+							new XvtForm(fileMission).Show();
 							Close();
 							fs.Close();
 							return false;
 						case Platform.MissionFile.Platform.BoP:
 							_applicationExit = false;
-							new XvtForm(_config, fileMission).Show();
+							new XvtForm(fileMission).Show();
 							Close();
 							fs.Close();
 							return false;
 						case Platform.MissionFile.Platform.XWA:
 							_applicationExit = false;
-							new XwaForm(_config, fileMission).Show();
+							new XwaForm(fileMission).Show();
 							Close();
 							fs.Close();
 							return false;
@@ -570,7 +568,7 @@ namespace Idmr.Yogeme
 			Text = "Ye Olde Galactic Empire Mission Editor - TIE - " + _mission.MissionFileName;
 			_config.LastMission = fileMission;
 			refreshRecent();
-			if (_config.Verify) Common.RunVerify(_mission.MissionPath, _config);
+			if (_config.Verify) Common.RunVerify(_mission.MissionPath);
 		}
 		void setInteractiveLabelColor(Label control, bool highlight)
 		{
@@ -1135,7 +1133,7 @@ namespace Idmr.Yogeme
 		void menuAbout_Click(object sender, EventArgs e) => new AboutDialog().ShowDialog();
 		void menuBattle_Click(object sender, EventArgs e)
 		{
-			_fBattle = new BattleForm(_config);
+			_fBattle = new BattleForm();
 			try { _fBattle.Show(); }
 			catch (ObjectDisposedException) { _fBattle = null; }
 		}
@@ -1248,7 +1246,7 @@ namespace Idmr.Yogeme
 		{
 			try { _fMap.Close(); }
 			catch { /* do nothing */ }
-			_fMap = new MapForm(_config, _mission.FlightGroups, mapForm_DataChangedCallback);
+			_fMap = new MapForm(_mission.FlightGroups, mapForm_DataChangedCallback);
 			_fMap.Show();
 		}
 		void mapForm_DataChangedCallback(object sender, EventArgs e)
@@ -1261,7 +1259,7 @@ namespace Idmr.Yogeme
 			promptSave();
 			closeForms();
 			_applicationExit = false;
-			new XwingForm(_config).Show();
+			new XwingForm().Show();
 			Close();
 		}
 		void menuNewBoP_Click(object sender, EventArgs e) => menuNewXvT_Click("BoP", new EventArgs());
@@ -1286,7 +1284,7 @@ namespace Idmr.Yogeme
 			promptSave();
 			closeForms();
 			_applicationExit = false;
-			new XvtForm(_config, sender.ToString() == "BoP").Show();
+			new XvtForm(sender.ToString() == "BoP").Show();
 			Close();
 		}
 		void menuNewXWA_Click(object sender, EventArgs e)
@@ -1294,7 +1292,7 @@ namespace Idmr.Yogeme
 			promptSave();
 			closeForms();
 			_applicationExit = false;
-			new XwaForm(_config).Show();
+			new XwaForm().Show();
 			Close();
 		}
 		void menuOpen_Click(object sender, EventArgs e)
@@ -1308,7 +1306,7 @@ namespace Idmr.Yogeme
 			_config.SetWorkingPath(Path.GetDirectoryName(opnTIE.FileName));
 			opnTIE.InitialDirectory = _config.GetWorkingPath();
 		}
-		void menuOptions_Click(object sender, EventArgs e) => new OptionsDialog(_config, applySettingsHandler).ShowDialog();
+		void menuOptions_Click(object sender, EventArgs e) => new OptionsDialog(applySettingsHandler).ShowDialog();
 		void menuPaste_Click(object sender, EventArgs e)
 		{
 			System.Runtime.Serialization.IFormatter formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
@@ -1513,13 +1511,13 @@ namespace Idmr.Yogeme
 		void menuVerify_Click(object sender, EventArgs e)
 		{
 			menuSave_Click("Verify", new EventArgs());
-			if (!_config.Verify) Common.RunVerify(_mission.MissionPath, _config);
+			if (!_config.Verify) Common.RunVerify(_mission.MissionPath);
 		}
 		void menuTest_Click(object sender, EventArgs e)
 		{
 			if (_config.ConfirmTest)
 			{
-				DialogResult res = new TestDialog(_config).ShowDialog();
+				DialogResult res = new TestDialog().ShowDialog();
 				if (res == DialogResult.Cancel) return;
 			}
 			menuSave_Click("menuTest_Click", new EventArgs());
@@ -1546,7 +1544,7 @@ namespace Idmr.Yogeme
 				File.Copy(_mission.MissionPath, fileName, true);
 			}
 
-			if (_config.VerifyTest && !_config.Verify) Common.RunVerify(_mission.MissionPath, _config);
+			if (_config.VerifyTest && !_config.Verify) Common.RunVerify(_mission.MissionPath);
 			Version os = Environment.OSVersion.Version;
 			bool isWin7 = (os.Major == 6 && os.Minor == 1);
 			System.Diagnostics.Process explorer = null;
@@ -2260,7 +2258,7 @@ namespace Idmr.Yogeme
 		{
 			try
 			{
-				BackdropDialog dlg = new BackdropDialog(Platform.MissionFile.Platform.TIE, _activeFG.Status1, _config);
+				BackdropDialog dlg = new BackdropDialog(Platform.MissionFile.Platform.TIE, _activeFG.Status1);
 				if (dlg.ShowDialog() == DialogResult.OK)
 				{
 					numBackdrop.Value = dlg.BackdropIndex;
@@ -3029,7 +3027,7 @@ namespace Idmr.Yogeme
 			txtQuestion_Leave("cmdPreview", new EventArgs());
 			_fOfficers?.Close();
 
-            _fOfficers = new OfficerPreviewForm(_mission.BriefingQuestions, cboOfficer.SelectedIndex, cboQuestion.SelectedIndex, _config);
+            _fOfficers = new OfficerPreviewForm(_mission.BriefingQuestions, cboOfficer.SelectedIndex, cboQuestion.SelectedIndex);
 			_fOfficers.Show();
 		}
 

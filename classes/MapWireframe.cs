@@ -1087,12 +1087,12 @@ namespace Idmr.Yogeme.MapWireframe
 
 		/// <summary>Prepares the manager to use a specific platform.</summary>
 		/// <remarks>Handles basic tasks required when changing platforms, resetting the model cache and determining a new directory to load models from.</remarks>
-		public void SetPlatform(Settings.Platform platform, Settings config)
+		public void SetPlatform(Settings.Platform platform)
 		{
 			// Retrieve the current installation path. If the platform remains the same, but the user has chosen a different folder, we'll be able to reload.
 			string installPath = CraftDataManager.GetInstance().GetInstallPath();
 
-			if (_curPlatform != platform || config.LastMission != _curMissionPath || _curInstallPath != installPath)
+			if (_curPlatform != platform || Settings.GetInstance().LastMission != _curMissionPath || _curInstallPath != installPath)
 			{
 				// Prepare new cache and reset the loading context.
 				_wireframeDefinitions = new Dictionary<int, WireframeDefinition>();
@@ -1117,7 +1117,7 @@ namespace Idmr.Yogeme.MapWireframe
 					}
 				}
 			}
-			_curMissionPath = config.LastMission;
+			_curMissionPath = Settings.GetInstance().LastMission;
 			_curInstallPath = installPath;
 			_craftData = CraftDataManager.GetInstance().GetCraftDataList();
 			_curPlatform = platform;

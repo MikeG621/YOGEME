@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2024 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.13.6
+ * VERSION: 1.13.6+
  */
 
 /* CHANGELOG
+ * [UPD] cleanup
  * v1.13.6, 220619
  * [NEW] Last Mission option
  * v1.5, 180910
@@ -33,11 +34,10 @@ namespace Idmr.Yogeme
 	/// <summary>The initial interface and effective program start</summary>
 	public partial class StartForm : Form
 	{
-        readonly Settings _config;
+        readonly Settings _config = Settings.GetInstance();
 
-		public StartForm(Settings settings)
+		public StartForm()
 		{
-			_config = settings;
 			InitializeComponent();
 
 			// Settings.LoadSettings already called, so has Settings.CheckPlatforms
@@ -68,19 +68,19 @@ namespace Idmr.Yogeme
 				return;
 			}
 			Hide();
-            if (optXWING.Checked) new XwingForm(_config).Show();
-            else if (optTIE.Checked) new TieForm(_config).Show();
-			else if (optXvT.Checked) new XvtForm(_config, chkBoP.Checked).Show();
-			else if (optXWA.Checked) new XwaForm(_config).Show();
+            if (optXWING.Checked) new XwingForm().Show();
+            else if (optTIE.Checked) new TieForm().Show();
+			else if (optXvT.Checked) new XvtForm(chkBoP.Checked).Show();
+			else if (optXWA.Checked) new XwaForm().Show();
 			else
             {
 				switch (_config.LastPlatform)
 				{
-					case Settings.Platform.XWING: new XwingForm(_config, _config.RecentMissions[1]).Show(); break;
-					case Settings.Platform.TIE: new TieForm(_config, _config.RecentMissions[1]).Show(); break;
-					case Settings.Platform.XvT: new XvtForm(_config, _config.RecentMissions[1]).Show(); break;
-					case Settings.Platform.BoP: new XvtForm(_config, _config.RecentMissions[1]).Show(); break;
-					case Settings.Platform.XWA: new XwaForm(_config, _config.RecentMissions[1]).Show(); break;
+					case Settings.Platform.XWING: new XwingForm(_config.RecentMissions[1]).Show(); break;
+					case Settings.Platform.TIE: new TieForm(_config.RecentMissions[1]).Show(); break;
+					case Settings.Platform.XvT: new XvtForm(_config.RecentMissions[1]).Show(); break;
+					case Settings.Platform.BoP: new XvtForm(_config.RecentMissions[1]).Show(); break;
+					case Settings.Platform.XWA: new XwaForm(_config.RecentMissions[1]).Show(); break;
 				}
 			}
 		}

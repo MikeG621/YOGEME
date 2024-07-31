@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2024 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.15.3
+ * VERSION: 1.15.3+
  */
 
 /* CHANGELOG
+ * [UPD] cleanup
  * v1.15.3, 231111
  * [FIX] Briefing tab was pointing to wrong files due to not fixing the regex groups after previous fix
  * v1.14, 230804
@@ -36,7 +37,7 @@ namespace Idmr.Yogeme
 	/// <summary>GUI to handle the mission .WAV files for XWA</summary>
 	public partial class XwaWavForm : Form
 	{
-		readonly Settings _config;
+		readonly Settings _config = Settings.GetInstance();
 		readonly Mission _mission;
 		readonly string _lstFile;
 		string[] _messages;
@@ -52,10 +53,9 @@ namespace Idmr.Yogeme
 		/// <summary>Create a new instance of the form</summary>
 		/// <param name="config">The current configuration</param>
 		/// <param name="mission">The current mission</param>
-		public XwaWavForm(Settings config, Mission mission)
+		public XwaWavForm(Mission mission)
 		{
 			InitializeComponent();
-			_config = config;
 			_mission = mission;
 			_wave = _config.XwaPath + "\\Wave\\";
 			_lstFile = _wave + "MissionVoice\\" + Path.GetFileNameWithoutExtension(_mission.MissionFileName) + ".LST";

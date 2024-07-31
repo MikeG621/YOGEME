@@ -3,10 +3,11 @@
  * Copyright (C) 2007-2024 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.2.3
+ * VERSION: 1.2.3+
  */
 
 /* CHANGELOG
+ * [UPD] cleanup
  * v1.2.3, 141214
  * [UPD] change to MPL
  * v1.1.1, 120814
@@ -22,11 +23,10 @@ namespace Idmr.Yogeme
 {
 	public partial class TestDialog : Form
 	{
-		readonly Settings _config;
+		readonly Settings _config = Settings.GetInstance();
 
-		public TestDialog(Settings settings)
+		public TestDialog()
 		{
-			_config = settings;
 			InitializeComponent();
 			chkVerify.Checked = _config.VerifyTest;
 			chkDelete.Checked = _config.DeleteTestPilots;

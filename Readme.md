@@ -43,6 +43,7 @@ This will leave behind a single config file in AppData with your user settings.
 - (TIE) Fixed a bug where the Questions wouldn't clear properly when loading a second mission.
 - (TIE-XWA) Test respects the "DetectMission" setting.
 - (XWA) Radio and Formation drop-downs swapped positions for consistency between platforms.
+- Settings class now a singleton
 - Various cleanups throughout
 
 Extensive updates due to changes in Platform.dll, using the full file format spec.

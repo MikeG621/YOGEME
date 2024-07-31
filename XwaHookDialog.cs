@@ -158,9 +158,10 @@ namespace Idmr.Yogeme
 		readonly CheckBox[] _chkRegions = new CheckBox[4];
 		#endregion
 
-		public XwaHookDialog(Mission mission, Settings config)
+		public XwaHookDialog(Mission mission)
 		{
 			InitializeComponent();
+			var config = Settings.GetInstance();
 			_mission = Path.GetFileNameWithoutExtension(mission.MissionPath);
 			if (_mission == "NewMission")
 			{

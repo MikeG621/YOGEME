@@ -50,10 +50,10 @@ namespace Idmr.Yogeme
 		bool _dragging = false;
 		LfdFile _battle;
 
-		public BattleForm(Settings config)
+		public BattleForm()
 		{
 			InitializeComponent();
-			if (!config.TieInstalled)
+			if (!Settings.GetInstance().TieInstalled)
 			{
 				MessageBox.Show("TIE95 installation not found, Battle function not available", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				Close();
@@ -61,7 +61,7 @@ namespace Idmr.Yogeme
 			}
 			else
 			{
-				_installPath = config.TiePath;
+				_installPath = Settings.GetInstance().TiePath;
 				Pltt standard = (Pltt)(new LfdFile(_installPath + "\\RESOURCE\\EMPIRE.LFD").Resources["PLTTstandard"]);
 				LfdFile tourdesk = new LfdFile(_installPath + "\\RESOURCE\\TOURDESK.LFD");
 				Pltt toddesk = (Pltt)tourdesk.Resources["PLTTtoddesk"];

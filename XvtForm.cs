@@ -169,7 +169,7 @@ namespace Idmr.Yogeme
 	public partial class XvtForm : Form
 	{
 		#region vars and stuff
-		readonly Settings _config;
+		readonly Settings _config = Settings.GetInstance();
 		Mission _mission;
 		bool _applicationExit;
 		int _activeFGIndex = 0;
@@ -215,9 +215,8 @@ namespace Idmr.Yogeme
 #pragma warning restore IDE1006 // Naming Styles
 		#endregion
 
-		public XvtForm(Settings settings, bool bBoP)
+		public XvtForm(bool bBoP)
 		{
-			_config = settings;
 			InitializeComponent();
 			_loading = true;
 			initializeMission();
@@ -226,9 +225,8 @@ namespace Idmr.Yogeme
 			lstFG.SelectedIndex = 0;
 			_loading = false;
 		}
-		public XvtForm(Settings settings, string path)
+		public XvtForm(string path)
 		{
-			_config = settings;
 			InitializeComponent();
 			_loading = true;
 			initializeMission();
@@ -417,7 +415,7 @@ namespace Idmr.Yogeme
 			Strings.OverrideShipList(null, null); //Restore defaults.
 			try
 			{
-				CraftDataManager.GetInstance().LoadPlatform(_mission.IsBop ? Settings.Platform.BoP : Settings.Platform.XvT, _config, Strings.CraftType, Strings.CraftAbbrv, fileMission);
+				CraftDataManager.GetInstance().LoadPlatform(_mission.IsBop ? Settings.Platform.BoP : Settings.Platform.XvT, Strings.CraftType, Strings.CraftAbbrv, fileMission);
 				Strings.OverrideShipList(CraftDataManager.GetInstance().GetLongNames(), CraftDataManager.GetInstance().GetShortNames());
 			}
 			catch (Exception x) { MessageBox.Show("Error processing custom XvT ship list, using defaults.\n\n" + x.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); }
@@ -449,13 +447,13 @@ namespace Idmr.Yogeme
 					{
 						case Platform.MissionFile.Platform.Xwing:
 							_applicationExit = false;
-							new XwingForm(_config, fileMission).Show();
+							new XwingForm(fileMission).Show();
 							Close();
 							fs.Close();
 							return false;
 						case Platform.MissionFile.Platform.TIE:
 							_applicationExit = false;
-							new TieForm(_config, fileMission).Show();
+							new TieForm(fileMission).Show();
 							Close();
 							fs.Close();
 							return false;
@@ -472,7 +470,7 @@ namespace Idmr.Yogeme
 							break;
 						case Platform.MissionFile.Platform.XWA:
 							_applicationExit = false;
-							new XwaForm(_config, fileMission).Show();
+							new XwaForm(fileMission).Show();
 							Close();
 							fs.Close();
 							return false;
@@ -585,7 +583,7 @@ namespace Idmr.Yogeme
 			Text = "Ye Olde Galactic Empire Mission Editor - " + (_mission.IsBop ? "BoP" : "XvT") + " - " + _mission.MissionFileName;
 			_config.LastMission = fileMission;
 			refreshRecent();
-			if (_config.Verify) Common.RunVerify(_mission.MissionPath, _config);
+			if (_config.Verify) Common.RunVerify(_mission.MissionPath);
 		}
 		void setBop(bool bop)
 		{
@@ -1506,15 +1504,15 @@ namespace Idmr.Yogeme
 		{
 			try { _fLST.Close(); }
 			catch { /* do nothing */ }
-			if (_mission.IsBop) _fLST = new LstForm(Settings.Platform.BoP, _config);
-			else _fLST = new LstForm(Settings.Platform.XvT, _config);
+			if (_mission.IsBop) _fLST = new LstForm(Settings.Platform.BoP);
+			else _fLST = new LstForm(Settings.Platform.XvT);
 			_fLST.Show();
 		}
 		void menuMap_Click(object sender, EventArgs e)
 		{
 			try { _fMap.Close(); }
 			catch { /* do nothing */ }
-			_fMap = new MapForm(_config, _mission.IsBop, _mission.FlightGroups, mapForm_DataChangedCallback);
+			_fMap = new MapForm(_mission.IsBop, _mission.FlightGroups, mapForm_DataChangedCallback);
 			_fMap.Show();
 		}
 		void mapForm_DataChangedCallback(object sender, EventArgs e)
@@ -1527,7 +1525,7 @@ namespace Idmr.Yogeme
 			promptSave();
 			closeForms();
 			_applicationExit = false;
-			new XwingForm(_config).Show();
+			new XwingForm().Show();
 			Close();
 		}
 		void menuNewBoP_Click(object sender, EventArgs e) => menuNewXvT_Click("BoP", new EventArgs());
@@ -1536,7 +1534,7 @@ namespace Idmr.Yogeme
 			promptSave();
 			closeForms();
 			_applicationExit = false;
-			new TieForm(_config).Show();
+			new TieForm().Show();
 			Close();
 		}
 		void menuNewXvT_Click(object sender, EventArgs e)
@@ -1561,7 +1559,7 @@ namespace Idmr.Yogeme
 			promptSave();
 			closeForms();
 			_applicationExit = false;
-			new XwaForm(_config).Show();
+			new XwaForm().Show();
 			Close();
 		}
 		void menuOpen_Click(object sender, EventArgs e)
@@ -1583,7 +1581,7 @@ namespace Idmr.Yogeme
 			_config.SetWorkingPath(Path.GetDirectoryName(opnXvT.FileName));
 			opnXvT.InitialDirectory = _config.GetWorkingPath();
 		}
-		void menuOptions_Click(object sender, EventArgs e) => new OptionsDialog(_config, applySettingsHandler).ShowDialog();
+		void menuOptions_Click(object sender, EventArgs e) => new OptionsDialog(applySettingsHandler).ShowDialog();
 		void menuDelete_Click(object sender, EventArgs e)
 		{
 			if (tabMain.SelectedIndex == 0 && (sender.ToString() == "toolbar" || lstFG.Focused)) deleteFG();
@@ -1831,7 +1829,7 @@ namespace Idmr.Yogeme
 		{
 			if (_config.ConfirmTest)
 			{
-				DialogResult res = new TestDialog(_config).ShowDialog();
+				DialogResult res = new TestDialog().ShowDialog();
 				if (res == DialogResult.Cancel) return;
 			}
 			
@@ -1876,7 +1874,7 @@ namespace Idmr.Yogeme
 				File.Copy(_mission.MissionPath, fileName, true);
 			}
 
-			if (_config.VerifyTest && !_config.Verify) Common.RunVerify(_mission.MissionPath, _config);
+			if (_config.VerifyTest && !_config.Verify) Common.RunVerify(_mission.MissionPath);
 			/*Version os = Environment.OSVersion.Version;
 			bool isWin7 = (os.Major == 6 && os.Minor == 1);
 			System.Diagnostics.Process explorer = null;
@@ -1999,7 +1997,7 @@ namespace Idmr.Yogeme
 		void menuVerify_Click(object sender, EventArgs e)
 		{
 			menuSave_Click("Verify", new EventArgs());
-			if (!_config.Verify) Common.RunVerify(_mission.MissionPath, _config);
+			if (!_config.Verify) Common.RunVerify(_mission.MissionPath);
 		}
 		#endregion
 		#region Flight Groups
@@ -2765,7 +2763,7 @@ namespace Idmr.Yogeme
 		{
 			try
 			{
-				BackdropDialog dlg = new BackdropDialog((_mission.IsBop ? Platform.MissionFile.Platform.BoP : Platform.MissionFile.Platform.XvT), _activeFG.Status1, _config);
+				BackdropDialog dlg = new BackdropDialog((_mission.IsBop ? Platform.MissionFile.Platform.BoP : Platform.MissionFile.Platform.XvT), _activeFG.Status1);
 				if (dlg.ShowDialog() == DialogResult.Cancel) return;
 				
 				numBackdrop.Value = dlg.BackdropIndex;

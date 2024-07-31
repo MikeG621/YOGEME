@@ -86,8 +86,9 @@ namespace Idmr.Yogeme
 		public List<CraftData> GetCraftDataList() => _finalizedCraftData;
 
 		/// <summary>Loads a platform, manages craft name strings, performs loading and merging of craft data, and path detection.</summary>
-		public void LoadPlatform(Settings.Platform platform, Settings config, string[] defaultLongNames, string[] defaultShortNames, string missionPath)
+		public void LoadPlatform(Settings.Platform platform, string[] defaultLongNames, string[] defaultShortNames, string missionPath)
 		{
+			var config = Settings.GetInstance();
 			// These vars will be assigned from the user's config settings.
 			_currentInstallPath = "";
 			bool detectMission = false;

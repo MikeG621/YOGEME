@@ -70,8 +70,9 @@ namespace Idmr.Yogeme
 		/// <summary>Run MissionVerify.exe on open mission</summary>
 		/// <remarks>MissionVerify part is take from <see cref="Settings.VerifyLocation"/></remarks>
 		/// <param name="path">Path to mission file</param>
-		public static void RunVerify(string missionPath, Settings config)
+		public static void RunVerify(string missionPath)
 		{
+			var config = Settings.GetInstance();
 			string verifyPath = config.VerifyLocation;
 			try
 			{
