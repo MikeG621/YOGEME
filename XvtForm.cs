@@ -1892,21 +1892,23 @@ namespace Idmr.Yogeme
 			File.Copy(Application.StartupPath + "\\xvttest0.plt", xvtPath + pilot);
 			if (_config.BopInstalled) File.Copy(Application.StartupPath + "\\xvttest0.pl2", bopPath + bopPilot, true);
 			// XvT pilot edit
-			FileStream pilotFile = File.OpenWrite(xvtPath + pilot);
-			pilotFile.Position = 4;
-			char[] indexBytes = index.ToString().ToCharArray();
-			new BinaryWriter(pilotFile).Write(indexBytes);
-			for (int i = (int)pilotFile.Position; i < 0xC; i++) pilotFile.WriteByte(0);
-			pilotFile.Close();
+			using (var pilotFile = File.OpenWrite(xvtPath + pilot))
+			{
+				pilotFile.Position = 4;
+				char[] indexBytes = index.ToString().ToCharArray();
+				new BinaryWriter(pilotFile).Write(indexBytes);
+				for (int i = (int)pilotFile.Position; i < 0xC; i++) pilotFile.WriteByte(0);
+			}
 			// BoP pilot edit
 			if (_config.BopInstalled)
 			{
-				pilotFile = File.OpenWrite(bopPath + bopPilot);
-				pilotFile.Position = 4;
-				indexBytes = index.ToString().ToCharArray();
-				new BinaryWriter(pilotFile).Write(indexBytes);
-				for (int i = (int)pilotFile.Position; i < 0xC; i++) pilotFile.WriteByte(0);
-				pilotFile.Close();
+				using (var pilotFile = File.OpenWrite(bopPath + bopPilot))
+				{
+					pilotFile.Position = 4;
+					char[] indexBytes = index.ToString().ToCharArray();
+					new BinaryWriter(pilotFile).Write(indexBytes);
+					for (int i = (int)pilotFile.Position; i < 0xC; i++) pilotFile.WriteByte(0);
+				}
 			}
 
 			// configure XvT
@@ -1916,37 +1918,26 @@ namespace Idmr.Yogeme
 			xvt.StartInfo.UseShellExecute = false;
 			xvt.StartInfo.WorkingDirectory = path;
 			File.Copy(path + lst, path + backup, true);
-			StreamReader sr = File.OpenText(xvtPath + "Config.cfg");
-			string contents = sr.ReadToEnd();
-			sr.Close();
+			string contents = "";
+			using (var sr = File.OpenText(xvtPath + "Config.cfg")) contents = sr.ReadToEnd();
 			int lastpilot = contents.IndexOf("lastpilot ") + 10;
 			int nextline = contents.IndexOf("\r\n", lastpilot);
 			string modified = contents.Substring(0, lastpilot) + "test" + index + contents.Substring(nextline);
-			StreamWriter sw = new FileInfo(xvtPath + "Config.cfg").CreateText();
-			sw.Write(modified);
-			sw.Close();
+			using (var sw = new FileInfo(xvtPath + "Config.cfg").CreateText()) sw.Write(modified);
 			if (_config.BopInstalled)
 			{
-				sr = File.OpenText(bopPath + "config2.cfg");
-				contents = sr.ReadToEnd();
-				sr.Close();
+				using (var sr = File.OpenText(bopPath + "config2.cfg")) contents = sr.ReadToEnd();
 				lastpilot = contents.IndexOf("lastpilot ") + 10;
 				nextline = contents.IndexOf("\r\n", lastpilot);
 				modified = contents.Substring(0, lastpilot) + "test" + index + contents.Substring(nextline);
-				sw = new FileInfo(bopPath + "config2.cfg").CreateText();
-				sw.Write(modified);
-				sw.Close();
+				using (var sw = new FileInfo(bopPath + "config2.cfg").CreateText()) sw.Write(modified);
 			}
-			sr = File.OpenText(path + lst);
-			contents = sr.ReadToEnd();
-			sr.Close();
+			using (var sr = File.OpenText(path + lst)) contents = sr.ReadToEnd();
 			string[] expanded = contents.Replace("\r\n", "\0").Split('\0');
 			expanded[4] = _mission.MissionFileName;
 			expanded[5] = "YOGEME: " + expanded[4];
 			modified = string.Join("\r\n", expanded);
-			sw = new FileInfo(path + lst).CreateText();
-			sw.Write(modified);
-			sw.Close();
+			using (var sw = new FileInfo(path + lst).CreateText()) sw.Write(modified);
 
 			/*if (isWin7)	// explorer kill so colors work right
 			{
@@ -1989,8 +1980,7 @@ namespace Idmr.Yogeme
 					File.Copy(fileName + ".bak", fileName, true);
 					File.Delete(fileName + ".bak");
 				}
-				else
-					File.Delete(fileName);
+				else File.Delete(fileName);
 			}
 			System.Diagnostics.Debug.WriteLine("Testing complete");
 		}

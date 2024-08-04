@@ -43,6 +43,7 @@ This will leave behind a single config file in AppData with your user settings.
 - (TIE) Fixed a bug where the Questions wouldn't clear properly when loading a second mission.
 - (TIE-XWA) Test respects the "DetectMission" setting.
 - (XWA) Radio and Formation drop-downs swapped positions for consistency between platforms.
+- (XWA) Hooks: Added new options to WeaponRates, added WarheadTypeCount
 - Settings class now a singleton
 - Various cleanups throughout
 
@@ -64,7 +65,6 @@ details for GlobalUnits added.
 - (XWA) Added Flightgroup Handicap, "More Arr/Dep" tab
 - (XWA) Added Messages Type, Speaker Header, Special Meaning. Don't know what they do.
 - (XWA) Added Global Goals Trigger Points and Delay
-- (XWA) Hooks: Added new options to WeaponRates, added WarheadTypeCount
 ---
 ### Additional Information
 #### Dependencies

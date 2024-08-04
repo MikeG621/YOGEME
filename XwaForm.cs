@@ -2306,8 +2306,8 @@ namespace Idmr.Yogeme
 
 			// pilot file edit
 			File.Copy(Application.StartupPath + "\\xwatest0.plt", path + pilot);
-			using (FileStream pilotFile = File.OpenWrite(path + pilot))
-			using (BinaryWriter bw = new BinaryWriter(pilotFile))
+			using (var pilotFile = File.OpenWrite(path + pilot))
+			using (var bw = new BinaryWriter(pilotFile))
 			{
 				pilotFile.Position = 4;
 				char[] indexBytes = index.ToString().ToCharArray();
@@ -2325,26 +2325,19 @@ namespace Idmr.Yogeme
 			xwa.StartInfo.UseShellExecute = false;
 			xwa.StartInfo.WorkingDirectory = path;
 			File.Copy(path + lst, path + backup, true);
-			StreamReader sr = File.OpenText(path + "CONFIG.CFG");
-			string contents = sr.ReadToEnd();
-			sr.Close();
+			string contents = "";
+			using (var sr = File.OpenText(path + "CONFIG.CFG")) contents = sr.ReadToEnd();
 			int lastpilot = contents.IndexOf("lastpilot ") + 10;
 			int nextline = contents.IndexOf("\r\n", lastpilot);
 			string modified = contents.Substring(0, lastpilot) + "test" + index + contents.Substring(nextline);
-			StreamWriter sw = new FileInfo(path + "CONFIG.CFG").CreateText();
-			sw.Write(modified);
-			sw.Close();
-			sr = File.OpenText(path + lst);
-			contents = sr.ReadToEnd();
-			sr.Close();
+			using (var sw = new FileInfo(path + "CONFIG.CFG").CreateText()) sw.Write(modified);
+			using (var sr = File.OpenText(path + lst)) contents = sr.ReadToEnd();
 			string[] expanded = contents.Replace("\r\n", "\0").Split('\0');
 			expanded[3] = "7";
 			expanded[4] = _mission.MissionFileName;
 			expanded[5] = "!MISSION_7_DESC!YOGEME: " + expanded[4];
 			modified = string.Join("\r\n", expanded);
-			sw = new FileInfo(path + lst).CreateText();
-			sw.Write(modified);
-			sw.Close();
+			using (var sw = new FileInfo(path + lst).CreateText()) sw.Write(modified);
 
 			xwa.Start();
 			System.Threading.Thread.Sleep(1000);
@@ -2367,8 +2360,7 @@ namespace Idmr.Yogeme
 					File.Copy(fileName + ".bak", fileName, true);
 					File.Delete(fileName + ".bak");
 				}
-				else
-					File.Delete(fileName);
+				else File.Delete(fileName);
 			}
 			System.Diagnostics.Debug.WriteLine("Testing complete");
 		}
