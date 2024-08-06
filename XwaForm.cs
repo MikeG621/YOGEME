@@ -458,7 +458,7 @@ namespace Idmr.Yogeme
 		}
 		void craftStart(FlightGroup fg, bool bAdd)
 		{
-			if (fg.Difficulty == 1 || fg.Difficulty == 3 || fg.Difficulty == 6
+			if (fg.Difficulty == Platform.BaseFlightGroup.Difficulties.Easy || fg.Difficulty == Platform.BaseFlightGroup.Difficulties.Hard || fg.Difficulty == Platform.BaseFlightGroup.Difficulties.Never
 				|| !fg.ArrivesIn30Seconds
 				|| fg.CraftType == 0xB7 || (fg.CraftType >= 0x46 && fg.CraftType <= 0x58)) return; // Ignore SAT/1 thru RDV
 			if (bAdd) _startingShips += fg.NumberOfCraft;
@@ -667,7 +667,7 @@ namespace Idmr.Yogeme
 					brText = Brushes.MediumOrchid; //was DarkOrchid;
 					break;
 			}
-			if (_mission.FlightGroups[fgIndex].Difficulty == 6) brText = Brushes.Gray;
+			if (_mission.FlightGroups[fgIndex].Difficulty == Platform.BaseFlightGroup.Difficulties.Never) brText = Brushes.Gray;
 			return brText;
 		}
 		Color getHighlightColor() => _config.ColorInteractSelected;
@@ -2804,7 +2804,7 @@ namespace Idmr.Yogeme
 					case "AbortTrigger": fg.AbortTrigger = Convert.ToByte(value); break;
 					case "DepartureTimerMinutes": fg.DepartureTimerMinutes = Convert.ToByte(value); break;
 					case "DepartureTimerSeconds": fg.DepartureTimerSeconds = Convert.ToByte(value); break;
-					case "Difficulty": fg.Difficulty = Convert.ToByte(value); break;
+					case "Difficulty": fg.Difficulty = (Platform.BaseFlightGroup.Difficulties)value; break;
 					case "ArriveOnlyIfHuman": fg.ArriveOnlyIfHuman = Convert.ToBoolean(value); break;
 					case "GoalTriggerInc": fg.Goals[_activeFGGoalIndex].IncompleteText = (string)value; break;
 					case "GoalTriggerComp": fg.Goals[_activeFGGoalIndex].CompleteText = (string)value; break;
@@ -3208,7 +3208,7 @@ namespace Idmr.Yogeme
 			numDepClockMin.Value = _activeFG.DepartureClockMin;
 			numDepClockSec.Value = _activeFG.DepartureClockSec;
 			cboAbort.SelectedIndex = _activeFG.AbortTrigger;
-			cboDiff.SelectedIndex = _activeFG.Difficulty;
+			cboDiff.SelectedIndex = (byte)_activeFG.Difficulty;
 			chkArrHuman.Checked = _activeFG.ArriveOnlyIfHuman;
 			for (int i = 0; i < 6; i++) labelRefresh(_activeFG.ArrDepTriggers[i], lblADTrig[i]);
 			lblADTrigArr_Click(lblADTrig[0], new EventArgs());

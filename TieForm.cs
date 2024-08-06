@@ -305,7 +305,7 @@ namespace Idmr.Yogeme
 		}
 		void craftStart(FlightGroup fg, bool bAdd)
 		{
-			if (fg.Difficulty == 1 || fg.Difficulty == 3 || !fg.ArrivesIn30Seconds) return;
+			if (fg.Difficulty == Platform.BaseFlightGroup.Difficulties.Easy || fg.Difficulty == Platform.BaseFlightGroup.Difficulties.Hard || !fg.ArrivesIn30Seconds) return;
 
 			if (bAdd) _startingShips += fg.NumberOfCraft;
 			else _startingShips -= fg.NumberOfCraft;
@@ -338,7 +338,7 @@ namespace Idmr.Yogeme
 					brText = Brushes.DarkOrchid; //Fuchsia;
 					break;
 			}
-			if (_mission.FlightGroups[fgIndex].Difficulty == 6) //[JB] For craft difficulty that never arrives.
+			if (_mission.FlightGroups[fgIndex].Difficulty == Platform.BaseFlightGroup.Difficulties.Never)
 				brText = Brushes.Gray;
 
 			return brText;
@@ -1827,7 +1827,7 @@ namespace Idmr.Yogeme
 					case "AbortTrigger": fg.AbortTrigger = Convert.ToByte(value); break;
 					case "DepartureClockMinutes": fg.DepartureTimerMinutes = Convert.ToByte(value); break;
 					case "DepartureClockSeconds": fg.DepartureTimerSeconds = Convert.ToByte(value); break;
-					case "Difficulty": fg.Difficulty = Convert.ToByte(value); break;
+					case "Difficulty": fg.Difficulty = (Platform.BaseFlightGroup.Difficulties)value; break;
 					case "BonusPoints": fg.Goals.BonusPoints = Convert.ToInt16(value); break;
 					case "Pitch": fg.Pitch = Convert.ToInt16(value); break;
 					case "Yaw": fg.Yaw = Convert.ToInt16(value); break;
@@ -2177,7 +2177,7 @@ namespace Idmr.Yogeme
 			numDepMin.Value = _activeFG.DepartureTimerMinutes;
 			numDepSec.Value = _activeFG.DepartureTimerSeconds;
 			cboAbort.SelectedIndex = _activeFG.AbortTrigger;
-			cboDiff.SelectedIndex = _activeFG.Difficulty;
+			cboDiff.SelectedIndex = (byte)_activeFG.Difficulty;
 			lblADTrigArr_Click(lblADTrig[0], new EventArgs());
 			#endregion
 			for (int i = 0; i < 8; i++)

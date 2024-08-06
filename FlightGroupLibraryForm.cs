@@ -121,18 +121,18 @@ namespace Idmr.Yogeme
 				case Settings.Platform.TIE:
 					iff = ((Platform.Tie.FlightGroup)fg).IFF;
 					if (iff <= 5) brText = tieColors[iff];
-					if (((Platform.Tie.FlightGroup)fg).Difficulty == 6) brText = Brushes.Gray;
+					if (((Platform.Tie.FlightGroup)fg).Difficulty == BaseFlightGroup.Difficulties.Never) brText = Brushes.Gray;
 					break;
 				case Settings.Platform.XvT:
 				case Settings.Platform.BoP:
 					iff = ((Platform.Xvt.FlightGroup)fg).IFF;
 					if (iff <= 5) brText = xvtxwaColors[iff];
-					if (((Platform.Xvt.FlightGroup)fg).Difficulty == 6 || ((Platform.Xvt.FlightGroup)fg).Difficulty == 7) brText = Brushes.Gray;
+					if (((Platform.Xvt.FlightGroup)fg).Difficulty == BaseFlightGroup.Difficulties.Never) brText = Brushes.Gray;
 					break;
 				case Settings.Platform.XWA:
 					iff = ((Platform.Xwa.FlightGroup)fg).IFF;
 					if (iff <= 5) brText = xvtxwaColors[iff];
-					if (((Platform.Xwa.FlightGroup)fg).Difficulty == 6) brText = Brushes.Gray;
+					if (((Platform.Xwa.FlightGroup)fg).Difficulty == BaseFlightGroup.Difficulties.Never) brText = Brushes.Gray;
 					break;
 			}
 			return brText;

@@ -43,28 +43,28 @@ This will leave behind a single config file in AppData with your user settings.
 - (TIE) Fixed a bug where the Questions wouldn't clear properly when loading a second mission.
 - (TIE-XWA) Test respects the "DetectMission" setting.
 - (XWA) Radio and Formation drop-downs swapped positions for consistency between platforms.
-- (XWA) Hooks: Added new options to WeaponRates, added WarheadTypeCount
-- Settings class now a singleton
-- Various cleanups throughout
+- (XWA) Hooks: Added new options to WeaponRates, added WarheadTypeCount.
+- Settings class now a singleton and therefor shared between instances.
+- Various cleanups throughout.
 
 Extensive updates due to changes in Platform.dll, using the full file format spec.
 - (Briefing) Unknown 3 now labeled "Tile", still unknown effect. Confirmed no effect in TIE.
 - (Briefing) Labels for Unk1/2 StartLength/EventLength and the Unknowns group deleted.
 - (Briefing) Text tag, FG tag, and masking colors now defined at launch instead of during every paint.
-- (Briefing) Event handling redone
+- (Briefing) Event handling redone.
 - (Hyper dialog) Update per spec, enum use to remove magic numbers.
 - (TIE) Added TimeLimit, RndSeed, Global Goal editor note.
 - (TIE) Arr/Dep renames.
 - (XvT) Added Flightgroup Handicap, Global Goal delay, EoM delay.
-- (XWA) Mission tab: Added GoalsUnimportant, WinOfficer, FailOfficer
+- (XWA) Mission tab: Added GoalsUnimportant, WinOfficer, FailOfficer.
 - (XWA) Mission2 tab: Added the rest of the properties for GlobalCargo and GlobalGroups (which also expanded to 32 total),
 details for GlobalUnits added.
   - Did not expose "ID" property of GlobalCargo or Region, pretty sure that's for internal use.
 - (XWA) GlobalUnit names and GlobalCargo will now appear in trigger labels.
 - (XWA) Rendzvous WP renamed to "Capture HYP".
-- (XWA) Added Flightgroup Handicap, "More Arr/Dep" tab
+- (XWA) Added Flightgroup Handicap, "More Arr/Dep" tab.
 - (XWA) Added Messages Type, Speaker Header, Special Meaning. Don't know what they do.
-- (XWA) Added Global Goals Trigger Points and Delay
+- (XWA) Added Global Goals Trigger Points and Delay.
 ---
 ### Additional Information
 #### Dependencies

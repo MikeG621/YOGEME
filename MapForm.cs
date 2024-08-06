@@ -1053,13 +1053,13 @@ namespace Idmr.Yogeme
 		}
 
 		/// <summary>Returns a value composed of a set of bit flags indicating which difficulties this FlightGroup arrives in.</summary>
-		int getDifficultyFlags(byte fgDifficulty)
+		int getDifficultyFlags(BaseFlightGroup.Difficulties fgDifficulty)
 		{
 			if (_platform == Settings.Platform.XWING) return 0b111;
 
 			// All, Easy, Medium, Hard, ...
-			int[] resultArray = { 0b111, 0b001, 0b010, 0b100, 0b110, 0b011, 0b000, 0b000, 0b001, 0b010, 0b100 };
-			return (fgDifficulty < resultArray.Length ? resultArray[fgDifficulty] : 0b000);
+			int[] resultArray = { 0b111, 0b001, 0b010, 0b100, 0b110, 0b011, 0b000 };
+			return resultArray[(byte)fgDifficulty];
 		}
 
 		/// <summary>Selects all visible objects on the map screen based on the criteria of currently selected items.</summary>
