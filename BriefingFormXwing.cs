@@ -208,7 +208,7 @@ namespace Idmr.Yogeme
 			}
 		}
 
-		void fillBriefData(int index, int craftType, BaseFlightGroup.BaseWaypoint waypoint, BaseFlightGroup.BaseWaypoint[] waypoints, byte iff, string name)
+		void fillBriefData(int index, int craftType, BaseFlightGroup.Waypoint waypoint, BaseFlightGroup.Waypoint[] waypoints, byte iff, string name)
 		{
 			_briefData[index].Craft = craftType;
 			_briefData[index].Waypoint = (short[])waypoint;

@@ -558,7 +558,7 @@ namespace Idmr.Yogeme
 			}
 		}
 
-		void fillBriefData(int index, int craftType, BaseFlightGroup.BaseWaypoint waypoint, BaseFlightGroup.BaseWaypoint[] waypoints, byte iff, string name)
+		void fillBriefData(int index, int craftType, BaseFlightGroup.Waypoint waypoint, BaseFlightGroup.Waypoint[] waypoints, byte iff, string name)
 		{
 			_briefData[index].Craft = craftType;
 			_briefData[index].Waypoint = (short[])waypoint;
@@ -689,7 +689,7 @@ namespace Idmr.Yogeme
 			cboFGTag.Items.Clear();
 			for (int i = 0; i < fg.Count; i++)
 			{
-				var wps = new BaseFlightGroup.BaseWaypoint[8];
+				var wps = new BaseFlightGroup.Waypoint[8];
 				for (int k = 0; k < 8; k++) wps[k] = fg[i].Waypoints[14 + k];
 				fillBriefData(i, fg[i].CraftType, fg[i].Waypoints[14], wps, fg[i].IFF, fg[i].Name);
 			}
@@ -1537,7 +1537,7 @@ namespace Idmr.Yogeme
 			#region FG tags
 			int briefIndex = cboBriefIndex1.SelectedIndex;
 			if (briefIndex < 0) briefIndex = 0;
-			BaseFlightGroup.BaseWaypoint wp;
+			BaseFlightGroup.Waypoint wp;
 			for (int i = 0; i < 8; i++)
 			{
 				if (_fgTags[i].Slot == -1) continue;
@@ -3228,7 +3228,7 @@ namespace Idmr.Yogeme
 		/// <summary>Gets or sets the values to make up a Waypoint.</summary>
 		public short[] Waypoint;
 		/// <summary>Gets or sets the waypoints.</summary>
-		public BaseFlightGroup.BaseWaypoint[] WaypointArr;
+		public BaseFlightGroup.Waypoint[] WaypointArr;
 		/// <summary>Gets or sets the IFF.</summary>
 		public byte IFF;
 		/// <summary>Gets or sets the FG Name.</summary>

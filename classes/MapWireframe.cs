@@ -931,7 +931,7 @@ namespace Idmr.Yogeme.MapWireframe
 		/// <param name="orientation">The viewing direction of the map</param>
 		/// <param name="meshTypeVisibilityFlags">The flags determining which Mesh types to display</param>
 		/// <remarks>If no change is detected, the wireframe remains as is. Resulting vertex positions are relative to the model origin.</remarks>
-		public void UpdateParams(Platform.BaseFlightGroup.BaseWaypoint cur, Platform.BaseFlightGroup.BaseWaypoint dest, int zoom, MapForm.Orientation orientation, long meshTypeVisibilityFlags, int degRoll)
+		public void UpdateParams(Platform.BaseFlightGroup.Waypoint cur, Platform.BaseFlightGroup.Waypoint dest, int zoom, MapForm.Orientation orientation, long meshTypeVisibilityFlags, int degRoll)
 		{
 			if (ModelDef == null) return;
 			if (!_rebuildRequired && _curX == cur.RawX && _curY == cur.RawY && _curZ == cur.RawZ && _dstX == dest.RawX && _dstY == dest.RawY && _dstZ == dest.RawZ && _curZoom == zoom && _curOrientation == orientation && _curVisibilityFlags == meshTypeVisibilityFlags)

@@ -288,7 +288,7 @@ namespace Idmr.Yogeme
 			int viewSpan = (int)calcSpan;
 			if (x + viewSpan < 0 || x - viewSpan > w || y + viewSpan < 0 || y - viewSpan > h) return;
 
-			BaseFlightGroup.BaseWaypoint dst;
+			BaseFlightGroup.Waypoint dst;
 
 			int region = -1;
 			if (_platform == Settings.Platform.XWA)
@@ -310,7 +310,7 @@ namespace Idmr.Yogeme
 			}
 
 			if (_platform == Settings.Platform.XWA && !dst.Enabled) model.UpdateSimple(meshZoom, _settings.WireframeMeshTypeVisibility, dat.Yaw, dat.Pitch, dat.Roll);
-			else if (_platform == Settings.Platform.XWA && dat.WPs[17][region].Enabled && ((Platform.Xwa.FlightGroup.Waypoint)dat.WPs[0][0]).Region != region)
+			else if (_platform == Settings.Platform.XWA && dat.WPs[17][region].Enabled && ((Platform.Xwa.FlightGroup.XwaWaypoint)dat.WPs[0][0]).Region != region)
 				model.UpdateParams(dat.WPs[17][region], dat.WPs[18][region], meshZoom, _displayMode, _settings.WireframeMeshTypeVisibility, dat.Roll);
 			else model.UpdateParams(dat.WPs[0][0], dst, meshZoom, _displayMode, _settings.WireframeMeshTypeVisibility, dat.Roll);
 
@@ -393,7 +393,7 @@ namespace Idmr.Yogeme
 			return coord;
 		}
 
-		string getDistanceString(BaseFlightGroup.BaseWaypoint wp1, BaseFlightGroup.BaseWaypoint wp2)
+		string getDistanceString(BaseFlightGroup.Waypoint wp1, BaseFlightGroup.Waypoint wp2)
 		{
 			double xlen = wp1.X - wp2.X;
 			double ylen = wp1.Y - wp2.Y;
@@ -402,7 +402,7 @@ namespace Idmr.Yogeme
 			return Math.Round(dist, 2).ToString() + " km";
 		}
 
-		string getTimeString(object fg, int orderIndex, BaseFlightGroup.BaseWaypoint wp1, BaseFlightGroup.BaseWaypoint wp2)
+		string getTimeString(object fg, int orderIndex, BaseFlightGroup.Waypoint wp1, BaseFlightGroup.Waypoint wp2)
 		{
 			double xlen = wp1.X - wp2.X;
 			double ylen = wp1.Y - wp2.Y;
@@ -734,7 +734,7 @@ namespace Idmr.Yogeme
 			{
 				if (dat.Active)
 				{
-					Platform.Xwa.FlightGroup.Waypoint curWp = (Platform.Xwa.FlightGroup.Waypoint)dat.WPRef;
+					Platform.Xwa.FlightGroup.XwaWaypoint curWp = (Platform.Xwa.FlightGroup.XwaWaypoint)dat.WPRef;
 					if (dat.WpOrder == 0)
 					{
 						curWp.Region = Convert.ToByte(region);
@@ -958,7 +958,7 @@ namespace Idmr.Yogeme
 
 					if (_platform == Settings.Platform.XWA)
 					{
-						Platform.Xwa.FlightGroup.Waypoint cwp = (Platform.Xwa.FlightGroup.Waypoint)_mapData[i].WPs[0][wp];
+						Platform.Xwa.FlightGroup.XwaWaypoint cwp = (Platform.Xwa.FlightGroup.XwaWaypoint)_mapData[i].WPs[0][wp];
 						if (cwp.Region != reg) continue;
 					}
 					if (waypointInside(_mapData[i].WPs[0][wp], ref m1, ref m2)) output.Add(new SelectionData(i, _mapData[i], 0, wp));
@@ -973,11 +973,11 @@ namespace Idmr.Yogeme
 						if (waypointInside(_mapData[i].WPs[ord][wp], ref m1, ref m2)) output.Add(new SelectionData(i, _mapData[i], ord, wp));
 					}
 
-                    var hyp = (Platform.Xwa.FlightGroup.Waypoint)_mapData[i].WPs[17][reg];
+                    var hyp = (Platform.Xwa.FlightGroup.XwaWaypoint)_mapData[i].WPs[17][reg];
 					if (hyp.Enabled && waypointInside(hyp, ref m1, ref m2)) output.Add(new SelectionData(i, _mapData[i], 17, reg));
 					//TODO: need to add the order check here ^ since it's grabbing hidden WPs
 					// I think what would be better is to completely overhaul this; centralize the visibility, use that for selection and display
-					var exit = (Platform.Xwa.FlightGroup.Waypoint)_mapData[i].WPs[18][reg];
+					var exit = (Platform.Xwa.FlightGroup.XwaWaypoint)_mapData[i].WPs[18][reg];
 					if (exit.Enabled && waypointInside(exit, ref m1, ref m2))
 					{
 						if (_mapData[i].WPs[0][0][4] != reg && numOrder.Value == 1) output.Add(new SelectionData(i, _mapData[i], 18, reg));
@@ -1004,7 +1004,7 @@ namespace Idmr.Yogeme
 		}
 
 		/// <summary>Determines if a waypoint (raw units) is within a bounding box formed by a top/left and bottom/right point.</summary>
-		bool waypointInside(BaseFlightGroup.BaseWaypoint wp, ref Point p1, ref Point p2)
+		bool waypointInside(BaseFlightGroup.Waypoint wp, ref Point p1, ref Point p2)
 		{
 			int tx = wp.RawX;
 			int ty = wp.RawY;
@@ -1076,7 +1076,7 @@ namespace Idmr.Yogeme
 					foreach (SelectionData dat in _selectionList) if (dat.Active) values.Add(dat.MapDataRef.Craft);
 					for (int i = 0; i < _mapData.Length; i++)
 					{
-						bool wpEnabled = (_platform == Settings.Platform.XWA ? ((Platform.Xwa.FlightGroup.Waypoint)_mapData[i].WPs[0][0]).Region == numRegion.Value - 1 : _mapData[i].WPs[0][0].Enabled);
+						bool wpEnabled = (_platform == Settings.Platform.XWA ? ((Platform.Xwa.FlightGroup.XwaWaypoint)_mapData[i].WPs[0][0]).Region == numRegion.Value - 1 : _mapData[i].WPs[0][0].Enabled);
 						if (_mapData[i].View != Visibility.Hide && passFilter(_mapData[i]) && values.Contains(_mapData[i].Craft) && wpEnabled && waypointInside(_mapData[i].WPs[0][0], ref m1, ref m2))
 							setSelectionState(i, true, 0, 0);
 					}
@@ -1085,7 +1085,7 @@ namespace Idmr.Yogeme
 					foreach (SelectionData dat in _selectionList) if (dat.Active) values.Add(dat.MapDataRef.IFF);
 					for (int i = 0; i < _mapData.Length; i++)
 					{
-						bool wpEnabled = (_platform == Settings.Platform.XWA ? ((Platform.Xwa.FlightGroup.Waypoint)_mapData[i].WPs[0][0]).Region == numRegion.Value - 1 : _mapData[i].WPs[0][0].Enabled);
+						bool wpEnabled = (_platform == Settings.Platform.XWA ? ((Platform.Xwa.FlightGroup.XwaWaypoint)_mapData[i].WPs[0][0]).Region == numRegion.Value - 1 : _mapData[i].WPs[0][0].Enabled);
 						if (_mapData[i].View != Visibility.Hide && passFilter(_mapData[i]) && values.Contains(_mapData[i].IFF) && wpEnabled && waypointInside(_mapData[i].WPs[0][0], ref m1, ref m2))
 							setSelectionState(i, true, 0, 0);
 					}
@@ -1101,7 +1101,7 @@ namespace Idmr.Yogeme
 					}
 					for (int i = 0; i < _mapData.Length; i++)
 					{
-						bool wpEnabled = (_platform == Settings.Platform.XWA ? ((Platform.Xwa.FlightGroup.Waypoint)_mapData[i].WPs[0][0]).Region == numRegion.Value - 1 : _mapData[i].WPs[0][0].Enabled);
+						bool wpEnabled = (_platform == Settings.Platform.XWA ? ((Platform.Xwa.FlightGroup.XwaWaypoint)_mapData[i].WPs[0][0]).Region == numRegion.Value - 1 : _mapData[i].WPs[0][0].Enabled);
 						int size = getModelSizeRating(i);
 						if (_mapData[i].View != Visibility.Hide && passFilter(_mapData[i]) && values.Contains(size) && wpEnabled && waypointInside(_mapData[i].WPs[0][0], ref m1, ref m2))
 							setSelectionState(i, true, 0, 0);
@@ -1112,7 +1112,7 @@ namespace Idmr.Yogeme
 					deselect();
 					for (int i = 0; i < _mapData.Length; i++)
 					{
-						bool wpEnabled = (_platform == Settings.Platform.XWA ? ((Platform.Xwa.FlightGroup.Waypoint)_mapData[i].WPs[0][0]).Region == numRegion.Value - 1 : _mapData[i].WPs[0][0].Enabled);
+						bool wpEnabled = (_platform == Settings.Platform.XWA ? ((Platform.Xwa.FlightGroup.XwaWaypoint)_mapData[i].WPs[0][0]).Region == numRegion.Value - 1 : _mapData[i].WPs[0][0].Enabled);
 						if (_mapData[i].View != Visibility.Hide && passFilter(_mapData[i]) && !values.Contains(i) && wpEnabled && waypointInside(_mapData[i].WPs[0][0], ref m1, ref m2))
 							setSelectionState(i, true, 0, 0);
 					}
@@ -1300,12 +1300,12 @@ namespace Idmr.Yogeme
 			{
 				if (wp < _mapData[i].WPs[ord].Length)
 				{
-					BaseFlightGroup.BaseWaypoint baseWp = _mapData[i].WPs[ord][wp];
+					BaseFlightGroup.Waypoint baseWp = _mapData[i].WPs[ord][wp];
 					if (!baseWp.Enabled && create)
 					{
 						if (_platform == Settings.Platform.XWA)
 						{
-							((Platform.Xwa.FlightGroup.Waypoint)baseWp).Region = Convert.ToByte(numRegion.Value - 1);
+							((Platform.Xwa.FlightGroup.XwaWaypoint)baseWp).Region = Convert.ToByte(numRegion.Value - 1);
 							if (wp == 0 && ord == 0)
 							{
 								_mapData[i].Region = (int)numRegion.Value - 1;
@@ -1769,7 +1769,7 @@ namespace Idmr.Yogeme
 		/// <param name="end">The end Waypoint to define length and direction of the vector.</param>
 		/// <param name="rawOffset">The distance in raw units from <paramref name="start"/>. Negative values are "behind" start.</param>
 		/// <returns>A Waypoint of the location.</returns>
-		BaseFlightGroup.BaseWaypoint getOffsetWaypoint(BaseFlightGroup.BaseWaypoint start, BaseFlightGroup.BaseWaypoint end, int rawOffset)
+		BaseFlightGroup.Waypoint getOffsetWaypoint(BaseFlightGroup.Waypoint start, BaseFlightGroup.Waypoint end, int rawOffset)
 		{
 			int[] vector = new int[3];
             for (int c = 0; c < 3; c++) vector[c] = end[c] - start[c];
@@ -1787,7 +1787,7 @@ namespace Idmr.Yogeme
 		/// <summary>Converts a waypoint into map coordinates for drawing.</summary>
 		/// <param name="waypoint">Source waypoint</param>
 		/// <returns>A map point taking into account Zoom and Display Orientation</returns>
-		Point getMapPoint(BaseFlightGroup.BaseWaypoint waypoint)
+		Point getMapPoint(BaseFlightGroup.Waypoint waypoint)
 		{
 			Point mapPoint = new Point();
             int mX = _mapX, mY = _mapZ, coord1 = 0, coord2 = 2;
@@ -1876,7 +1876,7 @@ namespace Idmr.Yogeme
 					else
 					{
 						// AI
-						var hyperEntry = new Platform.Xwa.FlightGroup.Waypoint();
+						var hyperEntry = new Platform.Xwa.FlightGroup.XwaWaypoint();
 						for (int o = 0; o < 16; o++)
 						{
 							int reg = o / 4;
@@ -1898,7 +1898,7 @@ namespace Idmr.Yogeme
 						}
 						if (!hyperEntry.Enabled) continue;	// this is the "not found"/"doesn't hyper" check
 
-						var enterBuoy = new Platform.Xwa.FlightGroup.Waypoint();
+						var enterBuoy = new Platform.Xwa.FlightGroup.XwaWaypoint();
 						for (int b = 0; b < numCraft; b++)
 						{
                             var buoy = (Platform.Xwa.FlightGroup)_mapData[b].FlightGroup;
@@ -2045,7 +2045,7 @@ namespace Idmr.Yogeme
 							if (chkTrace.Checked && !(chkTraceHideFade.Checked && _mapData[i].View == Visibility.Fade) && !(chkTraceSelected.Checked && !isMapObjectSelected(i)))
 							{
 								var baseWp = _mapData[i].WPs[0][0];
-								if (_mapData[i].WPs[17][region].Enabled && ((Platform.Xwa.FlightGroup.Waypoint)_mapData[i].WPs[0][0]).Region != region)
+								if (_mapData[i].WPs[17][region].Enabled && ((Platform.Xwa.FlightGroup.XwaWaypoint)_mapData[i].WPs[0][0]).Region != region)
 									baseWp = _mapData[i].WPs[17][region];
 								if (k == 0 && (!chkWP[0].Checked || isVisibleInRegion(i, 0) == WaypointVisibility.Absent)) continue;
 								else if (k > 0)
@@ -2140,7 +2140,7 @@ namespace Idmr.Yogeme
 				if (!dat.Active) continue;
 
 				var datPoint = getMapPoint(dat.WPRef);
-				if (_platform == Settings.Platform.XWA && dat.MapDataRef.WPs[17][region].Enabled && ((Platform.Xwa.FlightGroup.Waypoint)dat.WPRef).Region != (numRegion.Value - 1))
+				if (_platform == Settings.Platform.XWA && dat.MapDataRef.WPs[17][region].Enabled && ((Platform.Xwa.FlightGroup.XwaWaypoint)dat.WPRef).Region != (numRegion.Value - 1))
                     datPoint = getMapPoint(dat.MapDataRef.WPs[17][region]);
 				int x = datPoint.X;
 				int y = datPoint.Y;
@@ -2930,7 +2930,7 @@ namespace Idmr.Yogeme
 			public short Yaw;
 			public short Pitch;
 			public short Roll;
-			public BaseFlightGroup.BaseWaypoint[][] WPs;
+			public BaseFlightGroup.Waypoint[][] WPs;
 		}
 
 		class SelectionData
@@ -2959,7 +2959,7 @@ namespace Idmr.Yogeme
 
 			public int MapDataIndex { get; private set; }
 			public MapData MapDataRef { get; private set; }
-			public BaseFlightGroup.BaseWaypoint WPRef { get; private set; }
+			public BaseFlightGroup.Waypoint WPRef { get; private set; }
 			public int WpOrder { get; private set; }
 			public int WpIndex { get; private set; }
 			/// <summary>Gets or sets the toggle in the selection list.</summary>
