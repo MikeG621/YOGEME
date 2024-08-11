@@ -44,6 +44,7 @@ This will leave behind a single config file in AppData with your user settings.
 - (TIE-XWA) Test respects the "DetectMission" setting.
 - (XWA) Radio and Formation drop-downs swapped positions for consistency between platforms.
 - (XWA) Hooks: Added new options to WeaponRates, added WarheadTypeCount.
+- (Xwing) Order Descriptions now shown.
 - Settings class now a singleton and therefor shared between instances.
 - Various cleanups throughout.
 
