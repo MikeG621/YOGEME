@@ -142,7 +142,6 @@ namespace Idmr.Yogeme
 			this.label35 = new System.Windows.Forms.Label();
 			this.label34 = new System.Windows.Forms.Label();
 			this.label33 = new System.Windows.Forms.Label();
-			this.label28 = new System.Windows.Forms.Label();
 			this.cboOrder = new System.Windows.Forms.ComboBox();
 			this.cmdCopyOrder = new System.Windows.Forms.Button();
 			this.lblODesc = new System.Windows.Forms.Label();
@@ -1489,7 +1488,6 @@ namespace Idmr.Yogeme
 			this.tabOrders.Controls.Add(this.label35);
 			this.tabOrders.Controls.Add(this.label34);
 			this.tabOrders.Controls.Add(this.label33);
-			this.tabOrders.Controls.Add(this.label28);
 			this.tabOrders.Controls.Add(this.cboOrder);
 			this.tabOrders.Controls.Add(this.cmdCopyOrder);
 			this.tabOrders.Controls.Add(this.lblODesc);
@@ -1564,30 +1562,22 @@ namespace Idmr.Yogeme
 			this.label33.TabIndex = 20;
 			this.label33.Text = "Primary Target:";
 			// 
-			// label28
-			// 
-			this.label28.AutoSize = true;
-			this.label28.Location = new System.Drawing.Point(166, 53);
-			this.label28.Name = "label28";
-			this.label28.Size = new System.Drawing.Size(36, 13);
-			this.label28.TabIndex = 19;
-			this.label28.Text = "Order:";
-			// 
 			// cboOrder
 			// 
 			this.cboOrder.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cboOrder.FormattingEnabled = true;
-			this.cboOrder.Location = new System.Drawing.Point(208, 50);
+			this.cboOrder.Location = new System.Drawing.Point(169, 8);
 			this.cboOrder.Name = "cboOrder";
 			this.cboOrder.Size = new System.Drawing.Size(213, 21);
 			this.cboOrder.TabIndex = 18;
+			this.cboOrder.SelectedIndexChanged += new System.EventHandler(this.cboOrder_SelectedIndexChanged);
 			// 
 			// cmdCopyOrder
 			// 
 			this.cmdCopyOrder.ImageAlign = System.Drawing.ContentAlignment.BottomRight;
 			this.cmdCopyOrder.ImageIndex = 6;
 			this.cmdCopyOrder.ImageList = this.imgToolbar;
-			this.cmdCopyOrder.Location = new System.Drawing.Point(48, 48);
+			this.cmdCopyOrder.Location = new System.Drawing.Point(106, 8);
 			this.cmdCopyOrder.Name = "cmdCopyOrder";
 			this.cmdCopyOrder.Size = new System.Drawing.Size(24, 23);
 			this.cmdCopyOrder.TabIndex = 16;
@@ -1595,7 +1585,7 @@ namespace Idmr.Yogeme
 			// 
 			// lblODesc
 			// 
-			this.lblODesc.Location = new System.Drawing.Point(16, 70);
+			this.lblODesc.Location = new System.Drawing.Point(19, 34);
 			this.lblODesc.Name = "lblODesc";
 			this.lblODesc.Size = new System.Drawing.Size(512, 16);
 			this.lblODesc.TabIndex = 8;
@@ -1605,7 +1595,7 @@ namespace Idmr.Yogeme
 			this.cmdPasteOrder.ImageAlign = System.Drawing.ContentAlignment.BottomRight;
 			this.cmdPasteOrder.ImageIndex = 7;
 			this.cmdPasteOrder.ImageList = this.imgToolbar;
-			this.cmdPasteOrder.Location = new System.Drawing.Point(78, 50);
+			this.cmdPasteOrder.Location = new System.Drawing.Point(136, 8);
 			this.cmdPasteOrder.Name = "cmdPasteOrder";
 			this.cmdPasteOrder.Size = new System.Drawing.Size(24, 23);
 			this.cmdPasteOrder.TabIndex = 17;
@@ -2484,7 +2474,6 @@ namespace Idmr.Yogeme
 		private Label label35;
 		private Label label34;
 		private Label label33;
-		private Label label28;
 		private ComboBox cboOrder;
 		private ComboBox cboPlayer;
         private Button cmdCopyWPSP;

@@ -9,6 +9,7 @@
 
 /* CHANGELOG:
  * [UPD] Events changes
+ * [UPD] lblODesc actually used now
  * v1.14.2, 230901
  * [FIX #86] FG.CraftType when changing to B-wing
  * v1.13.11, 221030
@@ -2147,14 +2148,10 @@ namespace Idmr.Yogeme
 		}
 		#endregion
 		#region Orders
-		void cmdCopyOrder_Click(object sender, EventArgs e)
-		{
-			menuCopy_Click("Order", new EventArgs());
-		}
-		void cmdPasteOrder_Click(object sender, EventArgs e)
-		{
-			menuPaste_Click("Order", new EventArgs());
-		}
+		void cboOrder_SelectedIndexChanged(object sender, EventArgs e) => lblODesc.Text = Strings.OrderDesc[cboOrder.SelectedIndex];
+
+		void cmdCopyOrder_Click(object sender, EventArgs e) => menuCopy_Click("Order", new EventArgs());
+		void cmdPasteOrder_Click(object sender, EventArgs e) => menuPaste_Click("Order", new EventArgs());
 		#endregion
 		#region Waypoints
 		void enableRot(bool state)
@@ -2320,5 +2317,7 @@ namespace Idmr.Yogeme
 			_mission.Location = Common.Update(this, _mission.Location, Convert.ToInt16(cboMissionLocation.SelectedIndex));
 		}
 		#endregion
+
+		
 	}
 }
