@@ -575,6 +575,11 @@ namespace Idmr.Yogeme
 			comboReset(cboArrMSAlt, fgList, 0);
 			comboReset(cboDepMS, fgList, 0);
 			comboReset(cboDepMSAlt, fgList, 0);
+			comboReset(cboPMCEomFG, fgList, 0);
+			comboReset(cboPMFEomFG, fgList, 0);
+			comboReset(cboOMCEomFG, fgList, 0);
+			comboReset(cboGGLeader, fgList, 0);
+			comboReset(cboGULeader, fgList, 0);
 			numORegion.Value = 1;
 			comboReset(cboTeam, _mission.Teams.GetList(), _mission.FlightGroups[0].Team);
 			cboGlobalTeam.Items.Clear();
