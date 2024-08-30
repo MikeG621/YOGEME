@@ -7,6 +7,7 @@
  */
 
 /* CHANGELOG
+ * [FIX] SaveAs behavior
  * [FIX] Test now respects XwaDetectMission setting
  * [UPD] spec updates
  * v1.15.7, 240519
@@ -877,7 +878,7 @@ namespace Idmr.Yogeme
 			{
 				int reg = Common.ParseIntAfter(text, "REG:");
 				string regName = "#" + reg;
-				if (reg > 0 && reg <= 4 && !_mission.Regions[reg - 1].Name.ToUpper().StartsWith("REGION")) regName += " (" +_mission.Regions[reg - 1] + ")";
+				if (reg > 0 && reg <= 4 && !_mission.Regions[reg - 1].Name.ToUpper().StartsWith("REGION")) regName += " (" +_mission.Regions[reg - 1].Name + ")";
 				text = text.Replace("REG:" + reg, regName);
 			}
 			return text;
@@ -888,6 +889,8 @@ namespace Idmr.Yogeme
 			try { _fBrief.Save(); }
 			catch { /* do nothing */ }
 			lblTeamArr_Click(lblTeam[_activeTeamIndex], new EventArgs());    // forces an update
+			if (Text.IndexOf("*") == -1) return;    // don't save if unmodified
+
 			try { _mission.Save(fileMission); }
 			catch (Exception x) { MessageBox.Show(x.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); }
 			Text = "Ye Olde Galactic Empire Mission Editor - XWA - " + _mission.MissionFileName;
@@ -1651,7 +1654,7 @@ namespace Idmr.Yogeme
 					menuSave_Click("toolbar", new EventArgs());
 					break;
 				case 3:     //Save As
-					savXWA.ShowDialog();
+					menuSaveAsXWA_Click("toolbar", new EventArgs());
 					break;
 				case 5:     //New Item
 					if (tabMain.SelectedIndex == 0) newFG();
@@ -2183,7 +2186,11 @@ namespace Idmr.Yogeme
 				MessageBox.Show(x.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
 		}
-		void menuSaveAsXWA_Click(object sender, EventArgs e) => savXWA.ShowDialog();
+		void menuSaveAsXWA_Click(object sender, EventArgs e)
+		{
+			Common.MarkDirty(this);  // this is to avoid the "unmodified" cancel
+			savXWA.ShowDialog();
+		}
 		void menuSuperBackdrops_Click(object sender, EventArgs e)
 		{
 			tabMain.Focus();
@@ -2203,7 +2210,7 @@ namespace Idmr.Yogeme
 				{
 					if (_mission.FlightGroups[i].Backdrop == 55 && _mission.FlightGroups[i].Waypoints[0].Region == region)
 					{
-						MessageBox.Show("Mission already contains SuperBackdrops in " + _mission.Regions[region] + ".", "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+						MessageBox.Show("Mission already contains SuperBackdrops in " + _mission.Regions[region].Name + ".", "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
 						return;
 					}
 					else if (_mission.FlightGroups[i].Waypoints[0].Region == region) requiredQty++;

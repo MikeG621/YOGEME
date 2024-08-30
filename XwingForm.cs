@@ -8,6 +8,7 @@
  */
 
 /* CHANGELOG:
+ * [FIX] SaveAs behavior
  * [UPD] Events changes
  * [UPD] lblODesc actually used now
  * v1.14.2, 230901
@@ -422,6 +423,8 @@ namespace Idmr.Yogeme
 			switchTo(EditorMode.XWI);
 			try { _fBrief.Save(); }
 			catch { /* do nothing */ }
+			if (Text.IndexOf("*") == -1) return;    // don't save if unmodified
+
 			try { _mission.Save(fileMission); }
 			catch (Exception x) { MessageBox.Show(x.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); }
 			Text = "Ye Olde Galactic Empire Mission Editor - X-wing - " + _mission.MissionFileName;
@@ -784,7 +787,7 @@ namespace Idmr.Yogeme
 					menuSave_Click("toolbar", new EventArgs());
 					break;
 				case 3:     //Save As
-					savXW.ShowDialog();
+					menuSaveAsXwing_Click("toolbar", new EventArgs());
 					break;
 				case 5:     //New Item
 					if (tabMain.SelectedIndex == 0) newFG(true);
@@ -1201,9 +1204,10 @@ namespace Idmr.Yogeme
 		void menuSaveAsXwing_Click(object sender, EventArgs e)
 		{
 			switchTo(EditorMode.XWI);
+			Common.MarkDirty(this); // this is to avoid the "unmodified" cancel
 			savXW.ShowDialog();
 		}
-		private void menuTour_Click(object sender, EventArgs e)
+		void menuTour_Click(object sender, EventArgs e)
 		{
 			_fTour = new TourForm();
 			try { _fTour.Show(); }
@@ -2317,7 +2321,5 @@ namespace Idmr.Yogeme
 			_mission.Location = Common.Update(this, _mission.Location, Convert.ToInt16(cboMissionLocation.SelectedIndex));
 		}
 		#endregion
-
-		
 	}
 }

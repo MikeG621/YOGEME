@@ -111,6 +111,7 @@ using System.Windows.Forms;
 
 namespace Idmr.Yogeme
 {
+	// TODO: Change Shift+Drag to move all WPs for selection
 	/// <summary>graphical interface for craft waypoints</summary>
 	public partial class MapForm : Form
 	{
@@ -658,7 +659,7 @@ namespace Idmr.Yogeme
 					break;
 			}
 			// also apply the offset to the intial order WP
-			if (dat.WpOrder == 18) moveObject(new SelectionData(0, dat.MapDataRef, dat.WpIndex * 4 + 1, 0), offsetX, offsetY);
+			if (dat.WpOrder == 18) moveObject(new SelectionData(0, dat.MapDataRef, dat.WpIndex * 4 + 1, 0, dat.Region), offsetX, offsetY);
 
             if (_platform == Settings.Platform.XWA && ((Platform.Xwa.FlightGroup)dat.MapDataRef.FlightGroup).CraftType == 85) processHyperPoints();
         }
@@ -873,7 +874,7 @@ namespace Idmr.Yogeme
 					}
 				if (!found)
 				{
-					_selectionList.Add(new SelectionData(datIndex, _mapData[datIndex], order, wp));
+					_selectionList.Add(new SelectionData(datIndex, _mapData[datIndex], order, wp, (byte)(numRegion.Value - 1)));
 					int chkIndex = (order > 0 ? 4 + wp : wp);
 					lstSelection.Items.Add(_mapData[datIndex].FullName + "  " + chkWP[chkIndex].Text);
 					lstSelection.SetSelected(lstSelection.Items.Count - 1, true);
@@ -961,7 +962,7 @@ namespace Idmr.Yogeme
 						Platform.Xwa.FlightGroup.XwaWaypoint cwp = (Platform.Xwa.FlightGroup.XwaWaypoint)_mapData[i].WPs[0][wp];
 						if (cwp.Region != reg) continue;
 					}
-					if (waypointInside(_mapData[i].WPs[0][wp], ref m1, ref m2)) output.Add(new SelectionData(i, _mapData[i], 0, wp));
+					if (waypointInside(_mapData[i].WPs[0][wp], ref m1, ref m2)) output.Add(new SelectionData(i, _mapData[i], 0, wp, (byte)reg));
 				}
 				if (ord > 0)
 				{
@@ -970,24 +971,24 @@ namespace Idmr.Yogeme
 						if (!chkWP[4 + wp].Checked || !_mapData[i].WPs[ord][wp].Enabled) continue;
 						if (wp == 0 && _mapData[i].WPs[18][reg].Enabled && _mapData[i].WPs[0][0][4] != reg) continue;
 
-						if (waypointInside(_mapData[i].WPs[ord][wp], ref m1, ref m2)) output.Add(new SelectionData(i, _mapData[i], ord, wp));
+						if (waypointInside(_mapData[i].WPs[ord][wp], ref m1, ref m2)) output.Add(new SelectionData(i, _mapData[i], ord, wp, (byte)reg));
 					}
 
-                    var hyp = (Platform.Xwa.FlightGroup.XwaWaypoint)_mapData[i].WPs[17][reg];
+                    var hyp = _mapData[i].WPs[17][reg];
 					if (hyp.Enabled && waypointInside(hyp, ref m1, ref m2)) output.Add(new SelectionData(i, _mapData[i], 17, reg));
 					//TODO: need to add the order check here ^ since it's grabbing hidden WPs
 					// I think what would be better is to completely overhaul this; centralize the visibility, use that for selection and display
-					var exit = (Platform.Xwa.FlightGroup.XwaWaypoint)_mapData[i].WPs[18][reg];
+					var exit = _mapData[i].WPs[18][reg];
 					if (exit.Enabled && waypointInside(exit, ref m1, ref m2))
 					{
-						if (_mapData[i].WPs[0][0][4] != reg && numOrder.Value == 1) output.Add(new SelectionData(i, _mapData[i], 18, reg));
+						if (_mapData[i].WPs[0][0][4] != reg && numOrder.Value == 1) output.Add(new SelectionData(i, _mapData[i], 18, reg, (byte)reg));
 						else
 						{
 							var fg = (Platform.Xwa.FlightGroup)_mapData[i].FlightGroup;
 							for (int o = 0; o < 4; o++)
 								if (fg.Orders[reg, o].Command == 50 && (o + 1) == numOrder.Value)
 								{
-                                    output.Add(new SelectionData(i, _mapData[i], 18, reg));
+                                    output.Add(new SelectionData(i, _mapData[i], 18, reg, (byte)reg));
 									break;
                                 }
 						}
@@ -1134,12 +1135,12 @@ namespace Idmr.Yogeme
 				// Derived from the waypoint trace code.
 				for (int k = 0; k < 4; k++) // Start
 					if (chkWP[k].Checked && _mapData[i].WPs[0][k].Enabled && (_platform != Settings.Platform.XWA || _mapData[i].WPs[0][k][4] == (short)(numRegion.Value - 1)))
-						objects.Add(new SelectionData(i, _mapData[i], 0, k));
+						objects.Add(new SelectionData(i, _mapData[i], 0, k, (byte)(numRegion.Value - 1)));
 
 				if (_platform == Settings.Platform.XWA) // WPs
 				{
 					int ord = (int)((numRegion.Value - 1) * 4 + (numOrder.Value - 1) + 1);
-					for (int k = 0; k < 8; k++) if (chkWP[k + 4].Checked && _mapData[i].WPs[ord][k].Enabled) objects.Add(new SelectionData(i, _mapData[i], ord, k));
+					for (int k = 0; k < 8; k++) if (chkWP[k + 4].Checked && _mapData[i].WPs[ord][k].Enabled) objects.Add(new SelectionData(i, _mapData[i], ord, k, (byte)(numRegion.Value - 1)));
 				}
 				else for (int k = 4; k < 22; k++) if (chkWP[k].Checked && _mapData[i].WPs[0][k].Enabled) objects.Add(new SelectionData(i, _mapData[i], 0, k));
 			}
@@ -1818,7 +1819,7 @@ namespace Idmr.Yogeme
 				{
 					_mapData[i].WPs[17][r].Enabled = false;
 					_mapData[i].WPs[18][r].Enabled = false;
-                    var exitBuoySP = new Platform.Xwa.FlightGroup.Waypoint
+					var exitBuoySP = new Platform.Xwa.FlightGroup.XwaWaypoint
                     {
                         RawZ = 621  // just using as a flag
                     };
@@ -2140,7 +2141,7 @@ namespace Idmr.Yogeme
 				if (!dat.Active) continue;
 
 				var datPoint = getMapPoint(dat.WPRef);
-				if (_platform == Settings.Platform.XWA && dat.MapDataRef.WPs[17][region].Enabled && ((Platform.Xwa.FlightGroup.XwaWaypoint)dat.WPRef).Region != (numRegion.Value - 1))
+				if (_platform == Settings.Platform.XWA && dat.MapDataRef.WPs[17][region].Enabled && dat.Region != (numRegion.Value - 1))
                     datPoint = getMapPoint(dat.MapDataRef.WPs[17][region]);
 				int x = datPoint.X;
 				int y = datPoint.Y;
@@ -2935,7 +2936,7 @@ namespace Idmr.Yogeme
 
 		class SelectionData
 		{
-			public SelectionData(int index, MapData mapData, int wpOrder, int wpIndex)
+			public SelectionData(int index, MapData mapData, int wpOrder, int wpIndex, byte wpRegion = 0)
 			{
 				MapDataIndex = index;
 				MapDataRef = mapData;
@@ -2943,6 +2944,7 @@ namespace Idmr.Yogeme
 				WpOrder = wpOrder;
 				WpIndex = wpIndex;
 				Active = true;
+				Region = wpRegion;
 			}
 
 			/// <summary>Compares two selected objects for sorting, giving priority to visible objects over faded or hidden.</summary>
@@ -2970,6 +2972,7 @@ namespace Idmr.Yogeme
 			public short WpDragStartY { get; set; }
 			/// <summary>Gets or sets the Z origin for drag-move.</summary>
 			public short WpDragStartZ { get; set; }
+			public byte Region { get; set; }
 		}
 	}
 }

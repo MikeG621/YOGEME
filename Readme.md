@@ -39,6 +39,7 @@ This will leave behind a single config file in AppData with your user settings.
 #### WIP
 - (About) Minor updates to links and layout.
 - (Briefing) X-wing page events now edited directly instead of copying back and forth to a separate array first.
+- (All) SaveAs behavior now consistent between platforms; won't abort if mission is unmodified.
 - (TIE) IFF 5 (Red) permanently checked to match game behavior.
 - (TIE) Fixed a bug where the Questions wouldn't clear properly when loading a second mission.
 - (TIE-XWA) Test respects the "DetectMission" setting.
@@ -50,6 +51,7 @@ This will leave behind a single config file in AppData with your user settings.
 
 Extensive updates due to changes in Platform.dll, using the full file format spec.
 - (Briefing) Unknown 3 now labeled "Tile", still unknown effect. Confirmed no effect in TIE.
+  - Good chance this will be removed in the future.
 - (Briefing) Labels for Unk1/2 StartLength/EventLength and the Unknowns group deleted.
 - (Briefing) Text tag, FG tag, and masking colors now defined at launch instead of during every paint.
 - (Briefing) Event handling redone.

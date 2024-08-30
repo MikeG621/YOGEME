@@ -7,6 +7,7 @@
  */
 
 /* CHANGELOG
+ * [FIX] SaveAs behavior
  * [UPD] Spec updates (TimeLimit, RndSeed, Vars, WinBonus, Rescue, EomDelay, GlobalDelay, WaveDelay, ArrDep renames)
  * [UPD] IFF5 (Red) Hostile permanently checked
  * [FIX] Questions not clearing properly when loading a second mission
@@ -1092,7 +1093,7 @@ namespace Idmr.Yogeme
 					menuSave_Click("toolbar", new EventArgs());
 					break;
 				case 3:     //Save As
-					savTIE.ShowDialog();
+					menuSaveAsTIE_Click("toolbar", new EventArgs());
 					break;
 				case 5:     //New Item
 					if (tabMain.SelectedIndex == 0) newFG();
@@ -1473,7 +1474,7 @@ namespace Idmr.Yogeme
 			promptSave();
 			try
 			{
-				Platform.Xvt.Mission converted = Platform.Converter.TieToBop(_mission);
+				var converted = Platform.Converter.TieToBop(_mission);
 				converted.Save();
 			}
 			catch (Exception x)	// Platform doesn't throw anything, but leave this here just in case
@@ -1481,13 +1482,17 @@ namespace Idmr.Yogeme
 				MessageBox.Show(x.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
 		}
-		void menuSaveAsTIE_Click(object sender, EventArgs e) => savTIE.ShowDialog();
+		void menuSaveAsTIE_Click(object sender, EventArgs e)
+		{
+			Common.MarkDirty(this);	// this is to avoid the "unmodified" cancel
+			savTIE.ShowDialog();
+		}
 		void menuSaveAsXvT_Click(object sender, EventArgs e)
 		{
 			promptSave();
 			try
 			{
-				Platform.Xvt.Mission converted = Platform.Converter.TieToXvt(_mission);
+				var converted = Platform.Converter.TieToXvt(_mission);
 				converted.Save();
 			}
 			catch (Exception x)
@@ -1500,7 +1505,7 @@ namespace Idmr.Yogeme
 			promptSave();
 			try
 			{
-				Platform.Xwa.Mission converted = Platform.Converter.TieToXwa(_mission);
+				var converted = Platform.Converter.TieToXwa(_mission);
 				converted.Save();
 			}
 			catch (Exception x)

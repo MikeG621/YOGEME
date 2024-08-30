@@ -7,6 +7,7 @@
  */
 
 /* CHANGELOG
+ * [FIX] SaveAs behavior
  * [UPD] spec updates, cleanup
  * [FIX] Test now respects XvtDetectMission setting
  * v1.15.5, 231222
@@ -1339,7 +1340,8 @@ namespace Idmr.Yogeme
 					menuSave_Click("toolbar", new EventArgs());
 					break;
 				case 3:     //Save As
-					savXvT.ShowDialog();
+					if (_mission.IsBop) menuSaveAsBoP_Click("toolbar", new EventArgs());
+					else menuSaveAsXvT_Click("toolbar", new EventArgs());
 					break;
 				case 5:     //New Item
 					if (tabMain.SelectedIndex == 0) newFG();
@@ -1792,6 +1794,7 @@ namespace Idmr.Yogeme
 		void menuSaveAsBoP_Click(object sender, EventArgs e)
 		{
 			setBop(true);
+			Common.MarkDirty(this);  // this is to avoid the "unmodified" cancel
 			savXvT.ShowDialog();
 		}
 		void menuSaveAsTIE_Click(object sender, EventArgs e)
@@ -1810,6 +1813,7 @@ namespace Idmr.Yogeme
 		void menuSaveAsXvT_Click(object sender, EventArgs e)
 		{
 			setBop(false);
+			Common.MarkDirty(this); // this is to avoid the "unmodified" cancel
 			savXvT.ShowDialog();
 		}
 		void menuSaveAsXWA_Click(object sender, EventArgs e)
