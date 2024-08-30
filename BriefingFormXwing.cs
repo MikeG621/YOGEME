@@ -246,6 +246,7 @@ namespace Idmr.Yogeme
 					if (_events[i].IsEndEvent) break;
 				}
 				catch (ArgumentOutOfRangeException) { break; }  // if briefing is corrupted leading to an overflow, just kick out
+				catch (NullReferenceException) { break; }
 				lstEvents.Items.Add("");
 				updateList(i);
 			}
@@ -1389,7 +1390,7 @@ namespace Idmr.Yogeme
 			}
 			else if (_events[i].IsTextTag)
 			{
-				int v = (int)_events[i].Type - (int)BaseBriefing.EventType.TextTag1;
+				int v = (int)_events[i].Type - (int)Briefing.EventType.TextTag1;
 				_textTags[v].StringIndex = _events[i].Variables[0];
 				_textTags[v].X = _events[i].Variables[1];
 				_textTags[v].Y = _events[i].Variables[2];
