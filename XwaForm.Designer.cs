@@ -5123,7 +5123,7 @@ namespace Idmr.Yogeme
 			// 
 			// numArrRandMin
 			// 
-			this.numArrRandMin.Location = new System.Drawing.Point(36, 185);
+			this.numArrRandMin.Location = new System.Drawing.Point(36, 195);
 			this.numArrRandMin.Margin = new System.Windows.Forms.Padding(3, 3, 1, 3);
 			this.numArrRandMin.Maximum = new decimal(new int[] {
             255,
@@ -5137,7 +5137,7 @@ namespace Idmr.Yogeme
 			// 
 			// numArrRandSec
 			// 
-			this.numArrRandSec.Location = new System.Drawing.Point(128, 185);
+			this.numArrRandSec.Location = new System.Drawing.Point(128, 195);
 			this.numArrRandSec.Maximum = new decimal(new int[] {
             60,
             0,
@@ -5151,7 +5151,7 @@ namespace Idmr.Yogeme
 			// lblRandomArrivalDelayMinutes
 			// 
 			this.lblRandomArrivalDelayMinutes.AutoSize = true;
-			this.lblRandomArrivalDelayMinutes.Location = new System.Drawing.Point(80, 187);
+			this.lblRandomArrivalDelayMinutes.Location = new System.Drawing.Point(80, 197);
 			this.lblRandomArrivalDelayMinutes.Margin = new System.Windows.Forms.Padding(1, 0, 3, 0);
 			this.lblRandomArrivalDelayMinutes.Name = "lblRandomArrivalDelayMinutes";
 			this.lblRandomArrivalDelayMinutes.Size = new System.Drawing.Size(24, 13);
@@ -5161,7 +5161,7 @@ namespace Idmr.Yogeme
 			// lblRandomArrivalDelaySeconds
 			// 
 			this.lblRandomArrivalDelaySeconds.AutoSize = true;
-			this.lblRandomArrivalDelaySeconds.Location = new System.Drawing.Point(172, 187);
+			this.lblRandomArrivalDelaySeconds.Location = new System.Drawing.Point(172, 197);
 			this.lblRandomArrivalDelaySeconds.Margin = new System.Windows.Forms.Padding(1, 0, 3, 0);
 			this.lblRandomArrivalDelaySeconds.Name = "lblRandomArrivalDelaySeconds";
 			this.lblRandomArrivalDelaySeconds.Size = new System.Drawing.Size(26, 13);
@@ -5172,7 +5172,7 @@ namespace Idmr.Yogeme
 			// 
 			this.lblRandomArrivalDelayDesc.Location = new System.Drawing.Point(17, 78);
 			this.lblRandomArrivalDelayDesc.Name = "lblRandomArrivalDelayDesc";
-			this.lblRandomArrivalDelayDesc.Size = new System.Drawing.Size(228, 104);
+			this.lblRandomArrivalDelayDesc.Size = new System.Drawing.Size(228, 114);
 			this.lblRandomArrivalDelayDesc.TabIndex = 2;
 			this.lblRandomArrivalDelayDesc.Text = resources.GetString("lblRandomArrivalDelayDesc.Text");
 			// 
@@ -5180,6 +5180,11 @@ namespace Idmr.Yogeme
 			// 
 			this.cboStopArrivingWhen.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cboStopArrivingWhen.FormattingEnabled = true;
+			this.cboStopArrivingWhen.Items.AddRange(new object[] {
+            "Never (Continues to Arrive)",
+            "Mission Complete",
+            "Team Wins",
+            "Team Loses"});
 			this.cboStopArrivingWhen.Location = new System.Drawing.Point(20, 40);
 			this.cboStopArrivingWhen.Name = "cboStopArrivingWhen";
 			this.cboStopArrivingWhen.Size = new System.Drawing.Size(208, 21);

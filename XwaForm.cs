@@ -3216,6 +3216,8 @@ namespace Idmr.Yogeme
 			numArrSec.Value = _activeFG.ArrivalDelaySeconds;
 			numDepMin.Value = _activeFG.DepartureTimerMinutes;
 			numDepSec.Value = _activeFG.DepartureTimerSeconds;
+			cboStopArrivingWhen.SelectedIndex = (int)_activeFG.StopArrivingWhen;
+			numArrRandMin.Value = _activeFG.RandomArrivalDelayMinutes;
 			numArrRandSec.Value = _activeFG.RandomArrivalDelaySeconds;
 			numDepClockMin.Value = _activeFG.DepartureClockMin;
 			numDepClockSec.Value = _activeFG.DepartureClockSec;
