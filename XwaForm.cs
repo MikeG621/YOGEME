@@ -7,6 +7,7 @@
  */
 
 /* CHANGELOG
+ * [FIX] Special Cargo control visibility when not on first tab
  * [FIX] SaveAs behavior
  * [FIX] Test now respects XwaDetectMission setting
  * [UPD] spec updates
@@ -3266,8 +3267,10 @@ namespace Idmr.Yogeme
 		void chkRegionFilter_CheckedChanged(object sender, EventArgs e) => lstFG.Invalidate();
 		void numFilterRegion_ValueChanged(object sender, EventArgs e) { if (chkRegionFilter.Checked) lstFG.Invalidate(); }
 
-        #region Craft
-        void enableBackdrop(bool state)
+		void tabFGMinor_SelectedIndexChanged(object sender, EventArgs e) { if (tabFGMinor.SelectedIndex == 0) setSpecialVisibility(); }
+
+		#region Craft
+		void enableBackdrop(bool state)
 		{
 			bool btemp = _loading;
 			numBackdrop.Enabled = state;
@@ -3335,18 +3338,18 @@ namespace Idmr.Yogeme
 			Common.SafeSetCBO(cboStatus, isMine ? _activeFG.Status1 & 3 : _activeFG.Status1, true);
 			cboFormation.Enabled = !isMine;
 		}
+		void setSpecialVisibility()
+		{
+			lblNotUsed.Visible = ((numSC.Value == 0 || numSC.Value > _activeFG.NumberOfCraft) && !chkRandSC.Checked);
+			txtSpecCargo.Visible = !lblNotUsed.Visible;
+		}
 
 		void cboCraft_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			enableBackdrop(cboCraft.SelectedIndex == 0xB7);
 			refreshStatus();
 		}
-		void chkRandSC_CheckedChanged(object sender, EventArgs e)
-		{
-			if (chkRandSC.Checked) numSC.Value = 0;
-			lblNotUsed.Visible = (numSC.Value == 0 && !chkRandSC.Checked);
-			txtSpecCargo.Visible = !lblNotUsed.Visible;
-		}
+		void chkRandSC_CheckedChanged(object sender, EventArgs e) => setSpecialVisibility();
 
 		void cmdBackdrop_Click(object sender, EventArgs e)
 		{
@@ -3409,13 +3412,7 @@ namespace Idmr.Yogeme
 			foreach(FlightGroup fg in getSelectedFlightgroups()) fg.GlobalUnit = Common.Update(this, fg.GlobalUnit, Convert.ToByte(numGU.Value));
 			listRefreshSelectedItems();
 		}
-		void numSC_ValueChanged(object sender, EventArgs e)
-		{
-			if (_activeFG.RandSpecCargo) { numSC.Value = 0; return; }
-
-			lblNotUsed.Visible = (numSC.Value == 0 || numSC.Value > _activeFG.NumberOfCraft);
-			txtSpecCargo.Visible = !lblNotUsed.Visible;
-		}
+		void numSC_ValueChanged(object sender, EventArgs e) => setSpecialVisibility();
 		void numWaveDelay_ValueChanged(object sender, EventArgs e) => lblWaveDelay.Text = Common.GetFormattedTime(Mission.GetDelaySeconds((byte)numWaveDelay.Value), true);
 		#endregion
 		#region Arr/Dep

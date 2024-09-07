@@ -128,7 +128,7 @@
         AAEAAAD/////AQAAAAAAAAAMAgAAAFdTeXN0ZW0uV2luZG93cy5Gb3JtcywgVmVyc2lvbj00LjAuMC4w
         LCBDdWx0dXJlPW5ldXRyYWwsIFB1YmxpY0tleVRva2VuPWI3N2E1YzU2MTkzNGUwODkFAQAAACZTeXN0
         ZW0uV2luZG93cy5Gb3Jtcy5JbWFnZUxpc3RTdHJlYW1lcgEAAAAERGF0YQcCAgAAAAkDAAAADwMAAABu
-        DwAAAk1TRnQBSQFMAgEBDwEAAWgBAwFoAQMBEAEAARABAAT/AQkBAAj/AUIBTQE2AQQGAAE2AQQCAAEo
+        DwAAAk1TRnQBSQFMAgEBDwEAAXABAwFwAQMBEAEAARABAAT/AQkBAAj/AUIBTQE2AQQGAAE2AQQCAAEo
         AwABQAMAAUADAAEBAQABCAYAARAYAAGAAgABgAMAAoABAAGAAwABgAEAAYABAAKAAgADwAEAAcAB3AHA
         AQAB8AHKAaYBAAEzBQABMwEAATMBAAEzAQACMwIAAxYBAAMcAQADIgEAAykBAANVAQADTQEAA0IBAAM5
         AQABgAF8Af8BAAJQAf8BAAGTAQAB1gEAAf8B7AHMAQABxgHWAe8BAAHWAucBAAGQAakBrQIAAf8BMwMA
@@ -208,12 +208,6 @@
   <metadata name="dataWaypoints_Raw.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>529, 16</value>
   </metadata>
-  <data name="lblRandomArrivalDelayDesc.Text" xml:space="preserve">
-    <value>Randomized arrival delay. Stacks more delay time with the normal arrival trigger delay,
-based on whether the mission Randomize feature is enabled in-game.
-If enabled, a randomized delay from 1 second up to the amount here is added.
-If disabled, a flat delay of half this amount is added.</value>
-  </data>
   <metadata name="ttActiveSequence.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>932, 16</value>
   </metadata>
@@ -253,6 +247,12 @@ If disabled, a flat delay of half this amount is added.</value>
         odngAUAMwco0ESk/D+xj9e0WndAAAAAASUVORK5CYII=
 </value>
   </data>
+  <data name="lblRandomArrivalDelayDesc.Text" xml:space="preserve">
+    <value>Randomized arrival delay. Stacks more delay time with the normal arrival trigger delay,
+based on whether the mission Randomize feature is enabled in-game.
+If enabled, a randomized delay from 1 second up to the amount here is added.
+If disabled, a flat delay of half this amount is added.</value>
+  </data>
   <data name="numGlobActSeq.ToolTip" xml:space="preserve">
     <value>0 = Always active
 1 = Always active
@@ -269,9 +269,6 @@ If disabled, a flat delay of half this amount is added.</value>
   </metadata>
   <metadata name="dataOrders_Raw.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>792, 16</value>
-  </metadata>
-  <metadata name="ttActiveSequence.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>932, 16</value>
   </metadata>
   <metadata name="$this.TrayHeight" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>53</value>

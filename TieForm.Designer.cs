@@ -507,6 +507,7 @@ namespace Idmr.Yogeme
 			this.tabFGMinor.SelectedIndex = 0;
 			this.tabFGMinor.Size = new System.Drawing.Size(552, 504);
 			this.tabFGMinor.TabIndex = 0;
+			this.tabFGMinor.SelectedIndexChanged += new System.EventHandler(this.tabFGMinor_SelectedIndexChanged);
 			// 
 			// tabCraft
 			// 
@@ -980,11 +981,6 @@ namespace Idmr.Yogeme
 			this.numSC.Name = "numSC";
 			this.numSC.Size = new System.Drawing.Size(42, 20);
 			this.numSC.TabIndex = 8;
-			this.numSC.Value = new decimal(new int[] {
-            2,
-            0,
-            0,
-            0});
 			this.numSC.ValueChanged += new System.EventHandler(this.numSC_ValueChanged);
 			// 
 			// label4

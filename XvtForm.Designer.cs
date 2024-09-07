@@ -720,6 +720,7 @@ namespace Idmr.Yogeme
 			this.tabFGMinor.SelectedIndex = 0;
 			this.tabFGMinor.Size = new System.Drawing.Size(552, 507);
 			this.tabFGMinor.TabIndex = 5;
+			this.tabFGMinor.SelectedIndexChanged += new System.EventHandler(this.tabFGMinor_SelectedIndexChanged);
 			// 
 			// tabCraft
 			// 

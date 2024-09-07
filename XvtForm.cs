@@ -7,6 +7,7 @@
  */
 
 /* CHANGELOG
+ * [FIX] Special Cargo control visibility when not on first tab
  * [FIX] SaveAs behavior
  * [UPD] spec updates, cleanup
  * [FIX] Test now respects XvtDetectMission setting
@@ -2696,6 +2697,8 @@ namespace Idmr.Yogeme
 		}
 		void cmdMoveFGUp_Click(object sender, EventArgs e) => moveFlightgroups(-1);
 		void cmdMoveFGDown_Click(object sender, EventArgs e) => moveFlightgroups(1);
+
+		void tabFGMinor_SelectedIndexChanged(object sender, EventArgs e) { if (tabFGMinor.SelectedIndex == 0) setSpecialVisibility(); }
 		#region Craft
 		void enableBackdrop(bool state)
 		{
@@ -2732,6 +2735,11 @@ namespace Idmr.Yogeme
 			Common.SafeSetCBO(cboStatus, (isMine ? _activeFG.Status1 & 3 : _activeFG.Status1), true);
 			cboFormation.Enabled = !isMine;
 		}
+		void setSpecialVisibility()
+		{
+			lblNotUsed.Visible = ((numSC.Value == 0 || numSC.Value > _activeFG.NumberOfCraft) && !chkRandSC.Checked);
+			txtSpecCargo.Visible = !lblNotUsed.Visible;
+		}
 
 		void cboCraft_SelectedIndexChanged(object sender, EventArgs e)
 		{
@@ -2744,14 +2752,7 @@ namespace Idmr.Yogeme
 			catch { numBackdrop.Value = numBackdrop.Maximum; }
 		}
 
-		void chkRandSC_CheckedChanged(object sender, EventArgs e)
-		{
-			if (_loading) return;
-
-			if (chkRandSC.Checked) numSC.Value = 0;
-			lblNotUsed.Visible = (numSC.Value == 0 && !chkRandSC.Checked);
-			txtSpecCargo.Visible = !lblNotUsed.Visible;
-		}
+		void chkRandSC_CheckedChanged(object sender, EventArgs e) => setSpecialVisibility();
 
 		void cmdBackdrop_Click(object sender, EventArgs e)
 		{
@@ -2789,14 +2790,7 @@ namespace Idmr.Yogeme
 			foreach(FlightGroup fg in getSelectedFlightgroups()) fg.GlobalGroup = Common.Update(this, fg.GlobalGroup, Convert.ToByte(numGG.Value));
 			listRefreshSelectedItems();
 		}
-		void numSC_ValueChanged(object sender, EventArgs e)
-		{
-			Common.MarkDirty(this, _loading);
-			if (_activeFG.RandSpecCargo) { numSC.Value = 0; return; }
-
-			lblNotUsed.Visible = (numSC.Value == 0 || numSC.Value > _activeFG.NumberOfCraft);
-			txtSpecCargo.Visible = !lblNotUsed.Visible;
-		}
+		void numSC_ValueChanged(object sender, EventArgs e) => setSpecialVisibility();
 		#endregion
 		#region Arr/Dep
 		Mission.Trigger _activeArrDepTrigger => _activeFG.ArrDepTriggers[_activeArrDepTriggerIndex];

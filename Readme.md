@@ -43,6 +43,7 @@ This will leave behind a single config file in AppData with your user settings.
 - (TIE) IFF 5 (Red) permanently checked to match game behavior.
 - (TIE) Fixed a bug where the Questions wouldn't clear properly when loading a second mission.
 - (TIE-XWA) Test respects the "DetectMission" setting.
+- (TIE-XWA) Fixed Special Cargo control visilibity when not on first FG tab.
 - (XWA) Radio and Formation drop-downs swapped positions for consistency between platforms.
 - (XWA) Hooks: Added new options to WeaponRates, added WarheadTypeCount.
 - (Xwing) Order Descriptions now shown.
