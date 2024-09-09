@@ -740,7 +740,7 @@ namespace Idmr.Yogeme
 			// 
 			// cmdMoveFGDown
 			// 
-			this.cmdMoveFGDown.Location = new System.Drawing.Point(437, 429);
+			this.cmdMoveFGDown.Location = new System.Drawing.Point(428, 427);
 			this.cmdMoveFGDown.Name = "cmdMoveFGDown";
 			this.cmdMoveFGDown.Size = new System.Drawing.Size(75, 23);
 			this.cmdMoveFGDown.TabIndex = 17;
@@ -750,7 +750,7 @@ namespace Idmr.Yogeme
 			// 
 			// cmdMoveFGUp
 			// 
-			this.cmdMoveFGUp.Location = new System.Drawing.Point(437, 400);
+			this.cmdMoveFGUp.Location = new System.Drawing.Point(428, 398);
 			this.cmdMoveFGUp.Name = "cmdMoveFGUp";
 			this.cmdMoveFGUp.Size = new System.Drawing.Size(75, 23);
 			this.cmdMoveFGUp.TabIndex = 17;
@@ -879,7 +879,7 @@ namespace Idmr.Yogeme
 			this.grpCraft3.Controls.Add(this.numGG);
 			this.grpCraft3.Controls.Add(this.numGU);
 			this.grpCraft3.Controls.Add(this.label3);
-			this.grpCraft3.Location = new System.Drawing.Point(280, 24);
+			this.grpCraft3.Location = new System.Drawing.Point(263, 24);
 			this.grpCraft3.Name = "grpCraft3";
 			this.grpCraft3.Size = new System.Drawing.Size(240, 130);
 			this.grpCraft3.TabIndex = 15;
@@ -1284,15 +1284,15 @@ namespace Idmr.Yogeme
 			this.grpCraft4.Controls.Add(this.label2);
 			this.grpCraft4.Controls.Add(this.cboCounter);
 			this.grpCraft4.Controls.Add(this.label5);
-			this.grpCraft4.Location = new System.Drawing.Point(280, 160);
+			this.grpCraft4.Location = new System.Drawing.Point(263, 160);
 			this.grpCraft4.Name = "grpCraft4";
-			this.grpCraft4.Size = new System.Drawing.Size(240, 188);
+			this.grpCraft4.Size = new System.Drawing.Size(256, 188);
 			this.grpCraft4.TabIndex = 11;
 			this.grpCraft4.TabStop = false;
 			// 
 			// cmdBackdrop
 			// 
-			this.cmdBackdrop.Location = new System.Drawing.Point(155, 159);
+			this.cmdBackdrop.Location = new System.Drawing.Point(161, 159);
 			this.cmdBackdrop.Name = "cmdBackdrop";
 			this.cmdBackdrop.Size = new System.Drawing.Size(68, 20);
 			this.cmdBackdrop.TabIndex = 36;
@@ -1303,7 +1303,7 @@ namespace Idmr.Yogeme
 			// numBackdrop
 			// 
 			this.numBackdrop.Enabled = false;
-			this.numBackdrop.Location = new System.Drawing.Point(96, 159);
+			this.numBackdrop.Location = new System.Drawing.Point(102, 159);
 			this.numBackdrop.Maximum = new decimal(new int[] {
             255,
             0,
@@ -1326,7 +1326,7 @@ namespace Idmr.Yogeme
 			// 
 			// lblExplode
 			// 
-			this.lblExplode.Location = new System.Drawing.Point(152, 136);
+			this.lblExplode.Location = new System.Drawing.Point(158, 136);
 			this.lblExplode.Name = "lblExplode";
 			this.lblExplode.Size = new System.Drawing.Size(48, 16);
 			this.lblExplode.TabIndex = 28;
@@ -1335,7 +1335,7 @@ namespace Idmr.Yogeme
 			// 
 			// numExplode
 			// 
-			this.numExplode.Location = new System.Drawing.Point(96, 136);
+			this.numExplode.Location = new System.Drawing.Point(102, 136);
 			this.numExplode.Maximum = new decimal(new int[] {
             255,
             0,
@@ -1367,9 +1367,9 @@ namespace Idmr.Yogeme
 			// cboWarheads
 			// 
 			this.cboWarheads.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.cboWarheads.Location = new System.Drawing.Point(96, 64);
+			this.cboWarheads.Location = new System.Drawing.Point(102, 64);
 			this.cboWarheads.Name = "cboWarheads";
-			this.cboWarheads.Size = new System.Drawing.Size(136, 21);
+			this.cboWarheads.Size = new System.Drawing.Size(148, 21);
 			this.cboWarheads.TabIndex = 24;
 			// 
 			// lblStatus
@@ -1384,17 +1384,17 @@ namespace Idmr.Yogeme
 			// cboBeam
 			// 
 			this.cboBeam.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.cboBeam.Location = new System.Drawing.Point(96, 88);
+			this.cboBeam.Location = new System.Drawing.Point(102, 88);
 			this.cboBeam.Name = "cboBeam";
-			this.cboBeam.Size = new System.Drawing.Size(136, 21);
+			this.cboBeam.Size = new System.Drawing.Size(148, 21);
 			this.cboBeam.TabIndex = 25;
 			// 
 			// cboStatus
 			// 
 			this.cboStatus.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.cboStatus.Location = new System.Drawing.Point(96, 16);
+			this.cboStatus.Location = new System.Drawing.Point(102, 16);
 			this.cboStatus.Name = "cboStatus";
-			this.cboStatus.Size = new System.Drawing.Size(136, 21);
+			this.cboStatus.Size = new System.Drawing.Size(148, 21);
 			this.cboStatus.TabIndex = 23;
 			this.cboStatus.Leave += new System.EventHandler(this.cboStatus_Leave);
 			// 
@@ -1409,9 +1409,9 @@ namespace Idmr.Yogeme
 			// cboStatus2
 			// 
 			this.cboStatus2.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.cboStatus2.Location = new System.Drawing.Point(96, 40);
+			this.cboStatus2.Location = new System.Drawing.Point(102, 40);
 			this.cboStatus2.Name = "cboStatus2";
-			this.cboStatus2.Size = new System.Drawing.Size(136, 21);
+			this.cboStatus2.Size = new System.Drawing.Size(148, 21);
 			this.cboStatus2.TabIndex = 23;
 			// 
 			// label2
@@ -1430,9 +1430,9 @@ namespace Idmr.Yogeme
             "Chaff",
             "Flare",
             "(Cluster Mine)"});
-			this.cboCounter.Location = new System.Drawing.Point(96, 112);
+			this.cboCounter.Location = new System.Drawing.Point(102, 112);
 			this.cboCounter.Name = "cboCounter";
-			this.cboCounter.Size = new System.Drawing.Size(136, 21);
+			this.cboCounter.Size = new System.Drawing.Size(148, 21);
 			this.cboCounter.TabIndex = 25;
 			// 
 			// label5
