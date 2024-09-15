@@ -47,8 +47,8 @@ namespace Idmr.Yogeme
 			}
 			for (int i = 0; i < 4; i++)
 			{
-				cboFrom.Items.Add(_mission.Regions[i]);
-				cboTo.Items.Add(_mission.Regions[i]);
+				cboFrom.Items.Add(_mission.Regions[i].Name);
+				cboTo.Items.Add(_mission.Regions[i].Name);
 			}
 			cboFrom.SelectedIndex = 0;
 			cboTo.SelectedIndex = 1;
