@@ -2470,7 +2470,7 @@ namespace Idmr.Yogeme
 					case "Markings": fg.Markings = Convert.ToByte(value); break;
 					case "PlayerNumber": fg.PlayerNumber = Convert.ToByte(value); break;
 					case "PlayerCraft": fg.PlayerCraft = Convert.ToByte(value); break;
-					case "Radio": fg.Radio = (FlightGroup.RadioChannel)value; break;
+					case "Radio": fg.Radio = (FlightGroup.RadioChannel)Convert.ToByte(value); break;
 					case "Formation": fg.Formation = Convert.ToByte(value); break;
 					case "FormDistance": fg.FormDistance = Convert.ToByte(value); break;
 					case "Status1": fg.Status1 = Convert.ToByte(value); break;

@@ -2785,14 +2785,14 @@ namespace Idmr.Yogeme
 					case "Markings": fg.Markings = Convert.ToByte(value); break;
 					case "PlayerNumber": fg.PlayerNumber = Convert.ToByte(value); break;
 					case "PlayerCraft": fg.PlayerCraft = Convert.ToByte(value); break;
-					case "Radio": fg.Radio = (FlightGroup.RadioChannel)value; break;
+					case "Radio": fg.Radio = (FlightGroup.RadioChannel)Convert.ToByte(value); break;
 					case "Formation": fg.Formation = Convert.ToByte(value); break;
 					case "FormDistance": fg.FormDistance = Convert.ToByte(value); break;
 					case "Status1": fg.Status1 = Convert.ToByte(value); break;
 					case "Status2": fg.Status2 = Convert.ToByte(value); break;
 					case "Missile": fg.Missile = Convert.ToByte(value); break;
 					case "Beam": fg.Beam = Convert.ToByte(value); break;
-					case "Countermeasures": fg.Countermeasures = (FlightGroup.CounterTypes)value; break;
+					case "Countermeasures": fg.Countermeasures = (FlightGroup.CounterTypes)Convert.ToByte(value); break;
 					case "ExplosionTime": fg.ExplosionTime = Convert.ToByte(value); break;
 					case "Backdrop": fg.Backdrop = Convert.ToByte(value); break;
 					case "GlobalCargo":
