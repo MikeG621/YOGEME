@@ -3425,7 +3425,7 @@ namespace Idmr.Yogeme
 						if (trigRefresh++ == 0) labelRefresh(trig, lblMessTrig[_activeMessageTriggerIndex]);  // only refresh once
 						break;
 					case "MessColor": msg.Color = Convert.ToByte(value); break;
-					case "MessDelay": msg.Delay = Convert.ToByte((int)value / 5); break;
+					case "MessDelay": msg.RawDelay = Convert.ToByte((int)value / 5); break;
 					case "Mess1OR2": msg.T1OrT2 = Convert.ToBoolean(value); break;
 					case "Mess3OR4": msg.T3OrT4 = Convert.ToBoolean(value); break;
 					case "Mess12OR34": msg.T12OrT34 = Convert.ToBoolean(value); break;
@@ -3511,7 +3511,7 @@ namespace Idmr.Yogeme
 			optMess12OR34.Checked = _activeMessage.T12OrT34;
 			optMess12AND34.Checked = !optMess12OR34.Checked;
 			txtShort.Text = _activeMessage.Note;
-			numMessDelay.Value = _activeMessage.Delay * 5;
+			numMessDelay.Value = _activeMessage.DelaySeconds;
 			for (int i = 0; i < 10; i++) chkSendTo[i].Checked = _activeMessage.SentToTeam[i];
 			lblMessTrigArr_Click(0, new EventArgs());
 			_loading = btemp;

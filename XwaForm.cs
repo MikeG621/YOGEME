@@ -1407,7 +1407,7 @@ namespace Idmr.Yogeme
 			registerFgMultiEdit(numDepClockSec, "DepClockSec", 0);
 
 			registerMsgMultiEdit(cboMessColor, "MessColor", MultiEditRefreshType.ItemText);
-			registerMsgMultiEdit(numMessDelay, "RawDelay", 0);
+			registerMsgMultiEdit(numMessDelay, "MessDelay", 0);
 			registerMsgMultiEdit(cboMessFG, "MessFG", 0);
 			registerMsgMultiEdit(cboMessAmount, "MessTrigger", 0);
 			registerMsgMultiEdit(cboMessType, "MessTrigger", 0);
