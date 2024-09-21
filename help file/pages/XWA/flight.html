@@ -13,7 +13,7 @@
 <li><a href="#wp">Waypoints</a>
 <li><a href="#ord">Orders</a>
 <li><a href="#opt">Options</a>
-<li><a href="#unk">Unknowns</a>
+<li><a href="#more">More Arr/Dep</a>
 </ul>
 When you start YOGEME and launch the XWA platform you will be greeted by the FlightGroups-Craft tab.
 <p align=center><img src="../../images/XWA/FG-craft.png"></p>
@@ -29,7 +29,7 @@ Multiselect is now available as of v1.13. The details of the top-selected item w
 <p>The next group has several settings, from ship type, weapons, formation, etc. For the <i>Craft Type</i>, if you wish to use a custom shipilst, say for a conversion mod or you've replaced ship models, you can take the supplied <i>"xwa_shiplist_template.txt"</i> file and remove the "_template" from the name and change the contents as you see fit. YOGEME will automatically detect and attempt to load the non-template file. It is important to note that the number of entries must match the original count and that each line is the form "Full Craft Name,Abbrv". This will not affect in-game content, this is merely display within YOGEME.<br>
 <i>IFF</i> will determine which color it appears as in the CMD, while <i>Team</i> determines allegiance and who the ship blongs to. Note that this has little meaning to the AI. If you give an order to attack a ship on the same Team, an AI craft will attack and doesn't care.<br>
 For the <i>Player</i> value, use zero for AI controlled. The <i>AI skill</i> value controls how smart the FG is. Veteran is usually a good value for an average ship. <i>Markings</i> will change the highlight markings for craft that support it, which usually means Fighters.<br>
-<i>Formations</i> are the layout of the FG. If you know what you want you can select it from the dropdown, or click the button to take you to the <a href="../main/forms.html">Formations Dialog</a>. <i>Leader spacing</i> controls how far out the first craft is from the rest of the group. This is handy for strike groups; since the AI is more likely to attack the closet ship you can have the leader way out in front, leaving the rest of the wave to launch their attack. Likewise, <i>FG Spacing</i> controls how spread out the gorup is. Default value is 2, and I haven't found a consistent unit of measure for this value although it's probably related to ship class.<br>
+<i>Formations</i> are the layout of the FG. If you know what you want you can select it from the dropdown, or click the button to take you to the <a href="../main/forms.html">Formations Dialog</a>. <i>FG Spacing</i> controls how spread out the group is. Default value is 2, and I haven't found a consistent unit of measure for this value although it's probably related to ship class.<br>
 The <i>Radio</i> is used to detemrine if FlightGroups will listen to orders given by the player and will also give various status messages udring the mission.</p>
 
 <p>The third group is the numbers box. <i># of Waves</i> is how many times the group will spawn, minimum of 1. If you never want it to show up, use Arr/Dep controls. <i># of Craft</i> controls how many ships spawn at a single time, maximum of 6 as the formations can begin to corrupt above that.<br>
@@ -50,7 +50,7 @@ The <i>Explosion time</i> field acts strange, I don't mess with it normally. For
 
 <h3><a name="arrdep" class="anchor">Arr/Dep</a></h3>
 <p align=center><img src="../../images/XWA/FG-AD.png"></p>
-<p>The Arrival and Departures tab controls when, how and if the FG shows up during the mission. The Arrival and Departure panels hold the settings for those events as one would expect. When you click on a trigger (red background) it gets loaded into the drop boxes below for editing. The two buttons next to the drop boxes should be pretty obvious that they're <i>Copy</i> and <i>Paste</i> buttons. These apply to the trigger itself. The trigger can be pasted into any trigger in the mission, likewise any trigger copied elsewhere can be pasted here. The final drop box at the bottom controls which mission difficulty setting is required at launch for the FG to show up as well as a checkbox to force craft to be player-controlled (for when multiple player FGs are defined or MP missions). Handy for throwing in extra ships for Hard or removing ships in Easy.</p>
+<p>The Arrival and Departures tab controls when, how, and if the FG shows up during the mission. The Arrival and Departure panels hold the settings for those events as one would expect. When you click on a trigger (red background) it gets loaded into the drop boxes below for editing. The two buttons next to the drop boxes should be pretty obvious that they're <i>Copy</i> and <i>Paste</i> buttons. These apply to the trigger itself. The trigger can be pasted into any trigger in the mission, likewise any trigger copied elsewhere can be pasted here. The final drop box at the bottom controls which mission difficulty setting is required at launch for the FG to show up as well as a checkbox to force craft to be player-controlled (for when multiple player FGs are defined or MP missions). Handy for throwing in extra ships for Hard or removing ships in Easy.</p>
 
 <p>The Mothership settings should be straight forward, craft will default to Hyperspace. You can select any FG in the mission to be a Mothership, even if they aren't equipped with a hangar. Forgetting to reassign the Mothership's FG can lead to amusing instances of large craft leaving the "hangar" of the first FG, which is usually the player, sending them tumbling, sometimes into tiny pieces.<br><u>Player craft must have a Mothership assigned, even if assigned to itself</u>.<br>
 FlightGroups will attempt the the first option (<i>Via</i> panel) when the appropriate trigger fires and will go to the <i>Alternate</i> when the primary Mothership is not in theater. If both condtions cannot be met, the FG will hang around either holding still or sometimes flying in a straight line forever, depending on their last order.</p>
@@ -84,6 +84,8 @@ There's a time limit that can be applied and also three strings at your disposal
 
 <p>Orders in the list shown with the "&gt;&gt;" prefix denote that there is a Skip trigger defined for it. A "??" prefix means that there is a Skip trigger, but it's broken and will never fire. A "XX" prefix means that there's a Skip trigger and it's explicitly set to "FALSE", which is completely worthless.</p>
 
+<p>The <i>Handicap</i> field needs more testing, but seems like the intention was to provide a "preference" to the targets, to guide them to certain targets wtihout removing them from the list of potential targets.</p>
+
 <h3><a name="opt" class="anchor">Options</a></h3>
 <p align=center><img src="../../images/XWA/FG-Opt.png"></p>
 <p>This tab lets you set a bunch of miscellaneous settings for the FG, most of them pertaining to loadouts available to select at the start of the mission while you're sitting in the hangar.  Use the <i>Craft Category</i> to set a bunch of flyable craft, or make a custom set.  There's a bunch of weapon options to play with, too.</p>
@@ -92,8 +94,8 @@ There's a time limit that can be applied and also three strings at your disposal
 
 <p>XWA also provides Skip triggers for every order, instead of just Order #4 like in XvT.  This also helps with the dynamic capability of the missions. If the trigger is defined, the drop-down will denote it with "&lt;&lt;".  The "??" and "XX" markers are also used here.</p>
 
-<h3><a name="unk" class="anchor">Unknown</a></h3>
-<p align=center><img src="../../images/XWA/FG-Unk.png"></p>
-Not much to this tab, just the remaining values that can be changed, but may not do anything. Offsets are local to the FG. Change the <i>Order</i> and <i>Goal</i> fields to change which set of Unknowns you're editing for those sections, offsets are local to that Order or Goal.</p>
+<h3><a name="more" class="anchor">More Arr/Dep</a></h3>
+<p align=center><img src="../../images/XWA/FG-MoreAD.png"></p>
+<p>The Unknowns tab has been replaced with "More Arr/Dep", which has a few extra fields that cannot fit on the original Arr/Dep tab.  These aren't used very often, and have descriptions shown. The <i>Stop arriving when</i> field stops the condition of say a FG wave with simple Attack orders arriving, targets already destroyed so they leave, next wave arrives, repeat.</p>
 </body>
 </html>
