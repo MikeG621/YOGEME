@@ -1650,7 +1650,7 @@ namespace Idmr.Yogeme
 			// 
 			// lblWaveDelay
 			// 
-			this.lblWaveDelay.Location = new System.Drawing.Point(132, 66);
+			this.lblWaveDelay.Location = new System.Drawing.Point(132, 67);
 			this.lblWaveDelay.Name = "lblWaveDelay";
 			this.lblWaveDelay.Size = new System.Drawing.Size(86, 13);
 			this.lblWaveDelay.TabIndex = 45;

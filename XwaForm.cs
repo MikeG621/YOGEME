@@ -3254,6 +3254,7 @@ namespace Idmr.Yogeme
 			refreshSkipIndicators();
 			optSkipOR.Checked = _activeFG.Orders[r, o].SkipT1OrT2;
 			optSkipAND.Checked = !optSkipOR.Checked;
+			cboHandicap.SelectedIndex = _activeFG.Handicap;
 			#endregion
 			enableBackdrop(_activeFG.CraftType == 0xB7);
 			_loading = btemp;
@@ -3295,6 +3296,7 @@ namespace Idmr.Yogeme
 			numSC.Enabled = !state;
 			chkRandSC.Enabled = !state;
 			numExplode.Enabled = !state;
+			numWaveDelay.Enabled = !state;
 			_loading = true;
 			if (state)
 			{
