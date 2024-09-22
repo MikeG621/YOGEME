@@ -2529,6 +2529,7 @@ namespace Idmr.Yogeme
 					case "Order34Or": fg.Orders[_activeOrderIndex].T3OrT4 = Convert.ToBoolean(value); break;
 					case "OrderThrottle": fg.Orders[_activeOrderIndex].Throttle = Convert.ToByte(value); break;
 					case "OrderSpeed": fg.Orders[_activeOrderIndex].Speed = Convert.ToByte(value); break;
+					case "Handicap": fg.Handicap = Convert.ToByte(value); break;
 					case "StopArrivingWhen": fg.StopArrivingWhen = (FlightGroup.WavesEnd)value; break;
 					case "RandomArrivalDelayMinutes": fg.RandomArrivalDelayMinutes = Convert.ToByte(value); break;
 					case "RandomArrivalDelaySeconds": fg.RandomArrivalDelaySeconds = Convert.ToByte(value); break;
