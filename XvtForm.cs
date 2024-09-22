@@ -2707,8 +2707,11 @@ namespace Idmr.Yogeme
 			cboWarheads.Enabled = !state;
 			cboCounter.Enabled = !state;
 			cboBeam.Enabled = !state;
+			numExplode.Enabled = !state;
 			numCraft.Enabled = !state;
 			numWaves.Enabled = !state;
+			numWavesDelay.Enabled = !state;
+			chkPreventNumbering.Enabled = !state;
 			txtCargo.Enabled = !state;
 			txtSpecCargo.Enabled = !state;
 			numSC.Enabled = !state;
@@ -2730,11 +2733,11 @@ namespace Idmr.Yogeme
 		void refreshStatus()
 		{
 			cboStatus.Items.Clear();
-			bool isMine = (_activeFG.CraftType >= 0x4B && _activeFG.CraftType <= 0x4D);
+			bool isMine = (cboCraft.SelectedIndex >= 0x4B && cboCraft.SelectedIndex <= 0x4D);
 			lblStatus.Text = isMine ? "Mine Formation" : "Status";
 			cboStatus.Items.AddRange(isMine ? Strings.FormationMine : Strings.Status);
 			Common.SafeSetCBO(cboStatus, (isMine ? _activeFG.Status1 & 3 : _activeFG.Status1), true);
-			cboFormation.Enabled = !isMine;
+			cboFormation.Enabled = !isMine && cboCraft.SelectedIndex != 0x57;	// and not planet
 		}
 		void setSpecialVisibility()
 		{
@@ -3615,6 +3618,7 @@ namespace Idmr.Yogeme
 			txtGlobalFail.Visible = (g < (int)Globals.GoalIndex.Prevent);
 			txtGlobalInc.Visible = (g < (int)Globals.GoalIndex.Secondary);
 			labelRefresh(_activeGGTrigger.GoalTrigger, lblGlobTrig[_activeGlobalTriggerIndex]);
+			numGlobalDelay.Value = _activeGlobalGoal.Delay * 5;
 			_loading = btemp;
 		}
 		void lblGlobTrigArr_DoubleClick(object sender, EventArgs e) => menuPaste_Click("Glob", new EventArgs());

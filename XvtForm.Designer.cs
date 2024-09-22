@@ -4298,16 +4298,17 @@ namespace Idmr.Yogeme
 			// 
 			// label53
 			// 
-			this.label53.Location = new System.Drawing.Point(344, 72);
+			this.label53.AutoSize = true;
+			this.label53.Location = new System.Drawing.Point(344, 74);
 			this.label53.Name = "label53";
-			this.label53.Size = new System.Drawing.Size(104, 29);
+			this.label53.Size = new System.Drawing.Size(125, 13);
 			this.label53.TabIndex = 21;
-			this.label53.Text = "Notes\r\n(not used in game)";
+			this.label53.Text = "Notes (not used in game)";
 			// 
 			// txtShort
 			// 
 			this.txtShort.Enabled = false;
-			this.txtShort.Location = new System.Drawing.Point(448, 72);
+			this.txtShort.Location = new System.Drawing.Point(487, 71);
 			this.txtShort.MaxLength = 15;
 			this.txtShort.Name = "txtShort";
 			this.txtShort.Size = new System.Drawing.Size(104, 20);
@@ -4463,7 +4464,6 @@ namespace Idmr.Yogeme
 			// 
 			// numGlobalDelay
 			// 
-			this.numGlobalDelay.Enabled = false;
 			this.numGlobalDelay.Increment = new decimal(new int[] {
             5,
             0,
@@ -5101,7 +5101,6 @@ namespace Idmr.Yogeme
 			// 
 			// numEomFailedDelay
 			// 
-			this.numEomFailedDelay.Enabled = false;
 			this.numEomFailedDelay.Increment = new decimal(new int[] {
             5,
             0,
@@ -5200,7 +5199,6 @@ namespace Idmr.Yogeme
 			// 
 			// numEomSecDelay
 			// 
-			this.numEomSecDelay.Enabled = false;
 			this.numEomSecDelay.Increment = new decimal(new int[] {
             5,
             0,
@@ -5299,7 +5297,6 @@ namespace Idmr.Yogeme
 			// 
 			// numEomCompDelay
 			// 
-			this.numEomCompDelay.Enabled = false;
 			this.numEomCompDelay.Increment = new decimal(new int[] {
             5,
             0,
