@@ -37,18 +37,19 @@ Selecting the <i>Clear...</i> button will activate the radio buttons next to it,
 <h3><a name="string" class="anchor">Tags and Strings</a></h3>
 <p align=center><img src="../../images/TIE/Brief-Strings.png"></p>
 <p>A simple tab, you have 32 tags and 32 strings at your disposal. As is the case in officer questions, use the "[ ]" brackets for green highlighting. For the title (typically the first string, as shown) use ">" for yellow highlighting and centered. If you want to force a line break, use the "$". There's no hard limit to length, just what you can see in-game<br/>
-A word of caution for custom missions; if you plan on replacing existing mission numbers (ie, starting from mission 1) then the original briefing voices will play if you use that particular string index. So if you use the second string, regardless of what it says, you will still hear "One TIE Fighter from Alpha..." (I can hear his voice in my head). This can be mitigated by using indexes further down in the list instead of starting at the top.</p>
+A word of caution for custom missions; if you plan on replacing existing mission numbers (ie, starting from mission 1) then the original briefing voices will play if you use that particular string index. So if you use the second string, regardless of what it says, you will still hear "One TIE Fighter from Alpha..." (I can hear his voice in my head). This can be mitigated by using indexes further down in the list instead of starting at the top.<br/>
+The <i>Notes</i> field is not used in TIE, so will only be enabled for XvT and XWA.</p>
 
 <h3><a name="events" class="anchor">Event List</a></h3>
 <p align=center><img src="../../images/TIE/Brief-Events.png"></p>
 <p>This is the humanized version of the raw briefing data. The list of everything is on the left, you have arrow buttons to move them around, you can delete/add/modify events from here, you can build the entire thing from here if you felt like it. You'll notice a few fields that you will never have access to, regardless of what you do. This is because the briefing dialog is actually shared between TIE, XvT and XWA. The animation tab gets redone to match the appearance of the platform, while the nitty-gritty on the backend stays the same.</p>
 
-<p><i>Unknown 1</i> is the only unk value you can mess with, Unk3 doesn't belong to TIE and Unk2 has been defined and is auto-generated. The <i>Event Time</i> field is the raw number with the rounded value in seconds listed next to it. Changing that value will automatically move the event up and down the list as neccessary. If the "Shift All" box is checked, it will also move every event after it by the same amount. Changing the <i>Event</i> drop-box will enable and disable <i>Parameter</i> fields as neccessary and behave the same as on the main Briefing tab.</p>
+<p>The <i>Event Time</i> field is the raw number with the rounded value in seconds listed next to it. Changing that value will automatically move the event up and down the list as neccessary. If the <i>Shift All</i> box is checked, it will also move every event after it by the same amount. Changing the <i>Event</i> drop-box will enable and disable <i>Parameter</i> fields as neccessary and behave the same as on the main Briefing tab.</p>
 
 <p>Now, this is a quirk of TIE, but as you can see in the image above the Title is redefined after every Page Break. That's because <u>Page Break clears both the caption and title</u>. You can redefine the Title at the same time, but make sure the Page Break is higher on the list. Use the "SkipMarker" event to add points where the "Next" button in playback will stop, but won't clear the text.</p>
 
 <p>The <i>X</i> and <i>Y</i> values are the raw numbers on the same scale as the raw FG Waypoint values. For Zoom, 48 is generally a good number and is the YOGEME default.</p>
 
-<p>There is an "End Briefing" event, although it does not need to be manually placed. YOGEME will automatically add that event at time=9999.</p>
+<p>There is an "End Briefing" event, although it does not need to be manually placed and YOGEME does not show it. YOGEME will automatically add that event at time=9999.</p>
 </body>
 </html>
