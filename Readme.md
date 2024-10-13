@@ -69,7 +69,7 @@ details for GlobalUnits added.
 - (XWA) Added Flightgroup Handicap, "More Arr/Dep" tab.
 - (XWA) Added Messages Type, Speaker Header, Special Meaning. Don't know what they do.
 - (XWA) Added Global Goals Trigger Points and Delay.
-- (TIE-XWA) Some orders now have a Delay variable, but may or may not have a real effect. This is based on the format spec, not the exectuable.
+- (TIE-XWA) Some orders now have a Delay variable, but may or may not have a real effect. This is based on the format spec, not the executable.
 ---
 ### Additional Information
 #### Dependencies
