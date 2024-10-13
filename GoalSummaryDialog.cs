@@ -4,9 +4,8 @@
  * Licensed under the MPL v2.0 or later
  * 
  * VERSION: 1.3
- */
-
-/* CHANGELOG
+ * 
+ * CHANGELOG
  * v1.3, 170107
  * [NEW] Dialog created [JB]
  */

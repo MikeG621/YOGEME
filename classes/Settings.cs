@@ -3,10 +3,10 @@
  * Copyright (C) 2007-2024 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.13.12+
- */
-
-/* CHANGELOG
+ * VERSION: 1.16
+ *
+ * CHANGELOG
+ * v1.16, 241013
  * [UPD] class is now a Singleton
  * [UPD] LoadSettings and CheckPlatforms now private, weren't used elsewhere anyway
  * [UPD] Defaults now initialized directly instead of load function

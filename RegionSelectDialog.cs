@@ -3,10 +3,10 @@
  * Copyright (C) 2007-2024 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.4.1+
- */
-
-/* CHANGELOG
+ * VERSION: 1.16
+ *
+ * CHANGELOG
+ * v1.16, 241013
  * [UPD] ctor uses Region[] instead of string[]
  * v1.4.1, 171118
  * [NEW] created (#13)

@@ -3,10 +3,10 @@
  * Copyright (C) 2007-2024 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.15.3+
- */
-
-/* CHANGELOG
+ * VERSION: 1.16
+ *
+ * CHANGELOG
+ * v1.16, 241013
  * [UPD] Updates due to Platform
  * [UPD] Text tag, FG tag and mask colors defined at ctor instead of inline
  * [NEW] TextTag and ShipTag structs to replace int[,] for _textTags and _fgTags

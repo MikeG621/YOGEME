@@ -3,10 +3,10 @@
  * Copyright (C) 2007-2024 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.14.1+
- */
-
-/* CHANGELOG
+ * VERSION: 1.16
+ *
+ * CHANGELOG
+ * v1.16, 241013
  * [UPD] cleanup
  * v1.14.1, 230814
  * [FIX #85] Now looks for hook INI or TXT at mission location

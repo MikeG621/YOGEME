@@ -4,9 +4,8 @@
  * Licensed under the MPL v2.0 or later
  * 
  * VERSION: 1.13
- */
-
-/* CHANGELOG
+ * 
+ * CHANGELOG
  * v1.13, 220130
  * [UPD] Redesign [JB]
  * v1.7, 200816

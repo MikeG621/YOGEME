@@ -36,7 +36,7 @@ To remove YOGEME, simply delete the directory where you placed it.
 This will leave behind a single config file in AppData with your user settings.
 
 ## Latest Release
-#### WIP
+#### 1.16. 13 Oct 2024
 - (About) Minor updates to links and layout.
 - (Briefing) X-wing page events now edited directly instead of copying back and forth to a separate array first.
 - (All) SaveAs behavior now consistent between platforms; won't abort if mission is unmodified.
@@ -69,6 +69,7 @@ details for GlobalUnits added.
 - (XWA) Added Flightgroup Handicap, "More Arr/Dep" tab.
 - (XWA) Added Messages Type, Speaker Header, Special Meaning. Don't know what they do.
 - (XWA) Added Global Goals Trigger Points and Delay.
+- (TIE-XWA) Some orders now have a Delay variable, but may or may not have a real effect. This is based on the format spec, not the exectuable.
 ---
 ### Additional Information
 #### Dependencies

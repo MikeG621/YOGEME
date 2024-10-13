@@ -4,10 +4,10 @@
  * This file authored by "JB" (Random Starfighter) (randomstarfighter@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.8+
- */
-
-/* CHANGELOG:
+ * VERSION: 1.16
+ *
+ * CHANGELOG
+ * v1.16, 241013
  * [UPD] Mostly cleanup
  * [UPD] ArrDep renames
  * v1.8, 201004

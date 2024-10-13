@@ -4,10 +4,10 @@
  * This file authored by "JB" (Random Starfighter) (randomstarfighter@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.13.6+
- */
-
-/* CHANGELOG
+ * VERSION: 1.16
+ *
+ * CHANGELOG
+ * v1.16, 241013
  * [UPD] Updates per Platform
  * [NEW] TextTag and ShipTag structs (def'd in BriefingForm.cs) to replace int[,] for _textTags and _fgTags
  * [UPD] _events now EventCollection type
