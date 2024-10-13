@@ -184,8 +184,8 @@
 				<param name="Local" value="pages\TIE\flight.html#ord">
 				</OBJECT>
 			<LI> <OBJECT type="text/sitemap">
-				<param name="Name" value="Unknowns">
-				<param name="Local" value="pages\TIE\flight.html#unk">
+				<param name="Name" value="Options">
+				<param name="Local" value="pages\TIE\flight.html#opt">
 				</OBJECT>
 		</UL>
 		<LI> <OBJECT type="text/sitemap">
@@ -284,8 +284,8 @@
 				<param name="Local" value="pages\XvT\flight.html#opt">
 				</OBJECT>
 			<LI> <OBJECT type="text/sitemap">
-				<param name="Name" value="Unknowns">
-				<param name="Local" value="pages\XvT\flight.html#unk">
+				<param name="Name" value="More Arr/Dep">
+				<param name="Local" value="pages\XvT\flight.html#more">
 				</OBJECT>
 		</UL>
 		<LI> <OBJECT type="text/sitemap">
@@ -348,8 +348,8 @@
 				<param name="Local" value="pages\XWA\flight.html#opt">
 				</OBJECT>
 			<LI> <OBJECT type="text/sitemap">
-				<param name="Name" value="Unknowns">
-				<param name="Local" value="pages\XWA\flight.html#unk">
+				<param name="Name" value="More Arr/Dep">
+				<param name="Local" value="pages\XWA\flight.html#more">
 				</OBJECT>
 		</UL>
 		<LI> <OBJECT type="text/sitemap">
