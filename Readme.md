@@ -36,7 +36,10 @@ To remove YOGEME, simply delete the directory where you placed it.
 This will leave behind a single config file in AppData with your user settings.
 
 ## Latest Release
-#### 1.16. 13 Oct 2024
+#### 1.16.0.1, 14 Oct 2024
+- (XWA) Fixed a bug that caused the hook backup to be restored after saving the changes. [Issue [#109](https://github.com/MikeG621/YOGEME/issues/109)]
+ 
+#### 1.16, 13 Oct 2024
 - (About) Minor updates to links and layout.
 - (Briefing) X-wing page events now edited directly instead of copying back and forth to a separate array first.
 - (All) SaveAs behavior now consistent between platforms; won't abort if mission is unmodified.

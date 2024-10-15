@@ -3,9 +3,11 @@
  * Copyright (C) 2007-2024 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.16
+ * VERSION: 1.16.1
  *
  * CHANGELOG
+ * v1.16.1, 241015
+ * [FIX #109] Was restoring backup after a save due to deleting empty filenames
  * v1.16, 241013
  * [UPD] ArrDep renames
  * [FIX] FamilyCamera controls weren't doing anything
@@ -2186,32 +2188,32 @@ namespace Idmr.Yogeme
 				sw.Flush();
 				sw.Close();
 
-				File.Delete(_bdFile);
-				File.Delete(_missionTxtFile);
-				File.Delete(_soundFile);
-				File.Delete(_interdictionFile);
-				File.Delete(_objFile);
-				File.Delete(_hangarObjectsFile);
-				File.Delete(_hangarCameraFile);
-				File.Delete(_famHangarCameraFile);
-				File.Delete(_hangarMapFile);
-				File.Delete(_famHangarMapFile);
-				File.Delete(_hangarObjectsFileSI);
-				File.Delete(_hangarCameraFileSI);
-				File.Delete(_famHangarCameraFileSI);
-				File.Delete(_hangarMapFileSI);
-				File.Delete(_famHangarMapFileSI);
-				File.Delete(_hangarObjectsFileS);
-				File.Delete(_hangarCameraFileS);
-				File.Delete(_famHangarCameraFileS);
-				File.Delete(_hangarMapFileS);
-				File.Delete(_famHangarMapFileS);
-				File.Delete(_32bppFile);
-				File.Delete(_shieldFile);
-				File.Delete(_hyperFile);
-				File.Delete(_concourseFile);
-				File.Delete(_hullIconFile);
-				File.Delete(_statsFile);
+				if (_bdFile != "") File.Delete(_bdFile);
+				if (_missionTxtFile != "") File.Delete(_missionTxtFile);
+				if (_soundFile != "") File.Delete(_soundFile);
+				if (_interdictionFile != "") File.Delete(_interdictionFile);
+				if (_objFile != "") File.Delete(_objFile);
+				if (_hangarObjectsFile != "") File.Delete(_hangarObjectsFile);
+				if (_hangarCameraFile != "") File.Delete(_hangarCameraFile);
+				if (_famHangarCameraFile != "") File.Delete(_famHangarCameraFile);
+				if (_hangarMapFile != "") File.Delete(_hangarMapFile);
+				if (_famHangarMapFile != "") File.Delete(_famHangarMapFile);
+				if (_hangarObjectsFileSI != "") File.Delete(_hangarObjectsFileSI);
+				if (_hangarCameraFileSI != "") File.Delete(_hangarCameraFileSI);
+				if (_famHangarCameraFileSI != "") File.Delete(_famHangarCameraFileSI);
+				if (_hangarMapFileSI != "") File.Delete(_hangarMapFileSI);
+				if (_famHangarMapFileSI != "") File.Delete(_famHangarMapFileSI);
+				if (_hangarObjectsFileS != "") File.Delete(_hangarObjectsFileS);
+				if (_hangarCameraFileS != "") File.Delete(_hangarCameraFileS);
+				if (_famHangarCameraFileS != "") File.Delete(_famHangarCameraFileS);
+				if (_hangarMapFileS != "") File.Delete(_hangarMapFileS);
+				if (_famHangarMapFileS != "") File.Delete(_famHangarMapFileS);
+				if (_32bppFile != "") File.Delete(_32bppFile);
+				if (_shieldFile != "") File.Delete(_shieldFile);
+				if (_hyperFile != "") File.Delete(_hyperFile);
+				if (_concourseFile != "") File.Delete(_concourseFile);
+				if (_hullIconFile != "") File.Delete(_hullIconFile);
+				if (_statsFile != "") File.Delete(_statsFile);
 			}
 			catch
 			{
