@@ -3,9 +3,11 @@
  * Copyright (C) 2007-2024 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.16
+ * VERSION: 1.16.0.2
  *
  * CHANGELOG
+ * v1.16.0.2, 241017
+ * [FIX] Exception during XwaSetIcon and XwaMoveIcon event modifications
  * v1.16, 241013
  * [UPD] Updates due to Platform
  * [UPD] Text tag, FG tag and mask colors defined at ctor instead of inline
@@ -2140,7 +2142,6 @@ namespace Idmr.Yogeme
 					_events[i].Variables[0] = _icon;
 					_events[i].Variables[1] = (short)cboNCraft.SelectedIndex;
 					_events[i].Variables[2] = (short)cboIconIff.SelectedIndex;
-					_events[i].Variables[3] = 0;
 					updateList(i);
 					// add initial MoveIcon 
 					if (cboNCraft.SelectedIndex != 0)
@@ -2150,7 +2151,6 @@ namespace Idmr.Yogeme
 						_events[i].Variables[0] = _icon;
 						_events[i].Variables[1] = _tempX;
 						_events[i].Variables[2] = _tempY;
-						_events[i].Variables[3] = 0;
 					}
 					break;
 				case BaseBriefing.EventType.XwaShipInfo:
@@ -2174,7 +2174,6 @@ namespace Idmr.Yogeme
 						_events[i].Variables[0] = _icon;
 						_events[i].Variables[1] = _briefData[_icon].Waypoint[0];
 						_events[i].Variables[2] = _briefData[_icon].Waypoint[1];
-						_events[i].Variables[3] = 0;
 					}
 					else
 					{
@@ -2194,7 +2193,6 @@ namespace Idmr.Yogeme
 							_events[i].Variables[0] = _icon;
 							_events[i].Variables[1] = (short)((x - _tempX) * j / total + _tempX);
 							_events[i].Variables[2] = (short)((y - _tempY) * j / total + _tempY);
-							_events[i].Variables[3] = 0;
 							updateList(i);
 						}
 					}
