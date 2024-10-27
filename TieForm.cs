@@ -3,9 +3,11 @@
  * Copyright (C) 2007-2024 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.16
+ * VERSION: 1.16.0.3
  *
  * CHANGELOG
+ * v1.16.0.3, 241027
+ * [FIX #110] FG library callback cast exception
  * v1.16, 241013
  * [FIX] Special Cargo control visibility when not on first tab
  * [FIX] SaveAs behavior
@@ -1231,8 +1233,9 @@ namespace Idmr.Yogeme
 		}
 		void flightGroupLibraryCallback(object sender, EventArgs e)
 		{
-			foreach (FlightGroup fg in (FlightGroup[])sender)
+			foreach (object obj in (object[])sender)
 			{
+				FlightGroup fg = (FlightGroup)obj;
 				if (fg == null || !newFG()) break;
 
 				_mission.FlightGroups[_activeFGIndex] = fg;

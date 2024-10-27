@@ -36,9 +36,12 @@ To remove YOGEME, simply delete the directory where you placed it.
 This will leave behind a single config file in AppData with your user settings.
 
 ## Latest Release
+#### 1.16.0.3, 27 Oct 2024
+- (All) Fixed an exception when attemping to add a craft to the mission from the Library. [Issue [#110](https://github.com/MikeG621/YOGEME/issues/110)]
+
 #### 1.16.0.2, 17 Oct 2024
 - (XWA) Fixed a briefing bug that caused an exception when setting or moving a craft icon.
-- 
+
 #### 1.16.0.1, 14 Oct 2024
 - (XWA) Fixed a bug that caused the hook backup to be restored after saving the changes. [Issue [#109](https://github.com/MikeG621/YOGEME/issues/109)]
  

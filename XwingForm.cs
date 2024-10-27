@@ -4,9 +4,11 @@
  * This file authored by "JB" (Random Starfighter) (randomstarfighter@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.16
+ * VERSION: 1.16.0.3
  *
  * CHANGELOG
+ * v1.16.0.3, 241027
+ * [FIX #110] FG library callback cast exception
  * v1.16, 241013
  * [FIX] SaveAs behavior
  * [UPD] Events changes
@@ -925,8 +927,9 @@ namespace Idmr.Yogeme
 		}
 		void flightGroupLibraryCallback(object sender, EventArgs e)
 		{
-			foreach (FlightGroup fg in (FlightGroup[])sender)
+			foreach (object obj in (object[])sender)
 			{
+				FlightGroup fg = (FlightGroup)obj;
 				if (fg == null || !newFG(fg.IsFlightGroup())) break;
 
 				_mission.FlightGroups[_activeFG] = fg;
