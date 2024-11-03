@@ -3,9 +3,11 @@
  * Copyright (C) 2007-2024 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.16.0.3
+ * VERSION: 1.16.0.4
  *
  * CHANGELOG
+ * v1.16.0.4, 241103
+ * [FIX #111] Exception when enabling a FG Goal
  * v1.16.0.3, 241027
  * [FIX #110] FG library callback cast exception
  * v1.16, 241013
@@ -1356,7 +1358,7 @@ namespace Idmr.Yogeme
 			registerFgMultiEdit(numGoalActSeq, "GoalTriggerSequence", MultiEditRefreshType.FgGoalLabel);
 			registerFgMultiEdit(numGoalPoints, "GoalTriggerPoints", MultiEditRefreshType.FgGoalLabel);
 			registerFgMultiEdit(numGoalTimeLimit, "GoalTriggerParam", MultiEditRefreshType.FgGoalLabel);  // shares same value as Param
-			registerFgMultiEdit(chkGoalEnable, "GoalTriggerEnabled", MultiEditRefreshType.FgGoalLabel);
+			//registerFgMultiEdit(chkGoalEnable, "GoalTriggerEnabled", MultiEditRefreshType.FgGoalLabel);
 
 			registerFgMultiEdit(numSP1, "WPRegion1", MultiEditRefreshType.Map);
 			registerFgMultiEdit(numSP2, "WPRegion2", MultiEditRefreshType.Map);
