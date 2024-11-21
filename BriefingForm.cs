@@ -3,9 +3,11 @@
  * Copyright (C) 2007-2024 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.16.0.2
+ * VERSION: 1.16.0.5
  *
  * CHANGELOG
+ * v1.16.0.5, 241120
+ * [FIX #112] Exception adding events to blank briefing, and silently overwriting existing events.
  * v1.16.0.2, 241017
  * [FIX] Exception during XwaSetIcon and XwaMoveIcon event modifications
  * v1.16, 241013
@@ -2013,19 +2015,25 @@ namespace Idmr.Yogeme
                     if (i < 10000) { break; }  // no further action, existing found
 
 					i = _events.Insert(i - 10000, new BaseBriefing.Event(_eventType) { Time = (short)hsbTimer.Value });
+					lstEvents.Items.Insert(i, "");
 					break;
 				case BaseBriefing.EventType.PageBreak:
 					i = findExisting(_eventType);
 					if (i < 10000) { break; }
 
 					i = _events.Insert(i - 10000, new BaseBriefing.Event(_eventType) { Time = (short)hsbTimer.Value });
+					lstEvents.Items.Insert(i, "");
 					if (_platform == Settings.Platform.TIE) lblTitle.Text = "";
 					lblCaption.Text = "";
 					break;
 				case BaseBriefing.EventType.TitleText:
 					i = findExisting(_eventType);
-					if (i >= 10000) i = _events.Insert(i - 10000, new BaseBriefing.Event(_eventType) { Time = (short)hsbTimer.Value });
-					_events[i].Variables[0] = (short)cboText.SelectedIndex;	// TODO: possible exception if nothing selected?
+					if (i >= 10000)
+					{
+						i = _events.Insert(i - 10000, new BaseBriefing.Event(_eventType) { Time = (short)hsbTimer.Value });
+						lstEvents.Items.Insert(i, "");
+					}
+					_events[i].Variables[0] = (short)((cboText.SelectedIndex >= 0) ? cboText.SelectedIndex : 0);
 					if (_strings[_events[i].Variables[0]].StartsWith(">"))
 					{
 						lblTitle.TextAlign = ContentAlignment.TopCenter;
@@ -2041,7 +2049,11 @@ namespace Idmr.Yogeme
 					break;
 				case BaseBriefing.EventType.CaptionText:
 					i = findExisting(_eventType);
-					if (i >= 10000) i = _events.Insert(i - 10000, new BaseBriefing.Event(_eventType) { Time = (short)hsbTimer.Value });
+					if (i >= 10000)
+					{
+						i = _events.Insert(i - 10000, new BaseBriefing.Event(_eventType) { Time = (short)hsbTimer.Value });
+						lstEvents.Items.Insert(i, "");
+					}
 					_events[i].Variables[0] = (short)cboText.SelectedIndex;
 					if (_strings[_events[i].Variables[0]].StartsWith(">"))
 					{
@@ -2058,14 +2070,22 @@ namespace Idmr.Yogeme
                     break;
 				case BaseBriefing.EventType.MoveMap:
 					i = findExisting(_eventType);
-					if (i >= 10000) i = _events.Insert(i - 10000, new BaseBriefing.Event(_eventType) { Time = (short)hsbTimer.Value });
+					if (i >= 10000)
+					{
+						i = _events.Insert(i - 10000, new BaseBriefing.Event(_eventType) { Time = (short)hsbTimer.Value });
+						lstEvents.Items.Insert(i, "");
+					}
 					_events[i].Variables[0] = _mapX;
 					_events[i].Variables[1] = _mapY;
 					// don't need to repaint, done while adjusting values
 					break;
 				case BaseBriefing.EventType.ZoomMap:
 					i = findExisting(_eventType);
-					if (i >= 10000) i = _events.Insert(i - 10000, new BaseBriefing.Event(_eventType) { Time = (short)hsbTimer.Value });
+					if (i >= 10000)
+					{
+						i = _events.Insert(i - 10000, new BaseBriefing.Event(_eventType) { Time = (short)hsbTimer.Value });
+						lstEvents.Items.Insert(i, "");
+					}
 					_events[i].Variables[0] = _zoomX;
 					_events[i].Variables[1] = _zoomY;
 					// don't need to repaint, done while adjusting values
@@ -2075,6 +2095,7 @@ namespace Idmr.Yogeme
 					if (i < 10000) break;
 
 					i = _events.Insert(i - 10000, new BaseBriefing.Event(_eventType) { Time = (short)hsbTimer.Value });
+					lstEvents.Items.Insert(i, "");
 					for (int n = 0; n < 8; n++)
 					{
 						_fgTags[n].Slot = -1;
@@ -2084,7 +2105,11 @@ namespace Idmr.Yogeme
 				case BaseBriefing.EventType.FGTag1:
 					_eventType = (BaseBriefing.EventType)((int)_eventType + numFG.Value - 1);
 					i = findExisting(_eventType);
-					if (i >= 10000) i = _events.Insert(i - 10000, new BaseBriefing.Event(_eventType) { Time = (short)hsbTimer.Value });
+					if (i >= 10000)
+					{
+						i = _events.Insert(i - 10000, new BaseBriefing.Event(_eventType) { Time = (short)hsbTimer.Value });
+						lstEvents.Items.Insert(i, "");
+					}
 					_events[i].Variables[0] = (short)cboFGTag.SelectedIndex;
 					_fgTags[(int)_eventType - (int)BaseBriefing.EventType.FGTag1].Slot = _events[i].Variables[0];
 					_fgTags[(int)_eventType - (int)BaseBriefing.EventType.FGTag1].StartTime = _events[i].Time;
@@ -2095,6 +2120,7 @@ namespace Idmr.Yogeme
 					if (i < 10000) break;
 
 					i = _events.Insert(i - 10000, new BaseBriefing.Event(_eventType) { Time = (short)hsbTimer.Value });
+					lstEvents.Items.Insert(i, "");
 					for (int n = 0; n < 8; n++)
 					{
 						_textTags[n].StringIndex = -1;
@@ -2113,6 +2139,7 @@ namespace Idmr.Yogeme
 							break;
 						}
 						i = _events.Insert(i - 10000, new BaseBriefing.Event(_eventType) { Time = (short)hsbTimer.Value });
+						lstEvents.Items.Insert(i, "");
 					}
 					else
 					{
@@ -2137,8 +2164,8 @@ namespace Idmr.Yogeme
 						break;
 					}
 
-					i = findNext();
-					i = _events.Insert(i, new BaseBriefing.Event(_eventType) { Time = (short)hsbTimer.Value });
+					i = _events.Insert(findNext(), new BaseBriefing.Event(_eventType) { Time = (short)hsbTimer.Value });
+					lstEvents.Items.Insert(i, "");
 					_events[i].Variables[0] = _icon;
 					_events[i].Variables[1] = (short)cboNCraft.SelectedIndex;
 					_events[i].Variables[2] = (short)cboIconIff.SelectedIndex;
@@ -2146,8 +2173,8 @@ namespace Idmr.Yogeme
 					// add initial MoveIcon 
 					if (cboNCraft.SelectedIndex != 0)
 					{
-						i = findNext();
-						i = _events.Insert(i, new BaseBriefing.Event(_eventType) { Time = (short)hsbTimer.Value });
+						i = _events.Insert(findNext(), new BaseBriefing.Event(BaseBriefing.EventType.XwaMoveIcon) { Time = (short)hsbTimer.Value });
+						lstEvents.Items.Insert(i, "");
 						_events[i].Variables[0] = _icon;
 						_events[i].Variables[1] = _tempX;
 						_events[i].Variables[2] = _tempY;
@@ -2155,7 +2182,11 @@ namespace Idmr.Yogeme
 					break;
 				case BaseBriefing.EventType.XwaShipInfo:
 					i = findExisting(_eventType);
-					if (i >= 10000) i = _events.Insert(i - 10000, new BaseBriefing.Event(_eventType) { Time = (short)hsbTimer.Value });
+					if (i >= 10000)
+					{
+						i = _events.Insert(i - 10000, new BaseBriefing.Event(_eventType) { Time = (short)hsbTimer.Value });
+						lstEvents.Items.Insert(i, "");
+					}
 					_events[i].Variables[0] = (short)(optInfoOn.Checked ? 1 : 0);
 					_events[i].Variables[1] = (short)cboInfoCraft.SelectedIndex;
 					break;
@@ -2169,8 +2200,8 @@ namespace Idmr.Yogeme
 
 					if (numMoveTime.Value == 0)
 					{
-						i = findNext();
-						i = _events.Insert(i, new BaseBriefing.Event(_eventType) { Time = (short)hsbTimer.Value });
+						i = _events.Insert(findNext(), new BaseBriefing.Event(_eventType) { Time = (short)hsbTimer.Value });
+						lstEvents.Items.Insert(i, "");
 						_events[i].Variables[0] = _icon;
 						_events[i].Variables[1] = _briefData[_icon].Waypoint[0];
 						_events[i].Variables[2] = _briefData[_icon].Waypoint[1];
@@ -2188,8 +2219,8 @@ namespace Idmr.Yogeme
                         int t0 = hsbTimer.Value, x = _briefData[_icon].Waypoint[0], y = _briefData[_icon].Waypoint[1];
                         for (int j = 0; j <= total; j++)
 						{
-							i = findNext(j + t0);
-							i = _events.Insert(i, new BaseBriefing.Event(_eventType) { Time = (short)(j + t0) });
+							i = _events.Insert(findNext(j + t0), new BaseBriefing.Event(_eventType) { Time = (short)(j + t0) });
+							lstEvents.Items.Insert(i, "");
 							_events[i].Variables[0] = _icon;
 							_events[i].Variables[1] = (short)((x - _tempX) * j / total + _tempX);
 							_events[i].Variables[2] = (short)((y - _tempY) * j / total + _tempY);
@@ -2198,14 +2229,18 @@ namespace Idmr.Yogeme
 					}
 					break;
 				case BaseBriefing.EventType.XwaRotateIcon:
-					i = findNext();
-					i = _events.Insert(i, new BaseBriefing.Event(_eventType) { Time = (short)hsbTimer.Value });
+					i = _events.Insert(findNext(), new BaseBriefing.Event(_eventType) { Time = (short)hsbTimer.Value });
+					lstEvents.Items.Insert(i, "");
 					_events[i].Variables[0] = _icon;
 					_events[i].Variables[1] = (short)cboRotateAmount.SelectedIndex;
 					break;
 				case BaseBriefing.EventType.XwaChangeRegion:
 					i = findExisting(_eventType);
-					if (i >= 10000) i = _events.Insert(i - 10000, new BaseBriefing.Event(_eventType) { Time = (short)hsbTimer.Value });
+					if (i >= 10000)
+					{
+						i = _events.Insert(i - 10000, new BaseBriefing.Event(_eventType) { Time = (short)hsbTimer.Value });
+						lstEvents.Items.Insert(i, "");
+					}
 					_events[i].Variables[0] = (short)(numNewRegion.Value - 1);
 					break;
 				default:    // this shouldn't be possible

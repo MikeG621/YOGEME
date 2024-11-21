@@ -4,9 +4,11 @@
  * This file authored by "JB" (Random Starfighter) (randomstarfighter@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.16
+ * VERSION: 1.16.0.5
  *
  * CHANGELOG
+ * v1.16.0.5, 241120
+ * [FIX #112] Exception adding events to blank briefing, and silently overwriting existing events.
  * v1.16, 241013
  * [UPD] Updates per Platform
  * [NEW] TextTag and ShipTag structs (def'd in BriefingForm.cs) to replace int[,] for _textTags and _fgTags
@@ -944,7 +946,11 @@ namespace Idmr.Yogeme
 
 				case Briefing.EventType.TitleText:
 					i = findExisting(_eventType);
-					if (i >= 10000) i = _events.Insert(i - 10000, new Briefing.Event(_eventType) { Time = (short)hsbTimer.Value });
+					if (i >= 10000)
+					{
+						i = _events.Insert(i - 10000, new Briefing.Event(_eventType) { Time = (short)hsbTimer.Value });
+						lstEvents.Items.Insert(i, "");
+					}
 					_events[i].Variables[0] = (short)((cboText.SelectedIndex >= 0) ? cboText.SelectedIndex : 0);  //[JB] Fix exception if no string is selected in the dropdown box.
 					if (_strings[_events[i].Variables[0]].StartsWith(">"))
 					{
@@ -961,7 +967,11 @@ namespace Idmr.Yogeme
 					break;
 				case Briefing.EventType.CaptionText:
 					i = findExisting(_eventType);
-					if (i >= 10000) i = _events.Insert(i - 10000, new Briefing.Event(_eventType) { Time = (short)hsbTimer.Value });
+					if (i >= 10000)
+					{
+						i = _events.Insert(i - 10000, new Briefing.Event(_eventType) { Time = (short)hsbTimer.Value });
+						lstEvents.Items.Insert(i, "");
+					}
 					_events[i].Variables[0] = (short)cboText.SelectedIndex;
 					if (_strings[_events[i].Variables[0]].StartsWith(">"))
 					{
@@ -978,14 +988,22 @@ namespace Idmr.Yogeme
 					break;
 				case Briefing.EventType.MoveMap:
 					i = findExisting(_eventType);
-					if (i >= 10000) i = _events.Insert(i - 10000, new Briefing.Event(_eventType) { Time = (short)hsbTimer.Value });
+					if (i >= 10000)
+					{
+						i = _events.Insert(i - 10000, new Briefing.Event(_eventType) { Time = (short)hsbTimer.Value });
+						lstEvents.Items.Insert(i, "");
+					}
 					_events[i].Variables[0] = _mapX;
 					_events[i].Variables[1] = _mapY;
 					// don't need to repaint, done while adjusting values
 					break;
 				case Briefing.EventType.ZoomMap:
 					i = findExisting(_eventType);
-					if (i >= 10000) i = _events.Insert(i - 10000, new Briefing.Event(_eventType) { Time = (short)hsbTimer.Value });
+					if (i >= 10000)
+					{
+						i = _events.Insert(i - 10000, new Briefing.Event(_eventType) { Time = (short)hsbTimer.Value });
+						lstEvents.Items.Insert(i, "");
+					}
 					_events[i].Variables[0] = _zoomX;
 					_events[i].Variables[1] = _zoomY;
 					// don't need to repaint, done while adjusting values
@@ -995,6 +1013,7 @@ namespace Idmr.Yogeme
 					if (i < 10000) break; // no further action, existing break found
 
 					i = _events.Insert(i - 10000, new Briefing.Event(_eventType) { Time = (short)hsbTimer.Value });
+					lstEvents.Items.Insert(i, "");
 					for (int n = 0; n < 8; n++)
 					{
 						_fgTags[n].Slot = -1;
@@ -1004,7 +1023,11 @@ namespace Idmr.Yogeme
 				case Briefing.EventType.FGTag1:
 					_eventType = (Briefing.EventType)((int)_eventType + numFG.Value - 1);
 					i = findExisting(_eventType);
-					if (i >= 10000) i = _events.Insert(i - 10000, new Briefing.Event(_eventType) { Time = (short)hsbTimer.Value });
+					if (i >= 10000)
+					{
+						i = _events.Insert(i - 10000, new Briefing.Event(_eventType) { Time = (short)hsbTimer.Value });
+						lstEvents.Items.Insert(i, "");
+					}
 					_events[i].Variables[0] = (short)cboFGTag.SelectedIndex;
 					_fgTags[(int)_eventType - (int)Briefing.EventType.FGTag1].Slot = _events[i].Variables[0];
 					_fgTags[(int)_eventType - (int)Briefing.EventType.FGTag1].StartTime = _events[i].Time;
@@ -1015,6 +1038,7 @@ namespace Idmr.Yogeme
 					if (i < 10000) break; // no further action, existing break found
 
 					i = _events.Insert(i - 10000, new Briefing.Event(_eventType) { Time = (short)hsbTimer.Value });
+					lstEvents.Items.Insert(i, "");
 					for (int n = 0; n < 4; n++)
 					{
 						_textTags[n].StringIndex = -1;
@@ -1033,6 +1057,7 @@ namespace Idmr.Yogeme
 							break;
 						}
 						i = _events.Insert(i - 10000, new Briefing.Event(_eventType) { Time = (short)hsbTimer.Value });
+						lstEvents.Items.Insert(i, "");
 					}
 					else
 					{
@@ -1052,6 +1077,7 @@ namespace Idmr.Yogeme
 					if (i < 10000) break;
 
 					i = _events.Insert(i - 10000, new Briefing.Event(_eventType) { Time = (short)hsbTimer.Value });
+					lstEvents.Items.Insert(i, "");
 					break;
 			}
 
