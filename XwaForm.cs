@@ -3,9 +3,10 @@
  * Copyright (C) 2007-2024 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.16.0.4
+ * VERSION: 1.16.0.4+
  *
  * CHANGELOG
+ * [NEW #113] Defect order now displays selected IFF and Team
  * v1.16.0.4, 241103
  * [FIX #111] Exception when enabling a FG Goal
  * v1.16.0.3, 241027
@@ -3584,6 +3585,7 @@ namespace Idmr.Yogeme
 			lblOVar1.Text = s[1];
 			lblOVar2.Text = s[2];
 			lblOVar3.Text = s[3];
+			_activeOrder.Command = (byte)cboOrders.SelectedIndex;
 			numOVar1_ValueChanged(0, new EventArgs()); // Force refresh, since label information is provided to the user.
 			numOVar2_ValueChanged(0, new EventArgs());
 		}
@@ -3676,6 +3678,9 @@ namespace Idmr.Yogeme
 					text = text.Replace("  ", " ");
 					if (numOVar1.Value > 27) text = "Invalid";
 					break;
+				case FlightGroup.Order.CommandList.Defect:
+					if (value < _mission.IFFs.Length) text = _mission.IFFs[value];
+					break;
 			}
 			lblOVar1Note.Text = text;
 			lblOVar1Note.Visible = (text != "");
@@ -3709,6 +3714,9 @@ namespace Idmr.Yogeme
 						warning = true;
 					}
 					if (ActiveControl == numOVar2) orderLabelRefresh(); //Instant update the order.
+					break;
+				case FlightGroup.Order.CommandList.Defect:
+					if (var < _mission.Teams.Count) text = _mission.Teams[var].Name;
 					break;
 			}
 			lblOVar2Note.Text = text;
