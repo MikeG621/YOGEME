@@ -299,7 +299,7 @@
 			this.cmdRemoveTextCraft = new System.Windows.Forms.Button();
 			this.cmdAddCraftText = new System.Windows.Forms.Button();
 			this.lstCraftText = new System.Windows.Forms.ListBox();
-			this.tabStats = new System.Windows.Forms.TabPage();
+			this.tabMissStats = new System.Windows.Forms.TabPage();
 			this.label63 = new System.Windows.Forms.Label();
 			this.label62 = new System.Windows.Forms.Label();
 			this.label61 = new System.Windows.Forms.Label();
@@ -368,10 +368,40 @@
 			this.cmdHullAdd = new System.Windows.Forms.Button();
 			this.lstHullIcon = new System.Windows.Forms.ListBox();
 			this.pnlWeaponRate = new System.Windows.Forms.Panel();
+			this.pnlWarheadCounts = new System.Windows.Forms.Panel();
+			this.label94 = new System.Windows.Forms.Label();
+			this.label93 = new System.Windows.Forms.Label();
+			this.label92 = new System.Windows.Forms.Label();
+			this.label91 = new System.Windows.Forms.Label();
+			this.label90 = new System.Windows.Forms.Label();
+			this.label89 = new System.Windows.Forms.Label();
+			this.label88 = new System.Windows.Forms.Label();
+			this.label87 = new System.Windows.Forms.Label();
+			this.label86 = new System.Windows.Forms.Label();
+			this.label85 = new System.Windows.Forms.Label();
+			this.numClusterBombs = new System.Windows.Forms.NumericUpDown();
+			this.numAdvMagPulse = new System.Windows.Forms.NumericUpDown();
+			this.numIonPulse = new System.Windows.Forms.NumericUpDown();
+			this.numMagPulse = new System.Windows.Forms.NumericUpDown();
+			this.numAdvTorpedos = new System.Windows.Forms.NumericUpDown();
+			this.numAdvMissiles = new System.Windows.Forms.NumericUpDown();
+			this.numTorpedos = new System.Windows.Forms.NumericUpDown();
+			this.numMissiles = new System.Windows.Forms.NumericUpDown();
+			this.numRockets = new System.Windows.Forms.NumericUpDown();
+			this.numBombs = new System.Windows.Forms.NumericUpDown();
 			this.label84 = new System.Windows.Forms.Label();
 			this.pnlWeapRates = new System.Windows.Forms.Panel();
+			this.chkMaxTorpTarget = new System.Windows.Forms.CheckBox();
+			this.chkMaxTorpPass = new System.Windows.Forms.CheckBox();
+			this.chkTransferShieldLimit = new System.Windows.Forms.CheckBox();
+			this.chkTransferWeapLimit = new System.Windows.Forms.CheckBox();
 			this.numImpactAngle = new System.Windows.Forms.NumericUpDown();
+			this.numMaxTorpTarget = new System.Windows.Forms.NumericUpDown();
+			this.numMaxTorpPass = new System.Windows.Forms.NumericUpDown();
+			this.numTransferShieldLimit = new System.Windows.Forms.NumericUpDown();
+			this.numTransferWeapLimit = new System.Windows.Forms.NumericUpDown();
 			this.numImpactSpeed = new System.Windows.Forms.NumericUpDown();
+			this.numRatePenalty = new System.Windows.Forms.NumericUpDown();
 			this.numTransfer = new System.Windows.Forms.NumericUpDown();
 			this.numRecharge = new System.Windows.Forms.NumericUpDown();
 			this.numDecharge = new System.Windows.Forms.NumericUpDown();
@@ -381,6 +411,7 @@
 			this.chkImpact = new System.Windows.Forms.CheckBox();
 			this.chkTransfer = new System.Windows.Forms.CheckBox();
 			this.chkWeapRecharge = new System.Windows.Forms.CheckBox();
+			this.chkRatePenalty = new System.Windows.Forms.CheckBox();
 			this.txtWeapProfile = new System.Windows.Forms.TextBox();
 			this.pnlWeapProfiles = new System.Windows.Forms.Panel();
 			this.optLinkingProfile = new System.Windows.Forms.RadioButton();
@@ -388,44 +419,22 @@
 			this.optWarheadProfile = new System.Windows.Forms.RadioButton();
 			this.optWeapProfile = new System.Windows.Forms.RadioButton();
 			this.pnlWeapRateOrProfiles = new System.Windows.Forms.Panel();
+			this.optWarheadCounts = new System.Windows.Forms.RadioButton();
 			this.optWeapProfiles = new System.Windows.Forms.RadioButton();
 			this.optWeapRate = new System.Windows.Forms.RadioButton();
 			this.cboWeapFG = new System.Windows.Forms.ComboBox();
 			this.cmdRemWeap = new System.Windows.Forms.Button();
 			this.cmdAddWeap = new System.Windows.Forms.Button();
 			this.lstWeapons = new System.Windows.Forms.ListBox();
-			this.chkRatePenalty = new System.Windows.Forms.CheckBox();
-			this.numRatePenalty = new System.Windows.Forms.NumericUpDown();
-			this.numTransferWeapLimit = new System.Windows.Forms.NumericUpDown();
-			this.chkTransferWeapLimit = new System.Windows.Forms.CheckBox();
-			this.numTransferShieldLimit = new System.Windows.Forms.NumericUpDown();
-			this.chkTransferShieldLimit = new System.Windows.Forms.CheckBox();
-			this.numMaxTorpPass = new System.Windows.Forms.NumericUpDown();
-			this.chkMaxTorpPass = new System.Windows.Forms.CheckBox();
-			this.numMaxTorpTarget = new System.Windows.Forms.NumericUpDown();
-			this.chkMaxTorpTarget = new System.Windows.Forms.CheckBox();
-			this.pnlWarheadCounts = new System.Windows.Forms.Panel();
-			this.label85 = new System.Windows.Forms.Label();
-			this.numBombs = new System.Windows.Forms.NumericUpDown();
-			this.numRockets = new System.Windows.Forms.NumericUpDown();
-			this.label86 = new System.Windows.Forms.Label();
-			this.numMissiles = new System.Windows.Forms.NumericUpDown();
-			this.label87 = new System.Windows.Forms.Label();
-			this.numTorpedos = new System.Windows.Forms.NumericUpDown();
-			this.label88 = new System.Windows.Forms.Label();
-			this.numAdvMissiles = new System.Windows.Forms.NumericUpDown();
-			this.label89 = new System.Windows.Forms.Label();
-			this.numAdvTorpedos = new System.Windows.Forms.NumericUpDown();
-			this.label90 = new System.Windows.Forms.Label();
-			this.numMagPulse = new System.Windows.Forms.NumericUpDown();
-			this.label91 = new System.Windows.Forms.Label();
-			this.numIonPulse = new System.Windows.Forms.NumericUpDown();
-			this.label92 = new System.Windows.Forms.Label();
-			this.numAdvMagPulse = new System.Windows.Forms.NumericUpDown();
-			this.label93 = new System.Windows.Forms.Label();
-			this.numClusterBombs = new System.Windows.Forms.NumericUpDown();
-			this.label94 = new System.Windows.Forms.Label();
-			this.optWarheadCounts = new System.Windows.Forms.RadioButton();
+			this.chkHardShields = new System.Windows.Forms.CheckBox();
+			this.chkDisableRanks = new System.Windows.Forms.CheckBox();
+			this.tabMissTarget = new System.Windows.Forms.TabPage();
+			this.lstFgTargeting = new System.Windows.Forms.ListBox();
+			this.label95 = new System.Windows.Forms.Label();
+			this.cmdClearTargeting = new System.Windows.Forms.Button();
+			this.chkNotInspected = new System.Windows.Forms.CheckBox();
+			this.label96 = new System.Windows.Forms.Label();
+			this.cboTargetMethod = new System.Windows.Forms.ComboBox();
 			((System.ComponentModel.ISupportInitialize)(this.numFamHeadingZ)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numFamPosZ)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numFamHeadingXY)).BeginInit();
@@ -498,7 +507,7 @@
 			this.tcMission.SuspendLayout();
 			this.tabMissFG.SuspendLayout();
 			this.tabMissText.SuspendLayout();
-			this.tabStats.SuspendLayout();
+			this.tabMissStats.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numStatPercent)).BeginInit();
 			this.tabMissSettings.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numTurretS)).BeginInit();
@@ -522,30 +531,31 @@
 			((System.ComponentModel.ISupportInitialize)(this.numHullIcon)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numPlayerHull)).BeginInit();
 			this.pnlWeaponRate.SuspendLayout();
+			this.pnlWarheadCounts.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.numClusterBombs)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.numAdvMagPulse)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.numIonPulse)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.numMagPulse)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.numAdvTorpedos)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.numAdvMissiles)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.numTorpedos)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.numMissiles)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.numRockets)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.numBombs)).BeginInit();
 			this.pnlWeapRates.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numImpactAngle)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.numMaxTorpTarget)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.numMaxTorpPass)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.numTransferShieldLimit)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.numTransferWeapLimit)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numImpactSpeed)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.numRatePenalty)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numTransfer)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numRecharge)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numDecharge)).BeginInit();
 			this.pnlWeapProfiles.SuspendLayout();
 			this.pnlWeapRateOrProfiles.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.numRatePenalty)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.numTransferWeapLimit)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.numTransferShieldLimit)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.numMaxTorpPass)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.numMaxTorpTarget)).BeginInit();
-			this.pnlWarheadCounts.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.numBombs)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.numRockets)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.numMissiles)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.numTorpedos)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.numAdvMissiles)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.numAdvTorpedos)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.numMagPulse)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.numIonPulse)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.numAdvMagPulse)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.numClusterBombs)).BeginInit();
+			this.tabMissTarget.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// cmdOK
@@ -3572,8 +3582,9 @@
 			// 
 			this.tcMission.Controls.Add(this.tabMissFG);
 			this.tcMission.Controls.Add(this.tabMissText);
-			this.tcMission.Controls.Add(this.tabStats);
+			this.tcMission.Controls.Add(this.tabMissStats);
 			this.tcMission.Controls.Add(this.tabMissSettings);
+			this.tcMission.Controls.Add(this.tabMissTarget);
 			this.tcMission.Location = new System.Drawing.Point(3, 3);
 			this.tcMission.Name = "tcMission";
 			this.tcMission.SelectedIndex = 0;
@@ -3719,25 +3730,25 @@
 			this.lstCraftText.Size = new System.Drawing.Size(364, 95);
 			this.lstCraftText.TabIndex = 0;
 			// 
-			// tabStats
+			// tabMissStats
 			// 
-			this.tabStats.Controls.Add(this.label63);
-			this.tabStats.Controls.Add(this.label62);
-			this.tabStats.Controls.Add(this.label61);
-			this.tabStats.Controls.Add(this.chkStatPlayer);
-			this.tabStats.Controls.Add(this.numStatPercent);
-			this.tabStats.Controls.Add(this.txtStatProfile);
-			this.tabStats.Controls.Add(this.cboStatMarks);
-			this.tabStats.Controls.Add(this.cboStatType);
-			this.tabStats.Controls.Add(this.cmdRemoveStat);
-			this.tabStats.Controls.Add(this.cmdAddStat);
-			this.tabStats.Controls.Add(this.lstStats);
-			this.tabStats.Location = new System.Drawing.Point(4, 22);
-			this.tabStats.Name = "tabStats";
-			this.tabStats.Size = new System.Drawing.Size(369, 251);
-			this.tabStats.TabIndex = 3;
-			this.tabStats.Text = "Craft Stats";
-			this.tabStats.UseVisualStyleBackColor = true;
+			this.tabMissStats.Controls.Add(this.label63);
+			this.tabMissStats.Controls.Add(this.label62);
+			this.tabMissStats.Controls.Add(this.label61);
+			this.tabMissStats.Controls.Add(this.chkStatPlayer);
+			this.tabMissStats.Controls.Add(this.numStatPercent);
+			this.tabMissStats.Controls.Add(this.txtStatProfile);
+			this.tabMissStats.Controls.Add(this.cboStatMarks);
+			this.tabMissStats.Controls.Add(this.cboStatType);
+			this.tabMissStats.Controls.Add(this.cmdRemoveStat);
+			this.tabMissStats.Controls.Add(this.cmdAddStat);
+			this.tabMissStats.Controls.Add(this.lstStats);
+			this.tabMissStats.Location = new System.Drawing.Point(4, 22);
+			this.tabMissStats.Name = "tabMissStats";
+			this.tabMissStats.Size = new System.Drawing.Size(369, 251);
+			this.tabMissStats.TabIndex = 3;
+			this.tabMissStats.Text = "Craft Stats";
+			this.tabMissStats.UseVisualStyleBackColor = true;
 			// 
 			// label63
 			// 
@@ -3867,6 +3878,8 @@
 			// 
 			// tabMissSettings
 			// 
+			this.tabMissSettings.Controls.Add(this.chkDisableRanks);
+			this.tabMissSettings.Controls.Add(this.chkHardShields);
 			this.tabMissSettings.Controls.Add(this.numTurretS);
 			this.tabMissSettings.Controls.Add(this.numTurretM);
 			this.tabMissSettings.Controls.Add(this.numTurretH);
@@ -4562,6 +4575,344 @@
 			this.pnlWeaponRate.Size = new System.Drawing.Size(375, 705);
 			this.pnlWeaponRate.TabIndex = 66;
 			// 
+			// pnlWarheadCounts
+			// 
+			this.pnlWarheadCounts.Controls.Add(this.label94);
+			this.pnlWarheadCounts.Controls.Add(this.label93);
+			this.pnlWarheadCounts.Controls.Add(this.label92);
+			this.pnlWarheadCounts.Controls.Add(this.label91);
+			this.pnlWarheadCounts.Controls.Add(this.label90);
+			this.pnlWarheadCounts.Controls.Add(this.label89);
+			this.pnlWarheadCounts.Controls.Add(this.label88);
+			this.pnlWarheadCounts.Controls.Add(this.label87);
+			this.pnlWarheadCounts.Controls.Add(this.label86);
+			this.pnlWarheadCounts.Controls.Add(this.label85);
+			this.pnlWarheadCounts.Controls.Add(this.numClusterBombs);
+			this.pnlWarheadCounts.Controls.Add(this.numAdvMagPulse);
+			this.pnlWarheadCounts.Controls.Add(this.numIonPulse);
+			this.pnlWarheadCounts.Controls.Add(this.numMagPulse);
+			this.pnlWarheadCounts.Controls.Add(this.numAdvTorpedos);
+			this.pnlWarheadCounts.Controls.Add(this.numAdvMissiles);
+			this.pnlWarheadCounts.Controls.Add(this.numTorpedos);
+			this.pnlWarheadCounts.Controls.Add(this.numMissiles);
+			this.pnlWarheadCounts.Controls.Add(this.numRockets);
+			this.pnlWarheadCounts.Controls.Add(this.numBombs);
+			this.pnlWarheadCounts.Location = new System.Drawing.Point(101, 460);
+			this.pnlWarheadCounts.Name = "pnlWarheadCounts";
+			this.pnlWarheadCounts.Size = new System.Drawing.Size(190, 234);
+			this.pnlWarheadCounts.TabIndex = 32;
+			this.pnlWarheadCounts.Visible = false;
+			// 
+			// label94
+			// 
+			this.label94.AutoSize = true;
+			this.label94.Location = new System.Drawing.Point(3, 210);
+			this.label94.Name = "label94";
+			this.label94.Size = new System.Drawing.Size(74, 13);
+			this.label94.TabIndex = 0;
+			this.label94.Text = "Cluster Bombs";
+			// 
+			// label93
+			// 
+			this.label93.AutoSize = true;
+			this.label93.Location = new System.Drawing.Point(3, 187);
+			this.label93.Name = "label93";
+			this.label93.Size = new System.Drawing.Size(79, 13);
+			this.label93.TabIndex = 0;
+			this.label93.Text = "Adv Mag Pulse";
+			// 
+			// label92
+			// 
+			this.label92.AutoSize = true;
+			this.label92.Location = new System.Drawing.Point(3, 164);
+			this.label92.Name = "label92";
+			this.label92.Size = new System.Drawing.Size(51, 13);
+			this.label92.TabIndex = 0;
+			this.label92.Text = "Ion Pulse";
+			// 
+			// label91
+			// 
+			this.label91.AutoSize = true;
+			this.label91.Location = new System.Drawing.Point(3, 142);
+			this.label91.Name = "label91";
+			this.label91.Size = new System.Drawing.Size(57, 13);
+			this.label91.TabIndex = 0;
+			this.label91.Text = "Mag Pulse";
+			// 
+			// label90
+			// 
+			this.label90.AutoSize = true;
+			this.label90.Location = new System.Drawing.Point(3, 119);
+			this.label90.Name = "label90";
+			this.label90.Size = new System.Drawing.Size(74, 13);
+			this.label90.TabIndex = 0;
+			this.label90.Text = "Adv Torpedos";
+			// 
+			// label89
+			// 
+			this.label89.AutoSize = true;
+			this.label89.Location = new System.Drawing.Point(3, 96);
+			this.label89.Name = "label89";
+			this.label89.Size = new System.Drawing.Size(65, 13);
+			this.label89.TabIndex = 0;
+			this.label89.Text = "Adv Missiles";
+			// 
+			// label88
+			// 
+			this.label88.AutoSize = true;
+			this.label88.Location = new System.Drawing.Point(3, 73);
+			this.label88.Name = "label88";
+			this.label88.Size = new System.Drawing.Size(52, 13);
+			this.label88.TabIndex = 0;
+			this.label88.Text = "Torpedos";
+			// 
+			// label87
+			// 
+			this.label87.AutoSize = true;
+			this.label87.Location = new System.Drawing.Point(3, 50);
+			this.label87.Name = "label87";
+			this.label87.Size = new System.Drawing.Size(43, 13);
+			this.label87.TabIndex = 0;
+			this.label87.Text = "Missiles";
+			// 
+			// label86
+			// 
+			this.label86.AutoSize = true;
+			this.label86.Location = new System.Drawing.Point(3, 27);
+			this.label86.Name = "label86";
+			this.label86.Size = new System.Drawing.Size(81, 13);
+			this.label86.TabIndex = 0;
+			this.label86.Text = "Heavy Rockets";
+			// 
+			// label85
+			// 
+			this.label85.AutoSize = true;
+			this.label85.Location = new System.Drawing.Point(3, 4);
+			this.label85.Name = "label85";
+			this.label85.Size = new System.Drawing.Size(73, 13);
+			this.label85.TabIndex = 0;
+			this.label85.Text = "Space Bombs";
+			// 
+			// numClusterBombs
+			// 
+			this.numClusterBombs.Location = new System.Drawing.Point(134, 208);
+			this.numClusterBombs.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+			this.numClusterBombs.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            -2147483648});
+			this.numClusterBombs.Name = "numClusterBombs";
+			this.numClusterBombs.Size = new System.Drawing.Size(49, 20);
+			this.numClusterBombs.TabIndex = 17;
+			this.numClusterBombs.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            -2147483648});
+			// 
+			// numAdvMagPulse
+			// 
+			this.numAdvMagPulse.Location = new System.Drawing.Point(134, 185);
+			this.numAdvMagPulse.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+			this.numAdvMagPulse.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            -2147483648});
+			this.numAdvMagPulse.Name = "numAdvMagPulse";
+			this.numAdvMagPulse.Size = new System.Drawing.Size(49, 20);
+			this.numAdvMagPulse.TabIndex = 17;
+			this.numAdvMagPulse.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            -2147483648});
+			// 
+			// numIonPulse
+			// 
+			this.numIonPulse.Location = new System.Drawing.Point(134, 162);
+			this.numIonPulse.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+			this.numIonPulse.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            -2147483648});
+			this.numIonPulse.Name = "numIonPulse";
+			this.numIonPulse.Size = new System.Drawing.Size(49, 20);
+			this.numIonPulse.TabIndex = 17;
+			this.numIonPulse.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            -2147483648});
+			// 
+			// numMagPulse
+			// 
+			this.numMagPulse.Location = new System.Drawing.Point(134, 140);
+			this.numMagPulse.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+			this.numMagPulse.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            -2147483648});
+			this.numMagPulse.Name = "numMagPulse";
+			this.numMagPulse.Size = new System.Drawing.Size(49, 20);
+			this.numMagPulse.TabIndex = 17;
+			this.numMagPulse.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            -2147483648});
+			// 
+			// numAdvTorpedos
+			// 
+			this.numAdvTorpedos.Location = new System.Drawing.Point(134, 117);
+			this.numAdvTorpedos.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+			this.numAdvTorpedos.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            -2147483648});
+			this.numAdvTorpedos.Name = "numAdvTorpedos";
+			this.numAdvTorpedos.Size = new System.Drawing.Size(49, 20);
+			this.numAdvTorpedos.TabIndex = 17;
+			this.numAdvTorpedos.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            -2147483648});
+			// 
+			// numAdvMissiles
+			// 
+			this.numAdvMissiles.Location = new System.Drawing.Point(134, 94);
+			this.numAdvMissiles.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+			this.numAdvMissiles.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            -2147483648});
+			this.numAdvMissiles.Name = "numAdvMissiles";
+			this.numAdvMissiles.Size = new System.Drawing.Size(49, 20);
+			this.numAdvMissiles.TabIndex = 17;
+			this.numAdvMissiles.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            -2147483648});
+			// 
+			// numTorpedos
+			// 
+			this.numTorpedos.Location = new System.Drawing.Point(134, 71);
+			this.numTorpedos.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+			this.numTorpedos.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            -2147483648});
+			this.numTorpedos.Name = "numTorpedos";
+			this.numTorpedos.Size = new System.Drawing.Size(49, 20);
+			this.numTorpedos.TabIndex = 17;
+			this.numTorpedos.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            -2147483648});
+			// 
+			// numMissiles
+			// 
+			this.numMissiles.Location = new System.Drawing.Point(134, 48);
+			this.numMissiles.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+			this.numMissiles.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            -2147483648});
+			this.numMissiles.Name = "numMissiles";
+			this.numMissiles.Size = new System.Drawing.Size(49, 20);
+			this.numMissiles.TabIndex = 17;
+			this.numMissiles.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            -2147483648});
+			// 
+			// numRockets
+			// 
+			this.numRockets.Location = new System.Drawing.Point(134, 25);
+			this.numRockets.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+			this.numRockets.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            -2147483648});
+			this.numRockets.Name = "numRockets";
+			this.numRockets.Size = new System.Drawing.Size(49, 20);
+			this.numRockets.TabIndex = 17;
+			this.numRockets.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            -2147483648});
+			// 
+			// numBombs
+			// 
+			this.numBombs.Location = new System.Drawing.Point(134, 2);
+			this.numBombs.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+			this.numBombs.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            -2147483648});
+			this.numBombs.Name = "numBombs";
+			this.numBombs.Size = new System.Drawing.Size(49, 20);
+			this.numBombs.TabIndex = 17;
+			this.numBombs.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            -2147483648});
+			// 
 			// label84
 			// 
 			this.label84.Location = new System.Drawing.Point(202, 193);
@@ -4598,6 +4949,46 @@
 			this.pnlWeapRates.Size = new System.Drawing.Size(190, 261);
 			this.pnlWeapRates.TabIndex = 30;
 			// 
+			// chkMaxTorpTarget
+			// 
+			this.chkMaxTorpTarget.AutoSize = true;
+			this.chkMaxTorpTarget.Location = new System.Drawing.Point(3, 168);
+			this.chkMaxTorpTarget.Name = "chkMaxTorpTarget";
+			this.chkMaxTorpTarget.Size = new System.Drawing.Size(123, 17);
+			this.chkMaxTorpTarget.TabIndex = 23;
+			this.chkMaxTorpTarget.Text = "Max Torp per Target";
+			this.chkMaxTorpTarget.UseVisualStyleBackColor = true;
+			// 
+			// chkMaxTorpPass
+			// 
+			this.chkMaxTorpPass.AutoSize = true;
+			this.chkMaxTorpPass.Location = new System.Drawing.Point(3, 144);
+			this.chkMaxTorpPass.Name = "chkMaxTorpPass";
+			this.chkMaxTorpPass.Size = new System.Drawing.Size(115, 17);
+			this.chkMaxTorpPass.TabIndex = 23;
+			this.chkMaxTorpPass.Text = "Max Torp per Pass";
+			this.chkMaxTorpPass.UseVisualStyleBackColor = true;
+			// 
+			// chkTransferShieldLimit
+			// 
+			this.chkTransferShieldLimit.AutoSize = true;
+			this.chkTransferShieldLimit.Location = new System.Drawing.Point(3, 120);
+			this.chkTransferShieldLimit.Name = "chkTransferShieldLimit";
+			this.chkTransferShieldLimit.Size = new System.Drawing.Size(121, 17);
+			this.chkTransferShieldLimit.TabIndex = 23;
+			this.chkTransferShieldLimit.Text = "Transfer Shield Limit";
+			this.chkTransferShieldLimit.UseVisualStyleBackColor = true;
+			// 
+			// chkTransferWeapLimit
+			// 
+			this.chkTransferWeapLimit.AutoSize = true;
+			this.chkTransferWeapLimit.Location = new System.Drawing.Point(3, 96);
+			this.chkTransferWeapLimit.Name = "chkTransferWeapLimit";
+			this.chkTransferWeapLimit.Size = new System.Drawing.Size(121, 17);
+			this.chkTransferWeapLimit.TabIndex = 23;
+			this.chkTransferWeapLimit.Text = "Transfer Weap Limit";
+			this.chkTransferWeapLimit.UseVisualStyleBackColor = true;
+			// 
 			// numImpactAngle
 			// 
 			this.numImpactAngle.Location = new System.Drawing.Point(134, 236);
@@ -4605,6 +4996,84 @@
 			this.numImpactAngle.Size = new System.Drawing.Size(49, 20);
 			this.numImpactAngle.TabIndex = 22;
 			this.numImpactAngle.Value = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+			// 
+			// numMaxTorpTarget
+			// 
+			this.numMaxTorpTarget.Location = new System.Drawing.Point(134, 167);
+			this.numMaxTorpTarget.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+			this.numMaxTorpTarget.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            -2147483648});
+			this.numMaxTorpTarget.Name = "numMaxTorpTarget";
+			this.numMaxTorpTarget.Size = new System.Drawing.Size(49, 20);
+			this.numMaxTorpTarget.TabIndex = 17;
+			this.numMaxTorpTarget.Value = new decimal(new int[] {
+            16,
+            0,
+            0,
+            0});
+			// 
+			// numMaxTorpPass
+			// 
+			this.numMaxTorpPass.Location = new System.Drawing.Point(134, 143);
+			this.numMaxTorpPass.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+			this.numMaxTorpPass.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            -2147483648});
+			this.numMaxTorpPass.Name = "numMaxTorpPass";
+			this.numMaxTorpPass.Size = new System.Drawing.Size(49, 20);
+			this.numMaxTorpPass.TabIndex = 17;
+			this.numMaxTorpPass.Value = new decimal(new int[] {
+            6,
+            0,
+            0,
+            0});
+			// 
+			// numTransferShieldLimit
+			// 
+			this.numTransferShieldLimit.Location = new System.Drawing.Point(134, 119);
+			this.numTransferShieldLimit.Maximum = new decimal(new int[] {
+            65535,
+            0,
+            0,
+            0});
+			this.numTransferShieldLimit.Name = "numTransferShieldLimit";
+			this.numTransferShieldLimit.Size = new System.Drawing.Size(49, 20);
+			this.numTransferShieldLimit.TabIndex = 17;
+			this.numTransferShieldLimit.Value = new decimal(new int[] {
+            800,
+            0,
+            0,
+            0});
+			// 
+			// numTransferWeapLimit
+			// 
+			this.numTransferWeapLimit.Location = new System.Drawing.Point(134, 95);
+			this.numTransferWeapLimit.Maximum = new decimal(new int[] {
+            65535,
+            0,
+            0,
+            0});
+			this.numTransferWeapLimit.Name = "numTransferWeapLimit";
+			this.numTransferWeapLimit.Size = new System.Drawing.Size(49, 20);
+			this.numTransferWeapLimit.TabIndex = 17;
+			this.numTransferWeapLimit.Value = new decimal(new int[] {
             100,
             0,
             0,
@@ -4621,6 +5090,18 @@
             0,
             0,
             0});
+			// 
+			// numRatePenalty
+			// 
+			this.numRatePenalty.Location = new System.Drawing.Point(134, 71);
+			this.numRatePenalty.Maximum = new decimal(new int[] {
+            65535,
+            0,
+            0,
+            0});
+			this.numRatePenalty.Name = "numRatePenalty";
+			this.numRatePenalty.Size = new System.Drawing.Size(49, 20);
+			this.numRatePenalty.TabIndex = 17;
 			// 
 			// numTransfer
 			// 
@@ -4735,6 +5216,16 @@
 			this.chkWeapRecharge.Text = "Recharge Rate";
 			this.chkWeapRecharge.UseVisualStyleBackColor = true;
 			// 
+			// chkRatePenalty
+			// 
+			this.chkRatePenalty.AutoSize = true;
+			this.chkRatePenalty.Location = new System.Drawing.Point(3, 72);
+			this.chkRatePenalty.Name = "chkRatePenalty";
+			this.chkRatePenalty.Size = new System.Drawing.Size(129, 17);
+			this.chkRatePenalty.TabIndex = 23;
+			this.chkRatePenalty.Text = "Transfer Rate Penalty";
+			this.chkRatePenalty.UseVisualStyleBackColor = true;
+			// 
 			// txtWeapProfile
 			// 
 			this.txtWeapProfile.Enabled = false;
@@ -4808,6 +5299,18 @@
 			this.pnlWeapRateOrProfiles.Size = new System.Drawing.Size(193, 24);
 			this.pnlWeapRateOrProfiles.TabIndex = 9;
 			// 
+			// optWarheadCounts
+			// 
+			this.optWarheadCounts.AutoSize = true;
+			this.optWarheadCounts.Location = new System.Drawing.Point(121, 2);
+			this.optWarheadCounts.Name = "optWarheadCounts";
+			this.optWarheadCounts.Size = new System.Drawing.Size(58, 17);
+			this.optWarheadCounts.TabIndex = 7;
+			this.optWarheadCounts.TabStop = true;
+			this.optWarheadCounts.Text = "Counts";
+			this.optWarheadCounts.UseVisualStyleBackColor = true;
+			this.optWarheadCounts.CheckedChanged += new System.EventHandler(this.optWarheadCounts_CheckedChanged);
+			// 
 			// optWeapProfiles
 			// 
 			this.optWeapProfiles.AutoSize = true;
@@ -4870,495 +5373,101 @@
 			this.lstWeapons.Size = new System.Drawing.Size(366, 108);
 			this.lstWeapons.TabIndex = 1;
 			// 
-			// chkRatePenalty
+			// chkHardShields
 			// 
-			this.chkRatePenalty.AutoSize = true;
-			this.chkRatePenalty.Location = new System.Drawing.Point(3, 72);
-			this.chkRatePenalty.Name = "chkRatePenalty";
-			this.chkRatePenalty.Size = new System.Drawing.Size(129, 17);
-			this.chkRatePenalty.TabIndex = 23;
-			this.chkRatePenalty.Text = "Transfer Rate Penalty";
-			this.chkRatePenalty.UseVisualStyleBackColor = true;
+			this.chkHardShields.AutoSize = true;
+			this.chkHardShields.Location = new System.Drawing.Point(3, 187);
+			this.chkHardShields.Name = "chkHardShields";
+			this.chkHardShields.Size = new System.Drawing.Size(171, 17);
+			this.chkHardShields.TabIndex = 13;
+			this.chkHardShields.Text = "Shoot through Shields on Hard";
+			this.chkHardShields.UseVisualStyleBackColor = true;
 			// 
-			// numRatePenalty
+			// chkDisableRanks
 			// 
-			this.numRatePenalty.Location = new System.Drawing.Point(134, 71);
-			this.numRatePenalty.Maximum = new decimal(new int[] {
-            65535,
-            0,
-            0,
-            0});
-			this.numRatePenalty.Name = "numRatePenalty";
-			this.numRatePenalty.Size = new System.Drawing.Size(49, 20);
-			this.numRatePenalty.TabIndex = 17;
+			this.chkDisableRanks.AutoSize = true;
+			this.chkDisableRanks.Location = new System.Drawing.Point(3, 210);
+			this.chkDisableRanks.Name = "chkDisableRanks";
+			this.chkDisableRanks.Size = new System.Drawing.Size(152, 17);
+			this.chkDisableRanks.TabIndex = 14;
+			this.chkDisableRanks.Text = "Disable FG Rank Modifiers";
+			this.chkDisableRanks.UseVisualStyleBackColor = true;
 			// 
-			// numTransferWeapLimit
+			// tabMissTarget
 			// 
-			this.numTransferWeapLimit.Location = new System.Drawing.Point(134, 95);
-			this.numTransferWeapLimit.Maximum = new decimal(new int[] {
-            65535,
-            0,
-            0,
-            0});
-			this.numTransferWeapLimit.Name = "numTransferWeapLimit";
-			this.numTransferWeapLimit.Size = new System.Drawing.Size(49, 20);
-			this.numTransferWeapLimit.TabIndex = 17;
-			this.numTransferWeapLimit.Value = new decimal(new int[] {
-            100,
-            0,
-            0,
-            0});
+			this.tabMissTarget.Controls.Add(this.cboTargetMethod);
+			this.tabMissTarget.Controls.Add(this.label96);
+			this.tabMissTarget.Controls.Add(this.chkNotInspected);
+			this.tabMissTarget.Controls.Add(this.cmdClearTargeting);
+			this.tabMissTarget.Controls.Add(this.label95);
+			this.tabMissTarget.Controls.Add(this.lstFgTargeting);
+			this.tabMissTarget.Location = new System.Drawing.Point(4, 22);
+			this.tabMissTarget.Name = "tabMissTarget";
+			this.tabMissTarget.Size = new System.Drawing.Size(369, 251);
+			this.tabMissTarget.TabIndex = 4;
+			this.tabMissTarget.Text = "\"O\" Targeting";
+			this.tabMissTarget.UseVisualStyleBackColor = true;
 			// 
-			// chkTransferWeapLimit
+			// lstFgTargeting
 			// 
-			this.chkTransferWeapLimit.AutoSize = true;
-			this.chkTransferWeapLimit.Location = new System.Drawing.Point(3, 96);
-			this.chkTransferWeapLimit.Name = "chkTransferWeapLimit";
-			this.chkTransferWeapLimit.Size = new System.Drawing.Size(121, 17);
-			this.chkTransferWeapLimit.TabIndex = 23;
-			this.chkTransferWeapLimit.Text = "Transfer Weap Limit";
-			this.chkTransferWeapLimit.UseVisualStyleBackColor = true;
+			this.lstFgTargeting.FormattingEnabled = true;
+			this.lstFgTargeting.Location = new System.Drawing.Point(3, 25);
+			this.lstFgTargeting.Name = "lstFgTargeting";
+			this.lstFgTargeting.ScrollAlwaysVisible = true;
+			this.lstFgTargeting.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
+			this.lstFgTargeting.Size = new System.Drawing.Size(167, 173);
+			this.lstFgTargeting.TabIndex = 0;
 			// 
-			// numTransferShieldLimit
+			// label95
 			// 
-			this.numTransferShieldLimit.Location = new System.Drawing.Point(134, 119);
-			this.numTransferShieldLimit.Maximum = new decimal(new int[] {
-            65535,
-            0,
-            0,
-            0});
-			this.numTransferShieldLimit.Name = "numTransferShieldLimit";
-			this.numTransferShieldLimit.Size = new System.Drawing.Size(49, 20);
-			this.numTransferShieldLimit.TabIndex = 17;
-			this.numTransferShieldLimit.Value = new decimal(new int[] {
-            800,
-            0,
-            0,
-            0});
+			this.label95.AutoSize = true;
+			this.label95.Location = new System.Drawing.Point(3, 9);
+			this.label95.Name = "label95";
+			this.label95.Size = new System.Drawing.Size(158, 13);
+			this.label95.TabIndex = 1;
+			this.label95.Text = "\"O\" targetable FGs (multi-select)";
 			// 
-			// chkTransferShieldLimit
+			// cmdClearTargeting
 			// 
-			this.chkTransferShieldLimit.AutoSize = true;
-			this.chkTransferShieldLimit.Location = new System.Drawing.Point(3, 120);
-			this.chkTransferShieldLimit.Name = "chkTransferShieldLimit";
-			this.chkTransferShieldLimit.Size = new System.Drawing.Size(121, 17);
-			this.chkTransferShieldLimit.TabIndex = 23;
-			this.chkTransferShieldLimit.Text = "Transfer Shield Limit";
-			this.chkTransferShieldLimit.UseVisualStyleBackColor = true;
+			this.cmdClearTargeting.Location = new System.Drawing.Point(3, 204);
+			this.cmdClearTargeting.Name = "cmdClearTargeting";
+			this.cmdClearTargeting.Size = new System.Drawing.Size(75, 23);
+			this.cmdClearTargeting.TabIndex = 2;
+			this.cmdClearTargeting.Text = "&Clear All";
+			this.cmdClearTargeting.UseVisualStyleBackColor = true;
+			this.cmdClearTargeting.Click += new System.EventHandler(this.cmdClearTargeting_Click);
 			// 
-			// numMaxTorpPass
+			// chkNotInspected
 			// 
-			this.numMaxTorpPass.Location = new System.Drawing.Point(134, 143);
-			this.numMaxTorpPass.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
-			this.numMaxTorpPass.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            -2147483648});
-			this.numMaxTorpPass.Name = "numMaxTorpPass";
-			this.numMaxTorpPass.Size = new System.Drawing.Size(49, 20);
-			this.numMaxTorpPass.TabIndex = 17;
-			this.numMaxTorpPass.Value = new decimal(new int[] {
-            6,
-            0,
-            0,
-            0});
+			this.chkNotInspected.AutoSize = true;
+			this.chkNotInspected.Location = new System.Drawing.Point(176, 52);
+			this.chkNotInspected.Name = "chkNotInspected";
+			this.chkNotInspected.Size = new System.Drawing.Size(165, 17);
+			this.chkNotInspected.TabIndex = 3;
+			this.chkNotInspected.Text = "Filter targets to Not Inspected";
+			this.chkNotInspected.UseVisualStyleBackColor = true;
 			// 
-			// chkMaxTorpPass
+			// label96
 			// 
-			this.chkMaxTorpPass.AutoSize = true;
-			this.chkMaxTorpPass.Location = new System.Drawing.Point(3, 144);
-			this.chkMaxTorpPass.Name = "chkMaxTorpPass";
-			this.chkMaxTorpPass.Size = new System.Drawing.Size(115, 17);
-			this.chkMaxTorpPass.TabIndex = 23;
-			this.chkMaxTorpPass.Text = "Max Torp per Pass";
-			this.chkMaxTorpPass.UseVisualStyleBackColor = true;
+			this.label96.AutoSize = true;
+			this.label96.Location = new System.Drawing.Point(176, 9);
+			this.label96.Name = "label96";
+			this.label96.Size = new System.Drawing.Size(104, 13);
+			this.label96.TabIndex = 4;
+			this.label96.Text = "Target Craft method:";
 			// 
-			// numMaxTorpTarget
+			// cboTargetMethod
 			// 
-			this.numMaxTorpTarget.Location = new System.Drawing.Point(134, 167);
-			this.numMaxTorpTarget.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
-			this.numMaxTorpTarget.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            -2147483648});
-			this.numMaxTorpTarget.Name = "numMaxTorpTarget";
-			this.numMaxTorpTarget.Size = new System.Drawing.Size(49, 20);
-			this.numMaxTorpTarget.TabIndex = 17;
-			this.numMaxTorpTarget.Value = new decimal(new int[] {
-            16,
-            0,
-            0,
-            0});
-			// 
-			// chkMaxTorpTarget
-			// 
-			this.chkMaxTorpTarget.AutoSize = true;
-			this.chkMaxTorpTarget.Location = new System.Drawing.Point(3, 168);
-			this.chkMaxTorpTarget.Name = "chkMaxTorpTarget";
-			this.chkMaxTorpTarget.Size = new System.Drawing.Size(123, 17);
-			this.chkMaxTorpTarget.TabIndex = 23;
-			this.chkMaxTorpTarget.Text = "Max Torp per Target";
-			this.chkMaxTorpTarget.UseVisualStyleBackColor = true;
-			// 
-			// pnlWarheadCounts
-			// 
-			this.pnlWarheadCounts.Controls.Add(this.label94);
-			this.pnlWarheadCounts.Controls.Add(this.label93);
-			this.pnlWarheadCounts.Controls.Add(this.label92);
-			this.pnlWarheadCounts.Controls.Add(this.label91);
-			this.pnlWarheadCounts.Controls.Add(this.label90);
-			this.pnlWarheadCounts.Controls.Add(this.label89);
-			this.pnlWarheadCounts.Controls.Add(this.label88);
-			this.pnlWarheadCounts.Controls.Add(this.label87);
-			this.pnlWarheadCounts.Controls.Add(this.label86);
-			this.pnlWarheadCounts.Controls.Add(this.label85);
-			this.pnlWarheadCounts.Controls.Add(this.numClusterBombs);
-			this.pnlWarheadCounts.Controls.Add(this.numAdvMagPulse);
-			this.pnlWarheadCounts.Controls.Add(this.numIonPulse);
-			this.pnlWarheadCounts.Controls.Add(this.numMagPulse);
-			this.pnlWarheadCounts.Controls.Add(this.numAdvTorpedos);
-			this.pnlWarheadCounts.Controls.Add(this.numAdvMissiles);
-			this.pnlWarheadCounts.Controls.Add(this.numTorpedos);
-			this.pnlWarheadCounts.Controls.Add(this.numMissiles);
-			this.pnlWarheadCounts.Controls.Add(this.numRockets);
-			this.pnlWarheadCounts.Controls.Add(this.numBombs);
-			this.pnlWarheadCounts.Location = new System.Drawing.Point(101, 460);
-			this.pnlWarheadCounts.Name = "pnlWarheadCounts";
-			this.pnlWarheadCounts.Size = new System.Drawing.Size(190, 234);
-			this.pnlWarheadCounts.TabIndex = 32;
-			this.pnlWarheadCounts.Visible = false;
-			// 
-			// label85
-			// 
-			this.label85.AutoSize = true;
-			this.label85.Location = new System.Drawing.Point(3, 4);
-			this.label85.Name = "label85";
-			this.label85.Size = new System.Drawing.Size(73, 13);
-			this.label85.TabIndex = 0;
-			this.label85.Text = "Space Bombs";
-			// 
-			// numBombs
-			// 
-			this.numBombs.Location = new System.Drawing.Point(134, 2);
-			this.numBombs.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
-			this.numBombs.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            -2147483648});
-			this.numBombs.Name = "numBombs";
-			this.numBombs.Size = new System.Drawing.Size(49, 20);
-			this.numBombs.TabIndex = 17;
-			this.numBombs.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            -2147483648});
-			// 
-			// numRockets
-			// 
-			this.numRockets.Location = new System.Drawing.Point(134, 25);
-			this.numRockets.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
-			this.numRockets.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            -2147483648});
-			this.numRockets.Name = "numRockets";
-			this.numRockets.Size = new System.Drawing.Size(49, 20);
-			this.numRockets.TabIndex = 17;
-			this.numRockets.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            -2147483648});
-			// 
-			// label86
-			// 
-			this.label86.AutoSize = true;
-			this.label86.Location = new System.Drawing.Point(3, 27);
-			this.label86.Name = "label86";
-			this.label86.Size = new System.Drawing.Size(81, 13);
-			this.label86.TabIndex = 0;
-			this.label86.Text = "Heavy Rockets";
-			// 
-			// numMissiles
-			// 
-			this.numMissiles.Location = new System.Drawing.Point(134, 48);
-			this.numMissiles.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
-			this.numMissiles.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            -2147483648});
-			this.numMissiles.Name = "numMissiles";
-			this.numMissiles.Size = new System.Drawing.Size(49, 20);
-			this.numMissiles.TabIndex = 17;
-			this.numMissiles.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            -2147483648});
-			// 
-			// label87
-			// 
-			this.label87.AutoSize = true;
-			this.label87.Location = new System.Drawing.Point(3, 50);
-			this.label87.Name = "label87";
-			this.label87.Size = new System.Drawing.Size(43, 13);
-			this.label87.TabIndex = 0;
-			this.label87.Text = "Missiles";
-			// 
-			// numTorpedos
-			// 
-			this.numTorpedos.Location = new System.Drawing.Point(134, 71);
-			this.numTorpedos.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
-			this.numTorpedos.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            -2147483648});
-			this.numTorpedos.Name = "numTorpedos";
-			this.numTorpedos.Size = new System.Drawing.Size(49, 20);
-			this.numTorpedos.TabIndex = 17;
-			this.numTorpedos.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            -2147483648});
-			// 
-			// label88
-			// 
-			this.label88.AutoSize = true;
-			this.label88.Location = new System.Drawing.Point(3, 73);
-			this.label88.Name = "label88";
-			this.label88.Size = new System.Drawing.Size(52, 13);
-			this.label88.TabIndex = 0;
-			this.label88.Text = "Torpedos";
-			// 
-			// numAdvMissiles
-			// 
-			this.numAdvMissiles.Location = new System.Drawing.Point(134, 94);
-			this.numAdvMissiles.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
-			this.numAdvMissiles.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            -2147483648});
-			this.numAdvMissiles.Name = "numAdvMissiles";
-			this.numAdvMissiles.Size = new System.Drawing.Size(49, 20);
-			this.numAdvMissiles.TabIndex = 17;
-			this.numAdvMissiles.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            -2147483648});
-			// 
-			// label89
-			// 
-			this.label89.AutoSize = true;
-			this.label89.Location = new System.Drawing.Point(3, 96);
-			this.label89.Name = "label89";
-			this.label89.Size = new System.Drawing.Size(65, 13);
-			this.label89.TabIndex = 0;
-			this.label89.Text = "Adv Missiles";
-			// 
-			// numAdvTorpedos
-			// 
-			this.numAdvTorpedos.Location = new System.Drawing.Point(134, 117);
-			this.numAdvTorpedos.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
-			this.numAdvTorpedos.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            -2147483648});
-			this.numAdvTorpedos.Name = "numAdvTorpedos";
-			this.numAdvTorpedos.Size = new System.Drawing.Size(49, 20);
-			this.numAdvTorpedos.TabIndex = 17;
-			this.numAdvTorpedos.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            -2147483648});
-			// 
-			// label90
-			// 
-			this.label90.AutoSize = true;
-			this.label90.Location = new System.Drawing.Point(3, 119);
-			this.label90.Name = "label90";
-			this.label90.Size = new System.Drawing.Size(74, 13);
-			this.label90.TabIndex = 0;
-			this.label90.Text = "Adv Torpedos";
-			// 
-			// numMagPulse
-			// 
-			this.numMagPulse.Location = new System.Drawing.Point(134, 140);
-			this.numMagPulse.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
-			this.numMagPulse.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            -2147483648});
-			this.numMagPulse.Name = "numMagPulse";
-			this.numMagPulse.Size = new System.Drawing.Size(49, 20);
-			this.numMagPulse.TabIndex = 17;
-			this.numMagPulse.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            -2147483648});
-			// 
-			// label91
-			// 
-			this.label91.AutoSize = true;
-			this.label91.Location = new System.Drawing.Point(3, 142);
-			this.label91.Name = "label91";
-			this.label91.Size = new System.Drawing.Size(57, 13);
-			this.label91.TabIndex = 0;
-			this.label91.Text = "Mag Pulse";
-			// 
-			// numIonPulse
-			// 
-			this.numIonPulse.Location = new System.Drawing.Point(134, 162);
-			this.numIonPulse.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
-			this.numIonPulse.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            -2147483648});
-			this.numIonPulse.Name = "numIonPulse";
-			this.numIonPulse.Size = new System.Drawing.Size(49, 20);
-			this.numIonPulse.TabIndex = 17;
-			this.numIonPulse.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            -2147483648});
-			// 
-			// label92
-			// 
-			this.label92.AutoSize = true;
-			this.label92.Location = new System.Drawing.Point(3, 164);
-			this.label92.Name = "label92";
-			this.label92.Size = new System.Drawing.Size(51, 13);
-			this.label92.TabIndex = 0;
-			this.label92.Text = "Ion Pulse";
-			// 
-			// numAdvMagPulse
-			// 
-			this.numAdvMagPulse.Location = new System.Drawing.Point(134, 185);
-			this.numAdvMagPulse.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
-			this.numAdvMagPulse.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            -2147483648});
-			this.numAdvMagPulse.Name = "numAdvMagPulse";
-			this.numAdvMagPulse.Size = new System.Drawing.Size(49, 20);
-			this.numAdvMagPulse.TabIndex = 17;
-			this.numAdvMagPulse.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            -2147483648});
-			// 
-			// label93
-			// 
-			this.label93.AutoSize = true;
-			this.label93.Location = new System.Drawing.Point(3, 187);
-			this.label93.Name = "label93";
-			this.label93.Size = new System.Drawing.Size(79, 13);
-			this.label93.TabIndex = 0;
-			this.label93.Text = "Adv Mag Pulse";
-			// 
-			// numClusterBombs
-			// 
-			this.numClusterBombs.Location = new System.Drawing.Point(134, 208);
-			this.numClusterBombs.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
-			this.numClusterBombs.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            -2147483648});
-			this.numClusterBombs.Name = "numClusterBombs";
-			this.numClusterBombs.Size = new System.Drawing.Size(49, 20);
-			this.numClusterBombs.TabIndex = 17;
-			this.numClusterBombs.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            -2147483648});
-			// 
-			// label94
-			// 
-			this.label94.AutoSize = true;
-			this.label94.Location = new System.Drawing.Point(3, 210);
-			this.label94.Name = "label94";
-			this.label94.Size = new System.Drawing.Size(74, 13);
-			this.label94.TabIndex = 0;
-			this.label94.Text = "Cluster Bombs";
-			// 
-			// optWarheadCounts
-			// 
-			this.optWarheadCounts.AutoSize = true;
-			this.optWarheadCounts.Location = new System.Drawing.Point(121, 2);
-			this.optWarheadCounts.Name = "optWarheadCounts";
-			this.optWarheadCounts.Size = new System.Drawing.Size(58, 17);
-			this.optWarheadCounts.TabIndex = 7;
-			this.optWarheadCounts.TabStop = true;
-			this.optWarheadCounts.Text = "Counts";
-			this.optWarheadCounts.UseVisualStyleBackColor = true;
-			this.optWarheadCounts.CheckedChanged += new System.EventHandler(this.optWarheadCounts_CheckedChanged);
+			this.cboTargetMethod.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboTargetMethod.FormattingEnabled = true;
+			this.cboTargetMethod.Items.AddRange(new object[] {
+            "Use Global setting (default)",
+            "Nearest Target",
+            "Cycle Targets"});
+			this.cboTargetMethod.Location = new System.Drawing.Point(176, 25);
+			this.cboTargetMethod.Name = "cboTargetMethod";
+			this.cboTargetMethod.Size = new System.Drawing.Size(165, 21);
+			this.cboTargetMethod.TabIndex = 5;
 			// 
 			// XwaHookDialog
 			// 
@@ -5482,8 +5591,8 @@
 			this.tabMissFG.PerformLayout();
 			this.tabMissText.ResumeLayout(false);
 			this.tabMissText.PerformLayout();
-			this.tabStats.ResumeLayout(false);
-			this.tabStats.PerformLayout();
+			this.tabMissStats.ResumeLayout(false);
+			this.tabMissStats.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numStatPercent)).EndInit();
 			this.tabMissSettings.ResumeLayout(false);
 			this.tabMissSettings.PerformLayout();
@@ -5517,10 +5626,27 @@
 			((System.ComponentModel.ISupportInitialize)(this.numPlayerHull)).EndInit();
 			this.pnlWeaponRate.ResumeLayout(false);
 			this.pnlWeaponRate.PerformLayout();
+			this.pnlWarheadCounts.ResumeLayout(false);
+			this.pnlWarheadCounts.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.numClusterBombs)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.numAdvMagPulse)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.numIonPulse)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.numMagPulse)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.numAdvTorpedos)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.numAdvMissiles)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.numTorpedos)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.numMissiles)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.numRockets)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.numBombs)).EndInit();
 			this.pnlWeapRates.ResumeLayout(false);
 			this.pnlWeapRates.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numImpactAngle)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.numMaxTorpTarget)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.numMaxTorpPass)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.numTransferShieldLimit)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.numTransferWeapLimit)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.numImpactSpeed)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.numRatePenalty)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.numTransfer)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.numRecharge)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.numDecharge)).EndInit();
@@ -5528,23 +5654,8 @@
 			this.pnlWeapProfiles.PerformLayout();
 			this.pnlWeapRateOrProfiles.ResumeLayout(false);
 			this.pnlWeapRateOrProfiles.PerformLayout();
-			((System.ComponentModel.ISupportInitialize)(this.numRatePenalty)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.numTransferWeapLimit)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.numTransferShieldLimit)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.numMaxTorpPass)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.numMaxTorpTarget)).EndInit();
-			this.pnlWarheadCounts.ResumeLayout(false);
-			this.pnlWarheadCounts.PerformLayout();
-			((System.ComponentModel.ISupportInitialize)(this.numBombs)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.numRockets)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.numMissiles)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.numTorpedos)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.numAdvMissiles)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.numAdvTorpedos)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.numMagPulse)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.numIonPulse)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.numAdvMagPulse)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.numClusterBombs)).EndInit();
+			this.tabMissTarget.ResumeLayout(false);
+			this.tabMissTarget.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -5754,7 +5865,7 @@
         private System.Windows.Forms.NumericUpDown numTurretS;
         private System.Windows.Forms.NumericUpDown numTurretM;
         private System.Windows.Forms.NumericUpDown numTurretH;
-        private System.Windows.Forms.TabPage tabStats;
+        private System.Windows.Forms.TabPage tabMissStats;
         private System.Windows.Forms.ListBox lstStats;
         private System.Windows.Forms.ComboBox cboStatType;
         private System.Windows.Forms.Button cmdRemoveStat;
@@ -5949,5 +6060,14 @@
 		private System.Windows.Forms.NumericUpDown numMagPulse;
 		private System.Windows.Forms.NumericUpDown numAdvTorpedos;
 		private System.Windows.Forms.RadioButton optWarheadCounts;
+		private System.Windows.Forms.CheckBox chkHardShields;
+		private System.Windows.Forms.CheckBox chkDisableRanks;
+		private System.Windows.Forms.TabPage tabMissTarget;
+		private System.Windows.Forms.ListBox lstFgTargeting;
+		private System.Windows.Forms.Button cmdClearTargeting;
+		private System.Windows.Forms.Label label95;
+		private System.Windows.Forms.ComboBox cboTargetMethod;
+		private System.Windows.Forms.Label label96;
+		private System.Windows.Forms.CheckBox chkNotInspected;
 	}
 }

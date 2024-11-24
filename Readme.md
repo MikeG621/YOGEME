@@ -39,6 +39,8 @@ This will leave behind a single config file in AppData with your user settings.
 #### WIP
 - (XWA) Defect order now displays selected IFF and Team in order parameter note text. [Issue [#113](https://github.com/MikeG621/YOGEME/issues/113)]
 - (XWA) Fixed order parameter note text not showing right away.
+- (XWA) Hooks: Added MissionTie - TargetCraftKey settings [Issue [#107](https://github.com/MikeG621/YOGEME/issues/107)]
+- (XWA) Hooks: Added MissionTie - CanShootThroughtShieldOnHardDifficulty, IsMissionRanksModifierEnabled
 
 #### 1.16.0.5, 20 Nov 2024
 - (All) Fixed an exception when adding events to blank briefings, which would also silently overwrite non-related events in populated briefings. [Issue [#112](https://github.com/MikeG621/YOGEME/issues/112)]

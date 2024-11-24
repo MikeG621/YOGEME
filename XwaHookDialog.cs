@@ -3,10 +3,12 @@
  * Copyright (C) 2007-2024 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.16.1
+ * VERSION: 1.16.0.1+
  *
  * CHANGELOG
- * v1.16.1, 241015
+ * [NEW] Mission: CanShootThroughtShieldOnHardDifficulty, IsMissionRanksModifierEnabled
+ * [NEW #107] TargetCraftKey tab under Mission_Tie
+ * v1.16.0.1, 241014
  * [FIX #109] Was restoring backup after a save due to deleting empty filenames
  * v1.16, 241013
  * [UPD] ArrDep renames
@@ -174,7 +176,7 @@ namespace Idmr.Yogeme
 			_fileName = Path.ChangeExtension(mission.MissionPath, ".ini");
 
 			#region initialize
-			Width = 780;
+			Width = 782;
 			Height = 620;
 			_panels[0] = pnlBackdrops;
 			_panels[1] = pnlMission;
@@ -242,6 +244,7 @@ namespace Idmr.Yogeme
 			cboProfileFG.Items.AddRange(mission.FlightGroups.GetList());
 			cboSFoilFG.Items.AddRange(mission.FlightGroups.GetList());
 			cboWeapFG.Items.AddRange((mission.FlightGroups.GetList()));
+			lstFgTargeting.Items.AddRange(((mission.FlightGroups.GetList())));
 			for (int i = 0; i < 400; i++)
 			{
 				cboShuttleModel.Items.Add(i);
@@ -578,6 +581,19 @@ namespace Idmr.Yogeme
 					if (chkDisableLaser.Checked) contents += "DisablePlayerLaserShoot = 1\r\n";
 					if (chkDisableWarhead.Checked) contents += "DisablePlayerWarheadShoot = 1\r\n";
 					if (chkDisableCollision.Checked) contents += "IsWarheadCollisionDamagesEnabled = 0\r\n";
+					if (chkHardShields.Checked) contents += "CanShootThroughtShieldOnHardDifficulty = 1\r\n";
+					if (chkDisableRanks.Checked) contents += "IsMissionRanksModifierEnabled = 0\r\n";
+					if (lstFgTargeting.SelectedIndices.Count > 0)
+					{
+						contents += "KEY_O_TargetCraftFGs = ";
+                        for (int i = 0; i < lstFgTargeting.SelectedIndices.Count; i++)
+                        {
+							contents += lstFgTargeting.SelectedIndices[i].ToString() + ",";
+                        }
+						contents = contents.Substring(0, contents.Length - 1) + "\r\n";
+                    }
+					if (cboTargetMethod.SelectedIndex != 0) contents += "TargetCraftKeyMethod = " + (cboTargetMethod.SelectedIndex - 1) + "\r\n";
+					if (chkNotInspected.Checked) contents += "TargetCraftKeySelectOnlyNotInspected = 1\r\n";
 				}
 				contents += "\r\n";
 			}
@@ -1160,6 +1176,9 @@ namespace Idmr.Yogeme
 			chkDisableLaser.Checked = false;
 			chkDisableWarhead.Checked = false;
 			chkDisableCollision.Checked = false;
+			chkDisableRanks.Checked = false;
+			chkHardShields.Checked = false;
+			cboTargetMethod.SelectedIndex = 0;
 			lstStats.Items.Clear();
 			chkWeapDecharge.Checked = false;
 			chkWeapRecharge.Checked = false;
@@ -1213,6 +1232,18 @@ namespace Idmr.Yogeme
 					else if (parts[2] == "shortname") lstCraftText.Items.Add(cboCraftText.Items[craft].ToString() + ",abbrv," + parts[3]);
 					else throw new InvalidDataException();
 				}
+				else if (parts[0].StartsWith("key_o"))
+				{
+					// this one's separate because the format is key=#,#,#...
+					var firstPart = parts[0].Split('=');
+					if (firstPart[0] == "key_o_targetcraftfgs")
+					{
+						lstFgTargeting.ClearSelected();
+						lstFgTargeting.SetSelected(int.Parse(firstPart[1]), true);
+						for (int i = 1; i < parts.Length; i++) { lstFgTargeting.SetSelected(int.Parse(parts[i]), true); }
+					}
+					else throw new InvalidDataException();
+				}
 				else
 				{
 					parts = parts[0].Split('=');
@@ -1238,6 +1269,10 @@ namespace Idmr.Yogeme
 					else if (parts[0] == "disableplayerlasershoot") chkDisableLaser.Checked = parts[1] == "1";
 					else if (parts[0] == "disableplayerwarheadshoot") chkDisableWarhead.Checked = parts[1] == "1";
 					else if (parts[0] == "iswarheadcollisiondamagesenabled") chkDisableCollision.Checked = parts[1] == "0";
+					else if (parts[0] == "canshootthroughtshieldonharddifficulty") chkHardShields.Checked = parts[1] == "1";
+					else if (parts[0] == "ismissionranksmodifierenabled") chkDisableRanks.Checked = parts[1] == "0";
+					else if (parts[0] == "targetcraftkeymethod") cboTargetMethod.SelectedIndex = int.Parse(parts[1]) + 1;
+					else if (parts[0] == "targetcraftkeyselectonlynotinspected") chkNotInspected.Checked = parts[1] == "1";
 					else throw new InvalidDataException();
 				}
 			}
@@ -1350,6 +1385,7 @@ namespace Idmr.Yogeme
 
 			lstStats.Items.RemoveAt(lstStats.SelectedIndex);
 		}
+		private void cmdClearTargeting_Click(object sender, EventArgs e) => lstFgTargeting.ClearSelected();
 
 		bool useMissionSettings
 		{
@@ -1363,7 +1399,9 @@ namespace Idmr.Yogeme
 				}
 				if (chkRedAlert.Checked || chkSkipHyper.Checked
 					|| chkForceTurret.Checked || numTurretH.Value != 0 || numTurretM.Value != 0 || numTurretS.Value != 8
-					|| chkDisableLaser.Checked || chkDisableWarhead.Checked || chkDisableCollision.Checked) return true;
+					|| chkDisableLaser.Checked || chkDisableWarhead.Checked || chkDisableCollision.Checked || chkDisableRanks.Checked
+					|| chkHardShields.Checked
+					|| cboTargetMethod.SelectedIndex != 0 || chkNotInspected.Checked || lstFgTargeting.SelectedIndices.Count != 0) return true;
 				return false;
 			}
 		}
