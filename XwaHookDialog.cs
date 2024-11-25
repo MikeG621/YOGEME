@@ -8,6 +8,7 @@
  * CHANGELOG
  * [NEW] Mission: CanShootThroughtShieldOnHardDifficulty, IsMissionRanksModifierEnabled
  * [NEW #107] TargetCraftKey tab under Mission_Tie
+ * [NEW #103] MissionTie: SpecRci
  * v1.16.0.1, 241014
  * [FIX #109] Was restoring backup after a save due to deleting empty filenames
  * v1.16, 241013
@@ -128,6 +129,7 @@ namespace Idmr.Yogeme
 		readonly string _energyProfilesFile = "";
 		readonly string _linkingProfilesFile = "";
 		readonly string _warheadTypeCountFile = "";
+		readonly string _specRciFile = "";
 		readonly string _installDirectory = "";
 		readonly string _mis = "Missions\\";
 		readonly string _res = "Resdata\\";
@@ -138,7 +140,7 @@ namespace Idmr.Yogeme
 			None = -1, Backdrop, Mission, Sounds, Interdiction, Objects,
 			HangarObjects, HangarCamera, FamilyHangarCamera, HangarMap, FamilyHangarMap,
 			Skins, Shield, Hyper, Concourse, HullIcon, Stats,
-			WeaponRate, WeapProfile, WarheadProfile, EnergyProfile, LinkingProfile, WarheadTypeCount
+			WeaponRate, WeapProfile, WarheadProfile, EnergyProfile, LinkingProfile, WarheadTypeCount, SpecRci
 		}
 		bool _loading = false;
 		readonly int[,] _cameras = new int[5, 3];
@@ -151,7 +153,7 @@ namespace Idmr.Yogeme
 		readonly int[] _defaultRoofCranePosition = new int[3] { -1400, 786, -282 };
 		readonly Panel[] _panels = new Panel[12];
 		readonly List<string> _unknown = new List<string>();
-		readonly List<string>[] _comments = new List<string>[22];
+		readonly List<string>[] _comments;
 		string _preComments = "";
 		readonly bool[] _skipIffs = new bool[255];
 		readonly bool _initialLoad = true;
@@ -272,6 +274,8 @@ namespace Idmr.Yogeme
 			cboShield.SelectedIndex = 0;
 			cboCraftText.Items.AddRange(Strings.CraftType);
 			cboCraftText.SelectedIndex = 0;
+			cboSpecRci.SelectedIndex = 0;
+			_comments = new List<string>[Enum.GetValues(typeof(ReadMode)).Length];
 			for (int i = 0; i < _comments.Length; i++) _comments[i] = new List<string>();
 			#endregion
 			reset();
@@ -381,6 +385,7 @@ namespace Idmr.Yogeme
 				_energyProfilesFile = checkFile("_EnergyProfiles.txt");
 				_linkingProfilesFile = checkFile("_LinkingProfiles.txt");
 				_warheadTypeCountFile = checkFile("_WarheadTypeCount.txt");
+				_specRciFile = checkFile("_SpecRci.txt");
 			}
 			string line;
 
@@ -443,6 +448,7 @@ namespace Idmr.Yogeme
 			if (_energyProfilesFile != "") loadIntoListBox(_energyProfilesFile, lstWeapons);
 			if (_linkingProfilesFile != "") loadIntoListBox(_linkingProfilesFile, lstWeapons);
 			if (_warheadTypeCountFile != "") loadIntoListBox(_warheadTypeCountFile, lstWeapons);
+			if (_specRciFile != "") loadIntoListBox (_specRciFile, lstSpecRci);
 			#endregion
 
 			if (File.Exists(_fileName))
@@ -922,6 +928,13 @@ namespace Idmr.Yogeme
 					insertComments(ref contents, (int)ReadMode.WarheadTypeCount);
 				}
 			}
+			if (lstSpecRci.Items.Count > 0)
+			{
+				contents += "[SpecRci]\r\n";
+				for (int i = 0; i < lstSpecRci.Items.Count; i++) contents += lstSpecRci.Items[i] + "\r\n";
+				contents += "\r\n";
+			}
+			insertComments(ref contents, (int)ReadMode.SpecRci);
 			for (int i = 0; i < _unknown.Count; i++) contents += _unknown[i] + "\r\n";
 			txtHook.Text = contents;
 		}
@@ -1015,12 +1028,14 @@ namespace Idmr.Yogeme
 					else if (lineLower == "[concourse]") readMode = ReadMode.Concourse;
 					else if (lineLower == "[hullicon]") readMode = ReadMode.HullIcon;
 					else if (lineLower == "[statsprofiles]") readMode = ReadMode.Stats;
+					// TODO: need StatsModifiers* (MissionTie dll)
 					else if (lineLower == "[weaponrates]") readMode = ReadMode.WeaponRate;
 					else if (lineLower == "[weaponprofiles]") readMode = ReadMode.WeapProfile;
 					else if (lineLower == "[warheadprofiles]") readMode = ReadMode.WarheadProfile;
 					else if (lineLower == "[energyprofiles]") readMode = ReadMode.EnergyProfile;
 					else if (lineLower == "[linkingprofiles]") readMode = ReadMode.LinkingProfile;
 					else if (lineLower == "[warheadtypecount]") readMode = ReadMode.WarheadTypeCount;
+					else if (lineLower == "[specrci]") readMode = ReadMode.SpecRci;
 					else if (_commandOpt != "")
 					{
 						if (lineLower == "[hangarobjects_" + _commandOpt + "_" + _commandIff + "]") readMode = ReadMode.HangarObjects;
@@ -1070,6 +1085,7 @@ namespace Idmr.Yogeme
 				else if (readMode == ReadMode.WeaponRate) lstWeapons.Items.Add("WR: " + line);
 				else if (readMode == ReadMode.WeapProfile || readMode == ReadMode.WarheadProfile
 					|| readMode == ReadMode.EnergyProfile || readMode == ReadMode.LinkingProfile || readMode == ReadMode.WarheadTypeCount) lstWeapons.Items.Add(line);
+				else if (readMode == ReadMode.SpecRci) lstSpecRci.Items.Add(line);
 				else if (readMode == ReadMode.None && !isPre) _unknown.Add(txtHook.Lines[i]);
 			}
 			checkIndicies();
@@ -1192,6 +1208,7 @@ namespace Idmr.Yogeme
 			chkImpactAngle.Checked = false;
 			chkImpactSpeed.Checked = false;
 			lstWeapons.Items.Clear();
+			lstSpecRci.Items.Clear();
 		}
 
 		#region Backdrops
@@ -1386,6 +1403,24 @@ namespace Idmr.Yogeme
 			lstStats.Items.RemoveAt(lstStats.SelectedIndex);
 		}
 		private void cmdClearTargeting_Click(object sender, EventArgs e) => lstFgTargeting.ClearSelected();
+		private void cmdAddSpecRci_Click(object sender, EventArgs e)
+		{
+			if (cboSpecRci.SelectedIndex == -1 || numSpecRci.Value == -1) return;
+
+			if (_installDirectory != "") opnObjects.InitialDirectory = _installDirectory + _fm;
+			opnObjects.Title = "Select Craft...";
+			DialogResult res = opnObjects.ShowDialog();
+			if (res != DialogResult.OK) return;
+
+			string line = Path.GetFileNameWithoutExtension(opnObjects.FileName) + "_" + cboSpecRci.Text + " = " + numSpecRci.Value;
+			lstSpecRci.Items.Add(line);
+		}
+		private void cmdRemoveSpecRci_Click(object sender, EventArgs e)
+		{
+			if (lstSpecRci.SelectedIndex == -1) return;
+
+			lstSpecRci.Items.RemoveAt(lstSpecRci.SelectedIndex);
+		}
 
 		bool useMissionSettings
 		{

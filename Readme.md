@@ -41,6 +41,7 @@ This will leave behind a single config file in AppData with your user settings.
 - (XWA) Fixed order parameter note text not showing right away.
 - (XWA) Hooks: Added MissionTie - TargetCraftKey settings [Issue [#107](https://github.com/MikeG621/YOGEME/issues/107)]
 - (XWA) Hooks: Added MissionTie - CanShootThroughtShieldOnHardDifficulty, IsMissionRanksModifierEnabled
+- (XWA) Hooks: Added MissionTie - SpecRci settings [Issue [#103](https://github.com/MikeG621/YOGEME/issues/103)]
 
 #### 1.16.0.5, 20 Nov 2024
 - (All) Fixed an exception when adding events to blank briefings, which would also silently overwrite non-related events in populated briefings. [Issue [#112](https://github.com/MikeG621/YOGEME/issues/112)]

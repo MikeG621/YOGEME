@@ -435,6 +435,12 @@
 			this.chkNotInspected = new System.Windows.Forms.CheckBox();
 			this.label96 = new System.Windows.Forms.Label();
 			this.cboTargetMethod = new System.Windows.Forms.ComboBox();
+			this.tabMissRci = new System.Windows.Forms.TabPage();
+			this.lstSpecRci = new System.Windows.Forms.ListBox();
+			this.cboSpecRci = new System.Windows.Forms.ComboBox();
+			this.numSpecRci = new System.Windows.Forms.NumericUpDown();
+			this.cmdAddSpecRci = new System.Windows.Forms.Button();
+			this.cmdRemoveSpecRci = new System.Windows.Forms.Button();
 			((System.ComponentModel.ISupportInitialize)(this.numFamHeadingZ)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numFamPosZ)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numFamHeadingXY)).BeginInit();
@@ -556,6 +562,8 @@
 			this.pnlWeapProfiles.SuspendLayout();
 			this.pnlWeapRateOrProfiles.SuspendLayout();
 			this.tabMissTarget.SuspendLayout();
+			this.tabMissRci.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.numSpecRci)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// cmdOK
@@ -3585,6 +3593,7 @@
 			this.tcMission.Controls.Add(this.tabMissStats);
 			this.tcMission.Controls.Add(this.tabMissSettings);
 			this.tcMission.Controls.Add(this.tabMissTarget);
+			this.tcMission.Controls.Add(this.tabMissRci);
 			this.tcMission.Location = new System.Drawing.Point(3, 3);
 			this.tcMission.Name = "tcMission";
 			this.tcMission.SelectedIndex = 0;
@@ -5469,6 +5478,91 @@
 			this.cboTargetMethod.Size = new System.Drawing.Size(165, 21);
 			this.cboTargetMethod.TabIndex = 5;
 			// 
+			// tabMissRci
+			// 
+			this.tabMissRci.Controls.Add(this.cmdRemoveSpecRci);
+			this.tabMissRci.Controls.Add(this.cmdAddSpecRci);
+			this.tabMissRci.Controls.Add(this.numSpecRci);
+			this.tabMissRci.Controls.Add(this.cboSpecRci);
+			this.tabMissRci.Controls.Add(this.lstSpecRci);
+			this.tabMissRci.Location = new System.Drawing.Point(4, 22);
+			this.tabMissRci.Name = "tabMissRci";
+			this.tabMissRci.Size = new System.Drawing.Size(369, 251);
+			this.tabMissRci.TabIndex = 5;
+			this.tabMissRci.Text = "SpecRci";
+			this.tabMissRci.UseVisualStyleBackColor = true;
+			// 
+			// lstSpecRci
+			// 
+			this.lstSpecRci.FormattingEnabled = true;
+			this.lstSpecRci.Location = new System.Drawing.Point(2, 6);
+			this.lstSpecRci.Name = "lstSpecRci";
+			this.lstSpecRci.Size = new System.Drawing.Size(364, 95);
+			this.lstSpecRci.TabIndex = 0;
+			// 
+			// cboSpecRci
+			// 
+			this.cboSpecRci.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboSpecRci.FormattingEnabled = true;
+			this.cboSpecRci.Items.AddRange(new object[] {
+            "Speed",
+            "Acceleration",
+            "Maneuverability",
+            "Laser",
+            "Ion",
+            "Missile",
+            "Shield",
+            "Hukk",
+            "Size",
+            "Score"});
+			this.cboSpecRci.Location = new System.Drawing.Point(2, 107);
+			this.cboSpecRci.Name = "cboSpecRci";
+			this.cboSpecRci.Size = new System.Drawing.Size(141, 21);
+			this.cboSpecRci.TabIndex = 5;
+			// 
+			// numSpecRci
+			// 
+			this.numSpecRci.Location = new System.Drawing.Point(149, 108);
+			this.numSpecRci.Maximum = new decimal(new int[] {
+            2147483647,
+            0,
+            0,
+            0});
+			this.numSpecRci.Minimum = new decimal(new int[] {
+            -2147483648,
+            0,
+            0,
+            -2147483648});
+			this.numSpecRci.Name = "numSpecRci";
+			this.numSpecRci.Size = new System.Drawing.Size(90, 20);
+			this.numSpecRci.TabIndex = 6;
+			this.numSpecRci.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+			this.numSpecRci.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            -2147483648});
+			// 
+			// cmdAddSpecRci
+			// 
+			this.cmdAddSpecRci.Location = new System.Drawing.Point(245, 108);
+			this.cmdAddSpecRci.Name = "cmdAddSpecRci";
+			this.cmdAddSpecRci.Size = new System.Drawing.Size(60, 23);
+			this.cmdAddSpecRci.TabIndex = 7;
+			this.cmdAddSpecRci.Text = "&Add";
+			this.cmdAddSpecRci.UseVisualStyleBackColor = true;
+			this.cmdAddSpecRci.Click += new System.EventHandler(this.cmdAddSpecRci_Click);
+			// 
+			// cmdRemoveSpecRci
+			// 
+			this.cmdRemoveSpecRci.Location = new System.Drawing.Point(306, 108);
+			this.cmdRemoveSpecRci.Name = "cmdRemoveSpecRci";
+			this.cmdRemoveSpecRci.Size = new System.Drawing.Size(60, 23);
+			this.cmdRemoveSpecRci.TabIndex = 8;
+			this.cmdRemoveSpecRci.Text = "&Remove";
+			this.cmdRemoveSpecRci.UseVisualStyleBackColor = true;
+			this.cmdRemoveSpecRci.Click += new System.EventHandler(this.cmdRemoveSpecRci_Click);
+			// 
 			// XwaHookDialog
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -5656,6 +5750,8 @@
 			this.pnlWeapRateOrProfiles.PerformLayout();
 			this.tabMissTarget.ResumeLayout(false);
 			this.tabMissTarget.PerformLayout();
+			this.tabMissRci.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.numSpecRci)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -6069,5 +6165,11 @@
 		private System.Windows.Forms.ComboBox cboTargetMethod;
 		private System.Windows.Forms.Label label96;
 		private System.Windows.Forms.CheckBox chkNotInspected;
+		private System.Windows.Forms.TabPage tabMissRci;
+		private System.Windows.Forms.ListBox lstSpecRci;
+		private System.Windows.Forms.NumericUpDown numSpecRci;
+		private System.Windows.Forms.ComboBox cboSpecRci;
+		private System.Windows.Forms.Button cmdRemoveSpecRci;
+		private System.Windows.Forms.Button cmdAddSpecRci;
 	}
 }
