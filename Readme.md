@@ -37,6 +37,7 @@ This will leave behind a single config file in AppData with your user settings.
 
 ## Latest Release
 #### WIP
+- (Map) Move all WPs of currently selected craft [Issue [#81](https://github.com/MikeG621/YOGEME/issues/81)]
 - (XWA) Defect order now displays selected IFF and Team in order parameter note text. [Issue [#113](https://github.com/MikeG621/YOGEME/issues/113)]
 - (XWA) Fixed order parameter note text not showing right away.
 - (XWA) Hooks: Added MissionTie - TargetCraftKey settings [Issue [#107](https://github.com/MikeG621/YOGEME/issues/107)]

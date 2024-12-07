@@ -3,9 +3,11 @@
  * Copyright (C) 2007-2024 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.16
+ * VERSION: 1.16+
  *
  * CHANGELOG
+ * [NEW #81] Move all WPs of selected craft
+ * [UPD] minor cleanup/reorg for my sanity
  * v1.16, 241013
  * [UPD] cleanup
  * v1.15.5, 231222
@@ -107,11 +109,11 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Security.Cryptography;
 using System.Windows.Forms;
 
 namespace Idmr.Yogeme
 {
-	// TODO: Change Shift+Drag to move all WPs for selection
 	/// <summary>graphical interface for craft waypoints</summary>
 	public partial class MapForm : Form
 	{
@@ -126,6 +128,7 @@ namespace Idmr.Yogeme
 		MapData[] _mapData;
 		readonly List<SelectionData> _selectionList = new List<SelectionData>();  // List of all craft and waypoints that are currently selected and itemized in the list control.
 		readonly List<int> _sortedMapDataList = new List<int>();  // List of _mapData indices sorted for drawing order.
+		readonly List<SelectionData> _dragAllList = new List<SelectionData>();	// List to grab all enabled WPs based on selected craft
 		readonly int[] _dragIcon = new int[2];   // [0] = fg, [1] = wp
 		bool _isLoading = false;
 #pragma warning disable IDE1006 // Naming Styles
@@ -138,6 +141,7 @@ namespace Idmr.Yogeme
 		bool _dragSelectActive = false;    // Indicates that a drag-select is in progress, and to draw the selection box.
 		bool _dragMoveActive = false;      // A drag-move is in progress.
 		bool _dragMoveSnapReady = false;  // The starting position for drag-move operation has been assigned, so that snapping can work correctly.
+		bool _dragAllActive = false;	// A drag-move is in progress, for all WPs of the selected craft
 		Point _clickPixelDown = new Point(0, 0);  //Form pixel coordinates of mouse click.
 		Point _clickPixelUp = new Point(0, 0);
 		Point _clickMapDown = new Point(0, 0);    //Virtual map coordinates of mouse click
@@ -251,26 +255,148 @@ namespace Idmr.Yogeme
 			onDataModified = dataModifiedCallback;
 			startup();
 		}
-        #endregion ctors
+		#endregion ctors
 
-        #region private methods
-        /// <summary>Converts the location on the physical map to a raw craft waypoint (160 raw units = 1 km).</summary>
-        void convertMousepointToWaypoint(int mouseX, int mouseY, ref Point pt)
+		#region private methods
+		/// <summary>Take the original image from the craft image strip and adds the RGB values from the craft IFF.</summary>
+		/// <param name="craftImage">The greyscale craft image.</param>
+		/// <param name="iff">The craft's IFF colors.</param>
+		/// <returns>Colorized craft image according to IFF.</returns>
+		static Bitmap applyIffMask(Bitmap craftImage, Color iff)
 		{
-			switch (_displayMode)
+			// craftImage comes in as 32bppRGB, but we force the image into 24bppRGB with LockBits
+			BitmapData bmData = GraphicsFunctions.GetBitmapData(craftImage, PixelFormat.Format24bppRgb);
+			byte[] pix = new byte[bmData.Stride * bmData.Height];
+			GraphicsFunctions.CopyImageToBytes(bmData, pix);
+			for (int y = 0; y < craftImage.Height; y++)
 			{
-				case Orientation.XY:
-					pt.X = Convert.ToInt32((mouseX - _mapX) / Convert.ToDouble(_zoom) * 160);
-					pt.Y = Convert.ToInt32((_mapY - mouseY) / Convert.ToDouble(_zoom) * 160);
+				for (int x = 0, pos = bmData.Stride * y; x < craftImage.Width; x++)
+				{
+					// stupid thing returns BGR instead of RGB
+					// get intensity, apply to IFF mask
+					pix[pos + x * 3] = (byte)(pix[pos + x * 3] * iff.B / 255);
+					pix[pos + x * 3 + 1] = (byte)(pix[pos + x * 3 + 1] * iff.G / 255);
+					pix[pos + x * 3 + 2] = (byte)(pix[pos + x * 3 + 2] * iff.R / 255);
+				}
+			}
+			GraphicsFunctions.CopyBytesToImage(pix, bmData);
+			craftImage.UnlockBits(bmData);
+			craftImage.MakeTransparent(Color.Black);
+			return craftImage;
+		}
+
+		/// <summary>Comparison function that sorts MapData objects by visibility. Brings faded items up front so that they can be drawn first. Visible items will overlap them.</summary>
+		int compareDrawOrder(int leftIndex, int rightIndex)
+		{
+			if (_mapData[leftIndex].View > _mapData[rightIndex].View) return -1;
+			else if (_mapData[leftIndex].View < _mapData[rightIndex].View) return 1;
+			return 0;
+		}
+		/// <summary>Creates a waypoint for any selected craft whos waypoint is disabled. If no waypoints were created, then the existing waypoints are selected.</summary>
+		/// <remarks>The type of waypoint depends on which keys are pressed. Expects number row keys and modifiers. Resolves selected craft/waypoints to their parent craft.</remarks>
+		void createOrSelectWaypoint(KeyEventArgs e)
+		{
+			// Mouse position contains screen coordinates, so check their bounds and convert them relative to the map area.
+			Rectangle mapRect = pctMap.RectangleToScreen(pctMap.DisplayRectangle);
+			if (!mapRect.Contains(MousePosition)) return;
+
+			bool create = (e.KeyCode == _lastWaypointKeyCode && e.Modifiers == _lastWaypointKeyModifiers && (Environment.TickCount - _lastWaypointKeyTime <= SystemInformation.DoubleClickTime));
+
+			_lastWaypointKeyCode = e.KeyCode;
+			_lastWaypointKeyModifiers = e.Modifiers;
+			_lastWaypointKeyTime = Environment.TickCount;
+
+			Point mouse = new Point();
+			convertMousepointToWaypoint(MousePosition.X - mapRect.Left, MousePosition.Y - mapRect.Top, ref mouse);
+
+			int wp = -1;
+			int chk = -1; // Special case for XWA, since the checkbox array doesn't necessarily match the waypoint index.
+			int ord = (_platform == Settings.Platform.XWA ? (int)((numRegion.Value - 1) * 4 + numOrder.Value) : 0);
+
+			switch (_platform)
+			{
+				case Settings.Platform.XWING:
+					if (e.KeyCode >= Keys.D1 && e.KeyCode <= Keys.D3)
+					{
+						if (e.Shift && !e.Control) wp = e.KeyCode - Keys.D1;  // SP1 to SP3
+						else if (!e.Shift && !e.Control) wp = 4 + e.KeyCode - Keys.D1;  // WP1 to WP3
+						else if (!e.Shift && e.Control) wp = 14 + e.KeyCode - Keys.D1;
+					}
+					else if (e.KeyCode == Keys.D0) wp = 13;  // HYP
 					break;
-				case Orientation.XZ:
-					pt.X = Convert.ToInt32((mouseX - _mapX) / Convert.ToDouble(_zoom) * 160);
-					pt.Y = Convert.ToInt32((_mapZ - mouseY) / Convert.ToDouble(_zoom) * 160);
+				case Settings.Platform.TIE:
+				case Settings.Platform.XvT:
+				case Settings.Platform.BoP:
+					if (e.Shift && !e.Control && e.KeyCode >= Keys.D1 && e.KeyCode <= Keys.D4) wp = e.KeyCode - Keys.D1;  // SP1 to SP4
+					else if (!e.Shift && !e.Control && e.KeyCode >= Keys.D1 && e.KeyCode <= Keys.D8) wp = 4 + e.KeyCode - Keys.D1;  // WP1 to WP8
+					else if (!e.Shift && e.Control && e.KeyCode >= Keys.D1 && e.KeyCode <= Keys.D8) wp = 14 + (_platform == Settings.Platform.TIE ? 0 : e.KeyCode - Keys.D1);  //BRF for TIE, BRF to BR8 for XvT
+					else if (e.KeyCode == Keys.D9) wp = 12; // RND
+					else if (e.KeyCode == Keys.D0) wp = 13; // HYP
 					break;
-				case Orientation.YZ:
-					pt.X = Convert.ToInt32((mouseX - _mapY) / Convert.ToDouble(_zoom) * 160);
-					pt.Y = Convert.ToInt32((_mapZ - mouseY) / Convert.ToDouble(_zoom) * 160);
+				case Settings.Platform.XWA:
+					if (e.Shift && e.KeyCode >= Keys.D1 && e.KeyCode <= Keys.D3) { wp = e.KeyCode - Keys.D1; ord = 0; }  // SP1 to SP3
+					else if (!e.Shift && e.KeyCode >= Keys.D1 && e.KeyCode <= Keys.D8) { wp = e.KeyCode - Keys.D1; chk = 4 + wp; } // WP1 to WP8
+					else if (e.KeyCode == Keys.D0) { wp = 3; ord = 0; } // HYP
 					break;
+			}
+			if (wp == -1) return; // Keys didn't resolve to a valid waypoint.
+
+			bool modified = false;
+			bool refreshRequired = false;
+			List<SelectionData> exist = new List<SelectionData>();
+
+			// Build a list of parent craft.
+			HashSet<int> parentSet = new HashSet<int>();
+			foreach (SelectionData dat in _selectionList) if (dat.Active) parentSet.Add(dat.MapDataIndex);
+
+			foreach (int i in parentSet)
+			{
+				if (wp < _mapData[i].WPs[ord].Length)
+				{
+					BaseFlightGroup.Waypoint baseWp = _mapData[i].WPs[ord][wp];
+					if (!baseWp.Enabled && create)
+					{
+						if (_platform == Settings.Platform.XWA)
+						{
+							((Platform.Xwa.FlightGroup.XwaWaypoint)baseWp).Region = Convert.ToByte(numRegion.Value - 1);
+							if (wp == 0 && ord == 0)
+							{
+								_mapData[i].Region = (int)numRegion.Value - 1;
+								refreshRequired = true;
+							}
+						}
+
+						modified = true;
+						baseWp.Enabled = true;
+						switch (_displayMode)
+						{
+							case Orientation.XY: baseWp.RawX = (short)mouse.X; baseWp.RawY = (short)mouse.Y; break;
+							case Orientation.XZ: baseWp.RawX = (short)mouse.X; baseWp.RawZ = (short)mouse.Y; break;
+							case Orientation.YZ: baseWp.RawY = (short)mouse.X; baseWp.RawZ = (short)mouse.Y; break;
+						}
+					}
+					else if (baseWp.Enabled && !create) exist.Add(new SelectionData(i, _mapData[i], ord, wp));
+				}
+			}
+			if (modified || exist.Count > 0)
+			{
+				if (chk == -1) chk = wp;
+				if (chk < chkWP.Length && !chkWP[chk].Checked) chkWP[chk].Checked = true;
+			}
+
+			if (modified)
+			{
+				onDataModified?.Invoke(0, new EventArgs());
+				if (refreshRequired) lstCraft.Refresh();
+				scheduleMapPaint();
+			}
+			else if (exist.Count > 0)
+			{
+				deselect();
+				foreach (SelectionData dat in exist) setSelectionState(dat.MapDataIndex, true, dat.WpOrder, dat.WpIndex);
+				updateSelectionListSize();
+				updatePreviousCraftSelection();
+				scheduleMapPaint();
 			}
 		}
 
@@ -371,29 +497,15 @@ namespace Idmr.Yogeme
 			else if (model.ModelDef.LongestSpanMeters > 30 && viewSpan > 32) g.DrawEllipse(hangar, x - 1, y - 1, 2, 2);
 		}
 
-		/// <summary>Get the center pixel of pctMap and the coordinates it pertains to</summary>
-		/// <returns>A point with the map coordinates in klicks</returns>
-		PointF getCenterCoord()
+		/// <summary>Returns a value composed of a set of bit flags indicating which difficulties this FlightGroup arrives in.</summary>
+		int getDifficultyFlags(BaseFlightGroup.Difficulties fgDifficulty)
 		{
-			PointF coord = new PointF();
-			switch (_displayMode)
-			{
-				case Orientation.XY:
-					coord.X = (w / 2 - _mapX) / Convert.ToSingle(_zoom);
-					coord.Y = (_mapY - h / 2) / Convert.ToSingle(_zoom);
-					break;
-				case Orientation.XZ:
-					coord.X = (w / 2 - _mapX) / Convert.ToSingle(_zoom);
-					coord.Y = (_mapZ - h / 2) / Convert.ToSingle(_zoom);
-					break;
-				case Orientation.YZ:
-					coord.X = (w / 2 - _mapY) / Convert.ToSingle(_zoom);
-					coord.Y = (_mapZ - h / 2) / Convert.ToSingle(_zoom);
-					break;
-			}
-			return coord;
-		}
+			if (_platform == Settings.Platform.XWING) return 0b111;
 
+			// All, Easy, Medium, Hard, ...
+			int[] resultArray = { 0b111, 0b001, 0b010, 0b100, 0b110, 0b011, 0b000 };
+			return resultArray[(byte)fgDifficulty];
+		}
 		string getDistanceString(BaseFlightGroup.Waypoint wp1, BaseFlightGroup.Waypoint wp2)
 		{
 			double xlen = wp1.X - wp2.X;
@@ -402,7 +514,6 @@ namespace Idmr.Yogeme
 			double dist = Math.Sqrt((xlen * xlen) + (ylen * ylen) + (zlen * zlen));
 			return Math.Round(dist, 2).ToString() + " km";
 		}
-
 		string getTimeString(object fg, int orderIndex, BaseFlightGroup.Waypoint wp1, BaseFlightGroup.Waypoint wp2)
 		{
 			double xlen = wp1.X - wp2.X;
@@ -484,7 +595,6 @@ namespace Idmr.Yogeme
 			int seconds = (int)((dist * 1000) / speed);
 			return (seconds / 60).ToString() + ":" + ((seconds % 60 < 10) ? "0" : "") + (seconds % 60).ToString() + " @ " + (throttle != 0 ? throttle + "%" : speed + " mglt");
 		}
-
 		Brush getDrawColor(MapData dat)
 		{
 			if (!passFilter(dat)) return Brushes.DarkSlateGray;
@@ -515,7 +625,6 @@ namespace Idmr.Yogeme
 			}
 			return brText;
 		}
-
 		Color getIFFColor(int IFF)
 		{
 			switch (IFF)
@@ -534,56 +643,42 @@ namespace Idmr.Yogeme
 
 			return Color.White; //Nothing should return this color.
 		}
-
-		/// <summary>Take the original image from the craft image strip and adds the RGB values from the craft IFF.</summary>
-		/// <param name="craftImage">The greyscale craft image.</param>
-		/// <param name="iff">The craft's IFF colors.</param>
-		/// <returns>Colorized craft image according to IFF.</returns>
-		static Bitmap applyIffMask(Bitmap craftImage, Color iff)
+		/// <summary>Returns a size rating of the map object, based off its wireframe.</summary>
+		/// <remarks>Wireframes must be enabled. NOTE: This should probably be replaced with craft categories, but that would require additional changes, and more information in the craft data files.</remarks>
+		int getModelSizeRating(int mapDataIndex)
 		{
-			// craftImage comes in as 32bppRGB, but we force the image into 24bppRGB with LockBits
-			BitmapData bmData = GraphicsFunctions.GetBitmapData(craftImage, PixelFormat.Format24bppRgb);
-			byte[] pix = new byte[bmData.Stride * bmData.Height];
-			GraphicsFunctions.CopyImageToBytes(bmData, pix);
-			for (int y = 0; y < craftImage.Height; y++)
-			{
-				for (int x = 0, pos = bmData.Stride * y; x < craftImage.Width; x++)
-				{
-					// stupid thing returns BGR instead of RGB
-					// get intensity, apply to IFF mask
-					pix[pos + x * 3] = (byte)(pix[pos + x * 3] * iff.B / 255);
-					pix[pos + x * 3 + 1] = (byte)(pix[pos + x * 3 + 1] * iff.G / 255);
-					pix[pos + x * 3 + 2] = (byte)(pix[pos + x * 3 + 2] * iff.R / 255);
-				}
-			}
-			GraphicsFunctions.CopyBytesToImage(pix, bmData);
-			craftImage.UnlockBits(bmData);
-			craftImage.MakeTransparent(Color.Black);
-			return craftImage;
-		}
+			if (!_settings.WireframeEnabled || (_platform == Settings.Platform.XWA && _mapData[mapDataIndex].Craft == 0x55)) return 0;  // Hyper beacon
 
-		void moveMapToCursor()
+			WireframeInstance wire = _wireframeManager.GetOrCreateWireframeInstance(_mapData[mapDataIndex].Craft, _mapData[mapDataIndex].FgIndex);
+			if (wire == null || wire.ModelDef == null) return 0;
+
+			int size = wire.ModelDef.LongestSpanMeters;
+			int limit1 = 40, limit2 = 100, limit3 = 450;
+			if (size > 1 && size < limit1) return 1;
+			else if (size >= limit1 && size < limit2) return 2;
+			else if (size >= limit2 && size < limit3) return 3;
+			else if (size >= limit3) return 4;
+			return 0;
+		}
+		/// <summary>Gets a waypoint along the vector defined by two points with the given raw offset from the starting point.</summary>
+		/// <param name="start">The origin Waypoint</param>
+		/// <param name="end">The end Waypoint to define length and direction of the vector.</param>
+		/// <param name="rawOffset">The distance in raw units from <paramref name="start"/>. Negative values are "behind" start.</param>
+		/// <returns>A Waypoint of the location.</returns>
+		BaseFlightGroup.Waypoint getOffsetWaypoint(BaseFlightGroup.Waypoint start, BaseFlightGroup.Waypoint end, int rawOffset)
 		{
-			int offx = (_clickPixelUp.X - _dragMapPrevious.X);
-			int offy = (_clickPixelUp.Y - _dragMapPrevious.Y);
-			switch (_displayMode)
+			int[] vector = new int[3];
+			for (int c = 0; c < 3; c++) vector[c] = end[c] - start[c];
+			double vectorLength = Math.Sqrt(Math.Pow(vector[0], 2) + Math.Pow(vector[1], 2) + Math.Pow(vector[2], 2));
+			if (vectorLength == 0)
 			{
-				case Orientation.XY:
-					_mapX += offx;
-					_mapY += offy;
-					break;
-				case Orientation.XZ:
-					_mapX += offx;
-					_mapZ += offy;
-					break;
-				case Orientation.YZ:
-					_mapY += offx;
-					_mapZ += offy;
-					break;
+				vector[1] = 1;
+				vectorLength = 1;
 			}
-			_dragMapPrevious = _clickPixelUp;
+			var offsetWaypoint = new Platform.Xwa.FlightGroup.Waypoint();
+			for (int c = 0; c < 3; c++) offsetWaypoint[c] = (short)(start[c] + rawOffset * vector[c] / vectorLength);
+			return offsetWaypoint;
 		}
-
 		/// <summary>Retrieves the snap distance amount, in raw map units, as specified in the form control.</summary>
 		int getRawSnapAmount()
 		{
@@ -593,204 +688,42 @@ namespace Idmr.Yogeme
 			return snapAmount;
 		}
 
-		/// <summary>Attempts to move a selected object or waypoint relative to its location.</summary>
-		void moveObject(SelectionData dat, int offsetX, int offsetY)
+		/// <summary>Determines if the object is enabled and visible.</summary>
+		/// <remarks>For most platforms, checks the start point. For XWA, also checks for any hyper jump to the current region.</remarks>
+		WaypointVisibility isVisibleInRegion(int mapDataIndex, int waypoint)
 		{
-			// If part of a larger move operation, it must be flagged as ready after the first frame of movement has been processed.
-			// This initializes the starting point so that snapping can work properly.
-			if (_dragMoveActive && !_dragMoveSnapReady)
-			{
-				dat.WpDragStartX = dat.WPRef.RawX;
-				dat.WpDragStartY = dat.WPRef.RawY;
-				dat.WpDragStartZ = dat.WPRef.RawZ;
-			}
-			else if (!_dragMoveActive) _dragMoveSnapReady = false;
-			int currentX = 0, currentY = 0;
-			switch (_displayMode)
-			{
-				case Orientation.XY:
-					currentX = (_dragMoveActive ? dat.WpDragStartX : dat.WPRef.RawX);
-					currentY = (_dragMoveActive ? dat.WpDragStartY : dat.WPRef.RawY);
-					break;
-				case Orientation.XZ:
-					currentX = (_dragMoveActive ? dat.WpDragStartX : dat.WPRef.RawX);
-					currentY = (_dragMoveActive ? dat.WpDragStartZ : dat.WPRef.RawZ);
-					break;
-				case Orientation.YZ:
-					currentX = (_dragMoveActive ? dat.WpDragStartY : dat.WPRef.RawY);
-					currentY = (_dragMoveActive ? dat.WpDragStartZ : dat.WPRef.RawZ);
-					break;
-			}
+			if (_platform != Settings.Platform.XWA) return _mapData[mapDataIndex].WPs[0][waypoint].Enabled ? WaypointVisibility.Present : WaypointVisibility.Absent;
 
-			// Calculate new position based on snap settings.
-			// Integer division by the amount prevents any fractional values.
-			int newX = 0, newY = 0;
-			int snapAmount = getRawSnapAmount();
-			int snapType = (_dragMoveActive ? cboSnapTo.SelectedIndex : 0);
-			switch (snapType)
-			{
-				case 0:  // No snap.
-					newX = currentX + offsetX;
-					newY = currentY + offsetY;
-					break;
-				case 1:  // Snap to self.
-					newX = currentX + ((offsetX / snapAmount) * snapAmount);
-					newY = currentY + ((offsetY / snapAmount) * snapAmount);
-					break;
-				case 2:  // Snap to grid.
-					newX = ((currentX + offsetX) / snapAmount) * snapAmount;
-					newY = ((currentY + offsetY) / snapAmount) * snapAmount;
-					break;
-			}
+			bool enabled = (waypoint == 0 || _mapData[mapDataIndex].WPs[0][waypoint].Enabled);
+			if (!enabled) return WaypointVisibility.Absent;
 
-			switch (_displayMode)
-			{
-				case Orientation.XY:
-					dat.WPRef.RawX = (short)newX;
-					dat.WPRef.RawY = (short)newY;
-					break;
-				case Orientation.XZ:
-					dat.WPRef.RawX = (short)newX;
-					dat.WPRef.RawZ = (short)newY;
-					break;
-				case Orientation.YZ:
-					dat.WPRef.RawY = (short)newX;
-					dat.WPRef.RawZ = (short)newY;
-					break;
-			}
-			// also apply the offset to the intial order WP
-			if (dat.WpOrder == 18) moveObject(new SelectionData(0, dat.MapDataRef, dat.WpIndex * 4 + 1, 0, dat.Region), offsetX, offsetY);
+			int region = (int)numRegion.Value - 1;
+			if (_mapData[mapDataIndex].WPs[0][waypoint][4] == (short)region) return WaypointVisibility.Present;
 
-            if (_platform == Settings.Platform.XWA && ((Platform.Xwa.FlightGroup)dat.MapDataRef.FlightGroup).CraftType == 85) processHyperPoints();
-        }
-
-        void moveSelectionToCursor()
-		{
-			int offsetX = _clickMapUp.X - _clickMapDown.X;
-			int offsetY = _clickMapUp.Y - _clickMapDown.Y;
-			foreach (SelectionData dat in _selectionList)
-				if (dat.Active && dat.WpOrder != 17)	// do not move Exit points. Will update on next load
-					moveObject(dat, offsetX, offsetY);
-			_dragMoveSnapReady = true;
-			onDataModified?.Invoke(0, new EventArgs());
+			Platform.Xwa.FlightGroup xwaFg = (Platform.Xwa.FlightGroup)_mapData[mapDataIndex].FlightGroup;
+			for (int i = 0; i < 4; i++)
+				for (int j = 0; j < 4; j++)
+					if (xwaFg.Orders[i, j].Command == 0x32 && xwaFg.Orders[i, j].Variable1 == region) return WaypointVisibility.OtherRegion; // Hyper to region
+			return WaypointVisibility.Absent;
 		}
 
-		/// <summary>Processes a keyboard event to move all selected objects in a particular direction.</summary>
-		/// <remarks>Amount is derived from the snap amount if snapping is enabled (otherwise uses a default value), but snapping is always relative to self.</remarks>
-		void moveSelectionByKey(KeyEventArgs e, int directionX, int directionY)
+		/// <summary>Performs a middle click action depending on whether something is selected or not, based on user configuration.</summary>
+		void middleClick()
 		{
-			if (_dragMoveActive || _selectionList.Count == 0) return;
-
-			int amount;
-			if (cboSnapTo.SelectedIndex > 0) amount = getRawSnapAmount();
-			else
-			{
-				amount = (int)(4 / Convert.ToDouble(_zoom) * 160);
-				if (_zoom < 1000 && amount < 2) amount = 2;
-				else if (amount < 1) amount = 1;
-			}
-			if (e.Shift)
-			{
-				amount /= 4;
-				if (amount < 1) amount = 1;
-			}
-			if (e.Control)
-			{
-				amount *= 4;
-				if (amount > 40) amount = 40;
-			}
-
-			int offsetX = amount * directionX;
-			int offsetY = amount * directionY;
-			foreach (SelectionData dat in _selectionList) if (dat.Active) moveObject(dat, offsetX, offsetY);
-
-			if (_selectionList.Count == 1)
-			{
-				SelectionData dat = _selectionList[0];
-				switch (_displayMode)
-				{
-					case Orientation.XY:
-						lblCoor1.Text = "New X: " + Math.Round(dat.WPRef.X, 2).ToString();
-						lblCoor2.Text = "New Y: " + Math.Round(dat.WPRef.Y, 2).ToString();
-						break;
-					case Orientation.XZ:
-						lblCoor1.Text = "New X: " + Math.Round(dat.WPRef.X, 2).ToString();
-						lblCoor2.Text = "New Z: " + Math.Round(dat.WPRef.Z, 2).ToString();
-						break;
-					case Orientation.YZ:
-						lblCoor1.Text = "New Y: " + Math.Round(dat.WPRef.Y, 2).ToString();
-						lblCoor2.Text = "New Z: " + Math.Round(dat.WPRef.Z, 2).ToString();
-						break;
-				}
-			}
-			onDataModified?.Invoke(0, new EventArgs());
-			MapPaint();
+			if (_selectionList.Count > 0) performMiddleClickAction(_settings.MapMiddleClickActionSelected);
+			else performMiddleClickAction(_settings.MapMiddleClickActionNoneSelected);
 		}
-
-		/// <summary>Moves all selected craft or waypoints into a different region. XWA only.</summary>
-		void moveSelectionToRegion(int region)
+		/// <summary>Aligns a control horizontally to the left of another control, or to the left of a fixed point if no control is specified.</summary>
+		void moveControlLeft(Control control, Control anchor, int value)
 		{
-			bool regionChanged = false, waypointCreated = false;
-			foreach (SelectionData dat in _selectionList)
-			{
-				if (dat.Active)
-				{
-					Platform.Xwa.FlightGroup.XwaWaypoint curWp = (Platform.Xwa.FlightGroup.XwaWaypoint)dat.WPRef;
-					if (dat.WpOrder == 0)
-					{
-						curWp.Region = Convert.ToByte(region);
-						if (dat.WpIndex == 0)
-						{
-							dat.MapDataRef.Region = region;
-							regionChanged = true;
-						}
-					}
-					else
-					{
-						int targetOrd = (int)(region * 4 + numOrder.Value);
-						Platform.Xwa.FlightGroup.Waypoint targWp = (Platform.Xwa.FlightGroup.Waypoint)_mapData[dat.MapDataIndex].WPs[targetOrd][dat.WpIndex];
-						targWp.RawX = curWp.RawX;
-						targWp.RawY = curWp.RawY;
-						targWp.RawZ = curWp.RawZ;
-						targWp.Enabled = curWp.Enabled;
-						curWp.Enabled = false;
-						waypointCreated = true;
-					}
-				}
-			}
-			if (regionChanged || waypointCreated)
-			{
-				deselect();
-				onDataModified?.Invoke(0, new EventArgs());
-				if (regionChanged) lstCraft.Refresh();
-				scheduleMapPaint();
-			}
+			if (anchor != null) control.Left = anchor.Left - (control.Width + value + (control.Margin.Right >= anchor.Margin.Left ? control.Margin.Right : anchor.Margin.Left));
+			else control.Left = value - (control.Width + control.Margin.Right);
 		}
-
-		/// <summary>Disables all selected waypoints and removes them from the selection list.</summary>
-		void disableSelectionWaypoints()
+		/// <summary>Aligns a control vertically above another control, or above a fixed point if no control is specified.</summary>
+		void moveControlAbove(Control control, Control anchor, int padding)
 		{
-			bool modified = false;
-			if (_selectionList.Count == 0) return;
-
-			// Work backwards because we have to remove from selection, and this disrupts the selection order.
-			for (int i = _selectionList.Count - 1; i >= 0; i--)
-			{
-				SelectionData dat = _selectionList[i];
-				if (dat.Active && (dat.WpIndex != 0 || dat.WpOrder != 0) && dat.WPRef.Enabled)
-				{
-					dat.WPRef.Enabled = false;
-					dat.Active = false;
-					setSelectionState(dat.MapDataIndex, false, dat.WpOrder, dat.WpIndex);
-					modified = true;
-				}
-			}
-			if (!modified) return;
-
-			updateSelectionListSize();
-			updatePreviousCraftSelection();
-			onDataModified?.Invoke(0, new EventArgs());
-			scheduleMapPaint();
+			if (anchor != null) control.Top = anchor.Top - (control.Height + padding + (control.Margin.Bottom >= anchor.Margin.Top ? control.Margin.Bottom : anchor.Margin.Top));
+			else control.Top = padding - (control.Height + control.Margin.Bottom);
 		}
 
 		/// <summary>Converts points to become top-left (<paramref name="a"/>) and bottom-right (<paramref name="b"/>)</summary>
@@ -818,534 +751,145 @@ namespace Idmr.Yogeme
 			bool passIff = (cboViewIff.SelectedIndex == 0 || dat.IFF == cboViewIff.SelectedIndex - 1);
 			return (passDiff && passIff);
 		}
-
-		/// <summary>Clears all selection states, lists, and resets their associated controls.</summary>
-		void deselect()
+		/// <summary>Performs a middle click action.</summary>
+		void performMiddleClickAction(MiddleClickAction action)
 		{
-			bool btemp = _ignoreSelectionEvents;
-			_ignoreSelectionEvents = true;
-			_previousCraftSelection = null;
-			lstCraft.ClearSelected();
-			_selectionList.Clear();
-			lstSelection.Items.Clear();
-			lstSelection.Visible = false;
-			lblSelection.Visible = false;
-			_ignoreSelectionEvents = btemp;
+			switch (action)
+			{
+				case MiddleClickAction.ResetToCenter: fitMapToObjects(null); break;
+				case MiddleClickAction.DoNothing: break;
+				case MiddleClickAction.FitToWorld: fitMapToWorld(); break;
+				case MiddleClickAction.FitToSelection: fitMapToObjects(_selectionList); break;
+				case MiddleClickAction.CenterOnSelection: centerMapOnSelection(); break;
+				default: fitMapToObjects(null); break;
+			}
 		}
-
-		/// <summary>Returns true if the specified object parameters are in the current selection list, and active.</summary>
-		bool getSelectionState(int datIndex, int order, int wp)
+		void processHyperPoints()
 		{
-			foreach (SelectionData dat in _selectionList) if (dat.Active && dat.MapDataIndex == datIndex && dat.WpOrder == order && dat.WpIndex == wp) return true;
-
-			return false;
-		}
-
-		/// <summary>Adds or removes a selected object based on its parameters. Ensures the object is unique.</summary>
-		/// <remarks>Automatically maintains the list and its associated controls.</remarks>
-		void setSelectionState(int datIndex, bool state, int order, int wp)
-		{
-			if (datIndex < 0 || datIndex >= _mapData.Length) return;
-
-			bool btemp = _ignoreSelectionEvents;
-			_ignoreSelectionEvents = true;
-			if (!state)
+			int numCraft = _mapData.Length;
+			for (int i = 0; i < numCraft; i++)
 			{
-				int i = 0;
-				while (i < _selectionList.Count)
+				var fg = (Platform.Xwa.FlightGroup)_mapData[i].FlightGroup;
+
+				for (int r = 0; r < 4; r++)
 				{
-					if (_selectionList[i].MapDataIndex == datIndex && _selectionList[i].WpOrder == order &&_selectionList[i].WpIndex == wp)
+					_mapData[i].WPs[17][r].Enabled = false;
+					_mapData[i].WPs[18][r].Enabled = false;
+					var exitBuoySP = new Platform.Xwa.FlightGroup.XwaWaypoint
 					{
-						_selectionList.RemoveAt(i);
-						lstSelection.Items.RemoveAt(i);
-						if (order == 0 && wp == 0) lstCraft.SetSelected(datIndex, false);
-					}
-					else i++;
-				}
-			}
-			else
-			{
-				bool found = false;
-				foreach (SelectionData dat in _selectionList)
-					if (dat.MapDataIndex == datIndex && dat.WpOrder == order && dat.WpIndex == wp)
+						RawZ = 621  // just using as a flag
+					};
+					for (int o = 0; o < 16; o++)
 					{
-						found = true;
-						break;
-					}
-				if (!found)
-				{
-					_selectionList.Add(new SelectionData(datIndex, _mapData[datIndex], order, wp, (byte)(numRegion.Value - 1)));
-					int chkIndex = (order > 0 ? 4 + wp : wp);
-					lstSelection.Items.Add(_mapData[datIndex].FullName + "  " + chkWP[chkIndex].Text);
-					lstSelection.SetSelected(lstSelection.Items.Count - 1, true);
-					if (order == 0 && wp == 0) lstCraft.SetSelected(datIndex, true);
-				}
-			}
-			_ignoreSelectionEvents = btemp;
-		}
-
-		/// <summary>Selects objects via mouse click or bounding-box dragging.</summary>
-		void performSelection()
-		{
-			// Select anything inside the bounding box, or a single object if the user clicked on something.
-			// If the Control key is held down, add the bounding box to the current selection. Or toggle selection on a single object.
-			if (!ModifierKeys.HasFlag(Keys.Control)) deselect();
-
-			List<SelectionData> objects = new List<SelectionData>();
-			enumSelectionObjects(ref _clickPixelDown, ref _clickPixelUp, objects);
-			bool isClick = isPointClicked(ref _clickPixelDown, ref _clickPixelUp);
-			if (isClick && objects.Count > 1) objects.Sort(SelectionData.Compare);
-
-			foreach (SelectionData dat in objects)
-			{
-				setSelectionState(dat.MapDataIndex, (objects.Count != 1 || !ModifierKeys.HasFlag(Keys.Control) || !getSelectionState(dat.MapDataIndex, dat.WpOrder, dat.WpIndex)), dat.WpOrder, dat.WpIndex);
-				if (isClick) break;
-			}
-			updateSelectionListSize();
-			updatePreviousCraftSelection();
-		}
-
-		/// <summary>Populates a list of objects (craft or their waypoints) that can be selected inside a rectangle of two opposing points.</summary>
-		/// <remarks>Points are the physical pixel coordinates on the map. The points will be interpreted as either a click (similar or identical points) or a bounding-box.</remarks>
-		void enumSelectionObjects(ref Point p1, ref Point p2, List<SelectionData> output)
-		{
-			Point m1 = new Point();
-			Point m2 = new Point();
-			convertMousepointToWaypoint(p1.X, p1.Y, ref m1);
-			convertMousepointToWaypoint(p2.X, p2.Y, ref m2);
-			normalizePoint(ref m1, ref m2);
-
-			if (isPointClicked(ref p1, ref p2))  // Also handles normalizing.
-			{
-				double msX = 0.0, msY = 0.0;
-				switch (_displayMode)
-				{
-					case Orientation.XY:
-						msX = (p2.X - _mapX) / Convert.ToDouble(_zoom) * 160;
-						msY = (_mapY - p2.Y) / Convert.ToDouble(_zoom) * 160;
-						break;
-					case Orientation.XZ:
-						msX = (p2.X - _mapX) / Convert.ToDouble(_zoom) * 160;
-						msY = (_mapZ - p2.Y) / Convert.ToDouble(_zoom) * 160;
-						break;
-					case Orientation.YZ:
-						msX = (p2.X - _mapY) / Convert.ToDouble(_zoom) * 160;
-						msY = (_mapZ - p2.Y) / Convert.ToDouble(_zoom) * 160;
-						break;
-				}
-
-				int tolerance = (int)(10 / Convert.ToDouble(_zoom) * 160);
-				if (tolerance < 1) tolerance = 1; // For very high zoom levels.
-				m1.X = (int)msX - tolerance;
-				m1.Y = (int)msY - tolerance;
-				m2.X = (int)msX + tolerance;
-				m2.Y = (int)msY + tolerance;
-			}
-
-			int ord = 0;
-			int reg = 0;
-			if (_platform == Settings.Platform.XWA)
-			{
-				reg = (int)(numRegion.Value - 1);
-				ord = (int)(reg * 4 + numOrder.Value);
-			}
-			for (int i = 0; i < _mapData.Length; i++)
-			{
-				if (_mapData[i].View == Visibility.Hide || !passFilter(_mapData[i])) continue;
-
-				for (int wp = 0; wp < _mapData[i].WPs[0].Length; wp++)
-				{
-					if (!chkWP[wp].Checked || (!_mapData[i].WPs[0][wp].Enabled && _platform != Settings.Platform.XWA && wp != 0)) continue;
-
-					if (_platform == Settings.Platform.XWA)
-					{
-						Platform.Xwa.FlightGroup.XwaWaypoint cwp = (Platform.Xwa.FlightGroup.XwaWaypoint)_mapData[i].WPs[0][wp];
-						if (cwp.Region != reg) continue;
-					}
-					if (waypointInside(_mapData[i].WPs[0][wp], ref m1, ref m2)) output.Add(new SelectionData(i, _mapData[i], 0, wp, (byte)reg));
-				}
-				if (ord > 0)
-				{
-					for (int wp = 0; wp < _mapData[i].WPs[ord].Length; wp++)
-					{
-						if (!chkWP[4 + wp].Checked || !_mapData[i].WPs[ord][wp].Enabled) continue;
-						if (wp == 0 && _mapData[i].WPs[18][reg].Enabled && _mapData[i].WPs[0][0][4] != reg) continue;
-
-						if (waypointInside(_mapData[i].WPs[ord][wp], ref m1, ref m2)) output.Add(new SelectionData(i, _mapData[i], ord, wp, (byte)reg));
-					}
-
-                    var hyp = _mapData[i].WPs[17][reg];
-					if (hyp.Enabled && waypointInside(hyp, ref m1, ref m2)) output.Add(new SelectionData(i, _mapData[i], 17, reg));
-					//TODO: need to add the order check here ^ since it's grabbing hidden WPs
-					// I think what would be better is to completely overhaul this; centralize the visibility, use that for selection and display
-					var exit = _mapData[i].WPs[18][reg];
-					if (exit.Enabled && waypointInside(exit, ref m1, ref m2))
-					{
-						if (_mapData[i].WPs[0][0][4] != reg && numOrder.Value == 1) output.Add(new SelectionData(i, _mapData[i], 18, reg, (byte)reg));
-						else
+						int reg = o / 4;
+						int ord = o % 4;
+						if (fg.Orders[reg, ord].Command == 50 && fg.Orders[reg, ord].Variable1 == r)
 						{
-							var fg = (Platform.Xwa.FlightGroup)_mapData[i].FlightGroup;
-							for (int o = 0; o < 4; o++)
-								if (fg.Orders[reg, o].Command == 50 && (o + 1) == numOrder.Value)
-								{
-                                    output.Add(new SelectionData(i, _mapData[i], 18, reg, (byte)reg));
-									break;
-                                }
-						}
-					}
-                }
-			}
-		}
-
-		/// <summary>Returns true if two points are close enough to be considered a clicked point rather than a bounding box.</summary>
-		bool isPointClicked(ref Point p1, ref Point p2)
-		{
-			normalizePoint(ref p1, ref p2);
-			return (p2.X - p1.X <= 12 && p2.Y - p1.Y <= 12);
-		}
-
-		/// <summary>Determines if a waypoint (raw units) is within a bounding box formed by a top/left and bottom/right point.</summary>
-		bool waypointInside(BaseFlightGroup.Waypoint wp, ref Point p1, ref Point p2)
-		{
-			int tx = wp.RawX;
-			int ty = wp.RawY;
-			int tz = wp.RawZ;
-			switch (_displayMode)
-			{
-				case Orientation.XY: return ((tx >= p1.X && tx <= p2.X) && (ty >= p1.Y && ty <= p2.Y));
-				case Orientation.XZ: return ((tx >= p1.X && tx <= p2.X) && (tz >= p1.Y && tz <= p2.Y));
-				case Orientation.YZ: return ((ty >= p1.X && ty <= p2.X) && (tz >= p1.Y && tz <= p2.Y));
-			}
-			return false;
-		}
-
-		/// <summary>Returns true if any specified objects are currently in our selection list.</summary>
-		bool isListObjectSelected(List<SelectionData> objects)
-		{
-			foreach (SelectionData test in objects) 
-				foreach (SelectionData cur in _selectionList)
-					if (test.MapDataIndex == cur.MapDataIndex && test.WpIndex == cur.WpIndex && test.WpOrder == cur.WpOrder) return true;
-			return false;
-		}
-		/// <summary>Returns true if the specified craft or any of its waypoints are selected.</summary>
-		bool isMapObjectSelected(int mapDataIndex)
-		{
-			for(int i = 0; i < _selectionList.Count; i++)
-				if (_selectionList[i].MapDataIndex == mapDataIndex) return true;
-			return false;
-		}
-
-		/// <summary>Returns a size rating of the map object, based off its wireframe.</summary>
-		/// <remarks>Wireframes must be enabled. NOTE: This should probably be replaced with craft categories, but that would require additional changes, and more information in the craft data files.</remarks>
-		int getModelSizeRating(int mapDataIndex)
-		{
-			if (!_settings.WireframeEnabled || (_platform == Settings.Platform.XWA && _mapData[mapDataIndex].Craft == 0x55)) return 0;	// Hyper beacon
-
-			WireframeInstance wire = _wireframeManager.GetOrCreateWireframeInstance(_mapData[mapDataIndex].Craft, _mapData[mapDataIndex].FgIndex);
-			if (wire == null || wire.ModelDef == null) return 0;
-
-			int size = wire.ModelDef.LongestSpanMeters;
-			int limit1 = 40, limit2 = 100, limit3 = 450;
-			if (size > 1 && size < limit1) return 1;
-			else if (size >= limit1 && size < limit2) return 2;
-			else if (size >= limit2 && size < limit3) return 3;
-			else if (size >= limit3) return 4;
-			return 0;
-		}
-
-		/// <summary>Returns a value composed of a set of bit flags indicating which difficulties this FlightGroup arrives in.</summary>
-		int getDifficultyFlags(BaseFlightGroup.Difficulties fgDifficulty)
-		{
-			if (_platform == Settings.Platform.XWING) return 0b111;
-
-			// All, Easy, Medium, Hard, ...
-			int[] resultArray = { 0b111, 0b001, 0b010, 0b100, 0b110, 0b011, 0b000 };
-			return resultArray[(byte)fgDifficulty];
-		}
-
-		/// <summary>Selects all visible objects on the map screen based on the criteria of currently selected items.</summary>
-		void expandSelection(ExpandSelection mode)
-		{
-			HashSet<int> values = new HashSet<int>();
-			Point m1 = new Point(), m2 = new Point();
-			convertMousepointToWaypoint(0, 0, ref m1);
-			convertMousepointToWaypoint(pctMap.Width, pctMap.Height, ref m2);
-			normalizePoint(ref m1, ref m2);
-			switch (mode)
-			{
-				case ExpandSelection.Craft:
-					foreach (SelectionData dat in _selectionList) if (dat.Active) values.Add(dat.MapDataRef.Craft);
-					for (int i = 0; i < _mapData.Length; i++)
-					{
-						bool wpEnabled = (_platform == Settings.Platform.XWA ? ((Platform.Xwa.FlightGroup.XwaWaypoint)_mapData[i].WPs[0][0]).Region == numRegion.Value - 1 : _mapData[i].WPs[0][0].Enabled);
-						if (_mapData[i].View != Visibility.Hide && passFilter(_mapData[i]) && values.Contains(_mapData[i].Craft) && wpEnabled && waypointInside(_mapData[i].WPs[0][0], ref m1, ref m2))
-							setSelectionState(i, true, 0, 0);
-					}
-					break;
-				case ExpandSelection.Iff:
-					foreach (SelectionData dat in _selectionList) if (dat.Active) values.Add(dat.MapDataRef.IFF);
-					for (int i = 0; i < _mapData.Length; i++)
-					{
-						bool wpEnabled = (_platform == Settings.Platform.XWA ? ((Platform.Xwa.FlightGroup.XwaWaypoint)_mapData[i].WPs[0][0]).Region == numRegion.Value - 1 : _mapData[i].WPs[0][0].Enabled);
-						if (_mapData[i].View != Visibility.Hide && passFilter(_mapData[i]) && values.Contains(_mapData[i].IFF) && wpEnabled && waypointInside(_mapData[i].WPs[0][0], ref m1, ref m2))
-							setSelectionState(i, true, 0, 0);
-					}
-					break;
-				case ExpandSelection.Size:
-					foreach (SelectionData dat in _selectionList)
-					{
-						if (dat.Active)
-						{
-							int size = getModelSizeRating(dat.MapDataIndex);
-							if (size > 0) values.Add(size);
-						}
-					}
-					for (int i = 0; i < _mapData.Length; i++)
-					{
-						bool wpEnabled = (_platform == Settings.Platform.XWA ? ((Platform.Xwa.FlightGroup.XwaWaypoint)_mapData[i].WPs[0][0]).Region == numRegion.Value - 1 : _mapData[i].WPs[0][0].Enabled);
-						int size = getModelSizeRating(i);
-						if (_mapData[i].View != Visibility.Hide && passFilter(_mapData[i]) && values.Contains(size) && wpEnabled && waypointInside(_mapData[i].WPs[0][0], ref m1, ref m2))
-							setSelectionState(i, true, 0, 0);
-					}
-					break;
-				case ExpandSelection.Invert:
-					foreach (SelectionData dat in _selectionList) if (dat.Active && dat.WpIndex == 0 && dat.WpOrder == 0) values.Add(dat.MapDataIndex);
-					deselect();
-					for (int i = 0; i < _mapData.Length; i++)
-					{
-						bool wpEnabled = (_platform == Settings.Platform.XWA ? ((Platform.Xwa.FlightGroup.XwaWaypoint)_mapData[i].WPs[0][0]).Region == numRegion.Value - 1 : _mapData[i].WPs[0][0].Enabled);
-						if (_mapData[i].View != Visibility.Hide && passFilter(_mapData[i]) && !values.Contains(i) && wpEnabled && waypointInside(_mapData[i].WPs[0][0], ref m1, ref m2))
-							setSelectionState(i, true, 0, 0);
-					}
-					break;
-			}
-			updateSelectionListSize();
-			updatePreviousCraftSelection();
-			scheduleMapPaint();
-		}
-
-		/// <summary>Centers the map over all visible objects in the world, adjusting the zoom for best fit.</summary>
-		void fitMapToWorld()
-		{
-			List<SelectionData> objects = new List<SelectionData>();
-			for (int i = 0; i < _mapData.Length; i++)
-			{
-				if (_mapData[i].View == Visibility.Hide || !passFilter(_mapData[i])) continue;
-
-				// Derived from the waypoint trace code.
-				for (int k = 0; k < 4; k++) // Start
-					if (chkWP[k].Checked && _mapData[i].WPs[0][k].Enabled && (_platform != Settings.Platform.XWA || _mapData[i].WPs[0][k][4] == (short)(numRegion.Value - 1)))
-						objects.Add(new SelectionData(i, _mapData[i], 0, k, (byte)(numRegion.Value - 1)));
-
-				if (_platform == Settings.Platform.XWA) // WPs
-				{
-					int ord = (int)((numRegion.Value - 1) * 4 + (numOrder.Value - 1) + 1);
-					for (int k = 0; k < 8; k++) if (chkWP[k + 4].Checked && _mapData[i].WPs[ord][k].Enabled) objects.Add(new SelectionData(i, _mapData[i], ord, k, (byte)(numRegion.Value - 1)));
-				}
-				else for (int k = 4; k < 22; k++) if (chkWP[k].Checked && _mapData[i].WPs[0][k].Enabled) objects.Add(new SelectionData(i, _mapData[i], 0, k));
-			}
-			fitMapToObjects(objects);
-		}
-
-		/// <summary>Centers the map over all specified objects, adjusting the zoom for best fit.</summary>
-		/// <remarks>If no objects are specified, centers the map on (0,0) at its default zoom level.</remarks>
-		void fitMapToObjects(List<SelectionData> objects)
-		{
-			if (objects == null || objects.Count == 0)
-			{
-				_mapX = w / 2;
-				_mapY = h / 2;
-				_mapZ = h / 2;
-				hscZoom.Value = 40;
-				MapPaint();
-				return;
-			}
-
-			int minX = short.MaxValue;
-			int minY = short.MaxValue;
-			int maxX = short.MinValue;
-			int maxY = short.MinValue;
-
-			foreach (SelectionData dat in objects)
-			{
-				if (!dat.Active) continue;
-
-				// Project a distance around each point based on half its wireframe size.
-				int wireframeRawSize = 0;
-				if (dat.WpIndex == 0 && dat.WpOrder == 0 && _settings.WireframeEnabled)
-				{
-					WireframeInstance wireframe = _wireframeManager.GetOrCreateWireframeInstance(dat.MapDataRef.Craft, dat.MapDataRef.FgIndex);
-					if (wireframe != null && wireframe.ModelDef != null) wireframeRawSize = (int)((double)wireframe.ModelDef.LongestSpanMeters / 1000 / 2 * 160);
-				}
-				int x1 = 0, y1 = 0, x2 = 0, y2 = 0;
-				switch (_displayMode)
-				{
-					case Orientation.XY:
-						x1 = dat.WPRef.RawX;
-						y1 = dat.WPRef.RawY;
-						break;
-					case Orientation.XZ:
-						x1 = dat.WPRef.RawX;
-						y1 = dat.WPRef.RawZ;
-						break;
-					case Orientation.YZ:
-						x1 = dat.WPRef.RawY;
-						y1 = dat.WPRef.RawZ;
-						break;
-				}
-				x2 = x1 + wireframeRawSize;
-				y2 = y1 + wireframeRawSize;
-				x1 -= wireframeRawSize;
-				y1 -= wireframeRawSize;
-
-				if (x1 < minX) minX = x1;
-				if (x2 > maxX) maxX = x2;
-				if (y1 < minY) minY = y1;
-				if (y2 > maxY) maxY = y2;
-			}
-			double spanKmX = (maxX * 0.00625) - (minX * 0.00625);
-			double spanKmY = (maxY * 0.00625) - (minY * 0.00625);
-			if (spanKmX < 0.001) spanKmX = 0.001;
-			if (spanKmY < 0.001) spanKmY = 0.001;
-
-			// Calculate the zoom level necessary to hold the span of objects in each dimension. Choose the smaller value to ensure everything fits on screen.
-			double zoomX = (double)pctMap.Width / spanKmX;
-			double zoomY = (double)pctMap.Height / spanKmY;
-			double zoom = (zoomX <= zoomY ? zoomX : zoomY);
-
-			zoom *= 0.85;
-			if (zoom < 5) zoom = 5;
-			else if (zoom > 200) zoom = 200;
-
-			hscZoom.Value = (int)zoom;
-			updateMapCoord(new PointF((float)((minX + ((maxX - minX) / 2.0)) / 160.0), (float)((minY + ((maxY - minY) / 2.0)) / 160.0)));
-			MapPaint();
-		}
-
-		/// <summary>Centers the map over the positional average of all selected objects. Does nothing if no objects are selected.</summary>
-		/// <remarks>This function is also called when changing XY, XZ, and YZ views, so it redraws the screen even if the position remains the same.</remarks>
-		void centerMapOnSelection()
-		{
-			if (_selectionList.Count > 0)
-			{
-				int mapX = 0, mapY = 0;
-				switch (_displayMode)
-				{
-					case Orientation.XY: getAverageSelectionCoords(out mapX, out mapY, out _); break;
-					case Orientation.XZ: getAverageSelectionCoords(out mapX, out _, out mapY); break;
-					case Orientation.YZ: getAverageSelectionCoords(out _, out mapX, out mapY); break;
-				}
-				updateMapCoord(new PointF((float)mapX / 160, (float)mapY / 160));
-			}
-			MapPaint();
-		}
-
-		/// <summary>Creates a waypoint for any selected craft whos waypoint is disabled. If no waypoints were created, then the existing waypoints are selected.</summary>
-		/// <remarks>The type of waypoint depends on which keys are pressed. Expects number row keys and modifiers. Resolves selected craft/waypoints to their parent craft.</remarks>
-		void createOrSelectWaypoint(KeyEventArgs e)
-		{
-			// Mouse position contains screen coordinates, so check their bounds and convert them relative to the map area.
-			Rectangle mapRect = pctMap.RectangleToScreen(pctMap.DisplayRectangle);
-			if (!mapRect.Contains(MousePosition)) return;
-
-			bool create = (e.KeyCode == _lastWaypointKeyCode && e.Modifiers == _lastWaypointKeyModifiers && (Environment.TickCount - _lastWaypointKeyTime <= SystemInformation.DoubleClickTime));
-
-			_lastWaypointKeyCode = e.KeyCode;
-			_lastWaypointKeyModifiers = e.Modifiers;
-			_lastWaypointKeyTime = Environment.TickCount;
-
-			Point mouse = new Point();
-			convertMousepointToWaypoint(MousePosition.X - mapRect.Left, MousePosition.Y - mapRect.Top, ref mouse);
-
-			int wp = -1;
-			int chk = -1; // Special case for XWA, since the checkbox array doesn't necessarily match the waypoint index.
-			int ord = (_platform == Settings.Platform.XWA ? (int)((numRegion.Value - 1) * 4 + numOrder.Value) : 0);
-
-			switch (_platform)
-			{
-				case Settings.Platform.XWING:
-					if (e.KeyCode >= Keys.D1 && e.KeyCode <= Keys.D3)
-					{
-						if (e.Shift && !e.Control) wp = e.KeyCode - Keys.D1;  // SP1 to SP3
-						else if (!e.Shift && !e.Control) wp = 4 + e.KeyCode - Keys.D1;  // WP1 to WP3
-						else if (!e.Shift && e.Control) wp = 14 + e.KeyCode - Keys.D1;
-					}
-					else if (e.KeyCode == Keys.D0) wp = 13;  // HYP
-					break;
-				case Settings.Platform.TIE:
-				case Settings.Platform.XvT:
-				case Settings.Platform.BoP:
-					if (e.Shift && !e.Control && e.KeyCode >= Keys.D1 && e.KeyCode <= Keys.D4) wp = e.KeyCode - Keys.D1;  // SP1 to SP4
-					else if (!e.Shift && !e.Control && e.KeyCode >= Keys.D1 && e.KeyCode <= Keys.D8) wp = 4 + e.KeyCode - Keys.D1;  // WP1 to WP8
-					else if (!e.Shift && e.Control && e.KeyCode >= Keys.D1 && e.KeyCode <= Keys.D8) wp = 14 + (_platform == Settings.Platform.TIE ? 0 : e.KeyCode - Keys.D1);  //BRF for TIE, BRF to BR8 for XvT
-					else if (e.KeyCode == Keys.D9) wp = 12; // RND
-					else if (e.KeyCode == Keys.D0) wp = 13; // HYP
-					break;
-				case Settings.Platform.XWA:
-					if (e.Shift && e.KeyCode >= Keys.D1 && e.KeyCode <= Keys.D3) { wp = e.KeyCode - Keys.D1; ord = 0; }  // SP1 to SP3
-					else if (!e.Shift && e.KeyCode >= Keys.D1 && e.KeyCode <= Keys.D8) { wp = e.KeyCode - Keys.D1; chk = 4 + wp; } // WP1 to WP8
-					else if (e.KeyCode == Keys.D0) { wp = 3; ord = 0; } // HYP
-					break;
-			}
-			if (wp == -1) return; // Keys didn't resolve to a valid waypoint.
-
-			bool modified = false;
-			bool refreshRequired = false;
-			List<SelectionData> exist = new List<SelectionData>();
-
-			// Build a list of parent craft.
-			HashSet<int> parentSet = new HashSet<int>();
-			foreach (SelectionData dat in _selectionList) if (dat.Active) parentSet.Add(dat.MapDataIndex);
-
-			foreach (int i in parentSet) 
-			{
-				if (wp < _mapData[i].WPs[ord].Length)
-				{
-					BaseFlightGroup.Waypoint baseWp = _mapData[i].WPs[ord][wp];
-					if (!baseWp.Enabled && create)
-					{
-						if (_platform == Settings.Platform.XWA)
-						{
-							((Platform.Xwa.FlightGroup.XwaWaypoint)baseWp).Region = Convert.ToByte(numRegion.Value - 1);
-							if (wp == 0 && ord == 0)
+							for (int b = 0; b < numCraft; b++)
 							{
-								_mapData[i].Region = (int)numRegion.Value - 1;
-								refreshRequired = true;
+								var buoy = (Platform.Xwa.FlightGroup)_mapData[b].FlightGroup;
+								if (buoy.CraftType == 85 && buoy.Waypoints[0][4] == r && (buoy.Designation1 == reg + 12 || buoy.Designation2 == reg + 12 || buoy.Designation1 == 0x14 || buoy.Designation2 == 0x14))   // From are #12-15, 0x14 is "From any"
+								{
+									exitBuoySP = buoy.Waypoints[0];
+									System.Diagnostics.Debug.WriteLine(fg.ToString() + " enters Region " + (r + 1) + " from " + (reg + 1) + " via " + buoy.ToString());
+									break;
+								}
 							}
 						}
+					}
 
-						modified = true;
-						baseWp.Enabled = true;
-						switch (_displayMode)
+					var o1w1 = _mapData[i].WPs[r * 4 + 1][0];
+					// if returning to the starting region, grab the first order after the Hyper order
+					if (exitBuoySP.RawZ != 621 && r == _mapData[i].WPs[0][0][4])
+					{
+						for (int o = 0; o < 3; o++)
 						{
-							case Orientation.XY: baseWp.RawX = (short)mouse.X; baseWp.RawY = (short)mouse.Y; break;
-							case Orientation.XZ: baseWp.RawX = (short)mouse.X; baseWp.RawZ = (short)mouse.Y; break;
-							case Orientation.YZ: baseWp.RawY = (short)mouse.X; baseWp.RawZ = (short)mouse.Y; break;
+							if (fg.Orders[r, o].Command == 50)
+							{
+								o1w1 = _mapData[i].WPs[(r * 4 + 1) + (o + 1)][0];
+								System.Diagnostics.Debug.WriteLine("return o1w1 used: " + fg.ToString());
+							}
 						}
 					}
-					else if (baseWp.Enabled && !create) exist.Add(new SelectionData(i, _mapData[i], ord, wp));
+
+					Platform.Xwa.FlightGroup.Order hyperOrder = null;
+					if (fg.PlayerNumber != 0)
+					{
+						// Player
+						for (int o = 0; o < 16; o++)
+						{
+							int reg = o / 4;
+							int ord = o % 4;
+							if (fg.Orders[reg, ord].Command == 50 && fg.Orders[reg, ord].Variable1 == r)
+							{
+								var exitPoint = getOffsetWaypoint(exitBuoySP, o1w1, -100);    // .625 km
+								for (int c = 0; c < 3; c++) _mapData[i].WPs[17][r][c] = exitPoint[c];
+								_mapData[i].WPs[17][r].Enabled = true;
+								for (int c = 0; c < 3; c++) _mapData[i].WPs[18][r][c] = o1w1[c];
+								_mapData[i].WPs[18][r].Enabled = true;
+							}
+						}
+					}
+					else
+					{
+						// AI
+						var hyperEntry = new Platform.Xwa.FlightGroup.XwaWaypoint();
+						for (int o = 0; o < 16; o++)
+						{
+							int reg = o / 4;
+							int ord = o % 4;
+							if (fg.Orders[reg, ord].Command == (byte)Platform.Xwa.FlightGroup.Order.CommandList.HyperToRegion && fg.Orders[reg, ord].Variable1 == r)
+							{
+								hyperOrder = fg.Orders[reg, ord];
+								for (int w = 1; w < 8; w++)
+								{
+									if (!fg.Orders[reg, ord].Waypoints[w].Enabled)
+									{
+										for (int c = 0; c < 3; c++) hyperEntry[c] = fg.Orders[reg, ord].Waypoints[w - 1][c];
+										hyperEntry.Region = (byte)reg;
+										hyperEntry.Enabled = true;
+										break;
+									}
+								}
+							}
+						}
+						if (!hyperEntry.Enabled) continue;  // this is the "not found"/"doesn't hyper" check
+
+						var enterBuoy = new Platform.Xwa.FlightGroup.XwaWaypoint();
+						for (int b = 0; b < numCraft; b++)
+						{
+							var buoy = (Platform.Xwa.FlightGroup)_mapData[b].FlightGroup;
+							if (buoy.CraftType == 85 && buoy.Waypoints[0][4] == hyperEntry.Region && (buoy.Designation1 == r + 16 || buoy.Designation2 == r + 16))  // To are #16-19
+							{
+								enterBuoy = buoy.Waypoints[0];
+								System.Diagnostics.Debug.WriteLine(fg.ToString() + " leaves Region " + (hyperEntry.Region + 1) + " to " + (r + 1) + " via " + buoy.ToString());
+								break;
+							}
+						}
+						int[] offset = new int[3];
+						if (hyperOrder.Waypoints[0].Enabled) // don't calc an offset if WP1 disabled, use the buoy itself
+							for (int c = 0; c < 3; c++) offset[c] = hyperEntry[c] - enterBuoy[c];
+						for (int c = 0; c < 3; c++) _mapData[i].WPs[17][r][c] = (short)(exitBuoySP[c] + offset[c]);
+						_mapData[i].WPs[17][r].Enabled = true;
+						for (int c = 0; c < 3; c++) _mapData[i].WPs[18][r][c] = (short)(o1w1[c] + offset[c]);
+						_mapData[i].WPs[18][r].Enabled = true;
+					}
 				}
 			}
-			if (modified || exist.Count > 0)
-			{
-				if (chk == -1) chk = wp;
-				if (chk < chkWP.Length && !chkWP[chk].Checked) chkWP[chk].Checked = true;
-			}
+		}
 
-			if (modified)
-			{
-				onDataModified?.Invoke(0, new EventArgs());
-				if (refreshRequired) lstCraft.Refresh();
-				scheduleMapPaint();
-			}
-			else if (exist.Count > 0)
-			{
-				deselect();
-				foreach (SelectionData dat in exist) setSelectionState(dat.MapDataIndex, true, dat.WpOrder, dat.WpIndex);
-				updateSelectionListSize();
-				updatePreviousCraftSelection();
-				scheduleMapPaint();
-			}
+		/// <summary>Re-counts how many objects are faded or hidden, updates controls providing this information, and re-sorts the draw order.</summary>
+		void refreshVisibility()
+		{
+			int[] count = new int[3];
+			for (int i = 0; i < _mapData.Length; i++) count[(int)_mapData[i].View]++;
+			lblFade.Text = "Faded: " + count[1] + " craft";
+			lblHide.Text = "Hidden: " + count[2] + " craft";
+			lblFade.ForeColor = (count[1] > 0 ? Color.Red : SystemColors.WindowText);
+			lblHide.ForeColor = (count[2] > 0 ? Color.Red : SystemColors.WindowText);
+			scheduleMapPaint();
+			lstCraft.Refresh();
+			_sortedMapDataList.Sort(compareDrawOrder);
 		}
 
 		/// <summary>Assigns which measurement units are used when snapping object movement.</summary>
@@ -1378,21 +922,6 @@ namespace Idmr.Yogeme
 			numSnapAmount.Value = value;
 			_lastSnapUnit = selectedIndex;
 		}
-
-		/// <summary>Schedules a map redraw using a timer interval.</summary>
-		/// <remarks>This saves CPU cycles and produces smoother performance during rapid redraw requests such as when dragging something with the mouse.</remarks>
-		void scheduleMapPaint()
-		{
-			if (_mapPaintScheduled) return;
-			
-			if (!mapPaintRedrawTimer.Enabled)
-			{
-				//mapPaintRedrawTimer.Interval = 17;    //Was trying to aim for ~60 FPS, but according to MSDN, the minimum accuracy is 55 ms.
-				mapPaintRedrawTimer.Start();
-			}
-			_mapPaintScheduled = true;
-		}
-
 		/// <summary>Intialization routine, loads settings and config per platform</summary>
 		void startup()
 		{
@@ -1506,14 +1035,14 @@ namespace Idmr.Yogeme
 
 			cboViewIff.Items.Clear();
 			cboViewIff.Items.Add("All IFF");
-			switch(_platform)
+			switch (_platform)
 			{
 				case Settings.Platform.XWING:
 					cboViewDifficulty.Enabled = false;
-					cboViewIff.Items.AddRange( new string[] { "Rebel", "Imperial", "Neutral", "Neutral 2"});
+					cboViewIff.Items.AddRange(new string[] { "Rebel", "Imperial", "Neutral", "Neutral 2" });
 					break;
 				case Settings.Platform.TIE: cboViewIff.Items.AddRange(Platform.Tie.Strings.IFF); break;
-				case Settings.Platform.XvT:	case Settings.Platform.BoP: cboViewIff.Items.AddRange(Platform.Xvt.Strings.IFF); break;
+				case Settings.Platform.XvT: case Settings.Platform.BoP: cboViewIff.Items.AddRange(Platform.Xvt.Strings.IFF); break;
 				case Settings.Platform.XWA: cboViewIff.Items.AddRange(Platform.Xwa.Strings.IFF); break;
 			}
 			cboViewDifficulty.SelectedIndex = 0;
@@ -1525,14 +1054,6 @@ namespace Idmr.Yogeme
 			performMiddleClickAction(_settings.MapMiddleClickActionNoneSelected);
 
 			_isLoading = false;
-		}
-
-		/// <summary>Comparison function that sorts MapData objects by visibility. Brings faded items up front so that they can be drawn first. Visible items will overlap them.</summary>
-		int compareDrawOrder(int leftIndex, int rightIndex)
-		{
-			if (_mapData[leftIndex].View > _mapData[rightIndex].View) return -1;
-			else if (_mapData[leftIndex].View < _mapData[rightIndex].View) return 1;
-			return 0;
 		}
 
 		/// <summary>Adjust control size/locations</summary>
@@ -1620,17 +1141,298 @@ namespace Idmr.Yogeme
 			MapPaint();
 		}
 
-		/// <summary>Aligns a control horizontally to the left of another control, or to the left of a fixed point if no control is specified.</summary>
-		void moveControlLeft(Control control, Control anchor, int value)
+		#region map
+		/// <summary>Centers the map over the positional average of all selected objects. Does nothing if no objects are selected.</summary>
+		/// <remarks>This function is also called when changing XY, XZ, and YZ views, so it redraws the screen even if the position remains the same.</remarks>
+		void centerMapOnSelection()
 		{
-			if (anchor != null) control.Left = anchor.Left - (control.Width + value + (control.Margin.Right >= anchor.Margin.Left ? control.Margin.Right : anchor.Margin.Left));
-			else control.Left = value - (control.Width + control.Margin.Right);
+			if (_selectionList.Count > 0)
+			{
+				int mapX = 0, mapY = 0;
+				switch (_displayMode)
+				{
+					case Orientation.XY: getAverageSelectionCoords(out mapX, out mapY, out _); break;
+					case Orientation.XZ: getAverageSelectionCoords(out mapX, out _, out mapY); break;
+					case Orientation.YZ: getAverageSelectionCoords(out _, out mapX, out mapY); break;
+				}
+				updateMapCoord(new PointF((float)mapX / 160, (float)mapY / 160));
+			}
+			MapPaint();
 		}
-		/// <summary>Aligns a control vertically above another control, or above a fixed point if no control is specified.</summary>
-		void moveControlAbove(Control control, Control anchor, int padding)
+		/// <summary>Converts the location on the physical map to a raw craft waypoint (160 raw units = 1 km).</summary>
+		void convertMousepointToWaypoint(int mouseX, int mouseY, ref Point pt)
 		{
-			if (anchor != null) control.Top = anchor.Top - (control.Height + padding + (control.Margin.Bottom >= anchor.Margin.Top ? control.Margin.Bottom : anchor.Margin.Top));
-			else control.Top = padding - (control.Height + control.Margin.Bottom);
+			switch (_displayMode)
+			{
+				case Orientation.XY:
+					pt.X = Convert.ToInt32((mouseX - _mapX) / Convert.ToDouble(_zoom) * 160);
+					pt.Y = Convert.ToInt32((_mapY - mouseY) / Convert.ToDouble(_zoom) * 160);
+					break;
+				case Orientation.XZ:
+					pt.X = Convert.ToInt32((mouseX - _mapX) / Convert.ToDouble(_zoom) * 160);
+					pt.Y = Convert.ToInt32((_mapZ - mouseY) / Convert.ToDouble(_zoom) * 160);
+					break;
+				case Orientation.YZ:
+					pt.X = Convert.ToInt32((mouseX - _mapY) / Convert.ToDouble(_zoom) * 160);
+					pt.Y = Convert.ToInt32((_mapZ - mouseY) / Convert.ToDouble(_zoom) * 160);
+					break;
+			}
+		}
+
+		/// <summary>Centers the map over all visible objects in the world, adjusting the zoom for best fit.</summary>
+		void fitMapToWorld()
+		{
+			List<SelectionData> objects = new List<SelectionData>();
+			for (int i = 0; i < _mapData.Length; i++)
+			{
+				if (_mapData[i].View == Visibility.Hide || !passFilter(_mapData[i])) continue;
+
+				// Derived from the waypoint trace code.
+				for (int k = 0; k < 4; k++) // Start
+					if (chkWP[k].Checked && _mapData[i].WPs[0][k].Enabled && (_platform != Settings.Platform.XWA || _mapData[i].WPs[0][k][4] == (short)(numRegion.Value - 1)))
+						objects.Add(new SelectionData(i, _mapData[i], 0, k, (byte)(numRegion.Value - 1)));
+
+				if (_platform == Settings.Platform.XWA) // WPs
+				{
+					int ord = (int)((numRegion.Value - 1) * 4 + (numOrder.Value - 1) + 1);
+					for (int k = 0; k < 8; k++) if (chkWP[k + 4].Checked && _mapData[i].WPs[ord][k].Enabled) objects.Add(new SelectionData(i, _mapData[i], ord, k, (byte)(numRegion.Value - 1)));
+				}
+				else for (int k = 4; k < 22; k++) if (chkWP[k].Checked && _mapData[i].WPs[0][k].Enabled) objects.Add(new SelectionData(i, _mapData[i], 0, k));
+			}
+			fitMapToObjects(objects);
+		}
+		/// <summary>Centers the map over all specified objects, adjusting the zoom for best fit.</summary>
+		/// <remarks>If no objects are specified, centers the map on (0,0) at its default zoom level.</remarks>
+		void fitMapToObjects(List<SelectionData> objects)
+		{
+			if (objects == null || objects.Count == 0)
+			{
+				_mapX = w / 2;
+				_mapY = h / 2;
+				_mapZ = h / 2;
+				hscZoom.Value = 40;
+				MapPaint();
+				return;
+			}
+
+			int minX = short.MaxValue;
+			int minY = short.MaxValue;
+			int maxX = short.MinValue;
+			int maxY = short.MinValue;
+
+			foreach (SelectionData dat in objects)
+			{
+				if (!dat.Active) continue;
+
+				// Project a distance around each point based on half its wireframe size.
+				int wireframeRawSize = 0;
+				if (dat.WpIndex == 0 && dat.WpOrder == 0 && _settings.WireframeEnabled)
+				{
+					WireframeInstance wireframe = _wireframeManager.GetOrCreateWireframeInstance(dat.MapDataRef.Craft, dat.MapDataRef.FgIndex);
+					if (wireframe != null && wireframe.ModelDef != null) wireframeRawSize = (int)((double)wireframe.ModelDef.LongestSpanMeters / 1000 / 2 * 160);
+				}
+				int x1 = 0, y1 = 0, x2 = 0, y2 = 0;
+				switch (_displayMode)
+				{
+					case Orientation.XY:
+						x1 = dat.WPRef.RawX;
+						y1 = dat.WPRef.RawY;
+						break;
+					case Orientation.XZ:
+						x1 = dat.WPRef.RawX;
+						y1 = dat.WPRef.RawZ;
+						break;
+					case Orientation.YZ:
+						x1 = dat.WPRef.RawY;
+						y1 = dat.WPRef.RawZ;
+						break;
+				}
+				x2 = x1 + wireframeRawSize;
+				y2 = y1 + wireframeRawSize;
+				x1 -= wireframeRawSize;
+				y1 -= wireframeRawSize;
+
+				if (x1 < minX) minX = x1;
+				if (x2 > maxX) maxX = x2;
+				if (y1 < minY) minY = y1;
+				if (y2 > maxY) maxY = y2;
+			}
+			double spanKmX = (maxX * 0.00625) - (minX * 0.00625);
+			double spanKmY = (maxY * 0.00625) - (minY * 0.00625);
+			if (spanKmX < 0.001) spanKmX = 0.001;
+			if (spanKmY < 0.001) spanKmY = 0.001;
+
+			// Calculate the zoom level necessary to hold the span of objects in each dimension. Choose the smaller value to ensure everything fits on screen.
+			double zoomX = (double)pctMap.Width / spanKmX;
+			double zoomY = (double)pctMap.Height / spanKmY;
+			double zoom = (zoomX <= zoomY ? zoomX : zoomY);
+
+			zoom *= 0.85;
+			if (zoom < 5) zoom = 5;
+			else if (zoom > 200) zoom = 200;
+
+			hscZoom.Value = (int)zoom;
+			updateMapCoord(new PointF((float)((minX + ((maxX - minX) / 2.0)) / 160.0), (float)((minY + ((maxY - minY) / 2.0)) / 160.0)));
+			MapPaint();
+		}
+
+		/// <summary>Get the center pixel of pctMap and the coordinates it pertains to</summary>
+		/// <returns>A point with the map coordinates in klicks</returns>
+		PointF getCenterCoord()
+		{
+			PointF coord = new PointF();
+			switch (_displayMode)
+			{
+				case Orientation.XY:
+					coord.X = (w / 2 - _mapX) / Convert.ToSingle(_zoom);
+					coord.Y = (_mapY - h / 2) / Convert.ToSingle(_zoom);
+					break;
+				case Orientation.XZ:
+					coord.X = (w / 2 - _mapX) / Convert.ToSingle(_zoom);
+					coord.Y = (_mapZ - h / 2) / Convert.ToSingle(_zoom);
+					break;
+				case Orientation.YZ:
+					coord.X = (w / 2 - _mapY) / Convert.ToSingle(_zoom);
+					coord.Y = (_mapZ - h / 2) / Convert.ToSingle(_zoom);
+					break;
+			}
+			return coord;
+		}
+		/// <summary>Converts a waypoint into map coordinates for drawing.</summary>
+		/// <param name="waypoint">Source waypoint</param>
+		/// <returns>A map point taking into account Zoom and Display Orientation</returns>
+		Point getMapPoint(BaseFlightGroup.Waypoint waypoint)
+		{
+			Point mapPoint = new Point();
+			int mX = _mapX, mY = _mapZ, coord1 = 0, coord2 = 2;
+			switch (_displayMode)
+			{
+				case Orientation.XY:
+					mY = _mapY;
+					coord2 = 1;
+					break;
+				case Orientation.YZ:
+					mX = _mapY;
+					coord1 = 1;
+					break;
+			}
+			mapPoint.X = _zoom * waypoint[coord1] / 160 + mX;
+			mapPoint.Y = -_zoom * waypoint[coord2] / 160 + mY;
+			return mapPoint;
+		}
+
+		/// <summary>Returns true if two points are close enough to be considered a clicked point rather than a bounding box.</summary>
+		bool isPointClicked(ref Point p1, ref Point p2)
+		{
+			normalizePoint(ref p1, ref p2);
+			return (p2.X - p1.X <= 12 && p2.Y - p1.Y <= 12);
+		}
+
+		void moveMapToCursor()
+		{
+			int offx = (_clickPixelUp.X - _dragMapPrevious.X);
+			int offy = (_clickPixelUp.Y - _dragMapPrevious.Y);
+			switch (_displayMode)
+			{
+				case Orientation.XY:
+					_mapX += offx;
+					_mapY += offy;
+					break;
+				case Orientation.XZ:
+					_mapX += offx;
+					_mapZ += offy;
+					break;
+				case Orientation.YZ:
+					_mapY += offx;
+					_mapZ += offy;
+					break;
+			}
+			_dragMapPrevious = _clickPixelUp;
+		}
+		/// <summary>Attempts to move a selected object or waypoint relative to its location.</summary>
+		void moveObject(SelectionData dat, int offsetX, int offsetY)
+		{
+			bool isDragging = _dragMoveActive || _dragAllActive;
+			// If part of a larger move operation, it must be flagged as ready after the first frame of movement has been processed.
+			// This initializes the starting point so that snapping can work properly.
+			if (isDragging && !_dragMoveSnapReady)
+			{
+				dat.WpDragStartX = dat.WPRef.RawX;
+				dat.WpDragStartY = dat.WPRef.RawY;
+				dat.WpDragStartZ = dat.WPRef.RawZ;
+			}
+			else if (!isDragging) _dragMoveSnapReady = false;
+			int currentX = 0, currentY = 0;
+			switch (_displayMode)
+			{
+				case Orientation.XY:
+					currentX = (isDragging ? dat.WpDragStartX : dat.WPRef.RawX);
+					currentY = (isDragging ? dat.WpDragStartY : dat.WPRef.RawY);
+					break;
+				case Orientation.XZ:
+					currentX = (isDragging ? dat.WpDragStartX : dat.WPRef.RawX);
+					currentY = (isDragging ? dat.WpDragStartZ : dat.WPRef.RawZ);
+					break;
+				case Orientation.YZ:
+					currentX = (isDragging ? dat.WpDragStartY : dat.WPRef.RawY);
+					currentY = (isDragging ? dat.WpDragStartZ : dat.WPRef.RawZ);
+					break;
+			}
+
+			// Calculate new position based on snap settings.
+			// Integer division by the amount prevents any fractional values.
+			int newX = 0, newY = 0;
+			int snapAmount = getRawSnapAmount();
+			int snapType = (isDragging ? cboSnapTo.SelectedIndex : 0);
+			switch (snapType)
+			{
+				case 0:  // No snap.
+					newX = currentX + offsetX;
+					newY = currentY + offsetY;
+					break;
+				case 1:  // Snap to self.
+					newX = currentX + ((offsetX / snapAmount) * snapAmount);
+					newY = currentY + ((offsetY / snapAmount) * snapAmount);
+					break;
+				case 2:  // Snap to grid.
+					newX = ((currentX + offsetX) / snapAmount) * snapAmount;
+					newY = ((currentY + offsetY) / snapAmount) * snapAmount;
+					break;
+			}
+
+			switch (_displayMode)
+			{
+				case Orientation.XY:
+					dat.WPRef.RawX = (short)newX;
+					dat.WPRef.RawY = (short)newY;
+					break;
+				case Orientation.XZ:
+					dat.WPRef.RawX = (short)newX;
+					dat.WPRef.RawZ = (short)newY;
+					break;
+				case Orientation.YZ:
+					dat.WPRef.RawY = (short)newX;
+					dat.WPRef.RawZ = (short)newY;
+					break;
+			}
+			// also apply the offset to the initial order WP
+			if (dat.WpOrder == 18) moveObject(new SelectionData(0, dat.MapDataRef, dat.WpIndex * 4 + 1, 0, dat.Region), offsetX, offsetY);
+
+			if (_platform == Settings.Platform.XWA && ((Platform.Xwa.FlightGroup)dat.MapDataRef.FlightGroup).CraftType == 85) processHyperPoints();
+		}
+
+		/// <summary>Schedules a map redraw using a timer interval.</summary>
+		/// <remarks>This saves CPU cycles and produces smoother performance during rapid redraw requests such as when dragging something with the mouse.</remarks>
+		void scheduleMapPaint()
+		{
+			if (_mapPaintScheduled) return;
+
+			if (!mapPaintRedrawTimer.Enabled)
+			{
+				//mapPaintRedrawTimer.Interval = 17;    //Was trying to aim for ~60 FPS, but according to MSDN, the minimum accuracy is 55 ms.
+				mapPaintRedrawTimer.Start();
+			}
+			_mapPaintScheduled = true;
 		}
 
 		/// <summary>Update mapX and mapY</summary>
@@ -1660,6 +1462,216 @@ namespace Idmr.Yogeme
 			if ((_mapZ - h) / _zoom < -150) _mapZ = -150 * _zoom + h;
 		}
 
+		/// <summary>Determines if a waypoint (raw units) is within a bounding box formed by a top/left and bottom/right point.</summary>
+		bool waypointInside(BaseFlightGroup.Waypoint wp, ref Point p1, ref Point p2)
+		{
+			int tx = wp.RawX;
+			int ty = wp.RawY;
+			int tz = wp.RawZ;
+			switch (_displayMode)
+			{
+				case Orientation.XY: return ((tx >= p1.X && tx <= p2.X) && (ty >= p1.Y && ty <= p2.Y));
+				case Orientation.XZ: return ((tx >= p1.X && tx <= p2.X) && (tz >= p1.Y && tz <= p2.Y));
+				case Orientation.YZ: return ((ty >= p1.X && ty <= p2.X) && (tz >= p1.Y && tz <= p2.Y));
+			}
+			return false;
+		}
+		#endregion
+
+		#region selection
+		/// <summary>Clears all selection states, lists, and resets their associated controls.</summary>
+		void deselect()
+		{
+			bool btemp = _ignoreSelectionEvents;
+			_ignoreSelectionEvents = true;
+			_previousCraftSelection = null;
+			lstCraft.ClearSelected();
+			_selectionList.Clear();
+			lstSelection.Items.Clear();
+			lstSelection.Visible = false;
+			lblSelection.Visible = false;
+			_ignoreSelectionEvents = btemp;
+			_dragAllList.Clear();
+		}
+		/// <summary>Disables all selected waypoints and removes them from the selection list.</summary>
+		void disableSelectionWaypoints()
+		{
+			bool modified = false;
+			if (_selectionList.Count == 0) return;
+
+			// Work backwards because we have to remove from selection, and this disrupts the selection order.
+			for (int i = _selectionList.Count - 1; i >= 0; i--)
+			{
+				SelectionData dat = _selectionList[i];
+				if (dat.Active && (dat.WpIndex != 0 || dat.WpOrder != 0) && dat.WPRef.Enabled)
+				{
+					dat.WPRef.Enabled = false;
+					dat.Active = false;
+					setSelectionState(dat.MapDataIndex, false, dat.WpOrder, dat.WpIndex);
+					modified = true;
+				}
+			}
+			if (!modified) return;
+
+			updateSelectionListSize();
+			updatePreviousCraftSelection();
+			onDataModified?.Invoke(0, new EventArgs());
+			scheduleMapPaint();
+		}
+
+		/// <summary>Returns true if the specified object parameters are in the current selection list, and active.</summary>
+		/// <summary>Populates a list of objects (craft or their waypoints) that can be selected inside a rectangle of two opposing points.</summary>
+		/// <remarks>Points are the physical pixel coordinates on the map. The points will be interpreted as either a click (similar or identical points) or a bounding-box.</remarks>
+		void enumSelectionObjects(ref Point p1, ref Point p2, List<SelectionData> output)
+		{
+			Point m1 = new Point();
+			Point m2 = new Point();
+			convertMousepointToWaypoint(p1.X, p1.Y, ref m1);
+			convertMousepointToWaypoint(p2.X, p2.Y, ref m2);
+			normalizePoint(ref m1, ref m2);
+
+			if (isPointClicked(ref p1, ref p2))  // Also handles normalizing.
+			{
+				double msX = 0.0, msY = 0.0;
+				switch (_displayMode)
+				{
+					case Orientation.XY:
+						msX = (p2.X - _mapX) / Convert.ToDouble(_zoom) * 160;
+						msY = (_mapY - p2.Y) / Convert.ToDouble(_zoom) * 160;
+						break;
+					case Orientation.XZ:
+						msX = (p2.X - _mapX) / Convert.ToDouble(_zoom) * 160;
+						msY = (_mapZ - p2.Y) / Convert.ToDouble(_zoom) * 160;
+						break;
+					case Orientation.YZ:
+						msX = (p2.X - _mapY) / Convert.ToDouble(_zoom) * 160;
+						msY = (_mapZ - p2.Y) / Convert.ToDouble(_zoom) * 160;
+						break;
+				}
+
+				int tolerance = (int)(10 / Convert.ToDouble(_zoom) * 160);
+				if (tolerance < 1) tolerance = 1; // For very high zoom levels.
+				m1.X = (int)msX - tolerance;
+				m1.Y = (int)msY - tolerance;
+				m2.X = (int)msX + tolerance;
+				m2.Y = (int)msY + tolerance;
+			}
+
+			int ord = 0;
+			int reg = 0;
+			if (_platform == Settings.Platform.XWA)
+			{
+				reg = (int)(numRegion.Value - 1);
+				ord = (int)(reg * 4 + numOrder.Value);
+			}
+			for (int i = 0; i < _mapData.Length; i++)
+			{
+				if (_mapData[i].View == Visibility.Hide || !passFilter(_mapData[i])) continue;
+
+				for (int wp = 0; wp < _mapData[i].WPs[0].Length; wp++)
+				{
+					if (!chkWP[wp].Checked || (!_mapData[i].WPs[0][wp].Enabled && _platform != Settings.Platform.XWA && wp != 0)) continue;
+
+					if (_platform == Settings.Platform.XWA)
+					{
+						Platform.Xwa.FlightGroup.XwaWaypoint cwp = (Platform.Xwa.FlightGroup.XwaWaypoint)_mapData[i].WPs[0][wp];
+						if (cwp.Region != reg) continue;
+					}
+					if (waypointInside(_mapData[i].WPs[0][wp], ref m1, ref m2)) output.Add(new SelectionData(i, _mapData[i], 0, wp, (byte)reg));
+				}
+				if (ord > 0)
+				{
+					for (int wp = 0; wp < _mapData[i].WPs[ord].Length; wp++)
+					{
+						if (!chkWP[4 + wp].Checked || !_mapData[i].WPs[ord][wp].Enabled) continue;
+						if (wp == 0 && _mapData[i].WPs[18][reg].Enabled && _mapData[i].WPs[0][0][4] != reg) continue;
+
+						if (waypointInside(_mapData[i].WPs[ord][wp], ref m1, ref m2)) output.Add(new SelectionData(i, _mapData[i], ord, wp, (byte)reg));
+					}
+
+					var hyp = _mapData[i].WPs[17][reg];
+					if (hyp.Enabled && waypointInside(hyp, ref m1, ref m2)) output.Add(new SelectionData(i, _mapData[i], 17, reg));
+					//TODO: need to add the order check here ^ since it's grabbing hidden WPs
+					// I think what would be better is to completely overhaul this; centralize the visibility, use that for selection and display
+					var exit = _mapData[i].WPs[18][reg];
+					if (exit.Enabled && waypointInside(exit, ref m1, ref m2))
+					{
+						if (_mapData[i].WPs[0][0][4] != reg && numOrder.Value == 1) output.Add(new SelectionData(i, _mapData[i], 18, reg, (byte)reg));
+						else
+						{
+							var fg = (Platform.Xwa.FlightGroup)_mapData[i].FlightGroup;
+							for (int o = 0; o < 4; o++)
+								if (fg.Orders[reg, o].Command == 50 && (o + 1) == numOrder.Value)
+								{
+									output.Add(new SelectionData(i, _mapData[i], 18, reg, (byte)reg));
+									break;
+								}
+						}
+					}
+				}
+			}
+		}
+		/// <summary>Selects all visible objects on the map screen based on the criteria of currently selected items.</summary>
+		void expandSelection(ExpandSelection mode)
+		{
+			HashSet<int> values = new HashSet<int>();
+			Point m1 = new Point(), m2 = new Point();
+			convertMousepointToWaypoint(0, 0, ref m1);
+			convertMousepointToWaypoint(pctMap.Width, pctMap.Height, ref m2);
+			normalizePoint(ref m1, ref m2);
+			switch (mode)
+			{
+				case ExpandSelection.Craft:
+					foreach (SelectionData dat in _selectionList) if (dat.Active) values.Add(dat.MapDataRef.Craft);
+					for (int i = 0; i < _mapData.Length; i++)
+					{
+						bool wpEnabled = (_platform == Settings.Platform.XWA ? ((Platform.Xwa.FlightGroup.XwaWaypoint)_mapData[i].WPs[0][0]).Region == numRegion.Value - 1 : _mapData[i].WPs[0][0].Enabled);
+						if (_mapData[i].View != Visibility.Hide && passFilter(_mapData[i]) && values.Contains(_mapData[i].Craft) && wpEnabled && waypointInside(_mapData[i].WPs[0][0], ref m1, ref m2))
+							setSelectionState(i, true, 0, 0);
+					}
+					break;
+				case ExpandSelection.Iff:
+					foreach (SelectionData dat in _selectionList) if (dat.Active) values.Add(dat.MapDataRef.IFF);
+					for (int i = 0; i < _mapData.Length; i++)
+					{
+						bool wpEnabled = (_platform == Settings.Platform.XWA ? ((Platform.Xwa.FlightGroup.XwaWaypoint)_mapData[i].WPs[0][0]).Region == numRegion.Value - 1 : _mapData[i].WPs[0][0].Enabled);
+						if (_mapData[i].View != Visibility.Hide && passFilter(_mapData[i]) && values.Contains(_mapData[i].IFF) && wpEnabled && waypointInside(_mapData[i].WPs[0][0], ref m1, ref m2))
+							setSelectionState(i, true, 0, 0);
+					}
+					break;
+				case ExpandSelection.Size:
+					foreach (SelectionData dat in _selectionList)
+					{
+						if (dat.Active)
+						{
+							int size = getModelSizeRating(dat.MapDataIndex);
+							if (size > 0) values.Add(size);
+						}
+					}
+					for (int i = 0; i < _mapData.Length; i++)
+					{
+						bool wpEnabled = (_platform == Settings.Platform.XWA ? ((Platform.Xwa.FlightGroup.XwaWaypoint)_mapData[i].WPs[0][0]).Region == numRegion.Value - 1 : _mapData[i].WPs[0][0].Enabled);
+						int size = getModelSizeRating(i);
+						if (_mapData[i].View != Visibility.Hide && passFilter(_mapData[i]) && values.Contains(size) && wpEnabled && waypointInside(_mapData[i].WPs[0][0], ref m1, ref m2))
+							setSelectionState(i, true, 0, 0);
+					}
+					break;
+				case ExpandSelection.Invert:
+					foreach (SelectionData dat in _selectionList) if (dat.Active && dat.WpIndex == 0 && dat.WpOrder == 0) values.Add(dat.MapDataIndex);
+					deselect();
+					for (int i = 0; i < _mapData.Length; i++)
+					{
+						bool wpEnabled = (_platform == Settings.Platform.XWA ? ((Platform.Xwa.FlightGroup.XwaWaypoint)_mapData[i].WPs[0][0]).Region == numRegion.Value - 1 : _mapData[i].WPs[0][0].Enabled);
+						if (_mapData[i].View != Visibility.Hide && passFilter(_mapData[i]) && !values.Contains(i) && wpEnabled && waypointInside(_mapData[i].WPs[0][0], ref m1, ref m2))
+							setSelectionState(i, true, 0, 0);
+					}
+					break;
+			}
+			updateSelectionListSize();
+			updatePreviousCraftSelection();
+			scheduleMapPaint();
+		}
+
 		/// <summary>Calculates and retrieves the average coordinates (in raw map units) of all selected items.</summary>
 		void getAverageSelectionCoords(out int x, out int y, out int z)
 		{
@@ -1677,6 +1689,209 @@ namespace Idmr.Yogeme
 			y = sumY / _selectionList.Count;
 			z = sumZ / _selectionList.Count;
 		}
+		bool getSelectionState(int datIndex, int order, int wp)
+		{
+			foreach (SelectionData dat in _selectionList) if (dat.Active && dat.MapDataIndex == datIndex && dat.WpOrder == order && dat.WpIndex == wp) return true;
+
+			return false;
+		}
+
+		/// <summary>Returns true if any specified objects are currently in our selection list.</summary>
+		bool isListObjectSelected(List<SelectionData> objects)
+		{
+			foreach (SelectionData test in objects)
+				foreach (SelectionData cur in _selectionList)
+					if (test.MapDataIndex == cur.MapDataIndex && test.WpIndex == cur.WpIndex && test.WpOrder == cur.WpOrder) return true;
+			return false;
+		}
+		/// <summary>Returns true if the specified craft or any of its waypoints are selected.</summary>
+		bool isMapObjectSelected(int mapDataIndex)
+		{
+			for (int i = 0; i < _selectionList.Count; i++)
+				if (_selectionList[i].MapDataIndex == mapDataIndex) return true;
+			return false;
+		}
+
+		void moveEntireSelection()
+		{
+			int offsetX = _clickMapUp.X - _clickMapDown.X;
+			int offsetY = _clickMapUp.Y - _clickMapDown.Y;
+			if (_dragAllList.Count == 0)
+				for (int md = 0; md < _mapData.Length; md++)
+				{
+					if (!isMapObjectSelected(md)) continue;
+
+					int reg = (_platform == Settings.Platform.XWA ? (int)(numRegion.Value - 1) : 0);
+					int ord = (_platform == Settings.Platform.XWA ? reg * 4 + 1 : 0);	// always grab Order 1 for the region
+
+					for (int wpSet = 0; wpSet < _mapData[md].WPs.Length; wpSet++)
+						for (int wp = 0; wp < _mapData[md].WPs[wpSet].Length; wp++)
+						{
+							if (!_mapData[md].WPs[wpSet][wp].Enabled) continue;
+
+							if (_platform == Settings.Platform.XWA)
+							{
+								if (wpSet == 0 && ((Platform.Xwa.FlightGroup.XwaWaypoint)_mapData[md].WPs[wpSet][wp]).Region != reg)
+									continue;
+								else if (wpSet > 0 && wpSet < ord || wpSet > ord + 3 ) continue;
+							}
+
+							_dragAllList.Add(new SelectionData(md, _mapData[md], wpSet, wp));
+						}
+				}
+			foreach (var dat in _dragAllList) moveObject(dat, offsetX, offsetY);
+			_dragMoveSnapReady = true;
+			onDataModified?.Invoke(0, new EventArgs());
+		}
+		void moveSelectionToCursor()
+		{
+			int offsetX = _clickMapUp.X - _clickMapDown.X;
+			int offsetY = _clickMapUp.Y - _clickMapDown.Y;
+			foreach (SelectionData dat in _selectionList)
+				if (dat.Active && dat.WpOrder != 17)    // do not move Exit points. Will update on next load
+					moveObject(dat, offsetX, offsetY);
+			_dragMoveSnapReady = true;
+			onDataModified?.Invoke(0, new EventArgs());
+		}
+		/// <summary>Processes a keyboard event to move all selected objects in a particular direction.</summary>
+		/// <remarks>Amount is derived from the snap amount if snapping is enabled (otherwise uses a default value), but snapping is always relative to self.</remarks>
+		void moveSelectionByKey(KeyEventArgs e, int directionX, int directionY)
+		{
+			if (_dragMoveActive || _dragAllActive || _selectionList.Count == 0) return;
+
+			int amount;
+			if (cboSnapTo.SelectedIndex > 0) amount = getRawSnapAmount();
+			else
+			{
+				amount = (int)(4 / Convert.ToDouble(_zoom) * 160);
+				if (_zoom < 1000 && amount < 2) amount = 2;
+				else if (amount < 1) amount = 1;
+			}
+			if (e.Shift)
+			{
+				amount /= 4;
+				if (amount < 1) amount = 1;
+			}
+			if (e.Control)
+			{
+				amount *= 4;
+				if (amount > 40) amount = 40;
+			}
+
+			int offsetX = amount * directionX;
+			int offsetY = amount * directionY;
+			if (e.Alt)
+			{
+				if (_dragAllList.Count == 0)
+					for (int md = 0; md < _mapData.Length; md++)
+					{
+						if (!isMapObjectSelected(md)) continue;
+
+						int reg = (_platform == Settings.Platform.XWA ? (int)(numRegion.Value - 1) : 0);
+						int ord = (_platform == Settings.Platform.XWA ? reg * 4 + 1 : 0);   // always grab Order 1 for the region
+
+						for (int wpSet = 0; wpSet < _mapData[md].WPs.Length; wpSet++)
+							for (int wp = 0; wp < _mapData[md].WPs[wpSet].Length; wp++)
+							{
+								if (!_mapData[md].WPs[wpSet][wp].Enabled) continue;
+
+								if (_platform == Settings.Platform.XWA)
+								{
+									if (wpSet == 0 && ((Platform.Xwa.FlightGroup.XwaWaypoint)_mapData[md].WPs[wpSet][wp]).Region != reg)
+										continue;
+									else if (wpSet > 0 && wpSet < ord || wpSet > ord + 3) continue;
+								}
+
+								_dragAllList.Add(new SelectionData(md, _mapData[md], wpSet, wp));
+							}
+					}
+				foreach (var dat in _dragAllList) moveObject(dat, offsetX, offsetY);
+
+			}
+			else foreach (SelectionData dat in _selectionList) if (dat.Active) moveObject(dat, offsetX, offsetY);
+
+			if (_selectionList.Count == 1)
+			{
+				SelectionData dat = _selectionList[0];
+				switch (_displayMode)
+				{
+					case Orientation.XY:
+						lblCoor1.Text = "New X: " + Math.Round(dat.WPRef.X, 2).ToString();
+						lblCoor2.Text = "New Y: " + Math.Round(dat.WPRef.Y, 2).ToString();
+						break;
+					case Orientation.XZ:
+						lblCoor1.Text = "New X: " + Math.Round(dat.WPRef.X, 2).ToString();
+						lblCoor2.Text = "New Z: " + Math.Round(dat.WPRef.Z, 2).ToString();
+						break;
+					case Orientation.YZ:
+						lblCoor1.Text = "New Y: " + Math.Round(dat.WPRef.Y, 2).ToString();
+						lblCoor2.Text = "New Z: " + Math.Round(dat.WPRef.Z, 2).ToString();
+						break;
+				}
+			}
+			onDataModified?.Invoke(0, new EventArgs());
+			MapPaint();
+		}
+		/// <summary>Moves all selected craft or waypoints into a different region. XWA only.</summary>
+		void moveSelectionToRegion(int region)
+		{
+			bool regionChanged = false, waypointCreated = false;
+			foreach (SelectionData dat in _selectionList)
+			{
+				if (dat.Active)
+				{
+					Platform.Xwa.FlightGroup.XwaWaypoint curWp = (Platform.Xwa.FlightGroup.XwaWaypoint)dat.WPRef;
+					if (dat.WpOrder == 0)
+					{
+						curWp.Region = Convert.ToByte(region);
+						if (dat.WpIndex == 0)
+						{
+							dat.MapDataRef.Region = region;
+							regionChanged = true;
+						}
+					}
+					else
+					{
+						int targetOrd = (int)(region * 4 + numOrder.Value);
+						var targWp = _mapData[dat.MapDataIndex].WPs[targetOrd][dat.WpIndex];
+						targWp.RawX = curWp.RawX;
+						targWp.RawY = curWp.RawY;
+						targWp.RawZ = curWp.RawZ;
+						targWp.Enabled = curWp.Enabled;
+						curWp.Enabled = false;
+						waypointCreated = true;
+					}
+				}
+			}
+			if (regionChanged || waypointCreated)
+			{
+				deselect();
+				onDataModified?.Invoke(0, new EventArgs());
+				if (regionChanged) lstCraft.Refresh();
+				scheduleMapPaint();
+			}
+		}
+
+		/// <summary>Selects objects via mouse click or bounding-box dragging.</summary>
+		void performSelection()
+		{
+			// Select anything inside the bounding box, or a single object if the user clicked on something.
+			// If the Control key is held down, add the bounding box to the current selection. Or toggle selection on a single object.
+			if (!ModifierKeys.HasFlag(Keys.Control)) deselect();
+
+			List<SelectionData> objects = new List<SelectionData>();
+			enumSelectionObjects(ref _clickPixelDown, ref _clickPixelUp, objects);
+			bool isClick = isPointClicked(ref _clickPixelDown, ref _clickPixelUp);
+			if (isClick && objects.Count > 1) objects.Sort(SelectionData.Compare);
+
+			foreach (SelectionData dat in objects)
+			{
+				setSelectionState(dat.MapDataIndex, (objects.Count != 1 || !ModifierKeys.HasFlag(Keys.Control) || !getSelectionState(dat.MapDataIndex, dat.WpOrder, dat.WpIndex)), dat.WpOrder, dat.WpIndex);
+				if (isClick) break;
+			}
+			updateSelectionListSize();
+			updatePreviousCraftSelection();
+		}
 
 		/// <summary>Clears and rebuilds the selection lists.</summary>
 		/// <remarks>For reloading externally modified data (since the main editor and map utilize different lists).</remarks>
@@ -1692,6 +1907,49 @@ namespace Idmr.Yogeme
 			refreshVisibility();
 		}
 
+		/// <summary>Adds or removes a selected object based on its parameters. Ensures the object is unique.</summary>
+		/// <remarks>Automatically maintains the list and its associated controls.</remarks>
+		void setSelectionState(int datIndex, bool state, int order, int wp)
+		{
+			if (datIndex < 0 || datIndex >= _mapData.Length) return;
+
+			bool btemp = _ignoreSelectionEvents;
+			_ignoreSelectionEvents = true;
+			if (!state)
+			{
+				int i = 0;
+				while (i < _selectionList.Count)
+				{
+					if (_selectionList[i].MapDataIndex == datIndex && _selectionList[i].WpOrder == order && _selectionList[i].WpIndex == wp)
+					{
+						_selectionList.RemoveAt(i);
+						lstSelection.Items.RemoveAt(i);
+						if (order == 0 && wp == 0) lstCraft.SetSelected(datIndex, false);
+					}
+					else i++;
+				}
+			}
+			else
+			{
+				bool found = false;
+				foreach (SelectionData dat in _selectionList)
+					if (dat.MapDataIndex == datIndex && dat.WpOrder == order && dat.WpIndex == wp)
+					{
+						found = true;
+						break;
+					}
+				if (!found)
+				{
+					_selectionList.Add(new SelectionData(datIndex, _mapData[datIndex], order, wp, (byte)(numRegion.Value - 1)));
+					int chkIndex = (order > 0 ? 4 + wp : wp);
+					lstSelection.Items.Add(_mapData[datIndex].FullName + "  " + chkWP[chkIndex].Text);
+					lstSelection.SetSelected(lstSelection.Items.Count - 1, true);
+					if (order == 0 && wp == 0) lstCraft.SetSelected(datIndex, true);
+				}
+			}
+			_ignoreSelectionEvents = btemp;
+		}
+
 		/// <summary>Must be called whenever the selection is changed outside of the list control itself.</summary>
 		void updatePreviousCraftSelection()
 		{
@@ -1700,7 +1958,6 @@ namespace Idmr.Yogeme
 			lstCraft.Refresh();
 			lstSelection.Refresh();
 		}
-
 		/// <summary>Updates the size and visibility of the list control based on the number of items it contains.</summary>
 		void updateSelectionListSize()
 		{
@@ -1710,217 +1967,8 @@ namespace Idmr.Yogeme
 			lblSelection.Visible = (lstSelection.Items.Count > 0);
 			lstSelection.Visible = (lstSelection.Items.Count > 0);
 		}
+		#endregion
 
-		/// <summary>Re-counts how many objects are faded or hidden, updates controls providing this information, and re-sorts the draw order.</summary>
-		void refreshVisibility()
-		{
-			int[] count = new int[3];
-			for (int i = 0; i < _mapData.Length; i++) count[(int)_mapData[i].View]++;
-			lblFade.Text = "Faded: " + count[1] + " craft";
-			lblHide.Text = "Hidden: " + count[2] + " craft";
-			lblFade.ForeColor = (count[1] > 0 ? Color.Red : SystemColors.WindowText);
-			lblHide.ForeColor = (count[2] > 0 ? Color.Red : SystemColors.WindowText);
-			scheduleMapPaint();
-			lstCraft.Refresh();
-			_sortedMapDataList.Sort(compareDrawOrder);
-		}
-
-		/// <summary>Performs a middle click action depending on whether something is selected or not, based on user configuration.</summary>
-		void middleClick()
-		{
-			if (_selectionList.Count > 0) performMiddleClickAction(_settings.MapMiddleClickActionSelected);
-			else performMiddleClickAction(_settings.MapMiddleClickActionNoneSelected);
-		}
-
-		/// <summary>Performs a middle click action.</summary>
-		void performMiddleClickAction(MiddleClickAction action)
-		{
-			switch (action)
-			{
-				case MiddleClickAction.ResetToCenter: fitMapToObjects(null); break;
-				case MiddleClickAction.DoNothing: break;
-				case MiddleClickAction.FitToWorld: fitMapToWorld(); break;
-				case MiddleClickAction.FitToSelection: fitMapToObjects(_selectionList); break;
-				case MiddleClickAction.CenterOnSelection: centerMapOnSelection(); break;
-				default: fitMapToObjects(null); break;
-			}
-		}
-
-		/// <summary>Determines if the object is enabled and visible.</summary>
-		/// <remarks>For most platforms, checks the start point. For XWA, also checks for any hyper jump to the current region.</remarks>
-		WaypointVisibility isVisibleInRegion(int mapDataIndex, int waypoint)
-		{
-			if (_platform != Settings.Platform.XWA) return _mapData[mapDataIndex].WPs[0][waypoint].Enabled ? WaypointVisibility.Present : WaypointVisibility.Absent;
-
-			bool enabled = (waypoint == 0 || _mapData[mapDataIndex].WPs[0][waypoint].Enabled);
-			if (!enabled) return WaypointVisibility.Absent;
-
-			int region = (int)numRegion.Value - 1;
-			if (_mapData[mapDataIndex].WPs[0][waypoint][4] == (short)region) return WaypointVisibility.Present;
-
-			Platform.Xwa.FlightGroup xwaFg = (Platform.Xwa.FlightGroup)_mapData[mapDataIndex].FlightGroup;
-			for (int i = 0; i < 4; i++)
-				for (int j = 0; j < 4; j++)
-					if (xwaFg.Orders[i, j].Command == 0x32 && xwaFg.Orders[i, j].Variable1 == region) return WaypointVisibility.OtherRegion; // Hyper to region
-			return WaypointVisibility.Absent;
-		}
-
-		/// <summary>Gets a waypoint along the vector defined by two points with the given raw offset from the starting point.</summary>
-		/// <param name="start">The origin Waypoint</param>
-		/// <param name="end">The end Waypoint to define length and direction of the vector.</param>
-		/// <param name="rawOffset">The distance in raw units from <paramref name="start"/>. Negative values are "behind" start.</param>
-		/// <returns>A Waypoint of the location.</returns>
-		BaseFlightGroup.Waypoint getOffsetWaypoint(BaseFlightGroup.Waypoint start, BaseFlightGroup.Waypoint end, int rawOffset)
-		{
-			int[] vector = new int[3];
-            for (int c = 0; c < 3; c++) vector[c] = end[c] - start[c];
-            double vectorLength = Math.Sqrt(Math.Pow(vector[0], 2) + Math.Pow(vector[1], 2) + Math.Pow(vector[2], 2));
-            if (vectorLength == 0)
-            {
-                vector[1] = 1;
-                vectorLength = 1;
-            }
-			var offsetWaypoint = new Platform.Xwa.FlightGroup.Waypoint();
-            for (int c = 0; c < 3; c++) offsetWaypoint[c] = (short)(start[c] + rawOffset * vector[c] / vectorLength);
-			return offsetWaypoint;
-        }
-
-		/// <summary>Converts a waypoint into map coordinates for drawing.</summary>
-		/// <param name="waypoint">Source waypoint</param>
-		/// <returns>A map point taking into account Zoom and Display Orientation</returns>
-		Point getMapPoint(BaseFlightGroup.Waypoint waypoint)
-		{
-			Point mapPoint = new Point();
-            int mX = _mapX, mY = _mapZ, coord1 = 0, coord2 = 2;
-            switch (_displayMode)
-            {
-                case Orientation.XY:
-                    mY = _mapY;
-                    coord2 = 1;
-                    break;
-                case Orientation.YZ:
-                    mX = _mapY;
-                    coord1 = 1;
-                    break;
-            }
-			mapPoint.X = _zoom * waypoint[coord1] / 160 + mX;
-            mapPoint.Y = -_zoom * waypoint[coord2] / 160 + mY;
-			return mapPoint;
-        }
-
-		void processHyperPoints()
-		{
-            int numCraft = _mapData.Length;
-			for (int i = 0; i < numCraft; i++)
-			{
-				var fg = (Platform.Xwa.FlightGroup)_mapData[i].FlightGroup;
-
-                for (int r = 0; r < 4; r++)
-				{
-					_mapData[i].WPs[17][r].Enabled = false;
-					_mapData[i].WPs[18][r].Enabled = false;
-					var exitBuoySP = new Platform.Xwa.FlightGroup.XwaWaypoint
-                    {
-                        RawZ = 621  // just using as a flag
-                    };
-                    for (int o = 0; o < 16; o++)
-					{
-                        int reg = o / 4;
-                        int ord = o % 4;
-                        if (fg.Orders[reg, ord].Command == 50 && fg.Orders[reg, ord].Variable1 == r)
-						{
-							for (int b = 0; b < numCraft; b++)
-							{
-								var buoy = (Platform.Xwa.FlightGroup)_mapData[b].FlightGroup;
-                                if (buoy.CraftType == 85 && buoy.Waypoints[0][4] == r && (buoy.Designation1 == reg + 12 || buoy.Designation2 == reg + 12 || buoy.Designation1 == 0x14 || buoy.Designation2 == 0x14))   // From are #12-15, 0x14 is "From any"
-								{
-									exitBuoySP = buoy.Waypoints[0];
-									System.Diagnostics.Debug.WriteLine(fg.ToString() + " enters Region " + (r + 1) + " from " + (reg + 1) + " via " + buoy.ToString());
-									break;
-								}
-							}
-						}
-					}
-
-					var o1w1 = _mapData[i].WPs[r * 4 + 1][0];
-					// if returning to the starting region, grab the first order after the Hyper order
-					if (exitBuoySP.RawZ != 621 && r == _mapData[i].WPs[0][0][4])
-					{
-						for (int o = 0; o < 3; o++)
-						{
-							if (fg.Orders[r, o].Command == 50)
-							{
-								o1w1 = _mapData[i].WPs[(r * 4 + 1) + (o + 1)][0];
-								System.Diagnostics.Debug.WriteLine("return o1w1 used: " + fg.ToString());
-							}
-						}
-					}
-
-					Platform.Xwa.FlightGroup.Order hyperOrder = null;
-					if (fg.PlayerNumber != 0)
-					{
-						// Player
-						for (int o = 0; o < 16; o++)
-						{
-                            int reg = o / 4;
-                            int ord = o % 4;
-							if (fg.Orders[reg, ord].Command == 50 && fg.Orders[reg, ord].Variable1 == r)
-							{
-								var exitPoint = getOffsetWaypoint(exitBuoySP, o1w1, -100);    // .625 km
-								for (int c = 0; c < 3; c++) _mapData[i].WPs[17][r][c] = exitPoint[c];
-								_mapData[i].WPs[17][r].Enabled = true;
-								for (int c = 0; c < 3; c++) _mapData[i].WPs[18][r][c] = o1w1[c];
-								_mapData[i].WPs[18][r].Enabled = true;
-							}
-						}
-					}
-					else
-					{
-						// AI
-						var hyperEntry = new Platform.Xwa.FlightGroup.XwaWaypoint();
-						for (int o = 0; o < 16; o++)
-						{
-							int reg = o / 4;
-							int ord = o % 4;
-							if (fg.Orders[reg, ord].Command == (byte)Platform.Xwa.FlightGroup.Order.CommandList.HyperToRegion && fg.Orders[reg, ord].Variable1 == r)
-							{
-								hyperOrder = fg.Orders[reg, ord];
-								for (int w = 1; w < 8; w++)
-								{
-									if (!fg.Orders[reg, ord].Waypoints[w].Enabled)
-									{
-										for (int c = 0; c < 3; c++) hyperEntry[c] = fg.Orders[reg, ord].Waypoints[w - 1][c];
-										hyperEntry.Region = (byte)reg;
-										hyperEntry.Enabled = true;
-										break;
-									}
-								}
-							}
-						}
-						if (!hyperEntry.Enabled) continue;	// this is the "not found"/"doesn't hyper" check
-
-						var enterBuoy = new Platform.Xwa.FlightGroup.XwaWaypoint();
-						for (int b = 0; b < numCraft; b++)
-						{
-                            var buoy = (Platform.Xwa.FlightGroup)_mapData[b].FlightGroup;
-                            if (buoy.CraftType == 85 && buoy.Waypoints[0][4] == hyperEntry.Region && (buoy.Designation1 == r + 16 || buoy.Designation2 == r + 16))  // To are #16-19
-							{
-								enterBuoy = buoy.Waypoints[0];
-								System.Diagnostics.Debug.WriteLine(fg.ToString() + " leaves Region " + (hyperEntry.Region + 1) + " to " + (r + 1) + " via " + buoy.ToString());
-								break;
-							}
-						}
-                        int[] offset = new int[3];
-						if (hyperOrder.Waypoints[0].Enabled) // don't calc an offset if WP1 disabled, use the buoy itself
-							for (int c = 0; c < 3; c++) offset[c] = hyperEntry[c] - enterBuoy[c];
-						for (int c = 0; c < 3; c++) _mapData[i].WPs[17][r][c] = (short)(exitBuoySP[c] + offset[c]);
-						_mapData[i].WPs[17][r].Enabled = true;
-						for (int c = 0; c < 3; c++) _mapData[i].WPs[18][r][c] = (short)(o1w1[c] + offset[c]);
-						_mapData[i].WPs[18][r].Enabled = true;
-					}
-				}
-			}
-        }
         #endregion private methods
 
         #region public functions
@@ -2432,8 +2480,9 @@ namespace Idmr.Yogeme
 				List<SelectionData> objects = new List<SelectionData>();
 				enumSelectionObjects(ref _clickPixelDown, ref _clickPixelDown, objects);
 				bool isObjectAtPoint = isListObjectSelected(objects);
-				if (!_shiftState && !isObjectAtPoint) _dragSelectActive = true;
-				else if (!_shiftState && isObjectAtPoint && !ModifierKeys.HasFlag(Keys.Control)) _dragMoveActive = true;
+				if (!_shiftState && !isObjectAtPoint && !ModifierKeys.HasFlag(Keys.Alt)) _dragSelectActive = true;
+				else if (!_shiftState && isObjectAtPoint && !ModifierKeys.HasFlag(Keys.Control) && !ModifierKeys.HasFlag(Keys.Alt)) _dragMoveActive = true;
+				else if (!_shiftState && ModifierKeys.HasFlag(Keys.Alt)) _dragAllActive = true;
 				else if (_shiftState && _selectionList.Count > 0) _dragMoveActive = true;
 				convertMousepointToWaypoint(e.X, e.Y, ref _clickMapUp);
 				_dragMapPrevious = _clickMapUp;
@@ -2466,6 +2515,11 @@ namespace Idmr.Yogeme
 				{
 					moveSelectionToCursor();  //Dragging selected items, so move them.
 					scheduleMapPaint(); //Repaint with new positions.
+				}
+				else if (_dragAllActive && _selectionList.Count > 0)
+				{
+					moveEntireSelection();
+					scheduleMapPaint();
 				}
 			}
 			else if (_rightButtonDown)
@@ -2509,7 +2563,7 @@ namespace Idmr.Yogeme
 				_clickPixelUp.Y = e.Y;
 				convertMousepointToWaypoint(e.X, e.Y, ref _clickMapUp);
 				_dragSelectActive = false;  // Set to false so the selection box won't be painted.
-				if (!_shiftState && !_dragMoveActive)
+				if (!_shiftState && !_dragMoveActive && !_dragAllActive)
 				{
 					performSelection();
 					MapPaint();
@@ -2518,6 +2572,12 @@ namespace Idmr.Yogeme
 				{
 					moveSelectionToCursor();
 					_dragMoveActive = false;
+				}
+				else if (_dragAllActive)
+				{
+					moveEntireSelection();
+					_dragAllActive = false;
+					_dragAllList.Clear();
 				}
 			}
 			else if (e.Button == MouseButtons.Right)
@@ -2846,9 +2906,10 @@ namespace Idmr.Yogeme
 			text += "Q: fit map to selection.  W: fit map to world." + Environment.NewLine;
 			text += Environment.NewLine;
 			text += "Objects must be selected before they can be moved." + Environment.NewLine;
-			text += "Left-click drag any selected object to move them all." + Environment.NewLine;
-			text += "Or hold Shift key while dragging." + Environment.NewLine;
-			text += "Or use arrow keys. Hold Shift to move slower, Ctrl to move faster. You can specify a distance with the snap amount, but arrow keys always snap to self." + Environment.NewLine;
+			text += "Left-click drag any selected WP, or hold Shift while dragging, to move all selected WPs." + Environment.NewLine;
+			text += "Hold Alt to drag all enabled WPs for the selected FlightGroups, including hidden (unchecked) WPs.  For XWA, moves all Order WPs, applies to current Region only." + Environment.NewLine;
+			text += "Use arrow keys to move by fixed amounts. Hold Shift to move slower, Ctrl to move faster. You can specify a distance with the snap amount, but arrow keys always snap to self." + Environment.NewLine;
+			text += "Alt with arrow keys moves all enabled WPs for the selected FlightGroups by the default fixed amount, does not work with Control or Shift keys." + Environment.NewLine;
 			text += Environment.NewLine;
 			text += "If the map is too cluttered, you can Fade or Hide selected objects." + Environment.NewLine;
 			text += "Fade (F key) will darken their appearance to make surrounding objects easier to see." + Environment.NewLine;
@@ -2898,23 +2959,23 @@ namespace Idmr.Yogeme
 				switch (platform)
 				{
 					case Settings.Platform.XWING:
-						WPs = new Platform.Xwing.FlightGroup.Waypoint[1][];
+						WPs = new BaseFlightGroup.Waypoint[1][];
 						break;
 					case Settings.Platform.TIE:
-						WPs = new Platform.Tie.FlightGroup.Waypoint[1][];
+						WPs = new BaseFlightGroup.Waypoint[1][];
 						break;
 					case Settings.Platform.XvT:
 					case Settings.Platform.BoP:
-						WPs = new Platform.Xvt.FlightGroup.Waypoint[1][];
+						WPs = new BaseFlightGroup.Waypoint[1][];
 						break;
 					case Settings.Platform.XWA:
-						WPs = new Platform.Xwa.FlightGroup.Waypoint[19][];  // 0 is Starts, 1-16 are orders, 17 is HyperExits, 18 is HyperExitVectorTarget
-						WPs[17] = new Platform.Xwa.FlightGroup.Waypoint[4];
-						WPs[18] = new Platform.Xwa.FlightGroup.Waypoint[4];
+						WPs = new Platform.Xwa.FlightGroup.XwaWaypoint[19][];  // 0 is Starts, 1-16 are orders, 17 is HyperExits, 18 is HyperExitVectorTarget
+						WPs[17] = new Platform.Xwa.FlightGroup.XwaWaypoint[4];
+						WPs[18] = new Platform.Xwa.FlightGroup.XwaWaypoint[4];
 						for (int i = 0; i < 4; i++)
                         {
-                            WPs[17][i] = new Platform.Xwa.FlightGroup.Waypoint();
-							WPs[18][i] = new Platform.Xwa.FlightGroup.Waypoint();
+                            WPs[17][i] = new Platform.Xwa.FlightGroup.XwaWaypoint();
+							WPs[18][i] = new Platform.Xwa.FlightGroup.XwaWaypoint();
 						}
 						break;
 				}
