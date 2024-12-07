@@ -312,6 +312,8 @@
 			this.cmdAddStat = new System.Windows.Forms.Button();
 			this.lstStats = new System.Windows.Forms.ListBox();
 			this.tabMissSettings = new System.Windows.Forms.TabPage();
+			this.chkDisableRanks = new System.Windows.Forms.CheckBox();
+			this.chkHardShields = new System.Windows.Forms.CheckBox();
 			this.numTurretS = new System.Windows.Forms.NumericUpDown();
 			this.numTurretM = new System.Windows.Forms.NumericUpDown();
 			this.numTurretH = new System.Windows.Forms.NumericUpDown();
@@ -326,6 +328,19 @@
 			this.chkForceTurret = new System.Windows.Forms.CheckBox();
 			this.chkSkipHyper = new System.Windows.Forms.CheckBox();
 			this.chkRedAlert = new System.Windows.Forms.CheckBox();
+			this.tabMissTarget = new System.Windows.Forms.TabPage();
+			this.cboTargetMethod = new System.Windows.Forms.ComboBox();
+			this.label96 = new System.Windows.Forms.Label();
+			this.chkNotInspected = new System.Windows.Forms.CheckBox();
+			this.cmdClearTargeting = new System.Windows.Forms.Button();
+			this.label95 = new System.Windows.Forms.Label();
+			this.lstFgTargeting = new System.Windows.Forms.ListBox();
+			this.tabMissRci = new System.Windows.Forms.TabPage();
+			this.cmdRemoveSpecRci = new System.Windows.Forms.Button();
+			this.cmdAddSpecRci = new System.Windows.Forms.Button();
+			this.numSpecRci = new System.Windows.Forms.NumericUpDown();
+			this.cboSpecRci = new System.Windows.Forms.ComboBox();
+			this.lstSpecRci = new System.Windows.Forms.ListBox();
 			this.pnlSounds = new System.Windows.Forms.Panel();
 			this.chkIntRegion4 = new System.Windows.Forms.CheckBox();
 			this.chkIntRegion3 = new System.Windows.Forms.CheckBox();
@@ -426,21 +441,11 @@
 			this.cmdRemWeap = new System.Windows.Forms.Button();
 			this.cmdAddWeap = new System.Windows.Forms.Button();
 			this.lstWeapons = new System.Windows.Forms.ListBox();
-			this.chkHardShields = new System.Windows.Forms.CheckBox();
-			this.chkDisableRanks = new System.Windows.Forms.CheckBox();
-			this.tabMissTarget = new System.Windows.Forms.TabPage();
-			this.lstFgTargeting = new System.Windows.Forms.ListBox();
-			this.label95 = new System.Windows.Forms.Label();
-			this.cmdClearTargeting = new System.Windows.Forms.Button();
-			this.chkNotInspected = new System.Windows.Forms.CheckBox();
-			this.label96 = new System.Windows.Forms.Label();
-			this.cboTargetMethod = new System.Windows.Forms.ComboBox();
-			this.tabMissRci = new System.Windows.Forms.TabPage();
-			this.lstSpecRci = new System.Windows.Forms.ListBox();
-			this.cboSpecRci = new System.Windows.Forms.ComboBox();
-			this.numSpecRci = new System.Windows.Forms.NumericUpDown();
-			this.cmdAddSpecRci = new System.Windows.Forms.Button();
-			this.cmdRemoveSpecRci = new System.Windows.Forms.Button();
+			this.chkWeapRechargePercent = new System.Windows.Forms.CheckBox();
+			this.chkWeapDechargePercent = new System.Windows.Forms.CheckBox();
+			this.numDechargePercent = new System.Windows.Forms.NumericUpDown();
+			this.numRechargePercent = new System.Windows.Forms.NumericUpDown();
+			this.chkFighterDoubled = new System.Windows.Forms.CheckBox();
 			((System.ComponentModel.ISupportInitialize)(this.numFamHeadingZ)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numFamPosZ)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numFamHeadingXY)).BeginInit();
@@ -519,6 +524,9 @@
 			((System.ComponentModel.ISupportInitialize)(this.numTurretS)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numTurretM)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numTurretH)).BeginInit();
+			this.tabMissTarget.SuspendLayout();
+			this.tabMissRci.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.numSpecRci)).BeginInit();
 			this.pnlSounds.SuspendLayout();
 			this.pnlObjects.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numWeaponModel)).BeginInit();
@@ -561,9 +569,8 @@
 			((System.ComponentModel.ISupportInitialize)(this.numDecharge)).BeginInit();
 			this.pnlWeapProfiles.SuspendLayout();
 			this.pnlWeapRateOrProfiles.SuspendLayout();
-			this.tabMissTarget.SuspendLayout();
-			this.tabMissRci.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.numSpecRci)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.numDechargePercent)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.numRechargePercent)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// cmdOK
@@ -3910,6 +3917,26 @@
 			this.tabMissSettings.Text = "Settings";
 			this.tabMissSettings.UseVisualStyleBackColor = true;
 			// 
+			// chkDisableRanks
+			// 
+			this.chkDisableRanks.AutoSize = true;
+			this.chkDisableRanks.Location = new System.Drawing.Point(3, 210);
+			this.chkDisableRanks.Name = "chkDisableRanks";
+			this.chkDisableRanks.Size = new System.Drawing.Size(152, 17);
+			this.chkDisableRanks.TabIndex = 14;
+			this.chkDisableRanks.Text = "Disable FG Rank Modifiers";
+			this.chkDisableRanks.UseVisualStyleBackColor = true;
+			// 
+			// chkHardShields
+			// 
+			this.chkHardShields.AutoSize = true;
+			this.chkHardShields.Location = new System.Drawing.Point(3, 187);
+			this.chkHardShields.Name = "chkHardShields";
+			this.chkHardShields.Size = new System.Drawing.Size(171, 17);
+			this.chkHardShields.TabIndex = 13;
+			this.chkHardShields.Text = "Shoot through Shields on Hard";
+			this.chkHardShields.UseVisualStyleBackColor = true;
+			// 
 			// numTurretS
 			// 
 			this.numTurretS.AutoSize = true;
@@ -4066,6 +4093,167 @@
 			this.chkRedAlert.TabIndex = 0;
 			this.chkRedAlert.Text = "Red Alert";
 			this.chkRedAlert.UseVisualStyleBackColor = true;
+			// 
+			// tabMissTarget
+			// 
+			this.tabMissTarget.Controls.Add(this.cboTargetMethod);
+			this.tabMissTarget.Controls.Add(this.label96);
+			this.tabMissTarget.Controls.Add(this.chkNotInspected);
+			this.tabMissTarget.Controls.Add(this.cmdClearTargeting);
+			this.tabMissTarget.Controls.Add(this.label95);
+			this.tabMissTarget.Controls.Add(this.lstFgTargeting);
+			this.tabMissTarget.Location = new System.Drawing.Point(4, 22);
+			this.tabMissTarget.Name = "tabMissTarget";
+			this.tabMissTarget.Size = new System.Drawing.Size(369, 251);
+			this.tabMissTarget.TabIndex = 4;
+			this.tabMissTarget.Text = "\"O\" Targeting";
+			this.tabMissTarget.UseVisualStyleBackColor = true;
+			// 
+			// cboTargetMethod
+			// 
+			this.cboTargetMethod.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboTargetMethod.FormattingEnabled = true;
+			this.cboTargetMethod.Items.AddRange(new object[] {
+            "Use Global setting (default)",
+            "Nearest Target",
+            "Cycle Targets"});
+			this.cboTargetMethod.Location = new System.Drawing.Point(176, 25);
+			this.cboTargetMethod.Name = "cboTargetMethod";
+			this.cboTargetMethod.Size = new System.Drawing.Size(165, 21);
+			this.cboTargetMethod.TabIndex = 5;
+			// 
+			// label96
+			// 
+			this.label96.AutoSize = true;
+			this.label96.Location = new System.Drawing.Point(176, 9);
+			this.label96.Name = "label96";
+			this.label96.Size = new System.Drawing.Size(104, 13);
+			this.label96.TabIndex = 4;
+			this.label96.Text = "Target Craft method:";
+			// 
+			// chkNotInspected
+			// 
+			this.chkNotInspected.AutoSize = true;
+			this.chkNotInspected.Location = new System.Drawing.Point(176, 52);
+			this.chkNotInspected.Name = "chkNotInspected";
+			this.chkNotInspected.Size = new System.Drawing.Size(165, 17);
+			this.chkNotInspected.TabIndex = 3;
+			this.chkNotInspected.Text = "Filter targets to Not Inspected";
+			this.chkNotInspected.UseVisualStyleBackColor = true;
+			// 
+			// cmdClearTargeting
+			// 
+			this.cmdClearTargeting.Location = new System.Drawing.Point(3, 204);
+			this.cmdClearTargeting.Name = "cmdClearTargeting";
+			this.cmdClearTargeting.Size = new System.Drawing.Size(75, 23);
+			this.cmdClearTargeting.TabIndex = 2;
+			this.cmdClearTargeting.Text = "&Clear All";
+			this.cmdClearTargeting.UseVisualStyleBackColor = true;
+			this.cmdClearTargeting.Click += new System.EventHandler(this.cmdClearTargeting_Click);
+			// 
+			// label95
+			// 
+			this.label95.AutoSize = true;
+			this.label95.Location = new System.Drawing.Point(3, 9);
+			this.label95.Name = "label95";
+			this.label95.Size = new System.Drawing.Size(158, 13);
+			this.label95.TabIndex = 1;
+			this.label95.Text = "\"O\" targetable FGs (multi-select)";
+			// 
+			// lstFgTargeting
+			// 
+			this.lstFgTargeting.FormattingEnabled = true;
+			this.lstFgTargeting.Location = new System.Drawing.Point(3, 25);
+			this.lstFgTargeting.Name = "lstFgTargeting";
+			this.lstFgTargeting.ScrollAlwaysVisible = true;
+			this.lstFgTargeting.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
+			this.lstFgTargeting.Size = new System.Drawing.Size(167, 173);
+			this.lstFgTargeting.TabIndex = 0;
+			// 
+			// tabMissRci
+			// 
+			this.tabMissRci.Controls.Add(this.cmdRemoveSpecRci);
+			this.tabMissRci.Controls.Add(this.cmdAddSpecRci);
+			this.tabMissRci.Controls.Add(this.numSpecRci);
+			this.tabMissRci.Controls.Add(this.cboSpecRci);
+			this.tabMissRci.Controls.Add(this.lstSpecRci);
+			this.tabMissRci.Location = new System.Drawing.Point(4, 22);
+			this.tabMissRci.Name = "tabMissRci";
+			this.tabMissRci.Size = new System.Drawing.Size(369, 251);
+			this.tabMissRci.TabIndex = 5;
+			this.tabMissRci.Text = "SpecRci";
+			this.tabMissRci.UseVisualStyleBackColor = true;
+			// 
+			// cmdRemoveSpecRci
+			// 
+			this.cmdRemoveSpecRci.Location = new System.Drawing.Point(306, 108);
+			this.cmdRemoveSpecRci.Name = "cmdRemoveSpecRci";
+			this.cmdRemoveSpecRci.Size = new System.Drawing.Size(60, 23);
+			this.cmdRemoveSpecRci.TabIndex = 8;
+			this.cmdRemoveSpecRci.Text = "&Remove";
+			this.cmdRemoveSpecRci.UseVisualStyleBackColor = true;
+			this.cmdRemoveSpecRci.Click += new System.EventHandler(this.cmdRemoveSpecRci_Click);
+			// 
+			// cmdAddSpecRci
+			// 
+			this.cmdAddSpecRci.Location = new System.Drawing.Point(245, 108);
+			this.cmdAddSpecRci.Name = "cmdAddSpecRci";
+			this.cmdAddSpecRci.Size = new System.Drawing.Size(60, 23);
+			this.cmdAddSpecRci.TabIndex = 7;
+			this.cmdAddSpecRci.Text = "&Add";
+			this.cmdAddSpecRci.UseVisualStyleBackColor = true;
+			this.cmdAddSpecRci.Click += new System.EventHandler(this.cmdAddSpecRci_Click);
+			// 
+			// numSpecRci
+			// 
+			this.numSpecRci.Location = new System.Drawing.Point(149, 108);
+			this.numSpecRci.Maximum = new decimal(new int[] {
+            2147483647,
+            0,
+            0,
+            0});
+			this.numSpecRci.Minimum = new decimal(new int[] {
+            -2147483648,
+            0,
+            0,
+            -2147483648});
+			this.numSpecRci.Name = "numSpecRci";
+			this.numSpecRci.Size = new System.Drawing.Size(90, 20);
+			this.numSpecRci.TabIndex = 6;
+			this.numSpecRci.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+			this.numSpecRci.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            -2147483648});
+			// 
+			// cboSpecRci
+			// 
+			this.cboSpecRci.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboSpecRci.FormattingEnabled = true;
+			this.cboSpecRci.Items.AddRange(new object[] {
+            "Speed",
+            "Acceleration",
+            "Maneuverability",
+            "Laser",
+            "Ion",
+            "Missile",
+            "Shield",
+            "Hukk",
+            "Size",
+            "Score"});
+			this.cboSpecRci.Location = new System.Drawing.Point(2, 107);
+			this.cboSpecRci.Name = "cboSpecRci";
+			this.cboSpecRci.Size = new System.Drawing.Size(141, 21);
+			this.cboSpecRci.TabIndex = 5;
+			// 
+			// lstSpecRci
+			// 
+			this.lstSpecRci.FormattingEnabled = true;
+			this.lstSpecRci.Location = new System.Drawing.Point(2, 6);
+			this.lstSpecRci.Name = "lstSpecRci";
+			this.lstSpecRci.Size = new System.Drawing.Size(364, 95);
+			this.lstSpecRci.TabIndex = 0;
 			// 
 			// pnlSounds
 			// 
@@ -4311,6 +4499,7 @@
 			// 
 			// pnlShield
 			// 
+			this.pnlShield.Controls.Add(this.chkFighterDoubled);
 			this.pnlShield.Controls.Add(this.chkSSRecharge);
 			this.pnlShield.Controls.Add(this.label52);
 			this.pnlShield.Controls.Add(this.cboShield);
@@ -4322,7 +4511,7 @@
 			this.pnlShield.Controls.Add(this.numShieldRate);
 			this.pnlShield.Location = new System.Drawing.Point(397, 598);
 			this.pnlShield.Name = "pnlShield";
-			this.pnlShield.Size = new System.Drawing.Size(383, 252);
+			this.pnlShield.Size = new System.Drawing.Size(383, 271);
 			this.pnlShield.TabIndex = 60;
 			this.pnlShield.Visible = false;
 			// 
@@ -4606,7 +4795,7 @@
 			this.pnlWarheadCounts.Controls.Add(this.numMissiles);
 			this.pnlWarheadCounts.Controls.Add(this.numRockets);
 			this.pnlWarheadCounts.Controls.Add(this.numBombs);
-			this.pnlWarheadCounts.Location = new System.Drawing.Point(101, 460);
+			this.pnlWarheadCounts.Location = new System.Drawing.Point(201, 460);
 			this.pnlWarheadCounts.Name = "pnlWarheadCounts";
 			this.pnlWarheadCounts.Size = new System.Drawing.Size(190, 234);
 			this.pnlWarheadCounts.TabIndex = 32;
@@ -4944,24 +5133,28 @@
 			this.pnlWeapRates.Controls.Add(this.numImpactSpeed);
 			this.pnlWeapRates.Controls.Add(this.numRatePenalty);
 			this.pnlWeapRates.Controls.Add(this.numTransfer);
+			this.pnlWeapRates.Controls.Add(this.numRechargePercent);
 			this.pnlWeapRates.Controls.Add(this.numRecharge);
+			this.pnlWeapRates.Controls.Add(this.numDechargePercent);
 			this.pnlWeapRates.Controls.Add(this.numDecharge);
+			this.pnlWeapRates.Controls.Add(this.chkWeapDechargePercent);
 			this.pnlWeapRates.Controls.Add(this.chkWeapDecharge);
 			this.pnlWeapRates.Controls.Add(this.chkImpactAngle);
 			this.pnlWeapRates.Controls.Add(this.chkImpactSpeed);
 			this.pnlWeapRates.Controls.Add(this.chkImpact);
 			this.pnlWeapRates.Controls.Add(this.chkTransfer);
+			this.pnlWeapRates.Controls.Add(this.chkWeapRechargePercent);
 			this.pnlWeapRates.Controls.Add(this.chkWeapRecharge);
 			this.pnlWeapRates.Controls.Add(this.chkRatePenalty);
 			this.pnlWeapRates.Location = new System.Drawing.Point(6, 192);
 			this.pnlWeapRates.Name = "pnlWeapRates";
-			this.pnlWeapRates.Size = new System.Drawing.Size(190, 261);
+			this.pnlWeapRates.Size = new System.Drawing.Size(190, 313);
 			this.pnlWeapRates.TabIndex = 30;
 			// 
 			// chkMaxTorpTarget
 			// 
 			this.chkMaxTorpTarget.AutoSize = true;
-			this.chkMaxTorpTarget.Location = new System.Drawing.Point(3, 168);
+			this.chkMaxTorpTarget.Location = new System.Drawing.Point(3, 215);
 			this.chkMaxTorpTarget.Name = "chkMaxTorpTarget";
 			this.chkMaxTorpTarget.Size = new System.Drawing.Size(123, 17);
 			this.chkMaxTorpTarget.TabIndex = 23;
@@ -4971,7 +5164,7 @@
 			// chkMaxTorpPass
 			// 
 			this.chkMaxTorpPass.AutoSize = true;
-			this.chkMaxTorpPass.Location = new System.Drawing.Point(3, 144);
+			this.chkMaxTorpPass.Location = new System.Drawing.Point(3, 191);
 			this.chkMaxTorpPass.Name = "chkMaxTorpPass";
 			this.chkMaxTorpPass.Size = new System.Drawing.Size(115, 17);
 			this.chkMaxTorpPass.TabIndex = 23;
@@ -4981,7 +5174,7 @@
 			// chkTransferShieldLimit
 			// 
 			this.chkTransferShieldLimit.AutoSize = true;
-			this.chkTransferShieldLimit.Location = new System.Drawing.Point(3, 120);
+			this.chkTransferShieldLimit.Location = new System.Drawing.Point(3, 167);
 			this.chkTransferShieldLimit.Name = "chkTransferShieldLimit";
 			this.chkTransferShieldLimit.Size = new System.Drawing.Size(121, 17);
 			this.chkTransferShieldLimit.TabIndex = 23;
@@ -4991,7 +5184,7 @@
 			// chkTransferWeapLimit
 			// 
 			this.chkTransferWeapLimit.AutoSize = true;
-			this.chkTransferWeapLimit.Location = new System.Drawing.Point(3, 96);
+			this.chkTransferWeapLimit.Location = new System.Drawing.Point(3, 143);
 			this.chkTransferWeapLimit.Name = "chkTransferWeapLimit";
 			this.chkTransferWeapLimit.Size = new System.Drawing.Size(121, 17);
 			this.chkTransferWeapLimit.TabIndex = 23;
@@ -5000,7 +5193,7 @@
 			// 
 			// numImpactAngle
 			// 
-			this.numImpactAngle.Location = new System.Drawing.Point(134, 236);
+			this.numImpactAngle.Location = new System.Drawing.Point(134, 283);
 			this.numImpactAngle.Name = "numImpactAngle";
 			this.numImpactAngle.Size = new System.Drawing.Size(49, 20);
 			this.numImpactAngle.TabIndex = 22;
@@ -5012,7 +5205,7 @@
 			// 
 			// numMaxTorpTarget
 			// 
-			this.numMaxTorpTarget.Location = new System.Drawing.Point(134, 167);
+			this.numMaxTorpTarget.Location = new System.Drawing.Point(134, 214);
 			this.numMaxTorpTarget.Maximum = new decimal(new int[] {
             255,
             0,
@@ -5034,7 +5227,7 @@
 			// 
 			// numMaxTorpPass
 			// 
-			this.numMaxTorpPass.Location = new System.Drawing.Point(134, 143);
+			this.numMaxTorpPass.Location = new System.Drawing.Point(134, 190);
 			this.numMaxTorpPass.Maximum = new decimal(new int[] {
             255,
             0,
@@ -5056,7 +5249,7 @@
 			// 
 			// numTransferShieldLimit
 			// 
-			this.numTransferShieldLimit.Location = new System.Drawing.Point(134, 119);
+			this.numTransferShieldLimit.Location = new System.Drawing.Point(134, 166);
 			this.numTransferShieldLimit.Maximum = new decimal(new int[] {
             65535,
             0,
@@ -5073,7 +5266,7 @@
 			// 
 			// numTransferWeapLimit
 			// 
-			this.numTransferWeapLimit.Location = new System.Drawing.Point(134, 95);
+			this.numTransferWeapLimit.Location = new System.Drawing.Point(134, 142);
 			this.numTransferWeapLimit.Maximum = new decimal(new int[] {
             65535,
             0,
@@ -5090,7 +5283,7 @@
 			// 
 			// numImpactSpeed
 			// 
-			this.numImpactSpeed.Location = new System.Drawing.Point(134, 213);
+			this.numImpactSpeed.Location = new System.Drawing.Point(134, 260);
 			this.numImpactSpeed.Name = "numImpactSpeed";
 			this.numImpactSpeed.Size = new System.Drawing.Size(49, 20);
 			this.numImpactSpeed.TabIndex = 20;
@@ -5102,7 +5295,7 @@
 			// 
 			// numRatePenalty
 			// 
-			this.numRatePenalty.Location = new System.Drawing.Point(134, 71);
+			this.numRatePenalty.Location = new System.Drawing.Point(134, 118);
 			this.numRatePenalty.Maximum = new decimal(new int[] {
             65535,
             0,
@@ -5114,7 +5307,7 @@
 			// 
 			// numTransfer
 			// 
-			this.numTransfer.Location = new System.Drawing.Point(134, 48);
+			this.numTransfer.Location = new System.Drawing.Point(134, 95);
 			this.numTransfer.Maximum = new decimal(new int[] {
             65535,
             0,
@@ -5176,7 +5369,7 @@
 			// chkImpactAngle
 			// 
 			this.chkImpactAngle.AutoSize = true;
-			this.chkImpactAngle.Location = new System.Drawing.Point(3, 237);
+			this.chkImpactAngle.Location = new System.Drawing.Point(3, 284);
 			this.chkImpactAngle.Name = "chkImpactAngle";
 			this.chkImpactAngle.Size = new System.Drawing.Size(123, 17);
 			this.chkImpactAngle.TabIndex = 21;
@@ -5186,7 +5379,7 @@
 			// chkImpactSpeed
 			// 
 			this.chkImpactSpeed.AutoSize = true;
-			this.chkImpactSpeed.Location = new System.Drawing.Point(3, 214);
+			this.chkImpactSpeed.Location = new System.Drawing.Point(3, 261);
 			this.chkImpactSpeed.Name = "chkImpactSpeed";
 			this.chkImpactSpeed.Size = new System.Drawing.Size(127, 17);
 			this.chkImpactSpeed.TabIndex = 19;
@@ -5198,7 +5391,7 @@
 			this.chkImpact.AutoSize = true;
 			this.chkImpact.Checked = true;
 			this.chkImpact.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.chkImpact.Location = new System.Drawing.Point(3, 191);
+			this.chkImpact.Location = new System.Drawing.Point(3, 238);
 			this.chkImpact.Name = "chkImpact";
 			this.chkImpact.Size = new System.Drawing.Size(124, 17);
 			this.chkImpact.TabIndex = 18;
@@ -5208,7 +5401,7 @@
 			// chkTransfer
 			// 
 			this.chkTransfer.AutoSize = true;
-			this.chkTransfer.Location = new System.Drawing.Point(3, 49);
+			this.chkTransfer.Location = new System.Drawing.Point(3, 96);
 			this.chkTransfer.Name = "chkTransfer";
 			this.chkTransfer.Size = new System.Drawing.Size(127, 17);
 			this.chkTransfer.TabIndex = 16;
@@ -5228,7 +5421,7 @@
 			// chkRatePenalty
 			// 
 			this.chkRatePenalty.AutoSize = true;
-			this.chkRatePenalty.Location = new System.Drawing.Point(3, 72);
+			this.chkRatePenalty.Location = new System.Drawing.Point(3, 119);
 			this.chkRatePenalty.Name = "chkRatePenalty";
 			this.chkRatePenalty.Size = new System.Drawing.Size(129, 17);
 			this.chkRatePenalty.TabIndex = 23;
@@ -5382,186 +5575,69 @@
 			this.lstWeapons.Size = new System.Drawing.Size(366, 108);
 			this.lstWeapons.TabIndex = 1;
 			// 
-			// chkHardShields
+			// chkWeapRechargePercent
 			// 
-			this.chkHardShields.AutoSize = true;
-			this.chkHardShields.Location = new System.Drawing.Point(3, 187);
-			this.chkHardShields.Name = "chkHardShields";
-			this.chkHardShields.Size = new System.Drawing.Size(171, 17);
-			this.chkHardShields.TabIndex = 13;
-			this.chkHardShields.Text = "Shoot through Shields on Hard";
-			this.chkHardShields.UseVisualStyleBackColor = true;
+			this.chkWeapRechargePercent.AutoSize = true;
+			this.chkWeapRechargePercent.Location = new System.Drawing.Point(3, 72);
+			this.chkWeapRechargePercent.Name = "chkWeapRechargePercent";
+			this.chkWeapRechargePercent.Size = new System.Drawing.Size(110, 17);
+			this.chkWeapRechargePercent.TabIndex = 14;
+			this.chkWeapRechargePercent.Text = "Recharge Rate %";
+			this.chkWeapRechargePercent.UseVisualStyleBackColor = true;
 			// 
-			// chkDisableRanks
+			// chkWeapDechargePercent
 			// 
-			this.chkDisableRanks.AutoSize = true;
-			this.chkDisableRanks.Location = new System.Drawing.Point(3, 210);
-			this.chkDisableRanks.Name = "chkDisableRanks";
-			this.chkDisableRanks.Size = new System.Drawing.Size(152, 17);
-			this.chkDisableRanks.TabIndex = 14;
-			this.chkDisableRanks.Text = "Disable FG Rank Modifiers";
-			this.chkDisableRanks.UseVisualStyleBackColor = true;
+			this.chkWeapDechargePercent.AutoSize = true;
+			this.chkWeapDechargePercent.Location = new System.Drawing.Point(3, 49);
+			this.chkWeapDechargePercent.Name = "chkWeapDechargePercent";
+			this.chkWeapDechargePercent.Size = new System.Drawing.Size(110, 17);
+			this.chkWeapDechargePercent.TabIndex = 12;
+			this.chkWeapDechargePercent.Text = "Decharge Rate %";
+			this.chkWeapDechargePercent.UseVisualStyleBackColor = true;
 			// 
-			// tabMissTarget
+			// numDechargePercent
 			// 
-			this.tabMissTarget.Controls.Add(this.cboTargetMethod);
-			this.tabMissTarget.Controls.Add(this.label96);
-			this.tabMissTarget.Controls.Add(this.chkNotInspected);
-			this.tabMissTarget.Controls.Add(this.cmdClearTargeting);
-			this.tabMissTarget.Controls.Add(this.label95);
-			this.tabMissTarget.Controls.Add(this.lstFgTargeting);
-			this.tabMissTarget.Location = new System.Drawing.Point(4, 22);
-			this.tabMissTarget.Name = "tabMissTarget";
-			this.tabMissTarget.Size = new System.Drawing.Size(369, 251);
-			this.tabMissTarget.TabIndex = 4;
-			this.tabMissTarget.Text = "\"O\" Targeting";
-			this.tabMissTarget.UseVisualStyleBackColor = true;
-			// 
-			// lstFgTargeting
-			// 
-			this.lstFgTargeting.FormattingEnabled = true;
-			this.lstFgTargeting.Location = new System.Drawing.Point(3, 25);
-			this.lstFgTargeting.Name = "lstFgTargeting";
-			this.lstFgTargeting.ScrollAlwaysVisible = true;
-			this.lstFgTargeting.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-			this.lstFgTargeting.Size = new System.Drawing.Size(167, 173);
-			this.lstFgTargeting.TabIndex = 0;
-			// 
-			// label95
-			// 
-			this.label95.AutoSize = true;
-			this.label95.Location = new System.Drawing.Point(3, 9);
-			this.label95.Name = "label95";
-			this.label95.Size = new System.Drawing.Size(158, 13);
-			this.label95.TabIndex = 1;
-			this.label95.Text = "\"O\" targetable FGs (multi-select)";
-			// 
-			// cmdClearTargeting
-			// 
-			this.cmdClearTargeting.Location = new System.Drawing.Point(3, 204);
-			this.cmdClearTargeting.Name = "cmdClearTargeting";
-			this.cmdClearTargeting.Size = new System.Drawing.Size(75, 23);
-			this.cmdClearTargeting.TabIndex = 2;
-			this.cmdClearTargeting.Text = "&Clear All";
-			this.cmdClearTargeting.UseVisualStyleBackColor = true;
-			this.cmdClearTargeting.Click += new System.EventHandler(this.cmdClearTargeting_Click);
-			// 
-			// chkNotInspected
-			// 
-			this.chkNotInspected.AutoSize = true;
-			this.chkNotInspected.Location = new System.Drawing.Point(176, 52);
-			this.chkNotInspected.Name = "chkNotInspected";
-			this.chkNotInspected.Size = new System.Drawing.Size(165, 17);
-			this.chkNotInspected.TabIndex = 3;
-			this.chkNotInspected.Text = "Filter targets to Not Inspected";
-			this.chkNotInspected.UseVisualStyleBackColor = true;
-			// 
-			// label96
-			// 
-			this.label96.AutoSize = true;
-			this.label96.Location = new System.Drawing.Point(176, 9);
-			this.label96.Name = "label96";
-			this.label96.Size = new System.Drawing.Size(104, 13);
-			this.label96.TabIndex = 4;
-			this.label96.Text = "Target Craft method:";
-			// 
-			// cboTargetMethod
-			// 
-			this.cboTargetMethod.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.cboTargetMethod.FormattingEnabled = true;
-			this.cboTargetMethod.Items.AddRange(new object[] {
-            "Use Global setting (default)",
-            "Nearest Target",
-            "Cycle Targets"});
-			this.cboTargetMethod.Location = new System.Drawing.Point(176, 25);
-			this.cboTargetMethod.Name = "cboTargetMethod";
-			this.cboTargetMethod.Size = new System.Drawing.Size(165, 21);
-			this.cboTargetMethod.TabIndex = 5;
-			// 
-			// tabMissRci
-			// 
-			this.tabMissRci.Controls.Add(this.cmdRemoveSpecRci);
-			this.tabMissRci.Controls.Add(this.cmdAddSpecRci);
-			this.tabMissRci.Controls.Add(this.numSpecRci);
-			this.tabMissRci.Controls.Add(this.cboSpecRci);
-			this.tabMissRci.Controls.Add(this.lstSpecRci);
-			this.tabMissRci.Location = new System.Drawing.Point(4, 22);
-			this.tabMissRci.Name = "tabMissRci";
-			this.tabMissRci.Size = new System.Drawing.Size(369, 251);
-			this.tabMissRci.TabIndex = 5;
-			this.tabMissRci.Text = "SpecRci";
-			this.tabMissRci.UseVisualStyleBackColor = true;
-			// 
-			// lstSpecRci
-			// 
-			this.lstSpecRci.FormattingEnabled = true;
-			this.lstSpecRci.Location = new System.Drawing.Point(2, 6);
-			this.lstSpecRci.Name = "lstSpecRci";
-			this.lstSpecRci.Size = new System.Drawing.Size(364, 95);
-			this.lstSpecRci.TabIndex = 0;
-			// 
-			// cboSpecRci
-			// 
-			this.cboSpecRci.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.cboSpecRci.FormattingEnabled = true;
-			this.cboSpecRci.Items.AddRange(new object[] {
-            "Speed",
-            "Acceleration",
-            "Maneuverability",
-            "Laser",
-            "Ion",
-            "Missile",
-            "Shield",
-            "Hukk",
-            "Size",
-            "Score"});
-			this.cboSpecRci.Location = new System.Drawing.Point(2, 107);
-			this.cboSpecRci.Name = "cboSpecRci";
-			this.cboSpecRci.Size = new System.Drawing.Size(141, 21);
-			this.cboSpecRci.TabIndex = 5;
-			// 
-			// numSpecRci
-			// 
-			this.numSpecRci.Location = new System.Drawing.Point(149, 108);
-			this.numSpecRci.Maximum = new decimal(new int[] {
-            2147483647,
+			this.numDechargePercent.Location = new System.Drawing.Point(134, 48);
+			this.numDechargePercent.Maximum = new decimal(new int[] {
+            65535,
             0,
             0,
             0});
-			this.numSpecRci.Minimum = new decimal(new int[] {
-            -2147483648,
+			this.numDechargePercent.Name = "numDechargePercent";
+			this.numDechargePercent.Size = new System.Drawing.Size(49, 20);
+			this.numDechargePercent.TabIndex = 13;
+			this.numDechargePercent.Value = new decimal(new int[] {
+            100,
             0,
             0,
-            -2147483648});
-			this.numSpecRci.Name = "numSpecRci";
-			this.numSpecRci.Size = new System.Drawing.Size(90, 20);
-			this.numSpecRci.TabIndex = 6;
-			this.numSpecRci.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-			this.numSpecRci.Value = new decimal(new int[] {
-            1,
+            0});
+			// 
+			// numRechargePercent
+			// 
+			this.numRechargePercent.Location = new System.Drawing.Point(134, 71);
+			this.numRechargePercent.Maximum = new decimal(new int[] {
+            65535,
             0,
             0,
-            -2147483648});
+            0});
+			this.numRechargePercent.Name = "numRechargePercent";
+			this.numRechargePercent.Size = new System.Drawing.Size(49, 20);
+			this.numRechargePercent.TabIndex = 15;
+			this.numRechargePercent.Value = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
 			// 
-			// cmdAddSpecRci
+			// chkFighterDoubled
 			// 
-			this.cmdAddSpecRci.Location = new System.Drawing.Point(245, 108);
-			this.cmdAddSpecRci.Name = "cmdAddSpecRci";
-			this.cmdAddSpecRci.Size = new System.Drawing.Size(60, 23);
-			this.cmdAddSpecRci.TabIndex = 7;
-			this.cmdAddSpecRci.Text = "&Add";
-			this.cmdAddSpecRci.UseVisualStyleBackColor = true;
-			this.cmdAddSpecRci.Click += new System.EventHandler(this.cmdAddSpecRci_Click);
-			// 
-			// cmdRemoveSpecRci
-			// 
-			this.cmdRemoveSpecRci.Location = new System.Drawing.Point(306, 108);
-			this.cmdRemoveSpecRci.Name = "cmdRemoveSpecRci";
-			this.cmdRemoveSpecRci.Size = new System.Drawing.Size(60, 23);
-			this.cmdRemoveSpecRci.TabIndex = 8;
-			this.cmdRemoveSpecRci.Text = "&Remove";
-			this.cmdRemoveSpecRci.UseVisualStyleBackColor = true;
-			this.cmdRemoveSpecRci.Click += new System.EventHandler(this.cmdRemoveSpecRci_Click);
+			this.chkFighterDoubled.AutoSize = true;
+			this.chkFighterDoubled.Location = new System.Drawing.Point(2, 245);
+			this.chkFighterDoubled.Name = "chkFighterDoubled";
+			this.chkFighterDoubled.Size = new System.Drawing.Size(154, 17);
+			this.chkFighterDoubled.TabIndex = 46;
+			this.chkFighterDoubled.Text = "Starfighter Shields Doubled";
+			this.chkFighterDoubled.UseVisualStyleBackColor = true;
 			// 
 			// XwaHookDialog
 			// 
@@ -5693,6 +5769,10 @@
 			((System.ComponentModel.ISupportInitialize)(this.numTurretS)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.numTurretM)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.numTurretH)).EndInit();
+			this.tabMissTarget.ResumeLayout(false);
+			this.tabMissTarget.PerformLayout();
+			this.tabMissRci.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.numSpecRci)).EndInit();
 			this.pnlSounds.ResumeLayout(false);
 			this.pnlSounds.PerformLayout();
 			this.pnlObjects.ResumeLayout(false);
@@ -5748,10 +5828,8 @@
 			this.pnlWeapProfiles.PerformLayout();
 			this.pnlWeapRateOrProfiles.ResumeLayout(false);
 			this.pnlWeapRateOrProfiles.PerformLayout();
-			this.tabMissTarget.ResumeLayout(false);
-			this.tabMissTarget.PerformLayout();
-			this.tabMissRci.ResumeLayout(false);
-			((System.ComponentModel.ISupportInitialize)(this.numSpecRci)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.numDechargePercent)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.numRechargePercent)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -6171,5 +6249,10 @@
 		private System.Windows.Forms.ComboBox cboSpecRci;
 		private System.Windows.Forms.Button cmdRemoveSpecRci;
 		private System.Windows.Forms.Button cmdAddSpecRci;
+		private System.Windows.Forms.NumericUpDown numRechargePercent;
+		private System.Windows.Forms.NumericUpDown numDechargePercent;
+		private System.Windows.Forms.CheckBox chkWeapDechargePercent;
+		private System.Windows.Forms.CheckBox chkWeapRechargePercent;
+		private System.Windows.Forms.CheckBox chkFighterDoubled;
 	}
 }

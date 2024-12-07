@@ -42,6 +42,8 @@ This will leave behind a single config file in AppData with your user settings.
 - (XWA) Hooks: Added MissionTie - TargetCraftKey settings [Issue [#107](https://github.com/MikeG621/YOGEME/issues/107)]
 - (XWA) Hooks: Added MissionTie - CanShootThroughtShieldOnHardDifficulty, IsMissionRanksModifierEnabled
 - (XWA) Hooks: Added MissionTie - SpecRci settings [Issue [#103](https://github.com/MikeG621/YOGEME/issues/103)]
+- (XWA) Hooks: Added WeaponRates - Recharge/DechargeRatePercent settings.
+- (XWA) Hooks: Added Shields - IsShieldStrengthForStarfighterDoubled.
 
 #### 1.16.0.5, 20 Nov 2024
 - (All) Fixed an exception when adding events to blank briefings, which would also silently overwrite non-related events in populated briefings. [Issue [#112](https://github.com/MikeG621/YOGEME/issues/112)]

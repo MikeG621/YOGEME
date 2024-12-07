@@ -9,6 +9,8 @@
  * [NEW] Mission: CanShootThroughtShieldOnHardDifficulty, IsMissionRanksModifierEnabled
  * [NEW #107] TargetCraftKey tab under Mission_Tie
  * [NEW #103] MissionTie: SpecRci
+ * [NEW] WeaponRate: Recharge/DechargeRatePercent
+ * [NEW] Shields: IsShieldStrengthForStarfighterDoubled
  * v1.16.0.1, 241014
  * [FIX #109] Was restoring backup after a save due to deleting empty filenames
  * v1.16, 241013
@@ -790,7 +792,7 @@ namespace Idmr.Yogeme
 				contents += "\r\n";
 			}
 			insertComments(ref contents, (int)ReadMode.Skins);
-			if (lstShield.Items.Count > 0 || !chkSSRecharge.Checked)
+			if (lstShield.Items.Count > 0 || !chkSSRecharge.Checked || chkFighterDoubled.Checked)
 			{
 				contents += "[Shield]\r\n";
 				for (int i = 0; i < lstShield.Items.Count; i++)
@@ -806,6 +808,7 @@ namespace Idmr.Yogeme
 					contents += craft + ", " + (perGen ? "1, " + rate + ", 0" : "0, 0, " + rate) + "\r\n";
 				}
 				if (!chkSSRecharge.Checked) contents += "IsShieldRechargeForStarshipsEnabled = 0\r\n";
+				if (chkFighterDoubled.Checked) contents += "IsShieldStrengthForStarfighterDoubled = 1\r\n";
 				contents += "\r\n";
 			}
 			insertComments(ref contents, (int)ReadMode.Shield);
@@ -1028,7 +1031,6 @@ namespace Idmr.Yogeme
 					else if (lineLower == "[concourse]") readMode = ReadMode.Concourse;
 					else if (lineLower == "[hullicon]") readMode = ReadMode.HullIcon;
 					else if (lineLower == "[statsprofiles]") readMode = ReadMode.Stats;
-					// TODO: need StatsModifiers* (MissionTie dll)
 					else if (lineLower == "[weaponrates]") readMode = ReadMode.WeaponRate;
 					else if (lineLower == "[weaponprofiles]") readMode = ReadMode.WeapProfile;
 					else if (lineLower == "[warheadprofiles]") readMode = ReadMode.WarheadProfile;
@@ -1125,6 +1127,7 @@ namespace Idmr.Yogeme
 			lstSkins.Items.Clear();
 			lstShield.Items.Clear();
 			chkSSRecharge.Checked = true;
+			chkFighterDoubled.Checked = false;
 			optHypGlobal.Checked = true;
 			lstHangarObjects.Items.Clear();
 			chkShuttle.Checked = true;
@@ -1974,6 +1977,12 @@ namespace Idmr.Yogeme
 					if (parts.Length > 1 && int.Parse(parts[1]) == 0) chkSSRecharge.Checked = false;
 					return;
 				}
+				if (line.StartsWith("IsShieldStrengthForStarfighterDoubled", StringComparison.InvariantCultureIgnoreCase))
+				{
+					parts = line.Split('=');
+					if (parts.Length > 1 && int.Parse(parts[1]) == 1) chkFighterDoubled.Checked = true;
+					return;
+				}
 
 				parts = line.ToLower().Split(',');
 				bool perGen = (parts[1] == "1");
@@ -2110,6 +2119,8 @@ namespace Idmr.Yogeme
 				string fg = "_fg_" + cboWeapFG.SelectedIndex.ToString() + " = ";
 				if (chkWeapDecharge.Checked) lstWeapons.Items.Add($"{prefix}DechargeRate{fg}{numDecharge.Value}");
 				if (chkWeapRecharge.Checked) lstWeapons.Items.Add($"{prefix}RechargeRate{fg}{numRecharge.Value}");
+				if (chkWeapDechargePercent.Checked) lstWeapons.Items.Add($"{prefix}DechargeRatePercent{fg}{numDechargePercent.Value}");
+				if (chkWeapRechargePercent.Checked) lstWeapons.Items.Add($"{prefix}RechargeRatePercent{fg}{numRechargePercent.Value}");
 				if (chkTransfer.Checked) lstWeapons.Items.Add($"{prefix}EnergyTransferRate{fg}{numTransfer.Value}");
 				if (chkRatePenalty.Checked) lstWeapons.Items.Add($"{prefix}EnergyTransferRatePenalty{fg}{numRatePenalty.Value}");
 				if (chkTransferWeapLimit.Checked) lstWeapons.Items.Add($"{prefix}EnergyTransferWeaponLimit{fg}{numTransferWeapLimit.Value}");
