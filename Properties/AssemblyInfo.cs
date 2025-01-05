@@ -1,6 +1,6 @@
 /*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
- * Copyright (C) 2007-2024 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2025 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  */
 
@@ -16,7 +16,7 @@ using System.Reflection;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Imperial Department of Military Research")]
 [assembly: AssemblyProduct("YOGEME")]
-[assembly: AssemblyCopyright("Copyright © Michael Gaisser 2007-2024")]
+[assembly: AssemblyCopyright("Copyright © Michael Gaisser 2007-2025")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]		
 

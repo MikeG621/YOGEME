@@ -36,6 +36,8 @@ To remove YOGEME, simply delete the directory where you placed it.
 This will leave behind a single config file in AppData with your user settings.
 
 ## Latest Release
+#### 1.16.0.6, 4 Jan 2025
+- (XvT) Fixed an exception when selecting FGs with corrupted Role data. [Issue [#114](https://github.com/MikeG621/YOGEME/issues/114)]
 #### 1.16.0.5, 20 Nov 2024
 - (All) Fixed an exception when adding events to blank briefings, which would also silently overwrite non-related events in populated briefings. [Issue [#112](https://github.com/MikeG621/YOGEME/issues/112)]
 
