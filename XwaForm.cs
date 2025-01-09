@@ -1,11 +1,13 @@
 /*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
- * Copyright (C) 2007-2024 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2025 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.16.0.4
+ * VERSION: 1.16.0.7
  *
  * CHANGELOG
+ * v1.16.0.7, 080125
+ * [FIX] Couple exceptions with Trigger.Parameter due to previous Parameter2 now causing an OutOfBounds value.
  * v1.16.0.4, 241103
  * [FIX #111] Exception when enabling a FG Goal
  * v1.16.0.3, 241027
@@ -4377,7 +4379,7 @@ namespace Idmr.Yogeme
 			cboMessType.SelectedIndex = -1;
 			cboMessType.SelectedIndex = _activeMessTrig.VariableType;
 			cboMessAmount.SelectedIndex = _activeMessTrig.Amount;
-			cboMessPara.SelectedIndex = _activeMessTrig.Parameter;
+			Common.SafeSetCBO(cboMessPara, _activeMessTrig.Parameter, true);
 			_loading = btemp;
 		}
 		void lblMessTrigArr_DoubleClick(object sender, EventArgs e) => menuPaste_Click("MessTrig", new EventArgs());
@@ -4460,7 +4462,7 @@ namespace Idmr.Yogeme
 			cboGlobalType.SelectedIndex = -1;
 			cboGlobalType.SelectedIndex = _activeGGTrigger.VariableType;
 			cboGlobalAmount.SelectedIndex = _activeGGTrigger.Amount;
-			cboGlobalPara.SelectedIndex = _activeGGTrigger.Parameter;
+			Common.SafeSetCBO(cboGlobalPara, _activeGGTrigger.Parameter, true);
 			numGlobalPoints.Value = _activeGlobalGoal.Points;
 			txtGlobalInc.Text = _activeGlobalGoal.GoalStrings[trig, (int)Globals.GoalState.Incomplete];
 			txtGlobalComp.Text = _activeGlobalGoal.GoalStrings[trig, (int)Globals.GoalState.Complete];
