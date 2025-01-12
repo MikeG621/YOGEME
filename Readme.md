@@ -45,6 +45,8 @@ This will leave behind a single config file in AppData with your user settings.
 - (XWA) Hooks: Added MissionTie - SpecRci settings [Issue [#103](https://github.com/MikeG621/YOGEME/issues/103)]
 - (XWA) Hooks: Added WeaponRates - Recharge/DechargeRatePercent settings.
 - (XWA) Hooks: Added Shields - IsShieldStrengthForStarfighterDoubled.
+- (XWA) Orders now have label for Var 3.
+- (XWA) Orders with "Component" var (Attack and Disable) now list the mesh type.
 
 #### 1.16.0.7, 8 Jan 2025
 - (XWA) Fixed a couple exceptions with bad Trigger Parameter values due to type change in Platform.dll

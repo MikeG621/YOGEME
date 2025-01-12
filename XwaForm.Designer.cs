@@ -730,6 +730,7 @@ namespace Idmr.Yogeme
 			this.dataOrders = new System.Data.DataView();
 			this.dataOrders_Raw = new System.Data.DataView();
 			this.ttActiveSequence = new System.Windows.Forms.ToolTip(this.components);
+			this.lblOVar3Note = new System.Windows.Forms.Label();
 			((System.ComponentModel.ISupportInitialize)(this.dataWaypoints)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.dataWaypoints_Raw)).BeginInit();
 			this.tabMain.SuspendLayout();
@@ -3802,6 +3803,7 @@ namespace Idmr.Yogeme
 			this.tabOrders.Controls.Add(this.label104);
 			this.tabOrders.Controls.Add(this.cboOSpeed);
 			this.tabOrders.Controls.Add(this.lblOVar2Note);
+			this.tabOrders.Controls.Add(this.lblOVar3Note);
 			this.tabOrders.Controls.Add(this.lblOVar1Note);
 			this.tabOrders.Controls.Add(this.lblOSpeedNote);
 			this.tabOrders.Controls.Add(this.numORegion);
@@ -3879,7 +3881,7 @@ namespace Idmr.Yogeme
 			// 
 			// lblOVar2Note
 			// 
-			this.lblOVar2Note.Location = new System.Drawing.Point(416, 226);
+			this.lblOVar2Note.Location = new System.Drawing.Point(409, 226);
 			this.lblOVar2Note.Name = "lblOVar2Note";
 			this.lblOVar2Note.Size = new System.Drawing.Size(120, 16);
 			this.lblOVar2Note.TabIndex = 38;
@@ -4144,7 +4146,7 @@ namespace Idmr.Yogeme
 			// 
 			// numOVar3
 			// 
-			this.numOVar3.Location = new System.Drawing.Point(490, 245);
+			this.numOVar3.Location = new System.Drawing.Point(326, 246);
 			this.numOVar3.Maximum = new decimal(new int[] {
             255,
             0,
@@ -4153,6 +4155,7 @@ namespace Idmr.Yogeme
 			this.numOVar3.Name = "numOVar3";
 			this.numOVar3.Size = new System.Drawing.Size(40, 20);
 			this.numOVar3.TabIndex = 22;
+			this.numOVar3.ValueChanged += new System.EventHandler(this.numOVar3_ValueChanged);
 			// 
 			// numOVar1
 			// 
@@ -4169,7 +4172,7 @@ namespace Idmr.Yogeme
 			// 
 			// lblOVar3
 			// 
-			this.lblOVar3.Location = new System.Drawing.Point(370, 245);
+			this.lblOVar3.Location = new System.Drawing.Point(206, 248);
 			this.lblOVar3.Name = "lblOVar3";
 			this.lblOVar3.Size = new System.Drawing.Size(120, 16);
 			this.lblOVar3.TabIndex = 25;
@@ -8420,6 +8423,16 @@ namespace Idmr.Yogeme
 			// 
 			this.ttActiveSequence.ToolTipTitle = "Active Sequence";
 			// 
+			// lblOVar3Note
+			// 
+			this.lblOVar3Note.Location = new System.Drawing.Point(372, 248);
+			this.lblOVar3Note.Name = "lblOVar3Note";
+			this.lblOVar3Note.Size = new System.Drawing.Size(120, 16);
+			this.lblOVar3Note.TabIndex = 38;
+			this.lblOVar3Note.Text = "lblOVar3Note";
+			this.lblOVar3Note.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
+			this.lblOVar3Note.Visible = false;
+			// 
 			// XwaForm
 			// 
 			this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
@@ -9333,5 +9346,6 @@ namespace Idmr.Yogeme
 		private Label lblPMFDelay;
 		private Label lblOMCDelay;
 		private Label lblPMCDelay;
+		private Label lblOVar3Note;
 	}
 }

@@ -7,7 +7,9 @@
  *
  * CHANGELOG
  * [NEW #113] Defect order now displays selected IFF and Team
- *  * v1.16.0.7, 080125
+ * [NEW] Orders now have label for Var 3.
+ * [UPD] Orders with "Component" var (Attack and Disable) now list the mesh type.
+ * v1.16.0.7, 080125
  * [FIX] Couple exceptions with Trigger.Parameter due to previous Parameter2 now causing an OutOfBounds value.
  * v1.16.0.4, 241103
  * [FIX #111] Exception when enabling a FG Goal
@@ -233,6 +235,7 @@ using System.IO;
 using System.Windows.Forms;
 using System.Collections.Generic;
 using Idmr.Platform.Xwa;
+using Idmr.Platform;
 
 namespace Idmr.Yogeme
 {
@@ -3590,6 +3593,7 @@ namespace Idmr.Yogeme
 			_activeOrder.Command = (byte)cboOrders.SelectedIndex;
 			numOVar1_ValueChanged(0, new EventArgs()); // Force refresh, since label information is provided to the user.
 			numOVar2_ValueChanged(0, new EventArgs());
+			numOVar3_ValueChanged(0, new EventArgs());
 		}
 		void cboOT1Type_SelectedIndexChanged(object sender, EventArgs e)
 		{
@@ -3683,6 +3687,10 @@ namespace Idmr.Yogeme
 				case FlightGroup.Order.CommandList.Defect:
 					if (value < _mission.IFFs.Length) text = _mission.IFFs[value];
 					break;
+				case FlightGroup.Order.CommandList.AttackTargets:
+				case FlightGroup.Order.CommandList.DisableTargets:
+					if (value < BaseStrings.MeshType.Length) text = BaseStrings.MeshType[value];
+					break;
 			}
 			lblOVar1Note.Text = text;
 			lblOVar1Note.Visible = (text != "");
@@ -3720,10 +3728,39 @@ namespace Idmr.Yogeme
 				case FlightGroup.Order.CommandList.Defect:
 					if (var < _mission.Teams.Count) text = _mission.Teams[var].Name;
 					break;
+				case FlightGroup.Order.CommandList.AttackTargets:
+				case FlightGroup.Order.CommandList.DisableTargets:
+					if (var < BaseStrings.MeshType.Length) text = BaseStrings.MeshType[var];
+					break;
 			}
 			lblOVar2Note.Text = text;
 			lblOVar2Note.Visible = (text != "");
 			lblOVar2Note.ForeColor = warning ? Color.Red : SystemColors.ControlText;
+		}
+		void numOVar3_ValueChanged(object sender, EventArgs e)
+		{
+			byte value = (byte)numOVar3.Value;
+			var command = (FlightGroup.Order.CommandList)_activeOrder.Command;
+			string text = "";
+			bool warning = false;
+			switch(command)
+			{
+				case FlightGroup.Order.CommandList.AttackTargets:
+					if (value == 0) text = "Default";
+					else if (value == 1) text = "All";
+					else if (value == 2) text = "None";
+					break;
+				case FlightGroup.Order.CommandList.BoardDestroy:
+					text = Common.GetFormattedTime(Mission.GetDelaySeconds(value), true);
+					break;
+				case FlightGroup.Order.CommandList.HyperToRegion:
+				case FlightGroup.Order.CommandList.WorkOn:
+					if (value == 0) { text = "Zero, no loops!"; warning = true; }
+					break;
+			}
+			lblOVar3Note.Text = text;
+			lblOVar3Note.Visible = (text != "");
+			lblOVar3Note.ForeColor = warning ? Color.Red : SystemColors.ControlText;
 		}
 		#endregion
 		#region Goals
