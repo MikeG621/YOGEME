@@ -1,11 +1,13 @@
 /*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
- * Copyright (C) 2007-2024 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2025 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.16.0.3
+ * VERSION: 1.16.0.6
  *
  * CHANGELOG
+ * v1.16.0.6, 250104
+ * [FIX #114] Corrupted craft role (when AI Rating is written)
  * v1.16.0.3, 241027
  * [FIX #110] FG library callback cast exception
  * v1.16, 241013
@@ -3217,8 +3219,16 @@ namespace Idmr.Yogeme
 					}
 				}
 				if (rindex < 0) rindex = 0;
-				teams[i].SelectedIndex = tindex;
-				roles[i].SelectedIndex = rindex;
+				try
+				{
+					teams[i].SelectedIndex = tindex;
+					roles[i].SelectedIndex = rindex;
+				}
+				catch
+				{
+					teams[i].SelectedIndex = 0;
+					roles[i].SelectedIndex = 0;
+				}
 			}
 		}
 
