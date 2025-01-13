@@ -95,6 +95,7 @@ namespace Idmr.Yogeme
 			this.cboViewIff = new System.Windows.Forms.ComboBox();
 			this.chkWireframe = new System.Windows.Forms.CheckBox();
 			this.chkLimit = new System.Windows.Forms.CheckBox();
+			this.chkCumulative = new System.Windows.Forms.CheckBox();
 			((System.ComponentModel.ISupportInitialize)(this.pctMap)).BeginInit();
 			this.grpDir.SuspendLayout();
 			this.grpPoints.SuspendLayout();
@@ -778,7 +779,7 @@ namespace Idmr.Yogeme
 			// 
 			// chkTraceHideFade
 			// 
-			this.chkTraceHideFade.Location = new System.Drawing.Point(658, 499);
+			this.chkTraceHideFade.Location = new System.Drawing.Point(658, 482);
 			this.chkTraceHideFade.Margin = new System.Windows.Forms.Padding(0);
 			this.chkTraceHideFade.Name = "chkTraceHideFade";
 			this.chkTraceHideFade.Size = new System.Drawing.Size(92, 17);
@@ -789,7 +790,7 @@ namespace Idmr.Yogeme
 			// 
 			// chkTraceSelected
 			// 
-			this.chkTraceSelected.Location = new System.Drawing.Point(658, 516);
+			this.chkTraceSelected.Location = new System.Drawing.Point(658, 499);
 			this.chkTraceSelected.Margin = new System.Windows.Forms.Padding(0);
 			this.chkTraceSelected.Name = "chkTraceSelected";
 			this.chkTraceSelected.Size = new System.Drawing.Size(92, 17);
@@ -911,6 +912,18 @@ namespace Idmr.Yogeme
 			this.chkLimit.UseVisualStyleBackColor = true;
 			this.chkLimit.CheckedChanged += new System.EventHandler(this.chkLimit_CheckedChanged);
 			// 
+			// chkCumulative
+			// 
+			this.chkCumulative.Enabled = false;
+			this.chkCumulative.Location = new System.Drawing.Point(658, 516);
+			this.chkCumulative.Margin = new System.Windows.Forms.Padding(0);
+			this.chkCumulative.Name = "chkCumulative";
+			this.chkCumulative.Size = new System.Drawing.Size(92, 17);
+			this.chkCumulative.TabIndex = 31;
+			this.chkCumulative.Text = "Cumulative";
+			this.chkCumulative.UseVisualStyleBackColor = true;
+			this.chkCumulative.CheckedChanged += new System.EventHandler(this.chkCumulative_CheckedChanged);
+			// 
 			// MapForm
 			// 
 			this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
@@ -926,6 +939,7 @@ namespace Idmr.Yogeme
 			this.Controls.Add(this.cmdFitSelected);
 			this.Controls.Add(this.chkTraceSelected);
 			this.Controls.Add(this.chkTraceHideFade);
+			this.Controls.Add(this.chkCumulative);
 			this.Controls.Add(this.chkTime);
 			this.Controls.Add(this.cmdInvertSelection);
 			this.Controls.Add(this.cmdExpandBySize);
@@ -1066,5 +1080,6 @@ namespace Idmr.Yogeme
 		private ComboBox cboViewIff;
 		private CheckBox chkWireframe;
 		private CheckBox chkLimit;
+		private CheckBox chkCumulative;
 	}
 }

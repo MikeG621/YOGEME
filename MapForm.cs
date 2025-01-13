@@ -1,11 +1,12 @@
 /*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
- * Copyright (C) 2007-2024 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2025 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
  * VERSION: 1.16+
  *
  * CHANGELOG
+ * [NEW] Cumulative WP time checkbox
  * [NEW #81] Move all WPs of selected craft
  * [UPD] minor cleanup/reorg for my sanity
  * v1.16, 241013
@@ -514,8 +515,9 @@ namespace Idmr.Yogeme
 			double dist = Math.Sqrt((xlen * xlen) + (ylen * ylen) + (zlen * zlen));
 			return Math.Round(dist, 2).ToString() + " km";
 		}
-		string getTimeString(object fg, int orderIndex, BaseFlightGroup.Waypoint wp1, BaseFlightGroup.Waypoint wp2)
+		string getTimeString(object fg, int orderIndex, BaseFlightGroup.Waypoint wp1, BaseFlightGroup.Waypoint wp2, int previousSeconds, out int seconds)
 		{
+			seconds = 0;
 			double xlen = wp1.X - wp2.X;
 			double ylen = wp1.Y - wp2.Y;
 			double zlen = wp1.Z - wp2.Z;
@@ -582,7 +584,7 @@ namespace Idmr.Yogeme
 			}
 			if (speed > 0) // Using an explicit speed value instead of throttle.
 			{
-				speed = (int)((speed * 5) / 2.2235);
+				speed = (int)(speed * 5 / 2.2235);
 				throttle = 0;
 			}
 			else
@@ -592,8 +594,9 @@ namespace Idmr.Yogeme
 			}
 			if (speed == 0) return "stationary";
 
-			int seconds = (int)((dist * 1000) / speed);
-			return (seconds / 60).ToString() + ":" + ((seconds % 60 < 10) ? "0" : "") + (seconds % 60).ToString() + " @ " + (throttle != 0 ? throttle + "%" : speed + " mglt");
+			seconds = (int)(dist * 1000 / speed);
+			int totalSec = seconds + previousSeconds;
+			return $"{seconds / 60}:{((seconds % 60 < 10) ? "0" : "")}{seconds % 60} @ {(throttle != 0 ? throttle + "%" : speed + " mglt")}{(previousSeconds != 0 ? $" ({totalSec / 60}:{((totalSec % 60 < 10) ? "0" : "")}{totalSec % 60})" : "")}";
 		}
 		Brush getDrawColor(MapData dat)
 		{
@@ -1061,7 +1064,7 @@ namespace Idmr.Yogeme
 		{
 			PointF center = getCenterCoord();
 			pctMap.Width = Width - 102 - (lstCraft.Width + lstCraft.Margin.Right);
-			pctMap.Height = Height - 155;
+			pctMap.Height = Height - 160;
 			w = pctMap.Width;
 			h = pctMap.Height;
 			if (w < 1 || h < 1) return;
@@ -1085,13 +1088,15 @@ namespace Idmr.Yogeme
 			chkDistance.Left = grpDir.Left;
 			chkTime.Left = grpDir.Left;
 			chkTraceHideFade.Left = grpDir.Left - chkTraceHideFade.Width;
-			chkTraceSelected.Left = grpDir.Left - chkTraceHideFade.Width;
+			chkTraceSelected.Left = chkTraceHideFade.Left;
+			chkCumulative.Left = chkTraceHideFade.Left;
 			// Now align from the bottom, stacked in reverse order.
 			moveControlAbove(chkTime, null, ClientRectangle.Bottom - 3);
 			moveControlAbove(chkDistance, chkTime, 0);
 			moveControlAbove(chkTrace, chkDistance, 0);
 			moveControlAbove(chkTags, chkTrace, 0);
-			moveControlAbove(chkTraceSelected, null, ClientRectangle.Bottom - 3);
+			moveControlAbove(chkCumulative, null, ClientRectangle.Bottom - 3);
+			moveControlAbove(chkTraceSelected, chkCumulative, 0);
 			moveControlAbove(chkTraceHideFade, chkTraceSelected, 0);
 
 			updateMapCoord(center);
@@ -2037,6 +2042,7 @@ namespace Idmr.Yogeme
 				try { bmptemp = new Bitmap(imgCraft.Images[_mapData[i].Craft]); }
 				catch { bmptemp = new Bitmap(imgCraft.Images[0]); }
 				bmptemp = applyIffMask(bmptemp, pn.Color);
+				int seconds = 0;
 				// work through each WP and determine if it needs to be displayed, then place it on the map
 				// draw tags if required
 				// if previous sequential WP is checked and trace is required, draw trace line according to WP type
@@ -2118,7 +2124,11 @@ namespace Idmr.Yogeme
 										g3.DrawString(getDistanceString(_mapData[i].WPs[ord][k], baseWp), DefaultFont, sbTag, ordPoint.X + 4, ordPoint.Y + 4 + offy);
 										offy += 14;
 									}
-									if (chkTime.Checked) g3.DrawString(getTimeString(_mapData[i].FlightGroup, (int)numOrder.Value - 1, _mapData[i].WPs[ord][k], baseWp), DefaultFont, sbTag, ordPoint.X + 4, ordPoint.Y + 4 + offy);
+									if (chkTime.Checked)
+									{
+										g3.DrawString(getTimeString(_mapData[i].FlightGroup, (int)numOrder.Value - 1, _mapData[i].WPs[ord][k], baseWp, seconds, out int legSeconds), DefaultFont, sbTag, ordPoint.X + 4, ordPoint.Y + 4 + offy);
+										if (chkCumulative.Checked) seconds += legSeconds;
+									}
 								}
 							}
 						}
@@ -2145,7 +2155,11 @@ namespace Idmr.Yogeme
 										g3.DrawString(getDistanceString(_mapData[i].WPs[0][k], _mapData[i].WPs[0][comp]), DefaultFont, sbTag, waypoint.X + 4, waypoint.Y + 4 + offy);
 										offy += 14;
 									}
-									if (chkTime.Checked) g3.DrawString(getTimeString(_mapData[i].FlightGroup, (int)(numOrder.Value - 1), _mapData[i].WPs[0][k], _mapData[i].WPs[0][comp]), DefaultFont, sbTag, waypoint.X + 4, waypoint.Y + 4 + offy);
+									if (chkTime.Checked)
+									{
+										g3.DrawString(getTimeString(_mapData[i].FlightGroup, (int)numOrder.Value - 1, _mapData[i].WPs[0][k], _mapData[i].WPs[0][comp], seconds, out int legSeconds), DefaultFont, sbTag, waypoint.X + 4, waypoint.Y + 4 + offy);
+										if (chkCumulative.Checked) seconds += legSeconds;
+									}
 								}
 							}
 						}
@@ -2718,7 +2732,12 @@ namespace Idmr.Yogeme
 			chkTraceSelected.Enabled = chkTrace.Checked;
 		}
 		void chkDistance_CheckedChanged(object sender, EventArgs e) { if (!_isLoading) MapPaint(); }
-		void chkTime_CheckedChanged(object sender, EventArgs e) { if (!_isLoading) MapPaint(); }
+		void chkTime_CheckedChanged(object sender, EventArgs e)
+		{
+			chkCumulative.Enabled = chkTime.Checked;
+			if (!_isLoading) MapPaint();
+		}
+		void chkCumulative_CheckedChanged(object sender, EventArgs e) { if (!_isLoading) MapPaint(); }
 		void chkTraceHideFade_CheckedChanged(object sender, EventArgs e) { if (!_isLoading) MapPaint(); }
 		void chkTraceSelected_CheckedChanged(object sender, EventArgs e) { if (!_isLoading) MapPaint(); }
 		void chkWPArr_CheckedChanged(object sender, EventArgs e)
@@ -2895,6 +2914,7 @@ namespace Idmr.Yogeme
 		void cmdFitWorld_Click(object sender, EventArgs e) => fitMapToWorld();
 		void cmdFitDefault_Click(object sender, EventArgs e) => fitMapToObjects(null);
 		void cmdCenterSelected_Click(object sender, EventArgs e) => centerMapOnSelection();
+
 		void cmdHelp_Click(object sender, EventArgs e)
 		{
 			string text = "Left-click: select at cursor, or drag to select multiple objects." + Environment.NewLine;
