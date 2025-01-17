@@ -310,6 +310,7 @@ namespace Idmr.Yogeme
 			this.label104 = new System.Windows.Forms.Label();
 			this.cboOSpeed = new System.Windows.Forms.ComboBox();
 			this.lblOVar2Note = new System.Windows.Forms.Label();
+			this.lblOVar3Note = new System.Windows.Forms.Label();
 			this.lblOVar1Note = new System.Windows.Forms.Label();
 			this.lblOSpeedNote = new System.Windows.Forms.Label();
 			this.numORegion = new System.Windows.Forms.NumericUpDown();
@@ -730,7 +731,6 @@ namespace Idmr.Yogeme
 			this.dataOrders = new System.Data.DataView();
 			this.dataOrders_Raw = new System.Data.DataView();
 			this.ttActiveSequence = new System.Windows.Forms.ToolTip(this.components);
-			this.lblOVar3Note = new System.Windows.Forms.Label();
 			((System.ComponentModel.ISupportInitialize)(this.dataWaypoints)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.dataWaypoints_Raw)).BeginInit();
 			this.tabMain.SuspendLayout();
@@ -3889,6 +3889,16 @@ namespace Idmr.Yogeme
 			this.lblOVar2Note.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			this.lblOVar2Note.Visible = false;
 			// 
+			// lblOVar3Note
+			// 
+			this.lblOVar3Note.Location = new System.Drawing.Point(372, 248);
+			this.lblOVar3Note.Name = "lblOVar3Note";
+			this.lblOVar3Note.Size = new System.Drawing.Size(120, 16);
+			this.lblOVar3Note.TabIndex = 38;
+			this.lblOVar3Note.Text = "lblOVar3Note";
+			this.lblOVar3Note.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
+			this.lblOVar3Note.Visible = false;
+			// 
 			// lblOVar1Note
 			// 
 			this.lblOVar1Note.Location = new System.Drawing.Point(246, 227);
@@ -6115,7 +6125,7 @@ namespace Idmr.Yogeme
 			this.groupBox18.Size = new System.Drawing.Size(392, 152);
 			this.groupBox18.TabIndex = 11;
 			this.groupBox18.TabStop = false;
-			this.groupBox18.Text = "Primary Goals";
+			this.groupBox18.Text = "Primary Goal";
 			// 
 			// panel2
 			// 
@@ -6245,7 +6255,7 @@ namespace Idmr.Yogeme
 			this.groupBox5.Size = new System.Drawing.Size(392, 152);
 			this.groupBox5.TabIndex = 11;
 			this.groupBox5.TabStop = false;
-			this.groupBox5.Text = "Prevent Goals";
+			this.groupBox5.Text = "Prevent Goal";
 			// 
 			// panel3
 			// 
@@ -6374,7 +6384,7 @@ namespace Idmr.Yogeme
 			this.groupBox6.Size = new System.Drawing.Size(392, 152);
 			this.groupBox6.TabIndex = 11;
 			this.groupBox6.TabStop = false;
-			this.groupBox6.Text = "Secondary Goals";
+			this.groupBox6.Text = "Secondary Goal";
 			// 
 			// panel6
 			// 
@@ -8422,16 +8432,6 @@ namespace Idmr.Yogeme
 			// ttActiveSequence
 			// 
 			this.ttActiveSequence.ToolTipTitle = "Active Sequence";
-			// 
-			// lblOVar3Note
-			// 
-			this.lblOVar3Note.Location = new System.Drawing.Point(372, 248);
-			this.lblOVar3Note.Name = "lblOVar3Note";
-			this.lblOVar3Note.Size = new System.Drawing.Size(120, 16);
-			this.lblOVar3Note.TabIndex = 38;
-			this.lblOVar3Note.Text = "lblOVar3Note";
-			this.lblOVar3Note.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
-			this.lblOVar3Note.Visible = false;
 			// 
 			// XwaForm
 			// 
