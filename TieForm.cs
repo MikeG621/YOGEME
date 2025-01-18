@@ -1,11 +1,13 @@
 /*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
- * Copyright (C) 2007-2024 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2025 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.16.0.3
+ * VERSION: 1.16.0.3+
  *
  * CHANGELOG
+ * [FIX] Test now marks the battle:TEXT as Dirty.
+ * [FIX] Increased sleep after launching TIE during test before initial run check to preven premature cleanup.
  * v1.16.0.3, 241027
  * [FIX #110] FG library callback cast exception
  * v1.16, 241013
@@ -1577,6 +1579,7 @@ namespace Idmr.Yogeme
 			string[] missions = txt.Strings[3].Split('\0');
 			missions[0] = _mission.MissionFileName.Replace(".tie", "");
 			txt.Strings[3] = string.Join("\0", missions);
+			txt.Dirty();
 			battleLfd.Write();
 
 			if (isWin7 && !path.ToUpper().Contains("STEAM")) // explorer kill so colors work right
@@ -1590,7 +1593,7 @@ namespace Idmr.Yogeme
 			}
 
 			tie.Start();
-			System.Threading.Thread.Sleep(1000);
+			System.Threading.Thread.Sleep(3000);
 			System.Diagnostics.Process[] runningTies = System.Diagnostics.Process.GetProcessesByName("tie95");
 			while (runningTies.Length > 0)
 			{
