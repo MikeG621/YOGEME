@@ -1,12 +1,12 @@
 ﻿/*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
- * Copyright (C) 2007-2024 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2025 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
  * VERSION: 1.16.0.1+
  *
  * CHANGELOG
- * [NEW] Mission: CanShootThroughtShieldOnHardDifficulty, IsMissionRanksModifierEnabled
+ * [NEW] Mission: CanShootThroughtShieldOnHardDifficulty, IsMissionRanksModifierEnabled, SkipProjectilesProximityCheck
  * [NEW #107] TargetCraftKey tab under Mission_Tie
  * [NEW #103] MissionTie: SpecRci
  * [NEW] WeaponRate: Recharge/DechargeRatePercent
@@ -602,6 +602,7 @@ namespace Idmr.Yogeme
                     }
 					if (cboTargetMethod.SelectedIndex != 0) contents += "TargetCraftKeyMethod = " + (cboTargetMethod.SelectedIndex - 1) + "\r\n";
 					if (chkNotInspected.Checked) contents += "TargetCraftKeySelectOnlyNotInspected = 1\r\n";
+					if (chkSkipProx.Checked) contents += "SkipProjectilesProximityCheck = 1\r\n";
 				}
 				contents += "\r\n";
 			}
@@ -1196,6 +1197,7 @@ namespace Idmr.Yogeme
 			chkDisableWarhead.Checked = false;
 			chkDisableCollision.Checked = false;
 			chkDisableRanks.Checked = false;
+			chkSkipProx.Checked = false;
 			chkHardShields.Checked = false;
 			cboTargetMethod.SelectedIndex = 0;
 			lstStats.Items.Clear();
@@ -1293,6 +1295,7 @@ namespace Idmr.Yogeme
 					else if (parts[0] == "ismissionranksmodifierenabled") chkDisableRanks.Checked = parts[1] == "0";
 					else if (parts[0] == "targetcraftkeymethod") cboTargetMethod.SelectedIndex = int.Parse(parts[1]) + 1;
 					else if (parts[0] == "targetcraftkeyselectonlynotinspected") chkNotInspected.Checked = parts[1] == "1";
+					else if (parts[0] == "skipprojectilesproximitycheck") chkSkipProx.Checked = parts[1] == "1";
 					else throw new InvalidDataException();
 				}
 			}
@@ -1438,7 +1441,7 @@ namespace Idmr.Yogeme
 				if (chkRedAlert.Checked || chkSkipHyper.Checked
 					|| chkForceTurret.Checked || numTurretH.Value != 0 || numTurretM.Value != 0 || numTurretS.Value != 8
 					|| chkDisableLaser.Checked || chkDisableWarhead.Checked || chkDisableCollision.Checked || chkDisableRanks.Checked
-					|| chkHardShields.Checked
+					|| chkHardShields.Checked || chkSkipProx.Checked
 					|| cboTargetMethod.SelectedIndex != 0 || chkNotInspected.Checked || lstFgTargeting.SelectedIndices.Count != 0) return true;
 				return false;
 			}

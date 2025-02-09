@@ -39,11 +39,11 @@ This will leave behind a single config file in AppData with your user settings.
 #### WIP
 - (Map) Move all WPs of currently selected craft [Issue [#81](https://github.com/MikeG621/YOGEME/issues/81)]
 - (Map) Cumulative WP time checkbox.
-- (TIE) Order "Board to Destroy Cargo" updated to "Board with no Effect" via Platform.dll. Craft remains disabled, is assigned the "Full Stop" order upon completion. [Issue [#117](https://github.com/MikeG621/YOGEME/issues/117)]
+- (TIE) Order "Board to Destroy Cargo" updated to "Board with no Effect" via Platform.dll. In-game the craft remains disabled, is assigned the "Full Stop" order upon completion. [Issue [#117](https://github.com/MikeG621/YOGEME/issues/117)]
 - (XWA) Defect order now displays selected IFF and Team in order parameter note text. [Issue [#113](https://github.com/MikeG621/YOGEME/issues/113)]
 - (XWA) Fixed order parameter note text not showing right away.
 - (XWA) Hooks: Added MissionTie - TargetCraftKey settings [Issue [#107](https://github.com/MikeG621/YOGEME/issues/107)]
-- (XWA) Hooks: Added MissionTie - CanShootThroughtShieldOnHardDifficulty, IsMissionRanksModifierEnabled
+- (XWA) Hooks: Added MissionTie - CanShootThroughtShieldOnHardDifficulty, IsMissionRanksModifierEnabled, SkipProjectilesProximityCheck
 - (XWA) Hooks: Added MissionTie - SpecRci settings [Issue [#103](https://github.com/MikeG621/YOGEME/issues/103)]
 - (XWA) Hooks: Added WeaponRates - Recharge/DechargeRatePercent settings.
 - (XWA) Hooks: Added Shields - IsShieldStrengthForStarfighterDoubled.

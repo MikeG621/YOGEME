@@ -361,6 +361,7 @@
 			this.numOpacity = new System.Windows.Forms.NumericUpDown();
 			this.chkOpacity = new System.Windows.Forms.CheckBox();
 			this.pnlShield = new System.Windows.Forms.Panel();
+			this.chkFighterDoubled = new System.Windows.Forms.CheckBox();
 			this.chkSSRecharge = new System.Windows.Forms.CheckBox();
 			this.pnlHyper = new System.Windows.Forms.Panel();
 			this.txtHook = new System.Windows.Forms.TextBox();
@@ -418,13 +419,17 @@
 			this.numImpactSpeed = new System.Windows.Forms.NumericUpDown();
 			this.numRatePenalty = new System.Windows.Forms.NumericUpDown();
 			this.numTransfer = new System.Windows.Forms.NumericUpDown();
+			this.numRechargePercent = new System.Windows.Forms.NumericUpDown();
 			this.numRecharge = new System.Windows.Forms.NumericUpDown();
+			this.numDechargePercent = new System.Windows.Forms.NumericUpDown();
 			this.numDecharge = new System.Windows.Forms.NumericUpDown();
+			this.chkWeapDechargePercent = new System.Windows.Forms.CheckBox();
 			this.chkWeapDecharge = new System.Windows.Forms.CheckBox();
 			this.chkImpactAngle = new System.Windows.Forms.CheckBox();
 			this.chkImpactSpeed = new System.Windows.Forms.CheckBox();
 			this.chkImpact = new System.Windows.Forms.CheckBox();
 			this.chkTransfer = new System.Windows.Forms.CheckBox();
+			this.chkWeapRechargePercent = new System.Windows.Forms.CheckBox();
 			this.chkWeapRecharge = new System.Windows.Forms.CheckBox();
 			this.chkRatePenalty = new System.Windows.Forms.CheckBox();
 			this.txtWeapProfile = new System.Windows.Forms.TextBox();
@@ -441,11 +446,7 @@
 			this.cmdRemWeap = new System.Windows.Forms.Button();
 			this.cmdAddWeap = new System.Windows.Forms.Button();
 			this.lstWeapons = new System.Windows.Forms.ListBox();
-			this.chkWeapRechargePercent = new System.Windows.Forms.CheckBox();
-			this.chkWeapDechargePercent = new System.Windows.Forms.CheckBox();
-			this.numDechargePercent = new System.Windows.Forms.NumericUpDown();
-			this.numRechargePercent = new System.Windows.Forms.NumericUpDown();
-			this.chkFighterDoubled = new System.Windows.Forms.CheckBox();
+			this.chkSkipProx = new System.Windows.Forms.CheckBox();
 			((System.ComponentModel.ISupportInitialize)(this.numFamHeadingZ)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numFamPosZ)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numFamHeadingXY)).BeginInit();
@@ -565,12 +566,12 @@
 			((System.ComponentModel.ISupportInitialize)(this.numImpactSpeed)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numRatePenalty)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numTransfer)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.numRechargePercent)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numRecharge)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.numDechargePercent)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numDecharge)).BeginInit();
 			this.pnlWeapProfiles.SuspendLayout();
 			this.pnlWeapRateOrProfiles.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.numDechargePercent)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.numRechargePercent)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// cmdOK
@@ -3894,6 +3895,7 @@
 			// 
 			// tabMissSettings
 			// 
+			this.tabMissSettings.Controls.Add(this.chkSkipProx);
 			this.tabMissSettings.Controls.Add(this.chkDisableRanks);
 			this.tabMissSettings.Controls.Add(this.chkHardShields);
 			this.tabMissSettings.Controls.Add(this.numTurretS);
@@ -4514,6 +4516,16 @@
 			this.pnlShield.Size = new System.Drawing.Size(383, 271);
 			this.pnlShield.TabIndex = 60;
 			this.pnlShield.Visible = false;
+			// 
+			// chkFighterDoubled
+			// 
+			this.chkFighterDoubled.AutoSize = true;
+			this.chkFighterDoubled.Location = new System.Drawing.Point(2, 245);
+			this.chkFighterDoubled.Name = "chkFighterDoubled";
+			this.chkFighterDoubled.Size = new System.Drawing.Size(154, 17);
+			this.chkFighterDoubled.TabIndex = 46;
+			this.chkFighterDoubled.Text = "Starfighter Shields Doubled";
+			this.chkFighterDoubled.UseVisualStyleBackColor = true;
 			// 
 			// chkSSRecharge
 			// 
@@ -5322,6 +5334,23 @@
             0,
             0});
 			// 
+			// numRechargePercent
+			// 
+			this.numRechargePercent.Location = new System.Drawing.Point(134, 71);
+			this.numRechargePercent.Maximum = new decimal(new int[] {
+            65535,
+            0,
+            0,
+            0});
+			this.numRechargePercent.Name = "numRechargePercent";
+			this.numRechargePercent.Size = new System.Drawing.Size(49, 20);
+			this.numRechargePercent.TabIndex = 15;
+			this.numRechargePercent.Value = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+			// 
 			// numRecharge
 			// 
 			this.numRecharge.Location = new System.Drawing.Point(134, 25);
@@ -5335,6 +5364,23 @@
 			this.numRecharge.TabIndex = 15;
 			this.numRecharge.Value = new decimal(new int[] {
             2,
+            0,
+            0,
+            0});
+			// 
+			// numDechargePercent
+			// 
+			this.numDechargePercent.Location = new System.Drawing.Point(134, 48);
+			this.numDechargePercent.Maximum = new decimal(new int[] {
+            65535,
+            0,
+            0,
+            0});
+			this.numDechargePercent.Name = "numDechargePercent";
+			this.numDechargePercent.Size = new System.Drawing.Size(49, 20);
+			this.numDechargePercent.TabIndex = 13;
+			this.numDechargePercent.Value = new decimal(new int[] {
+            100,
             0,
             0,
             0});
@@ -5355,6 +5401,16 @@
             0,
             0,
             0});
+			// 
+			// chkWeapDechargePercent
+			// 
+			this.chkWeapDechargePercent.AutoSize = true;
+			this.chkWeapDechargePercent.Location = new System.Drawing.Point(3, 49);
+			this.chkWeapDechargePercent.Name = "chkWeapDechargePercent";
+			this.chkWeapDechargePercent.Size = new System.Drawing.Size(110, 17);
+			this.chkWeapDechargePercent.TabIndex = 12;
+			this.chkWeapDechargePercent.Text = "Decharge Rate %";
+			this.chkWeapDechargePercent.UseVisualStyleBackColor = true;
 			// 
 			// chkWeapDecharge
 			// 
@@ -5407,6 +5463,16 @@
 			this.chkTransfer.TabIndex = 16;
 			this.chkTransfer.Text = "Energy Transfer Rate";
 			this.chkTransfer.UseVisualStyleBackColor = true;
+			// 
+			// chkWeapRechargePercent
+			// 
+			this.chkWeapRechargePercent.AutoSize = true;
+			this.chkWeapRechargePercent.Location = new System.Drawing.Point(3, 72);
+			this.chkWeapRechargePercent.Name = "chkWeapRechargePercent";
+			this.chkWeapRechargePercent.Size = new System.Drawing.Size(110, 17);
+			this.chkWeapRechargePercent.TabIndex = 14;
+			this.chkWeapRechargePercent.Text = "Recharge Rate %";
+			this.chkWeapRechargePercent.UseVisualStyleBackColor = true;
 			// 
 			// chkWeapRecharge
 			// 
@@ -5575,69 +5641,15 @@
 			this.lstWeapons.Size = new System.Drawing.Size(366, 108);
 			this.lstWeapons.TabIndex = 1;
 			// 
-			// chkWeapRechargePercent
+			// chkSkipProx
 			// 
-			this.chkWeapRechargePercent.AutoSize = true;
-			this.chkWeapRechargePercent.Location = new System.Drawing.Point(3, 72);
-			this.chkWeapRechargePercent.Name = "chkWeapRechargePercent";
-			this.chkWeapRechargePercent.Size = new System.Drawing.Size(110, 17);
-			this.chkWeapRechargePercent.TabIndex = 14;
-			this.chkWeapRechargePercent.Text = "Recharge Rate %";
-			this.chkWeapRechargePercent.UseVisualStyleBackColor = true;
-			// 
-			// chkWeapDechargePercent
-			// 
-			this.chkWeapDechargePercent.AutoSize = true;
-			this.chkWeapDechargePercent.Location = new System.Drawing.Point(3, 49);
-			this.chkWeapDechargePercent.Name = "chkWeapDechargePercent";
-			this.chkWeapDechargePercent.Size = new System.Drawing.Size(110, 17);
-			this.chkWeapDechargePercent.TabIndex = 12;
-			this.chkWeapDechargePercent.Text = "Decharge Rate %";
-			this.chkWeapDechargePercent.UseVisualStyleBackColor = true;
-			// 
-			// numDechargePercent
-			// 
-			this.numDechargePercent.Location = new System.Drawing.Point(134, 48);
-			this.numDechargePercent.Maximum = new decimal(new int[] {
-            65535,
-            0,
-            0,
-            0});
-			this.numDechargePercent.Name = "numDechargePercent";
-			this.numDechargePercent.Size = new System.Drawing.Size(49, 20);
-			this.numDechargePercent.TabIndex = 13;
-			this.numDechargePercent.Value = new decimal(new int[] {
-            100,
-            0,
-            0,
-            0});
-			// 
-			// numRechargePercent
-			// 
-			this.numRechargePercent.Location = new System.Drawing.Point(134, 71);
-			this.numRechargePercent.Maximum = new decimal(new int[] {
-            65535,
-            0,
-            0,
-            0});
-			this.numRechargePercent.Name = "numRechargePercent";
-			this.numRechargePercent.Size = new System.Drawing.Size(49, 20);
-			this.numRechargePercent.TabIndex = 15;
-			this.numRechargePercent.Value = new decimal(new int[] {
-            100,
-            0,
-            0,
-            0});
-			// 
-			// chkFighterDoubled
-			// 
-			this.chkFighterDoubled.AutoSize = true;
-			this.chkFighterDoubled.Location = new System.Drawing.Point(2, 245);
-			this.chkFighterDoubled.Name = "chkFighterDoubled";
-			this.chkFighterDoubled.Size = new System.Drawing.Size(154, 17);
-			this.chkFighterDoubled.TabIndex = 46;
-			this.chkFighterDoubled.Text = "Starfighter Shields Doubled";
-			this.chkFighterDoubled.UseVisualStyleBackColor = true;
+			this.chkSkipProx.AutoSize = true;
+			this.chkSkipProx.Location = new System.Drawing.Point(3, 233);
+			this.chkSkipProx.Name = "chkSkipProx";
+			this.chkSkipProx.Size = new System.Drawing.Size(152, 17);
+			this.chkSkipProx.TabIndex = 15;
+			this.chkSkipProx.Text = "Skip Warhead Prox Check";
+			this.chkSkipProx.UseVisualStyleBackColor = true;
 			// 
 			// XwaHookDialog
 			// 
@@ -5822,14 +5834,14 @@
 			((System.ComponentModel.ISupportInitialize)(this.numImpactSpeed)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.numRatePenalty)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.numTransfer)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.numRechargePercent)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.numRecharge)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.numDechargePercent)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.numDecharge)).EndInit();
 			this.pnlWeapProfiles.ResumeLayout(false);
 			this.pnlWeapProfiles.PerformLayout();
 			this.pnlWeapRateOrProfiles.ResumeLayout(false);
 			this.pnlWeapRateOrProfiles.PerformLayout();
-			((System.ComponentModel.ISupportInitialize)(this.numDechargePercent)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.numRechargePercent)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -6254,5 +6266,6 @@
 		private System.Windows.Forms.CheckBox chkWeapDechargePercent;
 		private System.Windows.Forms.CheckBox chkWeapRechargePercent;
 		private System.Windows.Forms.CheckBox chkFighterDoubled;
+		private System.Windows.Forms.CheckBox chkSkipProx;
 	}
 }
