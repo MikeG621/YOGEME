@@ -7,6 +7,7 @@
  *
  * CHANGELOG
  * [NEW] Cumulative WP time checkbox
+ * [NEW] XWA All Order traces checkbox
  * [NEW #81] Move all WPs of selected craft
  * [UPD] minor cleanup/reorg for my sanity
  * v1.16, 241013
@@ -1007,6 +1008,7 @@ namespace Idmr.Yogeme
 				numRegion.Visible = true;
 				chkSP3.Text = "RDV";
 				chkSP4.Text = "HYP";
+				chkAllOrders.Visible = true;
 			}
 			if (_platform != Settings.Platform.XWING)
 			{
@@ -1090,6 +1092,7 @@ namespace Idmr.Yogeme
 			chkTraceHideFade.Left = grpDir.Left - chkTraceHideFade.Width;
 			chkTraceSelected.Left = chkTraceHideFade.Left;
 			chkCumulative.Left = chkTraceHideFade.Left;
+			moveControlLeft(chkAllOrders, chkTraceHideFade, 0);
 			// Now align from the bottom, stacked in reverse order.
 			moveControlAbove(chkTime, null, ClientRectangle.Bottom - 3);
 			moveControlAbove(chkDistance, chkTime, 0);
@@ -1098,6 +1101,7 @@ namespace Idmr.Yogeme
 			moveControlAbove(chkCumulative, null, ClientRectangle.Bottom - 3);
 			moveControlAbove(chkTraceSelected, chkCumulative, 0);
 			moveControlAbove(chkTraceHideFade, chkTraceSelected, 0);
+			chkAllOrders.Top = chkTraceHideFade.Top;
 
 			updateMapCoord(center);
 			lstCraft.Height = pctMap.Bottom - lstCraft.Top;
@@ -2066,68 +2070,87 @@ namespace Idmr.Yogeme
 				}
 				if (_platform == Settings.Platform.XWA) // WPs
 				{
-					int ord = (int)(region * 4 + (numOrder.Value - 1) + 1);
-                    bool offset = false;
+					
+					int currOrd = (int)(region * 4 + numOrder.Value);	// there's a -1 and +1 mixed in there
+					bool offset = false;
 					bool pointing = false;
                     for (int k = 0; k < 8; k++)
 					{
-						if (k == 0 && _mapData[i].WPs[18][region].Enabled)
+						for (int oInd = 0; oInd < 4; oInd++)
 						{
-							// only trigger the offset in the first order in a new region or the first return order in the starting region
-							if (_mapData[i].WPs[0][0][4] != region && numOrder.Value == 1) offset = true;
-							else
+							int ord = region * 4 + oInd + 1;
+							if (ord != currOrd && !chkAllOrders.Checked) continue;
+
+							bool ordIsCurr = (ord == currOrd && chkAllOrders.Checked);
+
+							if (k == 0 && _mapData[i].WPs[18][region].Enabled)
 							{
-								var fg = (Platform.Xwa.FlightGroup)_mapData[i].FlightGroup;
-								for (int o = 0; o < 3; o++)
+								// only trigger the offset in the first order in a new region or the first return order in the starting region
+								if (_mapData[i].WPs[0][0][4] != region && oInd == 0) offset = true;
+								else
 								{
-									if (fg.Orders[region, o].Command == 50 && (o + 2) == numOrder.Value)
+									var fg = (Platform.Xwa.FlightGroup)_mapData[i].FlightGroup;
+									for (int o = 0; o < 3; o++)
 									{
-										offset = true;
-										break;
+										if (fg.Orders[region, o].Command == 50 && (o + 2) == numOrder.Value)
+										{
+											offset = true;
+											break;
+										}
 									}
 								}
 							}
-						}
-						
-                        if (chkWP[k + 4].Checked && _mapData[i].WPs[ord][k].Enabled)
-						{
-							var ordPoint = getMapPoint(_mapData[i].WPs[ord][k]);
-							pointing = offset && k == 0;
-							if (pointing) ordPoint = getMapPoint(_mapData[i].WPs[18][region]);
-                            g3.DrawEllipse(pn, ordPoint.X - 1, ordPoint.Y - 1, 3, 3);
-							if (chkTags.Checked && _mapData[i].View == Visibility.Show)
-								g3.DrawString(_mapData[i].Name + " " + (pointing ? "Aim" : chkWP[k + 4].Text), DefaultFont, sbTag, ordPoint.X + 4, ordPoint.Y + 4);
-							if (chkTrace.Checked && !(chkTraceHideFade.Checked && _mapData[i].View == Visibility.Fade) && !(chkTraceSelected.Checked && !isMapObjectSelected(i)))
+
+							if (chkWP[k + 4].Checked && _mapData[i].WPs[ord][k].Enabled)
 							{
-								var baseWp = _mapData[i].WPs[0][0];
-								if (_mapData[i].WPs[17][region].Enabled && ((Platform.Xwa.FlightGroup.XwaWaypoint)_mapData[i].WPs[0][0]).Region != region)
-									baseWp = _mapData[i].WPs[17][region];
-								if (k == 0 && (!chkWP[0].Checked || isVisibleInRegion(i, 0) == WaypointVisibility.Absent)) continue;
-								else if (k > 0)
+								var ordPoint = getMapPoint(_mapData[i].WPs[ord][k]);
+								pointing = offset && k == 0;
+								if (pointing) ordPoint = getMapPoint(_mapData[i].WPs[18][region]);
+								g3.DrawEllipse(pn, ordPoint.X - 1, ordPoint.Y - 1, 3, 3);
+								if (chkTags.Checked && _mapData[i].View == Visibility.Show)
+									g3.DrawString(_mapData[i].Name + " " + (pointing ? "Aim" : chkWP[k + 4].Text), DefaultFont, sbTag, ordPoint.X + 4, ordPoint.Y + 4);
+								if (chkTrace.Checked && !(chkTraceHideFade.Checked && _mapData[i].View == Visibility.Fade) && !(chkTraceSelected.Checked && !isMapObjectSelected(i)))
 								{
-									if (offset && k == 1) baseWp = _mapData[i].WPs[17][region];   // trace WP2 back to hyper exit
+									var baseWp = _mapData[i].WPs[0][0];
+									if (_mapData[i].WPs[17][region].Enabled && ((Platform.Xwa.FlightGroup.XwaWaypoint)_mapData[i].WPs[0][0]).Region != region)
+										baseWp = _mapData[i].WPs[17][region];
+									if (k == 0 && (!chkWP[0].Checked || isVisibleInRegion(i, 0) == WaypointVisibility.Absent)) continue;
+									else if (k > 0)
+									{
+										if (offset && k == 1) baseWp = _mapData[i].WPs[17][region];   // trace WP2 back to hyper exit
+										else
+										{
+											if (!chkWP[k + 3].Checked) continue;
+
+											baseWp = _mapData[i].WPs[ord][k - 1];
+										}
+									}
+									var basePoint = getMapPoint(baseWp);
+									if (pointing) g3.DrawLine(pnDashTrace, basePoint.X, basePoint.Y, ordPoint.X, ordPoint.Y);
 									else
 									{
-                                        if (!chkWP[k + 3].Checked) continue;
-
-                                        baseWp = _mapData[i].WPs[ord][k - 1];
-                                    }
-								}
-								var basePoint = getMapPoint(baseWp);
-								if (pointing) g3.DrawLine(pnDashTrace, basePoint.X, basePoint.Y, ordPoint.X, ordPoint.Y);
-                                else g3.DrawLine(pnTrace, basePoint.X, basePoint.Y, ordPoint.X, ordPoint.Y);
-								if (_mapData[i].View == Visibility.Show && !pointing)
-								{
-									int offy = chkTags.Checked ? 14 : 0; //To render it below the FG tag
-									if (chkDistance.Checked)
-									{
-										g3.DrawString(getDistanceString(_mapData[i].WPs[ord][k], baseWp), DefaultFont, sbTag, ordPoint.X + 4, ordPoint.Y + 4 + offy);
-										offy += 14;
+										if (chkAllOrders.Checked)
+										{
+											if (oInd == 0) pnTrace.Color = (ord == currOrd) ? Color.White : Color.DimGray;
+											else if (oInd == 1) pnTrace.Color = (ord == currOrd) ? Color.Fuchsia : Color.Purple;
+											else if (oInd == 2) pnTrace.Color = (ord == currOrd) ? Color.Lime : Color.DarkGreen;
+											else pnTrace.Color = (ord == currOrd) ? Color.Cyan : Color.DarkCyan;
+										}
+										g3.DrawLine(pnTrace, basePoint.X, basePoint.Y, ordPoint.X, ordPoint.Y);
 									}
-									if (chkTime.Checked)
+									if (_mapData[i].View == Visibility.Show && !pointing && ord == currOrd)
 									{
-										g3.DrawString(getTimeString(_mapData[i].FlightGroup, (int)numOrder.Value - 1, _mapData[i].WPs[ord][k], baseWp, seconds, out int legSeconds), DefaultFont, sbTag, ordPoint.X + 4, ordPoint.Y + 4 + offy);
-										if (chkCumulative.Checked) seconds += legSeconds;
+										int offy = chkTags.Checked ? 14 : 0; //To render it below the FG tag
+										if (chkDistance.Checked)
+										{
+											g3.DrawString(getDistanceString(_mapData[i].WPs[ord][k], baseWp), DefaultFont, sbTag, ordPoint.X + 4, ordPoint.Y + 4 + offy);
+											offy += 14;
+										}
+										if (chkTime.Checked)
+										{
+											g3.DrawString(getTimeString(_mapData[i].FlightGroup, (int)numOrder.Value - 1, _mapData[i].WPs[ord][k], baseWp, seconds, out int legSeconds), DefaultFont, sbTag, ordPoint.X + 4, ordPoint.Y + 4 + offy);
+											if (chkCumulative.Checked) seconds += legSeconds;
+										}
 									}
 								}
 							}
@@ -2750,6 +2773,7 @@ namespace Idmr.Yogeme
 		}
 		void chkWireframe_CheckedChanged(object sender, EventArgs e) { if (!_isLoading) MapPaint(); }
 		void chkLimit_CheckedChanged(object sender, EventArgs e) { if (!_isLoading) MapPaint(); }
+		void chkAllOrders_CheckedChanged(object sender, EventArgs e) { if (!_isLoading) MapPaint(); }
 		#endregion
 
 		#region Selection and visibility

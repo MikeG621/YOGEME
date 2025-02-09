@@ -96,6 +96,7 @@ namespace Idmr.Yogeme
 			this.chkWireframe = new System.Windows.Forms.CheckBox();
 			this.chkLimit = new System.Windows.Forms.CheckBox();
 			this.chkCumulative = new System.Windows.Forms.CheckBox();
+			this.chkAllOrders = new System.Windows.Forms.CheckBox();
 			((System.ComponentModel.ISupportInitialize)(this.pctMap)).BeginInit();
 			this.grpDir.SuspendLayout();
 			this.grpPoints.SuspendLayout();
@@ -924,10 +925,22 @@ namespace Idmr.Yogeme
 			this.chkCumulative.UseVisualStyleBackColor = true;
 			this.chkCumulative.CheckedChanged += new System.EventHandler(this.chkCumulative_CheckedChanged);
 			// 
+			// chkAllOrders
+			// 
+			this.chkAllOrders.Location = new System.Drawing.Point(581, 482);
+			this.chkAllOrders.Name = "chkAllOrders";
+			this.chkAllOrders.Size = new System.Drawing.Size(74, 17);
+			this.chkAllOrders.TabIndex = 61;
+			this.chkAllOrders.Text = "All Orders";
+			this.chkAllOrders.UseVisualStyleBackColor = true;
+			this.chkAllOrders.Visible = false;
+			this.chkAllOrders.CheckedChanged += new System.EventHandler(this.chkAllOrders_CheckedChanged);
+			// 
 			// MapForm
 			// 
 			this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
 			this.ClientSize = new System.Drawing.Size(824, 535);
+			this.Controls.Add(this.chkAllOrders);
 			this.Controls.Add(this.chkLimit);
 			this.Controls.Add(this.cboViewIff);
 			this.Controls.Add(this.cboViewDifficulty);
@@ -1081,5 +1094,6 @@ namespace Idmr.Yogeme
 		private CheckBox chkWireframe;
 		private CheckBox chkLimit;
 		private CheckBox chkCumulative;
+		private CheckBox chkAllOrders;
 	}
 }
