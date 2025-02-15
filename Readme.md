@@ -36,7 +36,7 @@ To remove YOGEME, simply delete the directory where you placed it.
 This will leave behind a single config file in AppData with your user settings.
 
 ## Latest Release
-#### WIP
+#### 1.17, 26 Feb 2025
 - (Map) Move all WPs of currently selected craft [Issue [#81](https://github.com/MikeG621/YOGEME/issues/81)]
 - (Map) Cumulative WP time checkbox.
 - (Map) All Orders checkbox for XWA traces.
@@ -50,7 +50,17 @@ This will leave behind a single config file in AppData with your user settings.
 - (XWA) Hooks: Added Shields - IsShieldStrengthForStarfighterDoubled.
 - (XWA) Orders now have label for Var 3.
 - (XWA) Orders with "Component" var (Attack and Disable) now list the mesh type.
-- (XWA) Global goal trigger groups now labeled "Goal" instead of "Goals" to better reflect that it's a single goal with multiple triggers.
+- (XWA) Global goal trigger groups now labeled "Goal" instead of "Goals" to better reflect that it's a single goal with multiple trigger conditions.
+---
+### Additional Information
+#### Dependencies
+- [Idmr.Common](https://github.com/MikeG621/Common)
+- [Idmr.ImageFormat.Act](https://github.com/MikeG621/ImageFormat-Act)
+- [Idmr.ImageFormat.Dat](https://github.com/MikeG621/ImageFormat-Dat)
+- [Idmr.Platform](https://github.com/MikeG621/Platform)
+- [Idmr.LfdReader](https://github.com/MikeG621/LfdReader)
+
+### Version History
 
 #### 1.16.0.7, 8 Jan 2025
 - (XWA) Fixed a couple exceptions with bad Trigger Parameter values due to type change in Platform.dll
@@ -108,16 +118,6 @@ details for GlobalUnits added.
 - (XWA) Added Messages Type, Speaker Header, Special Meaning. Don't know what they do.
 - (XWA) Added Global Goals Trigger Points and Delay.
 - (TIE-XWA) Some orders now have a Delay variable, but may or may not have a real effect. This is based on the format spec, not the executable.
----
-### Additional Information
-#### Dependencies
-- [Idmr.Common](https://github.com/MikeG621/Common)
-- [Idmr.ImageFormat.Act](https://github.com/MikeG621/ImageFormat-Act)
-- [Idmr.ImageFormat.Dat](https://github.com/MikeG621/ImageFormat-Dat)
-- [Idmr.Platform](https://github.com/MikeG621/Platform)
-- [Idmr.LfdReader](https://github.com/MikeG621/LfdReader)
-
-### Version History
 
 #### v1.15.8, 1 Jun 2024
 - (XWA) Fixed a Hook dialog crash, something I broke back in v1.15. (Microsoft documentation lied to me...) [Issue [#101](https://github.com/MikeG621/YOGEME/issues/101)]

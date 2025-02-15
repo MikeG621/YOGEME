@@ -3,9 +3,10 @@
  * Copyright (C) 2007-2025 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.16+
+ * VERSION: 1.17
  *
  * CHANGELOG
+ * v1.17, 250215
  * [NEW] Cumulative WP time checkbox
  * [NEW] XWA All Order traces checkbox
  * [NEW #81] Move all WPs of selected craft

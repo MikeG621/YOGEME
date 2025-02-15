@@ -3,9 +3,10 @@
  * Copyright (C) 2007-2025 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.16.0.7+
+ * VERSION: 1.17
  *
  * CHANGELOG
+ * v1.17, 250215
  * [NEW #113] Defect order now displays selected IFF and Team
  * [NEW] Orders now have label for Var 3.
  * [UPD] Orders with "Component" var (Attack and Disable) now list the mesh type.

@@ -3,9 +3,10 @@
  * Copyright (C) 2007-2025 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.16.0.1+
+ * VERSION: 1.17
  *
  * CHANGELOG
+ * v1.17, 250215
  * [NEW] Mission: CanShootThroughtShieldOnHardDifficulty, IsMissionRanksModifierEnabled, SkipProjectilesProximityCheck
  * [NEW #107] TargetCraftKey tab under Mission_Tie
  * [NEW #103] MissionTie: SpecRci

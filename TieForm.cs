@@ -3,9 +3,10 @@
  * Copyright (C) 2007-2025 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.16.0.3+
+ * VERSION: 1.17
  *
  * CHANGELOG
+ * v1.17, 250215
  * [FIX] Test now marks the battle:TEXT as Dirty.
  * [FIX] Increased sleep after launching TIE during test before initial run check to preven premature cleanup.
  * v1.16.0.3, 241027
