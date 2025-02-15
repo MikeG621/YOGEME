@@ -36,7 +36,7 @@ To remove YOGEME, simply delete the directory where you placed it.
 This will leave behind a single config file in AppData with your user settings.
 
 ## Latest Release
-#### 1.17, 26 Feb 2025
+#### 1.17, 15 Feb 2025
 - (Map) Move all WPs of currently selected craft [Issue [#81](https://github.com/MikeG621/YOGEME/issues/81)]
 - (Map) Cumulative WP time checkbox.
 - (Map) All Orders checkbox for XWA traces.
