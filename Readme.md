@@ -36,6 +36,9 @@ To remove YOGEME, simply delete the directory where you placed it.
 This will leave behind a single config file in AppData with your user settings.
 
 ## Latest Release
+#### WIP
+- (TIE) Briefing text tags now use the in-game font if possible [Issue [#118](https://github.com/MikeG621/YOGEME/issues/118)].
+
 #### 1.17, 15 Feb 2025
 - (Map) Move all WPs of currently selected craft [Issue [#81](https://github.com/MikeG621/YOGEME/issues/81)]
 - (Map) Cumulative WP time checkbox.

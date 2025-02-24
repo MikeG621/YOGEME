@@ -1,11 +1,12 @@
 /*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
- * Copyright (C) 2007-2024 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2025 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.16.0.5
+ * VERSION: 1.16.0.5+
  *
  * CHANGELOG
+ * [UPD #118] TIE text tags now use in-game font when possible
  * v1.16.0.5, 241120
  * [FIX #112] Exception adding events to blank briefing, and silently overwriting existing events.
  * v1.16.0.2, 241017
@@ -78,13 +79,14 @@
  */
 
 using Idmr.Common;
+using Idmr.LfdReader;
 using Idmr.Platform;
 using System;
 using System.Data;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.Windows.Forms;
 using System.IO;
+using System.Windows.Forms;
 
 namespace Idmr.Yogeme
 {
@@ -141,6 +143,7 @@ namespace Idmr.Yogeme
 #pragma warning disable IDE1006 // Naming Styles
 		EventHandler onModified = null;
 #pragma warning restore IDE1006 // Naming Styles
+		readonly LfdFile _empire;
 		#endregion
 
 		static public string[] SharedTeamNames = new string[10];
@@ -184,6 +187,14 @@ namespace Idmr.Yogeme
 			_events = new BaseBriefing.EventCollection(MissionFile.Platform.TIE);
 			InitializeComponent();
 			Text = "YOGEME Briefing Editor - TIE";
+			try
+			{
+				_empire = new LfdFile(Settings.GetInstance().TiePath + "\\RESOURCE\\EMPIRE.LFD");
+			}
+			catch
+			{
+				_empire = null;
+			}
 			#region layout edit
 			// final layout update, as in VS it's spread out
 			Height = 426;
@@ -315,11 +326,11 @@ namespace Idmr.Yogeme
 			pctBrief.Size = new Size(360, 208); //[JB] //Was 214.  The actual size in game appears to be 320x210, but I trimmed it down to 208 because it seemed to be rendering some extra pixels.
 			pctBrief.Left = 150;
 			lblCaption.BackColor = Color.FromArgb(0, 0, 0x78);
-			lblCaption.Font = new Font("Times New Roman", 8F, FontStyle.Regular, GraphicsUnit.Point, 0);
+			lblCaption.Font = new System.Drawing.Font("Times New Roman", 8F, FontStyle.Regular, GraphicsUnit.Point, 0);
 			lblCaption.Size = new Size(360, 28);
 			lblCaption.Location = new Point(150, 254);
 			lblTitle.BackColor = Color.FromArgb(0x10, 0x10, 0x20);
-			lblTitle.Font = new Font("Times New Roman", 8F, FontStyle.Regular, GraphicsUnit.Point, 0);
+			lblTitle.Font = new System.Drawing.Font("Times New Roman", 8F, FontStyle.Regular, GraphicsUnit.Point, 0);
 			lblTitle.Size = new Size(360, 16);
 			lblTitle.TextAlign = ContentAlignment.TopCenter;
 			lblTitle.ForeColor = _titleColor;
@@ -453,11 +464,11 @@ namespace Idmr.Yogeme
 			lblTitle.TextAlign = ContentAlignment.TopCenter;
 			lblTitle.ForeColor = _titleColor;
 			lblTitle.Text = "*Defined in .LST file*";
-			lblTitle.Font = new Font("Arial", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
+			lblTitle.Font = new System.Drawing.Font("Arial", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
 			cmdTitle.Enabled = false;
 			cmdMarker.Visible = false;
 			lblCaption.BackColor = Color.FromArgb(0x20, 0x30, 0x88);
-			lblCaption.Font = new Font("Arial", 8F, FontStyle.Regular, GraphicsUnit.Point, 0);
+			lblCaption.Font = new System.Drawing.Font("Arial", 8F, FontStyle.Regular, GraphicsUnit.Point, 0);
 			lblCaption.Size = new Size(510, 40);
 			lblCaption.Top += 68;
 			lblCaption.Left += 36;
@@ -897,6 +908,37 @@ namespace Idmr.Yogeme
 			_mapPaintScheduled = true;
 		}
 
+		void displayString(Graphics g, string fontID, string text, short left, short top, Color color)
+		{
+			// not doing shadows, leaving it loose for font8 or font6
+			LfdReader.Font font = (LfdReader.Font)_empire.Resources[fontID];
+			font.SetColor(color);
+			char[] chars = text.ToCharArray();
+			int offset = left;
+			byte index;
+			bool badChar = false;
+			var oldMode = g.InterpolationMode;
+			g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
+			for (int i = 0; i < chars.Length; i++)
+			{
+				index = Convert.ToByte(chars[i] - font.StartingChar);
+				if (index >= font.NumberOfGlyphs)
+				{
+					index = Convert.ToByte('X' - font.StartingChar);
+					badChar = true;
+					font.SetColor(Color.Red);
+				}
+				var glyph = font.Glyphs[index];
+				g.DrawImage(glyph, offset, top, glyph.Width * 2, glyph.Height * 2);
+				offset += (glyph.Width + 1) * 2;
+				if (badChar)
+				{
+					badChar = false;
+					font.SetColor(color);
+				}
+			}
+			g.InterpolationMode = oldMode;
+		}
 		void drawGrid(int x, int y, Graphics g)
 		{
 			Pen pn = new Pen(Color.FromArgb(0x50, 0, 0)) { Width = 1 };
@@ -1453,7 +1495,10 @@ namespace Idmr.Yogeme
 				if (_textTags[i].StringIndex == -1) continue;
 
 				sb.Color = _tagColors[_textTags[i].ColorIndex < _tagColors.Length ? _textTags[i].ColorIndex : 1]; // default to red
-				g.DrawString(_tags[_textTags[i].StringIndex], new Font("MS Reference Sans Serif", 10), sb, 2 * (int)Math.Round((double)_zoomX * _textTags[i].X / 256, 0) + X, 2 * (int)Math.Round((double)_zoomY * _textTags[i].Y / 256, 0) + Y);
+				short left = (short)(2 * (int)Math.Round((double)_zoomX * _textTags[i].X / 256, 0) + X);
+				short top = (short)(2 * (int)Math.Round((double)_zoomY * _textTags[i].Y / 256, 0) + Y);
+				if (_empire != null) { displayString(g, "FONTfont6", _tags[_textTags[i].StringIndex], left, top, sb.Color); }
+				else g.DrawString(_tags[_textTags[i].StringIndex], new System.Drawing.Font("MS Reference Sans Serif", 10), sb, left, top);
 			}
 			for (int i = 0; i < _briefData.Length; i++)
 			{
@@ -1474,7 +1519,7 @@ namespace Idmr.Yogeme
 				// forced to even numbers
 				g.DrawImageUnscaled(bmptemp, 2 * (int)Math.Round((double)_zoomX * _briefData[i].Waypoint[0] / 256, 0) + X - 16, 2 * (int)Math.Round((double)_zoomY * -_briefData[i].Waypoint[1] / 256, 0) + Y - 16);  //[JB] Invert Y axis of waypoint, fixed Y zoom.
 			}
-			g.DrawString("#" + _page, new Font("Arial", 8), new SolidBrush(Color.White), w - 20, 4);
+			g.DrawString("#" + _page, new System.Drawing.Font("Arial", 8), new SolidBrush(Color.White), w - 20, 4);
 			pctBrief.Invalidate();
 			g.Dispose();
 		}
@@ -1632,7 +1677,7 @@ namespace Idmr.Yogeme
 				if (_textTags[i].StringIndex == -1) continue;
 
 				sb.Color = _tagColors[_textTags[i].ColorIndex < _tagColors.Length ? _textTags[i].ColorIndex : 1]; // default to red
-				g.DrawString(_tags[_textTags[i].StringIndex], new Font("MS Reference Sans Serif", 6), sb, (int)Math.Round((double)_zoomX * _textTags[i].X / 256, 0) + X, (int)Math.Round((double)_zoomY * _textTags[i].Y / 256, 0) + Y);
+				g.DrawString(_tags[_textTags[i].StringIndex], new System.Drawing.Font("MS Reference Sans Serif", 6), sb, (int)Math.Round((double)_zoomX * _textTags[i].X / 256, 0) + X, (int)Math.Round((double)_zoomY * _textTags[i].Y / 256, 0) + Y);
 			}
 			for (int i = 0; i < _briefData.Length; i++)
 			{
@@ -1646,7 +1691,7 @@ namespace Idmr.Yogeme
 				// simple base-256 grid coords * zoom to get pixel location, + map offset, - pic size/2 to center
 				g.DrawImageUnscaled(bmptemp, (int)Math.Round((double)_zoomX * wp[0] / 256, 0) + X - 11 + (pos[0] % 2), (int)Math.Round((double)_zoomY * -wp[1] / 256, 0) + Y - 11); //[JB] Invert Y axis. Also fixed Y axis zoom (was using X).
 			}
-			g.DrawString("#" + _page, new Font("Arial", 8), new SolidBrush(Color.White), w - 20, 4);
+			g.DrawString("#" + _page, new System.Drawing.Font("Arial", 8), new SolidBrush(Color.White), w - 20, 4);
 			pctBrief.Invalidate();
 			g.Dispose();
 		}
@@ -1690,7 +1735,7 @@ namespace Idmr.Yogeme
 			{
 				sb.Color = Color.FromArgb(0xE7, 0xE3, 0);   // yellow
 				StringFormat sf = new StringFormat { Alignment = StringAlignment.Center };
-				g.DrawString(_message, new Font("Arial", 12, FontStyle.Bold), sb, w / 2, h / 2, sf);
+				g.DrawString(_message, new System.Drawing.Font("Arial", 12, FontStyle.Bold), sb, w / 2, h / 2, sf);
 				pctBrief.Invalidate();
 				g.Dispose();
 				return;
@@ -1814,7 +1859,7 @@ namespace Idmr.Yogeme
 				if (_textTags[i].StringIndex == -1) continue;
 
 				sb.Color = _tagColors[_textTags[i].ColorIndex < _tagColors.Length ? _textTags[i].ColorIndex : 1]; // default to red
-				g.DrawString(_tags[_textTags[i].StringIndex], new Font("Arial", 9, FontStyle.Bold), sb, (int)Math.Round((double)_zoomX * _textTags[i].X / 256, 0) + X, (int)Math.Round((double)_zoomY * _textTags[i].Y / 256, 0) + Y);
+				g.DrawString(_tags[_textTags[i].StringIndex], new System.Drawing.Font("Arial", 9, FontStyle.Bold), sb, (int)Math.Round((double)_zoomX * _textTags[i].X / 256, 0) + X, (int)Math.Round((double)_zoomY * _textTags[i].Y / 256, 0) + Y);
 			}
 			for (int i = 0; i < _briefData.Length; i++)
 			{
@@ -1830,7 +1875,7 @@ namespace Idmr.Yogeme
 				// simple base-256 grid coords * zoom to get pixel location, + map offset, - pic size/2 to center
 				g.DrawImageUnscaled(bmptemp, (int)Math.Round((double)_zoomX * _briefData[i].Waypoint[0] / 256, 0) + X - 28, (int)Math.Round((double)_zoomY * _briefData[i].Waypoint[1] / 256, 0) + Y - 28);  //[JB] Fixed Y zoom.
 			}
-			g.DrawString("#" + _page, new Font("Arial", 8), new SolidBrush(Color.White), w - 20, 4);
+			g.DrawString("#" + _page, new System.Drawing.Font("Arial", 8), new SolidBrush(Color.White), w - 20, 4);
 			pctBrief.Invalidate();
 			g.Dispose();
 		}
@@ -2506,8 +2551,7 @@ namespace Idmr.Yogeme
 		}
 		void pctBrief_Paint(object sender, PaintEventArgs e)
 		{
-			Graphics g;
-			g = e.Graphics;
+			Graphics g = e.Graphics;
 			g.DrawImage(_map, 0, 0, _map.Width, _map.Height);
 		}
 
