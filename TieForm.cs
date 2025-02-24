@@ -3,9 +3,10 @@
  * Copyright (C) 2007-2025 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.17
+ * VERSION: 1.17+
  *
  * CHANGELOG
+ * [FIX] Stripping extension to write into Battle for Testing was case-sensitive
  * v1.17, 250215
  * [FIX] Test now marks the battle:TEXT as Dirty.
  * [FIX] Increased sleep after launching TIE during test before initial run check to preven premature cleanup.
@@ -1578,7 +1579,7 @@ namespace Idmr.Yogeme
 			LfdFile battleLfd = new LfdFile(path + battle);
 			Text txt = (Text)battleLfd.Resources[0];
 			string[] missions = txt.Strings[3].Split('\0');
-			missions[0] = _mission.MissionFileName.Replace(".tie", "");
+			missions[0] = _mission.MissionFileName.ToUpper().Replace(".TIE", "");
 			txt.Strings[3] = string.Join("\0", missions);
 			txt.Dirty();
 			battleLfd.Write();
