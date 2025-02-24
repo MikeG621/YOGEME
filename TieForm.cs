@@ -1579,7 +1579,7 @@ namespace Idmr.Yogeme
 			LfdFile battleLfd = new LfdFile(path + battle);
 			Text txt = (Text)battleLfd.Resources[0];
 			string[] missions = txt.Strings[3].Split('\0');
-			missions[0] = _mission.MissionFileName.ToUpper().Replace(".TIE", "");
+			missions[0] = _mission.MissionFileName.ToLower().Replace(".tie", "");
 			txt.Strings[3] = string.Join("\0", missions);
 			txt.Dirty();
 			battleLfd.Write();
