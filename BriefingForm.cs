@@ -3,9 +3,11 @@
  * Copyright (C) 2007-2025 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.16.0.5+
+ * VERSION: 1.17.1
  *
  * CHANGELOG
+ * v1.17.1, 250303
+ * [FIX #119] Crash when skipping to the end of the briefing
  * [UPD #118] TIE text tags now use in-game font when possible
  * v1.16.0.5, 241120
  * [FIX #112] Exception adding events to blank briefing, and silently overwriting existing events.
@@ -784,9 +786,9 @@ namespace Idmr.Yogeme
 		void cmdNext_Click(object sender, EventArgs e)
 		{
 			int i;
-			for (i = 0; i < _maxEvents; i++)
+			for (i = 0; i < _events.Count; i++)
 				if (_events[i].Time > hsbTimer.Value && (_events[i].Type == BaseBriefing.EventType.SkipMarker || _events[i].Type == BaseBriefing.EventType.PageBreak)) break;
-			if (i == _maxEvents) hsbTimer.Value = hsbTimer.Maximum - 11;    // tmr_Tick takes care of halting
+			if (i == _maxEvents || i == _events.Count) hsbTimer.Value = hsbTimer.Maximum - 11;    // tmr_Tick takes care of halting
 			else hsbTimer.Value = _events[i].Time;
 		}
 		void cmdPause_Click(object sender, EventArgs e) => stopTimer();

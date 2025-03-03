@@ -36,9 +36,21 @@ To remove YOGEME, simply delete the directory where you placed it.
 This will leave behind a single config file in AppData with your user settings.
 
 ## Latest Release
-#### WIP
+#### 1.17.1, 3 Mar 2025
+- (Briefing) Fixed a crash when skipping forwards to the end [Issue [#119](https://github.com/MikeG621/YOGEME/issues/119)].
 - (TIE) Briefing text tags now use the in-game font if possible [Issue [#118](https://github.com/MikeG621/YOGEME/issues/118)].
 - (TIE) Fixed an issue with the Test function being case-sensitive when setting up the Battle.LFD.
+
+---
+### Additional Information
+#### Dependencies
+- [Idmr.Common](https://github.com/MikeG621/Common)
+- [Idmr.ImageFormat.Act](https://github.com/MikeG621/ImageFormat-Act)
+- [Idmr.ImageFormat.Dat](https://github.com/MikeG621/ImageFormat-Dat)
+- [Idmr.Platform](https://github.com/MikeG621/Platform)
+- [Idmr.LfdReader](https://github.com/MikeG621/LfdReader)
+
+### Version History
 
 #### 1.17, 15 Feb 2025
 - (Map) Move all WPs of currently selected craft [Issue [#81](https://github.com/MikeG621/YOGEME/issues/81)]
@@ -55,16 +67,6 @@ This will leave behind a single config file in AppData with your user settings.
 - (XWA) Orders now have label for Var 3.
 - (XWA) Orders with "Component" var (Attack and Disable) now list the mesh type.
 - (XWA) Global goal trigger groups now labeled "Goal" instead of "Goals" to better reflect that it's a single goal with multiple trigger conditions.
----
-### Additional Information
-#### Dependencies
-- [Idmr.Common](https://github.com/MikeG621/Common)
-- [Idmr.ImageFormat.Act](https://github.com/MikeG621/ImageFormat-Act)
-- [Idmr.ImageFormat.Dat](https://github.com/MikeG621/ImageFormat-Dat)
-- [Idmr.Platform](https://github.com/MikeG621/Platform)
-- [Idmr.LfdReader](https://github.com/MikeG621/LfdReader)
-
-### Version History
 
 #### 1.16.0.7, 8 Jan 2025
 - (XWA) Fixed a couple exceptions with bad Trigger Parameter values due to type change in Platform.dll
