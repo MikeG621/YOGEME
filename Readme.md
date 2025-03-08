@@ -36,6 +36,9 @@ To remove YOGEME, simply delete the directory where you placed it.
 This will leave behind a single config file in AppData with your user settings.
 
 ## Latest Release
+#### WIP
+- (TIE) Missions with too many Messages will now load, though the excess will be lost. Via Platform.dll [Issue [#120](https://github.com/MikeG621/YOGEME/issues/120)]
+
 #### 1.17.1, 3 Mar 2025
 - (Briefing) Fixed a crash when skipping forwards to the end [Issue [#119](https://github.com/MikeG621/YOGEME/issues/119)].
 - (TIE) Briefing text tags now use the in-game font if possible [Issue [#118](https://github.com/MikeG621/YOGEME/issues/118)].
