@@ -1,12 +1,13 @@
 /*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
- * Copyright (C) 2007-2024 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2025 Michael Gaisser (mjgaisser@gmail.com)
  * This file authored by "JB" (Random Starfighter) (randomstarfighter@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.16.0.3
+ * VERSION: 1.16.0.3+
  *
  * CHANGELOG
+ * [FIX #123] Bad multi-edit properties for hyper/mothership
  * v1.16.0.3, 241027
  * [FIX #110] FG library callback cast exception
  * v1.16, 241013
@@ -567,9 +568,7 @@ namespace Idmr.Yogeme
 			registerFgMultiEdit(numSeconds, "PlatformSeconds", 0);
 			registerFgMultiEdit(cboStatus, "Status", 0);
 			registerFgMultiEdit(optArrHyp, "ArriveViaHyper", 0);
-			registerFgMultiEdit(optArrMS, "ArriveViaMothership", 0);
 			registerFgMultiEdit(optDepHyp, "DepartViaHyper", 0);
-			registerFgMultiEdit(optDepMS, "DepartViaMothership", 0);
 			registerFgMultiEdit(cboMothership, "Mothership", 0);
 			registerFgMultiEdit(cboArrFG, "ArrivalTrigFlightgroup", 0);
 			registerFgMultiEdit(cboArrCondition, "ArrivalTrigCondition", MultiEditRefreshType.CraftCount);
@@ -1453,8 +1452,8 @@ namespace Idmr.Yogeme
 					case "PlatformValue": fg.Formation = Convert.ToByte(value); break;    // Multipurpose property
 					case "PlatformSeconds": fg.Formation = Convert.ToByte(value); break;
 					case "Status": fg.Status1 = Convert.ToByte(((int)value == 18 ? 10 : 0) + Convert.ToByte(value)); break;  // B-wing repeats codes at status 10 and higher
-					case "ArriveViaHyperspace": fg.ArriveViaHyperspace = Convert.ToBoolean(value); break;
-					case "DepartViaHyperspace": fg.DepartViaHyperspace = Convert.ToBoolean(value); break;
+					case "ArriveViaHyper": fg.ArriveViaHyperspace = Convert.ToBoolean(value); break;
+					case "DepartViaHyper": fg.DepartViaHyperspace = Convert.ToBoolean(value); break;
 					case "Mothership": fg.Mothership = Convert.ToInt16(translateNullableFG((int)value)); break;
 					case "ArrivalTrigFlightgroup": fg.ArrivalFG = Convert.ToInt16(translateNullableFG((int)value)); break;
 					case "ArrivalTrigCondition": fg.ArrivalEvent = Convert.ToInt16(value); break;
