@@ -4,9 +4,10 @@
  * This file authored by "JB" (Random Starfighter) (randomstarfighter@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.16.0.3+
+ * VERSION: 1.17.2
  *
  * CHANGELOG
+ * v1.17.2, 250606
  * [FIX #123] Bad multi-edit properties for hyper/mothership
  * v1.16.0.3, 241027
  * [FIX #110] FG library callback cast exception

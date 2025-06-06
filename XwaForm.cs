@@ -3,9 +3,10 @@
  * Copyright (C) 2007-2025 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.17+
+ * VERSION: 1.17.2
  *
  * CHANGELOG
+ * v1.17.2, 250606
  * [FIX #122] "Hyper in region" behavior
  * v1.17, 250215
  * [NEW #113] Defect order now displays selected IFF and Team

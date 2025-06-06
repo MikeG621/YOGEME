@@ -36,16 +36,11 @@ To remove YOGEME, simply delete the directory where you placed it.
 This will leave behind a single config file in AppData with your user settings.
 
 ## Latest Release
-#### WIP
+#### 1.17.2, 6 Jun 2025
 - (TIE, XvT) Missions with too many Messages will now load, though the excess will be lost. Via Platform.dll [Issue [#120](https://github.com/MikeG621/YOGEME/issues/120)]
   - NOTE: Does not include XWA due to Messages being valid Trigger inputs, so simply deleting them can break missions.
 - (XW) Fixed crash due to bad multi-edit properties for FG hyper/mothership ArrDep [Issue [#123](https://github.com/MikeG621/YOGEME/issues/123)].
 - (XWA) Fixed an issue with Arr/Dep "Hyper in region of" not saving properly and also the Mothership drop-down not disabling/enabling correctly [Issue [#122](https://github.com/MikeG621/YOGEME/issues/122)].
-
-#### 1.17.1, 3 Mar 2025
-- (Briefing) Fixed a crash when skipping forwards to the end [Issue [#119](https://github.com/MikeG621/YOGEME/issues/119)].
-- (TIE) Briefing text tags now use the in-game font if possible [Issue [#118](https://github.com/MikeG621/YOGEME/issues/118)].
-- (TIE) Fixed an issue with the Test function being case-sensitive when setting up the Battle.LFD.
 
 ---
 ### Additional Information
@@ -58,6 +53,11 @@ This will leave behind a single config file in AppData with your user settings.
 
 ### Version History
 
+#### 1.17.1, 3 Mar 2025
+- (Briefing) Fixed a crash when skipping forwards to the end [Issue [#119](https://github.com/MikeG621/YOGEME/issues/119)].
+- (TIE) Briefing text tags now use the in-game font if possible [Issue [#118](https://github.com/MikeG621/YOGEME/issues/118)].
+- (TIE) Fixed an issue with the Test function being case-sensitive when setting up the Battle.LFD.
+ 
 #### 1.17, 15 Feb 2025
 - (Map) Move all WPs of currently selected craft [Issue [#81](https://github.com/MikeG621/YOGEME/issues/81)]
 - (Map) Cumulative WP time checkbox.
