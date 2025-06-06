@@ -3,9 +3,10 @@
  * Copyright (C) 2007-2025 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.17
+ * VERSION: 1.17+
  *
  * CHANGELOG
+ * [FIX #122] "Hyper in region" behavior
  * v1.17, 250215
  * [NEW #113] Defect order now displays selected IFF and Team
  * [NEW] Orders now have label for Var 3.
@@ -1336,10 +1337,12 @@ namespace Idmr.Yogeme
 			registerFgMultiEdit(cboGlobSpecCargo, "GlobalSpecialCargo", 0);
 
 			registerFgMultiEdit(optArrMS, "ArriveViaMothership", 0);
+			registerFgMultiEdit(optArrRegion, "ArriveViaMothership", 0);
 			registerFgMultiEdit(cboArrMS, "ArrivalMothership", 0);
 			registerFgMultiEdit(optArrMSAlt, "AlternateMothershipUsed", 0);
 			registerFgMultiEdit(cboArrMSAlt, "AlternateMothership", 0);
 			registerFgMultiEdit(optDepMS, "DepartViaMothership", 0);
+			registerFgMultiEdit(optDepRegion, "DepartViaMothership", 0);
 			registerFgMultiEdit(cboDepMS, "DepartureMothership", 0);
 			registerFgMultiEdit(optDepMSAlt, "CapturedDepartViaMothership", 0);
 			registerFgMultiEdit(cboDepMSAlt, "CapturedDepartureMothership", 0);
@@ -2816,9 +2819,17 @@ namespace Idmr.Yogeme
 					case "AlternateMothership": fg.AlternateMothership = Convert.ToByte(value); break;
 					case "DepartureMothership": fg.DepartureMothership = Convert.ToByte(value); break;
 					case "CapturedDepartureMothership": fg.CapturedDepartureMothership = Convert.ToByte(value); break;
-					case "ArriveViaMothership": fg.ArriveViaMothership = Convert.ToByte(value); break;
+					case "ArriveViaMothership":
+						if (optArrHyp.Checked) fg.ArriveViaMothership = 0;
+						else if (optArrMS.Checked) fg.ArriveViaMothership = 1;
+						else fg.ArriveViaMothership = 2;
+							break;
 					case "AlternateMothershipUsed": fg.AlternateMothershipUsed = Convert.ToBoolean(value); break;
-					case "DepartViaMothership": fg.DepartViaMothership = Convert.ToByte(value); break;
+					case "DepartViaMothership":
+						if (optDepHyp.Checked) fg.DepartViaMothership = 0;
+						else if (optDepMS.Checked) fg.DepartViaMothership = 1;
+						else fg.DepartViaMothership = 2;
+						break;
 					case "CapturedDepartViaMothership": fg.CapturedDepartViaMothership = Convert.ToBoolean(value); break;
 					case "ArrDepTrigger":
 						trig = getTriggerFromControls(cboADTrigAmount, cboADTrigType, cboADTrigVar, cboADTrig, cboADPara);
@@ -3530,7 +3541,9 @@ namespace Idmr.Yogeme
 		}
 
 		void optArrHyp_CheckedChanged(object sender, EventArgs e) => cboArrMS.Enabled = !optArrHyp.Checked;
+		void optArrRegion_CheckedChanged(object sender, EventArgs e) => cboArrMS.Enabled = !optArrRegion.Checked;
 		void optDepHyp_CheckedChanged(object sender, EventArgs e) => cboDepMS.Enabled = !optDepHyp.Checked;
+		void optDepRegion_CheckedChanged(object sender, EventArgs e) => cboDepMS.Enabled = !optDepRegion.Checked;
 		void optArrMSAlt_CheckedChanged(object sender, EventArgs e) => cboArrMSAlt.Enabled = optArrMSAlt.Checked;
 		void optDepMSAlt_CheckedChanged(object sender, EventArgs e) => cboDepMSAlt.Enabled = optDepMSAlt.Checked;
 		#endregion

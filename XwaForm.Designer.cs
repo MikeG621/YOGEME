@@ -2522,6 +2522,7 @@ namespace Idmr.Yogeme
 			this.optDepRegion.TabStop = true;
 			this.optDepRegion.Text = "Hyper in Region of:";
 			this.optDepRegion.UseVisualStyleBackColor = true;
+			this.optDepRegion.CheckedChanged += new System.EventHandler(this.optDepRegion_CheckedChanged);
 			// 
 			// optDepHyp
 			// 
@@ -2782,6 +2783,7 @@ namespace Idmr.Yogeme
 			this.optArrRegion.TabStop = true;
 			this.optArrRegion.Text = "Hyper in Region of:";
 			this.optArrRegion.UseVisualStyleBackColor = true;
+			this.optArrRegion.CheckedChanged += new System.EventHandler(this.optArrRegion_CheckedChanged);
 			// 
 			// cboArrMS
 			// 
