@@ -1433,7 +1433,7 @@ namespace Idmr.Yogeme
 						fg.NumberOfCraft = Convert.ToByte(value);
 						if (fg.SpecialCargoCraft > fg.NumberOfCraft) fg.SpecialCargoCraft = 0;
 						break;
-					case "NumberOfWaves": fg.NumberOfWaves = Convert.ToByte(value); break;
+					case "NumberOfWaves": fg.NumberOfWaves = Convert.ToByte((int)value - 1); break;
 					// "GlobalGroup" has special logic, not handled here.
 					case "Cargo": fg.Cargo = (string)value; break;
 					case "SpecialCargo": fg.SpecialCargo = (string)value; break;
@@ -1931,7 +1931,7 @@ namespace Idmr.Yogeme
 				_mission.FlightGroups[_activeFG].SpecialCargoCraft = -1;
 			numSC.Value = _mission.FlightGroups[_activeFG].SpecialCargoCraft + 1;
 			numCraft.Value = _mission.FlightGroups[_activeFG].NumberOfCraft;
-			numWaves.Value = _mission.FlightGroups[_activeFG].NumberOfWaves + 1;  //[JB] Modifying the logic so the mission data reflects actual raw values
+			numWaves.Value = _mission.FlightGroups[_activeFG].NumberOfWaves + 1;  // Mission data contains raw value, zero based number of extra waves.
 			if (train)
 			{
 				chkPlatformGuns.Checked = (_mission.FlightGroups[_activeFG].NumberOfCraft > 1);
