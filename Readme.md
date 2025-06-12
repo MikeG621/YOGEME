@@ -36,6 +36,9 @@ To remove YOGEME, simply delete the directory where you placed it.
 This will leave behind a single config file in AppData with your user settings.
 
 ## Latest Release
+#### WIP
+- (XW) Random fixed an index issue with the Number of Waves [Pull [#124](https://github.com/MikeG621/YOGEME/pull/124)].
+
 #### 1.17.2, 6 Jun 2025
 - (TIE, XvT) Missions with too many Messages will now load, though the excess will be lost. Via Platform.dll [Issue [#120](https://github.com/MikeG621/YOGEME/issues/120)]
   - NOTE: Does not include XWA due to Messages being valid Trigger inputs, so simply deleting them can break missions.

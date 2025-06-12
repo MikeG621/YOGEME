@@ -4,9 +4,10 @@
  * This file authored by "JB" (Random Starfighter) (randomstarfighter@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.17.2
+ * VERSION: 1.17.2+
  *
  * CHANGELOG
+ * [FIX #124] NumWave index fix [JB]
  * v1.17.2, 250606
  * [FIX #123] Bad multi-edit properties for hyper/mothership
  * v1.16.0.3, 241027
