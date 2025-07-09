@@ -3,9 +3,10 @@
  * Copyright (C) 2007-2025 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.17.2
+ * VERSION: 1.17.2+
  *
  * CHANGELOG
+ * [FIX #126] EoM display times not updating
  * v1.17.2, 250606
  * [FIX #122] "Hyper in region" behavior
  * v1.17, 250215
@@ -4705,7 +4706,6 @@ namespace Idmr.Yogeme
 			_activeTeam.EomNotes[0] = Common.Update(this, _activeTeam.EomNotes[0], txtPrimCompNote.Text);
 			_activeTeam.EomSourceFG[0] = Common.Update(this, _activeTeam.EomSourceFG[0], (byte)cboPMCEomFG.SelectedIndex);
 			_activeTeam.EomRawDelay[0] = Common.Update(this, _activeTeam.EomRawDelay[0], (byte)numPMCEomDelay.Value);
-
 		}
 		void grpTeamPMF_Leave(object sender, EventArgs e)
 		{
@@ -4716,6 +4716,10 @@ namespace Idmr.Yogeme
 			_activeTeam.EomSourceFG[1] = Common.Update(this, _activeTeam.EomSourceFG[1], (byte)cboPMFEomFG.SelectedIndex);
 			_activeTeam.EomRawDelay[1] = Common.Update(this, _activeTeam.EomRawDelay[1], (byte)numPMFEomDelay.Value);
 		}
+
+		void numPMCEomDelay_ValueChanged(object sender, EventArgs e) => lblPMCDelay.Text = Common.GetFormattedTime(Mission.GetDelaySeconds((byte)numPMCEomDelay.Value), false);
+		void numPMFEomDelay_ValueChanged(object sender, EventArgs e) => lblPMFDelay.Text = Common.GetFormattedTime(Mission.GetDelaySeconds((byte)numPMFEomDelay.Value), false);
+		void numOMCEomDelay_ValueChanged(object sender, EventArgs e) => lblOMCDelay.Text = Common.GetFormattedTime(Mission.GetDelaySeconds((byte)numOMCEomDelay.Value), false);
 
 		void txtTeamName_Leave(object sender, EventArgs e)
 		{
@@ -4881,6 +4885,6 @@ namespace Idmr.Yogeme
 		{
 			_mission.MissionNotes = Common.Update(this, _mission.MissionNotes, txtNotes.Text);
 		}
-		#endregion
+        #endregion
 	}
 }

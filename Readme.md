@@ -38,6 +38,9 @@ This will leave behind a single config file in AppData with your user settings.
 ## Latest Release
 #### WIP
 - (XW) Random fixed an index issue with the Number of Waves [Pull [#124](https://github.com/MikeG621/YOGEME/pull/124)].
+- (XW) Random fixed a briefing event duplication error due to not clearing old events properly [Pull [#125](https://github.com/MikeG621/YOGEME/pull/125)].
+- (XWA) Fixed End of Mission delay times not displaying properly [Issue [#126](https://github.com/MikeG621/YOGEME/issues/126)].
+- (All) Random fixed a bug with the local directory of a mission causing things like Wireframes to sometimes fail [Pull [#125](https://github.com/MikeG621/YOGEME/pull/125)].
 
 #### 1.17.2, 6 Jun 2025
 - (TIE, XvT) Missions with too many Messages will now load, though the excess will be lost. Via Platform.dll [Issue [#120](https://github.com/MikeG621/YOGEME/issues/120)]
