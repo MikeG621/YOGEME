@@ -7,6 +7,7 @@
  * VERSION: 1.17.2+
  *
  * CHANGELOG
+ * [FIX #125] initializing briefing events [JB]
  * [FIX #124] NumWave index fix [JB]
  * v1.17.2, 250606
  * [FIX #123] Bad multi-edit properties for hyper/mothership
