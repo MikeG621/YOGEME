@@ -1,11 +1,12 @@
 /*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
- * Copyright (C) 2007-2024 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2025 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.16
+ * VERSION: 1.16+
  *
  * CHANGELOG
+ * [FIX] Planet2 flag when loaded from RESDATA
  * v1.16, 241013
  * [UPD] cleanup
  * v1.14.1, 230814
@@ -347,6 +348,7 @@ namespace Idmr.Yogeme
 								thumbs[index].Image = temp.Groups[g].Subs[0].Image;
 							}
 						}
+						if (temp.FileName.ToLower() == "planet2.dat") _planet2Loaded = true;
 					}
 					catch (Exception x)
 					{
