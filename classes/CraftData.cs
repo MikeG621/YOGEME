@@ -22,6 +22,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Windows.Forms;
 
 /* [JB] The manager class here is responsible for loading and storing all craft data and lists of names, as
  * well as detecting installation paths to load any needed files. It operates as singleton, allowing it to be
@@ -242,7 +243,7 @@ namespace Idmr.Yogeme
 				case Settings.Platform.XvT: case Settings.Platform.BoP: filename = "craft_data_xvt.txt"; break;
 				case Settings.Platform.XWA: filename = "craft_data_xwa.txt"; break;
 			}
-			_externalCraftData = loadCraftData(filename);
+			_externalCraftData = loadCraftData(Path.Combine(Application.StartupPath, filename));
 
 			var container = (_currentPlatform == Settings.Platform.XWING) ? _editorCraftData : _externalCraftData;
 			if (container != null && ((_currentPlatform == Settings.Platform.XWA && container.Count < _defaultCraftData.Count) || (_currentPlatform != Settings.Platform.XWA && container.Count != _defaultCraftData.Count)))

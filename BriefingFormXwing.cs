@@ -240,6 +240,7 @@ namespace Idmr.Yogeme
 		}
 		void importEvents(Briefing.EventCollection rawEvents)
 		{
+			_events.Clear();
 			for (int i = 0; i < _maxEvents; i++)
 			{
 				try
