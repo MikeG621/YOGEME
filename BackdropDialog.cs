@@ -6,6 +6,9 @@
  * VERSION: 1.16+
  *
  * CHANGELOG
+ * [UPD] thumbs is now dynamically sized
+ * [UPD] added ability ot use scroll wheel over thumbs
+ * [NEW #127] XWA hook backdrops support up to index 255
  * [FIX] Planet2 flag when loaded from RESDATA
  * v1.16, 241013
  * [UPD] cleanup
@@ -74,7 +77,7 @@ namespace Idmr.Yogeme
 		int _numBackdrops = 0;
 		static DatFile _planets;
 #pragma warning disable IDE1006 // Naming Styles
-		readonly PictureBox[] thumbs = new PictureBox[104];
+		readonly PictureBox[] thumbs;
 #pragma warning restore IDE1006 // Naming Styles
 		readonly bool _hookInstalled;
 		readonly string _fileName;
@@ -113,6 +116,7 @@ namespace Idmr.Yogeme
 			if (_platform == MissionFile.Platform.BoP && (_index < 0 || _index > 16)) _index = 0;
 			InitializeComponent();
 			if (_planets != null) _planets = null;  // allow GC if you've changed platforms, although that'll only work if you open this again
+			thumbs = new PictureBox[_numBackdrops];
 			try { createThumbnails(); }
 			catch { MessageBox.Show("Failed to load backdrop graphics. The game's files could not be found. Check whether the game is installed and its path has been added to the platform settings.", "Error"); }
 			numBackdrop.Maximum = _numBackdrops - 1;
@@ -133,6 +137,7 @@ namespace Idmr.Yogeme
 			InitializeComponent();
 			if (!platformInstalled()) throw new ApplicationException("Platform installation not found, feature unavailable.");
 
+			thumbs = new PictureBox[_numBackdrops];
 			createThumbnails();
 			vsbThumbs.Enabled = true;
 			numBackdrop.Maximum = _numBackdrops - 1;
@@ -151,7 +156,7 @@ namespace Idmr.Yogeme
 			_platform = MissionFile.Platform.XWA;
 			_hookInstalled = true;
 			_index = index;
-			if (_index <= 0 || _index > 103 || _index == 25) _index = 1;
+			if (_index <= 0 || _index > 255 || _index == 25) _index = 1;
 			_shadow = shadow;
 			if (_shadow < 0 || _shadow > 6) _shadow = 0;
 			InitializeComponent();
@@ -159,8 +164,10 @@ namespace Idmr.Yogeme
 
 			if (File.Exists(Path.GetFileNameWithoutExtension(filePath) + "_Resdata.txt")) _fileName = Path.GetFileNameWithoutExtension(filePath) + "_Resdata.txt";
 			else _fileName = Path.GetFileNameWithoutExtension(filePath) + ".ini";
+			thumbs = new PictureBox[_numBackdrops];
 			createThumbnails();
 			vsbThumbs.Enabled = true;
+			vsbThumbs.Maximum = 39;
 			numBackdrop.Maximum = _numBackdrops - 1;
 			numBackdrop.Value = _index;
 			numShadow.Enabled = true;
@@ -171,123 +178,33 @@ namespace Idmr.Yogeme
 		void createThumbnails()
 		{
 			#region array assignment
-			thumbs[0] = thmb0;
-			thumbs[1] = thmb1;
-			thumbs[2] = thmb2;
-			thumbs[3] = thmb3;
-			thumbs[4] = thmb4;
-			thumbs[5] = thmb5;
-			thumbs[6] = thmb6;
-			thumbs[7] = thmb7;
-			thumbs[8] = thmb8;
-			thumbs[9] = thmb9;
-			thumbs[10] = thmb10;
-			thumbs[11] = thmb11;
-			thumbs[12] = thmb12;
-			thumbs[13] = thmb13;
-			thumbs[14] = thmb14;
-			thumbs[15] = thmb15;
-			thumbs[16] = thmb16;
-			thumbs[17] = thmb17;
-			thumbs[18] = thmb18;
-			thumbs[19] = thmb19;
-			thumbs[20] = thmb20;
-			thumbs[21] = thmb21;
-			thumbs[22] = thmb22;
-			thumbs[23] = thmb23;
-			thumbs[24] = thmb24;
-			thumbs[25] = thmb25;
-			thumbs[26] = thmb26;
-			thumbs[27] = thmb27;
-			thumbs[28] = thmb28;
-			thumbs[29] = thmb29;
-			thumbs[30] = thmb30;
-			thumbs[31] = thmb31;
-			thumbs[32] = thmb32;
-			thumbs[33] = thmb33;
-			thumbs[34] = thmb34;
-			thumbs[35] = thmb35;
-			thumbs[36] = thmb36;
-			thumbs[37] = thmb37;
-			thumbs[38] = thmb38;
-			thumbs[39] = thmb39;
-			thumbs[40] = thmb40;
-			thumbs[41] = thmb41;
-			thumbs[42] = thmb42;
-			thumbs[43] = thmb43;
-			thumbs[44] = thmb44;
-			thumbs[45] = thmb45;
-			thumbs[46] = thmb46;
-			thumbs[47] = thmb47;
-			thumbs[48] = thmb48;
-			thumbs[49] = thmb49;
-			thumbs[50] = thmb50;
-			thumbs[51] = thmb51;
-			thumbs[52] = thmb52;
-			thumbs[53] = thmb53;
-			thumbs[54] = thmb54;
-			thumbs[55] = thmb55;
-			thumbs[56] = thmb56;
-			thumbs[57] = thmb57;
-			thumbs[58] = thmb58;
-			thumbs[59] = thmb59;
-			thumbs[60] = thmb60;
-			thumbs[61] = thmb61;
-			thumbs[62] = thmb62;
-			thumbs[63] = thmb63;
-			thumbs[64] = thmb64;
-			thumbs[65] = thmb65;
-			thumbs[66] = thmb66;
-			thumbs[67] = thmb67;
-			thumbs[68] = thmb68;
-			thumbs[69] = thmb69;
-			thumbs[70] = thmb70;
-			thumbs[71] = thmb71;
-			thumbs[72] = thmb72;
-			thumbs[73] = thmb73;
-			thumbs[74] = thmb74;
-			thumbs[75] = thmb75;
-			thumbs[76] = thmb76;
-			thumbs[77] = thmb77;
-			thumbs[78] = thmb78;
-			thumbs[79] = thmb79;
-			thumbs[80] = thmb80;
-			thumbs[81] = thmb81;
-			thumbs[82] = thmb82;
-			thumbs[83] = thmb83;
-			thumbs[84] = thmb84;
-			thumbs[85] = thmb85;
-			thumbs[86] = thmb86;
-			thumbs[87] = thmb87;
-			thumbs[88] = thmb88;
-			thumbs[89] = thmb89;
-			thumbs[90] = thmb90;
-			thumbs[91] = thmb91;
-			thumbs[92] = thmb92;
-			thumbs[93] = thmb93;
-			thumbs[94] = thmb94;
-			thumbs[95] = thmb95;
-			thumbs[96] = thmb96;
-			thumbs[97] = thmb97;
-			thumbs[98] = thmb98;
-			thumbs[99] = thmb99;
-			thumbs[100] = thmb100;
-			thumbs[101] = thmb101;
-			thumbs[102] = thmb102;
-			thumbs[103] = thmb103;
-			#endregion
+			var sz = new Size(48, 48);
+			pnlThumbs.SuspendLayout();
 			for (int i = 0; i < thumbs.Length; i++)
 			{
-				thumbs[i].Tag = i;
-				thumbs[i].SizeMode = PictureBoxSizeMode.Zoom;
+				var thmb = new PictureBox
+				{
+					BackColor = System.Drawing.Color.Blue,
+					BackgroundImageLayout = ImageLayout.Stretch,
+					Location = new Point(i % 6 * 48, i / 6 * 48),
+					Size = sz,
+					SizeMode = PictureBoxSizeMode.Zoom,
+					Tag = i,
+				};
+				thmb.Click += new EventHandler(thmbArr_Click);
+				thmb.MouseWheel += new MouseEventHandler(thmbArr_MouseWheel);
+				pnlThumbs.Controls.Add(thmb);
+				thumbs[i] = thmb;
 			}
+			pnlThumbs.ResumeLayout(false);
+			#endregion
 			// TODO: also look for customs in TIE-BoP
 			if (_platform == MissionFile.Platform.TIE || _platform == MissionFile.Platform.XvT)
-				for (int i = 1; i <= 8; i++) setThumbnail(_backdropDirectory + "PLANET" + i + ".ACT", i - 1);
+				for (int i = 0; i < 8; i++) setThumbnail(_backdropDirectory + $"PLANET{i + 1}.ACT", i);
 			else if (_platform == MissionFile.Platform.BoP)
 			{
-				for (int i = 1; i <= 8; i++) setThumbnail(_backdropDirectory.Remove(_backdropDirectory.Length - 24, 15) + "PLANET" + i + ".ACT", i - 1);
-				for (int i = 9; i <= 12; i++) setThumbnail(_backdropDirectory + "PLANET" + i + ".ACT", i - 1);
+				for (int i = 0; i < 8; i++) setThumbnail(_backdropDirectory.Remove(_backdropDirectory.Length - 24, 15) + $"PLANET{i + 1}.ACT", i);
+				for (int i = 8; i < 12; i++) setThumbnail(_backdropDirectory + $"PLANET{i + 1}.ACT", i);
 				setThumbnail(_backdropDirectory + "SUN1B.ACT", 12);
 				setThumbnail(_backdropDirectory + "SUN1C.ACT", 13);
 				setThumbnail(_backdropDirectory + "SUN2B.ACT", 14);
@@ -340,12 +257,20 @@ namespace Idmr.Yogeme
 						int index = 0;
 						for (int g = 0; g < temp.NumberOfGroups; g++)
 						{
-							index = _planets.Groups.GetIndex(temp.Groups[g].ID);
+							short id = temp.Groups[g].ID;
+							index = _planets.Groups.GetIndex(id);
 							if (index != -1)
 							{
 								System.Diagnostics.Debug.WriteLine("Overriding Group #" + index);
 								_planets.Groups[index] = temp.Groups[g];
 								thumbs[index].Image = temp.Groups[g].Subs[0].Image;
+							}
+							else if (_hookInstalled && id >= 6304 && id <= 6455)
+							{
+								System.Diagnostics.Debug.WriteLine("Adding hook Group #" + id);
+								_planets.Groups.Add(temp.Groups[g]);
+								thumbs[id - 6304].Image = temp.Groups[g].Subs[0].Image;
+								thumbs[id - 6304].BackColor = System.Drawing.Color.Black;
 							}
 						}
 						if (temp.FileName.ToLower() == "planet2.dat") _planet2Loaded = true;
@@ -396,12 +321,20 @@ namespace Idmr.Yogeme
 							int index = 0;
 							for (int g = 0; g < temp.NumberOfGroups; g++)
 							{
-								index = _planets.Groups.GetIndex(temp.Groups[g].ID);
+								short id = temp.Groups[g].ID;
+								index = _planets.Groups.GetIndex(id);
 								if (index != -1)
 								{
 									System.Diagnostics.Debug.WriteLine("Overriding Group #" + index);
 									_planets.Groups[index] = temp.Groups[g];
 									thumbs[index].Image = temp.Groups[g].Subs[0].Image;
+								}
+								else if (id >= 6304 && id <= 6455)
+								{
+									System.Diagnostics.Debug.WriteLine("Adding hook Group #" + id);
+									_planets.Groups.Add(temp.Groups[g]);
+									thumbs[id - 6304].Image = temp.Groups[g].Subs[0].Image;
+									thumbs[id - 6304].BackColor = System.Drawing.Color.Black;
 								}
 							}
 							if (temp.FileName.ToLower() == "planet2.dat") _planet2Loaded = true;
@@ -411,6 +344,7 @@ namespace Idmr.Yogeme
 				}
 			}
 		}
+
 		/// <summary>TIE and XvT/BoP</summary>
 		/// <param name="actFile">ACT File</param>
 		/// <param name="index">Thumbs index</param>
@@ -467,7 +401,7 @@ namespace Idmr.Yogeme
 					if (!config.XwaInstalled) return false;
 					_installDirectory = config.XwaPath;
 					_backdropDirectory = config.XwaPath + "\\RESDATA\\";
-					_numBackdrops = 104;
+					_numBackdrops = (_hookInstalled ? 256 : 104);
 					// permanently increasing this to 512. Oversized SBD images now scaled to fit
 					int size = 256;
 					Height += size;
@@ -559,6 +493,13 @@ namespace Idmr.Yogeme
 			if (index >= _numBackdrops) return;
 			numBackdrop.Value = index;
 		}
+		void thmbArr_MouseWheel(object sender, MouseEventArgs e)
+		{
+			int diff = e.Delta / 120;
+
+			if ((vsbThumbs.Value - diff <= vsbThumbs.Maximum) && (vsbThumbs.Value - diff >= 0))
+				vsbThumbs.Value -= diff;
+		}
 
 		void vsbThumbs_ValueChanged(object sender, EventArgs e) { for (int i = 0; i < thumbs.Length; i++) thumbs[i].Top = (i / 6 - vsbThumbs.Value) * 48; }
 
@@ -634,6 +575,10 @@ namespace Idmr.Yogeme
 		 * 26: planet 6060, MonCal planet is blank
 		 * 55: (ISDs, planet 6104, shad0 is blank)
 		 * 61: wrapback 18000...
+		 */
+
+		/* with XWA hooks:
+		 * 104-255: groups 6304-6455
 		 */
 	}
 }

@@ -40,7 +40,10 @@ This will leave behind a single config file in AppData with your user settings.
 - (XW) Random fixed an index issue with the Number of Waves [Pull [#124](https://github.com/MikeG621/YOGEME/pull/124)].
 - (XW) Random fixed a briefing event duplication error due to not clearing old events properly [Pull [#125](https://github.com/MikeG621/YOGEME/pull/125)].
 - (XWA) Fixed End of Mission delay times not displaying properly [Issue [#126](https://github.com/MikeG621/YOGEME/issues/126)].
+- (XWA) Backdrop index supported up to 255 using hooks [part of Issue [#127](https://github.com/MikeG621/YOGEME/issues/127)].
 - (All) Random fixed a bug with the local directory of a mission causing things like Wireframes to sometimes fail [Pull [#125](https://github.com/MikeG621/YOGEME/pull/125)].
+- (Backdrops) Thumbnail arrays are now dynamically sized.
+- (Backdrops) Can now use the scroll wheel when hovering over the thumbnails.
 
 #### 1.17.2, 6 Jun 2025
 - (TIE, XvT) Missions with too many Messages will now load, though the excess will be lost. Via Platform.dll [Issue [#120](https://github.com/MikeG621/YOGEME/issues/120)]
