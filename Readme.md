@@ -36,6 +36,13 @@ To remove YOGEME, simply delete the directory where you placed it.
 This will leave behind a single config file in AppData with your user settings.
 
 ## Latest Release
+#### WIP
+- (XW) Random fixed multiple bugs mostly related to B-wings [Pull [#129](https://github.com/MikeG621/YOGEME/pull/129)].
+  - Mission not being marked dirty when changing craft/object type.
+  - Unable to change FG type from B-wing to Y-wing.
+  - Changing B-wings status changed it back to Y-wing in the background.
+  - Wrong B-wing icon assigned in BRF mode
+
 #### 1.17.3, 13 Jul 2025
 - (XW) Random fixed an index issue with the Number of Waves [Pull [#124](https://github.com/MikeG621/YOGEME/pull/124)].
 - (XW) Random fixed a briefing event duplication error due to not clearing old events properly [Pull [#125](https://github.com/MikeG621/YOGEME/pull/125)].
