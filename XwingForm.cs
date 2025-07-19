@@ -1513,7 +1513,8 @@ namespace Idmr.Yogeme
 		{
 			if (objectType >= 0) objectType += 17;  // Expand from cbo SelectedIndex into proper item.
 			bool isFlightgroup = fg.IsFlightGroup();
-			if ((isFlightgroup && craftType == fg.CraftType) || (!isFlightgroup && objectType == fg.ObjectType))
+			// If changing from B-Wing to Y-Wing (both are craftType 2) we still need to apply the change below.
+			if ((isFlightgroup && craftType == fg.CraftType && craftType != 2) || (!isFlightgroup && objectType == fg.ObjectType))
 				return -1;
 			// Don't change if "none" is selected for the opposite type.
 			if (isFlightgroup && objectType == 17 || !isFlightgroup && craftType == 0)
