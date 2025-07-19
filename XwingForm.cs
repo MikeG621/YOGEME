@@ -1454,7 +1454,7 @@ namespace Idmr.Yogeme
 						break;
 					case "PlatformValue": fg.Formation = Convert.ToByte(value); break;    // Multipurpose property
 					case "PlatformSeconds": fg.Formation = Convert.ToByte(value); break;
-					case "Status": fg.Status1 = Convert.ToByte(((int)value == 18 ? 10 : 0) + Convert.ToByte(value)); break;  // B-wing repeats codes at status 10 and higher
+					case "Status": fg.Status1 = Convert.ToByte((fg.Status1 >= 10 ? 10 : 0) + (int)value); break;  // B-wing repeats codes at status 10 and higher
 					case "ArriveViaHyper": fg.ArriveViaHyperspace = Convert.ToBoolean(value); break;
 					case "DepartViaHyper": fg.DepartViaHyperspace = Convert.ToBoolean(value); break;
 					case "Mothership": fg.Mothership = Convert.ToInt16(translateNullableFG((int)value)); break;
