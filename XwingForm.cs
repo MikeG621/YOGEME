@@ -4,9 +4,10 @@
  * This file authored by "JB" (Random Starfighter) (randomstarfighter@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.17.2+
+ * VERSION: 1.17.3
  *
  * CHANGELOG
+ * v1.17.3, 250713
  * [FIX #125] initializing briefing events [JB]
  * [FIX #124] NumWave index fix [JB]
  * v1.17.2, 250606

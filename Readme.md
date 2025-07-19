@@ -36,7 +36,7 @@ To remove YOGEME, simply delete the directory where you placed it.
 This will leave behind a single config file in AppData with your user settings.
 
 ## Latest Release
-#### WIP
+#### 1.17.3, 13 Jul 2025
 - (XW) Random fixed an index issue with the Number of Waves [Pull [#124](https://github.com/MikeG621/YOGEME/pull/124)].
 - (XW) Random fixed a briefing event duplication error due to not clearing old events properly [Pull [#125](https://github.com/MikeG621/YOGEME/pull/125)].
 - (XWA) Fixed End of Mission delay times not displaying properly [Issue [#126](https://github.com/MikeG621/YOGEME/issues/126)].
@@ -44,12 +44,6 @@ This will leave behind a single config file in AppData with your user settings.
 - (All) Random fixed a bug with the local directory of a mission causing things like Wireframes to sometimes fail [Pull [#125](https://github.com/MikeG621/YOGEME/pull/125)].
 - (Backdrops) Thumbnail arrays are now dynamically sized.
 - (Backdrops) Can now use the scroll wheel when hovering over the thumbnails.
-
-#### 1.17.2, 6 Jun 2025
-- (TIE, XvT) Missions with too many Messages will now load, though the excess will be lost. Via Platform.dll [Issue [#120](https://github.com/MikeG621/YOGEME/issues/120)]
-  - NOTE: Does not include XWA due to Messages being valid Trigger inputs, so simply deleting them can break missions.
-- (XW) Fixed crash due to bad multi-edit properties for FG hyper/mothership ArrDep [Issue [#123](https://github.com/MikeG621/YOGEME/issues/123)].
-- (XWA) Fixed an issue with Arr/Dep "Hyper in region of" not saving properly and also the Mothership drop-down not disabling/enabling correctly [Issue [#122](https://github.com/MikeG621/YOGEME/issues/122)].
 
 ---
 ### Additional Information
@@ -62,6 +56,12 @@ This will leave behind a single config file in AppData with your user settings.
 
 ### Version History
 
+#### 1.17.2, 6 Jun 2025
+- (TIE, XvT) Missions with too many Messages will now load, though the excess will be lost. Via Platform.dll [Issue [#120](https://github.com/MikeG621/YOGEME/issues/120)]
+  - NOTE: Does not include XWA due to Messages being valid Trigger inputs, so simply deleting them can break missions.
+- (XW) Fixed crash due to bad multi-edit properties for FG hyper/mothership ArrDep [Issue [#123](https://github.com/MikeG621/YOGEME/issues/123)].
+- (XWA) Fixed an issue with Arr/Dep "Hyper in region of" not saving properly and also the Mothership drop-down not disabling/enabling correctly [Issue [#122](https://github.com/MikeG621/YOGEME/issues/122)].
+ 
 #### 1.17.1, 3 Mar 2025
 - (Briefing) Fixed a crash when skipping forwards to the end [Issue [#119](https://github.com/MikeG621/YOGEME/issues/119)].
 - (TIE) Briefing text tags now use the in-game font if possible [Issue [#118](https://github.com/MikeG621/YOGEME/issues/118)].

@@ -3,9 +3,10 @@
  * Copyright (C) 2007-2025 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.16+
+ * VERSION: 1.17.3
  *
  * CHANGELOG
+ * v1.17.3, 250713
  * [UPD] thumbs is now dynamically sized
  * [UPD] added ability ot use scroll wheel over thumbs
  * [NEW #127] XWA hook backdrops support up to index 255
