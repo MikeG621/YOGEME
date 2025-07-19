@@ -1523,6 +1523,9 @@ namespace Idmr.Yogeme
 			// Have to poll these before changing the type, otherwise it interferes with search
 			int lastFlightgroup = _mission.FlightGroups.GetLastOfFlightGroup();
 			int lastObjectgroup = _mission.FlightGroups.GetLastOfObjectGroup();
+			int oldCraftType = fg.CraftType;
+			int oldObjectType = fg.ObjectType;
+			int oldStatus = fg.Status1;
 			if (_mode == EditorMode.XWI)
 			{
 				if (craftType >= 0)
@@ -1578,6 +1581,10 @@ namespace Idmr.Yogeme
 					fg.ObjectType = (short)objectType;
 				}
 			}
+
+			if(fg.CraftType != oldCraftType || fg.ObjectType != oldObjectType || fg.Status1 != oldStatus)
+				Common.MarkDirty(this);
+
 			return ret;
 		}
 		/// <summary>Moves a flightgroup slot to another, continuously swapping until it reaches its destination.</summary>
