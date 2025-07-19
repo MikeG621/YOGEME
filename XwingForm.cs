@@ -1573,8 +1573,11 @@ namespace Idmr.Yogeme
 						fg.CraftType = 0;
 						fg.ObjectType = 25;
 					}
-					fg.CraftType = (byte)craftType;
-					fg.ObjectType = 0;
+					else
+					{
+						fg.CraftType = (byte)craftType;
+						fg.ObjectType = 0;
+					}
 				}
 				else
 				{
