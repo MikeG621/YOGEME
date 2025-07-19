@@ -1454,7 +1454,7 @@ namespace Idmr.Yogeme
 						break;
 					case "PlatformValue": fg.Formation = Convert.ToByte(value); break;    // Multipurpose property
 					case "PlatformSeconds": fg.Formation = Convert.ToByte(value); break;
-					case "Status": fg.Status1 = Convert.ToByte(((int)value == 18 ? 10 : 0) + Convert.ToByte(value)); break;  // B-wing repeats codes at status 10 and higher
+					case "Status": fg.Status1 = Convert.ToByte((fg.Status1 >= 10 ? 10 : 0) + (int)value); break;  // B-wing repeats codes at status 10 and higher
 					case "ArriveViaHyper": fg.ArriveViaHyperspace = Convert.ToBoolean(value); break;
 					case "DepartViaHyper": fg.DepartViaHyperspace = Convert.ToBoolean(value); break;
 					case "Mothership": fg.Mothership = Convert.ToInt16(translateNullableFG((int)value)); break;
@@ -1513,7 +1513,8 @@ namespace Idmr.Yogeme
 		{
 			if (objectType >= 0) objectType += 17;  // Expand from cbo SelectedIndex into proper item.
 			bool isFlightgroup = fg.IsFlightGroup();
-			if ((isFlightgroup && craftType == fg.CraftType) || (!isFlightgroup && objectType == fg.ObjectType))
+			// If changing from B-Wing to Y-Wing (both are craftType 2) we still need to apply the change below.
+			if ((isFlightgroup && craftType == fg.CraftType && craftType != 2) || (!isFlightgroup && objectType == fg.ObjectType))
 				return -1;
 			// Don't change if "none" is selected for the opposite type.
 			if (isFlightgroup && objectType == 17 || !isFlightgroup && craftType == 0)
@@ -1523,6 +1524,9 @@ namespace Idmr.Yogeme
 			// Have to poll these before changing the type, otherwise it interferes with search
 			int lastFlightgroup = _mission.FlightGroups.GetLastOfFlightGroup();
 			int lastObjectgroup = _mission.FlightGroups.GetLastOfObjectGroup();
+			int oldCraftType = fg.CraftType;
+			int oldObjectType = fg.ObjectType;
+			int oldStatus = fg.Status1;
 			if (_mode == EditorMode.XWI)
 			{
 				if (craftType >= 0)
@@ -1569,8 +1573,11 @@ namespace Idmr.Yogeme
 						fg.CraftType = 0;
 						fg.ObjectType = 25;
 					}
-					fg.CraftType = (byte)craftType;
-					fg.ObjectType = 0;
+					else
+					{
+						fg.CraftType = (byte)craftType;
+						fg.ObjectType = 0;
+					}
 				}
 				else
 				{
@@ -1578,6 +1585,10 @@ namespace Idmr.Yogeme
 					fg.ObjectType = (short)objectType;
 				}
 			}
+
+			if(fg.CraftType != oldCraftType || fg.ObjectType != oldObjectType || fg.Status1 != oldStatus)
+				Common.MarkDirty(this);
+
 			return ret;
 		}
 		/// <summary>Moves a flightgroup slot to another, continuously swapping until it reaches its destination.</summary>
