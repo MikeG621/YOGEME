@@ -43,6 +43,7 @@ This will leave behind a single config file in AppData with your user settings.
   - Changing B-wings status changed it back to Y-wing in the background.
   - Wrong B-wing icon assigned in BRF mode
 - (XWA) End of Mission delay controls hidden due to not actually being implemented in-game [Issue [#128](https://github.com/MikeG621/YOGEME/issues/128)].
+- (XWA) Fixed the Flightgroup Goal Enabled checkbox not saving when toggled by the Trigger drop-down.
 
 #### 1.17.3, 13 Jul 2025
 - (XW) Random fixed an index issue with the Number of Waves [Pull [#124](https://github.com/MikeG621/YOGEME/pull/124)].

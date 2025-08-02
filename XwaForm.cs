@@ -6,6 +6,7 @@
  * VERSION: 1.17.3+
  *
  * CHANGELOG
+ * [FIX] FG Goal auto-check not saving
  * [UPD #128] EoM delay UI elements hidden as that feature isn't supported in-game
  * v1.17.3, 250713
  * [FIX #126] EoM display times not updating
@@ -3851,7 +3852,7 @@ namespace Idmr.Yogeme
 
 		void chkGoalEnable_CheckedChanged(object sender, EventArgs e)
 		{
-			if (ActiveControl != chkGoalEnable) return;
+			if (ActiveControl != chkGoalEnable && ActiveControl != cboGoalTrigger) return;
 
 			foreach (FlightGroup fg in getSelectedFlightgroups())
 				fg.Goals[_activeFGGoalIndex].SetEnabledForTeam(_activeFGGoalTeamIndex, Common.Update(this, fg.Goals[_activeFGGoalIndex].GetEnabledForTeam(_activeFGGoalTeamIndex), chkGoalEnable.Checked));
