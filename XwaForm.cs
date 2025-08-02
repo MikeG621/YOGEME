@@ -3,9 +3,11 @@
  * Copyright (C) 2007-2025 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.17.2+
+ * VERSION: 1.17.3+
  *
  * CHANGELOG
+ * [UPD #128] EoM delay UI elements hidden as that feature isn't supported in-game
+ * v1.17.3, 250713
  * [FIX #126] EoM display times not updating
  * v1.17.2, 250606
  * [FIX #122] "Hyper in region" behavior
