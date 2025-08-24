@@ -36,7 +36,7 @@ To remove YOGEME, simply delete the directory where you placed it.
 This will leave behind a single config file in AppData with your user settings.
 
 ## Latest Release
-#### WIP
+#### 1.17.4, 24 Aug 2025
 - (XW) Random fixed multiple bugs mostly related to B-wings [Pull [#129](https://github.com/MikeG621/YOGEME/pull/129)].
   - Mission not being marked dirty when changing craft/object type.
   - Unable to change FG type from B-wing to Y-wing.
@@ -44,15 +44,6 @@ This will leave behind a single config file in AppData with your user settings.
   - Wrong B-wing icon assigned in BRF mode
 - (XWA) End of Mission delay controls hidden due to not actually being implemented in-game [Issue [#128](https://github.com/MikeG621/YOGEME/issues/128)].
 - (XWA) Fixed the Flightgroup Goal Enabled checkbox not saving when toggled by the Trigger drop-down.
-
-#### 1.17.3, 13 Jul 2025
-- (XW) Random fixed an index issue with the Number of Waves [Pull [#124](https://github.com/MikeG621/YOGEME/pull/124)].
-- (XW) Random fixed a briefing event duplication error due to not clearing old events properly [Pull [#125](https://github.com/MikeG621/YOGEME/pull/125)].
-- (XWA) Fixed End of Mission delay times not displaying properly [Issue [#126](https://github.com/MikeG621/YOGEME/issues/126)].
-- (XWA) Backdrop index supported up to 255 using hooks [part of Issue [#127](https://github.com/MikeG621/YOGEME/issues/127)].
-- (All) Random fixed a bug with the local directory of a mission causing things like Wireframes to sometimes fail [Pull [#125](https://github.com/MikeG621/YOGEME/pull/125)].
-- (Backdrops) Thumbnail arrays are now dynamically sized.
-- (Backdrops) Can now use the scroll wheel when hovering over the thumbnails.
 
 ---
 ### Additional Information
@@ -65,6 +56,15 @@ This will leave behind a single config file in AppData with your user settings.
 
 ### Version History
 
+#### 1.17.3, 13 Jul 2025
+- (XW) Random fixed an index issue with the Number of Waves [Pull [#124](https://github.com/MikeG621/YOGEME/pull/124)].
+- (XW) Random fixed a briefing event duplication error due to not clearing old events properly [Pull [#125](https://github.com/MikeG621/YOGEME/pull/125)].
+- (XWA) Fixed End of Mission delay times not displaying properly [Issue [#126](https://github.com/MikeG621/YOGEME/issues/126)].
+- (XWA) Backdrop index supported up to 255 using hooks [part of Issue [#127](https://github.com/MikeG621/YOGEME/issues/127)].
+- (All) Random fixed a bug with the local directory of a mission causing things like Wireframes to sometimes fail [Pull [#125](https://github.com/MikeG621/YOGEME/pull/125)].
+- (Backdrops) Thumbnail arrays are now dynamically sized.
+- (Backdrops) Can now use the scroll wheel when hovering over the thumbnails.
+- 
 #### 1.17.2, 6 Jun 2025
 - (TIE, XvT) Missions with too many Messages will now load, though the excess will be lost. Via Platform.dll [Issue [#120](https://github.com/MikeG621/YOGEME/issues/120)]
   - NOTE: Does not include XWA due to Messages being valid Trigger inputs, so simply deleting them can break missions.
