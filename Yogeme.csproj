@@ -42,7 +42,7 @@
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -508,8 +508,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PreBuildEvent>
-    </PreBuildEvent>
+    <PreBuildEvent>attrib -r "$(SolutionDir)$(OutDir)$(TargetFileName).config"</PreBuildEvent>
     <PostBuildEvent>if $(ConfigurationName) == Release move /y "$(SolutionDir)$(OutDir)*.dll" "$(SolutionDir)$(OutDir)bin\"
 attrib +r "$(SolutionDir)$(OutDir)$(TargetFileName).config"</PostBuildEvent>
   </PropertyGroup>

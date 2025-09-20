@@ -36,6 +36,10 @@ To remove YOGEME, simply delete the directory where you placed it.
 This will leave behind a single config file in AppData with your user settings.
 
 ## Latest Release
+#### WIP
+- (TIE) Officers tab now includes ability to control facial expressions per question.
+- (TIE) Officer Preview form displays facial expressions.  Also, they blink now.
+
 #### 1.17.4, 24 Aug 2025
 - (XW) Random fixed multiple bugs mostly related to B-wings [Pull [#129](https://github.com/MikeG621/YOGEME/pull/129)].
   - Mission not being marked dirty when changing craft/object type.

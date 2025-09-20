@@ -3,9 +3,10 @@
  * Copyright (C) 2007-2025 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.17.1
+ * VERSION: 1.17.1+
  *
  * CHANGELOG
+ * [NEW] Officer facial expressions
  * v1.17.1, 250303
  * [FIX] Stripping extension to write into Battle for Testing was case-sensitive
  * v1.17, 250215
@@ -2897,8 +2898,24 @@ namespace Idmr.Yogeme
 			lblQuestionNote.Visible = (note != "");
 		}
 
+		void cboFacial_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			if (_loading || cboFacial.SelectedIndex == -1) return;
+
+			int face = cboFacial.SelectedIndex + 1;
+			if (cboOfficer.SelectedIndex == 0) _mission.BriefingQuestions.OfficerFacialExpressions[cboQuestion.SelectedIndex] = (Questions.OfficerFacialExpression)Common.Update(this, (int)_mission.BriefingQuestions.OfficerFacialExpressions[cboQuestion.SelectedIndex], face);
+			else if (cboOfficer.SelectedIndex == 1) _mission.BriefingQuestions.SecretOrderExpressions[cboQuestion.SelectedIndex] = (Questions.SecretOrderExpression)Common.Update(this, (int)_mission.BriefingQuestions.SecretOrderExpressions[cboQuestion.SelectedIndex], face);
+			else if (cboOfficer.SelectedIndex == 2) _mission.BriefingQuestions.OfficerFacialExpressions[cboQuestion.SelectedIndex + 5] = (Questions.OfficerFacialExpression)Common.Update(this, (int)_mission.BriefingQuestions.OfficerFacialExpressions[cboQuestion.SelectedIndex + 5], face);
+			else _mission.BriefingQuestions.SecretOrderExpressions[cboQuestion.SelectedIndex + 5] = (Questions.SecretOrderExpression)Common.Update(this, (int)_mission.BriefingQuestions.SecretOrderExpressions[cboQuestion.SelectedIndex + 5], face);
+		}
 		void cboOfficer_SelectedIndexChanged(object sender, EventArgs e)
 		{
+			bool btemp = _loading;
+			_loading = true;
+			cboFacial.Items.Clear();
+			if (cboOfficer.SelectedIndex % 2 == 0) cboFacial.Items.AddRange(Enum.GetNames(typeof(Questions.OfficerFacialExpression)));
+			else cboFacial.Items.AddRange(Enum.GetNames(typeof(Questions.SecretOrderExpression)));
+			_loading = btemp;
 			cboQuestion.SelectedIndex = 0;
 			cboQTrig.Enabled = (cboOfficer.SelectedIndex > 1);
 			cboQTrigType.Enabled = cboQTrig.Enabled;
@@ -2909,14 +2926,16 @@ namespace Idmr.Yogeme
 			if (cboOfficer.SelectedIndex < 2) return;
 
 			int index = ((cboOfficer.SelectedIndex == 2) ? 0 : 5) + cboQuestion.SelectedIndex;
-			_mission.BriefingQuestions.PostTrigger[index] = (Questions.QuestionCondition)Common.Update(this, (byte)_mission.BriefingQuestions.PostTrigger[index], Convert.ToByte(cboQTrig.SelectedIndex));
+			byte trig = Convert.ToByte(cboQTrig.SelectedIndex);
+			if (trig != 0) trig += 3;
+			_mission.BriefingQuestions.PostTrigger[index] = (Questions.QuestionCondition)Common.Update(this, (byte)_mission.BriefingQuestions.PostTrigger[index], trig);
 		}
 		void cboQTrigType_Leave(object sender, EventArgs e)
 		{
 			if (cboOfficer.SelectedIndex < 2) return;
 
 			int index = ((cboOfficer.SelectedIndex == 2) ? 0 : 5) + cboQuestion.SelectedIndex;
-			_mission.BriefingQuestions.PostTrigType[index] = (Questions.QuestionType)Common.Update(this, (byte)_mission.BriefingQuestions.PostTrigType[index], Convert.ToByte(cboQTrigType.SelectedIndex));
+			_mission.BriefingQuestions.PostTrigType[index] = (Questions.QuestionType)Common.Update(this, (byte)_mission.BriefingQuestions.PostTrigType[index], Convert.ToByte(cboQTrigType.SelectedIndex + 1));
 		}
 		void cboQuestion_SelectedIndexChanged(object sender, EventArgs e)
 		{
@@ -2928,14 +2947,20 @@ namespace Idmr.Yogeme
 				if (cboOfficer.SelectedIndex == 1) a = 5;   //if Secret Order, set place holder
 				txtQuestion.Text = _mission.BriefingQuestions.PreMissQuestions[cboQuestion.SelectedIndex + a];
 				txtAnswer.Text = _mission.BriefingQuestions.PreMissAnswers[cboQuestion.SelectedIndex + a];
+				if (cboOfficer.SelectedIndex == 0) cboFacial.SelectedIndex = (int)_mission.BriefingQuestions.OfficerFacialExpressions[cboQuestion.SelectedIndex] - 1;
+				else cboFacial.SelectedIndex = (int)_mission.BriefingQuestions.SecretOrderExpressions[cboQuestion.SelectedIndex] - 1;
 			}
 			else    //post-miss
 			{
 				if (cboOfficer.SelectedIndex == 3) a = 5;
-				cboQTrigType.SelectedIndex = (int)_mission.BriefingQuestions.PostTrigType[cboQuestion.SelectedIndex + a];
-				cboQTrig.SelectedIndex = (int)_mission.BriefingQuestions.PostTrigger[cboQuestion.SelectedIndex + a];
+				cboQTrigType.SelectedIndex = (int)_mission.BriefingQuestions.PostTrigType[cboQuestion.SelectedIndex + a] - 1;
+				int trig = (int)_mission.BriefingQuestions.PostTrigger[cboQuestion.SelectedIndex + a];
+				if (trig == 0) cboQTrig.SelectedIndex = 0;
+				else cboQTrig.SelectedIndex = trig - 3;
 				txtQuestion.Text = _mission.BriefingQuestions.PostMissQuestions[cboQuestion.SelectedIndex + a];
 				txtAnswer.Text = _mission.BriefingQuestions.PostMissAnswers[cboQuestion.SelectedIndex + a];
+				if (cboOfficer.SelectedIndex == 2) cboFacial.SelectedIndex = (int)_mission.BriefingQuestions.OfficerFacialExpressions[cboQuestion.SelectedIndex + 5] - 1;
+				else cboFacial.SelectedIndex = (int)_mission.BriefingQuestions.SecretOrderExpressions[cboQuestion.SelectedIndex + 5] - 1;
 			}
 			_loading = bTemp;
 		}
@@ -3113,6 +3138,6 @@ namespace Idmr.Yogeme
 			_mission.IFFs[(int)t.Tag] = Common.Update(this, _mission.IFFs[(int)t.Tag], t.Text);
 			comboReset(cboIFF, getIffStrings(), cboIFF.SelectedIndex);
 		}
-		#endregion
+		#endregion 
 	}
 }

@@ -28,6 +28,7 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(OfficerPreviewForm));
 			this.cmdClose = new System.Windows.Forms.Button();
 			this.pctPreview = new System.Windows.Forms.PictureBox();
@@ -37,6 +38,7 @@
 			this.optPostOff = new System.Windows.Forms.RadioButton();
 			this.optPreSec = new System.Windows.Forms.RadioButton();
 			this.optPostSec = new System.Windows.Forms.RadioButton();
+			this.tmrBlink = new System.Windows.Forms.Timer(this.components);
 			((System.ComponentModel.ISupportInitialize)(this.pctPreview)).BeginInit();
 			this.SuspendLayout();
 			// 
@@ -128,6 +130,12 @@
 			this.optPostSec.Text = "Post-mission Secret Order";
 			this.optPostSec.UseVisualStyleBackColor = true;
 			// 
+			// tmrBlink
+			// 
+			this.tmrBlink.Enabled = true;
+			this.tmrBlink.Interval = 50;
+			this.tmrBlink.Tick += new System.EventHandler(this.tmrBlink_Tick);
+			// 
 			// OfficerPreviewForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -160,5 +168,6 @@
 		private System.Windows.Forms.RadioButton optPostOff;
 		private System.Windows.Forms.RadioButton optPreSec;
 		private System.Windows.Forms.RadioButton optPostSec;
+		private System.Windows.Forms.Timer tmrBlink;
 	}
 }

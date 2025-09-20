@@ -257,6 +257,8 @@ namespace Idmr.Yogeme
 			this.optPrimOR = new System.Windows.Forms.RadioButton();
 			this.optPrimAND = new System.Windows.Forms.RadioButton();
 			this.tabOfficer = new System.Windows.Forms.TabPage();
+			this.cboFacial = new System.Windows.Forms.ComboBox();
+			this.label37 = new System.Windows.Forms.Label();
 			this.lblQuestionNote = new System.Windows.Forms.Label();
 			this.cmdAutoAlign = new System.Windows.Forms.Button();
 			this.cmdPreview = new System.Windows.Forms.Button();
@@ -2954,6 +2956,8 @@ namespace Idmr.Yogeme
 			// 
 			// tabOfficer
 			// 
+			this.tabOfficer.Controls.Add(this.cboFacial);
+			this.tabOfficer.Controls.Add(this.label37);
 			this.tabOfficer.Controls.Add(this.lblQuestionNote);
 			this.tabOfficer.Controls.Add(this.cmdAutoAlign);
 			this.tabOfficer.Controls.Add(this.cmdPreview);
@@ -2973,6 +2977,25 @@ namespace Idmr.Yogeme
 			this.tabOfficer.Size = new System.Drawing.Size(785, 510);
 			this.tabOfficer.TabIndex = 3;
 			this.tabOfficer.Text = "Officers";
+			// 
+			// cboFacial
+			// 
+			this.cboFacial.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboFacial.FormattingEnabled = true;
+			this.cboFacial.Location = new System.Drawing.Point(488, 64);
+			this.cboFacial.Name = "cboFacial";
+			this.cboFacial.Size = new System.Drawing.Size(168, 21);
+			this.cboFacial.TabIndex = 14;
+			this.cboFacial.SelectedIndexChanged += new System.EventHandler(this.cboFacial_SelectedIndexChanged);
+			// 
+			// label37
+			// 
+			this.label37.AutoSize = true;
+			this.label37.Location = new System.Drawing.Point(393, 67);
+			this.label37.Name = "label37";
+			this.label37.Size = new System.Drawing.Size(89, 13);
+			this.label37.TabIndex = 13;
+			this.label37.Text = "Facial Expression";
 			// 
 			// lblQuestionNote
 			// 
@@ -3118,15 +3141,8 @@ namespace Idmr.Yogeme
 			this.cboQTrigType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cboQTrigType.Enabled = false;
 			this.cboQTrigType.Items.AddRange(new object[] {
-            "None",
             "Primary Goals",
-            "Secondary Goals",
-            "3",
-            "4",
-            "5",
-            "6",
-            "7",
-            "8"});
+            "Secondary Goals"});
 			this.cboQTrigType.Location = new System.Drawing.Point(328, 120);
 			this.cboQTrigType.Name = "cboQTrigType";
 			this.cboQTrigType.Size = new System.Drawing.Size(136, 21);
@@ -3138,15 +3154,10 @@ namespace Idmr.Yogeme
 			this.cboQTrig.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cboQTrig.Enabled = false;
 			this.cboQTrig.Items.AddRange(new object[] {
-            "None",
-            "1",
-            "2",
-            "3",
+            "Never",
             "successful",
             "failed",
-            "6",
-            "7",
-            "8"});
+            "Always"});
 			this.cboQTrig.Location = new System.Drawing.Point(512, 120);
 			this.cboQTrig.Name = "cboQTrig";
 			this.cboQTrig.Size = new System.Drawing.Size(144, 21);
@@ -4486,5 +4497,7 @@ namespace Idmr.Yogeme
 		private Label lblMessDelay;
 		private Label label46;
 		private TextBox txtGlobalNote;
+		private ComboBox cboFacial;
+		private Label label37;
 	}
 }

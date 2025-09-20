@@ -1,11 +1,12 @@
 ﻿/*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
- * Copyright (C) 2007-2024 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2025 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.16
+ * VERSION: 1.16+
  *
  * CHANGELOG
+ * [UPD] facial expressions
  * v1.16, 241013
  * [UPD] Updated the FONT.TotalChars to FONT.NumberOfGlyphs rename
  * v1.8.1, 201213
@@ -54,6 +55,12 @@ namespace Idmr.Yogeme
 		readonly Bitmap _preview = new Bitmap(320, 200);
 		readonly byte[] _indexes = new byte[5];
 		readonly string _fontID = "FONTfont8";
+		readonly int[] _eyesFrames = new int[6] { 0, 5, 9, 6, 9, 0 };
+		readonly int[] _eyesBlink = new int[6] { 4, 4, 4, 7, 7, 0 };
+		readonly int[] _mouthFrames = new int[6] { 0, 2, 1, 3, 0, 0 };
+		readonly int[] _ssfaceFrames = new int[6] { 0, 5, 5, 6, 5, 0 };
+		readonly int[] _ssfaceBlink = new int[6] { 4, 5, 5, 7, 5, 0 };
+		int _blinkCountdown = 96;
 
 		public OfficerPreviewForm(Questions questions, int officer, int question)
 		{
@@ -175,6 +182,39 @@ namespace Idmr.Yogeme
 			cmdPrevious.Enabled = true;
 			loadPage();
 		}
+
+		void tmrBlink_Tick(object sender, EventArgs e)
+		{
+			_blinkCountdown--;
+			if (_blinkCountdown > 0) return;
+
+			Anim eyes = (Anim)_talk.Resources["ANIMeyes"];
+			Anim ssface = (Anim)_talk.Resources["ANIMssface"];
+			int faceInd = (_selectedIndex == -1 ? 0 : _selectedIndex);
+			var g = pctPreview.CreateGraphics();	// temporarily draw the blinks, scaled directly
+			g.ScaleTransform(2, 2);
+			switch (_qaSet)
+			{
+				case 0:
+					g.DrawImageUnscaled(eyes.Frames[_eyesBlink[(int)(_questions.OfficerFacialExpressions[faceInd] - 1)]].Image, eyes.Left, eyes.Top);
+					break;
+				case 1:
+					g.DrawImageUnscaled(ssface.Frames[_ssfaceBlink[(int)(_questions.SecretOrderExpressions[faceInd] - 1)]].Image, ssface.Left - 24, ssface.Top + 12);
+					break;
+				case 2:
+					g.DrawImageUnscaled(eyes.Frames[_eyesBlink[(int)(_questions.OfficerFacialExpressions[faceInd + 5] - 1)]].Image, eyes.Left, eyes.Top);
+					break;
+				case 3:
+					g.DrawImageUnscaled(ssface.Frames[_ssfaceBlink[(int)(_questions.SecretOrderExpressions[faceInd + 5] - 1)]].Image, ssface.Left - 24, ssface.Top + 12);
+					break;
+			}
+			g.Dispose();
+			if ((_qaSet < 2 && _blinkCountdown < -3) || (_qaSet > 1 && _blinkCountdown < -4))
+			{
+				_blinkCountdown = new Random().Next(0, 255) & 0x5F;
+				pctPreview.Invalidate();
+			}
+		}
 		#endregion controls
 
 		#region methods
@@ -261,6 +301,7 @@ namespace Idmr.Yogeme
 			Anim eyes = (Anim)_talk.Resources["ANIMeyes"];
 			Anim ssface = (Anim)_talk.Resources["ANIMssface"];
 			Anim mouth = (Anim)_talk.Resources["ANIMmouth"];
+			int faceInd = (_selectedIndex == -1 ? 0 : _selectedIndex);
 			switch (_qaSet)
 			{
 				// original graphics are 320x200, shift values come from the appropriate FILM
@@ -270,8 +311,8 @@ namespace Idmr.Yogeme
 					g.DrawImageUnscaled(offbak.Image, 0, 0);
 					g.DrawImageUnscaled(offtxt.Image, offtxt.Left, offtxt.Top);
 					g.DrawImageUnscaled(offcr21.Image, offcr21.Left, offcr21.Top + 10);
-					g.DrawImageUnscaled(eyes.Frames[0].Image, eyes.Left, eyes.Top);
-					g.DrawImageUnscaled(mouth.Frames[0].Image, mouth.Left, mouth.Top);
+					g.DrawImageUnscaled(eyes.Frames[_eyesFrames[(int)(_questions.OfficerFacialExpressions[faceInd] - 1)]].Image, eyes.Left, eyes.Top);
+					g.DrawImageUnscaled(mouth.Frames[_mouthFrames[(int)(_questions.OfficerFacialExpressions[faceInd] - 1)]].Image, mouth.Left, mouth.Top);
 					break;
 				case 1:
 					Delt ssbak = (Delt)_talk.Resources["DELTssbak"];
@@ -279,7 +320,7 @@ namespace Idmr.Yogeme
 					g.DrawImageUnscaled(ssbak.Image, 0, 0);
 					g.DrawImageUnscaled(sstxt.Image, sstxt.Left, sstxt.Top);
 					g.DrawImageUnscaled(ssrobe9.Image, ssrobe9.Left - 24, ssrobe9.Top + 12);
-					g.DrawImageUnscaled(ssface.Frames[0].Image, ssface.Left - 24, ssface.Top + 12);
+					g.DrawImageUnscaled(ssface.Frames[_ssfaceFrames[(int)(_questions.SecretOrderExpressions[faceInd] - 1)]].Image, ssface.Left - 24, ssface.Top + 12);
 					break;
 				case 2:
 					Delt doffbak = (Delt)_talk.Resources["DELTdoffbak"];
@@ -287,8 +328,8 @@ namespace Idmr.Yogeme
 					g.DrawImageUnscaled(doffbak.Image, 0, 0);
 					g.DrawImageUnscaled(dofftxt.Image, dofftxt.Left, dofftxt.Top);
 					g.DrawImageUnscaled(offcr21.Image, offcr21.Left, offcr21.Top + 10);
-					g.DrawImageUnscaled(eyes.Frames[0].Image, eyes.Left, eyes.Top);
-					g.DrawImageUnscaled(mouth.Frames[0].Image, mouth.Left, mouth.Top);
+					g.DrawImageUnscaled(eyes.Frames[_eyesFrames[(int)(_questions.OfficerFacialExpressions[faceInd + 5] - 1)]].Image, eyes.Left, eyes.Top);
+					g.DrawImageUnscaled(mouth.Frames[_mouthFrames[(int)(_questions.OfficerFacialExpressions[faceInd + 5] - 1)]].Image, mouth.Left, mouth.Top);
 					break;
 				case 3:
 					Delt dssbak = (Delt)_talk.Resources["DELTdssbak"];
@@ -296,7 +337,7 @@ namespace Idmr.Yogeme
 					g.DrawImageUnscaled(dssbak.Image, 0, 0);
 					g.DrawImageUnscaled(dsstxt.Image, dsstxt.Left, dsstxt.Top);
 					g.DrawImageUnscaled(ssrobe9.Image, ssrobe9.Left - 24, ssrobe9.Top + 12);
-					g.DrawImageUnscaled(ssface.Frames[0].Image, ssface.Left - 24, ssface.Top + 12);
+					g.DrawImageUnscaled(ssface.Frames[_ssfaceFrames[(int)(_questions.SecretOrderExpressions[faceInd + 5] - 1)]].Image, ssface.Left - 24, ssface.Top + 12);
 					break;
 			}
 			g.Dispose();
