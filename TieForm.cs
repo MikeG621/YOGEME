@@ -1,11 +1,12 @@
 /*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
- * Copyright (C) 2007-2025 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2026 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.17.1+
+ * VERSION: 1.17.5
  *
  * CHANGELOG
+ * v1.17.5, 260214
  * [NEW] Officer facial expressions
  * v1.17.1, 250303
  * [FIX] Stripping extension to write into Battle for Testing was case-sensitive

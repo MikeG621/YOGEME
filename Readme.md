@@ -36,18 +36,11 @@ To remove YOGEME, simply delete the directory where you placed it.
 This will leave behind a single config file in AppData with your user settings.
 
 ## Latest Release
-#### WIP
+#### 1.17.5, 14 Feb 2026
 - (TIE) Officers tab now includes ability to control facial expressions per question.
 - (TIE) Officer Preview form displays facial expressions.  Also, they blink now.
-
-#### 1.17.4, 24 Aug 2025
-- (XW) Random fixed multiple bugs mostly related to B-wings [Pull [#129](https://github.com/MikeG621/YOGEME/pull/129)].
-  - Mission not being marked dirty when changing craft/object type.
-  - Unable to change FG type from B-wing to Y-wing.
-  - Changing B-wings status changed it back to Y-wing in the background.
-  - Wrong B-wing icon assigned in BRF mode
-- (XWA) End of Mission delay controls hidden due to not actually being implemented in-game [Issue [#128](https://github.com/MikeG621/YOGEME/issues/128)].
-- (XWA) Fixed the Flightgroup Goal Enabled checkbox not saving when toggled by the Trigger drop-down.
+- (XWA) Fixed Backdrop display of hooked indexes 104-255.
+- Updated LfdReader.dll, mostly to fix briefing icon issues.
 
 ---
 ### Additional Information
@@ -59,6 +52,15 @@ This will leave behind a single config file in AppData with your user settings.
 - [Idmr.LfdReader](https://github.com/MikeG621/LfdReader)
 
 ### Version History
+
+#### 1.17.4, 24 Aug 2025
+- (XW) Random fixed multiple bugs mostly related to B-wings [Pull [#129](https://github.com/MikeG621/YOGEME/pull/129)].
+  - Mission not being marked dirty when changing craft/object type.
+  - Unable to change FG type from B-wing to Y-wing.
+  - Changing B-wings status changed it back to Y-wing in the background.
+  - Wrong B-wing icon assigned in BRF mode
+- (XWA) End of Mission delay controls hidden due to not actually being implemented in-game [Issue [#128](https://github.com/MikeG621/YOGEME/issues/128)].
+- (XWA) Fixed the Flightgroup Goal Enabled checkbox not saving when toggled by the Trigger drop-down.
 
 #### 1.17.3, 13 Jul 2025
 - (XW) Random fixed an index issue with the Number of Waves [Pull [#124](https://github.com/MikeG621/YOGEME/pull/124)].

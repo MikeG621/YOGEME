@@ -1,11 +1,13 @@
 /*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
- * Copyright (C) 2007-2025 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2026 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.17.3
+ * VERSION: 1.17.5
  *
  * CHANGELOG
+ * v1.17.5, 260214
+ * [FIX] XWA extended hook index wasn't displayed correctly
  * v1.17.3, 250713
  * [UPD] thumbs is now dynamically sized
  * [UPD] added ability ot use scroll wheel over thumbs
@@ -270,8 +272,8 @@ namespace Idmr.Yogeme
 							{
 								System.Diagnostics.Debug.WriteLine("Adding hook Group #" + id);
 								_planets.Groups.Add(temp.Groups[g]);
-								thumbs[id - 6304].Image = temp.Groups[g].Subs[0].Image;
-								thumbs[id - 6304].BackColor = System.Drawing.Color.Black;
+								thumbs[id - 6200].Image = temp.Groups[g].Subs[0].Image;
+								thumbs[id - 6200].BackColor = System.Drawing.Color.Black;
 							}
 						}
 						if (temp.FileName.ToLower() == "planet2.dat") _planet2Loaded = true;
@@ -334,8 +336,8 @@ namespace Idmr.Yogeme
 								{
 									System.Diagnostics.Debug.WriteLine("Adding hook Group #" + id);
 									_planets.Groups.Add(temp.Groups[g]);
-									thumbs[id - 6304].Image = temp.Groups[g].Subs[0].Image;
-									thumbs[id - 6304].BackColor = System.Drawing.Color.Black;
+									thumbs[id - 6200].Image = temp.Groups[g].Subs[0].Image;
+									thumbs[id - 6200].BackColor = System.Drawing.Color.Black;
 								}
 							}
 							if (temp.FileName.ToLower() == "planet2.dat") _planet2Loaded = true;
