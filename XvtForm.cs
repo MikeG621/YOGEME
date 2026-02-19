@@ -2482,7 +2482,7 @@ namespace Idmr.Yogeme
 					case "Status2": fg.Status2 = Convert.ToByte(value); break;
 					case "Missile": fg.Missile = Convert.ToByte(value); break;
 					case "Beam": fg.Beam = Convert.ToByte(value); break;
-					case "Countermeasures": fg.Countermeasures = (FlightGroup.CounterTypes)value; break;
+					case "Countermeasures": fg.Countermeasures = (FlightGroup.CounterTypes)Convert.ToByte(value); break;
 					case "ExplosionTime": fg.ExplosionTime = Convert.ToByte(value); break;
 					case "ArrivalMothership": fg.ArrivalMothership = Convert.ToByte(value); break;
 					case "AlternateMothership": fg.AlternateMothership = Convert.ToByte(value); break;
