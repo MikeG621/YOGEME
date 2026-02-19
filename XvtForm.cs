@@ -2903,6 +2903,7 @@ namespace Idmr.Yogeme
 			lblODesc.Text = s[0];
 			lblOVar1.Text = s[1];
 			lblOVar2.Text = s[2];
+			_activeOrder.Command = (byte)cboOrders.SelectedIndex;
 			numOVar1_ValueChanged(0, new EventArgs()); // Force refresh, since label information is provided to the user.
 			numOVar2_ValueChanged(0, new EventArgs());
 		}
@@ -2942,7 +2943,7 @@ namespace Idmr.Yogeme
 
 		void numOVar1_ValueChanged(object sender, EventArgs e)
 		{
-			byte value = _activeOrder.Variable1;
+			byte value = (byte)numOVar1.Value;
 			var command = (FlightGroup.Order.CommandList)_activeOrder.Command;
 			string text = "";
 			bool warning = false;
@@ -2986,7 +2987,7 @@ namespace Idmr.Yogeme
 		void numOVar2_ValueChanged(object sender, EventArgs e)
 		{
 			var command = (FlightGroup.Order.CommandList)_activeOrder.Command;
-			int value = _activeOrder.Variable2;
+			byte value = (byte)numOVar2.Value;
 			string text = "";
 			bool warning = false;
 			switch (command)
