@@ -36,6 +36,12 @@ To remove YOGEME, simply delete the directory where you placed it.
 This will leave behind a single config file in AppData with your user settings.
 
 ## Latest Release
+#### WIP
+Couple fixes from Random [Pull [#131](https://github.com/MikeG621/YOGEME/pull/131)].
+- (TIE, XvT) Fixed Order var/parameter text not updating properly.
+- (XvT) Fixed exception when changing Countermeasures.
+- (XvT) Improved test functionality, now takes into account player IFF when setting up the Training LST file and pre-selecting the team in the pilot file.
+
 #### 1.17.5, 14 Feb 2026
 - (TIE) Officers tab now includes ability to control facial expressions per question.
 - (TIE) Officer Preview form displays facial expressions.  Also, they blink now.

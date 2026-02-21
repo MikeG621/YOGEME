@@ -3,9 +3,10 @@
  * Copyright (C) 2007-2026 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.17.5
+ * VERSION: 1.17.5+
  *
  * CHANGELOG
+ * [FIX #131] Order var text during updates [JB]
  * v1.17.5, 260214
  * [NEW] Officer facial expressions
  * v1.17.1, 250303

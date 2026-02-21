@@ -1,11 +1,14 @@
 /*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
- * Copyright (C) 2007-2025 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2026 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.16.0.6
+ * VERSION: 1.16.0.6+
  *
  * CHANGELOG
+ * [FIX #131] Order var text during updates [JB]
+ * [FIX #131] Countermeasure cast exception [JB]
+ * [UPD #131] Better test use by allowing Rebel missions [JB]
  * v1.16.0.6, 250104
  * [FIX #114] Corrupted craft role (when AI Rating is written)
  * v1.16.0.3, 241027
