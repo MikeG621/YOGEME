@@ -1891,13 +1891,26 @@ namespace Idmr.Yogeme
 			int restart = 1;
 			Microsoft.Win32.RegistryKey key = Microsoft.Win32.Registry.LocalMachine.OpenSubKey("SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon", true);*/
 
+			// Detect player team to set the appropriate list, and the faction selected in the pilot file
+			byte playerIff = 1;    // Default Imperial
+			foreach(FlightGroup fg in _mission.FlightGroups)
+			{
+				if(fg.PlayerNumber != 0)
+				{
+					playerIff = fg.IFF;
+					break;
+				}
+			}
+			if(playerIff > 1) playerIff = 1;
+
 			// configure XvT/BoP
+			string lstBase = (playerIff == 1 ? "Train\\IMPERIAL" : "Train\\REBEL");
 			int index = 0;
 			while (File.Exists(xvtPath + "test" + index + "0.plt")) index++;
 			string pilot = "test" + index + "0.plt";
 			string bopPilot = "test" + index + "0.pl2";
-			string lst = "Train\\IMPERIAL.LST";
-			string backup = "Train\\IMPERIAL_" + index + ".bak";
+			string lst = lstBase + ".LST";
+			string backup = lstBase + "_" + index + ".bak";
 
 			File.Copy(Application.StartupPath + "\\xvttest0.plt", xvtPath + pilot);
 			if (_config.BopInstalled) File.Copy(Application.StartupPath + "\\xvttest0.pl2", bopPath + bopPilot, true);
@@ -1908,6 +1921,8 @@ namespace Idmr.Yogeme
 				char[] indexBytes = index.ToString().ToCharArray();
 				new BinaryWriter(pilotFile).Write(indexBytes);
 				for (int i = (int)pilotFile.Position; i < 0xC; i++) pilotFile.WriteByte(0);
+				pilotFile.Position = 0x3EA6;
+				pilotFile.WriteByte(playerIff);
 			}
 			// BoP pilot edit
 			if (_config.BopInstalled)
@@ -1918,6 +1933,8 @@ namespace Idmr.Yogeme
 					char[] indexBytes = index.ToString().ToCharArray();
 					new BinaryWriter(pilotFile).Write(indexBytes);
 					for (int i = (int)pilotFile.Position; i < 0xC; i++) pilotFile.WriteByte(0);
+					pilotFile.Position = 0x3682;
+					pilotFile.WriteByte(playerIff);
 				}
 			}
 
@@ -2482,7 +2499,7 @@ namespace Idmr.Yogeme
 					case "Status2": fg.Status2 = Convert.ToByte(value); break;
 					case "Missile": fg.Missile = Convert.ToByte(value); break;
 					case "Beam": fg.Beam = Convert.ToByte(value); break;
-					case "Countermeasures": fg.Countermeasures = (FlightGroup.CounterTypes)value; break;
+					case "Countermeasures": fg.Countermeasures = (FlightGroup.CounterTypes)Convert.ToByte(value); break;
 					case "ExplosionTime": fg.ExplosionTime = Convert.ToByte(value); break;
 					case "ArrivalMothership": fg.ArrivalMothership = Convert.ToByte(value); break;
 					case "AlternateMothership": fg.AlternateMothership = Convert.ToByte(value); break;
@@ -2903,6 +2920,7 @@ namespace Idmr.Yogeme
 			lblODesc.Text = s[0];
 			lblOVar1.Text = s[1];
 			lblOVar2.Text = s[2];
+			_activeOrder.Command = (byte)cboOrders.SelectedIndex;
 			numOVar1_ValueChanged(0, new EventArgs()); // Force refresh, since label information is provided to the user.
 			numOVar2_ValueChanged(0, new EventArgs());
 		}
@@ -2942,7 +2960,7 @@ namespace Idmr.Yogeme
 
 		void numOVar1_ValueChanged(object sender, EventArgs e)
 		{
-			byte value = _activeOrder.Variable1;
+			byte value = (byte)numOVar1.Value;
 			var command = (FlightGroup.Order.CommandList)_activeOrder.Command;
 			string text = "";
 			bool warning = false;
@@ -2986,7 +3004,7 @@ namespace Idmr.Yogeme
 		void numOVar2_ValueChanged(object sender, EventArgs e)
 		{
 			var command = (FlightGroup.Order.CommandList)_activeOrder.Command;
-			int value = _activeOrder.Variable2;
+			byte value = (byte)numOVar2.Value;
 			string text = "";
 			bool warning = false;
 			switch (command)
