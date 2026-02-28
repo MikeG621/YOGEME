@@ -1,11 +1,13 @@
 /*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
- * Copyright (C) 2007-2024 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2026 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.16
+ * VERSION: 1.16+
  *
  * CHANGELOG
+ * [FIX #132] Text wouldn't save due to not being marked Dirty
+ * [UPD] Redid some of the _loading flags
  * v1.16, 241013
  * [UPD] cleanup
  * v1.8.1, 201213
@@ -46,13 +48,26 @@ namespace Idmr.Yogeme
 		Bitmap _systemImage;
 		readonly Bitmap _galaxyImage;
 		readonly ColorPalette _systemPalette;
-		bool _loading = false;
+		bool _loading = true;
 		bool _dragging = false;
 		LfdFile _battle;
 
 		public BattleForm()
 		{
 			InitializeComponent();
+			#region dirties
+			txtBattle.TextChanged += markTextDirty;
+			txtCutscene.TextChanged += markTextDirty;
+			txtBTitle1.TextChanged += markTextDirty;
+			txtBTitle2.TextChanged += markTextDirty;
+			txtCTitle1.TextChanged += markTextDirty;
+			txtCTitle2.TextChanged += markTextDirty;
+			txtSystem.TextChanged += markTextDirty;
+			numFrameHeight.ValueChanged += markTextDirty;
+			numFrameWidth.ValueChanged += markTextDirty;
+			numFrameLeft.ValueChanged += markTextDirty;
+			numFrameTop.ValueChanged += markTextDirty;
+			#endregion
 			if (!Settings.GetInstance().TieInstalled)
 			{
 				MessageBox.Show("TIE95 installation not found, Battle function not available", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -131,13 +146,11 @@ namespace Idmr.Yogeme
 			_deltName = strTemp[0];
 			txtSystem.Text = strTemp[1];
 			// Image Frame
-			_loading = true;
 			string[] str_frame = strTemp[2].Split(' ');
 			numFrameTop.Value = Convert.ToInt32(str_frame[0]);
 			numFrameHeight.Value = Convert.ToInt32(str_frame[1]);
 			numFrameLeft.Value = Convert.ToInt32(str_frame[2]);
 			numFrameWidth.Value = Convert.ToInt32(str_frame[3]);
-			_loading = false;
 			drawFrame();
 			// Missions
 			strTemp = txt.Strings[3].Split('\0');
@@ -160,13 +173,17 @@ namespace Idmr.Yogeme
 				picSystem.Size = _systemImage.Size;
 			}
 			catch (Exception x) { MessageBox.Show(x.Message + "  System image unavailable.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); }
+			_loading = false;
 		}
+
+		void markTextDirty(object sender, EventArgs e) { if (!_loading) _battle.Resources[0].Dirty(); }
 
 		#region Main
 		void cmdNext_Click(object sender, EventArgs e)
 		{
 			if (_battleIndex == 13) return;     //TIE95 has 13 battles, although it may be possible to add more, dunno
 
+			_loading = true;
 			try
 			{
 				_battleIndex++;
@@ -185,6 +202,7 @@ namespace Idmr.Yogeme
 		{
 			if (_battleIndex == 1) return;
 
+			_loading = true;
 			try
 			{
 				_battleIndex--;
@@ -202,8 +220,6 @@ namespace Idmr.Yogeme
 		void cmdSave_Click(object sender, EventArgs e)
 		{
 			Text tex = (Text)_battle.Resources[0];
-			Delt del = (Delt)_battle.Resources[1];
-			del.Image = _systemImage;
 			tex.NumberOfStrings = (short)(_numMiss + 4);
 			tex.Strings[0] = txtBattle.Text + '\0' + txtCutscene.Text;
 			tex.Strings[1] = txtBTitle1.Text + '\0' + txtBTitle2.Text + '\0' + txtCTitle1.Text + '\0' + txtCTitle2.Text;
@@ -252,17 +268,17 @@ namespace Idmr.Yogeme
 		}
 		void cmdRemove_Click(object sender, EventArgs e)
 		{
-			if (lstMiss.SelectedIndex != -1)
+			if (lstMiss.SelectedIndex == -1) return;
+
+			for (int i = lstMiss.SelectedIndex; i < 7; i++)
 			{
-				for (int i = lstMiss.SelectedIndex; i < 7; i++)
-				{
-					_missionDescriptions[i] = _missionDescriptions[i + 1];
-					_missionFiles[i] = _missionFiles[i + 1];
-				}
-				lstMiss.Items.RemoveAt(lstMiss.SelectedIndex);
-				txtDesc.Text = "";
+				_missionDescriptions[i] = _missionDescriptions[i + 1];
+				_missionFiles[i] = _missionFiles[i + 1];
 			}
-			_numMiss--;
+			lstMiss.Items.RemoveAt(lstMiss.SelectedIndex);
+			txtDesc.Text = "";
+			_battle.Resources[0].Dirty();
+			if (_numMiss > 0) _numMiss--;
 		}
 
 		void lstMiss_SelectedIndexChanged(object sender, EventArgs e) { if (lstMiss.SelectedIndex != -1) txtDesc.Text = _missionDescriptions[lstMiss.SelectedIndex]; }
@@ -275,6 +291,7 @@ namespace Idmr.Yogeme
 			_missionFiles[_numMiss] = strMission;
 			_missionDescriptions[_numMiss] = "";
 			lstMiss.Items.Add(strMission);
+			_battle.Resources[0].Dirty();
 			_numMiss++;
 		}
 
@@ -290,6 +307,7 @@ namespace Idmr.Yogeme
 			picSystem.Width = _systemImage.Width;
 			picSystem.Height = _systemImage.Height;
 			picSystem.Image = _systemImage;
+			((Delt)_battle.Resources[1]).Image = _systemImage;
 		}
 
 		void savSystem_FileOk(object sender, System.ComponentModel.CancelEventArgs e) => _systemImage.Save(savSystem.FileName, System.Drawing.Imaging.ImageFormat.Bmp); //if ImageFormat isn't specified, it saves as PNG with .BMP extension

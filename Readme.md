@@ -37,6 +37,8 @@ This will leave behind a single config file in AppData with your user settings.
 
 ## Latest Release
 #### WIP
+- (TIE) Fixed battle LFDs not writing anymore [Issue [#132](https://github.com/MikeG621/YOGEME/issues/132)].
+
 Couple fixes from Random [Pull [#131](https://github.com/MikeG621/YOGEME/pull/131)].
 - (TIE, XvT) Fixed Order var/parameter text not updating properly.
 - (XvT) Fixed exception when changing Countermeasures.
