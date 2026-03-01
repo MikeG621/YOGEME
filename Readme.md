@@ -39,6 +39,7 @@ This will leave behind a single config file in AppData with your user settings.
 #### WIP
 - (TIE) Fixed battle LFDs not writing anymore [Issue [#132](https://github.com/MikeG621/YOGEME/issues/132)].
 - (XWA) Redid how backdrops are loaded, Group IDs are now hard-coded to prevent failures due to DAT modifications.
+- (Briefing) Now stripping newline characters from strings [Issue #132].
 
 Couple fixes from Random [Pull [#131](https://github.com/MikeG621/YOGEME/pull/131)].
 - (TIE, XvT) Fixed Order var/parameter text not updating properly.

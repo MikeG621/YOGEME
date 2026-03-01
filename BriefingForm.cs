@@ -1,11 +1,12 @@
 /*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
- * Copyright (C) 2007-2025 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2026 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.17.1
+ * VERSION: 1.17.1+
  *
  * CHANGELOG
+ * [FIX #132] Strip newline characters from briefing strings
  * v1.17.1, 250303
  * [FIX #119] Crash when skipping to the end of the briefing
  * [UPD #118] TIE text tags now use in-game font when possible
@@ -2635,27 +2636,19 @@ namespace Idmr.Yogeme
 		void tableStrings_RowChanged(object sender, DataRowChangeEventArgs e)
 		{
 			if (!_loading && onModified != null) onModified("StringsChanged", new EventArgs());
-			int i = 0;
-			for (int j = 0; j < _strings.Length; j++)
-				if (_tableStrings.Rows[j].Equals(e.Row))
-				{
-					i = j;
-					break;
-				}
-			_strings[i] = _tableStrings.Rows[i][0].ToString();
+			int i;
+			for (i = 0; i < _strings.Length; i++)
+				if (_tableStrings.Rows[i].Equals(e.Row)) break;
+			_strings[i] = _tableStrings.Rows[i][0].ToString().Replace('\n', ' ');
 			loadStrings();
 		}
 		void tableTags_RowChanged(object sender, DataRowChangeEventArgs e)
 		{
 			if (!_loading && onModified != null) onModified("TagsChanged", new EventArgs());
-			int i = 0;
-			for (int j = 0; j < _tags.Length; j++)
-				if (_tableTags.Rows[j].Equals(e.Row))
-				{
-					i = j;
-					break;
-				}
-			_tags[i] = _tableTags.Rows[i][0].ToString();
+			int i;
+			for (i = 0; i < _tags.Length; i++)
+				if (_tableTags.Rows[i].Equals(e.Row)) break;
+			_tags[i] = _tableTags.Rows[i][0].ToString().Replace('\n',' ');
 			loadTags();
 		}
 
