@@ -3,9 +3,10 @@
  * Copyright (C) 2007-2026 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.17.5
+ * VERSION: 1.17.5+
  *
  * CHANGELOG
+ * [FIX] XWA now initializes Groups directly before loading DATs
  * v1.17.5, 260214
  * [FIX] XWA extended hook index wasn't displayed correctly
  * v1.17.3, 250713
@@ -83,8 +84,7 @@ namespace Idmr.Yogeme
 		readonly PictureBox[] thumbs;
 #pragma warning restore IDE1006 // Naming Styles
 		readonly bool _hookInstalled;
-		readonly string _fileName;
-		static bool _planet2Loaded;
+		readonly string _filePath;
 		int _mouseX, _mouseY;
 
 		/// <summary>The selected Shadow setting</summary>
@@ -165,8 +165,8 @@ namespace Idmr.Yogeme
 			InitializeComponent();
 			if (!platformInstalled()) throw new ApplicationException("Platform installation not found, feature unavailable.");
 
-			if (File.Exists(Path.GetFileNameWithoutExtension(filePath) + "_Resdata.txt")) _fileName = Path.GetFileNameWithoutExtension(filePath) + "_Resdata.txt";
-			else _fileName = Path.GetFileNameWithoutExtension(filePath) + ".ini";
+			string resTxt = Path.GetDirectoryName(filePath) + Path.DirectorySeparatorChar + Path.GetFileNameWithoutExtension(filePath) + "_Resdata.txt";
+			_filePath = (File.Exists(resTxt) ? resTxt : Path.ChangeExtension(filePath, ".ini"));
 			thumbs = new PictureBox[_numBackdrops];
 			createThumbnails();
 			vsbThumbs.Enabled = true;
@@ -222,26 +222,39 @@ namespace Idmr.Yogeme
 					_planets = new DatFile();
 					_planets.Groups.AutoSort = false;
 					_planets.Groups.Add(-1);
-					setThumbnailXwa("planet.dat", 0, 24);
+					for (short i = 6010; i <= 6014; i++) _planets.Groups.Add(i);
+					for (short i = 6020; i <= 6034; i++) _planets.Groups.Add(i);
+					for (short i = 6040; i <= 6043; i++) _planets.Groups.Add(i);
 					_planets.Groups.Add(-2);
-					setThumbnailXwa("planet.dat", 25, 35);
-					setThumbnailXwa("wrapback.dat", 60, 2);
-					setThumbnailXwa("dsfire.dat", 62, 1);
-					setThumbnailXwa("nebula.dat", 63, 10);
-					setThumbnailXwa("galaxy.dat", 73, 10);
-					setThumbnailXwa("backdrop.dat", 83, 11);
-					setThumbnailXwa("wrapback.dat", 94, 4);
-					setThumbnailXwa("nebula.dat", 98, 5);
+					for (short i = 6060; i <= 6064; i++) _planets.Groups.Add(i);
+					for (short i = 6070; i <= 6084; i++) _planets.Groups.Add(i);
+					for (short i = 6090; i <= 6094; i++) _planets.Groups.Add(i);
+					for (short i = 6100; i <= 6104; i++) _planets.Groups.Add(i);
+					for (short i = 6110; i <= 6114; i++) _planets.Groups.Add(i);
+					_planets.Groups.Add(18000);
+					_planets.Groups.Add(19000);
+					_planets.Groups.Add(6250);
+					for (short i = 7001; i <= 7010; i++) _planets.Groups.Add(i);
+					for (short i = 8001; i <= 8010; i++) _planets.Groups.Add(i);
+					for (short i = 9001; i <= 9010; i++) _planets.Groups.Add(i);
+					_planets.Groups.Add(9100);
+					for (short i = 19100; i <= 19400; i += 100) _planets.Groups.Add(i);
+					for (short i = 7011; i <= 7015; i++) _planets.Groups.Add(i);
+					if (_hookInstalled) for (short i = 6304; i < 6456; i++) _planets.Groups.Add(i);
+					setThumbnailXwa(_backdropDirectory + "planet.dat");
+					setThumbnailXwa(_backdropDirectory + "wrapback.dat");
+					setThumbnailXwa(_backdropDirectory + "dsfire.dat");
+					setThumbnailXwa(_backdropDirectory + "nebula.dat");
+					setThumbnailXwa(_backdropDirectory + "galaxy.dat");
+					setThumbnailXwa(_backdropDirectory + "backdrop.dat");
 				}
 				for (int i = 1; i < _planets.NumberOfGroups; i++)
 				{
 					if (i == 25) continue;
-					thumbs[i].Image = _planets.Groups[i].Subs[0].Image;
-					thumbs[i].BackColor = System.Drawing.Color.Black;
+					if (_planets.Groups[i].NumberOfSubs > 0) thumbs[i].Image = _planets.Groups[i].Subs[0].Image;
 				}
 				StreamReader sr;
 				System.Collections.Generic.List<string> resdata = new System.Collections.Generic.List<string>(50);
-				DatFile temp;
 				string line;
 				bool ignoreError = false;
 				try
@@ -253,50 +266,25 @@ namespace Idmr.Yogeme
 				catch { MessageBox.Show("Could not open resource file:\n" + _installDirectory + "\\RESDATA.TXT", "Error"); }
 				for (int i = 0; i < resdata.Count - 38; i++)    // 38 original entries, customs must be at top
 				{
-					try
-					{
-						temp = new DatFile(_installDirectory + "\\" + resdata[i]);
-						System.Diagnostics.Debug.WriteLine("Loading " + temp.FileName);
-						int index = 0;
-						for (int g = 0; g < temp.NumberOfGroups; g++)
-						{
-							short id = temp.Groups[g].ID;
-							index = _planets.Groups.GetIndex(id);
-							if (index != -1)
-							{
-								System.Diagnostics.Debug.WriteLine("Overriding Group #" + index);
-								_planets.Groups[index] = temp.Groups[g];
-								thumbs[index].Image = temp.Groups[g].Subs[0].Image;
-							}
-							else if (_hookInstalled && id >= 6304 && id <= 6455)
-							{
-								System.Diagnostics.Debug.WriteLine("Adding hook Group #" + id);
-								_planets.Groups.Add(temp.Groups[g]);
-								thumbs[id - 6200].Image = temp.Groups[g].Subs[0].Image;
-								thumbs[id - 6200].BackColor = System.Drawing.Color.Black;
-							}
-						}
-						if (temp.FileName.ToLower() == "planet2.dat") _planet2Loaded = true;
-					}
+					try { setThumbnailXwa(_installDirectory + "\\" + resdata[i]); }
 					catch (Exception x)
 					{
-						if (!ignoreError)
-						{
-							string message = "Error reading DAT file from RESDATA.TXT:\n";
-							if (x.InnerException != null && x.InnerException.GetType() == typeof(FileNotFoundException)) message = "DAT File not found:\n";
-							var dlgError = new ErrorDialog(message + _installDirectory + "\\" + resdata[i] + "\nFile skipped.", true);
-							dlgError.ShowDialog();
-							ignoreError |= dlgError.IgnoreErrors;
-						}
+						if (ignoreError) continue;
+						
+						string message = "Error reading DAT file from RESDATA.TXT:\n";
+						if (x.InnerException != null && x.InnerException.GetType() == typeof(FileNotFoundException)) message = "DAT File not found:\n";
+						var dlgError = new ErrorDialog(message + $"_installDirectory\\{resdata[i]}\nFile skipped.", true);
+						dlgError.ShowDialog();
+						ignoreError |= dlgError.IgnoreErrors;
 					}
 				}
-				if (_hookInstalled && File.Exists(_fileName))
+				if (_hookInstalled && File.Exists(_filePath))
 				{
 					resdata.Clear();
 					try
 					{
-						sr = new StreamReader(_fileName);
-						bool readLine = _fileName.EndsWith(".txt");
+						sr = new StreamReader(_filePath);
+						bool readLine = _filePath.EndsWith(".txt");
 						while ((line = sr.ReadLine()) != null)
 						{
 							if (line.StartsWith("#") || line.StartsWith(";") || line.StartsWith("////") || line == "") continue;
@@ -308,41 +296,12 @@ namespace Idmr.Yogeme
 					}
 					catch
 					{
-						MessageBox.Show("Could not open hook file:\n" + _fileName, "Error");
+						MessageBox.Show("Could not open hook file:\n" + _filePath, "Error");
 					}
 					for (int i = 0; i < resdata.Count; i++)
 					{
-						if (resdata.Count == 1 && resdata[0].ToLower() == "resdata\\planet2.dat" && _planet2Loaded)
-						{
-							System.Diagnostics.Debug.WriteLine("SBD loaded, skipping");
-							continue;
-						}
-						try
-						{
-							temp = new DatFile(_installDirectory + "\\" + resdata[i]);
-							System.Diagnostics.Debug.WriteLine("Loading " + temp.FileName);
-							int index = 0;
-							for (int g = 0; g < temp.NumberOfGroups; g++)
-							{
-								short id = temp.Groups[g].ID;
-								index = _planets.Groups.GetIndex(id);
-								if (index != -1)
-								{
-									System.Diagnostics.Debug.WriteLine("Overriding Group #" + index);
-									_planets.Groups[index] = temp.Groups[g];
-									thumbs[index].Image = temp.Groups[g].Subs[0].Image;
-								}
-								else if (id >= 6304 && id <= 6455)
-								{
-									System.Diagnostics.Debug.WriteLine("Adding hook Group #" + id);
-									_planets.Groups.Add(temp.Groups[g]);
-									thumbs[id - 6200].Image = temp.Groups[g].Subs[0].Image;
-									thumbs[id - 6200].BackColor = System.Drawing.Color.Black;
-								}
-							}
-							if (temp.FileName.ToLower() == "planet2.dat") _planet2Loaded = true;
-						}
-						catch { MessageBox.Show("Error reading DAT file from hook:\n" + _installDirectory + "\\" + resdata[i] + "\nFile skipped.", "Error"); }
+						try { setThumbnailXwa(_installDirectory + "\\" + resdata[i]); }
+						catch { MessageBox.Show($"Error reading DAT file from hook:\n{_installDirectory}\\{resdata[i]}\nFile skipped.", "Error"); }
 					}
 				}
 			}
@@ -358,21 +317,24 @@ namespace Idmr.Yogeme
 			thumbs[index].BackColor = System.Drawing.Color.Black;
 		}
 		/// <summary>XWA</summary>
-		/// <param name="datFile">DAT file</param>
-		/// <param name="index">Starting thumbs index</param>
-		/// <param name="count">Number of groups to read</param>
-		void setThumbnailXwa(string datFile, int index, int count)
+		/// <param name="datFile">Full path to the DAT file</param>
+		void setThumbnailXwa(string datFile)
 		{
 			try
 			{
-				DatFile temp = new DatFile(_backdropDirectory + datFile);
-				int offset = 0;
-				if (index == 25) offset = 24;
-				else if (index == 94) offset = 2;
-				else if (index == 98) offset = 10;
-				for (int i = index; i < count + index; i++) _planets.Groups.Add(temp.Groups[i - index + offset]);
+				DatFile temp = new DatFile(datFile);
+				foreach (Group g in temp.Groups)
+				{
+					int index = _planets.Groups.GetIndex(g.ID);
+					if (index == -1) continue;
+
+					_planets.Groups[index] = g;
+					thumbs[index].Image = g.Subs[0].Image;
+					thumbs[index].BackColor = System.Drawing.Color.Black;
+				}
+				System.Diagnostics.Debug.WriteLine("Loaded " + temp.FileName);
 			}
-			catch { throw new ArgumentException("Cannot open resource file:\n" + _backdropDirectory + datFile + "\n\nCheck your platform installation path."); }
+			catch { throw new ArgumentException($"Cannot open resource file:\n{datFile}\n\nCheck your platform installation path."); }
 		}
 		bool platformInstalled()
 		{
@@ -454,16 +416,18 @@ namespace Idmr.Yogeme
 		{
 			if (_platform == MissionFile.Platform.XWA)
 			{
+				var grp = _planets.Groups[(int)numBackdrop.Value];
+				if (numBackdrop.Value > 103 && _planets.Groups.GetIndex((short)(numBackdrop.Value + 6200)) != -1) grp = _planets.Groups[_planets.Groups.GetIndex((short)(numBackdrop.Value + 6200))];
 				try
 				{
-					if (_shadow >= _planets.Groups[(int)numBackdrop.Value].NumberOfSubs)
+					if (_shadow >= grp.NumberOfSubs)
 					{
 						_shadow = 0;  //[JB] Need to set shadow or else the catch() will throw an exception since it's out of range.
 						numShadow.Value = 0;
 					}
-					pctBackdrop.Image = _planets.Groups[(int)numBackdrop.Value].Subs[_shadow].Image;
+					pctBackdrop.Image = grp.Subs[_shadow].Image;
 					_index = (int)numBackdrop.Value;
-					numShadow.Maximum = _planets.Groups[_index].NumberOfSubs - 1;
+					numShadow.Maximum = grp.NumberOfSubs - 1;
 				}
 				catch
 				{
@@ -515,7 +479,7 @@ namespace Idmr.Yogeme
 			mouseY = e.Y;
 			if (mouseX >= pctBackdrop.Image.Width || mouseY >= pctBackdrop.Image.Height) return;
 			Bitmap img = _planets.Groups[_index].Subs[_shadow].Image;
-			System.Diagnostics.Debug.WriteLine("mouse: " + mouseX + " " + mouseY);
+			//System.Diagnostics.Debug.WriteLine("mouse: " + mouseX + " " + mouseY);
 			if (img.Width > pctBackdrop.Width || img.Height > pctBackdrop.Height)
 			{
 				if (img.Width > img.Height)
