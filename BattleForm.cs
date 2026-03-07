@@ -3,9 +3,10 @@
  * Copyright (C) 2007-2026 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.16+
+ * VERSION: 1.17.6
  *
  * CHANGELOG
+ * v1.17.6, 260307
  * [FIX #132] Text wouldn't save due to not being marked Dirty
  * [UPD] Redid some of the _loading flags
  * v1.16, 241013

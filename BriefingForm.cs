@@ -3,9 +3,10 @@
  * Copyright (C) 2007-2026 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.17.1+
+ * VERSION: 1.17.6
  *
  * CHANGELOG
+ * v1.17.6, 260307
  * [FIX #132] Strip newline characters from briefing strings
  * v1.17.1, 250303
  * [FIX #119] Crash when skipping to the end of the briefing

@@ -36,7 +36,7 @@ To remove YOGEME, simply delete the directory where you placed it.
 This will leave behind a single config file in AppData with your user settings.
 
 ## Latest Release
-#### WIP
+#### 1.17.6, 7 Mar 2026
 - (TIE) Fixed battle LFDs not writing anymore [Issue [#132](https://github.com/MikeG621/YOGEME/issues/132)].
 - (XWA) Redid how backdrops are loaded, Group IDs are now hard-coded to prevent failures due to DAT modifications.
 - (Briefing) Now stripping newline characters from strings [Issue #132].
@@ -45,12 +45,6 @@ Couple fixes from Random [Pull [#131](https://github.com/MikeG621/YOGEME/pull/13
 - (TIE, XvT) Fixed Order var/parameter text not updating properly.
 - (XvT) Fixed exception when changing Countermeasures.
 - (XvT) Improved test functionality, now takes into account player IFF when setting up the Training LST file and pre-selecting the team in the pilot file.
-
-#### 1.17.5, 14 Feb 2026
-- (TIE) Officers tab now includes ability to control facial expressions per question.
-- (TIE) Officer Preview form displays facial expressions.  Also, they blink now.
-- (XWA) Fixed Backdrop display of hooked indexes 104-255.
-- Updated LfdReader.dll, mostly to fix briefing icon issues.
 
 ---
 ### Additional Information
@@ -62,6 +56,12 @@ Couple fixes from Random [Pull [#131](https://github.com/MikeG621/YOGEME/pull/13
 - [Idmr.LfdReader](https://github.com/MikeG621/LfdReader)
 
 ### Version History
+
+#### 1.17.5, 14 Feb 2026
+- (TIE) Officers tab now includes ability to control facial expressions per question.
+- (TIE) Officer Preview form displays facial expressions.  Also, they blink now.
+- (XWA) Fixed Backdrop display of hooked indexes 104-255.
+- Updated LfdReader.dll, mostly to fix briefing icon issues.
 
 #### 1.17.4, 24 Aug 2025
 - (XW) Random fixed multiple bugs mostly related to B-wings [Pull [#129](https://github.com/MikeG621/YOGEME/pull/129)].

@@ -3,9 +3,10 @@
  * Copyright (C) 2007-2026 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.16.0.6+
+ * VERSION: 1.17.6
  *
  * CHANGELOG
+ * v1.17.6, 260307
  * [FIX #131] Order var text during updates [JB]
  * [FIX #131] Countermeasure cast exception [JB]
  * [UPD #131] Better test use by allowing Rebel missions [JB]

@@ -3,9 +3,10 @@
  * Copyright (C) 2007-2026 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.17.5+
+ * VERSION: 1.17.6
  *
  * CHANGELOG
+ * v1.17.6, 260307
  * [FIX] XWA now initializes Groups directly before loading DATs
  * v1.17.5, 260214
  * [FIX] XWA extended hook index wasn't displayed correctly
