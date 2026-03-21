@@ -3125,6 +3125,7 @@ namespace Idmr.Yogeme
 			this.txtAnswer.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
 			this.txtAnswer.Size = new System.Drawing.Size(280, 312);
 			this.txtAnswer.TabIndex = 9;
+			this.txtAnswer.WordWrap = false;
 			this.txtAnswer.TextChanged += new System.EventHandler(this.txtAnswer_TextChanged);
 			this.txtAnswer.Leave += new System.EventHandler(this.txtAnswer_Leave);
 			// 
