@@ -3,9 +3,10 @@
  * Copyright (C) 2007-2026 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.17.6
+ * VERSION: 1.17.6+
  *
  * CHANGELOG
+ * [NEW] FG Delete now reports which FG and Message # have a reference
  * v1.17.6, 260307
  * [FIX #131] Order var text during updates [JB]
  * [FIX #131] Countermeasure cast exception [JB]
@@ -165,13 +166,13 @@
  * - Release
  */
 
+using Idmr.Platform.Xvt;
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
-using System.Collections.Generic;
-using Idmr.Platform.Xvt;
 
 namespace Idmr.Yogeme
 {
@@ -2025,16 +2026,21 @@ namespace Idmr.Yogeme
 		FlightGroup _activeFG => _mission.FlightGroups[_activeFGIndex];
 		/// <summary>Counts all trigger and parameter references of a FG</summary>
 		/// <param name="fgIndex">Index within _mission.FlightGroups</param>
+		/// <param name="fgs">Array of referenced FlightGroup indexes.</param>
+		/// <param name="mess">Array of referenced Message numbers.</param>
 		/// <remarks>Used to populate the counters in the confirm deletion dialog</remarks>
-		int[] countFlightGroupReferences(int fgIndex)
+		int[] countFlightGroupReferences(int fgIndex, out int[] fgs, out int[] mess)
 		{
-			int[] count = new int[8];
+			int[] count = new int[9];
 			const int cMothership = 1, cArrDep = 2, cOrder = 3, cSkip = 4, cGoal = 5, cMessage = 6, cBrief = 7;
+			var fgList = new List<int>();
+			var messList = new List<int>();
 			byte typeFG = (byte)Mission.Trigger.TypeList.FlightGroup;
 
 			for (int i = 0; i < _mission.FlightGroups.Count; i++)
 			{
 				if (fgIndex == i) continue;
+				var currentCount = count[cMothership] + count[cArrDep] + count[cOrder] + count[cSkip];
 
 				FlightGroup fg = _mission.FlightGroups[i];
 				if (fg.ArriveViaMothership == true && fg.ArrivalMothership == fgIndex) count[cMothership]++;
@@ -2055,6 +2061,8 @@ namespace Idmr.Yogeme
 				}
 				foreach (Mission.Trigger sk in fg.SkipToOrder4Trigger)
 					if (sk.VariableType == typeFG && sk.Variable == fgIndex) count[cSkip]++;
+
+				if (currentCount != count[cMothership] + count[cArrDep] + count[cOrder] + count[cSkip]) fgList.Add(i);
 			}
 
 			foreach (Globals global in _mission.Globals)
@@ -2062,16 +2070,21 @@ namespace Idmr.Yogeme
 					foreach (Globals.Goal.Trigger trig in goal.Triggers)
 						if (trig.GoalTrigger.VariableType == typeFG && trig.GoalTrigger.Variable == fgIndex) count[cGoal]++;
 
-			foreach (Platform.Xvt.Message msg in _mission.Messages)
-				foreach (Mission.Trigger trig in msg.Triggers)
+			for (int i = 0; i < _mission.Messages.Count; i++)
+			{
+				var currentCount = count[cMessage];
+				foreach (Mission.Trigger trig in _mission.Messages[i].Triggers)
 					if (trig.VariableType == typeFG && trig.Variable == fgIndex) count[cMessage]++;
+				if (currentCount != count[cMessage]) messList.Add(i);
+			}
 
 			foreach (var br in _mission.Briefings)
 				foreach (var evt in br.Events)
 					if (evt.IsFGTag && evt.Variables[0] == fgIndex) count[cBrief]++;
 
-			for (int i = 1; i < 8; i++)
-				count[0] += count[i];
+			for (int i = 1; i < count.Length; i++) count[0] += count[i];
+			fgs = fgList.ToArray();
+			mess = messList.ToArray();
 			return count;
 		}
 		void deleteFG()
@@ -2085,19 +2098,9 @@ namespace Idmr.Yogeme
 				int fgIndex = selection[si];
 				if (_config.ConfirmFGDelete)
 				{
-					int[] count = countFlightGroupReferences(fgIndex);
-					if (count[0] > 0)
-					{
-						string[] reasons = new string[8] { "", "Mothership reference", "Arrival/Departure trigger", "Order target reference", "'Skip to Order 4' trigger", "Global Goal trigger", "Message trigger", "Briefing FG Tag" };
-						string breakdown = "";
-						for (int i = 1; i < 8; i++) if (count[i] > 0) breakdown += "    " + count[i] + " " + reasons[i] + ((count[i] > 1) ? "s" : "") + "\n";
-
-						string s = _mission.FlightGroups[fgIndex].ToString(false) + "\nIs referenced " + count[0] + " time" + ((count[0] > 1) ? "s" : "") + " in these cases:\n" + breakdown + "\nAll references targeting this flight group will be reset to default.";
-						if (count[7] > 0) s += "\nAssociated Briefing FG Tag events will be deleted.";
-						s += "\n\nAre you sure you want to delete this Flight Group?";
-						DialogResult res = MessageBox.Show(s, "WARNING: Confirm Delete", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
-						if (res == DialogResult.No) break;  // exit the outer for() loop
-					}
+					int[] count = countFlightGroupReferences(fgIndex, out var fgs, out var mess);
+					if (count[0] > 0 && !Common.ConfirmFGDelete(_mission.FlightGroups[fgIndex].ToString(), count, fgs, _mission.FlightGroups.GetList(), mess))
+						break; // exit the outer for() loop
 				}
 				replaceClipboardFGReference(fgIndex, -1);
 				if (_mission.FlightGroups.Count != 1) lstFG.Items.RemoveAt(fgIndex);

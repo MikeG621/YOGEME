@@ -39,7 +39,7 @@ This will leave behind a single config file in AppData with your user settings.
 #### WIP
 - (TIE) Officer questions now strip new line characters ('\r\n') created by bad external copy/pastes [Issue [#134](https://github.com/MikeG621/YOGEME/issues/134)].
 - (TIE) Officer answers text box has had the WordWrap disabled, forcing the user to recognize the lack of line breaks.
-- (TIE) FG Delete message now indicates which FGs and Messages reference it.
+- (All) FG Delete message now indicates which FGs and Messages reference it, now handled in Common for consistency.
 
 #### 1.17.6, 7 Mar 2026
 - (TIE) Fixed battle LFDs not writing anymore [Issue [#132](https://github.com/MikeG621/YOGEME/issues/132)].

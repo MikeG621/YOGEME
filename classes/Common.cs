@@ -1,11 +1,12 @@
 /*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
- * Copyright (C) 2007-2024 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2026 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.16
+ * VERSION: 1.16+
  *
  * CHANGELOG
+ * [NEW] ConfirmFGDelete()
  * v1.16, 241013
  * [UPD] use actual types for comparison instead of strings
  * [UPD] Title() renamed to MarkDirty(), "loading" made optional
@@ -408,6 +409,42 @@ namespace Idmr.Yogeme
 				}
 			}
 			return false;
+		}
+
+		/// <summary>Present the user with the formatted confirmation message when deleting a FlightGroup.</summary>
+		/// <param name="fgName">The short reference of the FlightGroup.</param>
+		/// <param name="counts">The array produced by the appropriate countFlightGroupReferences().</param>
+		/// <param name="fgNames">List of all FlightGroups.</param>
+		/// <param name="fgs">List of referenced FlightGroup indexes.</param>
+		/// <param name="mess">List of referenced Message indexes</param>
+		/// <returns>The confirmation state selected.</returns>
+		/// <remarks>The <paramref name="counts"/> array is { Total, Mothership, ArrDep, Order target, Skip, Global Goal, Message, Briefing, FG Goal }.
+		/// Indicies are consistent between platforms and simply omitted it not applicable.</remarks>
+		public static bool ConfirmFGDelete(string fgName, int[] counts, int[] fgs, string[] fgNames, int[] mess)
+		{
+			string[] reasons = new string[9] { "", "Mothership reference", "Arrival/Departure trigger", "Order target reference", "'Skip to Order' trigger/param", "Global Goal trigger/param", "Message trigger/param", "Briefing FG Tag", "Goal FG Parameter" };
+			string breakdown = "";
+			for (int i = 1; i < counts.Length; i++)
+				if (counts[i] > 0) breakdown += $"    {counts[i]} {reasons[i]}{((counts[i] > 1) ? "s" : "")}\n";
+			if (fgs.Length > 0)
+			{
+				string fgText = "Referencing FGs:";
+				for (int f = 0; f < fgs.Length; f++) fgText += $" {fgNames[f]},";
+				breakdown += $"    {fgText.TrimEnd(',')}\n";
+			}
+			if (mess != null && mess.Length > 0)
+			{
+				string messText = "Message #s:";
+				for (int m = 0; m < mess.Length; m++) messText += $" {mess[m] + 1},";
+				breakdown += $"    {messText.TrimEnd(',')}\n";
+			}
+
+			string s = $"{fgName} is referenced {counts[0]} time{((counts[0] > 1) ? "s" : "")} in these cases:\n" + breakdown + "\nAll references targeting this flight group will be reset to default.";
+			if (counts[7] > 0) s += "\nAssociated Briefing FG Tag events will be deleted.";
+			s += "\n\nAre you sure you want to delete this Flight Group?";
+			DialogResult res = MessageBox.Show(s, "WARNING: Confirm Delete", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
+
+			return (res == DialogResult.Yes);
 		}
 	}
 

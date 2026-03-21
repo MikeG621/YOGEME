@@ -1,12 +1,13 @@
 /*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
- * Copyright (C) 2007-2025 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2026 Michael Gaisser (mjgaisser@gmail.com)
  * This file authored by "JB" (Random Starfighter) (randomstarfighter@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.17.4
+ * VERSION: 1.17.4+
  *
  * CHANGELOG
+ * [NEW] FG Delete now reports which FG have a reference
  * v1.17.4, 250824
  * [FIX #129] Multiple B-wing related bugs, mission not marked dirty when changing craft type [JB]
  * v1.17.3, 250713
@@ -1236,21 +1237,25 @@ namespace Idmr.Yogeme
 		#region FlightGroups
 		/// <summary>Counts all trigger and parameter references of a FG</summary>
 		/// <param name="fgIndex">Index within _mission.FlightGroups</param>
+		/// <param name="fgs">Array of referenced FlightGroup indexes.</param>
 		/// <remarks>Used to populate the counters in the confirm deletion dialog</remarks>
-		int[] countFlightGroupReferences(int fgIndex)
+		int[] countFlightGroupReferences(int fgIndex, out int[] fgs)
 		{
-			int[] count = new int[7];
-			const int cMothership = 1, cArrDep = 2, cOrder = 3, cBrief = 6;
+			int[] count = new int[9];
+			const int cMothership = 1, cArrDep = 2, cOrder = 3, cBrief = 7;
+			var fgList = new List<int>();
 			for (int i = 0; i < _mission.FlightGroups.Count; i++)
 			{
-				if (fgIndex == i)
-					continue;
+				if (fgIndex == i) continue;
+				var currentCount = count[cMothership] + count[cArrDep] + count[cOrder];
 
 				FlightGroup fg = _mission.FlightGroups[i];
 				if (fg.Mothership == fgIndex) count[cMothership]++;
 				if (fg.ArrivalFG == fgIndex) count[cArrDep]++;
 				if (fg.TargetPrimary == fgIndex) count[cOrder]++;
 				if (fg.TargetSecondary == fgIndex) count[cOrder]++;
+
+				if (currentCount != count[cMothership] + count[cArrDep] + count[cOrder]) fgList.Add(i);
 			}
 
 			if (_mode == EditorMode.BRF)
@@ -1267,8 +1272,9 @@ namespace Idmr.Yogeme
 					}
 				}
 			}
-			for (int i = 1; i < 7; i++)
+			for (int i = 1; i < count.Length; i++)
 				count[0] += count[i];
+			fgs = fgList.ToArray();
 			return count;
 		}
 		/// <summary>Get the FG or Object index</summary>
@@ -1304,44 +1310,33 @@ namespace Idmr.Yogeme
 			int startFG = _activeFG;
 			for (int si = selection.Count - 1; si >= 0; si--)  // Delete from end so prior indices remain intact.
 			{
-				int _activeFG = selection[si];
+				int fgIndex = selection[si];
 
 				if (_config.ConfirmFGDelete)
 				{
-					int[] count = countFlightGroupReferences(_activeFG);
-					if (count[0] > 0)
-					{
-						string[] Reasons = new string[7] { "", "Mothership reference", "Arrival/Departure trigger", "Order target reference", "Global Goal trigger", "Message trigger", "Briefing FG Tag" };
-						string breakdown = "";
-						for (int i = 1; i < 7; i++)
-							if (count[i] > 0) breakdown += "    " + count[i] + " " + Reasons[i] + ((count[i] > 1) ? "s" : "") + "\n";
-
-						string s = "This Flight Group is referenced " + count[0] + " time" + ((count[0] > 1) ? "s" : "") + " in these cases:\n" + breakdown + "\nAll references targeting this flight group will be reset to default.";
-						if (count[6] > 0) s += "\nAssociated Briefing FG Tag events will be deleted.";
-						s += "\n\nAre you sure you want to delete this Flight Group?";
-						DialogResult res = MessageBox.Show(s, "WARNING: Confirm Delete", MessageBoxButtons.YesNo);
-						if (res == DialogResult.No) break;  // exit the outer for() loop
-					}
+					int[] count = countFlightGroupReferences(fgIndex, out var fgs);
+					if (count[0] > 0 && !Common.ConfirmFGDelete(_mission.FlightGroups[fgIndex].ToString(), count, fgs, _mission.FlightGroups.GetList(), null))
+						break; // exit the outer for() loop
 				}
 
-				replaceClipboardFGReference(_activeFG, -1);
-				if (_mode == EditorMode.BRF) _mission.Briefing.TransformFGReferences(_activeFG, -1);
+				replaceClipboardFGReference(fgIndex, -1);
+				if (_mode == EditorMode.BRF) _mission.Briefing.TransformFGReferences(fgIndex, -1);
 
-				if (_mission.FlightGroups.Count != 1) lstFG.Items.RemoveAt(_activeFG);
-				craftStart(_mission.FlightGroups[_activeFG], false);
+				if (_mission.FlightGroups.Count != 1) lstFG.Items.RemoveAt(fgIndex);
+				craftStart(_mission.FlightGroups[fgIndex], false);
 				if (_mission.FlightGroups.Count == 1)
 				{
 #pragma warning disable IDE0059 // Unnecessary assignment of a value
-					_activeFG = _mission.FlightGroups.RemoveAt(_activeFG);  // Still need to delete to clear the indexes.  The delete function always ensures that Count==1, so it has to be inside this block, not before.
+					fgIndex = _mission.FlightGroups.RemoveAt(fgIndex);  // Still need to delete to clear the indexes.  The delete function always ensures that Count==1, so it has to be inside this block, not before.
 					_mission.FlightGroups.Clear();
-					_activeFG = 0;
+					fgIndex = 0;
 					_mission.FlightGroups[0].CraftType = 1;
 					_mission.FlightGroups[0].ObjectType = 0;
 					_mission.FlightGroups[0].IFF = 1;
 					craftStart(_mission.FlightGroups[0], true);
 					break;
 				}
-				else _activeFG = _mission.FlightGroups.RemoveAt(_activeFG);
+				else fgIndex = _mission.FlightGroups.RemoveAt(fgIndex);
 #pragma warning restore IDE0059 // Unnecessary assignment of a value
 			}
 			// Fix bounds and make new selection.
