@@ -40,6 +40,8 @@ This will leave behind a single config file in AppData with your user settings.
 - (TIE) Officer questions now strip new line characters ('\r\n') created by bad external copy/pastes [Issue [#134](https://github.com/MikeG621/YOGEME/issues/134)].
 - (TIE) Officer answers text box has had the WordWrap disabled, forcing the user to recognize the lack of line breaks.
 - (All) FG Delete message now indicates which FGs and Messages reference it, now handled in Common for consistency.
+- (XWA) Map interface now respects OPT replacement from the Objects hook [Issue [#135](https://github.com/MikeG621/YOGEME/issues/135)].
+    - NOTE: after making changes to the INI, will need to force the OPT refresh by opening a different/new mission and opening the map once.
 
 #### 1.17.6, 7 Mar 2026
 - (TIE) Fixed battle LFDs not writing anymore [Issue [#132](https://github.com/MikeG621/YOGEME/issues/132)].

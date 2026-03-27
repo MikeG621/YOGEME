@@ -1,12 +1,13 @@
 ﻿/*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
- * Copyright (C) 2007-2025 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2026 Michael Gaisser (mjgaisser@gmail.com)
  * This file authored by "JB" (Random Starfighter) (randomstarfighter@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.17.3
+ * VERSION: 1.17.3+
  *
  * CHANGELOG
+ * [NEW #135] Take into account Objects hook when loading OPTs (full swap, not profiles)
  * v1.17.3, 250713
  * [FIX #125] loading from correct Startup path [JB]
  * v1.16, 241013
@@ -64,6 +65,7 @@ namespace Idmr.Yogeme
 
 		string _currentInstallPath = "";                              // The current installation path as provided from Settings.
 		string _currentMissionPath = "";                              // The full path+filename of the current mission.
+		string _currentIniPath = "";                                  // The full path+filename of the current XWA hook Mission INI or Objects.txt file.
 		Settings.Platform _currentPlatform = Settings.Platform.None;  // Used to detect if the platform has changed since the last call to update.
 
 		// These booleans track the previous state to determine if the user's configuration has changed, and if data should be refreshed the next time a mission is loaded, even if from the same platform.
@@ -73,6 +75,7 @@ namespace Idmr.Yogeme
 
 		string _detectedInstallPath = "";                             // The path of the game platform installation, as resolved by detection from the mission path or the user's chosen install path.
 		string _detectedModelPath = "";                               // The path of the game's craft models, as resolved by detection from the mission path or the user's chosen install path.
+		readonly Dictionary<string, string> _optSwap = new Dictionary<string, string>(); // The hooked opt replacements
 
 		List<CraftData> _defaultCraftData = null;                     // This only contains strings provided by Idmr.Platform.
 		List<CraftData> _editorCraftData = null;                      // This is strictly for use in the editor craft type list, separate from the map. Needed because X-wing is a special case.
@@ -131,6 +134,40 @@ namespace Idmr.Yogeme
 			}
 			if (!detectMission) missionPath = "";
 			_currentMissionPath = missionPath;
+			string previousIniPath = _currentIniPath;
+			if (platform == Settings.Platform.XWA)
+			{
+				_currentIniPath = $"{_currentInstallPath}\\MISSIONS\\{Path.GetFileNameWithoutExtension(missionPath)}_Objects.txt";
+				if (!File.Exists(_currentIniPath)) _currentIniPath = $"{_currentInstallPath}\\MISSIONS\\{Path.GetFileNameWithoutExtension(missionPath)}.ini";
+				if (!File.Exists(_currentIniPath)) _currentIniPath = "";
+				_optSwap.Clear();
+			}
+			if (_currentIniPath != "")
+			{
+				bool reading = false;
+				using (var sr = new StreamReader(_currentIniPath))
+				{
+					string line = "";
+					while ((line = sr.ReadLine()) != null)
+					{
+						if (line.IndexOf(";") != -1) line = line.Substring(0, line.IndexOf(";"));
+						if (line.IndexOf("#") != -1) line = line.Substring(0, line.IndexOf("#"));
+						if (line.IndexOf("//") != -1) line = line.Substring(0, line.IndexOf("//"));
+						if (line == "" || line.StartsWith("!")) continue;
+
+						if (line.StartsWith("[objects]", StringComparison.InvariantCultureIgnoreCase) || _currentIniPath.EndsWith(".txt")) reading = true;
+						else if (line.StartsWith("[")) reading = false;
+
+						if (reading)
+						{
+							string[] tokens = line.Split(new char[] { '=', ' ' }, StringSplitOptions.RemoveEmptyEntries);
+							if (tokens.Length > 1 && tokens[0].EndsWith(".opt", StringComparison.InvariantCultureIgnoreCase) && tokens[1].EndsWith(".opt", StringComparison.InvariantCultureIgnoreCase))
+								_optSwap.Add(tokens[0].ToLower(), tokens[1]);
+						}
+					}
+				}
+				if (_optSwap.Count == 0) _currentIniPath = "";
+			}
 
 			bool configChanged = (_previousOverrideExternal != overrideExternal || _previousOverrideScan != overrideScan || _previousFlagRemappedCraft != flagRemappedCraft);
 			if (_currentPlatform != platform || configChanged)
@@ -156,7 +193,7 @@ namespace Idmr.Yogeme
 
 			string previousDetectedInstall = _detectedInstallPath;
 			detectInstallationPaths();
-			if (previousDetectedInstall != _detectedInstallPath || configChanged || _detectedInstallPath == "")
+			if (previousDetectedInstall != _detectedInstallPath || configChanged || _detectedInstallPath == "" || previousIniPath != _currentIniPath)
 			{
 				if (_detectedInstallPath != "" && _currentPlatform == Settings.Platform.XWA)
 				{
@@ -169,11 +206,11 @@ namespace Idmr.Yogeme
 						XwaInstallSpecificExternalDataLoaded = true;
 					}
 
-					if (overrideScan) _scannedCraftData = scanXwa(flagRemappedCraft);
+					if (overrideScan || previousIniPath != _currentIniPath) _scannedCraftData = scanXwa(flagRemappedCraft);
 				}
 
 				_finalizedCraftData = mergeLists(_defaultCraftData, _externalCraftData, overrideExternal);
-				if (overrideScan && _scannedCraftData != null && _scannedCraftData.Count > 0) _finalizedCraftData = mergeLists(_finalizedCraftData, _scannedCraftData, true);
+				if ((overrideScan || previousIniPath != _currentIniPath) && _scannedCraftData != null && _scannedCraftData.Count > 0) _finalizedCraftData = mergeLists(_finalizedCraftData, _scannedCraftData, true);
 			}
 		}
 
@@ -533,7 +570,8 @@ namespace Idmr.Yogeme
 										}
 										if (lineIndex >= 0 && lineIndex < optList[groupIndex].Count)
 										{
-											string res = optList[groupIndex][lineIndex];
+											string res = optList[groupIndex][lineIndex].ToLower();
+											if (_optSwap.Count > 0 && _optSwap.ContainsKey(res)) res = _optSwap[res];
 											if (res.LastIndexOf('\\') >= 0) res = res.Substring(res.LastIndexOf('\\') + 1);
 											if (res.LastIndexOf('.') >= 0) res = res.Remove(res.LastIndexOf('.'));
 											data.ResourceNames = res;

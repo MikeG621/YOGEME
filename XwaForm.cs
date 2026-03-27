@@ -1,11 +1,12 @@
 /*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
- * Copyright (C) 2007-2026 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2026+ Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
  * VERSION: 1.17.4+
  *
  * CHANGELOG
+ * [UPD #135] new mission now reloads craft data
  * [NEW] FG Delete now reports which FG and Message # have a reference
  * v1.17.4, 250824
  * [FIX] FG Goal auto-check not saving
@@ -1936,6 +1937,7 @@ namespace Idmr.Yogeme
 			promptSave();
 			closeForms();
 			_loading = true;
+			loadCraftData("");
 			initializeMission();
 			updateMissionTabs();
 			lstMessages.Items.Clear();
