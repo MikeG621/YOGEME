@@ -36,12 +36,23 @@ To remove YOGEME, simply delete the directory where you placed it.
 This will leave behind a single config file in AppData with your user settings.
 
 ## Latest Release
-#### WIP
+
+#### 1.17.7, 27 Mar 2026
 - (TIE) Officer questions now strip new line characters ('\r\n') created by bad external copy/pastes [Issue [#134](https://github.com/MikeG621/YOGEME/issues/134)].
 - (TIE) Officer answers text box has had the WordWrap disabled, forcing the user to recognize the lack of line breaks.
 - (All) FG Delete message now indicates which FGs and Messages reference it, now handled in Common for consistency.
 - (XWA) Map interface now respects OPT replacement from the Objects hook [Issue [#135](https://github.com/MikeG621/YOGEME/issues/135)].
-    - NOTE: after making changes to the INI, will need to force the OPT refresh by opening a different/new mission and opening the map once.
+    - NOTE: after making changes to the INI, you will need to force the OPT refresh by opening a different/new mission and opening the map once.
+---
+### Additional Information
+#### Dependencies
+- [Idmr.Common](https://github.com/MikeG621/Common)
+- [Idmr.ImageFormat.Act](https://github.com/MikeG621/ImageFormat-Act)
+- [Idmr.ImageFormat.Dat](https://github.com/MikeG621/ImageFormat-Dat)
+- [Idmr.Platform](https://github.com/MikeG621/Platform)
+- [Idmr.LfdReader](https://github.com/MikeG621/LfdReader)
+
+### Version History
 
 #### 1.17.6, 7 Mar 2026
 - (TIE) Fixed battle LFDs not writing anymore [Issue [#132](https://github.com/MikeG621/YOGEME/issues/132)].
@@ -53,16 +64,6 @@ Couple fixes from Random [Pull [#131](https://github.com/MikeG621/YOGEME/pull/13
 - (XvT) Fixed exception when changing Countermeasures.
 - (XvT) Improved test functionality, now takes into account player IFF when setting up the Training LST file and pre-selecting the team in the pilot file.
 
----
-### Additional Information
-#### Dependencies
-- [Idmr.Common](https://github.com/MikeG621/Common)
-- [Idmr.ImageFormat.Act](https://github.com/MikeG621/ImageFormat-Act)
-- [Idmr.ImageFormat.Dat](https://github.com/MikeG621/ImageFormat-Dat)
-- [Idmr.Platform](https://github.com/MikeG621/Platform)
-- [Idmr.LfdReader](https://github.com/MikeG621/LfdReader)
-
-### Version History
 
 #### 1.17.5, 14 Feb 2026
 - (TIE) Officers tab now includes ability to control facial expressions per question.

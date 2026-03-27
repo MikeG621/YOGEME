@@ -4,9 +4,10 @@
  * This file authored by "JB" (Random Starfighter) (randomstarfighter@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.17.4+
+ * VERSION: 1.17.7
  *
  * CHANGELOG
+ * v1.17.7, 260327
  * [NEW] FG Delete now reports which FG have a reference
  * v1.17.4, 250824
  * [FIX #129] Multiple B-wing related bugs, mission not marked dirty when changing craft type [JB]

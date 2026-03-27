@@ -4,9 +4,10 @@
  * This file authored by "JB" (Random Starfighter) (randomstarfighter@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.17.3+
+ * VERSION: 1.17.7
  *
  * CHANGELOG
+ * v1.17.7, 260327
  * [NEW #135] Take into account Objects hook when loading OPTs (full swap, not profiles)
  * v1.17.3, 250713
  * [FIX #125] loading from correct Startup path [JB]

@@ -3,9 +3,10 @@
  * Copyright (C) 2007-2026 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.17.6+
+ * VERSION: 1.17.7
  *
  * CHANGELOG
+ * v1.17.7, 260327
  * [FIX #134] Strip line breaks from Officer Questions (bad external copy/paste)
  * [UPD] WordWrap disabled in the Officers text box
  * [NEW] FG Delete now reports which FG and Message # have a reference
