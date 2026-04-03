@@ -498,7 +498,7 @@ namespace Idmr.Yogeme
 					}
 				}
 
-			string contents = ";" + _mission + ".ini" + (title != "" ? " - " + title : "") + "\r\n\r\n";
+			string contents = $";{_mission}.ini{(title != "" ? $" - {title}" : "")}\r\n\r\n";
 			contents += _preComments + "\r\n";
 			if (lstBackdrops.Items.Count > 0)
 			{
@@ -522,7 +522,7 @@ namespace Idmr.Yogeme
 							for (int m = 0; m < cboMarkings.Items.Count; m++)
 								if (cboMarkings.Items[m].ToString() == parts[2])
 								{
-									contents += "fg, " + fg + ", markings, " + m + "\r\n";
+									contents += $"fg, {fg}, markings, {m}\r\n";
 									break;
 								}
 						}
@@ -531,7 +531,7 @@ namespace Idmr.Yogeme
 							for (int m = 0; m < cboMarkings.Items.Count; m++)
 								if (cboMarkings.Items[m].ToString() == parts[3])
 								{
-									contents += "fg, " + fg + ", index, " + parts[2] + ", markings, " + m + "\r\n";
+									contents += $"fg, {fg}, index, {parts[2]}, markings, {m}\r\n";
 									break;
 								}
 						}
@@ -540,11 +540,11 @@ namespace Idmr.Yogeme
 							for (int iff = 0; iff < cboIff.Items.Count; iff++)
 								if (cboIff.Items[iff].ToString() == parts[2])
 								{
-									contents += "fg, " + fg + ", iff, " + iff + "\r\n";
+									contents += $"fg, {fg}, iff, {iff}\r\n";
 									break;
 								}
 						}
-						else if (parts[1] == "pilot") contents += "fg, " + fg + ", pilotvoice, " + parts[2] + "\r\n";
+						else if (parts[1] == "pilot") contents += $"fg, {fg}, pilotvoice, {parts[2]}\r\n";
 					}
 				}
 				if (useSFoils)
@@ -554,8 +554,8 @@ namespace Idmr.Yogeme
 						string[] parts = lstSFoils.Items[i].ToString().Split(',');
 						int fg;
 						for (fg = 0; fg < cboSFoilFG.Items.Count; fg++) if (cboSFoilFG.Items[fg].ToString() == parts[0]) break;
-						if (parts[1] == "closed") contents += "fg, " + fg + ", close_SFoils, 1\r\n";
-						else if (parts[1] == "open") contents += "fg, " + fg + ", open_LandingGears, 1\r\n";
+						if (parts[1] == "closed") contents +=$"fg, {fg}, close_SFoils, 1\r\n";
+						else if (parts[1] == "open") contents += $"fg, {fg}, open_LandingGears, 1\r\n";
 					}
 					if (chkForceHangarSF.Checked) contents += "CloseSFoilsAndOpenLandingGearsBeforeEnterHangar = 1\r\n";
 					if (chkForceHyperLG.Checked) contents += "CloseLandingGearsBeforeEnterHyperspace = 1\r\n";
@@ -568,10 +568,10 @@ namespace Idmr.Yogeme
 						string[] parts = lstCraftText.Items[i].ToString().Split(',');
 						int craft;
 						for (craft = 0; craft < cboCraftText.Items.Count; craft++) if (cboCraftText.Items[craft].ToString() == parts[0]) break;
-						if (parts[1] == "name") contents += "craft, " + craft + ", name, " + parts[2] + "\r\n";
-						else if (parts[1] == "species") contents += "craft, " + craft + ", specname, " + parts[2] + "\r\n";
-						else if (parts[1] == "plural") contents += "craft, " + craft + ", pluralname, " + parts[2] + "\r\n";
-						else if (parts[1] == "abbrv") contents += "craft, " + craft + ", shortname, " + parts[2] + "\r\n";
+						if (parts[1] == "name") contents += $"craft, {craft}, name, {parts[2]}\r\n";
+						else if (parts[1] == "species") contents += $"craft, {craft}, specname, {parts[2]}\r\n";
+						else if (parts[1] == "plural") contents += $"craft, {craft}, pluralname, {parts[2]}\r\n";
+						else if (parts[1] == "abbrv") contents += $"craft, {craft}, shortname, {parts[2]}\r\n";
 					}
 				}
 				if (useMissionSettings)
@@ -584,9 +584,9 @@ namespace Idmr.Yogeme
 						else for (int i = 0; i < _skipIffs.Length; i++) if (_skipIffs[i]) contents += "SkipObjectsMessagesIff = " + i + "\r\n";
 					}
 					if (chkForceTurret.Checked) contents += "ForcePlayerInTurret = 1\r\n";
-					if (numTurretH.Value != 0) contents += "ForcePlayerInTurretHours = " + (int)numTurretH.Value + "\r\n";
-					if (numTurretM.Value != 0) contents += "ForcePlayerInTurretMinutes = " + (int)numTurretM.Value + "\r\n";
-					if (numTurretS.Value != 8) contents += "ForcePlayerInTurretSeconds = " + (int)numTurretS.Value + "\r\n";
+					if (numTurretH.Value != 0) contents += $"ForcePlayerInTurretHours = {(int)numTurretH.Value}\r\n";
+					if (numTurretM.Value != 0) contents += $"ForcePlayerInTurretMinutes = {(int)numTurretM.Value}\r\n";
+					if (numTurretS.Value != 8) contents += $"ForcePlayerInTurretSeconds = {(int)numTurretS.Value}\r\n";
 					if (chkDisableLaser.Checked) contents += "DisablePlayerLaserShoot = 1\r\n";
 					if (chkDisableWarhead.Checked) contents += "DisablePlayerWarheadShoot = 1\r\n";
 					if (chkDisableCollision.Checked) contents += "IsWarheadCollisionDamagesEnabled = 0\r\n";
@@ -601,7 +601,7 @@ namespace Idmr.Yogeme
                         }
 						contents = contents.Substring(0, contents.Length - 1) + "\r\n";
                     }
-					if (cboTargetMethod.SelectedIndex != 0) contents += "TargetCraftKeyMethod = " + (cboTargetMethod.SelectedIndex - 1) + "\r\n";
+					if (cboTargetMethod.SelectedIndex != 0) contents += $"TargetCraftKeyMethod = {cboTargetMethod.SelectedIndex - 1}\r\n";
 					if (chkNotInspected.Checked) contents += "TargetCraftKeySelectOnlyNotInspected = 1\r\n";
 					if (chkSkipProx.Checked) contents += "SkipProjectilesProximityCheck = 1\r\n";
 				}
@@ -637,70 +637,70 @@ namespace Idmr.Yogeme
 				if (!chkShuttle.Checked) contents += "LoadShuttle = 0\r\n";
 				else
 				{
-					if (cboShuttleModel.SelectedIndex != 50) contents += "ShuttleModelIndex = " + cboShuttleModel.SelectedIndex + "\r\n";
-					if (cboShuttleMarks.SelectedIndex != 0) contents += "ShuttleMarkings = " + cboShuttleMarks.SelectedIndex + "\r\n";
-					if (txtShuttleProfile.Text != "") contents += "ShuttleObjectProfile = " + txtShuttleProfile.Text + "\r\n";
-					if (numShuttlePositionX.Value != _defaultShuttlePosition[0]) contents += "ShuttlePositionX = " + (int)numShuttlePositionX.Value + "\r\n";
-					if (numShuttlePositionY.Value != _defaultShuttlePosition[1]) contents += "ShuttlePositionY = " + (int)numShuttlePositionY.Value + "\r\n";
-					if (numShuttlePositionZ.Value != _defaultShuttlePosition[2]) contents += "ShuttlePositionZ = " + (int)numShuttlePositionZ.Value + "\r\n";
-					if (numShuttleOrientation.Value != _defaultShuttlePosition[3]) contents += "ShuttleOrientation = " + (int)numShuttleOrientation.Value + "\r\n";
+					if (cboShuttleModel.SelectedIndex != 50) contents += $"ShuttleModelIndex = {cboShuttleModel.SelectedIndex}\r\n";
+					if (cboShuttleMarks.SelectedIndex != 0) contents += $"ShuttleMarkings = {cboShuttleMarks.SelectedIndex}\r\n";
+					if (txtShuttleProfile.Text != "") contents += $"ShuttleObjectProfile = {txtShuttleProfile.Text}\r\n";
+					if (numShuttlePositionX.Value != _defaultShuttlePosition[0]) contents += $"ShuttlePositionX = {(int)numShuttlePositionX.Value}\r\n";
+					if (numShuttlePositionY.Value != _defaultShuttlePosition[1]) contents += $"ShuttlePositionY = {(int)numShuttlePositionY.Value}\r\n";
+					if (numShuttlePositionZ.Value != _defaultShuttlePosition[2]) contents += $"ShuttlePositionZ = {(int)numShuttlePositionZ.Value}\r\n";
+					if (numShuttleOrientation.Value != _defaultShuttlePosition[3]) contents += $"ShuttleOrientation = {(int)numShuttleOrientation.Value}\r\n";
 					if (chkShuttleFloor.Checked) contents += "IsShuttleFloorInverted = 1\r\n";
-					if (cboShuAnimation.SelectedIndex != 0) contents += "ShuttleAnimation = " + cboShuAnimation.Text + "\r\n";
-					if (numShuDistance.Value != 0) contents += "ShuttleAnimationStraightLine = " + (int)numShuDistance.Value + "\r\n";
-					if (numShuElevation.Value != 0) contents += "ShuttleAnimationElevation = " + (int)numShuElevation.Value + "\r\n";
+					if (cboShuAnimation.SelectedIndex != 0) contents += $"ShuttleAnimation = {cboShuAnimation.Text}\r\n";
+					if (numShuDistance.Value != 0) contents += $"ShuttleAnimationStraightLine = {(int)numShuDistance.Value}\r\n";
+					if (numShuElevation.Value != 0) contents += $"ShuttleAnimationElevation = {(int)numShuElevation.Value}\r\n";
 				}
 
 				if (!chkDroids.Checked) contents += "LoadDroids = 0\r\n";
 				else
 				{
-					if (numDroidsZ.Value != 0) contents += "DroidsPositionZ = " + (int)numDroidsZ.Value + "\r\n";
+					if (numDroidsZ.Value != 0) contents += $"DroidsPositionZ = {(int)numDroidsZ.Value}\r\n";
 					if (chkDroidsFloor.Checked) contents += "IsDroidsFloorInverted = 1\r\n";
 					if (!chkLoadDroid1.Checked) contents += "LoadDroid1 = 0\r\n";
 					else
 					{
-						if (numDroid1Z.Value != numDroidsZ.Value) contents += "Droid1PositionZ = " + (int)numDroid1Z.Value + "\r\n";
+						if (numDroid1Z.Value != numDroidsZ.Value) contents += $"Droid1PositionZ = {(int)numDroid1Z.Value}\r\n";
 						if (chkDroid1Floor.Checked) contents += "IsDroid1FloorInverted = 1\r\n";
 						if (!chkDroid1Update.Checked) contents += "Droid1Update = 0\r\n";
-						if (cboDroid1Model.SelectedIndex != 311) contents += "Droid1ModelIndex = " + cboDroid1Model.SelectedIndex + "\r\n";
-						if (cboDroid1Markings.SelectedIndex != 0) contents += "Droid1Markings = " + cboDroid1Markings.SelectedIndex + "\r\n";
-						if (txtDroid1Profile.Text != "") contents += "Droid1ObjectProfile = " + txtDroid1Profile.Text + "\r\n";
+						if (cboDroid1Model.SelectedIndex != 311) contents += $"Droid1ModelIndex = {cboDroid1Model.SelectedIndex}\r\n";
+						if (cboDroid1Markings.SelectedIndex != 0) contents += $"Droid1Markings = {cboDroid1Markings.SelectedIndex}\r\n";
+						if (txtDroid1Profile.Text != "") contents += $"Droid1ObjectProfile = {txtDroid1Profile.Text}\r\n";
 					}
 					if (!chkLoadDroid2.Checked) contents += "LoadDroid2 = 0\r\n";
 					else
 					{
-						if (numDroid2Z.Value != numDroidsZ.Value) contents += "Droid2PositionZ = " + (int)numDroid2Z.Value + "\r\n";
+						if (numDroid2Z.Value != numDroidsZ.Value) contents += $"Droid2PositionZ = {(int)numDroid2Z.Value}\r\n";
 						if (chkDroid2Floor.Checked) contents += "IsDroid2FloorInverted = 1\r\n";
 						if (!chkDroid2Update.Checked) contents += "Droid2Update = 0\r\n";
-						if (cboDroid2Model.SelectedIndex != 312) contents += "Droid2ModelIndex = " + cboDroid2Model.SelectedIndex + "\r\n";
-						if (cboDroid2Markings.SelectedIndex != 0) contents += "Droid2Markings = " + cboDroid2Markings.SelectedIndex + "\r\n";
-						if (txtDroid2Profile.Text != "") contents += "Droid2ObjectProfile = " + txtDroid2Profile.Text + "\r\n";
+						if (cboDroid2Model.SelectedIndex != 312) contents += $"Droid2ModelIndex = {cboDroid2Model.SelectedIndex}\r\n";
+						if (cboDroid2Markings.SelectedIndex != 0) contents += $"Droid2Markings = {cboDroid2Markings.SelectedIndex}\r\n";
+						if (txtDroid2Profile.Text != "") contents += $"Droid2ObjectProfile = {txtDroid2Profile.Text}\r\n";
 					}
 				}
 
-				if (numRoofCranePositionX.Value != _defaultRoofCranePosition[0]) contents += "HangarRoofCranePositionX = " + (int)numRoofCranePositionX.Value + "\r\n";
-				if (numRoofCranePositionY.Value != _defaultRoofCranePosition[1]) contents += "HangarRoofCranePositionY = " + (int)numRoofCranePositionY.Value + "\r\n";
-				if (numRoofCranePositionZ.Value != _defaultRoofCranePosition[2]) contents += "HangarRoofCranePositionZ = " + (int)numRoofCranePositionZ.Value + "\r\n";
+				if (numRoofCranePositionX.Value != _defaultRoofCranePosition[0]) contents += $"HangarRoofCranePositionX = {(int)numRoofCranePositionX.Value}\r\n";
+				if (numRoofCranePositionY.Value != _defaultRoofCranePosition[1]) contents += $"HangarRoofCranePositionY = {(int)numRoofCranePositionY.Value}\r\n";
+				if (numRoofCranePositionZ.Value != _defaultRoofCranePosition[2]) contents += $"HangarRoofCranePositionZ = {(int)numRoofCranePositionZ.Value}\r\n";
 				if (optRoofCraneAxisY.Checked) contents += "HangarRoofCraneAxis = 1\r\n";
 				else if (optRoofCraneAxisZ.Checked) contents += "HangarRoofCraneAxis = 2\r\n";
-				if (numRoofCraneLowOffset.Value != 0) contents += "HangarRoofCraneLowOffset = " + (int)numRoofCraneLowOffset.Value + "\r\n";
-				if (numRoofCraneHighOffset.Value != 0) contents += "HangarRoofCraneHighOffset = " + (int)numRoofCraneHighOffset.Value + "\r\n";
+				if (numRoofCraneLowOffset.Value != 0) contents += $"HangarRoofCraneLowOffset = {(int)numRoofCraneLowOffset.Value}\r\n";
+				if (numRoofCraneHighOffset.Value != 0) contents += $"HangarRoofCraneHighOffset = {(int)numRoofCraneHighOffset.Value}\r\n";
 				if (chkFloor.Checked) contents += "IsHangarFloorInverted = 1\r\n";
-				if (numInvertedHangarFloor.Value != 0) contents += "HangarFloorInvertedHeight = " + (int)numInvertedHangarFloor.Value + "\r\n";
-				if (chkShadows.Checked == chkFloor.Checked) contents += "DrawShadows = " + (chkShadows.Checked ? "1" : "0") + "\r\n";
-				if (numIntensity.Value != 192) contents += "LightColorIntensity = " + (int)numIntensity.Value + "\r\n";
-				if (txtLightColor.Text != "FFFFFF") contents += "LightColorRgb = " + txtLightColor.Text + "\r\n";
-				if (chkHangarIff.Checked) contents += "HangarIff = " + cboHangarIff.SelectedIndex + "\r\n";
+				if (numInvertedHangarFloor.Value != 0) contents += $"HangarFloorInvertedHeight = {(int)numInvertedHangarFloor.Value}\r\n";
+				if (chkShadows.Checked == chkFloor.Checked) contents += $"DrawShadows = {(chkShadows.Checked ? "1" : "0")}\r\n";
+				if (numIntensity.Value != 192) contents += $"LightColorIntensity = {(int)numIntensity.Value}\r\n";
+				if (txtLightColor.Text != "FFFFFF") contents += $"LightColorRgb = {txtLightColor.Text}\r\n";
+				if (chkHangarIff.Checked) contents += $"HangarIff = {cboHangarIff.SelectedIndex}\r\n";
 
-				if (numPlayerAnimationElevation.Value != 0) contents += "PlayerAnimationElevation = " + (int)numPlayerAnimationElevation.Value + "\r\n";
-				if (numPlayerStraight.Value != 0) contents += "PlayerAnimationStraightLine = " + (int)numPlayerStraight.Value + "\r\n";
-				if (numPlayerX.Value != 0) contents += "PlayerOffsetX = " + (int)numPlayerX.Value + "\r\n";
-				if (numPlayerY.Value != 0) contents += "PlayerOffsetY = " + (int)numPlayerY.Value + "\r\n";
-				if (numPlayerZ.Value != 0) contents += "PlayerOffsetZ = " + (int)numPlayerZ.Value + "\r\n";
+				if (numPlayerAnimationElevation.Value != 0) contents += $"PlayerAnimationElevation = {(int)numPlayerAnimationElevation.Value}\r\n";
+				if (numPlayerStraight.Value != 0) contents += $"PlayerAnimationStraightLine = {(int)numPlayerStraight.Value}\r\n";
+				if (numPlayerX.Value != 0) contents += $"PlayerOffsetX = {(int)numPlayerX.Value}\r\n";
+				if (numPlayerY.Value != 0) contents += $"PlayerOffsetY = {(int)numPlayerY.Value}\r\n";
+				if (numPlayerZ.Value != 0) contents += $"PlayerOffsetZ = {(int)numPlayerZ.Value}\r\n";
 				if (chkPlayerFloor.Checked) contents += "IsPlayerFloorInverted = 1\r\n";
-				if (numInvertedPlayerFloor.Value != numPlayerAnimationElevation.Value) contents += "PlayerAnimationInvertedElevation = " + (int)numInvertedPlayerFloor.Value + "\r\n";
-				if (numInvertedPlayerX.Value != 0) contents += "PlayerInvertedOffsetX = " + (int)numInvertedPlayerX.Value + "\r\n";
-				if (numInvertedPlayerY.Value != 0) contents += "PlayerInvertedOffsetY = " + (int)numInvertedPlayerY.Value + "\r\n";
-				if (numInvertedPlayerZ.Value != 0) contents += "PlayerInvertedOffsetZ = " + (int)numInvertedPlayerZ.Value + "\r\n";
+				if (numInvertedPlayerFloor.Value != numPlayerAnimationElevation.Value) contents += $"PlayerAnimationInvertedElevation = {(int)numInvertedPlayerFloor.Value}\r\n";
+				if (numInvertedPlayerX.Value != 0) contents += $"PlayerInvertedOffsetX = {(int)numInvertedPlayerX.Value}\r\n";
+				if (numInvertedPlayerY.Value != 0) contents += $"PlayerInvertedOffsetY = {(int)numInvertedPlayerY.Value}\r\n";
+				if (numInvertedPlayerZ.Value != 0) contents += $"PlayerInvertedOffsetZ = {(int)numInvertedPlayerZ.Value}\r\n";
 				if (lstAutoPlayer.Items.Count > 0)
 				{
 					string invert = "";
@@ -723,13 +723,13 @@ namespace Idmr.Yogeme
 							}
 						}
 					}
-					if (invert != "") contents += "PlayerFloorInvertedModelIndices = " + invert + "\r\n";
+					if (invert != "") contents += $"PlayerFloorInvertedModelIndices = {invert}\r\n";
 					if (model != "")
 					{
-						contents += "PlayerModelIndices = " + model + "\r\n";
-						contents += "PlayerOffsetsX = " + x + "\r\n";
-						contents += "PlayerOffsetsY = " + y + "\r\n";
-						contents += "PlayerOffsetsZ = " + z + "\r\n";
+						contents += $"PlayerModelIndices = {model}\r\n";
+						contents += $"PlayerOffsetsX = {x}\r\n";
+						contents += $"PlayerOffsetsY = {y}\r\n";
+						contents += $"PlayerOffsetsZ = {z}\r\n";
 					}
 				}
 
@@ -747,9 +747,9 @@ namespace Idmr.Yogeme
 					for (int j = 0; j < 3; j++) use |= (_cameras[i, j] != _defaultCameras[i, j]);
 					if (use)
 					{
-						contents += "Key" + keys[i] + "_X = " + _cameras[i, 0] + "\r\n";
-						contents += "Key" + keys[i] + "_Y = " + _cameras[i, 1] + "\r\n";
-						contents += "Key" + keys[i] + "_Z = " + _cameras[i, 2] + "\r\n";
+						contents += $"Key{keys[i]}_X = {_cameras[i, 0]}\r\n";
+						contents += $"Key{keys[i]}_Y = {_cameras[i, 1]}\r\n";
+						contents += $"Key{keys[i]}_Z = {_cameras[i, 2]}\r\n";
 					}
 				}
 				contents += "\r\n";
@@ -765,9 +765,9 @@ namespace Idmr.Yogeme
 					for (int j = 0; j < 3; j++) use |= (_familyCameras[i, j] != _defaultFamilyCameras[i, j]);
 					if (use)
 					{
-						contents += "FamKey" + keys[i] + "_X = " + _familyCameras[i, 0] + "\r\n";
-						contents += "FamKey" + keys[i] + "_Y = " + _familyCameras[i, 1] + "\r\n";
-						contents += "FamKey" + keys[i] + "_Z = " + _familyCameras[i, 2] + "\r\n";
+						contents += $"FamKey{keys[i]}_X = {_familyCameras[i, 0]}\r\n";
+						contents += $"FamKey{keys[i]}_Y = {_familyCameras[i, 1]}\r\n";
+						contents += $"FamKey{keys[i]}_Z = {_familyCameras[i, 2]}\r\n";
 					}
 				}
 				contents += "\r\n";
@@ -807,25 +807,25 @@ namespace Idmr.Yogeme
 					parts = parts[1].Trim().Split(' ');
 					bool perGen = (parts.Length > 1);
 					int rate = int.Parse(parts[0]);
-					contents += craft + ", " + (perGen ? "1, " + rate + ", 0" : "0, 0, " + rate) + "\r\n";
+					contents += $"{craft}, {(perGen ? $"1, {rate}, 0" : $"0, 0, {rate}")}\r\n";
 				}
 				if (!chkSSRecharge.Checked) contents += "IsShieldRechargeForStarshipsEnabled = 0\r\n";
 				if (chkFighterDoubled.Checked) contents += "IsShieldStrengthForStarfighterDoubled = 1\r\n";
 				contents += "\r\n";
 			}
 			insertComments(ref contents, (int)ReadMode.Shield);
-			if (!optHypGlobal.Checked) contents += "[Hyperspace]\r\nShortHyperspaceEffect = " + (optHypNormal.Checked ? "0" : "1") + "\r\n\r\n";
+			if (!optHypGlobal.Checked) contents += $"[Hyperspace]\r\nShortHyperspaceEffect = {(optHypNormal.Checked ? "0" : "1")}\r\n\r\n";
 			insertComments(ref contents, (int)ReadMode.Hyper);
 			if (chkConcoursePlanetIndex.Checked || chkConcoursePlanetX.Checked || chkConcoursePlanetY.Checked)
 			{
 				contents += "[Concourse]\r\n";
-				if (chkConcoursePlanetIndex.Checked) contents += "FrontPlanetIndex = " + numConcoursePlanetIndex.Value + "\r\n";
-				if (chkConcoursePlanetX.Checked) contents += "FrontPlanetPositionX = " + numConcoursePlanetX.Value + "\r\n";
-				if (chkConcoursePlanetY.Checked) contents += "FontPlanetPositionY = " + numConcoursePlanetY.Value + "\r\n";
+				if (chkConcoursePlanetIndex.Checked) contents += $"FrontPlanetIndex = {numConcoursePlanetIndex.Value}\r\n";
+				if (chkConcoursePlanetX.Checked) contents += $"FrontPlanetPositionX = {numConcoursePlanetX.Value}\r\n";
+				if (chkConcoursePlanetY.Checked) contents += $"FontPlanetPositionY = {numConcoursePlanetY.Value}\r\n";
 				contents += "\r\n";
 			}
 			insertComments(ref contents, (int)ReadMode.Concourse);
-			if (chkPlayerHull.Checked && numPlayerHull.Value > 0) contents += "[HullIcon]\r\nPlayerHullIcon = " + numPlayerHull.Value + "\r\n\r\n";
+			if (chkPlayerHull.Checked && numPlayerHull.Value > 0) contents += $"[HullIcon]\r\nPlayerHullIcon = {numPlayerHull.Value}\r\n\r\n";
 			insertComments(ref contents, (int)ReadMode.HullIcon);
 			if (lstStats.Items.Count > 0)
 			{
@@ -1002,7 +1002,7 @@ namespace Idmr.Yogeme
 				line = removeComment(line);
 				if (line == "")
 				{
-					if (isPre && !txtHook.Lines[i].StartsWith(";" + _mission + ".ini")) _preComments += txtHook.Lines[i] + "\r\n";
+					if (isPre && !txtHook.Lines[i].StartsWith($";{_mission}.ini")) _preComments += txtHook.Lines[i] + "\r\n";
 					else if (!isPre)
 					{
 						if (readMode == ReadMode.None) _unknown.Add(txtHook.Lines[i]);
@@ -1042,16 +1042,16 @@ namespace Idmr.Yogeme
 					else if (lineLower == "[specrci]") readMode = ReadMode.SpecRci;
 					else if (_commandOpt != "")
 					{
-						if (lineLower == "[hangarobjects_" + _commandOpt + "_" + _commandIff + "]") readMode = ReadMode.HangarObjects;
-						else if (lineLower == "[hangarcamera_" + _commandOpt + "_" + _commandIff + "]") readMode = ReadMode.HangarCamera;
-						else if (lineLower == "[famhangarcamera_" + _commandOpt + "_" + _commandIff + "]") readMode = ReadMode.FamilyHangarCamera;
-						else if (lineLower == "[hangarmap_" + _commandOpt + "_" + _commandIff + "]") readMode = ReadMode.HangarMap;
-						else if (lineLower == "[famhangarmap_" + _commandOpt + "_" + _commandIff + "]") readMode = ReadMode.FamilyHangarMap;
-						else if (lineLower == "[hangarobjects_" + _commandOpt + "]") readMode = ReadMode.HangarObjects;
-						else if (lineLower == "[hangarcamera_" + _commandOpt + "]") readMode = ReadMode.HangarCamera;
-						else if (lineLower == "[famhangarcamera_" + _commandOpt + "]") readMode = ReadMode.FamilyHangarCamera;
-						else if (lineLower == "[hangarmap_" + _commandOpt + "]") readMode = ReadMode.HangarMap;
-						else if (lineLower == "[famhangarmap_" + _commandOpt + "]") readMode = ReadMode.FamilyHangarMap;
+						if (lineLower == $"[hangarobjects_{_commandOpt}_{_commandIff}]") readMode = ReadMode.HangarObjects;
+						else if (lineLower == $"[hangarcamera_{_commandOpt}_{_commandIff}]") readMode = ReadMode.HangarCamera;
+						else if (lineLower == $"[famhangarcamera_{_commandOpt}_{_commandIff}]") readMode = ReadMode.FamilyHangarCamera;
+						else if (lineLower == $"[hangarmap_{_commandOpt}_{_commandIff}]") readMode = ReadMode.HangarMap;
+						else if (lineLower == $"[famhangarmap_{_commandOpt}_{_commandIff}]") readMode = ReadMode.FamilyHangarMap;
+						else if (lineLower == $"[hangarobjects_{_commandOpt}]") readMode = ReadMode.HangarObjects;
+						else if (lineLower == $"[hangarcamera_{_commandOpt}]") readMode = ReadMode.HangarCamera;
+						else if (lineLower == $"[famhangarcamera_{_commandOpt}]") readMode = ReadMode.FamilyHangarCamera;
+						else if (lineLower == $"[hangarmap_{_commandOpt}]") readMode = ReadMode.HangarMap;
+						else if (lineLower == $"[famhangarmap_{_commandOpt}]") readMode = ReadMode.FamilyHangarMap;
 						else _unknown.Add(txtHook.Lines[i]);
 					}
 					else _unknown.Add(txtHook.Lines[i]);
@@ -1354,10 +1354,10 @@ namespace Idmr.Yogeme
 			if (cboFG.SelectedIndex == -1 || ((optWingman.Checked || optMarkings.Checked) && cboMarkings.SelectedIndex == -1) || (optIff.Checked && cboIff.SelectedIndex == -1)
 				|| (optPilot.Checked && txtPilot.Text == "")) return;
 
-			if (optMarkings.Checked) lstMission.Items.Add(cboFG.Text + ",marks," + cboMarkings.Text);
-			else if (optWingman.Checked) lstMission.Items.Add(cboFG.Text + ",wing," + numWingman.Value + "," + cboMarkings.Text);
-			else if (optIff.Checked) lstMission.Items.Add(cboFG.Text + ",iff," + cboIff.Text);
-			else if (optPilot.Checked) lstMission.Items.Add(cboFG.Text + ",pilot," + txtPilot.Text);
+			if (optMarkings.Checked) lstMission.Items.Add($"{cboFG.Text},marks,{cboMarkings.Text}");
+			else if (optWingman.Checked) lstMission.Items.Add($"{cboFG.Text},wing,{numWingman.Value},{cboMarkings.Text}");
+			else if (optIff.Checked) lstMission.Items.Add($"{cboFG.Text},iff,{cboIff.Text}");
+			else if (optPilot.Checked) lstMission.Items.Add($"{cboFG.Text},pilot,{txtPilot.Text}");
 		}
 		private void cmdRemoveMiss_Click(object sender, EventArgs e)
 		{
@@ -1369,10 +1369,10 @@ namespace Idmr.Yogeme
 		{
 			if (cboCraftText.SelectedIndex == -1 || (!optCraftText.Checked && !optPluralText.Checked && !optAbbrvText.Checked && !optSpeciesText.Checked) || txtCraftText.Text == "") return;
 
-			if (optCraftText.Checked) lstCraftText.Items.Add(cboCraftText.Text + ",name," + txtCraftText.Text);
-			else if (optPluralText.Checked) lstCraftText.Items.Add(cboCraftText.Text + ",plural," + txtCraftText.Text);
-			else if (optAbbrvText.Checked) lstCraftText.Items.Add(cboCraftText.Text + ",abbrv," + txtCraftText.Text);
-			else if (optSpeciesText.Checked) lstCraftText.Items.Add(cboCraftText.Text + ",species," + txtCraftText.Text);
+			if (optCraftText.Checked) lstCraftText.Items.Add($"{cboCraftText.Text},name,{txtCraftText.Text}");
+			else if (optPluralText.Checked) lstCraftText.Items.Add($"{cboCraftText.Text},plural,{txtCraftText.Text}");
+			else if (optAbbrvText.Checked) lstCraftText.Items.Add($"{cboCraftText.Text},abbrv,{txtCraftText.Text}");
+			else if (optSpeciesText.Checked) lstCraftText.Items.Add($"{cboCraftText.Text},species,{txtCraftText.Text}");
 		}
 		private void cmdRemoveTextCraft_Click(object sender, EventArgs e)
 		{
@@ -1398,7 +1398,7 @@ namespace Idmr.Yogeme
 			}
 			else if (cboStatType.SelectedIndex != 0)
 			{
-				string line = cboStatType.Text + "Percent = " + numStatPercent.Value;
+				string line = $"{cboStatType.Text}Percent = {numStatPercent.Value}";
 				if (chkStatPlayer.Checked) line = "Player" + line;
 				lstStats.Items.Add(line);
 			}
@@ -1419,7 +1419,7 @@ namespace Idmr.Yogeme
 			DialogResult res = opnObjects.ShowDialog();
 			if (res != DialogResult.OK) return;
 
-			string line = Path.GetFileNameWithoutExtension(opnObjects.FileName) + "_" + cboSpecRci.Text + " = " + numSpecRci.Value;
+			string line = $"{Path.GetFileNameWithoutExtension(opnObjects.FileName)}_{cboSpecRci.Text} = {numSpecRci.Value}";
 			lstSpecRci.Items.Add(line);
 		}
 		private void cmdRemoveSpecRci_Click(object sender, EventArgs e)
@@ -1508,7 +1508,7 @@ namespace Idmr.Yogeme
 			}
 			else if (optFGProfile.Checked && txtProfile.Text != "" && txtProfile.Text.ToLower() != "default")
 			{
-				string line = "ObjectProfile_fg_" + cboProfileFG.SelectedIndex + " = " + txtProfile.Text;
+				string line = $"ObjectProfile_fg_{cboProfileFG.SelectedIndex} = {txtProfile.Text}";
 				lstObjects.Items.Add(line);
 			}
 			else if (optCraftProfile.Checked && txtProfile.Text != "" && txtProfile.Text.ToLower() != "default")
@@ -1517,7 +1517,7 @@ namespace Idmr.Yogeme
 				DialogResult res = opnObjects.ShowDialog();
 				if (res != DialogResult.OK) return;
 				
-				string line = "ObjectProfile_" + Path.GetFileNameWithoutExtension(opnObjects.FileName) + " = " + txtProfile.Text;
+				string line = $"ObjectProfile_{Path.GetFileNameWithoutExtension(opnObjects.FileName)} = {txtProfile.Text}";
 				lstObjects.Items.Add(line);
 			}
 			else if (optCraftCockpit.Checked && txtProfile.Text != "" && txtProfile.Text.ToLower() != "default")
@@ -1526,7 +1526,7 @@ namespace Idmr.Yogeme
 				DialogResult res = opnObjects.ShowDialog();
 				if (res != DialogResult.OK) return;
 				
-				string line = "FlightModels\\" + Path.GetFileNameWithoutExtension(opnObjects.FileName) + "_CockpitPovProfile = " + txtProfile.Text;
+				string line = $"FlightModels\\{Path.GetFileNameWithoutExtension(opnObjects.FileName)}_CockpitPovProfile = {txtProfile.Text}";
 				lstObjects.Items.Add(line);
 			}
 			else if (optCockpit.Checked && txtProfile.Text != "" && txtProfile.Text.ToLower() != "default")
@@ -1540,8 +1540,7 @@ namespace Idmr.Yogeme
 				DialogResult res = opnObjects.ShowDialog();
 				if (res != DialogResult.OK) return;
 				
-				string line = "ObjectProfile_" + Path.GetFileNameWithoutExtension(opnObjects.FileName) + "_" + numWeaponModel.Value
-					+ " = " + txtProfile.Text + (chkWeaponProfile.Checked ? "_" + numWeaponProfileMarking.Value : "");
+				string line = $"ObjectProfile_{Path.GetFileNameWithoutExtension(opnObjects.FileName)}_{numWeaponModel.Value} = {txtProfile.Text}{(chkWeaponProfile.Checked ? "_" + numWeaponProfileMarking.Value : "")}";
 				lstObjects.Items.Add(line);
 			}
 		}
@@ -1794,7 +1793,7 @@ namespace Idmr.Yogeme
 		private void cmdAutoAdd_Click(object sender, EventArgs e)
 		{
 			if (chkAutoInvert.Checked) lstAutoPlayer.Items.Add("Inverted," + cboAutoModel.Text);
-			else lstAutoPlayer.Items.Add(cboAutoModel.Text + "," + numAutoX.Value + "," + numAutoY.Value + "," + numAutoZ.Value);
+			else lstAutoPlayer.Items.Add($"{cboAutoModel.Text},{numAutoX.Value},{numAutoY.Value},{numAutoZ.Value}");
 		}
 		private void cmdCraneReset_Click(object sender, EventArgs e)
 		{
@@ -1954,8 +1953,7 @@ namespace Idmr.Yogeme
 			DialogResult res = opnObjects.ShowDialog();
 			if (res != DialogResult.OK) return;
 			
-			string line = Path.GetFileNameWithoutExtension(opnObjects.FileName) + (chkSkinMarks.Checked ? "_fgc_" + cboSkinMarks.SelectedIndex : "") + " = "
-				+ (chkDefaultSkin.Checked ? "Default" + (chkSkinMarks.Checked ? "_" + cboSkinMarks.SelectedIndex : "") : txtSkin.Text) + (chkOpacity.Checked ? "-" + (int)numOpacity.Value : "");
+			string line = $"{Path.GetFileNameWithoutExtension(opnObjects.FileName)}{(chkSkinMarks.Checked ? "_fgc_" + cboSkinMarks.SelectedIndex : "")} = {(chkDefaultSkin.Checked ? "Default" + (chkSkinMarks.Checked ? "_" + cboSkinMarks.SelectedIndex : "") : txtSkin.Text)}{(chkOpacity.Checked ? "-" + (int)numOpacity.Value : "")}";
 			lstSkins.Items.Add(line);
 		}
 		private void cmdAppendSkin_Click(object sender, EventArgs e)
@@ -1963,7 +1961,7 @@ namespace Idmr.Yogeme
 			if (lstSkins.SelectedIndex == -1) return;
 
 			string line = lstSkins.SelectedItem.ToString();
-			line += ", " + (chkDefaultSkin.Checked ? "Default" + (chkSkinMarks.Checked ? "_" + cboSkinMarks.SelectedIndex : "") : txtSkin.Text) + (chkOpacity.Checked ? "-" + (int)numOpacity.Value : "");
+			line += $", {(chkDefaultSkin.Checked ? "Default" + (chkSkinMarks.Checked ? "_" + cboSkinMarks.SelectedIndex : "") : txtSkin.Text)}{(chkOpacity.Checked ? "-" + (int)numOpacity.Value : "")}";
 			lstSkins.Items[lstSkins.SelectedIndex] = line;
 		}
 		private void cmdRemoveSkin_Click(object sender, EventArgs e) { if (lstSkins.SelectedIndex != -1) lstSkins.Items.RemoveAt(lstSkins.SelectedIndex); }
@@ -2000,7 +1998,7 @@ namespace Idmr.Yogeme
 		{
 			if (cboShield.SelectedIndex < 1) return;
 
-			string line = cboShield.Text + " = " + Math.Round(numShieldRate.Value) + (chkShieldGen.Checked ? " per" : "");
+			string line = $"{cboShield.Text} = {Math.Round(numShieldRate.Value)}{(chkShieldGen.Checked ? " per" : "")}";
 			lstShield.Items.Add(line);
 		}
 		private void cmdRemoveShield_Click(object sender, EventArgs e) { if (lstShield.SelectedIndex != -1) lstShield.Items.RemoveAt(lstShield.SelectedIndex); }
@@ -2097,7 +2095,7 @@ namespace Idmr.Yogeme
 			DialogResult res = opnObjects.ShowDialog();
 			if (res != DialogResult.OK) return;
 			
-			string line = "FlightModels\\" + Path.GetFileNameWithoutExtension(opnObjects.FileName) + "_HullIcon = " + numHullIcon.Value;
+			string line = $"FlightModels\\{Path.GetFileNameWithoutExtension(opnObjects.FileName)}_HullIcon = {numHullIcon.Value}";
 			lstHullIcon.Items.Add(line);
 		}
 		private void cmdHullRemove_Click(object sender, EventArgs e) { if (lstHullIcon.SelectedIndex != -1) lstHullIcon.Items.RemoveAt(lstHullIcon.SelectedIndex); }
@@ -2350,11 +2348,8 @@ namespace Idmr.Yogeme
 
 			public override string ToString()
 			{
-				return ModelIndex + ", " + (Markings != 0 ? Markings.ToString() + ", " : "")
-					+ PositionX + ", " + PositionY + ", " + (IsGrounded ? "0x7FFFFFFF" : PositionZ.ToString())
-					+ ", " + HeadingXY + ", " + HeadingZ
-					+ (Profile != "" ? ", " + Profile : "")
-					+ (IsFloorInverted ? (Profile == "" ? ", Default" : "") + ", 1" : "");
+				return $"{ModelIndex}, {(Markings != 0 ? $"{Markings}, " : "")}{PositionX}, {PositionY}, {(IsGrounded ? "0x7FFFFFFF" : PositionZ.ToString())}, {HeadingXY}, {HeadingZ}"
+					+ $"{(Profile != "" ? $", {Profile}" : "")}{(IsFloorInverted ? $"{(Profile == "" ? ", Default" : "")}, 1" : "")}";
 			}
 
 			public bool Parse(string line)
