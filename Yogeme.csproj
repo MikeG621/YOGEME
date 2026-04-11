@@ -253,6 +253,7 @@
       <DependentUpon>BackdropDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="classes\CraftData.cs" />
+    <Compile Include="classes\HookFile.cs" />
     <Compile Include="ErrorDialog.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -117,6 +117,7 @@
 			this.label47 = new System.Windows.Forms.Label();
 			this.tcHangar = new System.Windows.Forms.TabControl();
 			this.tabHangarObjects = new System.Windows.Forms.TabPage();
+			this.pctLight = new System.Windows.Forms.PictureBox();
 			this.txtLightColor = new System.Windows.Forms.TextBox();
 			this.label73 = new System.Windows.Forms.Label();
 			this.label72 = new System.Windows.Forms.Label();
@@ -312,6 +313,7 @@
 			this.cmdAddStat = new System.Windows.Forms.Button();
 			this.lstStats = new System.Windows.Forms.ListBox();
 			this.tabMissSettings = new System.Windows.Forms.TabPage();
+			this.chkSkipProx = new System.Windows.Forms.CheckBox();
 			this.chkDisableRanks = new System.Windows.Forms.CheckBox();
 			this.chkHardShields = new System.Windows.Forms.CheckBox();
 			this.numTurretS = new System.Windows.Forms.NumericUpDown();
@@ -446,7 +448,6 @@
 			this.cmdRemWeap = new System.Windows.Forms.Button();
 			this.cmdAddWeap = new System.Windows.Forms.Button();
 			this.lstWeapons = new System.Windows.Forms.ListBox();
-			this.chkSkipProx = new System.Windows.Forms.CheckBox();
 			((System.ComponentModel.ISupportInitialize)(this.numFamHeadingZ)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numFamPosZ)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numFamHeadingXY)).BeginInit();
@@ -463,6 +464,7 @@
 			((System.ComponentModel.ISupportInitialize)(this.numWingman)).BeginInit();
 			this.tcHangar.SuspendLayout();
 			this.tabHangarObjects.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.pctLight)).BeginInit();
 			this.grpCranePosition.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numRoofCranePositionZ)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numRoofCranePositionY)).BeginInit();
@@ -1518,6 +1520,7 @@
 			// 
 			// tabHangarObjects
 			// 
+			this.tabHangarObjects.Controls.Add(this.pctLight);
 			this.tabHangarObjects.Controls.Add(this.txtLightColor);
 			this.tabHangarObjects.Controls.Add(this.label73);
 			this.tabHangarObjects.Controls.Add(this.label72);
@@ -1546,6 +1549,15 @@
 			this.tabHangarObjects.Text = "Objects";
 			this.tabHangarObjects.UseVisualStyleBackColor = true;
 			// 
+			// pctLight
+			// 
+			this.pctLight.BackColor = System.Drawing.Color.White;
+			this.pctLight.Location = new System.Drawing.Point(124, 324);
+			this.pctLight.Name = "pctLight";
+			this.pctLight.Size = new System.Drawing.Size(20, 20);
+			this.pctLight.TabIndex = 74;
+			this.pctLight.TabStop = false;
+			// 
 			// txtLightColor
 			// 
 			this.txtLightColor.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
@@ -1560,7 +1572,7 @@
 			// label73
 			// 
 			this.label73.AutoSize = true;
-			this.label73.Location = new System.Drawing.Point(124, 327);
+			this.label73.Location = new System.Drawing.Point(152, 327);
 			this.label73.Name = "label73";
 			this.label73.Size = new System.Drawing.Size(46, 13);
 			this.label73.TabIndex = 72;
@@ -1639,6 +1651,7 @@
             0,
             0,
             -2147483648});
+			this.numRoofCranePositionZ.ValueChanged += new System.EventHandler(this.uiHangarObj_DefaultEvent);
 			// 
 			// cmdCraneReset
 			// 
@@ -1679,6 +1692,7 @@
             0,
             0,
             0});
+			this.numRoofCranePositionY.ValueChanged += new System.EventHandler(this.uiHangarObj_DefaultEvent);
 			// 
 			// numRoofCranePositionX
 			// 
@@ -1701,6 +1715,7 @@
             0,
             0,
             -2147483648});
+			this.numRoofCranePositionX.ValueChanged += new System.EventHandler(this.uiHangarObj_DefaultEvent);
 			// 
 			// chkShadows
 			// 
@@ -1713,6 +1728,7 @@
 			this.chkShadows.TabIndex = 69;
 			this.chkShadows.Text = "Draw Shadows";
 			this.chkShadows.UseVisualStyleBackColor = true;
+			this.chkShadows.CheckedChanged += new System.EventHandler(this.uiHangarObj_DefaultEvent);
 			// 
 			// chkFloor
 			// 
@@ -1723,6 +1739,7 @@
 			this.chkFloor.TabIndex = 69;
 			this.chkFloor.Text = "Invert Hangar Floor";
 			this.chkFloor.UseVisualStyleBackColor = true;
+			this.chkFloor.CheckedChanged += new System.EventHandler(this.uiHangarObj_DefaultEvent);
 			// 
 			// label34
 			// 
@@ -1770,6 +1787,7 @@
 			this.optRoofCraneAxisZ.TabIndex = 11;
 			this.optRoofCraneAxisZ.Text = "Z";
 			this.optRoofCraneAxisZ.UseVisualStyleBackColor = true;
+			this.optRoofCraneAxisZ.CheckedChanged += new System.EventHandler(this.uiHangarObj_DefaultEvent);
 			// 
 			// optRoofCraneAxisY
 			// 
@@ -1780,6 +1798,7 @@
 			this.optRoofCraneAxisY.TabIndex = 10;
 			this.optRoofCraneAxisY.Text = "Y";
 			this.optRoofCraneAxisY.UseVisualStyleBackColor = true;
+			this.optRoofCraneAxisY.CheckedChanged += new System.EventHandler(this.uiHangarObj_DefaultEvent);
 			// 
 			// optRoofCraneAxisX
 			// 
@@ -1792,10 +1811,11 @@
 			this.optRoofCraneAxisX.TabStop = true;
 			this.optRoofCraneAxisX.Text = "X";
 			this.optRoofCraneAxisX.UseVisualStyleBackColor = true;
+			this.optRoofCraneAxisX.CheckedChanged += new System.EventHandler(this.uiHangarObj_DefaultEvent);
 			// 
 			// numIntensity
 			// 
-			this.numIntensity.Location = new System.Drawing.Point(176, 325);
+			this.numIntensity.Location = new System.Drawing.Point(204, 325);
 			this.numIntensity.Maximum = new decimal(new int[] {
             65535,
             0,
@@ -1814,6 +1834,7 @@
             0,
             0,
             0});
+			this.numIntensity.ValueChanged += new System.EventHandler(this.uiHangarObj_DefaultEvent);
 			// 
 			// numInvertedHangarFloor
 			// 
@@ -1831,6 +1852,7 @@
 			this.numInvertedHangarFloor.Name = "numInvertedHangarFloor";
 			this.numInvertedHangarFloor.Size = new System.Drawing.Size(60, 20);
 			this.numInvertedHangarFloor.TabIndex = 64;
+			this.numInvertedHangarFloor.ValueChanged += new System.EventHandler(this.uiHangarObj_DefaultEvent);
 			// 
 			// numRoofCraneHighOffset
 			// 
@@ -1848,6 +1870,7 @@
 			this.numRoofCraneHighOffset.Name = "numRoofCraneHighOffset";
 			this.numRoofCraneHighOffset.Size = new System.Drawing.Size(60, 20);
 			this.numRoofCraneHighOffset.TabIndex = 64;
+			this.numRoofCraneHighOffset.ValueChanged += new System.EventHandler(this.uiHangarObj_DefaultEvent);
 			// 
 			// numRoofCraneLowOffset
 			// 
@@ -1865,6 +1888,7 @@
 			this.numRoofCraneLowOffset.Name = "numRoofCraneLowOffset";
 			this.numRoofCraneLowOffset.Size = new System.Drawing.Size(60, 20);
 			this.numRoofCraneLowOffset.TabIndex = 63;
+			this.numRoofCraneLowOffset.ValueChanged += new System.EventHandler(this.uiHangarObj_DefaultEvent);
 			// 
 			// cboHangarIff
 			// 
@@ -1874,6 +1898,7 @@
 			this.cboHangarIff.Name = "cboHangarIff";
 			this.cboHangarIff.Size = new System.Drawing.Size(121, 21);
 			this.cboHangarIff.TabIndex = 45;
+			this.cboHangarIff.SelectedIndexChanged += new System.EventHandler(this.uiHangarObj_DefaultEvent);
 			// 
 			// chkHangarIff
 			// 
@@ -1924,6 +1949,7 @@
 			this.txtShuttleProfile.Name = "txtShuttleProfile";
 			this.txtShuttleProfile.Size = new System.Drawing.Size(150, 20);
 			this.txtShuttleProfile.TabIndex = 42;
+			this.txtShuttleProfile.Leave += new System.EventHandler(this.uiHangarObj_DefaultEvent);
 			// 
 			// label27
 			// 
@@ -1950,6 +1976,7 @@
 			this.numShuElevation.Name = "numShuElevation";
 			this.numShuElevation.Size = new System.Drawing.Size(60, 20);
 			this.numShuElevation.TabIndex = 26;
+			this.numShuElevation.ValueChanged += new System.EventHandler(this.uiHangarObj_DefaultEvent);
 			// 
 			// numShuDistance
 			// 
@@ -1967,6 +1994,7 @@
 			this.numShuDistance.Name = "numShuDistance";
 			this.numShuDistance.Size = new System.Drawing.Size(60, 20);
 			this.numShuDistance.TabIndex = 26;
+			this.numShuDistance.ValueChanged += new System.EventHandler(this.uiHangarObj_DefaultEvent);
 			// 
 			// chkShuttleFloor
 			// 
@@ -1977,6 +2005,7 @@
 			this.chkShuttleFloor.TabIndex = 23;
 			this.chkShuttleFloor.Text = "Invert Shuttle Floor";
 			this.chkShuttleFloor.UseVisualStyleBackColor = true;
+			this.chkShuttleFloor.CheckedChanged += new System.EventHandler(this.uiHangarObj_DefaultEvent);
 			// 
 			// cboShuAnimation
 			// 
@@ -1990,6 +2019,7 @@
 			this.cboShuAnimation.Name = "cboShuAnimation";
 			this.cboShuAnimation.Size = new System.Drawing.Size(62, 21);
 			this.cboShuAnimation.TabIndex = 24;
+			this.cboShuAnimation.SelectedIndexChanged += new System.EventHandler(this.uiHangarObj_DefaultEvent);
 			// 
 			// label35
 			// 
@@ -2048,6 +2078,7 @@
             0,
             0,
             0});
+			this.numShuttlePositionX.ValueChanged += new System.EventHandler(this.uiHangarObj_DefaultEvent);
 			// 
 			// label37
 			// 
@@ -2079,6 +2110,7 @@
             0,
             0,
             0});
+			this.numShuttleOrientation.ValueChanged += new System.EventHandler(this.uiHangarObj_DefaultEvent);
 			// 
 			// label38
 			// 
@@ -2110,6 +2142,7 @@
             0,
             0,
             0});
+			this.numShuttlePositionY.ValueChanged += new System.EventHandler(this.uiHangarObj_DefaultEvent);
 			// 
 			// numShuttlePositionZ
 			// 
@@ -2127,6 +2160,7 @@
 			this.numShuttlePositionZ.Name = "numShuttlePositionZ";
 			this.numShuttlePositionZ.Size = new System.Drawing.Size(60, 20);
 			this.numShuttlePositionZ.TabIndex = 29;
+			this.numShuttlePositionZ.ValueChanged += new System.EventHandler(this.uiHangarObj_DefaultEvent);
 			// 
 			// cmdShuttleReset
 			// 
@@ -2180,6 +2214,7 @@
 			this.cboShuttleModel.Name = "cboShuttleModel";
 			this.cboShuttleModel.Size = new System.Drawing.Size(44, 21);
 			this.cboShuttleModel.TabIndex = 20;
+			this.cboShuttleModel.SelectedIndexChanged += new System.EventHandler(this.uiHangarObj_DefaultEvent);
 			// 
 			// label2
 			// 
@@ -2197,6 +2232,7 @@
 			this.cboShuttleMarks.Name = "cboShuttleMarks";
 			this.cboShuttleMarks.Size = new System.Drawing.Size(126, 21);
 			this.cboShuttleMarks.TabIndex = 21;
+			this.cboShuttleMarks.SelectedIndexChanged += new System.EventHandler(this.uiHangarObj_DefaultEvent);
 			// 
 			// chkShuttle
 			// 
@@ -2270,6 +2306,7 @@
 			this.txtDroid2Profile.Name = "txtDroid2Profile";
 			this.txtDroid2Profile.Size = new System.Drawing.Size(159, 20);
 			this.txtDroid2Profile.TabIndex = 76;
+			this.txtDroid2Profile.Leave += new System.EventHandler(this.uiHangarObj_DefaultEvent);
 			// 
 			// label68
 			// 
@@ -2296,6 +2333,7 @@
 			this.cboDroid2Markings.Name = "cboDroid2Markings";
 			this.cboDroid2Markings.Size = new System.Drawing.Size(159, 21);
 			this.cboDroid2Markings.TabIndex = 75;
+			this.cboDroid2Markings.SelectedIndexChanged += new System.EventHandler(this.uiHangarObj_DefaultEvent);
 			// 
 			// label64
 			// 
@@ -2313,6 +2351,7 @@
 			this.cboDroid2Model.Name = "cboDroid2Model";
 			this.cboDroid2Model.Size = new System.Drawing.Size(44, 21);
 			this.cboDroid2Model.TabIndex = 71;
+			this.cboDroid2Model.SelectedIndexChanged += new System.EventHandler(this.uiHangarObj_DefaultEvent);
 			// 
 			// chkDroid2Update
 			// 
@@ -2325,6 +2364,7 @@
 			this.chkDroid2Update.TabIndex = 71;
 			this.chkDroid2Update.Text = "Update";
 			this.chkDroid2Update.UseVisualStyleBackColor = true;
+			this.chkDroid2Update.CheckedChanged += new System.EventHandler(this.uiHangarObj_DefaultEvent);
 			// 
 			// numDroid2Z
 			// 
@@ -2342,6 +2382,7 @@
 			this.numDroid2Z.Name = "numDroid2Z";
 			this.numDroid2Z.Size = new System.Drawing.Size(60, 20);
 			this.numDroid2Z.TabIndex = 69;
+			this.numDroid2Z.ValueChanged += new System.EventHandler(this.uiHangarObj_DefaultEvent);
 			// 
 			// chkDroid2Floor
 			// 
@@ -2352,6 +2393,7 @@
 			this.chkDroid2Floor.TabIndex = 64;
 			this.chkDroid2Floor.Text = "Invert Floor";
 			this.chkDroid2Floor.UseVisualStyleBackColor = true;
+			this.chkDroid2Floor.CheckedChanged += new System.EventHandler(this.uiHangarObj_DefaultEvent);
 			// 
 			// grpDroid1
 			// 
@@ -2387,6 +2429,7 @@
 			this.txtDroid1Profile.Name = "txtDroid1Profile";
 			this.txtDroid1Profile.Size = new System.Drawing.Size(159, 20);
 			this.txtDroid1Profile.TabIndex = 76;
+			this.txtDroid1Profile.Leave += new System.EventHandler(this.uiHangarObj_DefaultEvent);
 			// 
 			// label67
 			// 
@@ -2413,6 +2456,7 @@
 			this.cboDroid1Markings.Name = "cboDroid1Markings";
 			this.cboDroid1Markings.Size = new System.Drawing.Size(159, 21);
 			this.cboDroid1Markings.TabIndex = 73;
+			this.cboDroid1Markings.SelectedIndexChanged += new System.EventHandler(this.uiHangarObj_DefaultEvent);
 			// 
 			// label41
 			// 
@@ -2430,6 +2474,7 @@
 			this.cboDroid1Model.Name = "cboDroid1Model";
 			this.cboDroid1Model.Size = new System.Drawing.Size(44, 21);
 			this.cboDroid1Model.TabIndex = 71;
+			this.cboDroid1Model.SelectedIndexChanged += new System.EventHandler(this.uiHangarObj_DefaultEvent);
 			// 
 			// numDroid1Z
 			// 
@@ -2447,6 +2492,7 @@
 			this.numDroid1Z.Name = "numDroid1Z";
 			this.numDroid1Z.Size = new System.Drawing.Size(60, 20);
 			this.numDroid1Z.TabIndex = 67;
+			this.numDroid1Z.ValueChanged += new System.EventHandler(this.uiHangarObj_DefaultEvent);
 			// 
 			// chkDroid1Update
 			// 
@@ -2459,6 +2505,7 @@
 			this.chkDroid1Update.TabIndex = 70;
 			this.chkDroid1Update.Text = "Update";
 			this.chkDroid1Update.UseVisualStyleBackColor = true;
+			this.chkDroid1Update.CheckedChanged += new System.EventHandler(this.uiHangarObj_DefaultEvent);
 			// 
 			// chkDroid1Floor
 			// 
@@ -2469,6 +2516,7 @@
 			this.chkDroid1Floor.TabIndex = 64;
 			this.chkDroid1Floor.Text = "Invert Floor";
 			this.chkDroid1Floor.UseVisualStyleBackColor = true;
+			this.chkDroid1Floor.CheckedChanged += new System.EventHandler(this.uiHangarObj_DefaultEvent);
 			// 
 			// chkLoadDroid2
 			// 
@@ -2505,6 +2553,7 @@
 			this.chkDroidsFloor.TabIndex = 64;
 			this.chkDroidsFloor.Text = "Invert Droids Floor";
 			this.chkDroidsFloor.UseVisualStyleBackColor = true;
+			this.chkDroidsFloor.CheckedChanged += new System.EventHandler(this.uiHangarObj_DefaultEvent);
 			// 
 			// label40
 			// 
@@ -2531,6 +2580,7 @@
 			this.numDroidsZ.Name = "numDroidsZ";
 			this.numDroidsZ.Size = new System.Drawing.Size(60, 20);
 			this.numDroidsZ.TabIndex = 65;
+			this.numDroidsZ.ValueChanged += new System.EventHandler(this.uiHangarObj_DefaultEvent);
 			// 
 			// chkDroids
 			// 
@@ -2636,6 +2686,7 @@
 			this.numAutoZ.Name = "numAutoZ";
 			this.numAutoZ.Size = new System.Drawing.Size(60, 20);
 			this.numAutoZ.TabIndex = 16;
+			this.numAutoZ.ValueChanged += new System.EventHandler(this.uiHangarObj_DefaultEvent);
 			// 
 			// cboAutoModel
 			// 
@@ -2701,6 +2752,7 @@
 			this.numAutoY.Name = "numAutoY";
 			this.numAutoY.Size = new System.Drawing.Size(60, 20);
 			this.numAutoY.TabIndex = 15;
+			this.numAutoY.ValueChanged += new System.EventHandler(this.uiHangarObj_DefaultEvent);
 			// 
 			// numAutoX
 			// 
@@ -2718,6 +2770,7 @@
 			this.numAutoX.Name = "numAutoX";
 			this.numAutoX.Size = new System.Drawing.Size(60, 20);
 			this.numAutoX.TabIndex = 14;
+			this.numAutoX.ValueChanged += new System.EventHandler(this.uiHangarObj_DefaultEvent);
 			// 
 			// grpInvertedPlayerPos
 			// 
@@ -2769,6 +2822,7 @@
 			this.numInvertedPlayerZ.Name = "numInvertedPlayerZ";
 			this.numInvertedPlayerZ.Size = new System.Drawing.Size(60, 20);
 			this.numInvertedPlayerZ.TabIndex = 16;
+			this.numInvertedPlayerZ.ValueChanged += new System.EventHandler(this.uiHangarObj_DefaultEvent);
 			// 
 			// cmdInvertedPlayerReset
 			// 
@@ -2805,6 +2859,7 @@
 			this.numInvertedPlayerY.Name = "numInvertedPlayerY";
 			this.numInvertedPlayerY.Size = new System.Drawing.Size(60, 20);
 			this.numInvertedPlayerY.TabIndex = 15;
+			this.numInvertedPlayerY.ValueChanged += new System.EventHandler(this.uiHangarObj_DefaultEvent);
 			// 
 			// numInvertedPlayerX
 			// 
@@ -2822,6 +2877,7 @@
 			this.numInvertedPlayerX.Name = "numInvertedPlayerX";
 			this.numInvertedPlayerX.Size = new System.Drawing.Size(60, 20);
 			this.numInvertedPlayerX.TabIndex = 14;
+			this.numInvertedPlayerX.ValueChanged += new System.EventHandler(this.uiHangarObj_DefaultEvent);
 			// 
 			// grpPlayerPosition
 			// 
@@ -2873,6 +2929,7 @@
 			this.numPlayerZ.Name = "numPlayerZ";
 			this.numPlayerZ.Size = new System.Drawing.Size(60, 20);
 			this.numPlayerZ.TabIndex = 16;
+			this.numPlayerZ.ValueChanged += new System.EventHandler(this.uiHangarObj_DefaultEvent);
 			// 
 			// cmdPlayerReset
 			// 
@@ -2909,6 +2966,7 @@
 			this.numPlayerY.Name = "numPlayerY";
 			this.numPlayerY.Size = new System.Drawing.Size(60, 20);
 			this.numPlayerY.TabIndex = 15;
+			this.numPlayerY.ValueChanged += new System.EventHandler(this.uiHangarObj_DefaultEvent);
 			// 
 			// numPlayerX
 			// 
@@ -2926,6 +2984,7 @@
 			this.numPlayerX.Name = "numPlayerX";
 			this.numPlayerX.Size = new System.Drawing.Size(60, 20);
 			this.numPlayerX.TabIndex = 14;
+			this.numPlayerX.ValueChanged += new System.EventHandler(this.uiHangarObj_DefaultEvent);
 			// 
 			// numInvertedPlayerFloor
 			// 
@@ -2943,6 +3002,7 @@
 			this.numInvertedPlayerFloor.Name = "numInvertedPlayerFloor";
 			this.numInvertedPlayerFloor.Size = new System.Drawing.Size(60, 20);
 			this.numInvertedPlayerFloor.TabIndex = 17;
+			this.numInvertedPlayerFloor.ValueChanged += new System.EventHandler(this.uiHangarObj_DefaultEvent);
 			// 
 			// numPlayerStraight
 			// 
@@ -2960,6 +3020,7 @@
 			this.numPlayerStraight.Name = "numPlayerStraight";
 			this.numPlayerStraight.Size = new System.Drawing.Size(60, 20);
 			this.numPlayerStraight.TabIndex = 17;
+			this.numPlayerStraight.ValueChanged += new System.EventHandler(this.uiHangarObj_DefaultEvent);
 			// 
 			// numPlayerAnimationElevation
 			// 
@@ -2977,6 +3038,7 @@
 			this.numPlayerAnimationElevation.Name = "numPlayerAnimationElevation";
 			this.numPlayerAnimationElevation.Size = new System.Drawing.Size(60, 20);
 			this.numPlayerAnimationElevation.TabIndex = 17;
+			this.numPlayerAnimationElevation.ValueChanged += new System.EventHandler(this.uiHangarObj_DefaultEvent);
 			// 
 			// chkPlayerFloor
 			// 
@@ -2987,6 +3049,7 @@
 			this.chkPlayerFloor.TabIndex = 18;
 			this.chkPlayerFloor.Text = "Invert Player Floor";
 			this.chkPlayerFloor.UseVisualStyleBackColor = true;
+			this.chkPlayerFloor.CheckedChanged += new System.EventHandler(this.uiHangarObj_DefaultEvent);
 			// 
 			// label74
 			// 
@@ -3277,6 +3340,7 @@
 			this.chkManualSF.TabIndex = 23;
 			this.chkManualSF.Text = "Manual control of SF and LG";
 			this.chkManualSF.UseVisualStyleBackColor = true;
+			this.chkManualSF.CheckedChanged += new System.EventHandler(this.uiMissionTie_DefaultEvent);
 			// 
 			// chkForceHyperLG
 			// 
@@ -3287,6 +3351,7 @@
 			this.chkForceHyperLG.TabIndex = 23;
 			this.chkForceHyperLG.Text = "Force LG closed in Hyperspace";
 			this.chkForceHyperLG.UseVisualStyleBackColor = true;
+			this.chkForceHyperLG.CheckedChanged += new System.EventHandler(this.uiMissionTie_DefaultEvent);
 			// 
 			// chkForceHangarSF
 			// 
@@ -3297,6 +3362,7 @@
 			this.chkForceHangarSF.TabIndex = 23;
 			this.chkForceHangarSF.Text = "Force SF closed, LG open in Hangar";
 			this.chkForceHangarSF.UseVisualStyleBackColor = true;
+			this.chkForceHangarSF.CheckedChanged += new System.EventHandler(this.uiMissionTie_DefaultEvent);
 			// 
 			// lstSFoils
 			// 
@@ -3518,6 +3584,7 @@
 			this.optHypEnabled.TabIndex = 2;
 			this.optHypEnabled.Text = "Enabled";
 			this.optHypEnabled.UseVisualStyleBackColor = true;
+			this.optHypEnabled.CheckedChanged += new System.EventHandler(this.optHyp_CheckedChanged);
 			// 
 			// optHypGlobal
 			// 
@@ -3530,6 +3597,7 @@
 			this.optHypGlobal.TabStop = true;
 			this.optHypGlobal.Text = "Global Setting (no effect)";
 			this.optHypGlobal.UseVisualStyleBackColor = true;
+			this.optHypGlobal.CheckedChanged += new System.EventHandler(this.optHyp_CheckedChanged);
 			// 
 			// optHypNormal
 			// 
@@ -3540,6 +3608,7 @@
 			this.optHypNormal.TabIndex = 2;
 			this.optHypNormal.Text = "Normal";
 			this.optHypNormal.UseVisualStyleBackColor = true;
+			this.optHypNormal.CheckedChanged += new System.EventHandler(this.optHyp_CheckedChanged);
 			// 
 			// label53
 			// 
@@ -3919,6 +3988,17 @@
 			this.tabMissSettings.Text = "Settings";
 			this.tabMissSettings.UseVisualStyleBackColor = true;
 			// 
+			// chkSkipProx
+			// 
+			this.chkSkipProx.AutoSize = true;
+			this.chkSkipProx.Location = new System.Drawing.Point(3, 233);
+			this.chkSkipProx.Name = "chkSkipProx";
+			this.chkSkipProx.Size = new System.Drawing.Size(152, 17);
+			this.chkSkipProx.TabIndex = 15;
+			this.chkSkipProx.Text = "Skip Warhead Prox Check";
+			this.chkSkipProx.UseVisualStyleBackColor = true;
+			this.chkSkipProx.CheckedChanged += new System.EventHandler(this.uiMissionTie_DefaultEvent);
+			// 
 			// chkDisableRanks
 			// 
 			this.chkDisableRanks.AutoSize = true;
@@ -3928,6 +4008,7 @@
 			this.chkDisableRanks.TabIndex = 14;
 			this.chkDisableRanks.Text = "Disable FG Rank Modifiers";
 			this.chkDisableRanks.UseVisualStyleBackColor = true;
+			this.chkDisableRanks.CheckedChanged += new System.EventHandler(this.uiMissionTie_DefaultEvent);
 			// 
 			// chkHardShields
 			// 
@@ -3938,6 +4019,7 @@
 			this.chkHardShields.TabIndex = 13;
 			this.chkHardShields.Text = "Shoot through Shields on Hard";
 			this.chkHardShields.UseVisualStyleBackColor = true;
+			this.chkHardShields.CheckedChanged += new System.EventHandler(this.uiMissionTie_DefaultEvent);
 			// 
 			// numTurretS
 			// 
@@ -3956,6 +4038,7 @@
             0,
             0,
             0});
+			this.numTurretS.ValueChanged += new System.EventHandler(this.uiMissionTie_DefaultEvent);
 			// 
 			// numTurretM
 			// 
@@ -3969,6 +4052,7 @@
 			this.numTurretM.Name = "numTurretM";
 			this.numTurretM.Size = new System.Drawing.Size(41, 20);
 			this.numTurretM.TabIndex = 11;
+			this.numTurretM.ValueChanged += new System.EventHandler(this.uiMissionTie_DefaultEvent);
 			// 
 			// numTurretH
 			// 
@@ -3982,6 +4066,7 @@
 			this.numTurretH.Name = "numTurretH";
 			this.numTurretH.Size = new System.Drawing.Size(41, 20);
 			this.numTurretH.TabIndex = 10;
+			this.numTurretH.ValueChanged += new System.EventHandler(this.uiMissionTie_DefaultEvent);
 			// 
 			// chkSkipIff
 			// 
@@ -4036,6 +4121,7 @@
 			this.chkDisableCollision.TabIndex = 5;
 			this.chkDisableCollision.Text = "Disable Warhead Collision";
 			this.chkDisableCollision.UseVisualStyleBackColor = true;
+			this.chkDisableCollision.CheckedChanged += new System.EventHandler(this.uiMissionTie_DefaultEvent);
 			// 
 			// chkDisableWarhead
 			// 
@@ -4046,6 +4132,7 @@
 			this.chkDisableWarhead.TabIndex = 4;
 			this.chkDisableWarhead.Text = "Disable Player Warheads";
 			this.chkDisableWarhead.UseVisualStyleBackColor = true;
+			this.chkDisableWarhead.CheckedChanged += new System.EventHandler(this.uiMissionTie_DefaultEvent);
 			// 
 			// chkDisableLaser
 			// 
@@ -4056,6 +4143,7 @@
 			this.chkDisableLaser.TabIndex = 3;
 			this.chkDisableLaser.Text = "Disable Player Lasers";
 			this.chkDisableLaser.UseVisualStyleBackColor = true;
+			this.chkDisableLaser.CheckedChanged += new System.EventHandler(this.uiMissionTie_DefaultEvent);
 			// 
 			// label60
 			// 
@@ -4075,6 +4163,7 @@
 			this.chkForceTurret.TabIndex = 2;
 			this.chkForceTurret.Text = "Force Player into Turret";
 			this.chkForceTurret.UseVisualStyleBackColor = true;
+			this.chkForceTurret.CheckedChanged += new System.EventHandler(this.uiMissionTie_DefaultEvent);
 			// 
 			// chkSkipHyper
 			// 
@@ -4085,6 +4174,7 @@
 			this.chkSkipHyper.TabIndex = 1;
 			this.chkSkipHyper.Text = "Skip Hyper messages";
 			this.chkSkipHyper.UseVisualStyleBackColor = true;
+			this.chkSkipHyper.CheckedChanged += new System.EventHandler(this.uiMissionTie_DefaultEvent);
 			// 
 			// chkRedAlert
 			// 
@@ -4095,6 +4185,7 @@
 			this.chkRedAlert.TabIndex = 0;
 			this.chkRedAlert.Text = "Red Alert";
 			this.chkRedAlert.UseVisualStyleBackColor = true;
+			this.chkRedAlert.CheckedChanged += new System.EventHandler(this.uiMissionTie_DefaultEvent);
 			// 
 			// tabMissTarget
 			// 
@@ -4123,6 +4214,7 @@
 			this.cboTargetMethod.Name = "cboTargetMethod";
 			this.cboTargetMethod.Size = new System.Drawing.Size(165, 21);
 			this.cboTargetMethod.TabIndex = 5;
+			this.cboTargetMethod.SelectedIndexChanged += new System.EventHandler(this.uiMissionTie_DefaultEvent);
 			// 
 			// label96
 			// 
@@ -4142,6 +4234,7 @@
 			this.chkNotInspected.TabIndex = 3;
 			this.chkNotInspected.Text = "Filter targets to Not Inspected";
 			this.chkNotInspected.UseVisualStyleBackColor = true;
+			this.chkNotInspected.CheckedChanged += new System.EventHandler(this.uiMissionTie_DefaultEvent);
 			// 
 			// cmdClearTargeting
 			// 
@@ -4171,6 +4264,7 @@
 			this.lstFgTargeting.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
 			this.lstFgTargeting.Size = new System.Drawing.Size(167, 173);
 			this.lstFgTargeting.TabIndex = 0;
+			this.lstFgTargeting.SelectedIndexChanged += new System.EventHandler(this.uiMissionTie_DefaultEvent);
 			// 
 			// tabMissRci
 			// 
@@ -4526,6 +4620,7 @@
 			this.chkFighterDoubled.TabIndex = 46;
 			this.chkFighterDoubled.Text = "Starfighter Shields Doubled";
 			this.chkFighterDoubled.UseVisualStyleBackColor = true;
+			this.chkFighterDoubled.CheckedChanged += new System.EventHandler(this.uiShield_DefaultEvent);
 			// 
 			// chkSSRecharge
 			// 
@@ -4538,6 +4633,7 @@
 			this.chkSSRecharge.TabIndex = 46;
 			this.chkSSRecharge.Text = "Starship Recharge Enabled";
 			this.chkSSRecharge.UseVisualStyleBackColor = true;
+			this.chkSSRecharge.CheckedChanged += new System.EventHandler(this.uiShield_DefaultEvent);
 			// 
 			// pnlHyper
 			// 
@@ -4561,6 +4657,7 @@
 			this.txtHook.Size = new System.Drawing.Size(378, 533);
 			this.txtHook.TabIndex = 62;
 			this.txtHook.WordWrap = false;
+			this.txtHook.TextChanged += new System.EventHandler(this.txtHook_TextChanged);
 			this.txtHook.Enter += new System.EventHandler(this.txtHook_Enter);
 			this.txtHook.Leave += new System.EventHandler(this.txtHook_Leave);
 			// 
@@ -4632,6 +4729,7 @@
 			this.numConcoursePlanetY.Name = "numConcoursePlanetY";
 			this.numConcoursePlanetY.Size = new System.Drawing.Size(69, 20);
 			this.numConcoursePlanetY.TabIndex = 0;
+			this.numConcoursePlanetY.ValueChanged += new System.EventHandler(this.numConcourse_ValueChanged);
 			// 
 			// numConcoursePlanetX
 			// 
@@ -4645,6 +4743,7 @@
 			this.numConcoursePlanetX.Name = "numConcoursePlanetX";
 			this.numConcoursePlanetX.Size = new System.Drawing.Size(69, 20);
 			this.numConcoursePlanetX.TabIndex = 0;
+			this.numConcoursePlanetX.ValueChanged += new System.EventHandler(this.numConcourse_ValueChanged);
 			// 
 			// numConcoursePlanetIndex
 			// 
@@ -4658,6 +4757,7 @@
 			this.numConcoursePlanetIndex.Name = "numConcoursePlanetIndex";
 			this.numConcoursePlanetIndex.Size = new System.Drawing.Size(69, 20);
 			this.numConcoursePlanetIndex.TabIndex = 0;
+			this.numConcoursePlanetIndex.ValueChanged += new System.EventHandler(this.numConcourse_ValueChanged);
 			// 
 			// lblNotFound
 			// 
@@ -4727,6 +4827,7 @@
 			this.numPlayerHull.Name = "numPlayerHull";
 			this.numPlayerHull.Size = new System.Drawing.Size(69, 20);
 			this.numPlayerHull.TabIndex = 3;
+			this.numPlayerHull.ValueChanged += new System.EventHandler(this.numPlayerHull_ValueChanged);
 			// 
 			// chkPlayerHull
 			// 
@@ -5641,16 +5742,6 @@
 			this.lstWeapons.Size = new System.Drawing.Size(366, 108);
 			this.lstWeapons.TabIndex = 1;
 			// 
-			// chkSkipProx
-			// 
-			this.chkSkipProx.AutoSize = true;
-			this.chkSkipProx.Location = new System.Drawing.Point(3, 233);
-			this.chkSkipProx.Name = "chkSkipProx";
-			this.chkSkipProx.Size = new System.Drawing.Size(152, 17);
-			this.chkSkipProx.TabIndex = 15;
-			this.chkSkipProx.Text = "Skip Warhead Prox Check";
-			this.chkSkipProx.UseVisualStyleBackColor = true;
-			// 
 			// XwaHookDialog
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -5697,6 +5788,7 @@
 			this.tcHangar.ResumeLayout(false);
 			this.tabHangarObjects.ResumeLayout(false);
 			this.tabHangarObjects.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.pctLight)).EndInit();
 			this.grpCranePosition.ResumeLayout(false);
 			this.grpCranePosition.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numRoofCranePositionZ)).EndInit();
@@ -6267,5 +6359,6 @@
 		private System.Windows.Forms.CheckBox chkWeapRechargePercent;
 		private System.Windows.Forms.CheckBox chkFighterDoubled;
 		private System.Windows.Forms.CheckBox chkSkipProx;
+		private System.Windows.Forms.PictureBox pctLight;
 	}
 }
