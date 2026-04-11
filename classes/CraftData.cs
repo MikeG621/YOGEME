@@ -4,9 +4,10 @@
  * This file authored by "JB" (Random Starfighter) (randomstarfighter@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.17.7
+ * VERSION: 1.17.7+
  *
  * CHANGELOG
+ * [UPD] HookFile implementation
  * v1.17.7, 260327
  * [NEW #135] Take into account Objects hook when loading OPTs (full swap, not profiles)
  * v1.17.3, 250713
@@ -145,26 +146,21 @@ namespace Idmr.Yogeme
 			}
 			if (_currentIniPath != "")
 			{
-				bool reading = false;
-				using (var sr = new StreamReader(_currentIniPath))
+				HookFile.HookSection section = null;
+				if (_currentIniPath.EndsWith(".ini"))	// don't need the case check, since we put it there
 				{
-					string line = "";
-					while ((line = sr.ReadLine()) != null)
+					var hook = new HookFile(_currentIniPath);
+					hook.Read();
+					section = hook.GetSectionByName("Objects");
+				}
+				else using (var sr = new StreamReader(_currentIniPath)) { section = new HookFile.HookSection("Objects", sr); }
+				if (section != null)
+				{
+					foreach (var entry in section.Entries)
 					{
-						if (line.IndexOf(";") != -1) line = line.Substring(0, line.IndexOf(";"));
-						if (line.IndexOf("#") != -1) line = line.Substring(0, line.IndexOf("#"));
-						if (line.IndexOf("//") != -1) line = line.Substring(0, line.IndexOf("//"));
-						if (line == "" || line.StartsWith("!")) continue;
-
-						if (line.StartsWith("[objects]", StringComparison.InvariantCultureIgnoreCase) || _currentIniPath.EndsWith(".txt")) reading = true;
-						else if (line.StartsWith("[")) reading = false;
-
-						if (reading)
-						{
-							string[] tokens = line.Split(new char[] { '=', ' ' }, StringSplitOptions.RemoveEmptyEntries);
-							if (tokens.Length > 1 && tokens[0].EndsWith(".opt", StringComparison.InvariantCultureIgnoreCase) && tokens[1].EndsWith(".opt", StringComparison.InvariantCultureIgnoreCase))
-								_optSwap.Add(tokens[0].ToLower(), tokens[1]);
-						}
+						string[] tokens = entry.Split(new char[] { '=', ' ' }, StringSplitOptions.RemoveEmptyEntries);
+						if (tokens.Length > 1 && tokens[0].EndsWith(".opt", StringComparison.OrdinalIgnoreCase) && tokens[1].EndsWith(".opt", StringComparison.OrdinalIgnoreCase))
+							_optSwap.Add(tokens[0].ToLower(), tokens[1]);
 					}
 				}
 				if (_optSwap.Count == 0) _currentIniPath = "";
