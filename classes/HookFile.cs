@@ -15,12 +15,21 @@ using System.IO;
 
 namespace Idmr.Yogeme
 {
+	/// <summary>Represents the hook configuration for a mission.</summary>
 	internal class HookFile
 	{
 		static string _iniPath = "";
 
+		/// <summary>Initialize the configuration.</summary>
+		/// <param name="path">The path to the misison INI.</param>
+		/// <remarks>Does not load the file yet.</remarks>
 		public HookFile(string path) => _iniPath = path;
 
+		/// <summary>Adds a comment to the base level of the file.</summary>
+		/// <param name="comment">The text to add.</param>
+		/// <remarks>Comments start with ";", "//", or "#".<br/>
+		/// If <paramref name="comment"/> doesn't contain one of those prefixes, ";" will be used.<br/>
+		/// If <paramref name="comment"/> is empty, it will be ignored. To add blank lines, it must already include a comment prefix.</remarks>
 		public void AddComment(string comment)
 		{
 			if (comment != null) comment = comment.Trim();
@@ -30,7 +39,13 @@ namespace Idmr.Yogeme
 			Comments.Add(comment);
 		}
 
+		/// <summary>Gets a concatenated string of <see cref="Comments"/>.</summary>
+		/// <returns>A joined string using line breaks.</returns>
 		public string GetComments() => string.Join("\r\n", Comments);
+		/// <summary>Gets the full contents of the file.</summary>
+		/// <returns>A string as it will be written to file.</returns>
+		/// <remarks>The <see cref="Comments"/> will be first, followed by each <see cref="HookSection"/> as ordered in <see cref="Sections"/>.<br/>
+		/// Note that comments such as a Changelog added to the end of the file will be viewed as belonging to the last Section, not the file.</remarks>
 		public string GetContents()
 		{
 			string contents = "";
@@ -39,8 +54,16 @@ namespace Idmr.Yogeme
 			return contents;
 		}
 
+		/// <summary>Gets if the supplied text is a comment.</summary>
+		/// <param name="line">The line of text.</param>
+		/// <returns>Returns <b>true</b> if <paramref name="line"/> starts with ";", "//", or "#".</returns>
 		public static bool IsComment(string line) => line.StartsWith(";") || line.StartsWith("//") || line.StartsWith("#");
 
+		/// <summary>Add the contents of a text file to a <see cref="HookSection"/>.</summary>
+		/// <param name="path">Full path to a text file.</param>
+		/// <param name="sectionName">Name of the section to add to.</param>
+		/// <remarks>If the section does not exist, it will be created.<br/>
+		/// If the contents of the file appear to include the start of a heading, it will read up to that point.</remarks>
 		public void MergeTextFile(string path, string sectionName)
 		{
 			var section = GetOrCreateSection(sectionName);
@@ -54,6 +77,9 @@ namespace Idmr.Yogeme
 				}
 		}
 
+		/// <summary>Loads the contents of the INI file.</summary>
+		/// <exception cref="InvalidDataException"><see cref="IniPath"/> has not been set.</exception>
+		/// <exception cref="FileNotFoundException"><see cref="IniPath"/> not found.</exception>
 		public void Read()
 		{
 			if (_iniPath == null) throw new InvalidDataException("Ini path has not been set.");
@@ -79,6 +105,9 @@ namespace Idmr.Yogeme
 			}
 		}
 
+		/// <summary>Saves the contents of the INI file.</summary>
+		/// <returns>Returns <b>true</b> if successful.</returns>
+		/// <exception cref="InvalidOperationException"><see cref="IniPath"/> has not been set.</exception>
 		public bool Write()
 		{
 			if (string.IsNullOrEmpty(_iniPath)) throw new InvalidOperationException("INI path has not been set.");
@@ -112,6 +141,9 @@ namespace Idmr.Yogeme
 			return true;
 		}
 
+		/// <summary>Gets the indicated <see cref="HookSection"/>, or creates a new one if it does not exist.</summary>
+		/// <param name="name">The name of the section, case insensitive.</param>
+		/// <returns>The indicated section.</returns>
 		public HookSection GetOrCreateSection(string name)
 		{
 			var section = GetSectionByName(name);
@@ -122,12 +154,18 @@ namespace Idmr.Yogeme
 			}
 			return section;
 		}
+		/// <summary>Gets the inidicated <see cref="HookSection"/>.</summary>
+		/// <param name="name">The name of the section, case insensitive.</param>
+		/// <returns>The indicated section, otherwise <b>null</b>.</returns>
 		public HookSection GetSectionByName(string name)
 		{
 			foreach (var section in Sections)
 				if (section.Name.Equals(name, StringComparison.OrdinalIgnoreCase)) return section;
 			return null;
 		}
+		/// <summary>Checks if the <see cref="HookSection"/> exists.</summary>
+		/// <param name="name">The name of the section, case insensitive.</param>
+		/// <returns>Returns <b>true</b> if the section exists, otherwise <b>false</b>.</returns>
 		public bool SectionExists(string name)
 		{
 			foreach (var section in Sections)
@@ -135,12 +173,24 @@ namespace Idmr.Yogeme
 			return false;
 		}
 
+		/// <summary>Gets the collection of sections in the file.</summary>
 		public List<HookSection> Sections { get; private set; } = new List<HookSection>();
+		/// <summary>Gets the collection of comments in the file header.</summary>
 		public List<string> Comments { get; private set; } = new List<string>();
+		/// <summary>Gets the as-stored path to the INI file.</summary>
+		public string IniPath => _iniPath;
 
+		/// <summary>Represents an individual section within the file.</summary>
 		internal class HookSection
 		{
+			/// <summary>Initializes an empty section.</summary>
+			/// <param name="name">The name of the section.</param>
+			/// <remarks>The <see cref="Name"/> will be saved in the case provided.</remarks>
 			public HookSection(string name) => Name = name;
+			/// <summary>Initializes and loads the section from a stream.</summary>
+			/// <param name="name">The name of the section.</param>
+			/// <param name="sr">The opened stream to the INI file.</param>
+			/// <remarks>The <see cref="Name"/> will be saved in the case provided.</remarks>
 			public HookSection(string name, StreamReader sr) : this(name)
 			{
 				while (!sr.EndOfStream && sr.Peek() != '[')
@@ -151,6 +201,11 @@ namespace Idmr.Yogeme
 				}
 			}
 
+			/// <summary>Adds a comment to the section.</summary>
+			/// <param name="comment">The text to add.</param>
+			/// <remarks>Comments start with ";", "//", or "#".<br/>
+			/// If <paramref name="comment"/> doesn't contain one of those prefixes, ";" will be used.<br/>
+			/// If <paramref name="comment"/> is empty, it will be ignored. To add blank lines, it must already include a comment prefix.</remarks>
 			public void AddComment(string comment)
 			{
 				if (comment != null) comment = comment.Trim();
@@ -159,6 +214,13 @@ namespace Idmr.Yogeme
 				if (!IsComment(comment)) comment = ";" + comment;
 				Comments.Add(comment);
 			}
+			/// <summary>Adds a line to the section.</summary>
+			/// <param name="line">The text to add.</param>
+			/// <returns>Returns <b>true</b> if <paramref name="line"/> is added.</returns>
+			/// <remarks>If <paramref name="line"/> is empty, no changes made.<br/>
+			/// If <paramref name="line"/> is a comment, adds to <see cref="Comments"/>.<br/>
+			/// If <paramref name="line"/> is normal text, but includes a comment afterwards, they will be split out between <see cref="Entries"/> and <see cref="Comments"/>.<br/>
+			/// Normal text is added to <see cref="Entries"/>.</remarks>
 			public bool AddLine(string line)
 			{
 				if (line != null) line = line.Trim();
@@ -195,6 +257,11 @@ namespace Idmr.Yogeme
 				return !found;
 			}
 
+			/// <summary>Gets the text of the entire section.</summary>
+			/// <returns>A string formatted to write to file.</returns>
+			/// <remarks>Format is:<br/>
+			/// <b>"[<see cref="Name"/>]<br/><see cref="GetEntries"/><br/><see cref="GetComments"/><br/>(spacing line break)"</b><br/><br/>
+			/// Note that the comments in sections are after the contents, whereas the file comments come first.</remarks>
 			public string GetContents()
 			{
 				if (Entries.Count == 0 && Comments.Count == 0) return "";
@@ -205,55 +272,31 @@ namespace Idmr.Yogeme
 				contents += "\r\n";
 				return contents;
 			}
+			/// <summary>Gets a concatenated string of <see cref="Comments"/>.</summary>
+			/// <returns>A joined string using line breaks.</returns>
 			public string GetComments() => string.Join("\r\n", Comments);
+			/// <summary>Gets a concatenated string of <see cref="Entries"/>.</summary>
+			/// <returns>A joined string using line breaks.</returns>
 			public string GetEntries() => string.Join("\r\n", Entries);
 
+			/// <summary>Adds the contents of another section.</summary>
+			/// <param name="section">The section to add from.</param>
+			/// <remarks>Appends both the <see cref="Entries"/> and <see cref="Comments"/> of <paramref name="section"/>.</remarks>
 			public void MergeSection(HookSection section)
 			{
 				foreach (var item in section.Entries) add(Entries, item);
 				foreach (var item in section.Comments) add(Comments, item);
 			}
-			/*
-			public void ReadFromTxt(string path)
-			{
-				string line;
-				using (var sr = new StreamReader(path))
-					while ((line = sr.ReadLine()) != null)
-					{
-						if (line.StartsWith("[")) break;	// shouldn't happen, since this is for TXT files
-
-						AddLine(line);
-					}
-			}
-
-			public void ReadFromIni()
-			{
-				if (_iniPath == "") throw new InvalidOperationException("INI file has not been defined.");
-				if (Name == "") throw new InvalidOperationException("Section name has not been defined.");
-
-				string line;
-				bool isReading = false;
-				using (var sr = new StreamReader(_iniPath))
-					while ((line = sr.ReadLine()) != null)
-					{
-						line = line.Trim();
-						if ((!isReading && !line.StartsWith("[")) || string.IsNullOrEmpty(line)) continue;
-						if (isReading && line.StartsWith("[")) break;
-
-						if (!isReading && line.StartsWith("[") && line.IndexOf(']') != -1)
-						{
-							line = line.Substring(1, line.LastIndexOf(']') - 1);
-							if (string.Equals(line, Name, StringComparison.OrdinalIgnoreCase)) isReading = true;
-							continue;
-						}
-						AddLine(line);
-					}
-			}
-			*/
+			
+			/// <summary>Gets the formatted section name.</summary>
+			/// <returns>A string in the form <b>"[<see cref="Name"/>]"</b>.</returns>
 			public override string ToString() => $"[{Name}]";
 
+			/// <summary>Gets the section name.</summary>
 			public string Name { get; private set; } = "";
+			/// <summary>Gets the collection of settings in the section.</summary>
 			public List<string> Entries { get; private set; } = new List<string>();
+			/// <summary>Gets the collection of comments in the section.</summary>
 			public List<string> Comments { get; private set; } = new List<string>();
 		}
 	}
