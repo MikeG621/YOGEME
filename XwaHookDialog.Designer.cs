@@ -448,6 +448,16 @@
 			this.cmdRemWeap = new System.Windows.Forms.Button();
 			this.cmdAddWeap = new System.Windows.Forms.Button();
 			this.lstWeapons = new System.Windows.Forms.ListBox();
+			this.optMapIcon = new System.Windows.Forms.RadioButton();
+			this.pnlMapIcon = new System.Windows.Forms.Panel();
+			this.label97 = new System.Windows.Forms.Label();
+			this.numMapLeft = new System.Windows.Forms.NumericUpDown();
+			this.label98 = new System.Windows.Forms.Label();
+			this.numMapTop = new System.Windows.Forms.NumericUpDown();
+			this.label99 = new System.Windows.Forms.Label();
+			this.numMapRight = new System.Windows.Forms.NumericUpDown();
+			this.label100 = new System.Windows.Forms.Label();
+			this.numMapBottom = new System.Windows.Forms.NumericUpDown();
 			((System.ComponentModel.ISupportInitialize)(this.numFamHeadingZ)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numFamPosZ)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numFamHeadingXY)).BeginInit();
@@ -574,6 +584,11 @@
 			((System.ComponentModel.ISupportInitialize)(this.numDecharge)).BeginInit();
 			this.pnlWeapProfiles.SuspendLayout();
 			this.pnlWeapRateOrProfiles.SuspendLayout();
+			this.pnlMapIcon.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.numMapLeft)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.numMapTop)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.numMapRight)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.numMapBottom)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// cmdOK
@@ -3702,6 +3717,8 @@
 			// 
 			// tabMissText
 			// 
+			this.tabMissText.Controls.Add(this.pnlMapIcon);
+			this.tabMissText.Controls.Add(this.optMapIcon);
 			this.tabMissText.Controls.Add(this.label59);
 			this.tabMissText.Controls.Add(this.optAbbrvText);
 			this.tabMissText.Controls.Add(this.optPluralText);
@@ -3722,7 +3739,7 @@
 			// 
 			// label59
 			// 
-			this.label59.Location = new System.Drawing.Point(6, 183);
+			this.label59.Location = new System.Drawing.Point(6, 208);
 			this.label59.Name = "label59";
 			this.label59.Size = new System.Drawing.Size(309, 42);
 			this.label59.TabIndex = 5;
@@ -3789,7 +3806,7 @@
 			// 
 			// cmdRemoveTextCraft
 			// 
-			this.cmdRemoveTextCraft.Location = new System.Drawing.Point(72, 157);
+			this.cmdRemoveTextCraft.Location = new System.Drawing.Point(72, 182);
 			this.cmdRemoveTextCraft.Name = "cmdRemoveTextCraft";
 			this.cmdRemoveTextCraft.Size = new System.Drawing.Size(60, 23);
 			this.cmdRemoveTextCraft.TabIndex = 1;
@@ -3799,7 +3816,7 @@
 			// 
 			// cmdAddCraftText
 			// 
-			this.cmdAddCraftText.Location = new System.Drawing.Point(6, 157);
+			this.cmdAddCraftText.Location = new System.Drawing.Point(6, 182);
 			this.cmdAddCraftText.Name = "cmdAddCraftText";
 			this.cmdAddCraftText.Size = new System.Drawing.Size(60, 23);
 			this.cmdAddCraftText.TabIndex = 1;
@@ -5744,6 +5761,118 @@
 			this.lstWeapons.Size = new System.Drawing.Size(366, 108);
 			this.lstWeapons.TabIndex = 1;
 			// 
+			// optMapIcon
+			// 
+			this.optMapIcon.AutoSize = true;
+			this.optMapIcon.Location = new System.Drawing.Point(272, 134);
+			this.optMapIcon.Name = "optMapIcon";
+			this.optMapIcon.Size = new System.Drawing.Size(67, 17);
+			this.optMapIcon.TabIndex = 6;
+			this.optMapIcon.TabStop = true;
+			this.optMapIcon.Text = "MapIcon";
+			this.optMapIcon.UseVisualStyleBackColor = true;
+			this.optMapIcon.CheckedChanged += new System.EventHandler(this.optMapIcon_CheckedChanged);
+			// 
+			// pnlMapIcon
+			// 
+			this.pnlMapIcon.Controls.Add(this.numMapBottom);
+			this.pnlMapIcon.Controls.Add(this.numMapRight);
+			this.pnlMapIcon.Controls.Add(this.numMapTop);
+			this.pnlMapIcon.Controls.Add(this.label100);
+			this.pnlMapIcon.Controls.Add(this.label99);
+			this.pnlMapIcon.Controls.Add(this.label98);
+			this.pnlMapIcon.Controls.Add(this.numMapLeft);
+			this.pnlMapIcon.Controls.Add(this.label97);
+			this.pnlMapIcon.Enabled = false;
+			this.pnlMapIcon.Location = new System.Drawing.Point(85, 157);
+			this.pnlMapIcon.Name = "pnlMapIcon";
+			this.pnlMapIcon.Size = new System.Drawing.Size(284, 27);
+			this.pnlMapIcon.TabIndex = 7;
+			// 
+			// label97
+			// 
+			this.label97.AutoSize = true;
+			this.label97.Location = new System.Drawing.Point(3, 6);
+			this.label97.Name = "label97";
+			this.label97.Size = new System.Drawing.Size(16, 13);
+			this.label97.TabIndex = 0;
+			this.label97.Text = "L:";
+			// 
+			// numMapLeft
+			// 
+			this.numMapLeft.Location = new System.Drawing.Point(19, 4);
+			this.numMapLeft.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+			this.numMapLeft.Name = "numMapLeft";
+			this.numMapLeft.Size = new System.Drawing.Size(47, 20);
+			this.numMapLeft.TabIndex = 1;
+			// 
+			// label98
+			// 
+			this.label98.AutoSize = true;
+			this.label98.Location = new System.Drawing.Point(72, 6);
+			this.label98.Name = "label98";
+			this.label98.Size = new System.Drawing.Size(17, 13);
+			this.label98.TabIndex = 0;
+			this.label98.Text = "T:";
+			// 
+			// numMapTop
+			// 
+			this.numMapTop.Location = new System.Drawing.Point(88, 4);
+			this.numMapTop.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+			this.numMapTop.Name = "numMapTop";
+			this.numMapTop.Size = new System.Drawing.Size(47, 20);
+			this.numMapTop.TabIndex = 1;
+			// 
+			// label99
+			// 
+			this.label99.AutoSize = true;
+			this.label99.Location = new System.Drawing.Point(141, 6);
+			this.label99.Name = "label99";
+			this.label99.Size = new System.Drawing.Size(18, 13);
+			this.label99.TabIndex = 0;
+			this.label99.Text = "R:";
+			// 
+			// numMapRight
+			// 
+			this.numMapRight.Location = new System.Drawing.Point(157, 4);
+			this.numMapRight.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+			this.numMapRight.Name = "numMapRight";
+			this.numMapRight.Size = new System.Drawing.Size(47, 20);
+			this.numMapRight.TabIndex = 1;
+			// 
+			// label100
+			// 
+			this.label100.AutoSize = true;
+			this.label100.Location = new System.Drawing.Point(210, 6);
+			this.label100.Name = "label100";
+			this.label100.Size = new System.Drawing.Size(17, 13);
+			this.label100.TabIndex = 0;
+			this.label100.Text = "B:";
+			// 
+			// numMapBottom
+			// 
+			this.numMapBottom.Location = new System.Drawing.Point(226, 4);
+			this.numMapBottom.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+			this.numMapBottom.Name = "numMapBottom";
+			this.numMapBottom.Size = new System.Drawing.Size(47, 20);
+			this.numMapBottom.TabIndex = 1;
+			// 
 			// XwaHookDialog
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -5936,6 +6065,12 @@
 			this.pnlWeapProfiles.PerformLayout();
 			this.pnlWeapRateOrProfiles.ResumeLayout(false);
 			this.pnlWeapRateOrProfiles.PerformLayout();
+			this.pnlMapIcon.ResumeLayout(false);
+			this.pnlMapIcon.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.numMapLeft)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.numMapTop)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.numMapRight)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.numMapBottom)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -6362,5 +6497,15 @@
 		private System.Windows.Forms.CheckBox chkFighterDoubled;
 		private System.Windows.Forms.CheckBox chkSkipProx;
 		private System.Windows.Forms.PictureBox pctLight;
+		private System.Windows.Forms.RadioButton optMapIcon;
+		private System.Windows.Forms.Panel pnlMapIcon;
+		private System.Windows.Forms.NumericUpDown numMapBottom;
+		private System.Windows.Forms.NumericUpDown numMapRight;
+		private System.Windows.Forms.NumericUpDown numMapTop;
+		private System.Windows.Forms.Label label100;
+		private System.Windows.Forms.Label label99;
+		private System.Windows.Forms.Label label98;
+		private System.Windows.Forms.NumericUpDown numMapLeft;
+		private System.Windows.Forms.Label label97;
 	}
 }

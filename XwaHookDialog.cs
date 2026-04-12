@@ -6,7 +6,7 @@
  * VERSION: 1.17+
  *
  * CHANGELOG
- * [NEW] Stats modifiers added: SpeedIncrement, SpeedDecrement
+ * [NEW] Stats modifiers added: SpeedIncrement, SpeedDecrement. MapIcon rect added.
  * [UPD] ExplosionDamage renamed to CriticalDamageThreshold per hook updates
  * [UPD] major refactor
  * [DEL] removed reading hangar command opt sections for now (thought it's still calc'd) as I was importing it wrong anyway and never saved
@@ -160,7 +160,6 @@ namespace Idmr.Yogeme
 		readonly int[] _defaultShuttlePosition = new int[4] { 1127, 959, 0, 43136 };
 		readonly int[] _defaultRoofCranePosition = new int[3] { -1400, 786, -282 };
 		readonly Panel[] _panels = new Panel[12];
-		readonly List<string>[] _comments;
 		readonly bool[] _skipIffs = new bool[255];
 		readonly bool _initialLoad = true;
 		string _tempModels = "";
@@ -285,8 +284,6 @@ namespace Idmr.Yogeme
 			cboCraftText.Items.AddRange(Strings.CraftType);
 			cboCraftText.SelectedIndex = 0;
 			cboSpecRci.SelectedIndex = 0;
-			_comments = new List<string>[Enum.GetValues(typeof(ReadMode)).Length];
-			for (int i = 0; i < _comments.Length; i++) _comments[i] = new List<string>();
 			#endregion
 			resetUI();
 			if (config.XwaInstalled) _installDirectory = config.XwaPath + "\\";
@@ -733,7 +730,7 @@ namespace Idmr.Yogeme
 					else if (parts[2].Equals("SpecName", StringComparison.OrdinalIgnoreCase)) lstCraftText.Items.Add($"{cboCraftText.Items[craft]},species,{parts[3]}");
 					else if (parts[2].Equals("PluralName", StringComparison.OrdinalIgnoreCase)) lstCraftText.Items.Add($"{cboCraftText.Items[craft]},plural,{parts[3]}");
 					else if (parts[2].Equals("ShortName", StringComparison.OrdinalIgnoreCase)) lstCraftText.Items.Add($"{cboCraftText.Items[craft]},abbrv,{parts[3]}");
-					// TODO: "craft", craft index, "mapicon", left value, top value, right value, bottom value.
+					else if (parts[2].Equals("MapIcon", StringComparison.OrdinalIgnoreCase) && parts.Length > 6) lstCraftText.Items.Add($"{cboCraftText.Items[craft]},mapicon,{parts[3]},{parts[4]},{parts[5]},{parts[6]}");
 					else throw new InvalidDataException();
 				}
 				else if (parts[0].StartsWith("Key_O", StringComparison.OrdinalIgnoreCase))
@@ -785,7 +782,7 @@ namespace Idmr.Yogeme
 					else throw new InvalidDataException();
 				}
 			}
-			catch { _comments[(int)ReadMode.Mission].Add(line); }
+			catch { _hookFile.GetOrCreateSection("Mission_Tie").AddComment(line); }
 		}
 
 		void optMission_CheckedChanged(object sender, EventArgs e)
@@ -863,6 +860,7 @@ namespace Idmr.Yogeme
 			else if (optPluralText.Checked) lstCraftText.Items.Add($"{cboCraftText.Text},plural,{txtCraftText.Text}");
 			else if (optAbbrvText.Checked) lstCraftText.Items.Add($"{cboCraftText.Text},abbrv,{txtCraftText.Text}");
 			else if (optSpeciesText.Checked) lstCraftText.Items.Add($"{cboCraftText.Text},species,{txtCraftText.Text}");
+			else if (optMapIcon.Checked) lstCraftText.Items.Add($"{cboCraftText.Text},mapicon,{numMapLeft.Value},{numMapTop.Value},{numMapRight.Value},{numMapBottom.Value}");
 			updateMissionTie();
 		}
 		private void cmdRemoveTextCraft_Click(object sender, EventArgs e)
@@ -926,6 +924,8 @@ namespace Idmr.Yogeme
 			lstSpecRci.Items.RemoveAt(lstSpecRci.SelectedIndex);
 			updateSectionFromLst("SpecRci", lstSpecRci);
 		}
+
+		private void optMapIcon_CheckedChanged(object sender, EventArgs e) => pnlMapIcon.Enabled = optMapIcon.Checked;
 
 		void uiMissionTie_DefaultEvent(object sender, EventArgs e) => updateMissionTie();
 
@@ -1093,7 +1093,7 @@ namespace Idmr.Yogeme
 				}
 				else throw new InvalidDataException();
 			}
-			catch { _comments[(int)ReadMode.Interdiction].Add(line); }
+			catch { _hookFile.GetOrCreateSection("Interdiction").AddComment(line); }
 			_loading = loading;
 		}
 
@@ -1242,7 +1242,7 @@ namespace Idmr.Yogeme
 
 				_cameras[view, camera] = int.Parse(parts[1]);
 			}
-			catch { _comments[(int)ReadMode.HangarCamera].Add(line); }
+			catch { _hookFile.GetOrCreateSection("HangarCamera").AddComment(line); }
 		}
 		void parseFamilyHangarCamera(string line)
 		{
@@ -1267,7 +1267,7 @@ namespace Idmr.Yogeme
 
 				_familyCameras[view, camera] = int.Parse(parts[1]);
 			}
-			catch { _comments[(int)ReadMode.FamilyHangarCamera].Add(line); }
+			catch { _hookFile.GetOrCreateSection("FamHangarCamera").AddComment(line); }
 		}
 		void parseHangarObjects(string line)
 		{
@@ -1363,7 +1363,7 @@ namespace Idmr.Yogeme
 				else if (parts[0].StartsWith(_fm, StringComparison.OrdinalIgnoreCase)) lstHangarObjects.Items.Add(parts[1]);
 				else throw new InvalidDataException();
 			}
-			catch { _comments[(int)ReadMode.HangarObjects].Add(line); }
+			catch { _hookFile.GetOrCreateSection("HangarObjects").AddComment(line); }
 			checkIndicies();
 		}
 
@@ -1917,7 +1917,7 @@ namespace Idmr.Yogeme
 				int rate = (perGen ? int.Parse(parts[2]) : int.Parse(parts[3]));
 				lstShield.Items.Add(Strings.CraftType[int.Parse(parts[0])] + " = " + rate + (perGen ? " per" : ""));
 			}
-			catch { _comments[(int)ReadMode.Shield].Add(line); }
+			catch { _hookFile.GetOrCreateSection("Shield").AddComment(line); }
 		}
 
 		private void cmdAddShield_Click(object sender, EventArgs e)
@@ -1980,7 +1980,7 @@ namespace Idmr.Yogeme
 				}
 				else throw new InvalidDataException();
 			}
-			catch { _comments[(int)ReadMode.Hyper].Add(line); }
+			catch { _hookFile.GetOrCreateSection("Hyperspace").AddComment(line); }
 		}
 
 		private void optHyp_CheckedChanged(object sender, EventArgs e)
@@ -2022,7 +2022,7 @@ namespace Idmr.Yogeme
 				}
 				else throw new InvalidDataException();
 			}
-			catch { _comments[(int)ReadMode.Concourse].Add(line); }
+			catch { _hookFile.GetOrCreateSection("Concourse").AddComment(line); }
 		}
 
 		private void chkConcoursePlanetIndex_CheckedChanged(object sender, EventArgs e)
@@ -2072,7 +2072,7 @@ namespace Idmr.Yogeme
 				}
 				else lstHullIcon.Items.Add(line);
 			}
-			catch { _comments[(int)ReadMode.HullIcon].Add(line); }
+			catch { _hookFile.GetOrCreateSection("HullIcon").AddComment(line); }
 		}
 
 		private void chkPlayerHull_CheckedChanged(object sender, EventArgs e)
