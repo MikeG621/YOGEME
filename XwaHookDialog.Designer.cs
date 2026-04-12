@@ -3919,14 +3919,16 @@
             "Profile",
             "Speed",
             "Acceleration",
+            "SpeedIncrement",
             "Deceleration",
+            "SpeedDecrement",
             "Pitch",
             "Roll",
             "Yaw",
             "HullStrength",
             "ShieldStrength",
             "SystemStrength",
-            "ExplosionStrength"});
+            "CriticalDamageThreshold"});
 			this.cboStatType.Location = new System.Drawing.Point(3, 107);
 			this.cboStatType.Name = "cboStatType";
 			this.cboStatType.Size = new System.Drawing.Size(141, 21);
@@ -4335,7 +4337,7 @@
             "Ion",
             "Missile",
             "Shield",
-            "Hukk",
+            "Hull",
             "Size",
             "Score"});
 			this.cboSpecRci.Location = new System.Drawing.Point(2, 107);

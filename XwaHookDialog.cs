@@ -6,9 +6,11 @@
  * VERSION: 1.17+
  *
  * CHANGELOG
+ * [NEW] Stats modifiers added: SpeedIncrement, SpeedDecrement
+ * [UPD] ExplosionDamage renamed to CriticalDamageThreshold per hook updates
  * [UPD] major refactor
  * [DEL] removed reading hangar command opt sections for now (thought it's still calc'd) as I was importing it wrong anyway and never saved
- * [FIX] typo'd FrontPlanetPositionY in Concourse
+ * [FIX] typo'd FrontPlanetPositionY in Concourse, and "Hull" in SpecRci
  * v1.17, 250215
  * [NEW] Mission: CanShootThroughtShieldOnHardDifficulty, IsMissionRanksModifierEnabled, SkipProjectilesProximityCheck
  * [NEW #107] TargetCraftKey tab under Mission_Tie
@@ -731,6 +733,7 @@ namespace Idmr.Yogeme
 					else if (parts[2].Equals("SpecName", StringComparison.OrdinalIgnoreCase)) lstCraftText.Items.Add($"{cboCraftText.Items[craft]},species,{parts[3]}");
 					else if (parts[2].Equals("PluralName", StringComparison.OrdinalIgnoreCase)) lstCraftText.Items.Add($"{cboCraftText.Items[craft]},plural,{parts[3]}");
 					else if (parts[2].Equals("ShortName", StringComparison.OrdinalIgnoreCase)) lstCraftText.Items.Add($"{cboCraftText.Items[craft]},abbrv,{parts[3]}");
+					// TODO: "craft", craft index, "mapicon", left value, top value, right value, bottom value.
 					else throw new InvalidDataException();
 				}
 				else if (parts[0].StartsWith("Key_O", StringComparison.OrdinalIgnoreCase))
@@ -775,6 +778,10 @@ namespace Idmr.Yogeme
 					else if (parts[0].Equals("TargetCraftKeyMethod", StringComparison.OrdinalIgnoreCase)) cboTargetMethod.SelectedIndex = int.Parse(parts[1]) + 1;
 					else if (parts[0].Equals("TargetCraftKeySelectOnlyNotInspected", StringComparison.OrdinalIgnoreCase)) chkNotInspected.Checked = parts[1] == "1";
 					else if (parts[0].Equals("SkipProjectilesProximityCheck", StringComparison.OrdinalIgnoreCase)) chkSkipProx.Checked = parts[1] == "1";
+					// TODO: "CampaignCraftsList" = { fg, fg2... }; similar to targeting FGs
+					// TODO: "CampaignCraftName_## = name"; where ## is the fg index of the ship.
+					// TODO: "CampaignCraftsListLines" = { string1, string2...}; comma separated list of strings.
+					// TODO: "CampaignCraftsListLinesTop" = -1; define the top position of the custom list
 					else throw new InvalidDataException();
 				}
 			}
@@ -880,6 +887,7 @@ namespace Idmr.Yogeme
 				else line += "c_" + cboStatMarks.SelectedIndex;
 				line += " = " + txtStatProfile.Text;
 				lstStats.Items.Add(line);
+				// TODO: "CraftOptName = ProfileName" for all markings, add an "All" entry to the cbo and key from that
 			}
 			else if (cboStatType.SelectedIndex != 0)
 			{
@@ -2142,6 +2150,11 @@ namespace Idmr.Yogeme
 				if (!chkImpact.Checked) lstWeapons.Items.Add($"{prefix}IsImpactSpinningEnabled{fg}0");
 				if (chkImpactSpeed.Checked && numImpactSpeed.Value != 100) lstWeapons.Items.Add($"{prefix}ImpactSpinningSpeedFactorPercent{fg}{numImpactSpeed.Value}");
 				if (chkImpactAngle.Checked && numImpactAngle.Value != 100) lstWeapons.Items.Add($"{prefix}ImpactSpinningAngleFactorPercent{fg}{numImpactAngle.Value}");
+				// TODO: MaxSystemDamages_fg_# = 1000
+				// TODO: Weapon284_LaserIon_Damages_fg_# = 1
+				// TODO: Weapon285_LaserIonTurbo_Damages_fg_# = 2
+				// TODO: Weapon290_LaserIonTurbo_Damages_fg_# = 4
+				// TODO: Weapon296_MagPulse_Damages_fg_# = 30
 			}
 			else if (optWarheadCounts.Checked)
 			{
