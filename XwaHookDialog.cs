@@ -746,6 +746,18 @@ namespace Idmr.Yogeme
 					}
 					else throw new InvalidDataException();
 				}
+				else if (parts[0].StartsWith("CampaignCraftsList", StringComparison.OrdinalIgnoreCase))
+				{
+					// this one's separate because the format is key=#,#,#...
+					var firstPart = parts[0].Split('=');
+					if (firstPart[0].Equals("CampaignCraftsList", StringComparison.OrdinalIgnoreCase))
+					{
+						lstCraftList.ClearSelected();
+						lstCraftList.SetSelected(int.Parse(firstPart[1]), true);
+						for (int i = 1; i < parts.Length; i++) { lstCraftList.SetSelected(int.Parse(parts[i]), true); }
+					}
+					else throw new InvalidDataException();
+				}
 				else
 				{
 					parts = parts[0].Split('=');
@@ -776,7 +788,6 @@ namespace Idmr.Yogeme
 					else if (parts[0].Equals("TargetCraftKeyMethod", StringComparison.OrdinalIgnoreCase)) cboTargetMethod.SelectedIndex = int.Parse(parts[1]) + 1;
 					else if (parts[0].Equals("TargetCraftKeySelectOnlyNotInspected", StringComparison.OrdinalIgnoreCase)) chkNotInspected.Checked = parts[1] == "1";
 					else if (parts[0].Equals("SkipProjectilesProximityCheck", StringComparison.OrdinalIgnoreCase)) chkSkipProx.Checked = parts[1] == "1";
-					// TODO: "CampaignCraftsList" = { fg, fg2... }; similar to targeting FGs
 					// TODO: "CampaignCraftName_## = name"; where ## is the fg index of the ship.
 					// TODO: "CampaignCraftsListLines" = { string1, string2...}; comma separated list of strings.
 					// TODO: "CampaignCraftsListLinesTop" = -1; define the top position of the custom list
@@ -904,6 +915,7 @@ namespace Idmr.Yogeme
 			updateSectionFromLst("StatsProfiles", lstStats);
 		}
 		private void cmdClearTargeting_Click(object sender, EventArgs e) => lstFgTargeting.ClearSelected();
+		private void cmdClearCraftList_Click(object sender, EventArgs e) => lstCraftList.ClearSelected();
 
 		private void cmdAddSpecRci_Click(object sender, EventArgs e)
 		{
@@ -1023,6 +1035,13 @@ namespace Idmr.Yogeme
 					for (int i = 0; i < lstFgTargeting.SelectedIndices.Count; i++)
 						targets += lstFgTargeting.SelectedIndices[i].ToString() + ",";
 					section.AddLine(targets.Substring(0, targets.Length - 1));	// trims off the last ','
+				}
+				if (lstCraftList.SelectedIndices.Count > 0)
+				{
+					string targets = "CampaignCraftsList = ";
+					for (int i = 0; i < lstCraftList.SelectedIndices.Count; i++)
+						targets += lstCraftList.SelectedIndices[i].ToString() + ",";
+					section.AddLine(targets.Substring(0, targets.Length - 1));  // trims off the last ','
 				}
 				if (cboTargetMethod.SelectedIndex != 0) section.AddLine($"TargetCraftKeyMethod = {cboTargetMethod.SelectedIndex - 1}");
 				if (chkNotInspected.Checked) section.AddLine("TargetCraftKeySelectOnlyNotInspected = 1");
