@@ -6,7 +6,7 @@
  * VERSION: 1.17+
  *
  * CHANGELOG
- * [NEW] Stats modifiers added: SpeedIncrement, SpeedDecrement. MapIcon rect added.
+ * [NEW] Stats modifiers: SpeedIncrement, SpeedDecrement. MapIcon rect. CraftStats all markings Profile.
  * [UPD] ExplosionDamage renamed to CriticalDamageThreshold per hook updates
  * [UPD] major refactor
  * [DEL] removed reading hangar command opt sections for now (thought it's still calc'd) as I was importing it wrong anyway and never saved
@@ -243,6 +243,7 @@ namespace Idmr.Yogeme
 				cboDroid1Markings.Items.Add("Clr #" + (i + 1));
 				cboDroid2Markings.Items.Add("Clr #" + (i + 1));
 			}
+			cboStatMarks.Items.Add("All");
 			cboMarkings.SelectedIndex = 0;
 			cboShuttleMarks.SelectedIndex = 0;
 			cboShuAnimation.SelectedIndex = 0;
@@ -882,10 +883,10 @@ namespace Idmr.Yogeme
 				
 				string line = Path.GetFileNameWithoutExtension(opnObjects.FileName) + "_fg";
 				if (chkStatPlayer.Checked) line += "_player";
+				else if (cboStatMarks.Text == "All") line = Path.GetFileNameWithoutExtension(opnObjects.FileName);
 				else line += "c_" + cboStatMarks.SelectedIndex;
 				line += " = " + txtStatProfile.Text;
 				lstStats.Items.Add(line);
-				// TODO: "CraftOptName = ProfileName" for all markings, add an "All" entry to the cbo and key from that
 			}
 			else if (cboStatType.SelectedIndex != 0)
 			{
@@ -936,7 +937,6 @@ namespace Idmr.Yogeme
 			var section = _hookFile.GetOrCreateSection("Mission_Tie");
 			section.Entries.Clear();
 			if (lstMission.Items.Count > 0)
-			{
 				for (int i = 0; i < lstMission.Items.Count; i++)
 				{
 					string[] parts = lstMission.Items[i].ToString().Split(',');
@@ -971,7 +971,6 @@ namespace Idmr.Yogeme
 					}
 					else if (parts[1] == "pilot") section.AddLine($"fg, {fg}, pilotvoice, {parts[2]}");
 				}
-			}
 			if (useSFoils)
 			{
 				for (int i = 0; i < lstSFoils.Items.Count; i++)
@@ -997,6 +996,7 @@ namespace Idmr.Yogeme
 					else if (parts[1] == "species") section.AddLine($"craft, {craft}, specname, {parts[2]}");
 					else if (parts[1] == "plural") section.AddLine($"craft, {craft}, pluralname, {parts[2]}");
 					else if (parts[1] == "abbrv") section.AddLine($"craft, {craft}, shortname, {parts[2]}");
+					else if (parts[1] == "mapicon") section.AddLine($"craft, {craft}, mapicon, {parts[2]}, {parts[3]}, {parts[4]}, {parts[5]}");
 				}
 			}
 			if (useMissionSettings)
@@ -1021,9 +1021,7 @@ namespace Idmr.Yogeme
 				{
 					string targets = "KEY_O_TargetCraftFGs = ";
 					for (int i = 0; i < lstFgTargeting.SelectedIndices.Count; i++)
-					{
 						targets += lstFgTargeting.SelectedIndices[i].ToString() + ",";
-					}
 					section.AddLine(targets.Substring(0, targets.Length - 1));	// trims off the last ','
 				}
 				if (cboTargetMethod.SelectedIndex != 0) section.AddLine($"TargetCraftKeyMethod = {cboTargetMethod.SelectedIndex - 1}");
