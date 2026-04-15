@@ -752,15 +752,14 @@ namespace Idmr.Yogeme
 				else if (parts[0].StartsWith("CampaignCraft", StringComparison.OrdinalIgnoreCase))
 				{
 					// this one's separate because the format is key=#,#,#...
-					// TODO: nope, redo this
-					/*var firstPart = parts[0].Split('=');
+					var firstPart = parts[0].Split('=');
 					if (firstPart[0].Equals("CampaignCraftsList", StringComparison.OrdinalIgnoreCase))
 					{
-						lstCraftList.ClearSelected();
-						lstCraftList.SetSelected(int.Parse(firstPart[1]), true);
-						for (int i = 1; i < parts.Length; i++) { lstCraftList.SetSelected(int.Parse(parts[i]), true); }
+						lstCraftList.Items.Add($"I: {cboCLInclude.Items[int.Parse(firstPart[1])]}");
+						for (int i = 1; i < parts.Length; i++) { lstCraftList.Items.Add($"I: {cboCLInclude.Items[int.Parse(parts[i])]}"); }
 					}
-					else throw new InvalidDataException();*/
+					else if (firstPart[0].Equals("CampaignCraftsListLinesTop", StringComparison.OrdinalIgnoreCase)) numCLTop.Value = int.Parse(firstPart[1]);
+
 				}
 				else
 				{
@@ -792,7 +791,6 @@ namespace Idmr.Yogeme
 					else if (parts[0].Equals("TargetCraftKeyMethod", StringComparison.OrdinalIgnoreCase)) cboTargetMethod.SelectedIndex = int.Parse(parts[1]) + 1;
 					else if (parts[0].Equals("TargetCraftKeySelectOnlyNotInspected", StringComparison.OrdinalIgnoreCase)) chkNotInspected.Checked = parts[1] == "1";
 					else if (parts[0].Equals("SkipProjectilesProximityCheck", StringComparison.OrdinalIgnoreCase)) chkSkipProx.Checked = parts[1] == "1";
-					else if (parts[0].Equals("CampaignCraftsListLinesTop", StringComparison.OrdinalIgnoreCase)) numCLTop.Value = int.Parse(parts[1]);
 					// TODO: "CampaignCraftName_## = name"; where ## is the fg index of the ship.
 					// TODO: "CampaignCraftsListLines" = { string1, string2...}; comma separated list of strings.
 					else throw new InvalidDataException();
@@ -926,7 +924,24 @@ namespace Idmr.Yogeme
 		private void cmdClearTargeting_Click(object sender, EventArgs e) => lstFgTargeting.ClearSelected();
 		private void cmdCraftListAdd_Click(object sender, EventArgs e)
 		{
-			// TODO: this
+			if (optCLInclude.Checked)
+			{
+				if (cboCLInclude.SelectedIndex == -1) return;
+
+				lstCraftList.Items.Add($"I: {cboCLInclude.Text}");
+			}
+			else if (optCLName.Checked)
+			{
+				if (cboCLInclude.SelectedIndex == -1 || txtCLText.Text == "") return;
+
+				lstCraftList.Items.Add($"N: {cboCLInclude.Text} = {txtCLText.Text}");
+			}
+			else
+			{
+				if (txtCLText.Text == "") return;
+
+				lstCraftList.Items.Add($"L: {txtCLText.Text}");
+			}
 		}
 		private void cmdCraftListRemove_Click(object sender, EventArgs e)
 		{
@@ -937,13 +952,19 @@ namespace Idmr.Yogeme
 		}
 		private void cmdCLDown_Click(object sender, EventArgs e)
 		{
-			// TODO: this
+			if (lstCraftList.SelectedIndex == lstCraftList.Items.Count - 1) return;
+
+			var item = lstCraftList.Items[lstCraftList.SelectedIndex];
+			lstCraftList.Items[lstCraftList.SelectedIndex] = lstCraftList.Items[lstCraftList.SelectedIndex + 1];
+			lstCraftList.Items[lstCraftList.SelectedIndex + 1] = item;
 		}
 		private void cmdCLUp_Click(object sender, EventArgs e)
 		{
 			if (lstCraftList.SelectedIndex < 1) return;
 
-			// TODO: this
+			var item = lstCraftList.Items[lstCraftList.SelectedIndex];
+			lstCraftList.Items[lstCraftList.SelectedIndex] = lstCraftList.Items[lstCraftList.SelectedIndex - 1];
+			lstCraftList.Items[lstCraftList.SelectedIndex - 1] = item;
 		}
 
 
@@ -1030,7 +1051,6 @@ namespace Idmr.Yogeme
 				if (chkManualSF.Checked) section.AddLine("AutoCloseSFoils = 0");
 			}
 			if (lstCraftText.Items.Count > 0)
-			{
 				for (int i = 0; i < lstCraftText.Items.Count; i++)
 				{
 					string[] parts = lstCraftText.Items[i].ToString().Split(',');
@@ -1042,6 +1062,22 @@ namespace Idmr.Yogeme
 					else if (parts[1] == "abbrv") section.AddLine($"craft, {craft}, shortname, {parts[2]}");
 					else if (parts[1] == "mapicon") section.AddLine($"craft, {craft}, mapicon, {parts[2]}, {parts[3]}, {parts[4]}, {parts[5]}");
 				}
+			if (lstCraftList.Items.Count > 0)
+			{
+				string fgList = "";
+				for (int i = 0; i < lstCraftList.Items.Count; i++)
+				{
+					if (lstCraftList.Items[i].ToString().StartsWith("I"))
+					{
+						string name = lstCraftList.Items[i].ToString().Substring(3);
+						int craft;
+						for (craft = 0; craft < cboCLInclude.Items.Count; craft++) if (cboCLInclude.Items[craft].ToString() == name) break;
+						fgList += (fgList != "" ? "," : "") + craft;
+					}
+				}
+				if (fgList != "") section.AddLine($"CampaignCraftsList = {fgList}");
+				// TODO: "CampaignCraftName_## = name"; where ## is the fg index of the ship.
+				// TODO: "CampaignCraftsListLines" = { string1, string2...}; comma separated list of strings.
 			}
 			if (useMissionSettings)
 			{
@@ -1081,8 +1117,6 @@ namespace Idmr.Yogeme
 				if (numCLTop.Value != -1) section.AddLine($"CampaignCraftsListLinesTop = {(int)numCLTop.Value}");
 			}
 			createContents();
-			// TODO: "CampaignCraftName_## = name"; where ## is the fg index of the ship.
-			// TODO: "CampaignCraftsListLines" = { string1, string2...}; comma separated list of strings.
 		}
 
 		bool useMissionSettings
@@ -1099,7 +1133,8 @@ namespace Idmr.Yogeme
 					|| chkForceTurret.Checked || numTurretH.Value != 0 || numTurretM.Value != 0 || numTurretS.Value != 8
 					|| chkDisableLaser.Checked || chkDisableWarhead.Checked || chkDisableCollision.Checked || chkDisableRanks.Checked
 					|| chkHardShields.Checked || chkSkipProx.Checked
-					|| cboTargetMethod.SelectedIndex != 0 || chkNotInspected.Checked || lstFgTargeting.SelectedIndices.Count != 0) return true;
+					|| cboTargetMethod.SelectedIndex != 0 || chkNotInspected.Checked || lstFgTargeting.SelectedIndices.Count != 0
+					|| numCLTop.Value != -1 || lstCraftList.Items.Count != 0) return true;
 				return false;
 			}
 		}
