@@ -6,10 +6,10 @@
  * VERSION: 1.17+
  *
  * CHANGELOG
- * [NEW] Stats modifiers: SpeedIncrement, SpeedDecrement. MapIcon rect. CraftStats all markings Profile.
+ * [NEW] Stats modifiers SpeedIncrement and SpeedDecrement, MapIcon rect, CraftStats all markings Profile, CampaignCraftsListLinesTop
  * [UPD] ExplosionDamage renamed to CriticalDamageThreshold per hook updates
  * [UPD] major refactor
- * [DEL] removed reading hangar command opt sections for now (thought it's still calc'd) as I was importing it wrong anyway and never saved
+ * [DEL] removed reading hangar command opt sections for now (though it's still calc'd) as I was importing it wrong anyway and never saved
  * [FIX] typo'd FrontPlanetPositionY in Concourse, and "Hull" in SpecRci
  * v1.17, 250215
  * [NEW] Mission: CanShootThroughtShieldOnHardDifficulty, IsMissionRanksModifierEnabled, SkipProjectilesProximityCheck
@@ -255,8 +255,9 @@ namespace Idmr.Yogeme
 			cboFG.Items.AddRange(mission.FlightGroups.GetList());
 			cboProfileFG.Items.AddRange(mission.FlightGroups.GetList());
 			cboSFoilFG.Items.AddRange(mission.FlightGroups.GetList());
-			cboWeapFG.Items.AddRange((mission.FlightGroups.GetList()));
-			lstFgTargeting.Items.AddRange(((mission.FlightGroups.GetList())));
+			cboWeapFG.Items.AddRange(mission.FlightGroups.GetList());
+			cboCLInclude.Items.AddRange(mission.FlightGroups.GetList());
+			lstFgTargeting.Items.AddRange(mission.FlightGroups.GetList());
 			for (int i = 0; i < 400; i++)
 			{
 				cboShuttleModel.Items.Add(i);
@@ -662,6 +663,8 @@ namespace Idmr.Yogeme
 			chkImpactSpeed.Checked = false;
 			lstWeapons.Items.Clear();
 			lstSpecRci.Items.Clear();
+			lstCraftList.Items.Clear();
+			numCLTop.Value = -1;
 		}
 
 		void updateHookFile()
@@ -746,17 +749,18 @@ namespace Idmr.Yogeme
 					}
 					else throw new InvalidDataException();
 				}
-				else if (parts[0].StartsWith("CampaignCraftsList", StringComparison.OrdinalIgnoreCase))
+				else if (parts[0].StartsWith("CampaignCraft", StringComparison.OrdinalIgnoreCase))
 				{
 					// this one's separate because the format is key=#,#,#...
-					var firstPart = parts[0].Split('=');
+					// TODO: nope, redo this
+					/*var firstPart = parts[0].Split('=');
 					if (firstPart[0].Equals("CampaignCraftsList", StringComparison.OrdinalIgnoreCase))
 					{
 						lstCraftList.ClearSelected();
 						lstCraftList.SetSelected(int.Parse(firstPart[1]), true);
 						for (int i = 1; i < parts.Length; i++) { lstCraftList.SetSelected(int.Parse(parts[i]), true); }
 					}
-					else throw new InvalidDataException();
+					else throw new InvalidDataException();*/
 				}
 				else
 				{
@@ -788,9 +792,9 @@ namespace Idmr.Yogeme
 					else if (parts[0].Equals("TargetCraftKeyMethod", StringComparison.OrdinalIgnoreCase)) cboTargetMethod.SelectedIndex = int.Parse(parts[1]) + 1;
 					else if (parts[0].Equals("TargetCraftKeySelectOnlyNotInspected", StringComparison.OrdinalIgnoreCase)) chkNotInspected.Checked = parts[1] == "1";
 					else if (parts[0].Equals("SkipProjectilesProximityCheck", StringComparison.OrdinalIgnoreCase)) chkSkipProx.Checked = parts[1] == "1";
+					else if (parts[0].Equals("CampaignCraftsListLinesTop", StringComparison.OrdinalIgnoreCase)) numCLTop.Value = int.Parse(parts[1]);
 					// TODO: "CampaignCraftName_## = name"; where ## is the fg index of the ship.
 					// TODO: "CampaignCraftsListLines" = { string1, string2...}; comma separated list of strings.
-					// TODO: "CampaignCraftsListLinesTop" = -1; define the top position of the custom list
 					else throw new InvalidDataException();
 				}
 			}
@@ -803,6 +807,11 @@ namespace Idmr.Yogeme
 			numWingman.Enabled = optWingman.Checked;
 			cboIff.Enabled = optIff.Checked;
 			txtPilot.Enabled = optPilot.Checked;
+		}
+		void optCraftList_CheckedChanged(object sender, EventArgs e)
+		{
+			cboCLInclude.Enabled = optCLInclude.Checked || optCLName.Checked;
+			txtCLText.Enabled = optCLName.Checked || optCLLines.Checked;
 		}
 
 		private void cboSkipIff_SelectedIndexChanged(object sender, EventArgs e)
@@ -915,7 +924,28 @@ namespace Idmr.Yogeme
 			updateSectionFromLst("StatsProfiles", lstStats);
 		}
 		private void cmdClearTargeting_Click(object sender, EventArgs e) => lstFgTargeting.ClearSelected();
-		private void cmdClearCraftList_Click(object sender, EventArgs e) => lstCraftList.ClearSelected();
+		private void cmdCraftListAdd_Click(object sender, EventArgs e)
+		{
+			// TODO: this
+		}
+		private void cmdCraftListRemove_Click(object sender, EventArgs e)
+		{
+			if (lstCraftList.SelectedIndex == -1) return;
+
+			lstCraftList.Items.RemoveAt(lstCraftList.SelectedIndex);
+			updateMissionTie();
+		}
+		private void cmdCLDown_Click(object sender, EventArgs e)
+		{
+			// TODO: this
+		}
+		private void cmdCLUp_Click(object sender, EventArgs e)
+		{
+			if (lstCraftList.SelectedIndex < 1) return;
+
+			// TODO: this
+		}
+
 
 		private void cmdAddSpecRci_Click(object sender, EventArgs e)
 		{
@@ -937,6 +967,8 @@ namespace Idmr.Yogeme
 			lstSpecRci.Items.RemoveAt(lstSpecRci.SelectedIndex);
 			updateSectionFromLst("SpecRci", lstSpecRci);
 		}
+
+		private void numCLTop_ValueChanged(object sender, EventArgs e) => updateMissionTie();
 
 		private void optMapIcon_CheckedChanged(object sender, EventArgs e) => pnlMapIcon.Enabled = optMapIcon.Checked;
 
@@ -1034,20 +1066,23 @@ namespace Idmr.Yogeme
 					string targets = "KEY_O_TargetCraftFGs = ";
 					for (int i = 0; i < lstFgTargeting.SelectedIndices.Count; i++)
 						targets += lstFgTargeting.SelectedIndices[i].ToString() + ",";
-					section.AddLine(targets.Substring(0, targets.Length - 1));	// trims off the last ','
+					section.AddLine(targets.TrimEnd(','));
 				}
 				if (lstCraftList.SelectedIndices.Count > 0)
 				{
 					string targets = "CampaignCraftsList = ";
 					for (int i = 0; i < lstCraftList.SelectedIndices.Count; i++)
 						targets += lstCraftList.SelectedIndices[i].ToString() + ",";
-					section.AddLine(targets.Substring(0, targets.Length - 1));  // trims off the last ','
+					section.AddLine(targets.TrimEnd(','));
 				}
 				if (cboTargetMethod.SelectedIndex != 0) section.AddLine($"TargetCraftKeyMethod = {cboTargetMethod.SelectedIndex - 1}");
 				if (chkNotInspected.Checked) section.AddLine("TargetCraftKeySelectOnlyNotInspected = 1");
 				if (chkSkipProx.Checked) section.AddLine("SkipProjectilesProximityCheck = 1");
+				if (numCLTop.Value != -1) section.AddLine($"CampaignCraftsListLinesTop = {(int)numCLTop.Value}");
 			}
 			createContents();
+			// TODO: "CampaignCraftName_## = name"; where ## is the fg index of the ship.
+			// TODO: "CampaignCraftsListLines" = { string1, string2...}; comma separated list of strings.
 		}
 
 		bool useMissionSettings

@@ -290,6 +290,16 @@
 			this.tcMission = new System.Windows.Forms.TabControl();
 			this.tabMissFG = new System.Windows.Forms.TabPage();
 			this.tabMissText = new System.Windows.Forms.TabPage();
+			this.pnlMapIcon = new System.Windows.Forms.Panel();
+			this.numMapBottom = new System.Windows.Forms.NumericUpDown();
+			this.numMapRight = new System.Windows.Forms.NumericUpDown();
+			this.numMapTop = new System.Windows.Forms.NumericUpDown();
+			this.label100 = new System.Windows.Forms.Label();
+			this.label99 = new System.Windows.Forms.Label();
+			this.label98 = new System.Windows.Forms.Label();
+			this.numMapLeft = new System.Windows.Forms.NumericUpDown();
+			this.label97 = new System.Windows.Forms.Label();
+			this.optMapIcon = new System.Windows.Forms.RadioButton();
 			this.label59 = new System.Windows.Forms.Label();
 			this.optAbbrvText = new System.Windows.Forms.RadioButton();
 			this.optPluralText = new System.Windows.Forms.RadioButton();
@@ -343,6 +353,20 @@
 			this.numSpecRci = new System.Windows.Forms.NumericUpDown();
 			this.cboSpecRci = new System.Windows.Forms.ComboBox();
 			this.lstSpecRci = new System.Windows.Forms.ListBox();
+			this.tabCraftList = new System.Windows.Forms.TabPage();
+			this.txtCLText = new System.Windows.Forms.TextBox();
+			this.cboCLInclude = new System.Windows.Forms.ComboBox();
+			this.cmdCLDown = new System.Windows.Forms.Button();
+			this.cmdCLUp = new System.Windows.Forms.Button();
+			this.numCLTop = new System.Windows.Forms.NumericUpDown();
+			this.label102 = new System.Windows.Forms.Label();
+			this.optCLLines = new System.Windows.Forms.RadioButton();
+			this.optCLName = new System.Windows.Forms.RadioButton();
+			this.optCLInclude = new System.Windows.Forms.RadioButton();
+			this.cmdCraftListAdd = new System.Windows.Forms.Button();
+			this.cmdCraftListRemove = new System.Windows.Forms.Button();
+			this.label101 = new System.Windows.Forms.Label();
+			this.lstCraftList = new System.Windows.Forms.ListBox();
 			this.pnlSounds = new System.Windows.Forms.Panel();
 			this.chkIntRegion4 = new System.Windows.Forms.CheckBox();
 			this.chkIntRegion3 = new System.Windows.Forms.CheckBox();
@@ -448,20 +472,6 @@
 			this.cmdRemWeap = new System.Windows.Forms.Button();
 			this.cmdAddWeap = new System.Windows.Forms.Button();
 			this.lstWeapons = new System.Windows.Forms.ListBox();
-			this.optMapIcon = new System.Windows.Forms.RadioButton();
-			this.pnlMapIcon = new System.Windows.Forms.Panel();
-			this.label97 = new System.Windows.Forms.Label();
-			this.numMapLeft = new System.Windows.Forms.NumericUpDown();
-			this.label98 = new System.Windows.Forms.Label();
-			this.numMapTop = new System.Windows.Forms.NumericUpDown();
-			this.label99 = new System.Windows.Forms.Label();
-			this.numMapRight = new System.Windows.Forms.NumericUpDown();
-			this.label100 = new System.Windows.Forms.Label();
-			this.numMapBottom = new System.Windows.Forms.NumericUpDown();
-			this.tabCraftList = new System.Windows.Forms.TabPage();
-			this.lstCraftList = new System.Windows.Forms.ListBox();
-			this.label101 = new System.Windows.Forms.Label();
-			this.cmdClearCraftList = new System.Windows.Forms.Button();
 			((System.ComponentModel.ISupportInitialize)(this.numFamHeadingZ)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numFamPosZ)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numFamHeadingXY)).BeginInit();
@@ -535,6 +545,11 @@
 			this.tcMission.SuspendLayout();
 			this.tabMissFG.SuspendLayout();
 			this.tabMissText.SuspendLayout();
+			this.pnlMapIcon.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.numMapBottom)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.numMapRight)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.numMapTop)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.numMapLeft)).BeginInit();
 			this.tabMissStats.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numStatPercent)).BeginInit();
 			this.tabMissSettings.SuspendLayout();
@@ -544,6 +559,8 @@
 			this.tabMissTarget.SuspendLayout();
 			this.tabMissRci.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numSpecRci)).BeginInit();
+			this.tabCraftList.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.numCLTop)).BeginInit();
 			this.pnlSounds.SuspendLayout();
 			this.pnlObjects.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numWeaponModel)).BeginInit();
@@ -588,12 +605,6 @@
 			((System.ComponentModel.ISupportInitialize)(this.numDecharge)).BeginInit();
 			this.pnlWeapProfiles.SuspendLayout();
 			this.pnlWeapRateOrProfiles.SuspendLayout();
-			this.pnlMapIcon.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.numMapLeft)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.numMapTop)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.numMapRight)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.numMapBottom)).BeginInit();
-			this.tabCraftList.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// cmdOK
@@ -1912,6 +1923,7 @@
 			// 
 			// cboHangarIff
 			// 
+			this.cboHangarIff.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cboHangarIff.Enabled = false;
 			this.cboHangarIff.FormattingEnabled = true;
 			this.cboHangarIff.Location = new System.Drawing.Point(75, 108);
@@ -3743,6 +3755,118 @@
 			this.tabMissText.Text = "Craft Text";
 			this.tabMissText.UseVisualStyleBackColor = true;
 			// 
+			// pnlMapIcon
+			// 
+			this.pnlMapIcon.Controls.Add(this.numMapBottom);
+			this.pnlMapIcon.Controls.Add(this.numMapRight);
+			this.pnlMapIcon.Controls.Add(this.numMapTop);
+			this.pnlMapIcon.Controls.Add(this.label100);
+			this.pnlMapIcon.Controls.Add(this.label99);
+			this.pnlMapIcon.Controls.Add(this.label98);
+			this.pnlMapIcon.Controls.Add(this.numMapLeft);
+			this.pnlMapIcon.Controls.Add(this.label97);
+			this.pnlMapIcon.Enabled = false;
+			this.pnlMapIcon.Location = new System.Drawing.Point(85, 157);
+			this.pnlMapIcon.Name = "pnlMapIcon";
+			this.pnlMapIcon.Size = new System.Drawing.Size(284, 27);
+			this.pnlMapIcon.TabIndex = 7;
+			// 
+			// numMapBottom
+			// 
+			this.numMapBottom.Location = new System.Drawing.Point(226, 4);
+			this.numMapBottom.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+			this.numMapBottom.Name = "numMapBottom";
+			this.numMapBottom.Size = new System.Drawing.Size(47, 20);
+			this.numMapBottom.TabIndex = 1;
+			// 
+			// numMapRight
+			// 
+			this.numMapRight.Location = new System.Drawing.Point(157, 4);
+			this.numMapRight.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+			this.numMapRight.Name = "numMapRight";
+			this.numMapRight.Size = new System.Drawing.Size(47, 20);
+			this.numMapRight.TabIndex = 1;
+			// 
+			// numMapTop
+			// 
+			this.numMapTop.Location = new System.Drawing.Point(88, 4);
+			this.numMapTop.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+			this.numMapTop.Name = "numMapTop";
+			this.numMapTop.Size = new System.Drawing.Size(47, 20);
+			this.numMapTop.TabIndex = 1;
+			// 
+			// label100
+			// 
+			this.label100.AutoSize = true;
+			this.label100.Location = new System.Drawing.Point(210, 6);
+			this.label100.Name = "label100";
+			this.label100.Size = new System.Drawing.Size(17, 13);
+			this.label100.TabIndex = 0;
+			this.label100.Text = "B:";
+			// 
+			// label99
+			// 
+			this.label99.AutoSize = true;
+			this.label99.Location = new System.Drawing.Point(141, 6);
+			this.label99.Name = "label99";
+			this.label99.Size = new System.Drawing.Size(18, 13);
+			this.label99.TabIndex = 0;
+			this.label99.Text = "R:";
+			// 
+			// label98
+			// 
+			this.label98.AutoSize = true;
+			this.label98.Location = new System.Drawing.Point(72, 6);
+			this.label98.Name = "label98";
+			this.label98.Size = new System.Drawing.Size(17, 13);
+			this.label98.TabIndex = 0;
+			this.label98.Text = "T:";
+			// 
+			// numMapLeft
+			// 
+			this.numMapLeft.Location = new System.Drawing.Point(19, 4);
+			this.numMapLeft.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+			this.numMapLeft.Name = "numMapLeft";
+			this.numMapLeft.Size = new System.Drawing.Size(47, 20);
+			this.numMapLeft.TabIndex = 1;
+			// 
+			// label97
+			// 
+			this.label97.AutoSize = true;
+			this.label97.Location = new System.Drawing.Point(3, 6);
+			this.label97.Name = "label97";
+			this.label97.Size = new System.Drawing.Size(16, 13);
+			this.label97.TabIndex = 0;
+			this.label97.Text = "L:";
+			// 
+			// optMapIcon
+			// 
+			this.optMapIcon.AutoSize = true;
+			this.optMapIcon.Location = new System.Drawing.Point(272, 134);
+			this.optMapIcon.Name = "optMapIcon";
+			this.optMapIcon.Size = new System.Drawing.Size(67, 17);
+			this.optMapIcon.TabIndex = 6;
+			this.optMapIcon.TabStop = true;
+			this.optMapIcon.Text = "MapIcon";
+			this.optMapIcon.UseVisualStyleBackColor = true;
+			this.optMapIcon.CheckedChanged += new System.EventHandler(this.optMapIcon_CheckedChanged);
+			// 
 			// label59
 			// 
 			this.label59.Location = new System.Drawing.Point(6, 208);
@@ -4375,6 +4499,172 @@
 			this.lstSpecRci.Name = "lstSpecRci";
 			this.lstSpecRci.Size = new System.Drawing.Size(364, 95);
 			this.lstSpecRci.TabIndex = 0;
+			// 
+			// tabCraftList
+			// 
+			this.tabCraftList.Controls.Add(this.txtCLText);
+			this.tabCraftList.Controls.Add(this.cboCLInclude);
+			this.tabCraftList.Controls.Add(this.cmdCLDown);
+			this.tabCraftList.Controls.Add(this.cmdCLUp);
+			this.tabCraftList.Controls.Add(this.numCLTop);
+			this.tabCraftList.Controls.Add(this.label102);
+			this.tabCraftList.Controls.Add(this.optCLLines);
+			this.tabCraftList.Controls.Add(this.optCLName);
+			this.tabCraftList.Controls.Add(this.optCLInclude);
+			this.tabCraftList.Controls.Add(this.cmdCraftListAdd);
+			this.tabCraftList.Controls.Add(this.cmdCraftListRemove);
+			this.tabCraftList.Controls.Add(this.label101);
+			this.tabCraftList.Controls.Add(this.lstCraftList);
+			this.tabCraftList.Location = new System.Drawing.Point(4, 22);
+			this.tabCraftList.Name = "tabCraftList";
+			this.tabCraftList.Size = new System.Drawing.Size(369, 251);
+			this.tabCraftList.TabIndex = 6;
+			this.tabCraftList.Text = "Craft List";
+			this.tabCraftList.UseVisualStyleBackColor = true;
+			// 
+			// txtCLText
+			// 
+			this.txtCLText.Enabled = false;
+			this.txtCLText.Location = new System.Drawing.Point(167, 182);
+			this.txtCLText.Name = "txtCLText";
+			this.txtCLText.Size = new System.Drawing.Size(199, 20);
+			this.txtCLText.TabIndex = 9;
+			// 
+			// cboCLInclude
+			// 
+			this.cboCLInclude.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboCLInclude.FormattingEnabled = true;
+			this.cboCLInclude.Location = new System.Drawing.Point(5, 182);
+			this.cboCLInclude.Name = "cboCLInclude";
+			this.cboCLInclude.Size = new System.Drawing.Size(156, 21);
+			this.cboCLInclude.TabIndex = 8;
+			// 
+			// cmdCLDown
+			// 
+			this.cmdCLDown.Location = new System.Drawing.Point(347, 88);
+			this.cmdCLDown.Name = "cmdCLDown";
+			this.cmdCLDown.Size = new System.Drawing.Size(19, 22);
+			this.cmdCLDown.TabIndex = 7;
+			this.cmdCLDown.Text = "&D";
+			this.cmdCLDown.UseVisualStyleBackColor = true;
+			this.cmdCLDown.Click += new System.EventHandler(this.cmdCLDown_Click);
+			// 
+			// cmdCLUp
+			// 
+			this.cmdCLUp.Location = new System.Drawing.Point(347, 52);
+			this.cmdCLUp.Name = "cmdCLUp";
+			this.cmdCLUp.Size = new System.Drawing.Size(19, 22);
+			this.cmdCLUp.TabIndex = 7;
+			this.cmdCLUp.Text = "&U";
+			this.cmdCLUp.UseVisualStyleBackColor = true;
+			this.cmdCLUp.Click += new System.EventHandler(this.cmdCLUp_Click);
+			// 
+			// numCLTop
+			// 
+			this.numCLTop.Location = new System.Drawing.Point(320, 152);
+			this.numCLTop.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+			this.numCLTop.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            -2147483648});
+			this.numCLTop.Name = "numCLTop";
+			this.numCLTop.Size = new System.Drawing.Size(46, 20);
+			this.numCLTop.TabIndex = 6;
+			this.numCLTop.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            -2147483648});
+			this.numCLTop.ValueChanged += new System.EventHandler(this.numCLTop_ValueChanged);
+			// 
+			// label102
+			// 
+			this.label102.AutoSize = true;
+			this.label102.Location = new System.Drawing.Point(232, 156);
+			this.label102.Name = "label102";
+			this.label102.Size = new System.Drawing.Size(82, 13);
+			this.label102.TabIndex = 5;
+			this.label102.Text = "Top (-1 default):";
+			// 
+			// optCLLines
+			// 
+			this.optCLLines.AutoSize = true;
+			this.optCLLines.Location = new System.Drawing.Point(128, 152);
+			this.optCLLines.Name = "optCLLines";
+			this.optCLLines.Size = new System.Drawing.Size(50, 17);
+			this.optCLLines.TabIndex = 4;
+			this.optCLLines.Text = "&Lines";
+			this.optCLLines.UseVisualStyleBackColor = true;
+			this.optCLLines.CheckedChanged += new System.EventHandler(this.optCraftList_CheckedChanged);
+			// 
+			// optCLName
+			// 
+			this.optCLName.AutoSize = true;
+			this.optCLName.Location = new System.Drawing.Point(69, 152);
+			this.optCLName.Name = "optCLName";
+			this.optCLName.Size = new System.Drawing.Size(53, 17);
+			this.optCLName.TabIndex = 4;
+			this.optCLName.Text = "&Name";
+			this.optCLName.UseVisualStyleBackColor = true;
+			this.optCLName.CheckedChanged += new System.EventHandler(this.optCraftList_CheckedChanged);
+			// 
+			// optCLInclude
+			// 
+			this.optCLInclude.AutoSize = true;
+			this.optCLInclude.Checked = true;
+			this.optCLInclude.Location = new System.Drawing.Point(3, 152);
+			this.optCLInclude.Name = "optCLInclude";
+			this.optCLInclude.Size = new System.Drawing.Size(60, 17);
+			this.optCLInclude.TabIndex = 4;
+			this.optCLInclude.TabStop = true;
+			this.optCLInclude.Text = "&Include";
+			this.optCLInclude.UseVisualStyleBackColor = true;
+			this.optCLInclude.CheckedChanged += new System.EventHandler(this.optCraftList_CheckedChanged);
+			// 
+			// cmdCraftListAdd
+			// 
+			this.cmdCraftListAdd.Location = new System.Drawing.Point(5, 216);
+			this.cmdCraftListAdd.Name = "cmdCraftListAdd";
+			this.cmdCraftListAdd.Size = new System.Drawing.Size(75, 23);
+			this.cmdCraftListAdd.TabIndex = 3;
+			this.cmdCraftListAdd.Text = "&Add";
+			this.cmdCraftListAdd.UseVisualStyleBackColor = true;
+			this.cmdCraftListAdd.Click += new System.EventHandler(this.cmdCraftListAdd_Click);
+			// 
+			// cmdCraftListRemove
+			// 
+			this.cmdCraftListRemove.Location = new System.Drawing.Point(86, 216);
+			this.cmdCraftListRemove.Name = "cmdCraftListRemove";
+			this.cmdCraftListRemove.Size = new System.Drawing.Size(75, 23);
+			this.cmdCraftListRemove.TabIndex = 3;
+			this.cmdCraftListRemove.Text = "&Remove";
+			this.cmdCraftListRemove.UseVisualStyleBackColor = true;
+			this.cmdCraftListRemove.Click += new System.EventHandler(this.cmdCraftListRemove_Click);
+			// 
+			// label101
+			// 
+			this.label101.AutoSize = true;
+			this.label101.Location = new System.Drawing.Point(2, 8);
+			this.label101.Name = "label101";
+			this.label101.Size = new System.Drawing.Size(141, 13);
+			this.label101.TabIndex = 1;
+			this.label101.Text = "Campaign Craft List Override";
+			// 
+			// lstCraftList
+			// 
+			this.lstCraftList.FormattingEnabled = true;
+			this.lstCraftList.Location = new System.Drawing.Point(3, 25);
+			this.lstCraftList.Name = "lstCraftList";
+			this.lstCraftList.ScrollAlwaysVisible = true;
+			this.lstCraftList.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
+			this.lstCraftList.Size = new System.Drawing.Size(341, 121);
+			this.lstCraftList.TabIndex = 0;
+			this.lstCraftList.SelectedIndexChanged += new System.EventHandler(this.uiMissionTie_DefaultEvent);
 			// 
 			// pnlSounds
 			// 
@@ -5767,160 +6057,6 @@
 			this.lstWeapons.Size = new System.Drawing.Size(366, 108);
 			this.lstWeapons.TabIndex = 1;
 			// 
-			// optMapIcon
-			// 
-			this.optMapIcon.AutoSize = true;
-			this.optMapIcon.Location = new System.Drawing.Point(272, 134);
-			this.optMapIcon.Name = "optMapIcon";
-			this.optMapIcon.Size = new System.Drawing.Size(67, 17);
-			this.optMapIcon.TabIndex = 6;
-			this.optMapIcon.TabStop = true;
-			this.optMapIcon.Text = "MapIcon";
-			this.optMapIcon.UseVisualStyleBackColor = true;
-			this.optMapIcon.CheckedChanged += new System.EventHandler(this.optMapIcon_CheckedChanged);
-			// 
-			// pnlMapIcon
-			// 
-			this.pnlMapIcon.Controls.Add(this.numMapBottom);
-			this.pnlMapIcon.Controls.Add(this.numMapRight);
-			this.pnlMapIcon.Controls.Add(this.numMapTop);
-			this.pnlMapIcon.Controls.Add(this.label100);
-			this.pnlMapIcon.Controls.Add(this.label99);
-			this.pnlMapIcon.Controls.Add(this.label98);
-			this.pnlMapIcon.Controls.Add(this.numMapLeft);
-			this.pnlMapIcon.Controls.Add(this.label97);
-			this.pnlMapIcon.Enabled = false;
-			this.pnlMapIcon.Location = new System.Drawing.Point(85, 157);
-			this.pnlMapIcon.Name = "pnlMapIcon";
-			this.pnlMapIcon.Size = new System.Drawing.Size(284, 27);
-			this.pnlMapIcon.TabIndex = 7;
-			// 
-			// label97
-			// 
-			this.label97.AutoSize = true;
-			this.label97.Location = new System.Drawing.Point(3, 6);
-			this.label97.Name = "label97";
-			this.label97.Size = new System.Drawing.Size(16, 13);
-			this.label97.TabIndex = 0;
-			this.label97.Text = "L:";
-			// 
-			// numMapLeft
-			// 
-			this.numMapLeft.Location = new System.Drawing.Point(19, 4);
-			this.numMapLeft.Maximum = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            0});
-			this.numMapLeft.Name = "numMapLeft";
-			this.numMapLeft.Size = new System.Drawing.Size(47, 20);
-			this.numMapLeft.TabIndex = 1;
-			// 
-			// label98
-			// 
-			this.label98.AutoSize = true;
-			this.label98.Location = new System.Drawing.Point(72, 6);
-			this.label98.Name = "label98";
-			this.label98.Size = new System.Drawing.Size(17, 13);
-			this.label98.TabIndex = 0;
-			this.label98.Text = "T:";
-			// 
-			// numMapTop
-			// 
-			this.numMapTop.Location = new System.Drawing.Point(88, 4);
-			this.numMapTop.Maximum = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            0});
-			this.numMapTop.Name = "numMapTop";
-			this.numMapTop.Size = new System.Drawing.Size(47, 20);
-			this.numMapTop.TabIndex = 1;
-			// 
-			// label99
-			// 
-			this.label99.AutoSize = true;
-			this.label99.Location = new System.Drawing.Point(141, 6);
-			this.label99.Name = "label99";
-			this.label99.Size = new System.Drawing.Size(18, 13);
-			this.label99.TabIndex = 0;
-			this.label99.Text = "R:";
-			// 
-			// numMapRight
-			// 
-			this.numMapRight.Location = new System.Drawing.Point(157, 4);
-			this.numMapRight.Maximum = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            0});
-			this.numMapRight.Name = "numMapRight";
-			this.numMapRight.Size = new System.Drawing.Size(47, 20);
-			this.numMapRight.TabIndex = 1;
-			// 
-			// label100
-			// 
-			this.label100.AutoSize = true;
-			this.label100.Location = new System.Drawing.Point(210, 6);
-			this.label100.Name = "label100";
-			this.label100.Size = new System.Drawing.Size(17, 13);
-			this.label100.TabIndex = 0;
-			this.label100.Text = "B:";
-			// 
-			// numMapBottom
-			// 
-			this.numMapBottom.Location = new System.Drawing.Point(226, 4);
-			this.numMapBottom.Maximum = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            0});
-			this.numMapBottom.Name = "numMapBottom";
-			this.numMapBottom.Size = new System.Drawing.Size(47, 20);
-			this.numMapBottom.TabIndex = 1;
-			// 
-			// tabCraftList
-			// 
-			this.tabCraftList.Controls.Add(this.cmdClearCraftList);
-			this.tabCraftList.Controls.Add(this.label101);
-			this.tabCraftList.Controls.Add(this.lstCraftList);
-			this.tabCraftList.Location = new System.Drawing.Point(4, 22);
-			this.tabCraftList.Name = "tabCraftList";
-			this.tabCraftList.Size = new System.Drawing.Size(369, 251);
-			this.tabCraftList.TabIndex = 6;
-			this.tabCraftList.Text = "Craft List";
-			this.tabCraftList.UseVisualStyleBackColor = true;
-			// 
-			// lstCraftList
-			// 
-			this.lstCraftList.FormattingEnabled = true;
-			this.lstCraftList.Location = new System.Drawing.Point(3, 25);
-			this.lstCraftList.Name = "lstCraftList";
-			this.lstCraftList.ScrollAlwaysVisible = true;
-			this.lstCraftList.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-			this.lstCraftList.Size = new System.Drawing.Size(167, 173);
-			this.lstCraftList.TabIndex = 0;
-			this.lstCraftList.SelectedIndexChanged += new System.EventHandler(this.uiMissionTie_DefaultEvent);
-			// 
-			// label101
-			// 
-			this.label101.AutoSize = true;
-			this.label101.Location = new System.Drawing.Point(2, 8);
-			this.label101.Name = "label101";
-			this.label101.Size = new System.Drawing.Size(141, 13);
-			this.label101.TabIndex = 1;
-			this.label101.Text = "Campaign Craft List Override";
-			// 
-			// cmdClearCraftList
-			// 
-			this.cmdClearCraftList.Location = new System.Drawing.Point(3, 204);
-			this.cmdClearCraftList.Name = "cmdClearCraftList";
-			this.cmdClearCraftList.Size = new System.Drawing.Size(75, 23);
-			this.cmdClearCraftList.TabIndex = 3;
-			this.cmdClearCraftList.Text = "&Clear All";
-			this.cmdClearCraftList.UseVisualStyleBackColor = true;
-			this.cmdClearCraftList.Click += new System.EventHandler(this.cmdClearCraftList_Click);
-			// 
 			// XwaHookDialog
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -6044,6 +6180,12 @@
 			this.tabMissFG.PerformLayout();
 			this.tabMissText.ResumeLayout(false);
 			this.tabMissText.PerformLayout();
+			this.pnlMapIcon.ResumeLayout(false);
+			this.pnlMapIcon.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.numMapBottom)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.numMapRight)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.numMapTop)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.numMapLeft)).EndInit();
 			this.tabMissStats.ResumeLayout(false);
 			this.tabMissStats.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numStatPercent)).EndInit();
@@ -6056,6 +6198,9 @@
 			this.tabMissTarget.PerformLayout();
 			this.tabMissRci.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.numSpecRci)).EndInit();
+			this.tabCraftList.ResumeLayout(false);
+			this.tabCraftList.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.numCLTop)).EndInit();
 			this.pnlSounds.ResumeLayout(false);
 			this.pnlSounds.PerformLayout();
 			this.pnlObjects.ResumeLayout(false);
@@ -6113,14 +6258,6 @@
 			this.pnlWeapProfiles.PerformLayout();
 			this.pnlWeapRateOrProfiles.ResumeLayout(false);
 			this.pnlWeapRateOrProfiles.PerformLayout();
-			this.pnlMapIcon.ResumeLayout(false);
-			this.pnlMapIcon.PerformLayout();
-			((System.ComponentModel.ISupportInitialize)(this.numMapLeft)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.numMapTop)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.numMapRight)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.numMapBottom)).EndInit();
-			this.tabCraftList.ResumeLayout(false);
-			this.tabCraftList.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -6560,6 +6697,16 @@
 		private System.Windows.Forms.TabPage tabCraftList;
 		private System.Windows.Forms.Label label101;
 		private System.Windows.Forms.ListBox lstCraftList;
-		private System.Windows.Forms.Button cmdClearCraftList;
+		private System.Windows.Forms.Button cmdCraftListRemove;
+		private System.Windows.Forms.Button cmdCraftListAdd;
+		private System.Windows.Forms.RadioButton optCLInclude;
+		private System.Windows.Forms.RadioButton optCLName;
+		private System.Windows.Forms.RadioButton optCLLines;
+		private System.Windows.Forms.NumericUpDown numCLTop;
+		private System.Windows.Forms.Label label102;
+		private System.Windows.Forms.ComboBox cboCLInclude;
+		private System.Windows.Forms.Button cmdCLDown;
+		private System.Windows.Forms.Button cmdCLUp;
+		private System.Windows.Forms.TextBox txtCLText;
 	}
 }
