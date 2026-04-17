@@ -4664,7 +4664,6 @@
 			this.lstCraftList.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
 			this.lstCraftList.Size = new System.Drawing.Size(341, 121);
 			this.lstCraftList.TabIndex = 0;
-			this.lstCraftList.SelectedIndexChanged += new System.EventHandler(this.uiMissionTie_DefaultEvent);
 			// 
 			// pnlSounds
 			// 

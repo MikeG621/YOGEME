@@ -6,7 +6,7 @@
  * VERSION: 1.17+
  *
  * CHANGELOG
- * [NEW] Stats modifiers SpeedIncrement and SpeedDecrement, MapIcon rect, CraftStats all markings Profile, CampaignCraftsListLinesTop
+ * [NEW] Stats modifiers SpeedIncrement and SpeedDecrement, MapIcon rect, CraftStats all markings Profile, CampaignCrafts*
  * [UPD] ExplosionDamage renamed to CriticalDamageThreshold per hook updates
  * [UPD] major refactor
  * [DEL] removed reading hangar command opt sections for now (though it's still calc'd) as I was importing it wrong anyway and never saved
@@ -764,6 +764,11 @@ namespace Idmr.Yogeme
 						lstCraftList.Items.Add($"L: {firstPart[1]}");
 						for (int i = 1; i < parts.Length; i++) { lstCraftList.Items.Add($"L: {parts[i]}"); }
 					}
+					else if (firstPart[0].StartsWith("CampaignCraftName", StringComparison.OrdinalIgnoreCase))
+					{
+						// key_<fg#>=<text>
+						lstCraftList.Items.Add($"N: {cboCLInclude.Items[int.Parse(firstPart[0].Split('_')[1])]} = {firstPart[1]}");
+					}
 					else if (firstPart[0].Equals("CampaignCraftsListLinesTop", StringComparison.OrdinalIgnoreCase)) numCLTop.Value = int.Parse(firstPart[1]);
 
 				}
@@ -797,7 +802,6 @@ namespace Idmr.Yogeme
 					else if (parts[0].Equals("TargetCraftKeyMethod", StringComparison.OrdinalIgnoreCase)) cboTargetMethod.SelectedIndex = int.Parse(parts[1]) + 1;
 					else if (parts[0].Equals("TargetCraftKeySelectOnlyNotInspected", StringComparison.OrdinalIgnoreCase)) chkNotInspected.Checked = parts[1] == "1";
 					else if (parts[0].Equals("SkipProjectilesProximityCheck", StringComparison.OrdinalIgnoreCase)) chkSkipProx.Checked = parts[1] == "1";
-					// TODO: "CampaignCraftName_## = name"; where ## is the fg index of the ship.
 					else throw new InvalidDataException();
 				}
 			}
@@ -974,8 +978,6 @@ namespace Idmr.Yogeme
 			lstCraftList.Items[lstCraftList.SelectedIndex - 1] = item;
 			updateMissionTie();
 		}
-
-
 		private void cmdAddSpecRci_Click(object sender, EventArgs e)
 		{
 			if (cboSpecRci.SelectedIndex == -1 || numSpecRci.Value == -1) return;
@@ -1083,12 +1085,19 @@ namespace Idmr.Yogeme
 						for (craft = 0; craft < cboCLInclude.Items.Count; craft++) if (cboCLInclude.Items[craft].ToString() == name) break;
 						fgList += (fgList != "" ? "," : "") + craft;
 					}
+					else if (lstCraftList.Items[i].ToString().StartsWith("N"))
+					{
+						string[] parts = lstCraftList.Items[i].ToString().Substring(3).Split('=');
+						string name = parts[0].Trim();
+						int craft;
+						for (craft = 0; craft < cboCLInclude.Items.Count; craft++) if (cboCLInclude.Items[craft].ToString() == name) break;
+						section.AddLine($"CampaignCraftName_{craft} = {parts[1]}");
+					}
 					else if (lstCraftList.Items[i].ToString().StartsWith("L"))
 						lines += (lines != "" ? "," : "") + lstCraftList.Items[i].ToString().Substring(3);
 				}
 				if (fgList != "") section.AddLine($"CampaignCraftsList = {fgList}");
 				if (lines != "") section.AddLine($"CampaignCraftsListLines = {lines}");
-				// TODO: "CampaignCraftName_## = name"; where ## is the fg index of the ship.
 			}
 			if (useMissionSettings)
 			{
