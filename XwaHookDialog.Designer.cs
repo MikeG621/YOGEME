@@ -472,6 +472,17 @@
 			this.cmdRemWeap = new System.Windows.Forms.Button();
 			this.cmdAddWeap = new System.Windows.Forms.Button();
 			this.lstWeapons = new System.Windows.Forms.ListBox();
+			this.pnlWeapDmg = new System.Windows.Forms.Panel();
+			this.numMaxSysDmg = new System.Windows.Forms.NumericUpDown();
+			this.num284Dmg = new System.Windows.Forms.NumericUpDown();
+			this.num285Dmg = new System.Windows.Forms.NumericUpDown();
+			this.num290Dmg = new System.Windows.Forms.NumericUpDown();
+			this.num296Dmg = new System.Windows.Forms.NumericUpDown();
+			this.chkMaxSysDmg = new System.Windows.Forms.CheckBox();
+			this.chk284Dmg = new System.Windows.Forms.CheckBox();
+			this.chk285Dmg = new System.Windows.Forms.CheckBox();
+			this.chk290Dmg = new System.Windows.Forms.CheckBox();
+			this.chk296Dmg = new System.Windows.Forms.CheckBox();
 			((System.ComponentModel.ISupportInitialize)(this.numFamHeadingZ)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numFamPosZ)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numFamHeadingXY)).BeginInit();
@@ -605,6 +616,12 @@
 			((System.ComponentModel.ISupportInitialize)(this.numDecharge)).BeginInit();
 			this.pnlWeapProfiles.SuspendLayout();
 			this.pnlWeapRateOrProfiles.SuspendLayout();
+			this.pnlWeapDmg.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.numMaxSysDmg)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.num284Dmg)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.num285Dmg)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.num290Dmg)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.num296Dmg)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// cmdOK
@@ -5185,6 +5202,7 @@
 			// 
 			// pnlWeaponRate
 			// 
+			this.pnlWeaponRate.Controls.Add(this.pnlWeapDmg);
 			this.pnlWeaponRate.Controls.Add(this.pnlWarheadCounts);
 			this.pnlWeaponRate.Controls.Add(this.label84);
 			this.pnlWeaponRate.Controls.Add(this.pnlWeapRates);
@@ -6056,6 +6074,158 @@
 			this.lstWeapons.Size = new System.Drawing.Size(366, 108);
 			this.lstWeapons.TabIndex = 1;
 			// 
+			// pnlWeapDmg
+			// 
+			this.pnlWeapDmg.Controls.Add(this.num296Dmg);
+			this.pnlWeapDmg.Controls.Add(this.num290Dmg);
+			this.pnlWeapDmg.Controls.Add(this.num285Dmg);
+			this.pnlWeapDmg.Controls.Add(this.num284Dmg);
+			this.pnlWeapDmg.Controls.Add(this.numMaxSysDmg);
+			this.pnlWeapDmg.Controls.Add(this.chk296Dmg);
+			this.pnlWeapDmg.Controls.Add(this.chk290Dmg);
+			this.pnlWeapDmg.Controls.Add(this.chk285Dmg);
+			this.pnlWeapDmg.Controls.Add(this.chk284Dmg);
+			this.pnlWeapDmg.Controls.Add(this.chkMaxSysDmg);
+			this.pnlWeapDmg.Location = new System.Drawing.Point(201, 289);
+			this.pnlWeapDmg.Name = "pnlWeapDmg";
+			this.pnlWeapDmg.Size = new System.Drawing.Size(171, 135);
+			this.pnlWeapDmg.TabIndex = 33;
+			// 
+			// numMaxSysDmg
+			// 
+			this.numMaxSysDmg.Location = new System.Drawing.Point(119, 3);
+			this.numMaxSysDmg.Maximum = new decimal(new int[] {
+            65535,
+            0,
+            0,
+            0});
+			this.numMaxSysDmg.Name = "numMaxSysDmg";
+			this.numMaxSysDmg.Size = new System.Drawing.Size(49, 20);
+			this.numMaxSysDmg.TabIndex = 17;
+			this.numMaxSysDmg.Value = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+			// 
+			// num284Dmg
+			// 
+			this.num284Dmg.Location = new System.Drawing.Point(119, 29);
+			this.num284Dmg.Maximum = new decimal(new int[] {
+            65535,
+            0,
+            0,
+            0});
+			this.num284Dmg.Name = "num284Dmg";
+			this.num284Dmg.Size = new System.Drawing.Size(49, 20);
+			this.num284Dmg.TabIndex = 17;
+			this.num284Dmg.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+			// 
+			// num285Dmg
+			// 
+			this.num285Dmg.Location = new System.Drawing.Point(119, 55);
+			this.num285Dmg.Maximum = new decimal(new int[] {
+            65535,
+            0,
+            0,
+            0});
+			this.num285Dmg.Name = "num285Dmg";
+			this.num285Dmg.Size = new System.Drawing.Size(49, 20);
+			this.num285Dmg.TabIndex = 17;
+			this.num285Dmg.Value = new decimal(new int[] {
+            2,
+            0,
+            0,
+            0});
+			// 
+			// num290Dmg
+			// 
+			this.num290Dmg.Location = new System.Drawing.Point(119, 81);
+			this.num290Dmg.Maximum = new decimal(new int[] {
+            65535,
+            0,
+            0,
+            0});
+			this.num290Dmg.Name = "num290Dmg";
+			this.num290Dmg.Size = new System.Drawing.Size(49, 20);
+			this.num290Dmg.TabIndex = 17;
+			this.num290Dmg.Value = new decimal(new int[] {
+            4,
+            0,
+            0,
+            0});
+			// 
+			// num296Dmg
+			// 
+			this.num296Dmg.Location = new System.Drawing.Point(119, 107);
+			this.num296Dmg.Maximum = new decimal(new int[] {
+            65535,
+            0,
+            0,
+            0});
+			this.num296Dmg.Name = "num296Dmg";
+			this.num296Dmg.Size = new System.Drawing.Size(49, 20);
+			this.num296Dmg.TabIndex = 17;
+			this.num296Dmg.Value = new decimal(new int[] {
+            30,
+            0,
+            0,
+            0});
+			// 
+			// chkMaxSysDmg
+			// 
+			this.chkMaxSysDmg.AutoSize = true;
+			this.chkMaxSysDmg.Location = new System.Drawing.Point(3, 4);
+			this.chkMaxSysDmg.Name = "chkMaxSysDmg";
+			this.chkMaxSysDmg.Size = new System.Drawing.Size(113, 17);
+			this.chkMaxSysDmg.TabIndex = 12;
+			this.chkMaxSysDmg.Text = "Max Systems Dmg";
+			this.chkMaxSysDmg.UseVisualStyleBackColor = true;
+			// 
+			// chk284Dmg
+			// 
+			this.chk284Dmg.AutoSize = true;
+			this.chk284Dmg.Location = new System.Drawing.Point(3, 30);
+			this.chk284Dmg.Name = "chk284Dmg";
+			this.chk284Dmg.Size = new System.Drawing.Size(113, 17);
+			this.chk284Dmg.TabIndex = 12;
+			this.chk284Dmg.Text = "LaserIon 284 Dmg";
+			this.chk284Dmg.UseVisualStyleBackColor = true;
+			// 
+			// chk285Dmg
+			// 
+			this.chk285Dmg.AutoSize = true;
+			this.chk285Dmg.Location = new System.Drawing.Point(3, 56);
+			this.chk285Dmg.Name = "chk285Dmg";
+			this.chk285Dmg.Size = new System.Drawing.Size(120, 17);
+			this.chk285Dmg.TabIndex = 12;
+			this.chk285Dmg.Text = "TLaserIon 285 Dmg";
+			this.chk285Dmg.UseVisualStyleBackColor = true;
+			// 
+			// chk290Dmg
+			// 
+			this.chk290Dmg.AutoSize = true;
+			this.chk290Dmg.Location = new System.Drawing.Point(3, 82);
+			this.chk290Dmg.Name = "chk290Dmg";
+			this.chk290Dmg.Size = new System.Drawing.Size(120, 17);
+			this.chk290Dmg.TabIndex = 12;
+			this.chk290Dmg.Text = "TLaserIon 290 Dmg";
+			this.chk290Dmg.UseVisualStyleBackColor = true;
+			// 
+			// chk296Dmg
+			// 
+			this.chk296Dmg.AutoSize = true;
+			this.chk296Dmg.Location = new System.Drawing.Point(3, 108);
+			this.chk296Dmg.Name = "chk296Dmg";
+			this.chk296Dmg.Size = new System.Drawing.Size(119, 17);
+			this.chk296Dmg.TabIndex = 12;
+			this.chk296Dmg.Text = "MagPulse 296 Dmg";
+			this.chk296Dmg.UseVisualStyleBackColor = true;
+			// 
 			// XwaHookDialog
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -6257,6 +6427,13 @@
 			this.pnlWeapProfiles.PerformLayout();
 			this.pnlWeapRateOrProfiles.ResumeLayout(false);
 			this.pnlWeapRateOrProfiles.PerformLayout();
+			this.pnlWeapDmg.ResumeLayout(false);
+			this.pnlWeapDmg.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.numMaxSysDmg)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.num284Dmg)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.num285Dmg)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.num290Dmg)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.num296Dmg)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -6707,5 +6884,16 @@
 		private System.Windows.Forms.Button cmdCLDown;
 		private System.Windows.Forms.Button cmdCLUp;
 		private System.Windows.Forms.TextBox txtCLText;
+		private System.Windows.Forms.Panel pnlWeapDmg;
+		private System.Windows.Forms.NumericUpDown numMaxSysDmg;
+		private System.Windows.Forms.NumericUpDown num296Dmg;
+		private System.Windows.Forms.NumericUpDown num290Dmg;
+		private System.Windows.Forms.NumericUpDown num285Dmg;
+		private System.Windows.Forms.NumericUpDown num284Dmg;
+		private System.Windows.Forms.CheckBox chk296Dmg;
+		private System.Windows.Forms.CheckBox chk290Dmg;
+		private System.Windows.Forms.CheckBox chk285Dmg;
+		private System.Windows.Forms.CheckBox chk284Dmg;
+		private System.Windows.Forms.CheckBox chkMaxSysDmg;
 	}
 }

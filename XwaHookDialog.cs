@@ -6,7 +6,7 @@
  * VERSION: 1.17+
  *
  * CHANGELOG
- * [NEW] Stats modifiers SpeedIncrement and SpeedDecrement, MapIcon rect, CraftStats all markings Profile, CampaignCrafts*
+ * [NEW] Stats modifiers SpeedIncrement and SpeedDecrement, MapIcon rect, CraftStats all markings Profile, CampaignCrafts*, weapon damages
  * [UPD] ExplosionDamage renamed to CriticalDamageThreshold per hook updates
  * [UPD] major refactor
  * [DEL] removed reading hangar command opt sections for now (though it's still calc'd) as I was importing it wrong anyway and never saved
@@ -2257,11 +2257,11 @@ namespace Idmr.Yogeme
 				if (!chkImpact.Checked) lstWeapons.Items.Add($"{prefix}IsImpactSpinningEnabled{fg}0");
 				if (chkImpactSpeed.Checked && numImpactSpeed.Value != 100) lstWeapons.Items.Add($"{prefix}ImpactSpinningSpeedFactorPercent{fg}{numImpactSpeed.Value}");
 				if (chkImpactAngle.Checked && numImpactAngle.Value != 100) lstWeapons.Items.Add($"{prefix}ImpactSpinningAngleFactorPercent{fg}{numImpactAngle.Value}");
-				// TODO: MaxSystemDamages_fg_# = 1000
-				// TODO: Weapon284_LaserIon_Damages_fg_# = 1
-				// TODO: Weapon285_LaserIonTurbo_Damages_fg_# = 2
-				// TODO: Weapon290_LaserIonTurbo_Damages_fg_# = 4
-				// TODO: Weapon296_MagPulse_Damages_fg_# = 30
+				if (chkMaxSysDmg.Checked && numMaxSysDmg.Value != 1000) lstWeapons.Items.Add($"{prefix}MaxSystemDamages{fg}{numMaxSysDmg.Value}");
+				if (chk284Dmg.Checked && num284Dmg.Value != 1) lstWeapons.Items.Add($"{prefix}Weapon284_LaserIon_Damages{fg}{num284Dmg.Value}");
+				if (chk285Dmg.Checked && num285Dmg.Value != 2) lstWeapons.Items.Add($"{prefix}Weapon285_LaserIonTurbo_Damages{fg}{num285Dmg.Value}");
+				if (chk290Dmg.Checked && num290Dmg.Value != 4) lstWeapons.Items.Add($"{prefix}Weapon290_LaserIonTurbo_Damages{fg}{num290Dmg.Value}");
+				if (chk296Dmg.Checked && num296Dmg.Value != 30) lstWeapons.Items.Add($"{prefix}Weapon296_MagPulse_Damages{fg}{num296Dmg.Value}");
 			}
 			else if (optWarheadCounts.Checked)
 			{
@@ -2295,6 +2295,7 @@ namespace Idmr.Yogeme
 		private void optWeapRate_CheckedChanged(object sender, EventArgs e)
 		{
 			pnlWeapRates.Enabled = optWeapRate.Checked;
+			pnlWeapDmg.Enabled = optWeapRate.Checked;
 		}
 		private void optWeapProfiles_CheckedChanged(object sender, EventArgs e)
 		{
