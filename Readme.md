@@ -37,6 +37,16 @@ This will leave behind a single config file in AppData with your user settings.
 
 ## Latest Release
 
+#### WIP
+- (XWA) Several Hook updates:
+  - Added a helper class to handle the hook INI. Backend of the Hook dialog redone to handle it, as well as the OPT swaps for the map.
+  - Fixed typos in Concourse:FrontPlanetPositionY and SpecRci:Hull.
+  - ExplosionDamage CraftStats type renamed to CriticalDamageThreshold per hook updates.
+  - Added CraftStats SpeedIncrement and SpeedDecrement modifiers.
+  - Added CraftStats Profile options for "All" markings (last entry of the drop-down).
+  - Added Mission_Tie:MapIcon and all Mission_Tie:CampiagnCrafts* options.
+  - Added WeaponRate:MaxSystemDamage and the WeaponrRate:Weapon*_Damages options.
+
 #### 1.17.7, 27 Mar 2026
 - (TIE) Officer questions now strip new line characters ('\r\n') created by bad external copy/pastes [Issue [#134](https://github.com/MikeG621/YOGEME/issues/134)].
 - (TIE) Officer answers text box has had the WordWrap disabled, forcing the user to recognize the lack of line breaks.
