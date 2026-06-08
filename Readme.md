@@ -46,6 +46,7 @@ This will leave behind a single config file in AppData with your user settings.
   - Added CraftStats Profile options for "All" markings (last entry of the drop-down).
   - Added Mission_Tie:MapIcon and all Mission_Tie:CampiagnCrafts* options.
   - Added WeaponRate:MaxSystemDamage and the WeaponrRate:Weapon*_Damages options.
+- (XWA) Menu typo [Issue [#136](https://github.com/MikeG621/YOGEME/issues/136)].
 
 #### 1.17.7, 27 Mar 2026
 - (TIE) Officer questions now strip new line characters ('\r\n') created by bad external copy/pastes [Issue [#134](https://github.com/MikeG621/YOGEME/issues/134)].

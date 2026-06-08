@@ -1158,7 +1158,7 @@ namespace Idmr.Yogeme
 			// menuHyperbuoy
 			// 
 			this.menuHyperbuoy.Index = 8;
-			this.menuHyperbuoy.Text = "&Hyperbouy Wizard";
+			this.menuHyperbuoy.Text = "&Hyperbuoy Wizard";
 			this.menuHyperbuoy.Click += new System.EventHandler(this.menuHyperbuoy_Click);
 			// 
 			// menuSuperBackdrops
