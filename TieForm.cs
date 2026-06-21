@@ -3,9 +3,10 @@
  * Copyright (C) 2007-2026 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.17.7
+ * VERSION: 1.17.7+
  *
  * CHANGELOG
+ * [UPD] LfdReader v3 update
  * v1.17.7, 260327
  * [FIX #134] Strip line breaks from Officer Questions (bad external copy/paste)
  * [UPD] WordWrap disabled in the Officers text box
@@ -1587,10 +1588,7 @@ namespace Idmr.Yogeme
 			File.Copy(path + battle, path + backup, true);
 			LfdFile battleLfd = new LfdFile(path + battle);
 			Text txt = (Text)battleLfd.Resources[0];
-			string[] missions = txt.Strings[3].Split('\0');
-			missions[0] = _mission.MissionFileName.ToLower().Replace(".tie", "");
-			txt.Strings[3] = string.Join("\0", missions);
-			txt.Dirty();
+			txt.Strings[3].SetSubstring(0, _mission.MissionFileName.ToLower().Replace(".tie", ""));
 			battleLfd.Write();
 
 			if (isWin7 && !path.ToUpper().Contains("STEAM")) // explorer kill so colors work right
