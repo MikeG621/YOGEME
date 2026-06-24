@@ -101,6 +101,7 @@ namespace Idmr.Yogeme
 	{
 		// this is going to be setup to read from the individual TXT files, but always write to Mission.ini
 		#region vars
+		readonly FormScaler _scaler;
 		readonly string _mission;
 		readonly string _fileName = "";
 		readonly string _bdFile = "";
@@ -464,6 +465,7 @@ namespace Idmr.Yogeme
 
 			_initialLoad = false;
 			_loading = false;
+			_scaler = new FormScaler(this);
 		}
 
 		string checkFile(string extension)

@@ -121,6 +121,7 @@ namespace Idmr.Yogeme
 	public partial class MapForm : Form
 	{
 		#region vars and stuff
+		readonly FormScaler _scaler;
 		int _zoom = 40;               //Current zoom scale, in pixels per kilometer
 #pragma warning disable IDE1006 // Naming Styles
 		int w, h, _mapX, _mapY, _mapZ;   //The map vars store offset of the center of the game world (0,0,0) relative to the top left corner of the viewport, taking zoom into account.
@@ -209,6 +210,8 @@ namespace Idmr.Yogeme
 			}
 			onDataModified = dataModifiedCallback;
 			startup();
+			_scaler = new FormScaler(this, FormScaler.ScaleFlags.ExcludePicture, form_ResizeEnd);
+			updateLayout();
 		}
 
 		/// <param name="fg">TFlights array</param>
@@ -225,6 +228,8 @@ namespace Idmr.Yogeme
 			}
 			onDataModified = dataModifiedCallback;
 			startup();
+			_scaler = new FormScaler(this, FormScaler.ScaleFlags.ExcludePicture, form_ResizeEnd);
+			updateLayout();
 		}
 
 		/// <param name="fg">XFlights array</param>
@@ -241,6 +246,8 @@ namespace Idmr.Yogeme
 			}
 			onDataModified = dataModifiedCallback;
 			startup();
+			_scaler = new FormScaler(this, FormScaler.ScaleFlags.ExcludePicture, form_ResizeEnd);
+			updateLayout();
 		}
 
 		/// <param name="fg">WFlights array</param>
@@ -257,6 +264,8 @@ namespace Idmr.Yogeme
 			}
 			onDataModified = dataModifiedCallback;
 			startup();
+			_scaler = new FormScaler(this, FormScaler.ScaleFlags.ExcludePicture, form_ResizeEnd);
+			updateLayout();
 		}
 		#endregion ctors
 
@@ -1066,24 +1075,25 @@ namespace Idmr.Yogeme
 		void updateLayout()
 		{
 			PointF center = getCenterCoord();
-			pctMap.Width = Width - 102 - (lstCraft.Width + lstCraft.Margin.Right);
-			pctMap.Height = Height - 160;
+			int width = ClientSize.Width;
+			int height = ClientSize.Height;
+			int rightWidth = Math.Max(grpPoints.Width + grpPoints.Margin.Left, chkTags.Width + chkTags.Margin.Left);
+			int bottomHeight = (chkCumulative.Bottom - chkTraceHideFade.Top) + ((chkTraceHideFade.Margin.Top + chkCumulative.Margin.Bottom) * 2);
+			pctMap.Width = width - (pctMap.Left + rightWidth);
+			pctMap.Height = height - (pctMap.Top + bottomHeight);
 			w = pctMap.Width;
 			h = pctMap.Height;
 			if (w < 1 || h < 1) return;
 
 			_map = new Bitmap(w, h, PixelFormat.Format24bppRgb);
-			lblCoor1.Top = Height - 59;
-			lblCoor2.Top = lblCoor1.Top;
-			lblZoom.Top = lblCoor1.Top;
-			hscZoom.Top = lblCoor1.Top;
-			hscZoom.Width = Width - 498;
-			lblRegion.Left = Width - 183; // Width - 268;
-			numRegion.Left = Width - 133; // Width - 218;
-			lblOrder.Left = Width - 272; // Width - 171;
-			numOrder.Left = Width - 230; // Width - 129;
-			grpDir.Left = Width - 90;
+
+			// Top right
+			grpDir.Left = width - (grpDir.Width + grpDir.Margin.Right);
 			grpPoints.Left = grpDir.Left;
+			moveControlLeft(numRegion, grpDir, 0);
+			moveControlLeft(lblRegion, numRegion, 0);
+			moveControlLeft(numOrder, lblRegion, numOrder.Margin.Right * 3);
+			moveControlLeft(lblOrder, numOrder, 0);
 
 			// Align all checkboxes to the bottom right of the map.
 			chkTags.Left = grpDir.Left;
@@ -1095,19 +1105,28 @@ namespace Idmr.Yogeme
 			chkCumulative.Left = chkTraceHideFade.Left;
 			moveControlLeft(chkAllOrders, chkTraceHideFade, 0);
 			// Now align from the bottom, stacked in reverse order.
-			moveControlAbove(chkTime, null, ClientRectangle.Bottom - 3);
+			moveControlAbove(chkTime, null, ClientRectangle.Bottom - chkTime.Margin.Bottom);
 			moveControlAbove(chkDistance, chkTime, 0);
 			moveControlAbove(chkTrace, chkDistance, 0);
 			moveControlAbove(chkTags, chkTrace, 0);
-			moveControlAbove(chkCumulative, null, ClientRectangle.Bottom - 3);
+			moveControlAbove(chkCumulative, null, ClientRectangle.Bottom - chkCumulative.Margin.Bottom);
 			moveControlAbove(chkTraceSelected, chkCumulative, 0);
 			moveControlAbove(chkTraceHideFade, chkTraceSelected, 0);
 			chkAllOrders.Top = chkTraceHideFade.Top;
 
+			// Bottom left and center area.
+			int firstRow = pctMap.Bottom + cmdCenterSelected.Margin.Top;
+			int secondRow = firstRow + cmdCenterSelected.Height + cmdCenterSelected.Margin.Bottom;
+			lblCoor1.Top = secondRow;
+			lblCoor2.Top = lblCoor1.Top;
+			lblZoom.Top = lblCoor1.Top;
+			hscZoom.Top = lblCoor1.Top;
+			hscZoom.Width = (chkTraceHideFade.Left - hscZoom.Left) - (hscZoom.Left - lblZoom.Right);
+
 			updateMapCoord(center);
 			lstCraft.Height = pctMap.Bottom - lstCraft.Top;
 
-			moveControlLeft(cboSnapUnit, grpDir, 4);
+			moveControlLeft(cboSnapUnit, grpDir, cboSnapUnit.Margin.Right);
 			moveControlLeft(numSnapAmount, cboSnapUnit, 0);
 			moveControlLeft(cboSnapTo, numSnapAmount, 0);
 			moveControlLeft(lblSnapTo, cboSnapTo, 0);

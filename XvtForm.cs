@@ -181,6 +181,7 @@ namespace Idmr.Yogeme
 	public partial class XvtForm : Form
 	{
 		#region vars and stuff
+		readonly FormScaler _scaler;
 		readonly Settings _config = Settings.GetInstance();
 		Mission _mission;
 		bool _applicationExit;
@@ -236,6 +237,7 @@ namespace Idmr.Yogeme
 			startup();
 			lstFG.SelectedIndex = 0;
 			_loading = false;
+			_scaler = new FormScaler(this, FormScaler.ScaleFlags.StretchLabel);
 		}
 		public XvtForm(string path)
 		{
@@ -247,6 +249,7 @@ namespace Idmr.Yogeme
 			lstFG.SelectedIndex = 0;
 			if (_mission.Messages.Count != 0) lstMessages.SelectedIndex = 0;
 			_loading = false;
+			_scaler = new FormScaler(this, FormScaler.ScaleFlags.StretchLabel);
 		}
 
 		#region methods

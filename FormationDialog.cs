@@ -36,6 +36,7 @@ namespace Idmr.Yogeme
 		/// <summary>Count of array elements in each axis. Used to calculate offsets for the X,Y,Z subsections of the data array. Will be initialized based on platform.</summary>
 		int _activeAxisDataCount = 0;
 
+		readonly FormScaler _scaler;
 		Settings.Platform _platform;
 		readonly Bitmap _canvas;
 		readonly Bitmap _frontIcon;
@@ -445,6 +446,7 @@ namespace Idmr.Yogeme
 			_frontIcon = createBitmapFromRaw(_frontIconRaw, 10, 10);
 			_sideIcon = createBitmapFromRaw(_sideIconRaw, 10, 10);
 			_topIcon = createBitmapFromRaw(_topIconRaw, 10, 10);
+			pctFormation.Image = _canvas;
 
 			setPlatform(platform);
 
@@ -456,6 +458,7 @@ namespace Idmr.Yogeme
 
 			lblFormInfo.BackColor = Color.Black;
 			lblFormInfo.ForeColor = Color.LightGray;
+			_scaler = new FormScaler(this, FormScaler.ScaleFlags.StretchPicture);
 		}
 
 		/// <summary>Initializes the formation list, data arrays, and control visibility for the current working platform.</summary>
@@ -695,18 +698,20 @@ namespace Idmr.Yogeme
 			FormPosition average = chkFormFitPanel.Checked ? generateCenteredAverage(positions) : new FormPosition(0, 0, 0);
 
 			// Inlining was a mess, so using these for simplicity.
-			int quartWidth = pctFormation.Width / 4;
-			int halfWidth = pctFormation.Width / 2;
-			int quartHeight = pctFormation.Height / 4;
-			int halfHeight = pctFormation.Height / 2;
+			int width = _canvas.Width;
+			int height = _canvas.Height;
+			int quartWidth = _canvas.Width / 4;
+			int halfWidth = _canvas.Width / 2;
+			int quartHeight = _canvas.Height / 4;
+			int halfHeight = _canvas.Height / 2;
 
 			const int iconSize = 10;
 			const int halfIconSize = iconSize / 2;
 
 			List<IconTag> tagList = new List<IconTag>();
 			Pen p = new Pen(Color.FromArgb(55, 55, 55));
-			g.DrawLine(p, halfWidth, 0, halfWidth, pctFormation.Height);
-			g.DrawLine(p, 0, halfHeight, pctFormation.Width, halfHeight);
+			g.DrawLine(p, halfWidth, 0, halfWidth, height);
+			g.DrawLine(p, 0, halfHeight, width, halfHeight);
 			g.DrawString("Top (X - Y)", DefaultFont, Brushes.LightGray, 30, 3);
 			g.DrawString("Side (Y - Z)", DefaultFont, Brushes.LightGray, halfWidth + 30, halfHeight + 3);
 			g.DrawString("Behind (X - Z)", DefaultFont, Brushes.LightGray, 30, halfHeight + 3);
@@ -721,15 +726,15 @@ namespace Idmr.Yogeme
 				g.DrawLine(pd, quartWidth, 0, quartWidth, halfHeight);
 				// Bottom view panel
 				g.DrawLine(pd, 0, quartHeight + halfHeight, halfWidth, quartHeight + halfHeight);
-				g.DrawLine(pd, quartWidth, halfHeight, quartWidth, pctFormation.Height);
+				g.DrawLine(pd, quartWidth, halfHeight, quartWidth, height);
 				// Side view panel
-				g.DrawLine(pd, halfWidth, quartHeight + halfHeight, pctFormation.Width, quartHeight + halfHeight);
-				g.DrawLine(pd, halfWidth + quartWidth, halfHeight, halfWidth + quartWidth, pctFormation.Height);
+				g.DrawLine(pd, halfWidth, quartHeight + halfHeight, width, quartHeight + halfHeight);
+				g.DrawLine(pd, halfWidth + quartWidth, halfHeight, halfWidth + quartWidth, height);
 			}
 			else
 			{
 				// Draw cross lines where (0, 0) is in the current panel.
-				int length = pctFormation.Width / 24;
+				int length = width / 24;
 
 				x = average.X; y = -average.Y;  // Flip Y
 				if (!clipViewport(ref x, ref y))
@@ -811,7 +816,5 @@ namespace Idmr.Yogeme
 
 		void cmdCancel_Click(object sender, EventArgs e) => Close();
 		void cmdOK_Click(object sender, EventArgs e) => Close();
-
-		void pctFormation_Paint(object sender, PaintEventArgs e) => e.Graphics.DrawImage(_canvas, 0, 0, _canvas.Width, _canvas.Height);
 	}
 }

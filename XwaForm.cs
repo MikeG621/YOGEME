@@ -254,6 +254,7 @@ namespace Idmr.Yogeme
 	public partial class XwaForm : Form
 	{
 		#region vars and stuff
+		readonly FormScaler _scaler;
 		readonly Settings _config = Settings.GetInstance();
 		bool _loading;
 		bool _noRefresh = false;
@@ -324,6 +325,7 @@ namespace Idmr.Yogeme
 			startup();
 			lstFG.SelectedIndex = 0;
 			_loading = false;
+			_scaler = new FormScaler(this, FormScaler.ScaleFlags.StretchLabel);
 		}
 		public XwaForm(string path)
 		{
@@ -335,6 +337,7 @@ namespace Idmr.Yogeme
 			lstFG.SelectedIndex = 0;
 			if (_mission.Messages.Count != 0) lstMessages.SelectedIndex = 0;
 			_loading = false;
+			_scaler = new FormScaler(this, FormScaler.ScaleFlags.StretchLabel);
 		}
 
 		#region methods

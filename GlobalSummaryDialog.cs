@@ -17,6 +17,7 @@ namespace Idmr.Yogeme
 {
 	public partial class GlobalSummaryDialog : Form
 	{
+		readonly FormScaler _scaler;
 		readonly string[] _groups = new string[256];
 		readonly string[] _units = new string[256];
 
@@ -28,6 +29,7 @@ namespace Idmr.Yogeme
 			for (int i = 0; i < fgs.Count; i++) if (fgs[i].GlobalGroup != 0) _groups[fgs[i].GlobalGroup] += "\t" + fgs[i].ToString(true) + "\r\n";
 
 			update();
+			_scaler = new FormScaler(this);
 		}
 		public GlobalSummaryDialog(Platform.Xvt.FlightGroupCollection fgs)
 		{
@@ -41,6 +43,7 @@ namespace Idmr.Yogeme
 			}
 
 			update();
+			_scaler = new FormScaler(this);
 		}
 		public GlobalSummaryDialog(Platform.Xwa.FlightGroupCollection fgs)
 		{
@@ -54,6 +57,7 @@ namespace Idmr.Yogeme
 			}
 
 			update();
+			_scaler = new FormScaler(this);
 		}
 
 		void init()

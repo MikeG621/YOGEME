@@ -24,11 +24,12 @@ namespace Idmr.Yogeme
 	/// <summary>Dialog to display program information</summary>
 	public partial class AboutDialog : Form
 	{
+		readonly FormScaler _scaler;
 		public AboutDialog()
 		{
 			InitializeComponent();
 			lblVersion.Text += Application.ProductVersion;
-			Height = 218;
+			_scaler = new FormScaler(this);
 		}
 
 		void cmdClose_Click(object sender, System.EventArgs e) => Close();

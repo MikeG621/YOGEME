@@ -18,12 +18,14 @@ namespace Idmr.Yogeme
 {
     public partial class ErrorDialog : Form
     {
+        FormScaler _scaler = null;
         public ErrorDialog(string message, bool allowIgnore = false)
         {
             InitializeComponent();
 
             lblMessage.Text = message;
             chkIgnore.Visible = allowIgnore;
+            _scaler = new FormScaler(this);
         }
 
         public bool IgnoreErrors => chkIgnore.Checked;

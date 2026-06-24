@@ -78,7 +78,6 @@
 			this.pctFormation.Size = new System.Drawing.Size(600, 490);
 			this.pctFormation.TabIndex = 4;
 			this.pctFormation.TabStop = false;
-			this.pctFormation.Paint += new System.Windows.Forms.PaintEventHandler(this.pctFormation_Paint);
 			// 
 			// chkFormFitPanel
 			// 

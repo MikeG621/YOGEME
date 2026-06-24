@@ -39,6 +39,7 @@ namespace Idmr.Yogeme
 	/// <summary> Loads Battle#.LFD for editing</summary>
 	public partial class BattleForm : Form
 	{
+		readonly FormScaler _scaler;
 		string _battlePath; // path to selected Battle#.lfd
 		readonly string _installPath;   // TIE95 install directory
 		int _battleIndex = 1;
@@ -98,6 +99,7 @@ namespace Idmr.Yogeme
 				MessageBox.Show(x.Message + " Battle function not available", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return;
 			}
+			_scaler = new FormScaler(this, picGalaxy, picSystem);
 		}
 
 		/// <summary>Draws the red frame on the galaxy map signifiying where the system is located</summary>

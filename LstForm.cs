@@ -32,6 +32,7 @@ namespace Idmr.Yogeme
 	/// <summary>Form for LST editing to assign custom missions</summary>
 	public partial class LstForm : Form
 	{
+		readonly FormScaler _scaler;
 		readonly string _installPath;
 
 		/// <summary>Initialize the form, gather file listings from all categories</summary>
@@ -89,6 +90,7 @@ namespace Idmr.Yogeme
 				cboFile.Items.AddRange(strFiles);
 				cboFile.SelectedIndex = start;
 			}
+			_scaler = new FormScaler(this);
 		}
 
 		void cboFile_SelectedIndexChanged(object sender, EventArgs e)

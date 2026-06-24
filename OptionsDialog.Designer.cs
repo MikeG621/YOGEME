@@ -25,6 +25,9 @@ namespace Idmr.Yogeme
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(OptionsDialog));
 			this.tabOptions = new System.Windows.Forms.TabControl();
 			this.tabOpt1 = new System.Windows.Forms.TabPage();
+			this.cmdFormScale = new System.Windows.Forms.Button();
+			this.cboFormScale = new System.Windows.Forms.ComboBox();
+			this.lblFormScale = new System.Windows.Forms.Label();
 			this.chkRememberOrder = new System.Windows.Forms.CheckBox();
 			this.chkOneIndexedFG = new System.Windows.Forms.CheckBox();
 			this.chkConfirmFGDelete = new System.Windows.Forms.CheckBox();
@@ -205,6 +208,9 @@ namespace Idmr.Yogeme
 			// 
 			// tabOpt1
 			// 
+			this.tabOpt1.Controls.Add(this.cmdFormScale);
+			this.tabOpt1.Controls.Add(this.cboFormScale);
+			this.tabOpt1.Controls.Add(this.lblFormScale);
 			this.tabOpt1.Controls.Add(this.chkRememberOrder);
 			this.tabOpt1.Controls.Add(this.chkOneIndexedFG);
 			this.tabOpt1.Controls.Add(this.chkConfirmFGDelete);
@@ -225,6 +231,38 @@ namespace Idmr.Yogeme
 			this.tabOpt1.Size = new System.Drawing.Size(397, 238);
 			this.tabOpt1.TabIndex = 0;
 			this.tabOpt1.Text = "Overall";
+			// 
+			// cmdFormScale
+			// 
+			this.cmdFormScale.Location = new System.Drawing.Point(106, 163);
+			this.cmdFormScale.Name = "cmdFormScale";
+			this.cmdFormScale.Size = new System.Drawing.Size(44, 23);
+			this.cmdFormScale.TabIndex = 20;
+			this.cmdFormScale.Text = "Apply";
+			this.cmdFormScale.UseVisualStyleBackColor = true;
+			this.cmdFormScale.Click += new System.EventHandler(this.cmdFormScale_Click);
+			// 
+			// cboFormScale
+			// 
+			this.cboFormScale.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable;
+			this.cboFormScale.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboFormScale.FormattingEnabled = true;
+			this.cboFormScale.Location = new System.Drawing.Point(3, 164);
+			this.cboFormScale.Name = "cboFormScale";
+			this.cboFormScale.Size = new System.Drawing.Size(99, 21);
+			this.cboFormScale.TabIndex = 19;
+			this.cboFormScale.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.cboFormScale_DrawItem);
+			this.cboFormScale.MeasureItem += new System.Windows.Forms.MeasureItemEventHandler(this.cboFormScale_MeasureItem);
+			this.cboFormScale.SelectedIndexChanged += new System.EventHandler(this.cboFormScale_SelectedIndexChanged);
+			// 
+			// lblFormScale
+			// 
+			this.lblFormScale.AutoSize = true;
+			this.lblFormScale.Location = new System.Drawing.Point(-1, 148);
+			this.lblFormScale.Name = "lblFormScale";
+			this.lblFormScale.Size = new System.Drawing.Size(137, 13);
+			this.lblFormScale.TabIndex = 18;
+			this.lblFormScale.Text = "Form scaling (experimental):";
 			// 
 			// chkRememberOrder
 			// 
@@ -1703,6 +1741,7 @@ namespace Idmr.Yogeme
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "YOGEME - Options";
+			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.OptionsDialog_FormClosed);
 			this.tabOptions.ResumeLayout(false);
 			this.tabOpt1.ResumeLayout(false);
 			this.tabOpt1.PerformLayout();
@@ -1880,5 +1919,8 @@ namespace Idmr.Yogeme
 		private Label label17;
         private CheckBox chkOneIndexedFG;
         private CheckBox chkRememberOrder;
-    }
+		private Label lblFormScale;
+		private Button cmdFormScale;
+		private ComboBox cboFormScale;
+	}
 }

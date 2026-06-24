@@ -94,6 +94,7 @@ namespace Idmr.Yogeme
 	public partial class XwingForm : Form
 	{
 		#region vars and stuff
+		readonly FormScaler _scaler;
 		readonly Settings _config = Settings.GetInstance();
 		Mission _mission;
 		bool _applicationExit;              //for frmTIE_Closing, confirms application exit vs switching platforms
@@ -142,6 +143,7 @@ namespace Idmr.Yogeme
 			startup();
 			lstFG.SelectedIndex = 0;
 			_loading = false;
+			_scaler = new FormScaler(this);
 		}
 		public XwingForm(string path)
 		{   //this is the command line and "Open..." support
@@ -152,6 +154,7 @@ namespace Idmr.Yogeme
 			if (!loadMission(path)) return;
 			lstFG.SelectedIndex = 0;
 			_loading = false;
+			_scaler = new FormScaler(this);
 		}
 
 		#region methods

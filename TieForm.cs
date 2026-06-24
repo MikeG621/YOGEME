@@ -182,6 +182,7 @@ namespace Idmr.Yogeme
 	public partial class TieForm : Form
 	{
 		#region vars and stuff
+		readonly FormScaler _scaler;
 		readonly Settings _config = Settings.GetInstance();
 		Mission _mission;
 		bool _applicationExit;              //for frmTIE_Closing, confirms application exit vs switching platforms
@@ -229,6 +230,7 @@ namespace Idmr.Yogeme
 			startup();
 			lstFG.SelectedIndex = 0;
 			_loading = false;
+			_scaler = new FormScaler(this, FormScaler.ScaleFlags.StretchLabel);
 		}
 		/// <summary>Initialize with an existing mission.</summary>
 		/// <param name="settings"></param>
@@ -244,6 +246,7 @@ namespace Idmr.Yogeme
 			lstFG.SelectedIndex = 0;
 			if (_mission.Messages.Count != 0) lstMessages.SelectedIndex = 0;
 			_loading = false;
+			_scaler = new FormScaler(this, FormScaler.ScaleFlags.StretchLabel);
 		}
 
 		#region methods

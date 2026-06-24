@@ -20,6 +20,7 @@ namespace Idmr.Yogeme
 {
 	public partial class RegionSelectDialog : Form
 	{
+		readonly FormScaler _scaler;
 		/// <summary>Initializes a dialog using custom region names.</summary>
 		/// <param name="regions">Array of region objects, must have a <see cref="Array.Length"/> of <b>4</b>.</param>
 		/// <exception cref="ArgumentException">Length of <paramref name="regions"/> is not <b>4</b>.</exception>
@@ -32,6 +33,7 @@ namespace Idmr.Yogeme
 			optRegion2.Text = regions[1].Name;
 			optRegion3.Text = regions[2].Name;
 			optRegion4.Text = regions[3].Name;
+			_scaler = new FormScaler(this);
 		}
 
 		void cmdOk_Click(object sender, EventArgs e) => Close();
