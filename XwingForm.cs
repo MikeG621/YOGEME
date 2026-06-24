@@ -121,7 +121,7 @@ namespace Idmr.Yogeme
 		readonly DataTable _tableRaw = new DataTable("Waypoints_Raw");
 		
 		MapForm _fMap;
-		BriefingFormXwing _fBrief;
+		BriefingForm2 _fBrief;
 		FlightGroupLibraryForm _fLibrary;
 		TourForm _fTour;
 		#endregion
@@ -237,7 +237,7 @@ namespace Idmr.Yogeme
 		{
 			Brush brText = Brushes.White;
 			if (fgIndex < 0 || fgIndex >= _mission.FlightGroups.Count) return brText;
-			if (_mission.FlightGroups[fgIndex].IsFlightGroup())
+			if (_mission.FlightGroups[fgIndex].IsFlightGroup() || _mission.FlightGroups[fgIndex].ObjectType == 25)
 			{
 				switch (_mission.FlightGroups[fgIndex].GetActualIFF())
 				{
@@ -257,6 +257,10 @@ namespace Idmr.Yogeme
 						brText = Brushes.RoyalBlue;
 						break;
 				}
+
+				// Default IFF for TRN is Neutral in briefings, but Imperial in flight.
+				if(_mission.FlightGroups[fgIndex].IFF == 0 && _mission.FlightGroups[fgIndex].CraftType == 8 && _mode == EditorMode.BRF)
+					brText = Brushes.DodgerBlue;
 			}
 			return brText;
 		}
@@ -614,6 +618,20 @@ namespace Idmr.Yogeme
 
 			_activeFG = 0;   //Prevent index bounds if selected index is higher in one mode than available FGs in another.
 			_mode = mode;
+
+			// The object list is different depending on mode.
+			cboObject.Items.Clear();
+			if (_mode == EditorMode.XWI) cboObject.Items.AddRange(Strings.ObjectType);
+			else
+			{
+				cboObject.BeginUpdate();
+				string[] objs = Strings.BriefingObjectType;
+				cboObject.Items.Add("None");
+				for (int i = 18; i < objs.Length; i++)
+					cboObject.Items.Add(objs[i]);
+				cboObject.EndUpdate();
+			}
+
 			lstFG.Items.Clear();
 			lstFG.Items.AddRange(_mission.FlightGroups.GetList());
 			listRefreshAll();
@@ -664,6 +682,92 @@ namespace Idmr.Yogeme
 		{
 			Common.MarkDirty(this, _loading);
 		}
+
+		void briefingModifiedCallback(string tag, int index, object data)
+		{
+			if (tag == BriefingForm2.DataChangeTags.FgWaypoint)
+			{
+				if(_mode == EditorMode.BRF && _activeFG == index)
+					refreshWaypointTab();
+			}
+			else if (tag == BriefingForm2.DataChangeTags.FgNew)
+			{
+				Platform.Xwing.FlightGroup fg = (Platform.Xwing.FlightGroup)data;
+				if (_mode == EditorMode.XWI)
+				{
+					_mission.FlightGroupsBriefing.Add(fg);
+				}
+				else
+				{
+					_mission.FlightGroups.Add(fg);
+					lstFG.Items.Add("");
+					listRefreshItem(lstFG.Items.Count - 1);
+				}
+			}
+			else if (tag == BriefingForm2.DataChangeTags.FgDelete)
+			{
+				if (_mode == EditorMode.XWI)
+				{
+					if (index >= 0 && index < _mission.FlightGroupsBriefing.Count)
+						_mission.FlightGroupsBriefing.RemoveAt(index);
+				}
+				else
+				{
+					if (index >= 0 && index < _mission.FlightGroups.Count)
+					{
+						// This is a heavily simplified version of the deleteFG() function.
+						// It's easier because the BRF flightgroups don't have any logistical considerations like triggers.
+						lstFG.SelectedIndex = index;
+						replaceClipboardFGReference(index, -1);
+						// Don't need to call this since the briefing will do it
+						//_mission.Briefing.TransformFGReferences(index, -1);
+						lstFG.Items.RemoveAt(index);
+						_mission.FlightGroups.RemoveAt(index);				
+
+						lstFG.SelectedIndex = lstFG.Items.Count > 0 ? 0 : -1;
+						refreshMap(-1);
+						Common.MarkDirty(this);
+						updateMissionTabs();
+						lstFG_SelectedIndexChanged(0, new EventArgs());
+						_activeFG = -1;
+						if (!lstFG.Focused) lstFG.Focus();
+					}
+				}
+			}
+			else if (tag == BriefingForm2.DataChangeTags.FgEntry)
+			{
+				FlightGroup fg = null;
+
+				if (_mode == EditorMode.XWI && index >= 0 && index < _mission.FlightGroupsBriefing.Count)
+					fg = _mission.FlightGroupsBriefing[index];
+				else if (_mode == EditorMode.BRF && index >= 0 && index < _mission.FlightGroups.Count)
+					fg = _mission.FlightGroups[index];
+
+				if (fg != null)
+				{
+					var props = ((int, int, string))data;
+					byte type = (byte)props.Item1;
+					if (type < 18)  // B-Wing is index 18, but use object for that instead.
+					{
+						fg.CraftType = type;
+						fg.ObjectType = 0;
+					}
+					else
+					{
+						fg.CraftType = 0;
+						fg.ObjectType = type;
+					}
+					fg.IFF = (byte)props.Item2;
+					fg.Name = props.Item3;
+
+					if (_mode == EditorMode.BRF)
+						listRefreshItem(index);
+				}
+			}
+
+			Common.MarkDirty(this, _loading);
+		}
+
 
 		void colorizedComboBox_DrawItem(object sender, DrawItemEventArgs e)
 		{
@@ -733,7 +837,13 @@ namespace Idmr.Yogeme
 				setFlightgroupProperty(prop.RefreshType, prop.Name, Common.GetControlValue(sender));
 				Common.MarkDirty(this);  // Since we're not loading, any change marks as dirty.
 			}
-			if (prop.RefreshType.HasFlag(MultiEditRefreshType.ItemText)) listRefreshSelectedItems();
+			if (prop.RefreshType.HasFlag(MultiEditRefreshType.ItemText))
+			{
+				if(_mode == EditorMode.BRF)
+					refreshBrief(-1);
+
+				listRefreshSelectedItems();
+			}
 			if (prop.RefreshType.HasFlag(MultiEditRefreshType.CraftName)) updateFGList();
 			if (prop.RefreshType.HasFlag(MultiEditRefreshType.Map)) refreshMap(-1);
 		}
@@ -842,9 +952,9 @@ namespace Idmr.Yogeme
 			try { _fBrief.Close(); }
 			catch { /* do nothing */ }
 			if (_mode == EditorMode.XWI)
-				_fBrief = new BriefingFormXwing(_mission.FlightGroupsBriefing, _mission.Briefing, briefingModifiedCallback);
+				_fBrief = new BriefingForm2(_mission.FlightGroupsBriefing, _mission.Briefing, briefingModifiedCallback);
 			else
-				_fBrief = new BriefingFormXwing(_mission.FlightGroups, _mission.Briefing, briefingModifiedCallback);
+				_fBrief = new BriefingForm2(_mission.FlightGroups, _mission.Briefing, briefingModifiedCallback);
 			_fBrief.Show();
 		}
 		//[JB] Added function for menu item and modified for extra safety checks to prevent deleting when the list controls don't have focus.
@@ -1132,6 +1242,8 @@ namespace Idmr.Yogeme
 							lstFG_SelectedIndexChanged(0, new EventArgs()); //[JB] Need to force refresh of form controls.
 							craftStart(fg, true);
 							lstFG.Focus();  //[JB] Return focus to list.  Lets the user delete the pasted FG without having to manually select it again.
+
+							if(_mode == EditorMode.BRF) refreshBrief(_activeFG);
 						}
 						catch { /* do nothing */ }
 						break;
@@ -1653,10 +1765,17 @@ namespace Idmr.Yogeme
 				listRefreshAll();
 			else
 				listRefreshSelectedItems();
+
+			if(_mode == EditorMode.BRF)
+				refreshBrief(-1);
 		}
 		void moveFlightgroups(int direction)
 		{
 			if (!checkMove(direction)) return;
+
+			// Can't have the briefing running when we modify the events.
+			if (_mode == EditorMode.BRF)
+				_fBrief?.Close();
 
 			List<int> selection = Common.GetSelectedIndices(lstFG);
 			for (int i = 0; i < selection.Count; i++)
@@ -1678,7 +1797,6 @@ namespace Idmr.Yogeme
 			}
 			Common.SetSelectedIndices(lstFG, selection, ref _noRefresh);  // Apply adjusted indices
 
-			_fBrief?.Close();
 			refreshMap(-1);
 			updateFGList();
 			Common.MarkDirty(this);
@@ -1690,7 +1808,8 @@ namespace Idmr.Yogeme
 			bool btemp = _noRefresh;
 			_noRefresh = true;                      // Modifying an item will invoke SelectedIndexChanged.
 			bool state = lstFG.GetSelected(index);  // It may also interfere with the current selection state.
-			lstFG.Items[index] = ((_mode == EditorMode.XWI) ? "" : "[BRF] ") + _mission.FlightGroups[index].ToString(true);
+			if (_mode == EditorMode.XWI) lstFG.Items[index] = _mission.FlightGroups[index].ToString(true);
+			else lstFG.Items[index] = "[BRF] " + _mission.FlightGroups[index].BriefingString(true);
 			lstFG.SetSelected(index, state);
 			if (!lstFG.IsDisposed) lstFG.Invalidate(lstFG.GetItemRectangle(index));
 			if (_fMap != null && mapUpdate) _fMap.UpdateFlightGroup(index, _mission.FlightGroups[index]);
@@ -1865,7 +1984,7 @@ namespace Idmr.Yogeme
 			_activeFG = lstFG.SelectedIndex;
 			string text;
 			int min, max;
-			bool isFG = _mission.FlightGroups[_activeFG].IsFlightGroup();
+			bool isFG = _mission.FlightGroups[_activeFG].IsFlightGroup() || (_mode == EditorMode.BRF && _mission.FlightGroups[_activeFG].ObjectType == 25);
 			bool train = _mission.FlightGroups[_activeFG].IsTrainingPlatform();
 			bool start = _mission.FlightGroups[_activeFG].IsStartingGate();
 			if (_mode == EditorMode.XWI)
@@ -1958,10 +2077,10 @@ namespace Idmr.Yogeme
 			else if (_mode == EditorMode.BRF && _mission.FlightGroups[_activeFG].CraftType == 25)
 				cboCraft.SelectedIndex = 18;  //Adjust for the object mode's B-wing used in briefings.
 			else
-				cboCraft.SelectedIndex = _mission.FlightGroups[_activeFG].CraftType;
+				Common.SafeSetCBO(cboCraft, _mission.FlightGroups[_activeFG].CraftType, true);
 			int objindex = _mission.FlightGroups[_activeFG].ObjectType - 17;
 			if (objindex < 0) objindex = 0;
-			cboObject.SelectedIndex = objindex;
+			Common.SafeSetCBO(cboObject, objindex, true);
 			cboIFF.SelectedIndex = _mission.FlightGroups[_activeFG].IFF;
 			cboAI.SelectedIndex = _mission.FlightGroups[_activeFG].AI;
 			cboMarkings.SelectedIndex = _mission.FlightGroups[_activeFG].Markings;
@@ -2090,20 +2209,20 @@ namespace Idmr.Yogeme
 			if (cboCraft.SelectedIndex == 0 && cboObject.SelectedIndex > 0) return;   // Don't switch to Craft "None" if already an Object.
 			enableRot(cboCraft.SelectedIndex == 0 && cboObject.SelectedIndex > 0);
 			if (_loading || cboCraft.SelectedIndex == -1) return;
-			changeSelectedFlightgroups(cboCraft.SelectedIndex, -1);
 			_loading = true;
-			cboObject.SelectedIndex = 0;
+			cboObject.SelectedIndex = 0;  // If the craft type is B-Wing in BRF mode, this will be overwritten after change.
 			_loading = false;
+			changeSelectedFlightgroups(cboCraft.SelectedIndex, -1);
 		}
 		void cboObject_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (cboCraft.SelectedIndex > 0 && cboObject.SelectedIndex == 0) return;   // Don't switch to Object "None" if already a Craft.
 			enableRot(cboCraft.SelectedIndex == 0 && cboObject.SelectedIndex > 0);
 			if (_loading || cboCraft.SelectedIndex == -1) return;
-			changeSelectedFlightgroups(-1, cboObject.SelectedIndex);
 			_loading = true;
 			cboCraft.SelectedIndex = 0;
 			_loading = false;
+			changeSelectedFlightgroups(-1, cboObject.SelectedIndex);
 		}
 		void cmdForms_Click(object sender, EventArgs e)
 		{
@@ -2195,6 +2314,19 @@ namespace Idmr.Yogeme
 				_fMap.MapPaint();
 			}
 		}
+
+		void refreshBrief(int fgIndex)
+		{
+			if(_mode != EditorMode.BRF) return;
+
+			if(_fBrief != null && !_fBrief.IsDisposed)
+			{
+				if(fgIndex < 0)
+					_fBrief.Import(_mission.FlightGroups);
+				else
+					_fBrief.Import(fgIndex, _mission.FlightGroups[fgIndex]);
+			}
+		}
 		void refreshWaypointTab()  //[JB] New function to refresh the contents the waypoint tab, since we want to call this from more than one place.
 		{
 			bool btemp = _loading;
@@ -2271,6 +2403,7 @@ namespace Idmr.Yogeme
 			}
 			_loading = false;
 			refreshMap(_activeFG);
+			refreshBrief(_activeFG);
 		}
 		void tableRaw_RowChanged(object sender, DataRowChangeEventArgs e)
 		{
@@ -2289,6 +2422,7 @@ namespace Idmr.Yogeme
 			}
 			_loading = false;
 			refreshMap(_activeFG);
+			refreshBrief(_activeFG);
 		}
 		void cmdCopyWPSP_Click(object sender, EventArgs e)
 		{

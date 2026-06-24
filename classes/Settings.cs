@@ -232,6 +232,7 @@ namespace Idmr.Yogeme
 					RememberSelectedOrder= br.ReadBoolean();	// added in 1.13.12
 
 					FormScale = br.ReadSingle();
+					BriefingConfigsCollection.Load(fs, br);
 				}
 				catch { System.Diagnostics.Debug.WriteLine("old settings file"); /*do nothing*/ }
 
@@ -539,6 +540,8 @@ namespace Idmr.Yogeme
 			bw.Write(RememberSelectedOrder);
 
 			bw.Write(FormScale);
+			BriefingConfigsCollection.Save(fs, bw);
+
 			fs.SetLength(fs.Position);
 			fs.Close();
 			// remove Regkey if needed

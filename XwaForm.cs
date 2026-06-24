@@ -259,7 +259,7 @@ namespace Idmr.Yogeme
 		bool _loading;
 		bool _noRefresh = false;
 		MapForm _fMap;
-		BriefingForm _fBrief;
+		BriefingForm2 _fBrief;
 		LstForm _fLST;
 		FlightGroupLibraryForm _fLibrary;
 		Mission _mission;
@@ -1501,7 +1501,7 @@ namespace Idmr.Yogeme
 			setInteractiveLabelColor(lblSkipTrig2, _activeSkipTriggerIndex == 1);
 		}
 
-		void briefingModifiedCallback(object sender, EventArgs e) => Common.MarkDirty(this, _loading);
+		void briefingModifiedCallback(string tag, int index, object data) => Common.MarkDirty(this, _loading);
 
 		void colorizedComboBox_DrawItem(object sender, DrawItemEventArgs e)
 		{
@@ -1725,10 +1725,9 @@ namespace Idmr.Yogeme
 		void menuAbout_Click(object sender, EventArgs e) => new AboutDialog().ShowDialog();
 		void menuBrief_Click(object sender, EventArgs e)
 		{
-			Common.MarkDirty(this);
 			try { _fBrief.Close(); }
 			catch { /* do nothing */ }
-			_fBrief = new BriefingForm(_mission.Briefings, briefingModifiedCallback);
+			_fBrief = new BriefingForm2(_mission, briefingModifiedCallback);
 			_fBrief.Show();
 		}
 		void menuDelete_Click(object sender, EventArgs e)
