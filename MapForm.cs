@@ -2300,12 +2300,12 @@ namespace Idmr.Yogeme
 				arr[5] = fg[i].Waypoints[(int)Platform.Xwing.FlightGroup.WaypointIndex.WP2];
 				arr[6] = fg[i].Waypoints[(int)Platform.Xwing.FlightGroup.WaypointIndex.WP3];
 				arr[13] = fg[i].Waypoints[(int)Platform.Xwing.FlightGroup.WaypointIndex.Hyperspace];
-				arr[14] = fg[i].Waypoints[(int)Platform.Xwing.FlightGroup.WaypointIndex.CS1]; // (BRF1)
-				arr[15] = fg[i].Waypoints[(int)Platform.Xwing.FlightGroup.WaypointIndex.CS2]; // (BRF2)
-				arr[16] = fg[i].Waypoints[(int)Platform.Xwing.FlightGroup.WaypointIndex.CS3]; // (BRF3)
-				fg[i].Waypoints[(int)Platform.Xwing.FlightGroup.WaypointIndex.CS1].Enabled = true;  //For map purposes, we need to activate these waypoints.
-				fg[i].Waypoints[(int)Platform.Xwing.FlightGroup.WaypointIndex.CS2].Enabled = true;
-				fg[i].Waypoints[(int)Platform.Xwing.FlightGroup.WaypointIndex.CS3].Enabled = true;
+				arr[14] = fg[i].Waypoints[(int)Platform.Xwing.FlightGroup.WaypointIndex.Briefing1]; // (BRF1)
+				arr[15] = fg[i].Waypoints[(int)Platform.Xwing.FlightGroup.WaypointIndex.Briefing2]; // (BRF2)
+				arr[16] = fg[i].Waypoints[(int)Platform.Xwing.FlightGroup.WaypointIndex.Briefing3]; // (BRF3)
+				fg[i].Waypoints[(int)Platform.Xwing.FlightGroup.WaypointIndex.Briefing1].Enabled = true;  //For map purposes, we need to activate these waypoints.
+				fg[i].Waypoints[(int)Platform.Xwing.FlightGroup.WaypointIndex.Briefing2].Enabled = true;
+				fg[i].Waypoints[(int)Platform.Xwing.FlightGroup.WaypointIndex.Briefing3].Enabled = true;
 
 				_mapData[i].WPs[0] = arr;
 				if (fg[i].IFF == 0 && fg[i].IsObjectGroup()) _mapData[i].IFF = 1; //None/Default objects appear as Imperial.
