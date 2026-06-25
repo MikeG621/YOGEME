@@ -283,6 +283,7 @@
     <Compile Include="GlobalSummaryDialog.Designer.cs">
       <DependentUpon>GlobalSummaryDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="HyperbuoyDialog.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -3,9 +3,10 @@
  * Copyright (C) 2007-2026 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.17.6
+ * VERSION: 1.17.6+
  *
  * CHANGELOG
+ * [UPD] LfdReader v3 update
  * v1.17.6, 260307
  * [FIX #132] Text wouldn't save due to not being marked Dirty
  * [UPD] Redid some of the _loading flags
@@ -135,17 +136,17 @@ namespace Idmr.Yogeme
 			lblBattle.Text = txt.Name;
 			_numMiss = txt.NumberOfStrings - 4;
 			// Titles
-			string[] strTemp = txt.Strings[0].Split('\0');
+			string[] strTemp = txt.Strings[0].GetSubstringArray();
 			txtBattle.Text = strTemp[0];
 			txtCutscene.Text = strTemp[1];
 			// Text
-			strTemp = txt.Strings[1].Split('\0');
+			strTemp = txt.Strings[1].GetSubstringArray();
 			txtBTitle1.Text = strTemp[0];
 			txtBTitle2.Text = strTemp[1];
 			txtCTitle1.Text = strTemp[2];
 			if (strTemp.Length == 4) txtCTitle2.Text = strTemp[3];  // TFW's fault, either left off, or only appends '\0', not '\0\0'
-																	// System
-			strTemp = txt.Strings[2].Split('\0');
+			// System
+			strTemp = txt.Strings[2].GetSubstringArray();
 			_deltName = strTemp[0];
 			txtSystem.Text = strTemp[1];
 			// Image Frame
@@ -156,15 +157,11 @@ namespace Idmr.Yogeme
 			numFrameWidth.Value = Convert.ToInt32(str_frame[3]);
 			drawFrame();
 			// Missions
-			strTemp = txt.Strings[3].Split('\0');
+			strTemp = txt.Strings[3].GetSubstringArray();
 			for (int i = 0; i < strTemp.Length; i++) _missionFiles[i] = strTemp[i];
 			for (int i = 0; i < _numMiss; i++) lstMiss.Items.Add(_missionFiles[i]);
 			// Descriptions
-			for (int i = 0; i < _numMiss; i++)
-			{
-				_missionDescriptions[i] = txt.Strings[4 + i];
-				_missionDescriptions[i] = _missionDescriptions[i].TrimEnd('\0').Replace("\0", "\r\n");
-			}
+			for (int i = 0; i < _numMiss; i++) _missionDescriptions[i] = txt.Strings[4 + i].FormattedValue;
 			txtDesc.Text = _missionDescriptions[0];
 			// System image
 			try
@@ -224,11 +221,11 @@ namespace Idmr.Yogeme
 		{
 			Text tex = (Text)_battle.Resources[0];
 			tex.NumberOfStrings = (short)(_numMiss + 4);
-			tex.Strings[0] = txtBattle.Text + '\0' + txtCutscene.Text;
-			tex.Strings[1] = txtBTitle1.Text + '\0' + txtBTitle2.Text + '\0' + txtCTitle1.Text + '\0' + txtCTitle2.Text;
-			tex.Strings[2] = _deltName + '\0' + txtSystem.Text + '\0' + numFrameTop.Value + ' ' + numFrameHeight.Value + ' ' + numFrameLeft.Value + ' ' + numFrameWidth.Value;
-			tex.Strings[3] = string.Join("\0", _missionFiles);
-			for (int i = 0; i < _numMiss; i++) tex.Strings[4 + i] = _missionDescriptions[i].Replace("\r\n", "\0");
+			tex.Strings[0].Value = txtBattle.Text + '\0' + txtCutscene.Text;
+			tex.Strings[1].Value = txtBTitle1.Text + '\0' + txtBTitle2.Text + '\0' + txtCTitle1.Text + '\0' + txtCTitle2.Text;
+			tex.Strings[2].Value = _deltName + '\0' + txtSystem.Text + '\0' + numFrameTop.Value + ' ' + numFrameHeight.Value + ' ' + numFrameLeft.Value + ' ' + numFrameWidth.Value;
+			tex.Strings[3].Value = string.Join("\0", _missionFiles);
+			for (int i = 0; i < _numMiss; i++) tex.Strings[4 + i].FormattedValue = _missionDescriptions[i];
 			try { _battle.Write(); }
 			catch (Exception x) { System.Diagnostics.Debug.WriteLine("Battle save failure"); throw x; }
 		}
