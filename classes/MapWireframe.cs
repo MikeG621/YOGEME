@@ -1,12 +1,13 @@
 ﻿/*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
- * Copyright (C) 2007-2024 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2026 Michael Gaisser (mjgaisser@gmail.com)
  * This file authored by "JB" (Random Starfighter) (randomstarfighter@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.16
+ * VERSION: 1.16+
  *
  * CHANGELOG
+ * [UPD] LfdReader v3 updates
  * v1.16, 241013
  * [UPD] cleanup
  * v1.13.12, 230116
@@ -589,6 +590,7 @@ namespace Idmr.Yogeme.MapWireframe
                 else return false;  // just in case the Type is something random, shouldn't ever happen
             }
 			catch { return false; }
+			rmap.Dispose();
 
 			return true;
 		}
@@ -601,11 +603,13 @@ namespace Idmr.Yogeme.MapWireframe
 			{
 				Crft crft = new Crft(lfdName, offset);
 				ship = crft;
+				crft.Dispose();
 			}
 			else
 			{
 				Cplx cplx = new Cplx(lfdName, offset);
 				ship = cplx;
+				cplx.Dispose();
             }
 
 			Craft = ship;
@@ -637,7 +641,6 @@ namespace Idmr.Yogeme.MapWireframe
 		/// <summary>Creates a definition from a loaded OPT.</summary>
 		/// <param name="opt">The source OPT object</param>
 		/// <remarks>Performs some basic optimization to prevent shared edges, so that lines don't have to be drawn twice.</remarks>
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0059:Unnecessary assignment of a value", Justification = "assignment function performs other necessary actions")]
 		public WireframeDefinition(OptFile opt)
 		{
 			MeshLayerDefinition layer = getOrCreateMeshLayerDefinition(MeshType.MainHull);  // Create a default entry so that it's first in the list, for drawing purposes.
@@ -721,23 +724,21 @@ namespace Idmr.Yogeme.MapWireframe
 			if (craft == null || craft.Craft == null) return;
 
 			// This function is conceptually similar to creating from OPT, except we already have our lines and don't need to examine the faces.
-#pragma warning disable IDE0059 // Unnecessary assignment of a value: assignment function performs other necessary actions
 			MeshLayerDefinition layer = getOrCreateMeshLayerDefinition(MeshType.MainHull);
-#pragma warning restore IDE0059 // Unnecessary assignment of a value
-			for (int i = 0; i < craft.Craft.Components.Length; i++)
+			for (int i = 0; i < craft.Craft.Components.Count; i++)
 			{
 				var comp = craft.Craft.Components[i];
-				if (comp.Lods.Length == 0)
+				if (comp.Lods.Count == 0)
 					continue;
 				var lod = comp.Lods[0];
 
-				int[] vertUsed = new int[lod.MeshVertices.Length];
+				int[] vertUsed = new int[lod.MeshVertices.Count];
 				HashSet<int> lineUsed = new HashSet<int>();
 
 				layer = getOrCreateMeshLayerDefinition((MeshType)comp.MeshType);
-				for (int j = 0; j < lod.Shapes.Length; j++)
+				for (int j = 0; j < lod.Shapes.Count; j++)
 				{
-					for (int l = 0; l < lod.Shapes[j].Lines.Length; l++)
+					for (int l = 0; l < lod.Shapes[j].Lines.Count; l++)
 					{
 						int v1, v2;
 						v1 = lod.Shapes[j].Lines[l].Vertex1;
@@ -849,7 +850,7 @@ namespace Idmr.Yogeme.MapWireframe
 		/// <summary>Gets the span of the widest dimension, derived from bounding box, expressed in raw units (40960 units = 1 km)</summary>
 		public int LongestSpanRaw { get; private set; }
 		/// <summary>Gets the span of the widest dimension, derived from bounding box, expressed in meters.</summary>
-		public int LongestSpanMeters { get { return (int)(LongestSpanRaw / 40.96); } }
+		public int LongestSpanMeters => (int)(LongestSpanRaw / 40.96);
 		/// <summary>Gets the mesh source</summary>
 		public List<MeshLayerDefinition> MeshLayerDefinitions { get; } = new List<MeshLayerDefinition>();
 	}
@@ -1185,6 +1186,7 @@ namespace Idmr.Yogeme.MapWireframe
 				}
 				def = new WireframeDefinition(craft);
 				def.Scale(scale);
+				craft.Craft.Dispose();
 			}
 			_wireframeDefinitions.Add(craftType, def);
 			return def;
