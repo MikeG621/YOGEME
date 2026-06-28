@@ -7,7 +7,7 @@
  * VERSION: 1.17.7+
  *
  * CHANGELOG
- * [NEW] created
+ * [NEW #137] created
  */
 
 // All these require DEBUG too.
@@ -50,7 +50,6 @@ using System.Windows.Forms;
 using System.Windows.Media.Media3D;   // For Vector3D
 using Idmr.LfdReader;
 using Idmr.Platform;
-using Idmr.Platform.Xwing;
 
 namespace Idmr.Yogeme
 {
@@ -5869,7 +5868,7 @@ namespace Idmr.Yogeme
 			// away from, the center of the canvas.
 			// Determines the offset between the source (where it blits the map from) and the destination
 			// where it blits to.
-			var map = getXwingPanel(PageTemplate.Elements.Map);
+			var map = getXwingPanel(Platform.Xwing.PageTemplate.Elements.Map);
 			var r = getXwingDestinationRect(map, isXwingHighDef() ? 2 : 1);
 			return new Point(_xwingSourceViewport[4].X - r.X, _xwingSourceViewport[4].Top);
 		}
@@ -7126,6 +7125,7 @@ namespace Idmr.Yogeme
 		short[] getTagUsageArray(int time, AbstractEventType start, AbstractEventType end, AbstractEventType clear)
 		{
 			short[] result = new short[8];
+			for (int i = 0; i < result.Length; i++) result[i] = -1;
 
 			foreach (var evt in _events)
 			{
@@ -7136,7 +7136,7 @@ namespace Idmr.Yogeme
 				}
 				else if (evt.Event == clear || evt.Event == AbstractEventType.XwaChangeRegion)
 				{
-					if (evt.Time <= time) Array.Clear(result, 0, result.Length);
+					if (evt.Time <= time) for (int i = 0; i < result.Length; i++) result[i] = -1;
 					else break;        // Don't check beyond the specified time
 				}
 			}
@@ -7238,8 +7238,8 @@ namespace Idmr.Yogeme
 				int tagTime = usage[i];
 				string s = "#" + (i + 1);
 				if (i == curIndex) s += " (this)";
-				else if (tagTime != 0 && tagTime <= curTime) s += " (in use)";
-				else if (tagTime != 0 && tagTime > curTime) s += " (later)";
+				else if (tagTime != -1 && tagTime <= curTime) s += " (in use)";
+				else if (tagTime != -1 && tagTime > curTime) s += " (later)";
 				cbo.Items.Add(s);
 			}
 
@@ -7345,8 +7345,8 @@ namespace Idmr.Yogeme
 				{
 					// Dynamically display the extra panel buttons depending on whether they're enabled in the current page settings.
 					// Almost nobody will ever use these.  No need to clutter the sidebar if the panels are disabled.
-					PagePanel panel3 = getXwingPanel(PageTemplate.Elements.Panel3);
-					PagePanel panel4 = getXwingPanel(PageTemplate.Elements.Panel4);
+					var panel3 = getXwingPanel(Platform.Xwing.PageTemplate.Elements.Panel3);
+					var panel4 = getXwingPanel(Platform.Xwing.PageTemplate.Elements.Panel4);
 					cmdPanel3.Visible = (panel3.IsVisible && panel3.Right != 0 && panel3.Bottom != 0);
 					cmdPanel4.Visible = (panel4.IsVisible && panel4.Right != 0 && panel4.Bottom != 0);
 
@@ -8824,7 +8824,7 @@ namespace Idmr.Yogeme
 		/// <summary>Toggles the Enabled state of the temp event buttons on the map tab, based on whether the selected briefing page has a map or not.</summary>
 		void refreshXwingTempCreateButtons()
 		{
-			bool isMap = getXwingPanel(PageTemplate.Elements.Map).IsVisible;
+			bool isMap = getXwingPanel(Platform.Xwing.PageTemplate.Elements.Map).IsVisible;
 			cmdClear.Enabled = isMap;
 			cmdFG.Enabled = isMap;
 			cmdText.Enabled = isMap;
@@ -8842,7 +8842,7 @@ namespace Idmr.Yogeme
 			bool info = eventType != AbstractEventType.TitleText;
 			if (isXwing)
 			{
-				var title = getXwingPanel(PageTemplate.Elements.Title);
+				var title = getXwingPanel(Platform.Xwing.PageTemplate.Elements.Title);
 				if (!title.IsVisible || title.Right - title.Left < 180) info = false;
 			}
 			if (info)
@@ -10408,7 +10408,7 @@ namespace Idmr.Yogeme
 		}
 
 		/// <summary>Retrieves the page template that is currently visible on the map in panel mode.</summary>
-		PageTemplate getPanelModePageTemplate()
+		Platform.Xwing.PageTemplate getPanelModePageTemplate()
 		{
 			var core = getXwingCoreBriefing();
 			int pageType = core.Pages[_currentBriefingIndex].PageType;
@@ -10416,7 +10416,7 @@ namespace Idmr.Yogeme
 		}
 
 		/// <summary>Retrieves the currently selected panel in panel mode.</summary>
-		PagePanel getPanelModePagePanel()
+		Platform.Xwing.PagePanel getPanelModePagePanel()
 		{
 			var template = getPanelModePageTemplate();
 			// Sometimes this can lose selection when swapping pages.
@@ -11612,8 +11612,8 @@ namespace Idmr.Yogeme
 
 			if (isXwing)
 			{
-				if (_pendingRedraw.HasFlag(RefreshFlags.Panel3)) drawXwingAuxPanel(_xwingPanel3Canvas, PageTemplate.Elements.Panel3, AbstractEventType.PanelText3);
-				if (_pendingRedraw.HasFlag(RefreshFlags.Panel4)) drawXwingAuxPanel(_xwingPanel4Canvas, PageTemplate.Elements.Panel4, AbstractEventType.PanelText4);
+				if (_pendingRedraw.HasFlag(RefreshFlags.Panel3)) drawXwingAuxPanel(_xwingPanel3Canvas, Platform.Xwing.PageTemplate.Elements.Panel3, AbstractEventType.PanelText3);
+				if (_pendingRedraw.HasFlag(RefreshFlags.Panel4)) drawXwingAuxPanel(_xwingPanel4Canvas, Platform.Xwing.PageTemplate.Elements.Panel4, AbstractEventType.PanelText4);
 			}
 
 			// Anything in the map display needs to refresh the combined canvas.
@@ -11783,7 +11783,7 @@ namespace Idmr.Yogeme
 				}
 				else if (isXwingPanelEditIndexSelected(4))
 				{
-					var r = getXwingSelectionRect(PageTemplate.Elements.Map, _mapCanvas);
+					var r = getXwingSelectionRect(Platform.Xwing.PageTemplate.Elements.Map, _mapCanvas);
 					drawPanelSelectionBracket(g, r);
 				}
 			}
@@ -11957,7 +11957,7 @@ namespace Idmr.Yogeme
 						xpos = isXwingHighDef() ? 10 : 4;
 						ypos = isXwingHighDef() ? 6 : 3;
 						int scale = isXwingHighDef() ? 2 : 1;
-						var item = getXwingPanel(PageTemplate.Elements.Title);
+						var item = getXwingPanel(Platform.Xwing.PageTemplate.Elements.Title);
 						width = (item.Right - item.Left) * scale;
 						height = (item.Bottom - item.Top) * scale;
 						if (isXwingHighDef())
@@ -12005,7 +12005,7 @@ namespace Idmr.Yogeme
 					// The XWING canvas is maximum size to accommodate arbitrary sizes.
 					// Only draw the source that was copied, which conforms to the viewport size.
 					// In TIE, the title is larger for the sake of overflow text, but we don't want that height here.
-					if (isXwing) r = getXwingSelectionRect(PageTemplate.Elements.Title, _titleCanvas);
+					if (isXwing) r = getXwingSelectionRect(Platform.Xwing.PageTemplate.Elements.Title, _titleCanvas);
 					else if (isTie) r.Height = 11;
 					drawPanelSelectionBracket(g, r);
 				}
@@ -12041,14 +12041,14 @@ namespace Idmr.Yogeme
 				int height = _captionCanvas.Height;
 				if (isXwing)
 				{
-					var item = getXwingPanel(PageTemplate.Elements.Caption);
+					var item = getXwingPanel(Platform.Xwing.PageTemplate.Elements.Caption);
 					int scale = isXwingHighDef() ? 2 : 1;
 					width = (item.Right - item.Left) * scale;
 
 					if (isXwingHighDef())
 					{
 						width -= 6;
-						if (getXwingPanel(PageTemplate.Elements.Map).IsVisible)
+						if (getXwingPanel(Platform.Xwing.PageTemplate.Elements.Map).IsVisible)
 						{
 							// NOTE: If xpos changes, modify the string drawing function.  It has a special condition
 							// needed to get centering via ">" to work properly, and it checks for this value.
@@ -12090,19 +12090,19 @@ namespace Idmr.Yogeme
 				if (selected || xwingSelected)
 				{
 					Rectangle r = new Rectangle(0, 0, _captionCanvas.Width - 1, _captionCanvas.Height - 1);
-					if (isXwing) r = getXwingSelectionRect(PageTemplate.Elements.Caption, _titleCanvas);
+					if (isXwing) r = getXwingSelectionRect(Platform.Xwing.PageTemplate.Elements.Caption, _titleCanvas);
 					else if (isTie) r.Height--;
 					drawPanelSelectionBracket(g, r);
 				}
 			}
 		}
 
-		void drawXwingAuxPanel(Bitmap canvas, PageTemplate.Elements panel, AbstractEventType eventType)
+		void drawXwingAuxPanel(Bitmap canvas, Platform.Xwing.PageTemplate.Elements panel, AbstractEventType eventType)
 		{
 			var item = getXwingPanel(panel);
 			if (canvas == null || !item.IsVisible) return;
 
-			int panelIndex = (panel == PageTemplate.Elements.Panel3 ? PANEL_XWING3 : PANEL_XWING4);
+			int panelIndex = (panel == Platform.Xwing.PageTemplate.Elements.Panel3 ? PANEL_XWING3 : PANEL_XWING4);
 			int stringIndex = _panelStringIndex[panelIndex];
 			int lastEventUid = _panelStringEventUid[panelIndex];
 
@@ -12132,7 +12132,7 @@ namespace Idmr.Yogeme
 
 				// If the panel extends to the bottom, allow the full canvas height so that it can use the extra
 				// space in high def mode.  Panel4 does not use the extra height.
-				if (item.Bottom < 138 || panel == PageTemplate.Elements.Panel4) height = (item.Bottom - item.Top) * scale;
+				if (item.Bottom < 138 || panel == Platform.Xwing.PageTemplate.Elements.Panel4) height = (item.Bottom - item.Top) * scale;
 
 				int xpos = 4;
 				int ypos = 3;
@@ -13170,7 +13170,7 @@ namespace Idmr.Yogeme
 			// XWING and TIE have borders surrounding the map panel.
 			if (isXwing)
 			{
-				var map = getXwingPanel(PageTemplate.Elements.Map);
+				var map = getXwingPanel(Platform.Xwing.PageTemplate.Elements.Map);
 				var rect = getXwingDestinationRect(map, isXwingHighDef() ? 2 : 1);
 				rect.Location = getXwingMapSourceLocation(rect);
 				rect.Width--;
@@ -14393,7 +14393,7 @@ namespace Idmr.Yogeme
 		/// <summary>Retrieves the rectangle used for a specific panel, scaled if necessary.</summary>
 		/// <param name="panel">The original configuration of the panel.  Will always contain low-res coordinates.</param>
 		/// <param name="scale">Scale to apply.  Should be 1 for low-def, or 2 for high-def.</param>
-		Rectangle getXwingDestinationRect(PagePanel panel, int scale)
+		Rectangle getXwingDestinationRect(Platform.Xwing.PagePanel panel, int scale)
 		{
 			// NOTE: This used to clamp to the actual bitmap size, but this caused text to be misaligned.
 			int x1 = panel.Left * scale;
@@ -14406,7 +14406,7 @@ namespace Idmr.Yogeme
 		/// <summary>Returns a clamped rectangle that fits inside the canvas for the selection bracket.</summary>
 		/// <param name="panel">Panel to retrieve.</param>
 		/// <param name="canvas">Canvas bitmap used for clamping dimensions.</param>
-		Rectangle getXwingSelectionRect(PageTemplate.Elements panel, Bitmap canvas)
+		Rectangle getXwingSelectionRect(Platform.Xwing.PageTemplate.Elements panel, Bitmap canvas)
 		{
 			// The original panel destination rectangle is not clamped, which is intentional and necessary
 			// for alignment to work properly in high-def mode.  For example, the right edge could be
@@ -14420,7 +14420,7 @@ namespace Idmr.Yogeme
 			
 			var d = getXwingDestinationRect(getXwingPanel(panel), isXwingHighDef() ? 2 : 1);
 			var r = _xwingSourceViewport[(int)panel];
-			if (panel == PageTemplate.Elements.Map)
+			if (panel == Platform.Xwing.PageTemplate.Elements.Map)
 			{
 				// Needs to be adjusted slightly.  View area is constrained by the output.
 				d.Location = getXwingMapSourceLocation(d);
@@ -14531,7 +14531,7 @@ namespace Idmr.Yogeme
 		}
 
 		/// <summary>Refreshes the lines in a listbox that contains panels and their visibility status.</summary>
-		void refreshPanelListBox(ListBox listbox, PageTemplate template, bool showPanelNum)
+		void refreshPanelListBox(ListBox listbox, Platform.Xwing.PageTemplate template, bool showPanelNum)
 		{
 			bool temp = _loading;
 			_loading = true;
@@ -14558,10 +14558,10 @@ namespace Idmr.Yogeme
 
 		/// <summary>Refreshes the numeric control that displays the estimated number of text lines in a panel.</summary>
 		/// <remarks>This control is shared by panel mode and the XWING settings tab.</remarks>
-		void refreshPanelTextLines(PageTemplate template, int panelIndex)
+		void refreshPanelTextLines(Platform.Xwing.PageTemplate template, int panelIndex)
 		{
 			var thisPanel = template.Items[panelIndex];
-			var map = template.GetElement(PageTemplate.Elements.Map);
+			var map = template.GetElement(Platform.Xwing.PageTemplate.Elements.Map);
 			bool visible = (thisPanel != map && map.IsVisible && thisPanel.IsVisible);
 
 			lblPanelTextLines.Enabled = visible;
@@ -14577,16 +14577,16 @@ namespace Idmr.Yogeme
 
 		/// <summary>Retrieves a panel element from the currently selected briefing page that's visible on the display canvas.</summary>
 		/// <remarks>This is for the main display, not necessarily panel mode.</remarks>
-		PagePanel getXwingPanel(Platform.Xwing.PageTemplate.Elements item)
+		Platform.Xwing.PagePanel getXwingPanel(Platform.Xwing.PageTemplate.Elements item)
 		{
 			var core = getXwingCoreBriefing();
 			int pageType = core.Pages[_currentBriefingIndex].PageType;
 			return core.Templates[pageType].GetElement(item);
 		}
 		/// <summary>Retrieve the page template being edited, either in panel mode or the XWING settings tab.</summary>
-		PageTemplate getWorkingPageTemplate() => (_panelMode ? getPanelModePageTemplate() : getXwingTabSelectedPageType());
+		Platform.Xwing.PageTemplate getWorkingPageTemplate() => (_panelMode ? getPanelModePageTemplate() : getXwingTabSelectedPageType());
 		/// <summary>Retrieve the page panel being edited, either in panel mode or the XWING settings tab.</summary>
-		PagePanel getWorkingPagePanel() => (_panelMode ? getPanelModePagePanel() : getXwingTabSelectedPanel());
+		Platform.Xwing.PagePanel getWorkingPagePanel() => (_panelMode ? getPanelModePagePanel() : getXwingTabSelectedPanel());
 		int getWorkingPanelIndex() => Math.Max(0, (_panelMode ? lstPanelMode.SelectedIndex : lstXwingPagePanels.SelectedIndex));
 
 		/// <summary>Saves the frontend panel values into the mission.</summary>
@@ -14971,7 +14971,7 @@ namespace Idmr.Yogeme
 			{
 				var pageType = core.Templates[i];
 				
-				bool isMap = pageType.GetElement(PageTemplate.Elements.Map).IsVisible;
+				bool isMap = pageType.GetElement(Platform.Xwing.PageTemplate.Elements.Map).IsVisible;
 				if (i == 0 && !isMap) verifyAddMessage(false, false, report, "Page #1 must contain a map in XWVM");
 				else if (i > 0 && isMap) verifyAddMessage(false, false, report, $"Page #{i + 1} must be text-only in XWVM");
 
@@ -16302,7 +16302,7 @@ namespace Idmr.Yogeme
 			// Parse everything in the file.
 			string[] lines = splitTrim(text, '\n');
 			int section;
-			PageTemplate xwingCurTemplate = null;
+			Platform.Xwing.PageTemplate xwingCurTemplate = null;
 
 			// Check for signature to make sure it's not a random text file.
 			if (file && lines.Length > 0 && !stringEqual(lines[0], "[YOGEME]")) return false;
@@ -16348,7 +16348,7 @@ namespace Idmr.Yogeme
 						}
 						else
 						{
-							while (pageNum > dat.XwingPageTemplates.Count) dat.XwingPageTemplates.Add(new PageTemplate());
+							while (pageNum > dat.XwingPageTemplates.Count) dat.XwingPageTemplates.Add(new Platform.Xwing.PageTemplate());
 
 							section = 6;
 							dat.AddSection(ImportData.Section.PageTypes);
@@ -16490,7 +16490,7 @@ namespace Idmr.Yogeme
 							return false;
 						}
 
-						PagePanel item = xwingCurTemplate.Items[index];
+						var item = xwingCurTemplate.Items[index];
 						item.Left = (short)parseInt(getSafeString(tok, 0));
 						item.Top = (short)parseInt(getSafeString(tok, 1));
 						item.Right = (short)parseInt(getSafeString(tok, 2));
@@ -16887,8 +16887,8 @@ namespace Idmr.Yogeme
 
 			_loading = temp;
 		}
-		
-		PageTemplate getXwingTabSelectedPageType()
+
+		Platform.Xwing.PageTemplate getXwingTabSelectedPageType()
 		{
 			var data = getXwingCoreBriefing();
 			int pageIndex = lstXwingPageTypes.SelectedIndex;
@@ -16903,7 +16903,7 @@ namespace Idmr.Yogeme
 			return data.Templates[pageIndex];
 		}
 
-		PagePanel getXwingTabSelectedPanel()
+		Platform.Xwing.PagePanel getXwingTabSelectedPanel()
 		{
 			var template = getXwingTabSelectedPageType();
 			int panIndex = Math.Max(0, lstXwingPagePanels.SelectedIndex);
@@ -18246,9 +18246,9 @@ namespace Idmr.Yogeme
 
 			var template = getWorkingPageTemplate();
 			var thisPanel = getWorkingPagePanel();
-			var title = template.GetElement(PageTemplate.Elements.Title);
-			var map = template.GetElement(PageTemplate.Elements.Map);
-			var caption = template.GetElement(PageTemplate.Elements.Caption);
+			var title = template.GetElement(Platform.Xwing.PageTemplate.Elements.Title);
+			var map = template.GetElement(Platform.Xwing.PageTemplate.Elements.Map);
+			var caption = template.GetElement(Platform.Xwing.PageTemplate.Elements.Caption);
 
 			// Resize and realign caption and map according to the selected line count.
 			int lines = (int)numPanelTextLines.Value;
@@ -19309,9 +19309,9 @@ namespace Idmr.Yogeme
 			}
 
 			data.Templates.Clear();
-			PageTemplate map = new PageTemplate();
+			Platform.Xwing.PageTemplate map = new Platform.Xwing.PageTemplate();
 			map.SetDefaultsToMapPage();
-			PageTemplate text = new PageTemplate();
+			Platform.Xwing.PageTemplate text = new Platform.Xwing.PageTemplate();
 			text.SetDefaultsToTextPage();
 			data.Templates.Add(map);
 			data.Templates.Add(text);
@@ -19330,7 +19330,7 @@ namespace Idmr.Yogeme
 
 			// Append a new text type, refresh, and select it.
 			var core = getXwingCoreBriefing();
-			PageTemplate text = new PageTemplate();
+			Platform.Xwing.PageTemplate text = new Platform.Xwing.PageTemplate();
 			text.SetDefaultsToTextPage();
 			core.Templates.Add(text);
 			lstXwingPageTypes.Items.Add("");
@@ -19433,7 +19433,7 @@ namespace Idmr.Yogeme
 			int pageType = 0;
 			for (int i = 0; i < core.Templates.Count; i++)
 			{
-				bool isMap = core.Templates[i].GetElement(PageTemplate.Elements.Map).IsVisible;
+				bool isMap = core.Templates[i].GetElement(Platform.Xwing.PageTemplate.Elements.Map).IsVisible;
 				if (newType == 0 && isMap) pageType = i;
 				else if (newType >= 1 && !isMap) pageType = i;
 			}
@@ -19476,7 +19476,7 @@ namespace Idmr.Yogeme
 			// Refresh any generated strings.
 			if (newType == 2 || optXwingStringPlaceholder.Checked) refreshXwingTabStrings();
 
-			BriefingPage page = new BriefingPage
+			Platform.Xwing.BriefingPage page = new Platform.Xwing.BriefingPage
 			{
 				PageType = (short)pageType,
 				Waypoint = (short)waypoint
@@ -19829,7 +19829,7 @@ namespace Idmr.Yogeme
 		{
 			public List<AbstractBriefing> Briefings = new List<AbstractBriefing>();
 			public List<AbstractFlightgroup> Flightgroups = new List<AbstractFlightgroup>();
-			public List<PageTemplate> XwingPageTemplates = new List<PageTemplate>();
+			public List<Platform.Xwing.PageTemplate> XwingPageTemplates = new List<Platform.Xwing.PageTemplate>();
 			public int XwingPageWaypoint = 0;
 			public bool IsTextImport = false;
 			public Section TextSections = Section.None;
@@ -21126,6 +21126,13 @@ namespace Idmr.Yogeme
 	/// <remarks>Each platform's params are separate, except XvT and BoP which share the same object.</remarks>
 	public class BriefingConfigsCollection
 	{
+		/*
+		 * int START_TAG
+		 * int Size: total byte length, including TAGs
+		 * short Version
+		 * BriefingConfig[4] { XW, TIE, XvT/BoP, XWA }
+		 * int END_TAG
+		 */
 		/// <summary>Version identifying the binary format.  If the version changes, the values will revert to default.</summary>
 		private const short ExpectedVersion = 1;
 

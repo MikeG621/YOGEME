@@ -1,11 +1,12 @@
 /*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
- * Copyright (C) 2007-2024 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2026 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.16
+ * VERSION: 1.16+
  *
  * CHANGELOG
+ * [NEW #137] FormScaler implemented
  * v1.16, 241013
  * [UPD] cleanup
  * v1.15.6, 240311
@@ -55,7 +56,7 @@ namespace Idmr.Yogeme
 		readonly Settings _config = Settings.GetInstance();
 		readonly EventHandler _closeCallback;
 
-		FormScaler _scaler = null;
+		readonly FormScaler _scaler = null;
 
 		/// <summary>Initialize and load the user's settings</summary>
 		/// <param name="config">The Settings config of the current user</param>

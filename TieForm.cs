@@ -7,6 +7,8 @@
  *
  * CHANGELOG
  * [UPD] LfdReader v3 update
+ * [UPD #137] switch to new BriefingForm
+ * [NEW #137] FormScaler implemented
  * v1.17.7, 260327
  * [FIX #134] Strip line breaks from Officer Questions (bad external copy/paste)
  * [UPD] WordWrap disabled in the Officers text box

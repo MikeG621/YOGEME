@@ -1,11 +1,12 @@
 ﻿/*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
- * Copyright (C) 2007-2024 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2026 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.16
+ * VERSION: 1.16+
  *
  * CHANGELOG
+ * [NEW #137] FormScale
  * v1.16, 241013
  * [UPD] class is now a Singleton
  * [UPD] LoadSettings and CheckPlatforms now private, weren't used elsewhere anyway
@@ -231,7 +232,7 @@ namespace Idmr.Yogeme
 
 					RememberSelectedOrder= br.ReadBoolean();	// added in 1.13.12
 
-					FormScale = br.ReadSingle();
+					FormScale = br.ReadSingle();	// added in XXX [JB]
 					BriefingConfigsCollection.Load(fs, br);
 				}
 				catch { System.Diagnostics.Debug.WriteLine("old settings file"); /*do nothing*/ }
@@ -452,7 +453,7 @@ namespace Idmr.Yogeme
 			FileStream fs = File.OpenWrite(_settingsDir + "\\Settings.dat");
 			BinaryWriter bw = new BinaryWriter(fs);
 			fs.WriteByte(0xFF);
-			fs.WriteByte(0x09);
+			fs.WriteByte(0x0A);
 			bw.Write(BopInstalled);
 			if (_bopPath != null) bw.Write(_bopPath);
 			else bw.Write("");
@@ -791,8 +792,9 @@ namespace Idmr.Yogeme
 	}
 	/* Settings and values
 	 * (version) Name TYPE: notes
+	 * 
 	 * (v3+) RESERVED BYTE: 0xFF
-	 * (v3+) Version BYTE: 0x07
+	 * (v3+) Version BYTE: 0x0A
 	 * BopInstalled BOOL:
 	 * BopPath STR: path to BoP directory
 	 * (v-3) CheckInstall BOOL: **DEPRECATED**
@@ -870,5 +872,8 @@ namespace Idmr.Yogeme
 	 * (v7+) MapSnapAmount FLOAT:
 	 * (v7+) MapSnapUnit BYTE: 0 = km, 1 = Raw
 	 * (v8+) OneIndexedFGs BOOL:
+	 * (v9+) RememberSelectedOrder BOOL:
+	 * (v10+) FormScale FLOAT:
+	 * (v10+) BriefingSettings: See BriefingForm2 for the details
 	 */
 }

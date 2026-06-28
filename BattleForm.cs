@@ -7,6 +7,7 @@
  *
  * CHANGELOG
  * [UPD] LfdReader v3 update
+ * [NEW #137] FormScaler implemented
  * v1.17.6, 260307
  * [FIX #132] Text wouldn't save due to not being marked Dirty
  * [UPD] Redid some of the _loading flags

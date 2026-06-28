@@ -7,6 +7,7 @@
  *
  * CHANGELOG
  * [UPD] LfdReader v3 update
+ * [NEW #137] FormScaler implemented
  * v1.16, 241013
  * [UPD] cleanup
  * v1.12, 220103
