@@ -64,7 +64,7 @@ namespace Idmr.Yogeme
 		bool _loading = false;                // If true, form controls can be initialized without invoking data changes.
 		bool _isDirty = false;                // If true, the briefing data will be exported and saved when the form is closed.
 		bool _isFinishedLoading = false;      // If true, all fields that require initialization or assignment have finished loading.  The program state is valid.
-		HashSet<int> _pendingWaypointSync = new HashSet<int>();
+		readonly HashSet<int> _pendingWaypointSync = new HashSet<int>();
 		string _titleString = "";             // Empty for XW and TIE.  The loaded mission title for XvT or XWA, or the placeholder if not loaded.
 		string _titleOverrideString = "";     // String to appear in place of the title text.  Used to convey certain information to the user.
 		int _titleOverrideTime = 0;           // Time remaining (in milliseconds), to display an override string if it should automatically expire.  If zero, the override is persistent until changed.
@@ -82,20 +82,20 @@ namespace Idmr.Yogeme
 		/// <remarks>For XW and TIE it will be the briefing itself.  For XvT and XWA it will the briefing collection.</remarks>
 		readonly object _corePlatformBriefing = null;
 
-		List<AbstractBriefing> _briefingList;   // The abstraction layer that holds all information imported from a mission
+		readonly List<AbstractBriefing> _briefingList;   // The abstraction layer that holds all information imported from a mission
 		int _currentBriefingIndex = 0;          // Current briefing selected in the dropdown, loaded into the frontend
 		int _currentTeamIndex = 0;              // Team index, only used by XvT for player numbering
 
 		// Active information loaded from the currently selected briefing, or the mission itself.
 		List<AbstractFlightgroup> _flightgroups;
-		List<string> _tags = new List<string>();
-		List<string> _strings = new List<string>();
-		List<string> _captionNotes = new List<string>();
-		List<AbstractEvent> _events = new List<AbstractEvent>();
+		readonly List<string> _tags = new List<string>();
+		readonly List<string> _strings = new List<string>();
+		readonly List<string> _captionNotes = new List<string>();
+		readonly List<AbstractEvent> _events = new List<AbstractEvent>();
 
 		// Other runtime information, some are platform specific.
-		string[] _teamNames = new string[10];
-		string[] _regionNames = new string[4];
+		readonly string[] _teamNames = new string[10];
+		readonly string[] _regionNames = new string[4];
 		string[] _iffNames;
 
 		// The maximum safe limit for strings, excluding null terminators.  Default for XvT/XWA.  XWING and TIE override on init.
@@ -115,7 +115,7 @@ namespace Idmr.Yogeme
 		BriefingFont _tagFont = new BriefingFont(BitmapCacheType.FontTag);
 		BriefingFont _fontAltCaption = null;    // Holds high def font in XWING, larger font in XvT/XWA
 		BriefingFont _fontAltTag = null;        // Holds high def font in XWING
-		Dictionary<long, Bitmap> _bitmapCache = new Dictionary<long, Bitmap>();    // A cache for preloaded or processed (tinted, rotated) bitmaps to avoid expensive reprocessing
+		readonly Dictionary<long, Bitmap> _bitmapCache = new Dictionary<long, Bitmap>();    // A cache for preloaded or processed (tinted, rotated) bitmaps to avoid expensive reprocessing
 		List<CraftIconImage> _craftIconImages = new List<CraftIconImage>();
 		List<CraftIconImage> _craftFlatIconImages = null;    // Only used for TIE
 		int _smallIconOffset = 0;               // For XWING and TIE, there's a duplicate set of scaled (zoomed out) icons.  If nonzero, this is the offset to add to the craft type to access the small icons.
@@ -169,17 +169,17 @@ namespace Idmr.Yogeme
 		int _regionPageTime = -1;          // When a region change is encountered, this is the time index to load the new icons.  Will be -1 when nothing needs to be loaded.
 		bool _regionTimeAdvanced = false;  // A region transition requires advancing a single frame before the map is shown again, so that icons are where they should be.
 		int _lastPageTime = -1;
-		bool[] _panelStringEnabled = new bool[4];
-		int[] _panelStringIndex = new int[4];
-		int[] _panelStringEventUid = new int[4];
+		readonly bool[] _panelStringEnabled = new bool[4];
+		readonly int[] _panelStringIndex = new int[4];
+		readonly int[] _panelStringEventUid = new int[4];
 		const int PANEL_TITLE = 0;
 		const int PANEL_CAPTION = 1;
 		const int PANEL_XWING3 = 2;
 		const int PANEL_XWING4 = 3;
-		MapElement[] _mapFgTags = new MapElement[8];
-		MapElement[] _mapTextTags = new MapElement[8];
-		MapElement[] _mapIcons = new MapElement[192];
-		MapElement _mapShipInfoTag = new MapElement();
+		readonly MapElement[] _mapFgTags = new MapElement[8];
+		readonly MapElement[] _mapTextTags = new MapElement[8];
+		readonly MapElement[] _mapIcons = new MapElement[192];
+		readonly MapElement _mapShipInfoTag = new MapElement();
 		List<MapElement>[] _mapIconCache = null; // Will be generated when used
 
 		// XWA map effects and special states
@@ -199,9 +199,9 @@ namespace Idmr.Yogeme
 		Dictionary<int, SoundPlayer> _captionSounds = null;
 
 		// Alternate map modes
-		List<MapElement> _mapShadowIcons = new List<MapElement>();
-		List<PathNode> _pathNodes = new List<PathNode>();
-		List<MapElement> _mapPreviewIcons = new List<MapElement>();
+		readonly List<MapElement> _mapShadowIcons = new List<MapElement>();
+		readonly List<PathNode> _pathNodes = new List<PathNode>();
+		readonly List<MapElement> _mapPreviewIcons = new List<MapElement>();
 		Point _firstPreviewStep = getNullPoint();
 		Point _lastPreviewStep;
 		bool _freeLookMode = false;
@@ -214,8 +214,8 @@ namespace Idmr.Yogeme
 		Point _backupZoom;
 
 		// Undo and redo
-		List<List<UndoOperation>> _undoFrames = new List<List<UndoOperation>>();
-		List<List<UndoOperation>> _redoFrames = new List<List<UndoOperation>>();
+		readonly List<List<UndoOperation>> _undoFrames = new List<List<UndoOperation>>();
+		readonly List<List<UndoOperation>> _redoFrames = new List<List<UndoOperation>>();
 		List<UndoOperation> _currentUndoFrame = new List<UndoOperation>();
 		int _lastTimeShiftUndoUid = -1;
 
@@ -229,11 +229,11 @@ namespace Idmr.Yogeme
 		Rectangle _scaledPanel3Rect = new Rectangle();
 		Rectangle _scaledPanel4Rect = new Rectangle();
 		int _lastEditEventUid = -1;                   // For quick navigation to the last edited event
-		Rectangle[] _xwingSourceViewport = new Rectangle[5];  // Stores the last known source bounding box that was copied from when an Xwing panel was updated.
+		readonly Rectangle[] _xwingSourceViewport = new Rectangle[5];  // Stores the last known source bounding box that was copied from when an Xwing panel was updated.
 		bool _keyStateShift = false;
 		bool _keyStateCtrl = false;
-		static int[] _bookmarkTimes = new int[4];     // Static so they persist even if the form is reopened
-		List<AbstractEvent> _eventCopyBuffer = new List<AbstractEvent>();
+		static readonly int[] _bookmarkTimes = new int[4];     // Static so they persist even if the form is reopened
+		readonly List<AbstractEvent> _eventCopyBuffer = new List<AbstractEvent>();
 		Rectangle _mapShiftStart, _mapShiftEnd;       // Start and end locations of a selected map move or map zoom event
 		Point _mapShiftEndZoom, _mapShiftEndPos;      // This serves the same purpose as the backup values in free look mode, but for shift mode, because we still need the original free look backups when we exit shift mode.
 		bool _mapShiftMode = false;                   // Editing move and zoom events requires some workarounds with free look
@@ -244,10 +244,10 @@ namespace Idmr.Yogeme
 		int _timelineRowScrollPos = 0;                                   // If there are too many events to fit in the vertical space of a timeline, this is the scroll position of the first visible item
 		int _timelineHighestItemCount = 0;                               // The maximum number of event rows for any of the visible columns
 		int _timelineVisibleRowCount = 0;                                // How many event rows (not including the header pip) are capable of fitting inside the timeline strip at its current panel size
-		List<MapElement> _timelineElements = new List<MapElement>();     // A list of all items that have been rendered on the timeline
+		readonly List<MapElement> _timelineElements = new List<MapElement>();     // A list of all items that have been rendered on the timeline
 
 		// Unsorted
-		System.Drawing.Font _statusFont = new System.Drawing.Font("Arial", 7, FontStyle.Regular);
+		readonly System.Drawing.Font _statusFont = new System.Drawing.Font("Arial", 7, FontStyle.Regular);
 		System.Drawing.Font _timelineFont = new System.Drawing.Font("Arial", 8f, FontStyle.Regular);
 		System.Drawing.Font _regionFont = null;      // Only loaded for XWA
 
@@ -735,11 +735,6 @@ namespace Idmr.Yogeme
 
 		string getPlatformInstallPath(Settings.Platform platform)
 		{
-			// TODO: [JB] Remove.  This is for quickly testing an incorrect or missing installation.
-			#if DEBUG && NOPATH
-			return "";
-			#endif
-
 			string ret = "";
 			if (platform == Settings.Platform.XWING && Settings.GetInstance().XwingInstalled) ret = Settings.GetInstance().XwingPath;
 			else if (platform == Settings.Platform.TIE && Settings.GetInstance().TieInstalled) ret = Settings.GetInstance().TiePath;
@@ -752,13 +747,7 @@ namespace Idmr.Yogeme
 		/// <summary>Assigns the working platform and tries to load platform-specific assets like fonts and bitmaps.</summary>
 		void setPlatformConfig(Settings.Platform platform, string path)
 		{
-			// TODO: [JB] Remove.  For designing when assets fail to load.
-			#if DEBUG && NOPATH
-			path = "";
-			#endif
-			
 			string fontPath = path;
-			Settings.Platform origPlatform = platform;
 
 			// As far as the editor functionality is concerned, there aren't any special considerations for
 			// BoP.  However for the sake of normal runtime logic, everything will check for XvT instead.
@@ -1567,7 +1556,7 @@ namespace Idmr.Yogeme
 					var def = EventDef.GetEventDefByRaw((short)srcEvt.Type);
 					if (def == null || def.Type == AbstractEventType.None)
 					{
-						// TODO: question, continue here vs error on other platforms
+						// NOTE: commented out to suppress an error on certain custom missions, might address later
 						//popupError($"Failed to load briefing.  Unexpected event type: {srcEvt.Type}");
 						//break;
 						continue;
@@ -4087,17 +4076,6 @@ namespace Idmr.Yogeme
 				{
 					swapMainString((int)op.GetData(true), (int)op.GetData(false), _captionNotes, null, -1, UndoType.None);
 				}
-				/* TODO: [JB] REMOVED: Changes on the main form aren't registered, and can lead to corrupted states.
-				else if (op.OpType == UndoType.NewFlightgroup || op.OpType == UndoType.DeleteFlightgroup)
-				{
-					bool insert = (op.OpType == UndoType.NewFlightgroup && redo) || (op.OpType == UndoType.DeleteFlightgroup && !redo);
-
-					if (insert)
-						insertXwingFlightgroup((BriefingFlightgroup)op.GetData(false), op.Index, false);
-					else
-						deleteXwingFlightgroup(op.Index);
-				}
-				*/
 				else if (op.OpType == UndoType.FlightgroupData)
 				{
 					if (op.Index >= 0 && op.Index < _flightgroups.Count)
