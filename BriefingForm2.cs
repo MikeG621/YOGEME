@@ -16083,7 +16083,7 @@ namespace Idmr.Yogeme
 			grpExportOptions.Enabled = useExport;
 			lblBriefImport.Enabled = useExportBox;
 			txtBriefImport.Enabled = useExportBox;
-			cmdBriefAction.Enabled = !(_platform == Settings.Platform.TIE && useTarget);
+			cmdBriefAction.Enabled = !(isTie && useTarget);
 		}
 
 		/// <summary>Refreshes the import/export checkboxes when the briefing action selection is changed</summary>
