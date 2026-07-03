@@ -16083,6 +16083,7 @@ namespace Idmr.Yogeme
 			grpExportOptions.Enabled = useExport;
 			lblBriefImport.Enabled = useExportBox;
 			txtBriefImport.Enabled = useExportBox;
+			cmdBriefAction.Enabled = !(_platform == Settings.Platform.TIE && useTarget);
 		}
 
 		/// <summary>Refreshes the import/export checkboxes when the briefing action selection is changed</summary>
@@ -19127,6 +19128,7 @@ namespace Idmr.Yogeme
 			switch ((BriefingManagerActions)cboBriefActions.SelectedIndex)
 			{
 				case BriefingManagerActions.Swap:
+					// NOTE: if blocks aren't inverted due to multiple declarations of `backup`
 					if (confirmBriefingTarget() && confirmBriefingAction("The current briefing will be swapped with the chosen briefing."))
 					{
 						exportActiveBriefing();
