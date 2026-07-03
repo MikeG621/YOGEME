@@ -19189,14 +19189,14 @@ namespace Idmr.Yogeme
 					if (confirmBriefingAction("The current briefing will be modified according to the section checkboxes, and which sections are contained in the text."))
 					{
 						ImportData dat = new ImportData();
-						if (loadImportDataFromText(txtBriefImport.Text, false, dat))
-						{
-							mergeImportData(dat);
-							exportActiveBriefing();  // Push back so populate can grab the updated info
-							markDirty();
-							verifyBriefing(true, true);
-							populateBriefingOptions();
-						}
+						if (!loadImportDataFromText(txtBriefImport.Text, false, dat)) break;
+
+						mergeImportData(dat);
+						exportActiveBriefing();  // Push back so populate can grab the updated info
+						markDirty();
+						verifyBriefing(true, true);
+						populateBriefingOptions();
+						break;
 					}
 					break;
 				case BriefingManagerActions.ImportFromFile:
@@ -19205,18 +19205,18 @@ namespace Idmr.Yogeme
 						Title = "Select mission to import",
 						Filter = "Mission files (*.tie)|*.tie|X-Wing mission (*.xwi)|*.xwi|Exported text (*.txt)|*.txt|All files (*.*)|*.*"
 					};
-					DialogResult result = open.ShowDialog();
+					var result = open.ShowDialog();
 					if (result == DialogResult.OK)
 					{
 						ImportData dat = new ImportData();
-						if (loadImportDataFromFile(open.FileName, dat))
-						{
-							mergeImportData(dat);
-							exportActiveBriefing();
-							markDirty();
-							verifyBriefing(true, true);
-							populateBriefingOptions();
-						}
+						if (!loadImportDataFromFile(open.FileName, dat)) break;
+
+						mergeImportData(dat);
+						exportActiveBriefing();
+						markDirty();
+						verifyBriefing(true, true);
+						populateBriefingOptions();
+						break;
 					}
 					break;
 			}
