@@ -37,6 +37,7 @@ namespace Idmr.Yogeme
 	/// <summary>GUI to handle the mission .WAV files for XWA</summary>
 	public partial class XwaWavForm : Form
 	{
+		readonly FormScaler _scaler;
 		readonly Settings _config = Settings.GetInstance();
 		readonly Mission _mission;
 		readonly string _lstFile;
@@ -72,6 +73,7 @@ namespace Idmr.Yogeme
 			_frontend = _wave + "FrontEnd\\B" + _battleNumber + "M" + _missionNumber + "\\";
 			opnWav.InitialDirectory = _wave;
 			Reload();
+			_scaler = new FormScaler(this);
 		}
 
 		// Mission WAVs are located in /Wave/MISSIONVOICE. There's a <mission>.LST with 64 message WAVs and 6 EOM WAVs.

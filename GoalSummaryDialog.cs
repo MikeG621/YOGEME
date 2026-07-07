@@ -17,11 +17,13 @@ namespace Idmr.Yogeme
 {
     public partial class GoalSummaryDialog : Form
     {
+        readonly FormScaler _scaler;
         public GoalSummaryDialog(string displayText)
         {
             InitializeComponent();
             txtSummary.Text = displayText;
             txtSummary.Select(0, 0);
+            _scaler = new FormScaler(this);
         }
 
         void cmdClose_Click(object sender, EventArgs e) => Close();

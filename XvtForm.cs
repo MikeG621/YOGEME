@@ -181,6 +181,7 @@ namespace Idmr.Yogeme
 	public partial class XvtForm : Form
 	{
 		#region vars and stuff
+		readonly FormScaler _scaler;
 		readonly Settings _config = Settings.GetInstance();
 		Mission _mission;
 		bool _applicationExit;
@@ -192,7 +193,7 @@ namespace Idmr.Yogeme
 		readonly DataTable _table = new DataTable("Waypoints");
 		readonly DataTable _tableRaw = new DataTable("Waypoints_Raw");
 		MapForm _fMap;
-		BriefingForm _fBrief;
+		BriefingForm2 _fBrief;
 		LstForm _fLST;
 		FlightGroupLibraryForm _fLibrary;
 		byte _activeMessageTriggerIndex = 0;
@@ -236,6 +237,7 @@ namespace Idmr.Yogeme
 			startup();
 			lstFG.SelectedIndex = 0;
 			_loading = false;
+			_scaler = new FormScaler(this, FormScaler.ScaleFlags.StretchLabel);
 		}
 		public XvtForm(string path)
 		{
@@ -247,6 +249,7 @@ namespace Idmr.Yogeme
 			lstFG.SelectedIndex = 0;
 			if (_mission.Messages.Count != 0) lstMessages.SelectedIndex = 0;
 			_loading = false;
+			_scaler = new FormScaler(this, FormScaler.ScaleFlags.StretchLabel);
 		}
 
 		#region methods
@@ -1199,7 +1202,14 @@ namespace Idmr.Yogeme
 			setInteractiveLabelColor(lblSkipTrig2, _activeSkipTriggerIndex == 1);
 		}
 
-		void briefingModifiedCallback(object sender, EventArgs e) => Common.MarkDirty(this, _loading);
+		void briefingModifiedCallback(string tag, int index, object data)
+		{
+			if (tag == BriefingForm2.DataChangeTags.FgWaypoint && index == _activeFGIndex)
+				refreshWaypointTab();
+
+			Common.MarkDirty(this, _loading);
+		}
+		
 
 		void colorizedComboBox_DrawItem(object sender, DrawItemEventArgs e)
 		{
@@ -1263,7 +1273,11 @@ namespace Idmr.Yogeme
 				setFlightgroupProperty(prop.RefreshType, prop.Name, Common.GetControlValue(sender));
 				Common.MarkDirty(this);  // Since we're not loading, any change marks as dirty.
 			}
-			if (prop.RefreshType.HasFlag(MultiEditRefreshType.ItemText)) listRefreshSelectedItems();
+			if (prop.RefreshType.HasFlag(MultiEditRefreshType.ItemText))
+			{
+				refreshBrief(-1);
+				listRefreshSelectedItems();
+			}
 			if (prop.RefreshType.HasFlag(MultiEditRefreshType.CraftName)) updateFGList();
 			if (prop.RefreshType.HasFlag(MultiEditRefreshType.FgGoalLabel)) goalLabelRefresh();
 			if (prop.RefreshType.HasFlag(MultiEditRefreshType.OrderLabel)) orderLabelRefresh();
@@ -1393,10 +1407,9 @@ namespace Idmr.Yogeme
 		void menuAbout_Click(object sender, EventArgs e) => new AboutDialog().ShowDialog();
 		void menuBrief_Click(object sender, EventArgs e)
 		{
-			Common.MarkDirty(this);
 			try { _fBrief.Close(); }
 			catch { /* do nothing */ }
-			_fBrief = new BriefingForm(_mission.FlightGroups, _mission.Briefings, briefingModifiedCallback);
+			_fBrief = new BriefingForm2(_mission, briefingModifiedCallback);
 			_fBrief.Show();
 		}
 		void menuCopy_Click(object sender, EventArgs e)
@@ -3118,6 +3131,15 @@ namespace Idmr.Yogeme
 			else if (fgIndex < _mission.FlightGroups.Count) _fMap.UpdateFlightGroup(fgIndex, _mission.FlightGroups[fgIndex]);
 			_fMap.MapPaint();
 		}
+		void refreshBrief(int fgIndex)
+		{
+			if (_loading || _fBrief == null || _fBrief.IsDisposed) return;
+			if(fgIndex < 0)
+				_fBrief.Import(_mission.FlightGroups);
+			else
+				_fBrief.Import(fgIndex, _mission.FlightGroups[fgIndex]);
+		}
+
 		void refreshWaypointTab()
 		{
 			bool btemp = _loading;
@@ -3147,6 +3169,7 @@ namespace Idmr.Yogeme
 			CheckBox c = (CheckBox)sender;
 			foreach(FlightGroup fg in getSelectedFlightgroups()) fg.Waypoints[(int)c.Tag].Enabled = Common.Update(this, fg.Waypoints[(int)c.Tag].Enabled, c.Checked);
 			refreshMap(_activeFGIndex);
+			refreshBrief(_activeFGIndex);
 		}
 
 		void table_RowChanged(object sender, DataRowChangeEventArgs e)
@@ -3165,6 +3188,7 @@ namespace Idmr.Yogeme
 			}
 			_loading = false;
 			refreshMap(_activeFGIndex);
+			refreshBrief(_activeFGIndex);
 		}
 		void tableRaw_RowChanged(object sender, DataRowChangeEventArgs e)
 		{
@@ -3181,6 +3205,7 @@ namespace Idmr.Yogeme
 			}
 			_loading = false;
 			refreshMap(_activeFGIndex);
+			refreshBrief(_activeFGIndex);
 		}
 		#endregion
 		#region Options

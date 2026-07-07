@@ -74,6 +74,7 @@ namespace Idmr.Yogeme
 	/// <summary>Dialog to visually choose backdrop images</summary>
 	public partial class BackdropDialog : Form
 	{
+		readonly FormScaler _scaler;
 		readonly MissionFile.Platform _platform;
 		int _index;
 		int _shadow = 0;
@@ -126,6 +127,7 @@ namespace Idmr.Yogeme
 			numBackdrop.Maximum = _numBackdrops - 1;
 			numBackdrop.Value = _index;
 			numBackdrop_ValueChanged("init", new EventArgs());
+			_scaler = new FormScaler(this);
 		}
 		/// <summary>Constructor for XWA</summary>
 		/// <param name="index">Backdrop index, set to 0 if out of range</param>
@@ -149,6 +151,7 @@ namespace Idmr.Yogeme
 			numShadow.Enabled = true;
 			numShadow.Value = _shadow;
 			numBackdrop_ValueChanged("init", new EventArgs());
+			_scaler = new FormScaler(this);
 		}
 		/// <summary>Constructor for XWA, Backdrop hook enabled</summary>
 		/// <param name="index">Backdrop index, set to 0 if out of range</param>
@@ -177,12 +180,15 @@ namespace Idmr.Yogeme
 			numShadow.Enabled = true;
 			numShadow.Value = _shadow;
 			numBackdrop_ValueChanged("init", new EventArgs());
+			_scaler = new FormScaler(this);
 		}
+
+		int thumbSize => pnlThumbs.Width / 6;
 
 		void createThumbnails()
 		{
 			#region array assignment
-			var sz = new Size(48, 48);
+			var sz = new Size(thumbSize, thumbSize);
 			pnlThumbs.SuspendLayout();
 			for (int i = 0; i < thumbs.Length; i++)
 			{
@@ -190,7 +196,7 @@ namespace Idmr.Yogeme
 				{
 					BackColor = System.Drawing.Color.Blue,
 					BackgroundImageLayout = ImageLayout.Stretch,
-					Location = new Point(i % 6 * 48, i / 6 * 48),
+					Location = new Point(i % 6 * thumbSize, i / 6 * thumbSize),
 					Size = sz,
 					SizeMode = PictureBoxSizeMode.Zoom,
 					Tag = i,

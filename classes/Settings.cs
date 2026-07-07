@@ -90,6 +90,7 @@ namespace Idmr.Yogeme
 		string _mruXwaPath = "";
 		readonly string _settingsDir = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)
 			+ "\\Imperial Department of Military Research\\YOGEME\\";
+		float _formScale = 1.0f;
 		#endregion
 		readonly string[] _recentMissions = new string[6];
 		readonly Platform[] _recentPlatforms = new Platform[6];
@@ -229,6 +230,9 @@ namespace Idmr.Yogeme
 					OneIndexedFGs = br.ReadBoolean();	// added in 1.13.4
 
 					RememberSelectedOrder= br.ReadBoolean();	// added in 1.13.12
+
+					FormScale = br.ReadSingle();
+					BriefingConfigsCollection.Load(fs, br);
 				}
 				catch { System.Diagnostics.Debug.WriteLine("old settings file"); /*do nothing*/ }
 
@@ -535,6 +539,9 @@ namespace Idmr.Yogeme
 
 			bw.Write(RememberSelectedOrder);
 
+			bw.Write(FormScale);
+			BriefingConfigsCollection.Save(fs, bw);
+
 			fs.SetLength(fs.Position);
 			fs.Close();
 			// remove Regkey if needed
@@ -773,6 +780,13 @@ namespace Idmr.Yogeme
 
 		/// <summary>Gets or sets if the selected order resets when changing FlightGroups.</summary>
 		public bool RememberSelectedOrder { get; set; }
+
+		/// <summary>Gets or sets the global GUI font scale multiplier used by all forms that contain a <see cref="FormScaler"/> object.</summary>
+		public float FormScale
+		{
+			get => _formScale;
+			set { _formScale = value; FormScaler.GlobalScale = value; }
+		}
 		#endregion
 	}
 	/* Settings and values

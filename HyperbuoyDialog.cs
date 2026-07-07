@@ -25,6 +25,7 @@ namespace Idmr.Yogeme
 {
 	public partial class HyperbuoyDialog : Form
 	{
+		readonly FormScaler _scaler;
 		readonly Mission _mission;
 		readonly byte _iff;
 		readonly byte _team;
@@ -52,6 +53,7 @@ namespace Idmr.Yogeme
 			}
 			cboFrom.SelectedIndex = 0;
 			cboTo.SelectedIndex = 1;
+			_scaler = new FormScaler(this);
 		}
 
 		string getBuoyText(FlightGroup fg)

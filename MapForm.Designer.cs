@@ -434,7 +434,7 @@ namespace Idmr.Yogeme
 			this.chkTrace.Location = new System.Drawing.Point(750, 482);
 			this.chkTrace.Margin = new System.Windows.Forms.Padding(0);
 			this.chkTrace.Name = "chkTrace";
-			this.chkTrace.Size = new System.Drawing.Size(92, 17);
+			this.chkTrace.Size = new System.Drawing.Size(72, 17);
 			this.chkTrace.TabIndex = 29;
 			this.chkTrace.Text = "Traces";
 			this.chkTrace.CheckedChanged += new System.EventHandler(this.chkTrace_CheckedChanged);
@@ -571,7 +571,7 @@ namespace Idmr.Yogeme
 			this.chkDistance.Location = new System.Drawing.Point(750, 499);
 			this.chkDistance.Margin = new System.Windows.Forms.Padding(0);
 			this.chkDistance.Name = "chkDistance";
-			this.chkDistance.Size = new System.Drawing.Size(68, 17);
+			this.chkDistance.Size = new System.Drawing.Size(72, 17);
 			this.chkDistance.TabIndex = 30;
 			this.chkDistance.Text = "Distance";
 			this.chkDistance.UseVisualStyleBackColor = true;
@@ -772,7 +772,7 @@ namespace Idmr.Yogeme
 			this.chkTime.Location = new System.Drawing.Point(750, 516);
 			this.chkTime.Margin = new System.Windows.Forms.Padding(0);
 			this.chkTime.Name = "chkTime";
-			this.chkTime.Size = new System.Drawing.Size(68, 17);
+			this.chkTime.Size = new System.Drawing.Size(72, 17);
 			this.chkTime.TabIndex = 31;
 			this.chkTime.Text = "Time";
 			this.chkTime.UseVisualStyleBackColor = true;

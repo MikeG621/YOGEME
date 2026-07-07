@@ -23,6 +23,7 @@ namespace Idmr.Yogeme
 {
 	public partial class TestDialog : Form
 	{
+		readonly FormScaler _scaler;
 		readonly Settings _config = Settings.GetInstance();
 
 		public TestDialog()
@@ -32,6 +33,7 @@ namespace Idmr.Yogeme
 			chkDelete.Checked = _config.DeleteTestPilots;
 			// can't check DoNotShow, otherwise this wouldn't have been launched in the first place :P
 			if (!_config.Verify) chkVerify.Enabled = true;
+			_scaler = new FormScaler(this);
 		}
 
 		void cmdCancel_Click(object sender, EventArgs e) => Close();

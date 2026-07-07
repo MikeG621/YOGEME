@@ -43,6 +43,7 @@ namespace Idmr.Yogeme
 	/// <summary>Form for Briefing and Debriefing officer question preview</summary>
 	public partial class OfficerPreviewForm : Form
 	{
+		readonly FormScaler _scaler;
 		string[] _answerLines;
 		int _page = 1;
 		int _selectedIndex = 0;
@@ -132,6 +133,7 @@ namespace Idmr.Yogeme
 				loadBackAndQuestions();
 				for (int i = 0; i < _indexes.Length; i++) if (question == _indexes[i]) displayQuestion(i);  //This will set the actual _selectedIndex
 			}
+			_scaler = new FormScaler(this, FormScaler.ScaleFlags.ExcludePicture);
 		}
 
 		#region controls

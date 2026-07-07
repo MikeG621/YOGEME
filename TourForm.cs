@@ -22,6 +22,7 @@ namespace Idmr.Yogeme
 {
 	public partial class TourForm : Form
 	{
+		readonly FormScaler _scaler;
 		readonly LfdFile _missions;
 		Text _tour;
 		int _tourIndex;
@@ -44,6 +45,7 @@ namespace Idmr.Yogeme
 				_tourIndex = 1;
 				loadTour();
 			}
+			_scaler = new FormScaler(this);
 		}
 
 		void loadTour()

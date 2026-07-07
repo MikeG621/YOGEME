@@ -55,6 +55,8 @@ namespace Idmr.Yogeme
 		readonly Settings _config = Settings.GetInstance();
 		readonly EventHandler _closeCallback;
 
+		FormScaler _scaler = null;
+
 		/// <summary>Initialize and load the user's settings</summary>
 		/// <param name="config">The Settings config of the current user</param>
 		public OptionsDialog(EventHandler callback)
@@ -179,7 +181,11 @@ namespace Idmr.Yogeme
 
 			chkRememberOrder.Checked = _config.RememberSelectedOrder;
 
+			initFormScaleDropdown();
+			setFormScale(_config.FormScale);
+
 			_closeCallback = callback;
+			_scaler = new FormScaler(this);
 		}
 
 		[System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0059:Unnecessary assignment of a value", Justification = "TryParse may not work")]
@@ -208,6 +214,20 @@ namespace Idmr.Yogeme
 			{
 				txt.Text = dirPlatform.SelectedPath;
 				if (!chk.Checked) chk.Checked = true;
+			}
+		}
+
+		void OptionsDialog_FormClosed(object sender, FormClosedEventArgs e)
+		{
+			if (cboFormScale.Tag != null)
+			{
+				FontPreviewItem[] items = getPreviewItems();
+				for (int i = 0; i < items.Length; i++)
+				{
+					items[i].PreviewBitmap?.Dispose();
+					items[i].PreviewBitmap = null;
+				}
+				cboFormScale.Tag = null;
 			}
 		}
 
@@ -464,5 +484,154 @@ namespace Idmr.Yogeme
 				if (result != "") MessageBox.Show(result, "Failed to save file.", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
 		}
-    }
+
+		struct FontPreviewItem
+		{
+			public float MultSize;
+			public float PointSize;
+			public Bitmap PreviewBitmap;
+
+		}
+		void initFormScaleDropdown()
+		{
+			if (cboFormScale.Tag != null) return;
+
+			// Assigning items will attempt to draw the control, but the data isn't ready yet.
+			cboFormScale.MeasureItem -= cboFormScale_MeasureItem;
+			cboFormScale.DrawItem -= cboFormScale_DrawItem;
+
+			string[] fontNames = new string[] { "100%", "125%", "150%", "175%", "200%", "225%", "250%" };
+			float[]  fontSizes = new float[]  {     1f,  1.25f,  1.50f,  1.75f,   2.0f,  2.25f,  2.50f };
+			int fontCount = fontSizes.Length;
+			FontPreviewItem[] previewItems = new FontPreviewItem[fontCount];
+
+			// Populate the list items.
+			cboFormScale.Items.Clear();
+			for (int i = 0; i < fontCount; i++)
+			{
+				string s = fontNames[i];
+				if (i == 0) s += " (default)";
+				cboFormScale.Items.Add(s);
+			}
+			cboFormScale.SelectedIndex = 0;
+
+			// Calculate the font point sizes and generate the bitmaps for the list item previews
+			// to illustrate their relative sizes.
+			Font orig = cboFormScale.Font;
+			Font[] fonts = new Font[fontCount];
+			using (Graphics textg = Graphics.FromHwnd(cboFormScale.Handle))
+			{
+				for (int i = 0; i < fontCount; i++)
+				{
+					float pointSize = orig.SizeInPoints * fontSizes[i];
+					fonts[i] = new Font(orig.FontFamily, pointSize);
+					previewItems[i].PointSize = pointSize;
+					previewItems[i].MultSize = fontSizes[i];
+
+					SizeF sz = textg.MeasureString(cboFormScale.Items[i].ToString(), fonts[i]);
+					int width = Math.Max(cboFormScale.Width, (int)Math.Ceiling(sz.Width));
+					int height = (int)Math.Ceiling(sz.Height);
+					Bitmap bmp = new Bitmap(width, height);
+					using (Graphics g = Graphics.FromImage(bmp))
+					{
+						g.Clear(SystemColors.Control);
+						g.DrawString(cboFormScale.Items[i].ToString(), fonts[i], SystemBrushes.ControlText, 0, 0);
+					}
+					bmp.MakeTransparent(SystemColors.Control);
+					previewItems[i].PreviewBitmap = bmp;
+				}
+			}
+
+			// Cleanup and finish.
+			foreach (Font f in fonts)
+				f.Dispose();
+
+			cboFormScale.Tag = previewItems;
+			cboFormScale.MeasureItem += cboFormScale_MeasureItem;
+			cboFormScale.DrawItem += cboFormScale_DrawItem;
+		}
+
+		FontPreviewItem[] getPreviewItems() => (FontPreviewItem[])cboFormScale.Tag;
+
+		void setFormScale(float scale)
+		{
+			if (cboFormScale.Tag == null) return;
+			// Determines the closest value in the dropdown selection, in case the list items ever change.
+			FontPreviewItem[] preview = getPreviewItems();
+			float foundDiff = 100.0f;
+			int foundIndex = 0;
+			for (int i = 0; i < preview.Length; i++)
+			{
+				float diff = Math.Abs(scale - preview[i].MultSize);
+				if (diff < foundDiff)
+				{
+					foundDiff = diff;
+					foundIndex = i;
+				}
+			}
+			cboFormScale.SelectedIndex = foundIndex;
+		}
+
+		void cmdFormScale_Click(object sender, EventArgs e)
+		{
+			if (cboFormScale.Tag == null || cboFormScale.SelectedIndex < 0) return;
+			FontPreviewItem[] preview = getPreviewItems();
+			float scale = preview[cboFormScale.SelectedIndex].MultSize;
+
+			if (scale == _config.FormScale)
+			{
+				MessageBox.Show("Already using that scale amount.", "Notice");
+				return;
+			}
+
+			if (!_scaler.VerifyScale(scale))
+			{
+				DialogResult res = MessageBox.Show("Warning: a form reports that the scaled size may exceed the boundaries of the screen.  If so, certain controls may be cropped and unreachable.  Continue?", "Confirm selection", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
+				if (res == DialogResult.No)
+				{
+					setFormScale(_config.FormScale);  // Return to actual value
+					return;
+				}
+			}
+
+			_config.FormScale = scale;
+			cmdFormScale.Enabled = false;
+			// Scaling can bring other forms to the front, even though this form has modal focus.
+			// Make sure it stays in focus.
+			this.Focus();
+		}
+
+		void cboFormScale_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			bool state = false;
+			if (cboFormScale.Tag != null && cboFormScale.SelectedIndex >= 0)
+			{
+				FontPreviewItem[] preview = getPreviewItems();
+				state = (preview[cboFormScale.SelectedIndex].MultSize != _config.FormScale);
+			}
+			cmdFormScale.Enabled = state;
+		}
+
+		void cboFormScale_DrawItem(object sender, DrawItemEventArgs e)
+		{
+			if (cboFormScale.Tag == null || e.Index < 0) return;
+
+			FontPreviewItem[] preview = getPreviewItems();
+
+			e.DrawBackground();
+			// Display the text only (if dropdown is collapsed) or draw the item contents.
+			if (e.State.HasFlag(DrawItemState.ComboBoxEdit))
+				e.Graphics.DrawString(cboFormScale.Items[e.Index].ToString(), cboFormScale.Font, SystemBrushes.ControlText, e.Bounds.Location);
+			else
+				e.Graphics.DrawImage(preview[e.Index].PreviewBitmap, e.Bounds.Location);
+		}
+
+		void cboFormScale_MeasureItem(object sender, MeasureItemEventArgs e)
+		{
+			if (cboFormScale.Tag == null || e.Index < 0) return;
+
+			FontPreviewItem[] preview = getPreviewItems();
+			e.ItemHeight = preview[e.Index].PreviewBitmap.Height;
+		}
+	}
 }

@@ -254,11 +254,12 @@ namespace Idmr.Yogeme
 	public partial class XwaForm : Form
 	{
 		#region vars and stuff
+		readonly FormScaler _scaler;
 		readonly Settings _config = Settings.GetInstance();
 		bool _loading;
 		bool _noRefresh = false;
 		MapForm _fMap;
-		BriefingForm _fBrief;
+		BriefingForm2 _fBrief;
 		LstForm _fLST;
 		FlightGroupLibraryForm _fLibrary;
 		Mission _mission;
@@ -324,6 +325,7 @@ namespace Idmr.Yogeme
 			startup();
 			lstFG.SelectedIndex = 0;
 			_loading = false;
+			_scaler = new FormScaler(this, FormScaler.ScaleFlags.StretchLabel);
 		}
 		public XwaForm(string path)
 		{
@@ -335,6 +337,7 @@ namespace Idmr.Yogeme
 			lstFG.SelectedIndex = 0;
 			if (_mission.Messages.Count != 0) lstMessages.SelectedIndex = 0;
 			_loading = false;
+			_scaler = new FormScaler(this, FormScaler.ScaleFlags.StretchLabel);
 		}
 
 		#region methods
@@ -1498,7 +1501,7 @@ namespace Idmr.Yogeme
 			setInteractiveLabelColor(lblSkipTrig2, _activeSkipTriggerIndex == 1);
 		}
 
-		void briefingModifiedCallback(object sender, EventArgs e) => Common.MarkDirty(this, _loading);
+		void briefingModifiedCallback(string tag, int index, object data) => Common.MarkDirty(this, _loading);
 
 		void colorizedComboBox_DrawItem(object sender, DrawItemEventArgs e)
 		{
@@ -1722,10 +1725,9 @@ namespace Idmr.Yogeme
 		void menuAbout_Click(object sender, EventArgs e) => new AboutDialog().ShowDialog();
 		void menuBrief_Click(object sender, EventArgs e)
 		{
-			Common.MarkDirty(this);
 			try { _fBrief.Close(); }
 			catch { /* do nothing */ }
-			_fBrief = new BriefingForm(_mission.Briefings, briefingModifiedCallback);
+			_fBrief = new BriefingForm2(_mission, briefingModifiedCallback);
 			_fBrief.Show();
 		}
 		void menuDelete_Click(object sender, EventArgs e)

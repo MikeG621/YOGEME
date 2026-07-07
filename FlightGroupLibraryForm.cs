@@ -28,6 +28,7 @@ namespace Idmr.Yogeme
 		const int _libraryHeaderId = 0x4C474659;      // "YFGL" header signature.
 		const int _libraryVersion = 1;
 
+		readonly FormScaler _scaler;
 		Settings.Platform _platform = Settings.Platform.None;
 		readonly object _flightGroupCollection = null;
 		readonly EventHandler _onAddEvent;
@@ -69,6 +70,7 @@ namespace Idmr.Yogeme
 			refreshGroupList();
 			refreshMissionCraft();
 			refreshLibraryCraft();
+			_scaler = new FormScaler(this);
 			Show();
 		}
 

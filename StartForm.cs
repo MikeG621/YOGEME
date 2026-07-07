@@ -34,6 +34,7 @@ namespace Idmr.Yogeme
 	/// <summary>The initial interface and effective program start</summary>
 	public partial class StartForm : Form
 	{
+		readonly FormScaler _scaler;
         readonly Settings _config = Settings.GetInstance();
 
 		public StartForm()
@@ -55,6 +56,8 @@ namespace Idmr.Yogeme
 			// using RecentMissions[1] here, since LastMission gets wiped if launching to a platform with a new file
 			if (_config.RecentMissions[1] == "") optLastMission.Enabled = false;
 			else optLastMission.Text += " (" + Path.GetFileNameWithoutExtension(_config.RecentMissions[1]) + ")";
+
+			_scaler = new FormScaler(this);
 		}
 
 		void chkBoP_CheckedChanged(object sender, EventArgs e) { if (chkBoP.Checked) optXvT.Checked = true; }
