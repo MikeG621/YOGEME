@@ -11,6 +11,7 @@
  * [UPD] major refactor
  * [DEL] removed reading hangar command opt sections for now (though it's still calc'd) as I was importing it wrong anyway and never saved
  * [FIX] typo'd FrontPlanetPositionY in Concourse, and "Hull" in SpecRci
+ * [NEW #137] FormScaler implemented
  * v1.17, 250215
  * [NEW] Mission: CanShootThroughtShieldOnHardDifficulty, IsMissionRanksModifierEnabled, SkipProjectilesProximityCheck
  * [NEW #107] TargetCraftKey tab under Mission_Tie

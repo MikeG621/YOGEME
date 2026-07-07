@@ -1,12 +1,13 @@
 /*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
- * Copyright (C) 2007-2024 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2026 Michael Gaisser (mjgaisser@gmail.com)
  * This file authored by "JB" (Random Starfighter) (randomstarfighter@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.16.0.5
+ * VERSION: 1.16.0.5+
  *
  * CHANGELOG
+ * [UPD] marked Obsolete, will be deleted at some point
  * v1.16.0.5, 241120
  * [FIX #112] Exception adding events to blank briefing, and silently overwriting existing events.
  * v1.16, 241013
@@ -54,6 +55,7 @@ using Idmr.Platform.Xwing;
 
 namespace Idmr.Yogeme
 {
+	[Obsolete("Use the new BriefingForm2")]
 	/// <summary>The X-wing briefing form for YOGEME.  The X-wing briefing is similar enough to re-use the Briefing form of the other platforms, but different enough that we can't easily integrate it with the other form without lots of hacks to accomodate the slightly different instruction set and multi-page format.</summary>
 	public partial class BriefingFormXwing : Form
 	{

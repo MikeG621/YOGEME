@@ -1,11 +1,13 @@
 /*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
- * Copyright (C) 2007-2026+ Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2026 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.17.7
+ * VERSION: 1.17.7+
  *
  * CHANGELOG
+ * [UPD #137] switch to new BriefingForm
+ * [NEW #137] FormScaler implemented
  * v1.17.7, 260327
  * [UPD #135] new mission now reloads craft data
  * [NEW] FG Delete now reports which FG and Message # have a reference

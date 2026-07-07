@@ -38,6 +38,20 @@ This will leave behind a single config file in AppData with your user settings.
 ## Latest Release
 
 #### WIP
+- The big update in this version: a brand new Briefing interface, thanks to a ton of work by Random [PR [#137](https://github.com/MikeG621/YOGEME/pull/137)].
+  - Resizable window and briefing map.
+  - Event timeline during playback.
+  - (XWA) Audio during playback.
+  - Ability to import/export briefing data via text.
+  - Error-checking and some repair abilities to prevent in-game crashes.
+  - Improved visual accuracy.
+  - Ability to select items on the briefing map and move/drag directly, pushing updates back to the Flightgroup.
+  - Free look to zoom/pan around the map without making even changes.
+  - Ability to show shadows/ghosts of other craft not present.
+  - (XWA) Visible motion trail for Move events, showing the entire path.
+  - Several QoL updates on the Events tab.
+  - Lots of settings that get saved on a per-platform basis.
+- Form DPI scaling added to all windows, allowing better visual adjustments when not at 100% (JB) [PR #137]
 - (XWA) Several Hook updates:
   - Added a helper class to handle the hook INI. Backend of the Hook dialog redone to handle it, as well as the OPT swaps for the map.
   - Fixed typos in Concourse:FrontPlanetPositionY and SpecRci:Hull.
@@ -45,8 +59,9 @@ This will leave behind a single config file in AppData with your user settings.
   - Added CraftStats SpeedIncrement and SpeedDecrement modifiers.
   - Added CraftStats Profile options for "All" markings (last entry of the drop-down).
   - Added Mission_Tie:MapIcon and all Mission_Tie:CampiagnCrafts* options.
-  - Added WeaponRate:MaxSystemDamage and the WeaponrRate:Weapon*_Damages options.
+  - Added WeaponRate:MaxSystemDamage and the WeaponRate:Weapon*_Damages options.
 - (XWA) Menu typo [Issue [#136](https://github.com/MikeG621/YOGEME/issues/136)].
+- LfdReader v3 updates.
 
 #### 1.17.7, 27 Mar 2026
 - (TIE) Officer questions now strip new line characters ('\r\n') created by bad external copy/pastes [Issue [#134](https://github.com/MikeG621/YOGEME/issues/134)].

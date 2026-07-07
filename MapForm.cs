@@ -1,11 +1,12 @@
 /*
  * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
- * Copyright (C) 2007-2025 Michael Gaisser (mjgaisser@gmail.com)
+ * Copyright (C) 2007-2026 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.17
+ * VERSION: 1.17+
  *
  * CHANGELOG
+ * [NEW #137] FormScaler implemented
  * v1.17, 250215
  * [NEW] Cumulative WP time checkbox
  * [NEW] XWA All Order traces checkbox
@@ -112,7 +113,6 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.Security.Cryptography;
 using System.Windows.Forms;
 
 namespace Idmr.Yogeme

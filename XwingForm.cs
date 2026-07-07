@@ -4,9 +4,11 @@
  * This file authored by "JB" (Random Starfighter) (randomstarfighter@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.17.7
+ * VERSION: 1.17.7+
  *
  * CHANGELOG
+ * [UPD #137] switch to new BriefingForm
+ * [NEW #137] FormScaler implemented
  * v1.17.7, 260327
  * [NEW] FG Delete now reports which FG have a reference
  * v1.17.4, 250824

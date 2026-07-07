@@ -3,9 +3,10 @@
  * Copyright (C) 2007-2026 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.17.6
+ * VERSION: 1.17.6+
  *
  * CHANGELOG
+ * [UPD] Marked Obsolete, will be deleted at some point
  * v1.17.6, 260307
  * [FIX #132] Strip newline characters from briefing strings
  * v1.17.1, 250303
@@ -94,6 +95,7 @@ using System.Windows.Forms;
 
 namespace Idmr.Yogeme
 {
+	[Obsolete("Use the new BriefingForm2")]
 	/// <summary>The briefing forms for YOGEME, one form for TIE-XWA</summary>
 	public partial class BriefingForm : Form
 	{

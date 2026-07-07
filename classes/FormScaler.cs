@@ -1,4 +1,16 @@
-﻿using System;
+﻿/*
+ * YOGEME.exe, All-in-one Mission Editor for the X-wing series, XW through XWA
+ * Copyright (C) 2007-2026 Michael Gaisser (mjgaisser@gmail.com)
+ * This file authored by "JB" (Random Starfighter) (randomstarfighter@gmail.com)
+ * Licensed under the MPL v2.0 or later
+ * 
+ * VERSION: 1.17.7+
+ *
+ * CHANGELOG
+ * [NEW #137] created
+ */
+
+using System;
 using System.Drawing;
 using System.Collections.Generic;
 using System.Windows.Forms;
