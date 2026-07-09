@@ -31,6 +31,76 @@
 			<param name="Local" value="pages\main\map.html">
 			</OBJECT>
 		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Briefing Dialog">
+			<param name="Local" value="pages\main\brief.html">
+			</OBJECT>
+		<UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Feature Overview">
+				<param name="Local" value="pages\main\brief.html#overview">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Setup Resources">
+				<param name="Local" value="pages\main\brief.html#setup">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Hotkey Reference">
+				<param name="Local" value="pages\main\brief.html#keys">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Event Command Reference">
+				<param name="Local" value="pages\main\brief.html#event">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Flightgroup Waypoints">
+				<param name="Local" value="pages\main\brief.html#waypoints">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Panel Mode (X-Wing)">
+				<param name="Local" value="pages\main\brief.html#panel">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Directional Movement (XWA)">
+				<param name="Local" value="pages\main\brief.html#icondirection">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Path Mode (XWA)">
+				<param name="Local" value="pages\main\brief.html#iconpath">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Briefing Tab">
+				<param name="Local" value="pages\main\brief.html#tab_briefing">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Tags and Strings Tab">
+				<param name="Local" value="pages\main\brief.html#tab_strings">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Event List Tab">
+				<param name="Local" value="pages\main\brief.html#tab_event">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Briefing Options Tab">
+				<param name="Local" value="pages\main\brief.html#tab_brfoption">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Editor Options Tab">
+				<param name="Local" value="pages\main\brief.html#tab_options">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="X-Wing Page Options Tab">
+				<param name="Local" value="pages\main\brief.html#tab_xwing">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Verify Tab">
+				<param name="Local" value="pages\main\brief.html#tab_verify">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Footer">
+				<param name="Local" value="pages\main\brief.html#footer">
+				</OBJECT>
+		</UL>
+		<LI> <OBJECT type="text/sitemap">
 			<param name="Name" value="Flightgroup Library Dialog">
 			<param name="Local" value="pages\main\fglib.html">
 			</OBJECT>
@@ -132,20 +202,28 @@
 			</OBJECT>
 		<LI> <OBJECT type="text/sitemap">
 			<param name="Name" value="Briefing Dialog">
-			<param name="Local" value="pages\XW\brief.html">
+			<param name="Local" value="pages\XW\brief2.html">
 			</OBJECT>
 		<UL>
 			<LI> <OBJECT type="text/sitemap">
-				<param name="Name" value="Briefing Animation">
-				<param name="Local" value="pages\XW\brief.html#brief">
+				<param name="Name" value="Briefing Map">
+				<param name="Local" value="pages\XW\brief2.html#tabbrief">
 				</OBJECT>
 			<LI> <OBJECT type="text/sitemap">
 				<param name="Name" value="Tags and Strings">
-				<param name="Local" value="pages\XW\brief.html#string">
+				<param name="Local" value="pages\XW\brief2.html#tabstring">
 				</OBJECT>
 			<LI> <OBJECT type="text/sitemap">
 				<param name="Name" value="Event List">
-				<param name="Local" value="pages\XW\brief.html#events">
+				<param name="Local" value="pages\XW\brief2.html#tabevent">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Page Options">
+				<param name="Local" value="pages\XW\brief2.html#tabpageoptions">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Briefing Options">
+				<param name="Local" value="pages\XW\brief2.html#tabmanage">
 				</OBJECT>
 		</UL>
 	</UL>
@@ -228,20 +306,20 @@
 		</UL>
 		<LI> <OBJECT type="text/sitemap">
 			<param name="Name" value="Briefing Dialog">
-			<param name="Local" value="pages\TIE\brief.html">
+			<param name="Local" value="pages\TIE\brief2.html">
 			</OBJECT>
 		<UL>
 			<LI> <OBJECT type="text/sitemap">
-				<param name="Name" value="Briefing Animation">
-				<param name="Local" value="pages\TIE\brief.html#brief">
+				<param name="Name" value="Briefing Map">
+				<param name="Local" value="pages\TIE\brief2.html#tabbrief">
 				</OBJECT>
 			<LI> <OBJECT type="text/sitemap">
 				<param name="Name" value="Tags and Strings">
-				<param name="Local" value="pages\TIE\brief.html#string">
+				<param name="Local" value="pages\TIE\brief2.html#tabstring">
 				</OBJECT>
 			<LI> <OBJECT type="text/sitemap">
 				<param name="Name" value="Event List">
-				<param name="Local" value="pages\TIE\brief.html#events">
+				<param name="Local" value="pages\TIE\brief2.html#tabevent">
 				</OBJECT>
 		</UL>
 	</UL>
@@ -306,7 +384,7 @@
 			</OBJECT>
 		<LI> <OBJECT type="text/sitemap">
 			<param name="Name" value="Briefing Dialog">
-			<param name="Local" value="pages\XvT\brief.html">
+			<param name="Local" value="pages\XvT\brief2.html">
 			</OBJECT>
 	</UL>
 	<LI> <OBJECT type="text/sitemap">
@@ -374,7 +452,7 @@
 			</OBJECT>
 		<LI> <OBJECT type="text/sitemap">
 			<param name="Name" value="Briefing Dialog">
-			<param name="Local" value="pages\XWA\brief.html">
+			<param name="Local" value="pages\XWA\brief2.html">
 			</OBJECT>
 		<LI> <OBJECT type="text/sitemap">
 			<param name="Name" value="Hook Dialog">
