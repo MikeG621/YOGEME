@@ -6,6 +6,7 @@
  * VERSION: 1.17.7+
  *
  * CHANGELOG
+ * [UPD] FG Goal Summary now includes Globals
  * [UPD] LfdReader v3 update
  * [UPD #137] switch to new BriefingForm
  * [NEW #137] FormScaler implemented
@@ -1254,7 +1255,7 @@ namespace Idmr.Yogeme
 		void menuER_Click(object sender, EventArgs e) => Common.LaunchER();
 		void menuExit_Click(object sender, EventArgs e) => Close();
 		void menuGlobalSummary_Click(object sender, EventArgs e) => new GlobalSummaryDialog(_mission.FlightGroups).Show();
-		void menuGoalSummary_Click(object sender, EventArgs e) => new GoalSummaryDialog("(global goals not included)\r\n\r\n" + generateGoalSummary()).Show();
+		void menuGoalSummary_Click(object sender, EventArgs e) => new GoalSummaryDialog(generateGoalSummary()).Show();
 		void menuLibrary_Click(object sender, EventArgs e)
 		{
 			_fLibrary?.Close();
@@ -1761,11 +1762,11 @@ namespace Idmr.Yogeme
 		}
 		string generateGoalSummary()
 		{
-			//4 elements:  Primary,Secondary,Secret,Bonus
+			//4 elements:  Global Primary, Global Secondary, Global Bonus, Primary, Secondary, Bonus
 			//Each element contains a list of strings for each goal.
-			List<string>[] goalList = new List<string>[4];
+			List<string>[] goalList = new List<string>[6];
 
-			for (int i = 0; i < 4; i++) goalList[i] = new List<string>();
+			for (int i = 0; i < 6; i++) goalList[i] = new List<string>();
 
 			//Iterate FGs and their goals, adding them to the proper list
 			for (int i = 0; i < _mission.FlightGroups.Count; i++)
@@ -1773,31 +1774,53 @@ namespace Idmr.Yogeme
 				FlightGroup fg = _mission.FlightGroups[i];
 				string c = Strings.CraftAbbrv[fg.CraftType] + " " + fg.Name;
 				string n = composeGoalString(c, fg.Goals.PrimaryAmount, fg.Goals.PrimaryCondition);
-				if (n != "") goalList[0].Add(n);
+				if (n != "") goalList[3].Add(n);
 
 				n = composeGoalString(c, fg.Goals.SecondaryAmount, fg.Goals.SecondaryCondition);
-				if (n != "") goalList[1].Add(n);
+				if (n != "") goalList[4].Add(n);
 
 				n = composeGoalString(c, fg.Goals.BonusAmount, fg.Goals.BonusCondition);
 				if (n != "")
 				{
-					n += " (" + fg.Goals.BonusPoints + " points)";
-					goalList[3].Add(n);
+					n += $" ({fg.Goals.BonusPoints} points)";
+					goalList[5].Add(n);
 				}
 			}
 
+			// Global goals, assumes trigger 2 is never used without 1
+			Label dummy = new Label();
+			for (int i = 0; i < 3; i++)
+			{
+				var goal = _mission.GlobalGoals.Goals[i];
+				if (goal.Triggers[0].Condition == 0 || goal.Triggers[0].Condition == 10) continue;
+
+				labelRefresh(goal.Triggers[0], dummy);
+				string global = dummy.Text;
+				if (goal.Triggers[1].Condition != 0 && goal.Triggers[1].Condition != 10)
+				{
+					global += $"\r\n-{(goal.T1AndOrT2 ? "OR" : "AND")}-\r\n";
+					labelRefresh(goal.Triggers[1], dummy);
+					global += dummy.Text;
+				}
+				goalList[i].Add(global);
+			}
+			dummy.Dispose();
+
 			//Compose the output by going through the goal categories
 			string output = "";
-			for (int i = 0; i < 4; i++)
+			for (int i = 0; i < 6; i++)
 			{
 				if (goalList[i].Count == 0) continue;
 
 				if (output.Length > 0) output += "\r\n";
 				switch (i)
 				{
-					case 0: output += "PRIMARY:\r\n"; break;
-					case 1: output += "SECONDARY:\r\n"; break;
-					case 3: output += "BONUS:\r\n"; break;
+					case 0: output += "GLOBAL PRIMARY:\r\n"; break;
+					case 1: output += "GLOBAL SECONDARY:\r\n"; break;
+					case 2: output += "GLOBAL BONUS:\r\n"; break;
+					case 3: output += "PRIMARY:\r\n"; break;
+					case 4: output += "SECONDARY:\r\n"; break;
+					case 5: output += "BONUS:\r\n"; break;
 				}
 				foreach (string s in goalList[i]) output += s + "\r\n";
 			}

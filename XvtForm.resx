@@ -125,7 +125,7 @@
         AAEAAAD/////AQAAAAAAAAAMAgAAAFdTeXN0ZW0uV2luZG93cy5Gb3JtcywgVmVyc2lvbj00LjAuMC4w
         LCBDdWx0dXJlPW5ldXRyYWwsIFB1YmxpY0tleVRva2VuPWI3N2E1YzU2MTkzNGUwODkFAQAAACZTeXN0
         ZW0uV2luZG93cy5Gb3Jtcy5JbWFnZUxpc3RTdHJlYW1lcgEAAAAERGF0YQcCAgAAAAkDAAAADwMAAAAE
-        DwAAAk1TRnQBSQFMAgEBDgEAAUABAgFAAQIBEAEAARABAAT/AQkBAAj/AUIBTQE2AQQGAAE2AQQCAAEo
+        DwAAAk1TRnQBSQFMAgEBDgEAAUgBAgFIAQIBEAEAARABAAT/AQkBAAj/AUIBTQE2AQQGAAE2AQQCAAEo
         AwABQAMAAUADAAEBAQABCAYAARAYAAGAAgABgAMAAoABAAGAAwABgAEAAYABAAKAAgADwAEAAcAB3AHA
         AQAB8AHKAaYBAAEzBQABMwEAATMBAAEzAQACMwIAAxYBAAMcAQADIgEAAykBAANVAQADTQEAA0IBAAM5
         AQABgAF8Af8BAAJQAf8BAAGTAQAB1gEAAf8B7AHMAQABxgHWAe8BAAHWAucBAAGQAakBrQIAAf8BMwMA
@@ -192,79 +192,13 @@
         Av8BgAEBCv8L
 </value>
   </data>
-  <metadata name="chkWPBrief1.Locked" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="chkWPHyp.Locked" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="chkWP8.Locked" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="chkWP7.Locked" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="chkWP2.Locked" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="chkWP1.Locked" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="chkSP4.Locked" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="chkSP3.Locked" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="chkSP2.Locked" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="chkSP1.Locked" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="chkWP6.Locked" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="chkWP5.Locked" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="chkWP4.Locked" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="chkWP3.Locked" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="chkWPRend.Locked" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="chkWPBrief2.Locked" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="chkWPBrief3.Locked" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="chkWPBrief4.Locked" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="chkWPBrief5.Locked" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="chkWPBrief6.Locked" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="chkWPBrief7.Locked" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="chkWPBrief8.Locked" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="label76.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
-        uAAADrgBakH1WwAAAAd0SU1FB+IFBAIqGK9ZiB4AAABxSURBVDhPtYwBCsAwCAP7Pv//H1cLt4pVkI4J
-        R01iM1T1E+8iIvPZgWnwPhl7akbI4mscRxWWXxfw+bogUhYQZJPdrdss8B88Nq2CFcxh9167AF356KOg
-        y38FUVc+Oi2w6XjLZ/EmMNEvC7LjjF2g4wGhZncJ2/B+zgAAAABJRU5ErkJggg==
+        uAAADrgBakH1WwAAAAd0SU1FB+IFBAIqGK9ZiB4AAABpSURBVDhPtZABCsAgDAN9X///n47BIiVLXN2Y
+        EGyTeqIjM8cXzSIisgZnD/Gh6kmThYz3NgD5awA/ZxvAsgAEaqm5JYBvhd8COMgWAL3zLaCr/wDcO38J
+        wAc+eTcA6hlei30LUMNKFXAAoWZ3CQz4GhcAAAAASUVORK5CYII=
 </value>
   </data>
   <metadata name="chkWPBrief1.Locked" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
@@ -315,18 +249,18 @@
   <data name="label77.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
-        uAAADrgBakH1WwAAAAd0SU1FB+IFBAIpOyYTqq8AAABySURBVDhPpY8LCoBACEQ9nzfstIYLymjTfkp4
-        bDi+gcTMfpEfqmpB7Gb4jBeXqwKWlxBfJEQksiIjXWD4XZH7wYpS0MNdsuBtVuX5z7NhYpAFLNwhC76U
-        uFMKECZ0/I7KCBOdyB/CjCLLNaCHJ9DlPiY3LiRUv6IZ2OkAAAAASUVORK5CYII=
+        uAAADrgBakH1WwAAAAd0SU1FB+IFBAIpOyYTqq8AAABtSURBVDhPpZABCsAwCAN9nz/cax0T2ml0Wplw
+        rCzmKCURoT/sAzPLApcynnECK8HlKneh/WbF7Jau3JUQFdgyLnQ4AYanbMHXdPL3NYvBUirA4JTxy1v0
+        5lYwlZWCTrTyUKhwZbqUsDQl/JhyAy4kVL/FgL0SAAAAAElFTkSuQmCC
 </value>
   </data>
   <data name="label78.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
-        uAAADrgBakH1WwAAAAd0SU1FB+IFBAIrBkxNhDwAAACfSURBVDhPjVGBDcAgCPM+P9y1DNRiRTSaNGJb
-        iptFRFLUWgWIGiMlIxCShc1D+SY5FnPxNk23HQSbI4fm8w3MeAo4aQO9IEM2BbjfQPdbMxA9vdCAl2aA
-        vTsx/i54aMxDazwOHMLcTbM6Nb9iC7AaYGPT6Dmd09oJfsom6ILRv588S4C/Ak3xGmcCmg2dVBMmLo0R
-        odngAUAMwco0ESk/D+xj9e0WndAAAAAASUVORK5CYII=
+        uAAADrgBakH1WwAAAAd0SU1FB+IFBAIrBkxNhDwAAACKSURBVDhPlVJBDsAgCPN9/nCvZXGxiKWQzKQH
+        21JUHGY2FOacBrAWkQgFhKiwsxnPIfeKHJ/m06sA5rrrHGMVUGkpYBOqS6ddAcrAYI8HsNDhesxE7NcF
+        Dy3ysSYZubjTUsBfpADVxbUwThnAs14LRr+/GLcL3KX7RPG0bkbHq5DR/QOAQ7CUtmpfD+xj9UPdpiIA
+        AAAASUVORK5CYII=
 </value>
   </data>
   <metadata name="chkWPBrief2.Locked" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">

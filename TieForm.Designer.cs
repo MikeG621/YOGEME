@@ -3960,7 +3960,7 @@ namespace Idmr.Yogeme
 			// menuGoalSummary
 			// 
 			this.menuGoalSummary.Index = 5;
-			this.menuGoalSummary.Text = "FG &Goal Summary";
+			this.menuGoalSummary.Text = "&Goal Summary";
 			this.menuGoalSummary.Click += new System.EventHandler(this.menuGoalSummary_Click);
 			// 
 			// menuLibrary

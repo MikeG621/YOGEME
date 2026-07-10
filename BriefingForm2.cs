@@ -94,6 +94,7 @@ namespace Idmr.Yogeme
 		readonly List<AbstractEvent> _events = new List<AbstractEvent>();
 
 		// Other runtime information, some are platform specific.
+		// TODO: need a mechanism to update these from the main platforms
 		readonly string[] _teamNames = new string[10];
 		readonly string[] _regionNames = new string[4];
 		string[] _iffNames;

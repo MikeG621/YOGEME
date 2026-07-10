@@ -6,6 +6,7 @@
  * VERSION: 1.17.7+
  *
  * CHANGELOG
+ * [UPD] FG Goal Summary now includes Globals
  * [UPD #137] switch to new BriefingForm
  * [NEW #137] FormScaler implemented
  * v1.17.7, 260327
@@ -1834,11 +1835,7 @@ namespace Idmr.Yogeme
 		void menuER_Click(object sender, EventArgs e) => Common.LaunchER();
 		void menuExit_Click(object sender, EventArgs e) => Close();
 		void menuGlobalSummary_Click(object sender, EventArgs e) => new GlobalSummaryDialog(_mission.FlightGroups).Show();
-		void menuGoalSummary_Click(object sender, EventArgs e)
-		{
-			string output = "(global goals not included):\r\n----------\r\n" + generateGoalSummary();
-			new GoalSummaryDialog(output).Show();
-		}
+		void menuGoalSummary_Click(object sender, EventArgs e) => new GoalSummaryDialog(generateGoalSummary()).Show();
 		void menuLibrary_Click(object sender, EventArgs e)
 		{
 			_fLibrary?.Close();
@@ -2556,52 +2553,106 @@ namespace Idmr.Yogeme
 		}
 		string generateGoalSummary()
 		{
-			//30 elements:  Primary,Prevent,Bonus, ... (repeat for each team)
+			//60 elements:  FG Primary, FG Prevent, FG Bonus, Global Primary, Global Prevent, Global Secondary... (repeat for each team)
 			//Each element contains a list of strings for each line of text.
-			//Was going to try and summarize global goals but the output was ugly, so removed it. Easy for the user to view those anyway.
-			List<string>[] goalList = new List<string>[30];
+			List<string>[] goalList = new List<string>[60];
 
-			for (int i = 0; i < 30; i++) goalList[i] = new List<string>();
+			for (int i = 0; i < 60; i++) goalList[i] = new List<string>();
 
 			//Iterate FGs and their goals, adding them to the proper list
 			for (int i = 0; i < _mission.FlightGroups.Count; i++)
 			{
 				FlightGroup fg = _mission.FlightGroups[i];
-				foreach (FlightGroup.Goal goal in fg.Goals)
+				foreach (var goal in fg.Goals)
 				{
 					if (goal.Condition == 0 || goal.Condition == 10) continue;
 
 					string c = Strings.CraftAbbrv[fg.CraftType] + " " + fg.Name;
 					string n = goal.ToString().Replace("Flight Group", c);
 					int category = (goal.Argument <= 1) ? 0 : 2;  //0 = primary, 1 = prevent, 2 = bonus
-					for (int t = 0; t < 10; t++) if (goal.GetEnabledForTeam(t)) goalList[t * 3 + category].Add(n);
+					for (int t = 0; t < 10; t++) if (goal.GetEnabledForTeam(t)) goalList[t * 6 + category].Add(n);
 				}
 			}
+
+			// Iterate teams and their global goals
+			// For the sake of display, assumes that the goal is never built with triggers 2-4 without using trigger 1
+			Label dummy = new Label();
+			for (int i = 0; i < 10; i++)
+			{
+				
+				for (int j = 0; j < 3; j++)
+				{
+					var goal = _mission.Globals[i].Goals[j];
+					if (goal.Triggers[0].Condition == 0 || goal.Triggers[0].Condition == 10) continue;
+
+					labelRefresh(goal.Triggers[0], dummy);
+					string global = dummy.Text;
+					global += $" ({goal.GetPointsPerTrigger(0)} points)";
+					if (goal.Triggers[1].Condition != 0 && goal.Triggers[1].Condition != 10)
+					{
+						global += $"\r\n-{(goal.T1AndOrT2 ? "OR" : "AND")}-\r\n";
+						labelRefresh(goal.Triggers[1], dummy);
+						global += dummy.Text;
+						global += $" ({goal.GetPointsPerTrigger(1)} points)";
+					}
+					if (goal.Triggers[2].Condition != 0 && goal.Triggers[2].Condition != 10)
+					{
+						global += $"\r\n-{(goal.T12AndOrT34 ? "OR" : "AND")}-\r\n";
+						labelRefresh(goal.Triggers[2], dummy);
+						global += dummy.Text;
+						global += $" ({goal.GetPointsPerTrigger(2)} points)";
+					}
+					if (goal.Triggers[3].Condition != 0 && goal.Triggers[3].Condition != 10)
+					{
+						global += $"\r\n-{(goal.T3AndOrT4 ? "OR" : "AND")}-\r\n";
+						labelRefresh(goal.Triggers[3], dummy);
+						global += dummy.Text;
+						global += $" ({goal.GetPointsPerTrigger(3)} points)";
+					}
+					global += $"\r\n({goal.Points} goal points)";
+					goalList[i * 6 + 3 + j].Add(global);
+				}
+			}
+			dummy.Dispose();
 
 			//Compose the output by going through the teams and writing the results from each goal category
 			string output = "";
 			for (int i = 0; i < 10; i++) //Each team
 			{
-				if (goalList[(i * 3) + 0].Count == 0 && goalList[(i * 3) + 2].Count == 0)  //No primary or bonus goals
+				if (goalList[i * 6].Count == 0 && goalList[i * 6 + 2].Count == 0 && goalList[i * 6 + 3].Count == 0 && goalList[i * 6 + 5].Count == 0)  //No primary or bonus goals
 					continue;
 
 				if (output.Length > 0) output += "\r\n----------\r\n";
 				output += "TEAM #" + (i + 1) + ": " + _mission.Teams[i].Name + "\r\n";
-				output += "PRIMARY:\r\n";
-				foreach (string s in goalList[(i * 3) + 0]) output += s + "\r\n";
-
-				if (goalList[(i * 3) + 1].Count > 0)
+				if (goalList[i * 6 + 3].Count > 0)
 				{
-					output += "\r\n";
-					output += "SECONDARY:\r\n";
-					foreach (string s in goalList[(i * 3) + 1]) output += s + "\r\n";
+					output += "\r\nGLOBAL PRIMARY:\r\n";
+					foreach (string s in goalList[i * 6 + 3]) output += s + "\r\n";
 				}
-
-				if (goalList[(i * 3) + 2].Count > 0)
+				if (goalList[i * 6 + 4].Count > 0)
 				{
-					output += "\r\n";
-					output += "BONUS:\r\n";
-					foreach (string s in goalList[(i * 3) + 2]) output += s + "\r\n";
+					output += "\r\nGLOBAL PREVENT:\r\n";
+					foreach (string s in goalList[i * 6 + 4]) output += s + "\r\n";
+				}
+				if (goalList[i * 6 + 5].Count > 0)
+				{
+					output += "\r\nGLOBAL SECONDARY:\r\n";
+					foreach (string s in goalList[i * 6 + 5]) output += s + "\r\n";
+				}
+				if (goalList[i * 6].Count > 0)
+				{
+					output += "\r\nPRIMARY:\r\n";
+					foreach (string s in goalList[i * 6 + 0]) output += s + "\r\n";
+				}
+				if (goalList[i * 6 + 1].Count > 0)
+				{
+					output += "\r\nSECONDARY:\r\n";
+					foreach (string s in goalList[i * 6 + 1]) output += s + "\r\n";
+				}
+				if (goalList[i * 6 + 2].Count > 0)
+				{
+					output += "\r\nBONUS:\r\n";
+					foreach (string s in goalList[i * 6 + 2]) output += s + "\r\n";
 				}
 			}
 			if (output == "") output = "Nothing here.";
@@ -4644,9 +4695,8 @@ namespace Idmr.Yogeme
 			for (int i = 0; i < 8; i++)
 				if (cboType[i].SelectedIndex == 0xC || cboType[i].SelectedIndex == 0x15)
 					cbo[i].Items[_activeTeamIndex] = teamName;
-
-			for (int i = 0; i < _mission.Teams.Count; i++)
-				BriefingForm.SharedTeamNames[i] = _mission.Teams[i].Name;
+			// TODO: Briefing Team refresh
+			//for (int i = 0; i < _mission.Teams.Count; i++) BriefingForm.SharedTeamNames[i] = _mission.Teams[i].Name;
 
 			if (_activeTeamIndex < 8)
 			{
