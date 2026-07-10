@@ -1,0 +1,1092 @@
+<HTML>
+<HEAD>
+  <link rel="stylesheet" type="text/css" href="../stylesheet.css" />
+  <title>Briefing Dialog</title>
+</HEAD>
+<BODY>
+<p align=center><h2>Briefing Dialog</h2></p>
+<p>Released after version 1.17.7, the briefing editor component was completely rewritten.  It is a significant improvement over the previous version, with several quality of life features.  This comprehensive document is meant to explain as much as possible.  Even if you're familiar with briefings, you might be able to learn some tips that may not be immediately obvious.</p>
+
+<ul>
+<li><a href="#overview">Feature Overview</a></li>
+<li><a href="#setup">Setup Resources</a></li>
+<li><a href="#keys">Hotkey / Interaction Command Reference</a></li>
+<li><a href="#event">Event Command Reference</a></li>
+<li><a href="#waypoints">Flightgroup Waypoints</a></li>
+<li><a href="#panel">Panel Mode (X-Wing only)</a></li>
+<li><a href="#icondirection">Icon Directional Movement (XWA only)</a></li>
+<li><a href="#iconpath">Icon Path Mode (XWA only)</a></li>
+<li><a href="#quickoptions">Quick Toggle Options</a></li>
+</ul>
+
+<p>Breakdown of all tabs and components in the main screen.</p>
+<ul>
+<li><a href="#tab_briefing">Briefing Tab</a>
+  <ul>
+  <li><a href="#map">Map</a></li>
+  <li><a href="#sidebar">Sidebar</a></li>
+  <li><a href="#timeline">Timeline</a></li>
+  </ul>
+</li>
+<li><a href="#tab_strings">Tags and Strings Tab</a></li>
+<li><a href="#tab_event">Event List Tab</a></li>
+<li><a href="#tab_brfoption">Briefing Options Tab</a></li>
+<li><a href="#tab_options">Editor Options Tab</a></li>
+<li><a href="#tab_xwing">X-Wing Page Options Tab</a></li>
+<li><a href="#tab_verify">Verify Tab</a></li>
+<li><a href="#footer">Footer</a></li>
+</ul>
+
+
+
+<h3><a name="overview" class="anchor">Feature Overview</a></h3>
+<p>The new briefing editor has been completely rebuilt from scratch, packed new features and quality of life improvements.  Here's a quick rundown of some new features over the previous version:</p>
+<ul>
+<li><a href="#timeline">Timeline</a>: Visual representation of events as they exist in time, relative to other events, and the ability to easily move them.</li>
+<li>Dynamic resizing and scaling of the map display, and the entire form.</li>
+<li>Nearly 100% pixel accuracy to the original games for icons, text, and tag animations (when <a href="#setup">setup</a> is correct).</li>
+<li>Accurate playback time.</li>
+<li><a href="#keys">Hotkeys</a> for navigation, playback, and interaction.</li>
+<li>Multiple selection on the map, timeline, and events list.</li>
+<li>Multi-level <a href="#undo">undo and redo</a>.</li>
+<li>Full WYSIWYG (what you see is what you get) editing that updates in real time.</li>
+<li>Copy and paste for event commands, and also text in the strings tab.</li>
+<li>Move strings or tags up and down.</li>
+<li>Time shift to add or remove time between events.</li>
+<li><a href="#freelook">Free look mode</a> to easily view the map and select items.</li>
+<li><a href="#autoslot">Automatic slot detection</a> for text tags, flightgroup tags, and XWA icons.</li>
+<li>Automatic creation of standard events like Page Break with a Caption, and Title too for relevant platforms.</li>
+<li>Better handling of map position and zoom, including editing both at the same time.  See <a href="#mapshift">map shift mode</a>.</li>
+<li>Import and export briefings, or parts of briefings, from any platform.</li>
+<li>Verification to detect common issues that might cause problems in game.</li>
+<li>X-Wing: Interactive panel mode to adjust the appearance of text or map panels.</li>
+<li>X-Wing: Graphical toggle for the 1994 DOS CD Edition, or the 1998 Windows Special Edition.</li>
+<li>X-Wing: Add, remove, or modify briefing flightgroup icons directly on the map.</li>
+<li>TIE Fighter, XvT: Easily move or toggle flightgroup icons on the map.</li>
+<li>XvT, XWA: The mission title is loaded from the mission list file.</li>
+<li>XWA: Easily create icons: Ship type, position, rotation, all at once.</li>
+<li>XWA: Brand new Path Mode to create complex movements.</li>
+<li>XWA: Shadow icons to visualize and interact with all steps of movement at once.</li>
+<li>XWA: Directional control for icons, with full control over distance, direction, and acceleration.</li>
+<li>XWA: Animated effects for region transitions or craft information, for accurate playback.</li>
+<li>XWA: Audio is loaded for caption strings, loaded from the mission's installation path.</li>
+</ul>
+
+
+<h3><a name="setup" class="anchor">Setup Resources</a></h3>
+<p>The new briefing editor strives for visual accuracy with the original games in the series.  To accomplish this, it loads resources like icon graphics and text fonts directly from the game installation.  Make sure your game installation paths are assigned in YOGEME's options menu.</p>
+
+<p>Note that if you have mods like XWA Upgrade or XWVM, pixel accuracy isn't possible as the rendering engines are modified and may appear slightly differently.</p>
+
+<p>When you first load the briefing, look in the bottom right corner of the window.  There is a status line displayed there.  On an empty briefing, you should see <b>Assets Loaded OK</b>.  This means all resources are loaded and ready.</p>
+
+<p>If you see <b>Font ERR, Icon ERR</b>, it means the installation paths haven't been assigned properly, or the expected resources could not be loaded for some reason.  Switch over to the Editor Options tab and check the load report.  It will tell you which icons and fonts are loaded, and from where.</p>
+
+<h4>X-Wing</h4>
+<p>It's best to target the 1998 Windows Special Edition version, since it contains assets for all versions.  The 1994 DOS CD version may bundle its resources into a CD image, which cannot be loaded.  The 1993 DOS Floppy version may be lacking some resources entirely.</p>
+
+<p>Alternatively, X-Wing will attempt to load TIE Fighter assets if TIE Fighter is installed, since the fonts are compatible and most of the icons are similar enough that they can be substituted.</p>
+
+<p>If you prefer not to target a specific version, you can install the required archives by copying them directly into YOGEME's folder.  These are <b>XWING.LFD</b> and <b>BWING.LFD</b></p>
+
+<h4>TIE Fighter</h4>
+<p>Unlike X-Wing, the briefing looks the same no matter which version of the game you use.</p>
+
+<p>If you prefer not to target a specific version, you can install the required archives by copying them directly into YOGEME's folder.  These are <b>EMPIRE.LFD</b> and <b>PLAYER.LFD</b></p>
+
+<h4>X-Wing vs TIE Fighter</h4>
+<p>Simple here, just target the platform.</p>
+
+<h4>X-Wing Alliance</h4>
+<p>Simple here, just target the platform.  However if you have XWA Upgrade 2025 or a mod based on it like TFTC, then YOGEME will not correctly replicate the HD graphics or fonts.</p>
+
+
+
+<h3><a name="keys" class="anchor">Hotkey / Interaction Command Reference</a></h3>
+<p>There are several hotkeys, and interactive shortcuts with the mouse, to make things easier.  If you have trouble getting hotkeys to work, hover the mouse over the map or timeline.  Sometimes clicking on the map or timeline can help.  If all else fails, try alt-tabbing away from the briefing window then back in.</p>
+
+<p>Map only:</p>
+<ul>
+<li><b>[Arrows Keys]</b> Move object positions on the map.  Hold <b>[Shift]</b> for smaller increment, or <b>[Ctrl]</b> for larger increment.</li>
+<li><b>[Left Click]</b> Select events, waypoints, and captions.  <b>[Shift]</b> to add selection, <b>[Ctrl]</b> to toggle.  Drag to move objects.</li>
+<li><b>[Middle Click]</b> Context reset.  Jump to selected event time, or cancels free look mode, in that order.</li>
+<li><b>[Right Click]</b> Drag to pan the map.  Right click on a caption to jump to the next caption.</li>
+</ul>
+
+<p>Timeline only:</p>
+<ul>
+<li><b>[Left Click]</b> Selects events.  <b>[Shift]</b> to add selection, <b>[Ctrl]</b> to toggle.  Drag to move events.  Selecting the pip at the top will include the entire column.</li>
+<li><b>[Middle Click]</b> Jumps to selected event time.</li>
+<li><b>[Right Click]</b> Drag to navigate the timeline horizontally through time, or vertically up and down a column.</li>
+<li><b>[Ctrl + Up/Down Arrow]</b> Move selected events up or down in the column.</li>
+<li><b>[Right/Left Arrow]</b> Navigate forward or backward by one frame.  Same as <b>[+, -]</b>.</li>
+<li><b>[Shift + Right/Left Arrow]</b> Navigate forward or backward by event.  Same as <b>[T, Y]</b>.</li>
+<li><b>[Ctrl + Right/Left Arrow]</b> Move selected events forward or backward through time by one frame.  Same as dragging events with the mouse.</li>
+</ul>
+
+<p>Both Map and Timeline:</p>
+<ul>
+<li><b>[Left Click]</b> Selects items.  <b>[Shift]</b> to add selection, <b>[Ctrl]</b> to toggle.  Drag to move objects.</li>
+<li><b>[Mousewheel]</b>: Either map or timeline zoom will be slower when <b>[Shift]</b> is pressed, or faster when <b>[Ctrl]</b> is pressed.</li>
+<li><b>[Escape]</b> Cancel event creation, deselects objects, or exits free look mode, in that order.</li>
+<li><b>[Spacebar]</b> Toggles briefing playback and pausing.</li>
+<li><b>[F]</b> Fast-forward to 2x, 4x, or 8x speed.  Begins playback at normal speed if currently paused.</li>
+<li><b>[PgDn]</b> and <b>[PgUp]</b> Navigate to next and previous caption, respectively.</li>
+<li><b>[Home]</b> Jump to the beginning of of the briefing.  Frame zero.</li>
+<li><b>[End]</b> Jump to the last event.  <b>[Ctrl+End]</b> jumps to the very last frame of the briefing.</li>
+<li><b>[1..9]</b> Jump to caption by number.</li>
+<li><b>[T, Y]</b> Navigate to the next or previous event column in the timeline.</li>
+<li><b>[E, R]</b> Navigate current time by half of the timeline.</li>
+<li><b>[F5..F8]</b> Recall a bookmark time.  Hold <b>[Shift]</b> to set.  Just like using target presets in game.</li>
+<li><b>[U]</b> Jump to last edited event.</li>
+<li><b>[G]</b> Context jump.  For XWA icon events, jumps to its parent <i>New Ship</i> event.</li>
+<li><b>[L]</b> Set briefing length (duration) to current time.</li>
+<li><b>[+,-]</b> Navigate time by 1 frame forward or backward.</li>
+</ul>
+
+<p>Map, Timeline, Strings Tab, Events Tab</p>
+<ul>
+<li><b>[Ctrl+C]</b> Copy</li>
+<li><b>[Ctrl+V]</b> Paste</li>
+<li><b>[Ctrl+X]</b> Cut</li>
+<li><b>[Ctrl+Z]</b> Undo</li>
+<li><b>[Ctrl+Y]</b> Redo</li>
+</ul>
+
+<p>Map only, XWA specific:</p>
+<ul>
+<li><b>[Numpad Arrows]</b> Generate icon movements if an icon is selected.  Hold <b>[Ctrl]</b> to create a batch of icons.</li>
+<li><b>"[ ]"</b> (brackets) Rotates the selected icon (will create an event if none exists).</li>
+<li><b>[I]</b> Expand current icon selection, to select all events involving that icon.  Important to know is that it will not select the first icon position.  This allows you to quickly select and delete entire movements without deleting the starting position.  If you want to select literally everything for that icon, include the first position in the selection.  The command also works on the timeline.</li>
+<li><b>[D]</b> Detect distance from prior icon movement step, changes the directional movement distance.</li>
+<li><b>[Double Click]</b> on a shadow icon, or any icon event in the timeline, to expand icon selection.  Same as <b>[I]</b>.</li>
+<li><b>[Ctrl+K]</b> Copy the selected icons at the current time (craft type, position, and rotation).  This is useful if you want to paste the icons into a different region.  If no icons are selected, it will copy all visible icons.</li>
+<li><b>[Backspace]</b> Creates an icon with a null craft type.  This is used to deactivate icons from the map, making them invisible, without deleting them.</li>
+</ul>
+
+<p>Map - Path Mode (XWA only)</p>
+<ul>
+<li><b>[P]</b> Toggles Path Mode.</li>
+<li><b>[Shift+Click]</b> Create node on map at cursor, adding to the end of the list.</li>
+<li><b>[Ctrl+Click]</b> Create node on map at cursor, inserting at the front of the list.</li>
+<li><b>[Delete]</b> Delete selected nodes, also deletes selected icons.</li>
+<li><b>[I]</b> or <b>[Double Click]</b> Expand icon selection.</li>
+<li><b>[1..9]</b> Select node by number.</li>
+<li><b>[Arrow Keys]</b> Move selected path nodes.</li>
+<li><b>[+,-]</b> Add or subtract movement steps for the current node.</li>
+<li><b>[Bracket]</b> Adjust node rotation.</li>
+<li><b>[Backslash]</b> Swap node rotation on first or second step.</li>
+</ul>
+
+
+<p>Map - Panel Mode (X-Wing only)</p>
+<ul>
+<li><b>[P]</b> Toggles Panel Mode.</li>
+<li><b>[Left Click]</b> Select panel for movement and customization, or select panel edge for resizing.</li>
+<li><b>[W, A, S, D]</b> Select edge for resizing.</li>
+<li><b>[Spacebar]</b> Select the center of the panel for moving.</li>
+<li><b>[Arrow Keys]</b> Move or resize depending on whether a panel interior, or panel edge is selected.</li>
+</ul>
+
+<p>Event interactions:</p>
+<ul>
+<li><i>Text Tag</i>, <i>New Ship</i>: <b>[Shift click]</b> on the map to set exact position instead of dragging the selection bracket.</li>
+<li><i>FG Tag</i>: <b>[Left click]</b> an icon to choose the tag target instead of using the dropdown.</li>
+<li><i>New Ship</i> (XWA only): <b>[Ctrl+Click]</b> an icon on the map to prepare a deactivation event for that icon.</li>
+<li><i>Rotate, Move Ship, Ship Info</i> (XWA only): <b>[Left click]</b> an icon on the map to select that icon.</li>
+</ul>
+
+
+
+<h3><a name="event" class="anchor">Event Command Reference</a></h3>
+
+<p>This is a listing of all event command instructions that can be used in a briefing.  Not all events are available for every platform.</p>
+
+<ul>
+<li><a href="#evt_title">Title</a></li>
+<li><a href="#evt_title">Caption</a></li>
+<li><a href="#evt_panel">Panel 3 (X-Wing only)</a></li>
+<li><a href="#evt_panel">Panel 4 (X-Wing only)</a></li>
+<li><a href="#evt_cleartag">Clear FG Tags</a></li>
+<li><a href="#evt_cleartag">Clear Text Tags</a></li>
+<li><a href="#evt_fgtag">FG Tag</a></li>
+<li><a href="#evt_texttag">Text Tag</a></li>
+<li><a href="#evt_movemap">Move Map</a></li>
+<li><a href="#evt_zoommap">Zoom Map</a></li>
+<li><a href="#evt_pagebreak">New Page</a> (AKA <i>Page Break</i>)</li>
+<li><a href="#evt_marker">Marker</a></li>
+<li><a href="#evt_newshipxw">New Ship (X-Wing only)</a></li>
+<li><a href="#evt_newship">New Ship (XWA only)</a></li>
+<li><a href="#evt_moveship">Move Ship (XWA only)</a> (AKA <i>Move Icon</i>)</li>
+<li><a href="#evt_rotate">Rotate (XWA only)</a> (AKA <i>Rotate Icon</i>)</li>
+<li><a href="#evt_region">Region (XWA only)</a></li>
+<li><a href="#evt_shipinfo">Ship Info (XWA only)</a></li>
+<li><a href="#evt_infotext">Info Text (XWA only)</a></li>
+</ul>
+
+<h4><a name="evt_title" class="anchor">Title, Caption</a></h4>
+<p>The title changes the text at the top of the page in the title space.  This is only for X-Wing and TIE Fighter.  XvT and XWA derive their title directly from the mission list file and cannot be changed with this event.</p>
+
+<p>The caption changes the text at the bottom of the page in the caption space.  X-Wing, TIE Fighter, and XWA all feature in-game audio that plays for each caption, as determined by its string slot.  The audio itself, or even which files to play, cannot be directly controlled here (unless you happen to choose an unused string slot).  Therefore, if you are editing or replacing existing missions, the old audio lines may still play in-game.  Audio playback within YOGEME is only supported for XWA.</p>
+
+<p>Change the string slot in the dropdown, and use the edit box to modify the chosen string.  See the <a href="#string">String Controls</a> for more information and any special formatting characters.</p>
+
+<p>Once a <i>Title</i> event is created, all new <i>Title</i> events will automatically select the first title, as is customary in most LucasArts missions.</p>
+
+<p>Typically most string changes are preceded by a <i>Page Break</i> event.  If <i>Auto Page Break</i> is checked, creating either a <i>Title</i> or <i>Caption</i> will automatically insert a <i>Page Break</i> event.  If creating a <i>Caption</i> event for X-Wing or TIE, it may also autocreate a <i>Title</i> event.</p>
+
+<p>Once created, you can select these events by clicking their respective panels on the map.  For navigation purposes, right clicking a caption will jump to the next caption.</p>
+
+<p>In X-Wing, a <i>Page Break</i> event is required before displaying a new string.</p>
+
+
+<h4><a name="evt_panel" class="anchor">Panel 3, Panel 4</a></h4>
+<p>For X-Wing only.  If these panels are enabled in the page template settings (see <a href="#tab_xwing">X-Wing Page Options Tab</a>), and the panels have a non-zero size, these buttons will be available to assign strings.  They behave exactly like caption strings, but instead operate on their respective panels.  All of the same options and rules apply.</p>
+
+
+<h4><a name="evt_cleartag" class="anchor">Clear (FG Tags, Text Tags)</a></h4>
+<p>When creating these events, use the toggle buttons to select whether FG Tags or Text Tags should be cleared, then click <i>OK</i>.</p>
+
+<p>In X-Wing, you must clear tags before reusing a tag slot.</p>
+
+
+<h4><a name="evt_fgtag" class="anchor">FG Tag</a></h4>
+<p>Displays an animation that draws attention to a flightgroup icon.  When the animation finishes, the icon will remain highlighted.</p>
+
+<p>When creating a tag, the tag number dropdown will <a href="#autoslot">automatically choose</a> a free slot depending on which ones are known to be in use.  If you manually choose, the dropdown items will indicate which slots are in use, either now or later.  Note that X-Wing only has four tag slots.  All other platforms have eight.</p>
+
+<p>Choose a flightgroup in the dropdown list, or click on a flightgroup icon on the map.  The chosen flightgroup will have a bracket indicator surrounding it.</p>
+
+<p>In X-Wing, you must use a <i>Clear FG</i> event before reusing the tag slot.</p>
+
+
+<h4><a name="evt_texttag" class="anchor">Text Tag</a></h4>
+<p>Display a short piece of text anywhere on the map.</p>
+
+<p>When creating at tag, it will <a href="#autoslot">automatically choose</a> a free slot depending on which ones are known to be in use.  If you manually choose, the dropdown items will indicate which slots are in use, either now or later.  Note that X-Wing only has four tag slots.  All other platforms have eight.</p>
+
+<p>In X-Wing, the color cannot be changed.  In all other platforms, there is a dropdown containing a list of available colors.  Which colors are available varies depending on game.</p>
+
+<p>Some colors are marked with an asterisk (*).  These are overflow colors.  Not intended for use by mission designers, but are technically available as <i>undefined behavior</i>.  As such, these tag animations may produce bizarre results, especially in TIE Fighter, as they access palette colors that weren't arranged to be used this way.  Note that missions ported to different engines, or newer engines like XWVM, may not be able to use these colors.  Recommended to use the proper colors.</p>
+
+<p>The position on the map is marked with a bracket.  Click and drag the bracket on the map to change its position.  See the <a href="#position">Position Controls</a> for more information.</p>
+
+<p>See the <a href="#string">String Controls</a> for more information on strings and any special formatting characters.</p>
+
+<p>In X-Wing, you must use a <i>Clear Text</i> event before reusing the tag slot.</p>
+
+
+<h4><a name="evt_movemap" class="anchor">Move Map</a></h4>
+
+<p>Performs an animated scroll from one position to another.</p>
+
+<p>Just like free look mode, you can right-click-drag to move the map to the desired position.<br/>
+Or use the scrollbars that appear to the right, or below the map.<br/>
+Or use the numeric controls to choose a specific value.<br/>
+Or the arrow keys on the map, using the increment in the dropdown.</p>
+
+<p>The range of motion in each scrollbar is intentionally limited to make them easier to use (since you probably won't need to navigate to the extremes of the map), but the numeric controls and mouse panning are unrestricted.</p>
+
+<p>If creating this event while in free look mode, it will automatically use the current free look position.  If the current position contains a zoom adjustment, a bonus <i>Zoom Map</i> event will be created too.</p>
+
+<p>When editing an existing event, it uses a special mode.  See <a href="#mapshift">Map Shift Mode</a> for more information.</p>
+
+
+<h4><a name="evt_zoommap" class="anchor">Zoom Map</a></h4>
+
+<p>Performs an animated effect, zooming in or out.</p>
+
+<p>Just like free look mode, you can use the scroll wheel to adjust the zoom.<br/>
+Hold <b>[Shift]</b> for small increment, or <b>[Ctrl]</b> for large increment.<br/>
+Or use the scrollbars that appear to the right, or below the map.<br/>
+Or use the numeric controls to choose a specific value.</p>
+
+<p>The range of motion in the scrollbars is intentionally limited to make them easier to use (since you probably won't need to zoom in to microscopic levels), but the numeric controls are unrestricted.</p>
+
+<p>The <i>Link</i> checkbox synchronizes both axes, but you can adjust individual axes if you really want to.</p>
+
+<p>If creating this event while in free look mode, it will automatically use the current free look zoom.  If the current location contains a position adjustment, a bonus <i>Move Map</i> event will be created too.</p>
+
+<p>When editing an existing event, it uses a special mode.  See <a href="#mapshift">Map Shift Mode</a> for more information.</p>
+
+
+<h4><a name="evt_pagebreak" class="anchor">New Page</a></h4>
+<p>Creates a page break.  Technically this command clears the title and caption panels.  In X-Wing, it also clears the extra panels.  In X-Wing, it is required to clear a panel before a new string can be assigned.</p>
+
+<p>It is standard practice in most LucasArts briefings to include a page break before all <i>Title</i> or <i>Caption</i> events, except at the beginning of the briefing.  If you create a <i>Title</i> or <i>Caption</i> event, there is an option to automatically generate a <i>Page Break</i> too.</p>
+
+<p>Page breaks will automatically insert at the top of the column, before any other events at that time.</p>
+
+
+<h4><a name="evt_marker" class="anchor">Marker</a></h4>
+<p>This was an older break sometimes used in X-Wing text pages.  It served as a stop point when clicking the page number box in-game.</p>
+
+<p>LucasArts missions typically rely on a <i>Page Break</i> event instead.  This event is generally unused outside of X-Wing, but it is  still available and functional when clicking to advance through a briefing.</p>
+
+
+<h4><a name="evt_newshipxw" class="anchor">New Ship (X-Wing only)</a></h4>
+<p>This is not a real event.  It allows you to interactively create briefing flightgroups directly on the map, displaying their craft icons.  Briefing flightgroups are completely separate and distinct from mission flightgroups.  Briefing flightgroups are purely cosmetic and do not affect gameplay.</p>
+
+<p>See <a href="#waypoints">Waypoints</a> for more information.  In the main YOGEME window, in the Flightgroup Craft tab, there is a button: <i>Switch to BRF</i> (or back to XWI).  This feature is an alternative to creating flightgroups there, with the added bonus of easily changing position without needing to use the Waypoint tab.</p>
+
+<p>A bracket highlights the position on the map where the new craft will be.  See <a href="#position">Position Controls</a> for more information.</p>
+
+<p>The craft dropdown changes the icon graphic.  Can be a craft, nav buoy, asteroid, planet, anything.  There are several miscellaneous icons of unknown type and purpose.  Some of them seem to be training gates.</p>
+
+<p>The IFF determines color.  X-Wing is special in that it has a "Default" IFF which attempts to automatically select an IFF based on craft type.  By default, Rebel craft are green, Imperial are red, transports and others are blue.  Or choose a specific IFF.  IFF has no effect for most miscellaneous objects like asteroids or planets.  Use Default IFF for those.</p>
+
+<p>You can choose the name for the flightgroup.  If the player pauses the briefing in game and hovers the mouse over an icon, it will display a popup with the flightgroup name.  Ideally it should match something that exists in the mission.</p>
+
+<p>You can delete icons by selecting them on the map and pressing the <b>[Delete]</b> key.  You must have at least one icon remaining on the map.  If you don't want it to be visible, use free look mode and move the icon somewhere outside the visible area.</p>
+
+<p><b>Note:</b> if you're just starting a briefing, consider switching to <i>BRF Mode</i> on the craft tab in the main YOGEME window.  Then click <i>Import FGs from XWI</i> in the bottom right corner of the craft tab.  This will copy all flightgroups from the mission into the briefing, with the correct craft types and names already assigned.  Then all you have to do is open the briefing and position everything where you want.</p>
+
+
+<h4><a name="evt_newship" class="anchor">New Ship (XWA only)</a></h4>
+<p>Activates a new craft icon on the map.  When creating a new event, it will <a href="#autoslot">automatically choose</a> a free slot.</p>
+
+<p>Choose the craft type and IFF color from the dropdown boxes.</p>
+
+<p>If you click on the map, it will auto create a position.  Once the position has been placed, a bracket will appear around the selected location.  Move the position by dragging it, or shift clicking the map.  See the <a href="#position">Position Controls</a>.</p>
+
+<p>If a position is assigned, you also have the option of choosing a rotation for it.  For convenience, you can use the bracket <b>[]</b> keys to rotate.</p>
+
+<p>When creating a new icon, it can automatically generate all three events (icon, position, and rotation) at the same time.  If no position or rotation is specified, the icon defaults to the center of the screen.</p>
+
+<p>If you choose <i>None</i> for a craft type, this will deactivate an existing icon, causing it to disappear from the map.  When the craft type is <i>None</i>, you may click an existing icon on the map to choose that slot for deactivation.  Alternatively, <b>[Ctrl+Click]</b> an existing icon will automatically set up a deactivation by choosing both the icon slot and setting craft type to <i>None</i>.   A red X may appear on the map indicating that the icon will be deactivated.  Although the X can be moved around, deactivation will ignore the position and rotation controls.</p>
+
+<p>Instead of creating a <i>None</i> event manually, you may also select an icon on the map and press <b>[Backspace]</b> to automatically create a deactivation event.</p>
+
+
+<h4><a name="evt_moveship" class="anchor">Move Ship (XWA only)</a></h4>
+
+<p>Moves an icon to a new position on the map.</p>
+
+<p>If creating this event, the last used or selected icon will remain chosen.  A bracket will appear around the icon's position.  If the icon is deactivated, the icon will be grayed out.</p>
+
+<p>If an existing event is selected, you may use the <a href="#icondirection">Directional Controls</a> to easily create new positions.  <a href="#iconpath">Path Mode</a> is also available.  Both of these methods allow creating movement without having to manually place every single step yourself.</p>
+
+<p>If Waypoint Shadows is enabled in the <a href="#quickoptions">Quick Options</a> menu, all steps of movement outside the current time will be visible and grayed out.  When they're visible, they can be selected and interacted with, like any other event.</p>
+
+
+<h4><a name="evt_rotate" class="anchor">Rotate (XWA only)</a></h4>
+<p>Rotates an icon on the map.</p>
+
+<p>If creating this event manually, the last used or selected icon will remain chosen.</p>
+
+<p>A bracket will appear around the icon that's being interacted with.  But this event doesn't involve a location, so the bracket can't be moved.</p>
+
+<p>Select a rotation from the dropdown list or use the bracket <b>[ ]</b> keys.</p>
+
+<p><b>Tip:</b> You'll never need to create this event manually.  For convenience, all you have to do is select any existing <i>Move Icon</i> event on the map.  Then press the bracket <b>[ ]</b> keys.  A <i>Rotate</i> event will be automatically inserted at that time.  If the event already exists, it will be modified accordingly.</p>
+
+
+<h4><a name="evt_region" class="anchor">Region (XWA only)</a></h4>
+<p>Transition the map to a new region.  Choose one of the four regions from the dropdown box.  By default, all briefings start on the first region.</p>
+
+<p>If creating this event, it will be created at the current time, and the current time will then be advanced by one frame.  It is typical for new events to follow a region, not coincide with the region time.</p>
+
+<p>Each of the four possible regions contains its own set of icons.  If advancing to a new region, all icons will be empty and ready for creation.  If returning back to a prior region, all prior icons will reappear on the map, at their last known positions.</p>
+
+
+<h4><a name="evt_shipinfo" class="anchor">Ship Info (XWA only)</a></h4>
+<p>Creates a map effect showing the craft information, like shields, hull, etc.  The stats are displayed in-game, along with its 3D model.  The briefing does not have access to these stats, so they won't be visible.  Instead of a 3D model, its 2D icon sprite will be used instead, enlarged in all its pixelated glory.</p>
+
+<p><b>IMPORTANT:</b> This event uses the craft type as assigned from the <i>New Ship</i> event.  If the craft type is <i>None</i>, it may crash the game.</p>
+
+<p>This is basically a special FG tag.  You must select an existing icon, because that's how it knows which craft type to use.  A bracket will appear around the icon that's being interacted with.  But this event doesn't involve a location, so the bracket can't be moved.</p>
+
+<p>Choose a state, either ON or OFF.  If creating an event, this may be automatic depending on the current state of the map.  If you create an <b>ON</b> state, it will optionally autocreate an <b>OFF</b> state.  You can choose the duration that the ship info will remain active on screen.  If <i>"Go to time after creating"</i> is checked, the map will automatically jump to the OFF time.</p>
+
+<p>If not creating an event, use the <b>[T, Y]</b> keys on the map or timeline to navigate forward and backward.  If the ship info text is visible on the map, you can right click anywhere on the map to jump to the end.</p>
+
+
+<h4><a name="evt_infotext" class="anchor">Info Text (XWA only)</a></h4>
+<p>This is a previously unknown command.  It creates a "Special Characteristics" paragraph of text that appears above the statistic information displayed in a <i>Ship Info</i> segment.</p>
+
+<p>It uses a caption string for this information.  See <a href="#string">String Controls</a>.  The "Special Characteristics" line cannot be modified.</p>
+
+<p>Note that like the <i>Ship Info</i> command, this also has an ON/OFF state.  If creating an event, the initial controls will be automatically chosen based on the current map state.</p>
+
+<p>The string will persist for all <i>Ship Info</i> segments unless deactivated.  If creating an ON event, there will be an option to automatically create an OFF event.  It will search for the end of the current <i>Ship Info</i> segment and create an OFF event there, if possible.</p>
+
+<p>For an existing event, when the ship info is active on the screen, you may click the left side of the map to select the event for the sake of editing its text.</p>
+
+
+
+<h3><a name="autoslot" class="anchor">Automatic Slot Detection</a></h3>
+
+<p>When creating certain new events (FG Tag, Text Tag, New Ship), it will attempt to automatically select an empty slot.  On the Briefing map tab, it uses the currently scrolled position in the timeline.  On the Event List tab, it uses the time of the first selected event.  With this information, it knows which slots are active, and is able to scan all further events to detect if any slots are activated at a later time.</p>
+
+<p>Slots that are currently active will be marked as <i>(in use)</i>.  Slots that are activated at a later time within the "block" are marked as <i>(later)</i>.  If you're editing an existing event rather than creating a new one, the currently chosen slot will be marked with <i>(this)</i>.</p>
+
+<p>A "block" ends when certain corresponding events are located.<br/>
+For a <i>FG Tag</i> event, it searches for a <i>Clear FG Tags</i> event.<br/>
+For a <i>Text Tag</i> event, it searches for a <i>Clear Text Tags</i> event.<br/>
+For a <i>New Ship</i> event, it searches for a <i>Region</i> event.</p>
+
+<p>If all slots within a block are currently in use, you will be notified that all slots are full.  You will need to determine when to clear existing slots, or determine which slot to replace.</p>
+
+<p>If all available slots are marked with either <i>(in use)</i> or <i>(later)</i>, it will choose one of the later slots to replace, but will not notify you.</p>
+
+<p>When creating a <i>Title</i> event, it will automatically select the current title string if one exists.  If none exist, an empty string slot is chosen.</p>
+
+<p>When creating a <i>Caption</i> or <i>Text Tag</i> event, it will choose an empty string slot.</p>
+
+
+
+<h3><a name="position" class="anchor">Position Controls</a></h3>
+<p align=center><img src="../../images/Brief2-position.png"></p>
+<p>Whenever something with an editable position is selected, the sidebar will display these common controls.</p>
+
+<p>The position in raw map units is displayed in the numeric controls.  The labels above indicate the waypoint coordinates.  The label units are in kilometers, but the grid drawn on the map is in miles.  The unit of measurement here doesn't really matter since moving items on the map is so easy.</p>
+
+<p>The arrow buttons in the numerics can increase or decrease the value.  If the text area of the control has keyboard focus, you can use the <b>[Up]</b> and <b>[Down]</b> arrow keys on the keyboard instead of the arrow buttons.   Optionally you can type waypoints into the numeric controls as long as you include the decimal separator.  For example <b>1.6</b>.  This is equivalent to typing values into the waypoint boxes in the main YOGEME window.</p>
+
+<p>If the mouse is hovered over the map screen, then the map has focus.  If you use the <b>[Arrow Keys]</b>, it will move the selected items up, down, left, or right.  Hold <b>[Shift]</b> while using the arrow keys to move in a small increment (always 1 pixel) or <b>[Ctrl]</b> to move in a large increment (larger than whatever is selected in the <i>Increment</i> dropdown).</p>
+
+<p>The <i>Increment</i> dropdown allows you to select the amount to move per interaction.  This applies to clicking the buttons in the numeric controls, using the up or down arrow keys in the numeric controls, or using the arrow keys on the map.  This also controls the snap amount if snap is enabled.</p>
+
+<p>The increment can be in pixel or grid amounts.  For the purposes of movement, a pixel refers to the map as presented in game, on its original canvas at normal 1x size.  Basically the smallest unit amount that is required to move a single pixel at the map's current zoom level.  If using grid amounts, it's a fraction of the grid.  <b>1/256</b> is the smallest unit of movement (1 raw unit).  <b>1/2</b> is half a grid cell, etc.  Grid cells are in miles, not kilometers.</p>
+
+<p><i>Snap to grid</i> aligns movement to the grid.  Depending on zoom level, some grid lines may be hidden.  Snap does not account for hidden lines.</p>
+
+<p><i>Snap mouse drag</i> constrains movements with the mouse when dragging them on the map.  The <i>Lock</i> checkboxes can further constrain mouse movement if needed.</p>
+
+<p>Mouse snapping and locking is irrelevant when using the keyboard to move, because it already moves at the specified increments, and only moves in one direction.  However <i>Snap to grid</i> does apply to keyboard movements.</p>
+
+<p>If multiple movable items of the same type are selected, a double thick bracket will appear on the map indicating the primary selected item.  The primary item is the one displayed in the sidebar.</p>
+
+<p align=center><img src="../../images/Brief2-positionmulti.png"></p>
+
+<p>When multiple items are selected, you may see additional controls specifying <i>Relative</i> or <i>Absolute</i> movement.  <i>Relative</i> movement maintains formation while moving items.  <i>Absolute</i> will forcibly change all selected items to use the exact coordinates you specify.  This is for rare situations when you want to align multiple items in precise horizontal or vertical lines.  Use with care.  Remember that undo is available if you mess up.</p>
+
+<p>Since absolute movement is only useful in very specific situations, relative movement is always selected by default.</p>
+
+
+
+<h3><a name="string" class="anchor">String Controls</a></h3>
+<p align=center><img src="../../images/Brief2-string.png"></p>
+
+<p>Whenever something with an editable string is selected, the sidebar will display these common controls.</p>
+
+<p>The dropdown box determines which slot is being used.  Briefings have a limited number of string slots available.  You can choose an existing string, or an empty one.  The edit box below is for modifying the chosen string.</p>
+
+<p>The current and maximum string length is displayed above the dropdown.  It will refresh instantly in real-time as you change slots or type in the edit box.  Changes will also instantly appear in the map.</p>
+
+<p>Depending on the type of string (text tag or caption), you can use certain characters for highlighting or special appearances.</p>
+
+<p>Caption strings (used for titles too) can be centered by prefixing the line with ">".  This will center only the current line, until word-wrapped at the right edge of the panel.  The default color for centered text is yellow, and that color cannot be changed.</p>
+
+<p>Words or phrases within captions can be highlighted by enclosing them in [brackets].  The result is usually green text, or blue in XWA.</p>
+
+<p>Text tags, displayed on the map, have customizable colors and also accept [bracket] highlighting.  Except X-Wing, which does not allow color selection or highlighting.</p>
+
+<p>Captions accept line breaks with "$".  If you are typing a caption string, you may press <b>[Shift+Enter]</b> into the edit box to insert a "$" character.  This does not work for text tags.</p>
+
+<h4>Color Codes</h4>
+<p>Special color codes are available depending on game platform.  These codes are technically not part of the briefing, rather the underlying text renderer used by the game.  Which codes are available vary depending on game and string type.  Use the map to experiment.</p>
+
+<p>Specify color codes by combining a backslash and a number from 0 to 9.  (Example: \2)</p>
+
+<p>Common codes operate the same for all platforms.  There is typically no reason to use these, because they can usually be accessed by other known characters.</p>
+<ul>
+<li>\0 will terminate a tag, or apply a newline in a caption, similar in function to "$".  It is recommended not to use \0.</li>
+<li>\1 will typically restore the standard color, equivalent to bracket "]"</li>
+<li>\2 will typically apply the highlight color, equivalent to bracket "["</li>
+</ul>
+
+<p>In XvT and XWA, further colors can be used:</p>
+<ul>
+<li>\3 = red</li>
+<li>\4 = yellow</li>
+<li>\5 = dark blue</li>
+<li>\6 = light blue, slightly closer to violet</li>
+</ul>
+
+<p>In XvT, you can use \7 for black.  This is a non-standard value, not intended to be used by the game, but it does exist.  This color is sometimes unstable and may crash the game.  For safety purposes, this code is removed when saving a briefing for XWA.</p>
+
+
+
+<h3><a name="waypoints" class="anchor">Flightgroup Waypoint Icons</a></h3>
+<p>X-Wing displays icons the map according to its list of briefing flightgroups (not their mission flightgroups).<br/>
+TIE Fighter and XvT display icons on the map according to their mission flightgroups, and their assigned briefing waypoints.<br/>
+XWA does not use flightgroup waypoints.  It has dedicated icons instead.  See the <a href="#event">Event Command Reference</a> for information on how to use them.</p>
+
+<p>If you select an icon on the map, the <a href="#position">Position Controls</a> appear in the sidebar, allowing you to move  its waypoint.</p>
+
+<p>In TIE Fighter and XvT, the visibility state can be toggled from the sidebar.  In X-Wing, icons are always visible and cannot be deactivated.</p>
+
+<p>The waypoint's flightgroup is displayed for informational purposes.  You cannot change which flightgroup the waypoint is attached to.</p>
+
+<p>All of these properties can now be edited here instead of using the flightgroup's waypoint tab in the main YOGEME window.  Moving an icon on the map automatically changes its waypoint position.  Toggling its visibility state is equivalent to toggling its waypoint checkbox in the main window.</p>
+
+<p>In the <a href="#quickoptions">Quick Options</a> list, if Waypoint Shadows is checked, waypoints that have been disabled will appear grayed-out, allowing you to select the icon and make further changes.</p>
+
+<p>X-Wing waypoints cannot be toggled off.  Their briefing flightgroups must be deleted, or moved outside the visible edge of the map.  Note that briefing flightgroups are NOT the same as mission flightgroups.  They can be deleted in the briefing editor by selecting them and pressing <b>[Delete]</b>.  However, you must always have at least one briefing flightgroup.</p>
+
+
+
+<h3><a name="panel" class="anchor">Panel Mode (X-Wing only)</a></h3>
+<p>While on the map tab, press <b>[P]</b> to toggle Panel Mode.  This allows you to fully visualize and interact with the page template customization.</p>
+
+<p><b>IMPORTANT:</b> It is strongly recommended to leave everything default.</p>
+
+<p><b>IMPORTANT:</b> Make sure you read the warnings and rendering caveats in the <a href="#template">Page Template Controls</a> section before using this feature.</p>
+
+<p>Changes to a template will affect all pages that use it.  Typically all text pages use the same template.  In the top right corner, it will display which page template is being used, and how many pages are using it.</p>
+
+<p>Click a panel in the list.  If the panel is enabled, you may also click it on the map instead.  The selected panel will have a magenta bracket around it.  The center of the panel will have a cross.</p>
+
+Left click inside a panel and drag it to move it.  The <i>Lock</i> checkboxes can restrict mouse movements to a single axis when you're moving the panel.  It does not affect resizing.</p>
+
+<p>If you hover the mouse over the edge of the panel, the cursor will change to a resize cursor.  Drag the edges to resize.</p>
+
+<p>You can also use the keyboard to resize.  If the cross is visible in the center of a panel, then using the arrow keys will move the panel in that direction.</p>
+
+<p>Click on the edge of a panel to select the edge.  Using the arrow keys will move that edge.</p>
+
+<p>Keyboard shortcuts:</p>
+<ul>
+<li><b>[P]</b> Toggles Panel Mode.</li>
+<li><b>[Left Click]</b> Select panel for movement and customization, or select panel edge for resizing.</li>
+<li><b>[W, A, S, D]</b> Select edge for resizing.</li>
+<li><b>[Spacebar]</b> Select the center of the panel for moving.</li>
+<li><b>[Arrow Keys]</b> Move or resize depending on whether a panel interior, or panel edge is selected.</li>
+</ul>
+
+<p>If you make any mistakes, use the reset buttons:</p>
+<ul>
+<li><b>Original State</b> is a backup of the template from the first time you entered Panel Mode.</li>
+<li><b>Map</b> changes the template to a default Map page.</li>
+<li><b>Text</b> changes the template to a default Text page.</li>
+</ul>
+
+
+
+<h3><a name="icondirection" class="anchor">Icon Directional Movement</a> (XWA only)</h3>
+<p align=center><img src="../../images/XWA/Brief2-direction.png"></p>
+<p>Once an icon has been placed on the map, select any existing <i>Move Icon</i> event or shadow icon.  The sidebar will then feature a large selection of controls dedicated to generating eight-way directional movement.</p>
+
+<p>The top part of the sidebar contains the <a href="#position">Position Controls</a>.  But this is for changing the position for the selected icon, not creating a new one.</p>
+
+<p>There is also a dropdown to change the rotation.  You can also press the bracket <b>[]</b> keys on the map.  If there is a rotation for that icon at that time, the rotation event will be changed.  If there isn't a rotate event at that time, it will be automatically created.</p>
+
+<p>What's new are the directional arrows.  Hovering the mouse over any of the arrows will display a preview on the map of where the new icon will be placed.  If any of the previewed icons would be generated off screen, a yellow arrow will appear around the edge of the map to indicate that it's outside the visible area.</p>
+
+
+<p align=center>Directional preview</p>
+<p align=center><img src="../../images/XWA/Brief2-movepreview.png"></p>
+
+<p>The X and Y numerics control the distance that the icon will move, in raw units.  If <i>Link</i> is checked, changing one value will change both.  By unlinking, you can create lines of movement that follow different angles.</p>
+
+<p>You can change the number of steps to make continuous lines of movement while holding the <b>[Ctrl]</b> key.  Holding <b>[Ctrl]</b> while hovering the mouse over the buttons will display all of the icons that would be generated.</p>
+
+<p>Further down you can control acceleration.  If set to <i>None</i>, the icons will generate in a straight line, all points equidistant from each other.  The X/Y values to the right are for acceleration.  If set to <i>Percentage</i> acceleration, a value of 10 means that the distance will increase by 10% for every new position.  If set to <i>Raw</i>, the distance will increase by a flat amount for every new position.</p>
+
+<p>When using acceleration, it's helpful to set a higher number of steps to place all of them at once, and hold <b>[Ctrl]</b> to preview the map.  Adjust the values as you see fit.  When satisfied with the preview, use <b>[Ctrl]</b> to generate them all.</p>
+
+<p>Acceleration values can be negative.  Icons will slow down until the distance amounts are zero.  When the distance is zero, no further icons will be generated regardless of the number of steps remaining.</p>
+
+<p>If you choose to make single steps, the X/Y distance values will increase in real time with each button press.  When this happens, the memory button will be enabled.  This button is marked with [M] in the center of the directional buttons.  Clicking the memory button will restore the X/Y distance values from when you started using acceleration.</p>
+
+<p>To change the distance or acceleration increments, you can use the <i>Preset Amounts</i> dropdown.  The <i>Grid</i> and <i>Pixel</i> values will update the distance amount, while <i>Acceleration</i> values will change the acceleration amounts.  The acceleration presets were derived from AlliEd.</p>
+
+<p>Instead of using the mouse to click the directional buttons, if you have a numeric keypad on your keyboard, you can use that.  Make sure NumLock is enabled, or it will interpret the keys as standard arrow buttons.  Standard arrows will move the existing icon, not create a new one.</p>
+
+<p>Finally at the bottom, there is a checkbox to auto advance the time.  Every step of movement will scroll the timeline to match.  If not checked, icon generation will start at the current time and continue into the future until you select another icon.</p>
+
+<p><i>Get Distance</i>. If you decide you want to add more movement steps, but you don't remember what the original movement amounts were, click this button, or press <b>[D]</b> on the map.  It will attempt to find a <i>Move Icon</i> event immediately preceding your current icon selection.  If found, it will calculate the distance offset and update the X/Y amounts accordingly.</p>
+
+<p><b>Note:</b> If you generated movements and decide that you don't like the results, undo with <b>[Ctrl+Z]</b>.  Or select one of the generated icons (not the first one), use the <a href="#expandicon">expand icon</a> feature to select them all, then press <b>[Delete]</b> to remove them.</p>
+
+<p>Finally, there's Path Mode.</p>
+
+
+
+<h3><a name="iconpath" class="anchor">Icon Path Mode</a> (XWA only)</h3>
+<p align=center><img src="../../images/XWA/Brief2-pathsidebar.png"></p>
+<p>Path Mode is a special feature that allows creation of complex lines of movement, specific angles of movement, or otherwise allows more control over the time spacing when placing movement steps.  Select an existing icon or shadow icon position.  Then toggle Path Mode by pressing <b>[P]</b>, or clicking the <i>Path Mode</i> button in the bottom of the directional control sidebar.</p>
+
+<p>The basic concept is that it works by placing nodes on the map, and creating line segments between them.  Each segment can have a number of positions along the line, called <i>Steps</i>.  Each segment can have its own rotation.</p>
+
+<p>You must have at least one icon position to start with.  This is the <i>Working Icon</i>, denoted by a purple bracket.  All steps generated from this tool will proceed from that point.</p>
+
+<p><b>[Shift+Click]</b> on the map to create a Path Node.  Typically a starting node will be generated on the Working Icon.  You can shift click multiple times around the map to create additional nodes.  Each new node is added to the end of the list.  <b>[Ctrl+Click]</b> to insert a node at the front instead.</p>
+
+<p>The <a href="#position">Position Controls</a> operate on the selected nodes.  <b>TIP:</b> grid snapping can be very helpful to if you want to make perfectly horizontal or vertical segments.</p>
+
+<p>You can see the list of nodes in the sidebar.</p>
+
+<p>Nodes can be selected by clicking them on the map, pressing the corresponding number key <b>[1..9]</b> on the map, or by clicking a node list item in the sidebar.</p>
+
+<p>Below the list of nodes are three main controls.  Each node can have the following properties:<br/>
+<i>Steps</i>: The number of positions, to be evenly distributed along the line segment.<br/>
+<i>Time</i>: Frames between each movement step.  The fastest speed an icon can move is once per frame.  However sometimes it can be useful to slow them down.<br/>
+<i>Rotation</i>: The rotation to apply at the start of the segment.</p>
+
+<p>Assigning these values manually can be tedious.  To simplify this, use auto distribution.<br/>
+In the dropdown, choose a method of unit measurement.<br/>
+For units of time, the value is the total duration of the path.  Either in seconds, or raw number of frames.<br/>
+For units of distance, the value determines approximately how far apart each icon should be.  Either pixels (at 1x scale), meters, or raw.  Use whichever unit seems most intuitive for you.</p>
+
+<p><i>Auto rotate</i>: determines how to apply rotations.  If set to <i>None</i>, it will use whatever the working icon has.  If set to <i>first</i> or <i>second</i>, it will apply the rotation on the first or second step of each segment.  The direction is determined by the segment path as it moves toward the next node, and which axis is the longest.  If it has to move further on the X axis, it will favor left or right directions.  If it has to move further on the Y axis, it will favor up or down directions.</p>
+
+<p><i>Default Facing</i>: how to determine which way the craft will be pointing when it traverses a line segment.  If a craft is moving to the right, ideally it should point to the right.  Different craft types may "point" a certain way, even when no rotation is specified.  That is their default facing.</p>
+
+<p>If you're unsure, set the default facing to <i>None</i>, then click <i>Distribute</i>.  Note which way the icons are pointing.  If they point up, choose <i>Up</i> in the dropdown, then click <i>Distribute</i> again to see if everything is correct.</p>
+
+<p>When everything is ready, click the <i>Distribute button</i>.  It will automatically calculate all the steps and rotations for every node.  The preview icons will be displayed on the map.</p>
+
+<p>Continue adjusting the values until you like what you see.  At any time you can click the <i>Preview</i> button to refresh the preview, which you'll need to do any time you add/remove nodes, or move a node somewhere else.  If the preview was generated by auto distribution, click <i>Distribute</i> to recalculate and refresh instead.  If you don't like the path and want to start over, click the <i>Clear List</i> button to erase all the nodes.</p>
+
+<p>When you've finished adjusting the path and its parameters, note the total duration and required event space, which is printed below the list of nodes.  Placing icons this way can consume a lot of space!  When you're ready, click the <i>Create!</i> button.</p>
+
+<p>By the way, if you haven't already, you should probably have shadow icons enabled in the quick toggle options, so you can actually see the icons that have been generated.</p>
+
+<p><b>Tip:</b> If there are too many icons, consuming too much event space, consider increasing the time for each node.  If using auto distribution, you only need to adjust the time on node #1.  Auto distribution will copy the time to all other nodes when it calculates the path.</p>
+
+<p>At the very bottom, there is a list of other actions:</p>
+<ul>
+<li><i>Move path to icon</i>: moves the <b>entire path</b> (all nodes), aligning node #1 with the Working Icon.</li>
+<li><i>Stretch #1 to icon</i>: moves <b>only node #1</b> to the Working Icon, but all other nodes remain where they are.  Useful if you want multiple craft to converge on the rest of the path.</li>
+<li><i>Flip Horizontal</i>: flips all nodes, mirror left and right.</li>
+<li><i>Flip Vertical</i>: flips all nodes, mirror up and down.</li>
+<li><i>Rotate 90</i>: rotates all nodes clockwise or counter-clockwise around node #1.</li>
+<li><i>Derive from selection</i>: A special case.  First select all shadow icons, then derive a path.  It will attempt to calculate a path that is capable of closely matching the existing icons.  Any existing path will be wiped, and replaced with the derivation.  This feature is useful if you have an existing trail of icons but want to fine-tune and regenerate the path after it was already generated.</li>
+</ul>
+
+<p><b>Note:</b> If you generated a path and decide that you don't like the results, undo with <b>[Ctrl+Z]</b>.  Or select one of the generated icons (not the first one), use the <a href="#expandicon">expand icon</a> feature to select them all, then press <b>[Delete]</b> to remove them.</p>
+
+<p>Keyboard shortcuts:</p>
+<ul>
+<li><b>[P]</b> Toggles Path Mode.</li>
+<li><b>[Shift+Click]</b> Create node on map at cursor, adding to the end of the list.</li>
+<li><b>[Ctrl+Click]</b> Create node on map at cursor, inserting at the front of the list.</li>
+<li><b>[Delete]</b> Delete selected nodes, also deletes selected icons.</li>
+<li><b>[I]</b> or <b>[Double Click]</b> Expand icon selection.</li>
+<li><b>[1..9]</b> Select node by number.</li>
+<li><b>[Arrow Keys]</b> Move selected path nodes.</li>
+<li><b>[+,-]</b> Add or subtract movement steps for the current node.</li>
+<li><b>[Bracket]</b> Adjust node rotation.</li>
+<li><b>[Backslash]</b> Swap node rotation on first or second step.</li>
+</ul>
+
+
+
+<h3><a name="expandicon" class="anchor">Expand Icon (XWA only)</a></h3>
+<p>Select at least one shadow icon, or an icon event on the map or timeline, and then press <b>[I]</b> on the map.  Or double click a shadow icon on the map, or icon event in the timeline.</p>
+
+<p>All shadow icons and events belonging to that icon will be selected, <b>except</b> the first icon.  However if you include the first icon in the initial selection, it will select <b>all</b> shadow icons.  The purpose of this distinction is that you can expand the selection and quickly delete a trail of icons without deleting the starting icon.  Useful if you placed down several icons, then decide you want to delete them and start over.</p>
+
+
+
+<h3><a name="tab_briefing" class="anchor">Briefing Tab</a></h3>
+<p>The briefing tab is divided into several different spaces containing the map, timeline, playback controls, and the sidebar.</p>
+<p>The sidebar is further divided into event creation, event editing, time shifting, and quick toggle options.</p>
+<ul>
+<li><a href="#map">Briefing Map</a></li>
+<li><a href="#freelook">Free Look Mode</a></li>
+<li><a href="#timeline">Timeline</a></li>
+<li><a href="#navigation">Navigation</a></li>
+<li><a href="#sidebar">Sidebar</a></li>
+</ul>
+
+
+
+<h3><a name="map" class="anchor">Briefing Map</a></h3>
+<p>The briefing map is the visual representation of the screen that would be visible in game.</p>
+
+<p>It strives for accuracy with the original games, however HD mods like XWVM or XWAU may be somewhat different.</p>
+
+<ul>
+<li>Left click: selects objects.  Create a bounding box for multiple selection.  Hold the <b>[Shift]</b> key to add to the selection, or <b>[Ctrl]</b> to toggle the selection.  To select nothing, just click on nothing, or press <b>[Escape]</b>.</li>
+<li>Right click: drag to pan the map.  It will automatically enter free look mode.</li>
+<li>Middle click: Exit free look mode, or centers the timeline on a selected event.</li>
+<li>Mousewheel: Adjusts zoom, will automatically enter free look mode.</li>
+</ul>
+
+<p>See a more comprehensive list of commands in the <a href="#keys">Keyboard Hotkeys</a>.</p>
+
+
+
+<h3><a name="freelook" class="anchor">Free Look Mode</a></h3>
+<p>Free look mode, as the name suggests, allows you look around the map.  The zoom can also be adjusted.  It can be useful to find tags, icons, or waypoints that have been positioned beyond the visible map area.  Zooming in can sometimes make it easier to select items that are close together.</p>
+
+<p>While in free look mode, the dotted rectangle displays the original viewing position and zoom level at the current time.</p>
+
+<p>Middle click or press <b>[Escape]</b> to cancel free look mode and return to the original position.</p>
+
+<p><b>Tip:</b> free look mode can be useful to preview a position or zoom level in preparation for creating <i>Map Move</i> or <i>Map Zoom</i> events.  If you are currently using free look mode when attempting to create these events, they will use the free look values.</p>
+
+
+
+<h3><a name="mapshift" class="anchor">Map Shift Mode</a></h3>
+<p>This is a special variant of free look mode that is used when editing a <i>Move Map</i> or <i>Zoom Map</i> event.  There will be two dashed rectangles denoting the starting and ending positions.  The darker rectangle is the starting position, and the brighter is the ending position.</p>
+
+<p align=center><img src="../../images/Brief2-mapshift.png"></p>
+
+<p>While panning or zooming the map, you are still in free look mode.  This lets you get a birds-eye perspective of where exactly it begins and ends.  Since both events are often paired together, selecting one will automatically include the other in the preview.  For example, selecting a <i>Move Map</i> event will include any applicable <i>Zoom Map</i> event into its preview.</p>
+
+<p>There will be a special control that appears: <i>Apply mouse pan/scroll</i>.  It has two options:<br/>
+<i>Free Look</i>: using the mouse will adjust Free Look only, leaving the event unchanged.<br/>
+<i>This Event</i>: using the mouse will directly modify the final position of the event, and the rectangle will reposition or resize itself in real time.</p>
+
+<p>Pressing <b>middle click</b> at any time will center the map on the final position, allowing you to see exactly where it ends up, and how it will look in game.  To cancel out, <b>left click</b> on nothing or press <b>[Escape]</b>.</p>
+
+<p>NOTE: If you select <b>both</b> <i>Move Map</i> and <i>Zoom Map</i> events in the timeline, you can modify both at the same time.</p>
+
+
+
+<h3><a name="timeline" class="anchor">Timeline</a></h3>
+
+<p>The timeline is the visual representation of all events, relative to other events.  It also displays your current time and can be used to move events around through time, or merely to navigate the briefing.</p>
+
+<p align=center><img src="../../images/Brief2-timeline.png"></p>
+
+<p>Basic Interaction:</p>
+<ul>
+<li>Left click: selects objects.  Create a bounding box for multiple selection.  Hold the <b>[Shift]</b> key to add to the selection, or <b>[Ctrl]</b> to toggle the selection.  To select nothing, just click on nothing, or press <b>[Escape]</b>.  If you select the circular pip at the top of the column, it will select everything in the column.</li>
+<li>Right click: drag to pan the timeline.  This will change your current viewing time, just as the scrollbar beneath the timeline also changes the time.</li>
+<li>Middle click: centers the timeline over a selected event.</li>
+<li>Mousewheel: Adjusts zoom, allowing you to see more of it at once.</li>
+</ul>
+<p>The timeline accepts some shortcut keys that are shared with the map.  See <a href="#keys">Keyboard Hotkeys</a>.</p>
+
+<p>To move events in the timeline, dragging items vertically up or down will change their order in the column, affecting their position in time.  Dragging horizontally left or right will move the events through time.</p>
+
+<p>Each vertical line represents one frame in the briefing.  The center of the timeline marks the current viewing time, denoted with a double line.  Events to the left are earlier in time.  Events to the right are later in time.  The beginning and end of the briefing are marked with colored double lines.</p>
+
+<p>Events are displayed in a column on each frame.  When each frame is run, events are processed in sequence from first to last.  If there are too many events in a column to display at once, a vertical scrollbar will appear to the right allowing navigation up and down.</p>
+
+<p>If there are further events above or below the visible scrolled position, there will be a small arrow with a purple background.  If an event is selected outside the visible timeline, a yellow arrow will appear on the edge of the timeline to indicate the direction.  Middle click to center the timeline over the selected item.</p>
+
+<p>If there are events beyond the briefing duration, any frames beyond the assigned duration will be marked with purple lines.</p>
+
+
+
+<h3><a name="navigation" class="anchor">Navigation</a></h3>
+<p>The navigation controls are below the timeline.  From left to right, the buttons are: Beginning, play/pause, stop, fast forward, and end.  Although you can use the mouse to control the buttons, navigation is much easier when using the keyboard shortcuts.</p>
+
+<ul>
+<li><b>[Spacebar]</b> Toggles briefing playback and pausing.</li>
+<li><b>[F]</b> Fast-forward to 2x, 4x, or 8x speed.  Begins playback at normal speed if currently paused.</li>
+<li><b>[PgDn]</b> and <b>[PgUp]</b> Navigate to next and previous caption, respectively.</li>
+<li><b>[Home]</b> Jump to the beginning of of the briefing.  Frame zero.</li>
+<li><b>[End]</b> Jump to the last event.  <b>[Ctrl+End]</b> jumps to the very last frame of the briefing.</li>
+<li><b>[1..9]</b> Jump to caption by number.</li>
+<li><b>[T, Y]</b> Navigate to the next or previous event column in the timeline.</li>
+<li><b>[E, R]</b> Navigate current time by half of the timeline.</li>
+<li><b>[F5..F8]</b> Recall a bookmark time.  Hold <b>[Shift]</b> to set.  Just like using target presets in game.</li>
+<li><b>[U]</b> Jump to last edited event.</li>
+<li><b>[G]</b> Context jump (see note *) based on selected event</li>
+<li><b>[+,-]</b> Navigate time by 1 frame forward or backward.</li>
+</ul>
+
+<p>Right clicking on a caption will advance to the next caption.  Same as <b>[PgDn]</b>.</p>
+<p>* Context jumps are mostly for extra navigation of XWA's events.  If a <i>Move Icon</i> or <i>Rotate Icon</i> event is selected, it will jump to the parent <i>New Ship</i> event.  This is useful if you want to change the icon's craft type or IFF.  If a <i>Ship Info</i> event is selected, it will jump back and forth between the start and end events.</p>
+
+
+
+<h3><a name="sidebar" class="anchor">Sidebar</a></h3>
+<p>The sidebar is shared between the Briefing Tab and the Event List Tab, and will appear to the right of the map, or event list, respectively.  When you first launch the briefing, the event buttons will be visible.  The sidebar changes dynamically depending on what is selected.</p>
+
+<p align=center><img src="../../images/Brief2-sidebar.png"></p>
+
+<p>On the event list tab, the sidebar only displays controls for editing the selected event.</p>
+
+<p>On the Briefing map tab, when nothing is selected, there are three main components that are visible:</p>
+<ul>
+<li>Buttons for creating events</li>
+<li>Time Shift</li>
+<li>Quick Toggle Options</li>
+</ul>
+
+<p>For information on the kinds of events that can be created, and what they do, see the <a href="#event">Event Command Reference.</a>  Not all events are available for all games.  The buttons will display all events that are supported by the platform.</p>
+
+<p>Time Shift allows you to add or remove time.  All events to the right of the currently viewed time can be pushed further out, or pulled in.  The increment controls the amount of time to shift every time you click the buttons.  Time shift cannot push events beyond the maximum duration, nor can it pull events below the current timeline position.</p>
+
+<p>Quick Options mostly affect visuals on the map during editing or playback.  Most of them are self explanatory, and some are specific to certain platforms.  See <a href="#quickoptions">Quick Toggle Options</a> for more info.</p>
+ 
+ 
+ 
+<h3><a name="footer" class="anchor">Footer</a></h3>
+<p align=center><img src="../../images/Brief2-footer.png"></p>
+<p>This area exists at the very bottom edge of the window, and is visible no matter which tab is selected.</p>
+
+<p>On the left side is the briefing selector.  In X-Wing, this lets you select the page.  For example, choosing between the map or one of the text or hint pages.  XvT and XWA allow multiple briefings for multiplayer teams.  TIE Fighter only has a single briefing.</p>
+
+<p>Then there's the <a href="#duration">duration</a> control.</p>
+
+<p>After duration is the current event space consumed by the briefing.  The amount available is determined by platform.  The limit is lower in X-Wing, TIE Fighter, and XvT, but you normally won't reach the limit.  XWA has a much higher limit, but icon movements can quickly consume event space, especially when using path mode, so this is a convenient way to keep watch.  When the maximum space is consumed, events can no longer be created.</p>
+
+<p>Finally, on the right, there's the status text.  When you first open the briefing editor in an empty mission, it will display the loading status.  If all goes well, it should say "Assets Loaded OK".  If not, refer to <a href="#setup">Setup</a>.  If you're loading an existing briefing, it may display a verification error or warning if something is wrong with the briefing.  In that case, refer to the <a href="#tab_verify">Verify Tab</a>.  In all other cases, as you make changes to the briefing, it will display the number of undo frames.  See <a href="#undo">Undo and Redo.</a>
+
+
+
+<h3><a name="duration" class="anchor">Duration</a></h3>
+<p>The duration controls how long the briefing plays before looping.  Normally the duration will be automatically extended as you create new events.  See <a href="#tab_options">Editor Tab Options</a> to customize this behavior.</p>
+<p>Duration can be assigned manually using the numeric control in the footer at the bottom of the window.  Normally it only accepts whole seconds, but you can type exact decimal values like <b>30.5</b> if you wish.</p>
+<p>Alternatively, navigate to a specific frame in the briefing and press <b>[L]</b> (for length).  (If you're wondering why it's not [D] that was already used for something else.)</p>
+<p>If you set the duration manually, be aware that automatic adjustments may still adjust the length after the fact.</p>
+
+
+
+<h3><a name="undo" class="anchor">Undo and Redo</a></h3>
+<p>The new briefing editor supports limited multi-level undo and redo via <b>[Ctrl+Z]</b> and <b>[Ctrl+Y]</b>, respectively.</p>
+
+<p>Not everything can be undone.  Generally anything involving events (creating, deleting, modifying), strings (tags or captions), and briefing duration can all be undone.</p>
+
+<p>In the very bottom right corner of the window, the status text will change as you make edits, reflecting the number of undo frames.  Every press of the hotkey will undo or redo a single frame.  Sometimes a frame will contain multiple edits.</p>
+
+
+
+<h3><a name="tab_strings" class="anchor">Tags and Strings Tab</a></h3>
+<p align=center><img src="../../images/Brief2-tabstrings.png"></p>
+
+<p>Provides a full overview of all tags and strings slots.  Text tags are displayed on the map, while the caption strings are used for everything else.</p>
+
+<p>Tags and caption strings are separated into different columns.  Click on a string to display its full string in the appropriate edit box at the bottom.  The string will update dynamically as you type.  The counter shows how long the string is, and the maximum allowed length of the string.  Exceeding the length may crash the game, so it's important to stay within the limit.  If the string is too long, the length will display in red and there will be a warning prefix in the list.  There will also be a verification error issued on the <a href="#tab_verify">Verify</a> tab.</p>
+
+<p>String order can be re-arranged by clicking the Up or Down arrows.  This can be especially useful for captions if you decide to add or remove captions at a later time, and want to keep them in sequence.  <b>Tip:</b> to insert an empty slot, it's easier to move an empty string from the bottom up, rather than moving everything down.</p>
+
+<p><b>Tip:</b> You don't have to click inside the text box to begin editing.  You can <b>double click</b> a string in the list, or select a string and press <b>[Enter]</b>, or <b>[F2]</b>.  It will automatically shift focus to the input boxes below.</p>
+
+<p><b>Tip:</b> You can copy and paste strings to/from the system clipboard by using the Cut, Copy, and Paste shortcut keys.  Just click the list item and press the shortcut keys.</p>
+
+<p><b>Tip:</b> You can undo string changes, including moving up and down, with the Undo and Redo shortcuts.</p>
+
+<p>In the bottom right, there's an informational panel indicating certain special characters that can be used for string formatting.  Typically they're meant to be used for caption strings, although text tags may accept certain characters depending on platform.  Use the map to experiment.</p>
+
+<p>Finally, in XWA, there is a <i>Notes</i> field above the caption list.  This does not affect the briefing.  It mainly served to provide information to voice actors on how to deliver each line.  Each caption string has its own attached note.</p>
+
+
+
+<h3><a name="tab_event" class="anchor">Event List Tab</a></h3>
+<p align=center><img src="../../images/Brief2-tabevent.png"></p>
+
+<p>With the improvements to the map page, the event tab is somewhat less important.  However it's much more compact than the timeline, and makes bulk interactions much easier, especially for shifting or deleting.</p>
+
+<p>  The list allows for multiple selection.  Drag the mouse over multiple items, or <b>[Shift+Click]</b> to select a range, or <b>[Ctrl+Click]</b> click to toggle individual items.</p>
+
+<p>Selection is shared between the map and event list, so it can be a useful way to find items.  For example, select an item, then switch back to the map and middle click to jump to that event.</p>
+
+<p>The top right contains basic controls for creating or deleting events, or shifting them around.  If something is selected, the context-based sidebar controls will be visible further below.  Some of the sidebar controls may have their layout adjusted to better fit the available space, and some map-specific controls may be disabled, but their primary behavior is unchanged.</p>
+
+<p><i>New Event</i>: creates a new event after the currently selected item.  The new event will always default to a page break.  Use the <i>Event Type</i> dropdown (below the time shift controls) to choose the desired event type.  See the <a href="#event">Event Command Reference</a> for possible events.</p>
+
+<p><i>Delete Event</i>: deletes all selected events.  You can also press the <b>[Delete]</b> key while the event list has focus.</p>
+
+<p><i>Show time difference column</i>: Shows a separate column indicating how much the time changes after each event.  Can be useful to visualize the time flow, but it's still not as good as the timeline.</p>
+
+<p><i>Time Diff</i>: If you select multiple events, it will measure the time difference between the first and last selected events and display the amount here.</p>
+
+<p><i>Show time values in ticks</i>: Only necessary if you have a data-level interest in the raw times.</p>
+
+<p><i>Shift within time</i>: For any collection of events grouped at the same time, allows you to reorder them.  This is equivalent to dragging items up or down in the timeline.  The buttons will refresh based on the selected events and whether they can be moved in either direction.</p>
+
+<p><i>Shift across time</i>: Adds or removes time to events.  The buttons will refresh based on the selected events and whether they can be moved in either direction.  The dropdown underneath controls the amount of time to shift.</p>
+
+<p><i>Exact time</i>: Specify the exact time for a move or shift.  It will be either seconds or raw units depending on whether <i>"time values in ticks"</i> is selected.</p>
+
+<p>The following controls affect both Shift Across Time, and Exact Time:</p>
+<ul>
+<li><i>Time shift all from selection</i>: If checked, this modifies all events from the selection until the end of the list.  Equivalent to the time shift feature on the main tab.</li>
+<li><i>Shift selected only</i>: Applies only to the selection.  Equivalent to dragging specific events left or right in the timeline.</li>
+<li><i>Allow shifting over other events</i>: Maintains the overall order, if you want to push specific events up to something, but not overshoot it.</li>
+</ul>
+
+
+<p><i>Event Type</i>: Manually changes the event command into something else.  Normally you don't need to use this, except after using the <i>New Event</i> button at the top.  See the <a href="#event">Event Command Reference</a> for possible events.  NOTE: If you select a Text Tag or FlightGroup Tag, the event will be the same as the tag number, and changing the tag number will also change the event too.  For these events, it's the same thing.</p>
+
+
+
+<h3><a name="tab_brfoption" class="anchor">Briefing Options Tab</a></h3>
+<p align=center><img src="../../images/Brief2-tabbrfoptions.png"></p>
+
+<p>Advanced briefing management controls.  You normally won't need to use this tab for standard editing.</p>
+<p><b>Important!</b>  Nothing on this tab can be undone, use with care.</p>
+
+<p>In the top left, you can toggle the team visibility for multiplayer missions by clicking individual teams in the list.  This is only available for XvT and XWA.</p>
+
+<p>Everything else on this page is related to the briefing actions in the central dropdown box.  Some of the management options are only intended for platforms with multiplayer briefings (XvT, XWA).  Other options like import/export, or erase briefing, may be useful for all platforms.</p>
+
+<p>Exporting strings may be useful for copying and pasting into a word-processor for spellchecking, or perhaps for translation.  Importing and exporting entire briefings is kind of like a full briefing copy/paste.  Importing also works between different games, performing a crude conversion, but some of the events may need further adjustment to appear correctly on the map.  It's more useful to import a mission from the same platform.</p>
+
+<p>For actions with a target briefing, use the dropdown on the right side.  The current briefing is always whatever is selected in the footer at the very bottom of the window.  For certain actions like Swap or Duplicate, the target briefing must be different from the current briefing.</p>
+
+<ul>
+<li><i>Swap with target</i>: Exchanges the briefing slot with the target.  Intended only for XvT and XWA.<br/>
+In X-Wing, this <b>only</b> exchanges events, it does not change any page settings.  Use the <a href="tab_xwing">X-Wing Page Options</a> tab to move pages instead.</li>
+<li><i>Duplicate into target</i>: Copies the entire briefing into the target slot.  In X-Wing, this only copies the events.</li>
+<li><i>Erase entire briefing</i>: Deletes all events and strings.<br/>
+In X-Wing, all pages share the same string pool.  It will offer a confirmation prompt if you wish to delete strings too, but only if you erase the first page.</li>
+<li><i>Export to edit box</i>: Dumps a text version of the briefing into the edit box on the right.  From here you can <b>[Ctrl+A]</b> select all text, and copy into a text editor.</li>
+<li><i>Import from edit box</i>: Loads the text from the edit box back into the briefing, overwriting any data encountered.</li>
+<li><i>Import from file</i>: Opens a dialog prompt to select a file.  You may import a briefing from any platform.</li>
+</ul>
+
+<p>The checkboxes control specific items for import/export, if you want to pick and choose particular sections.  However, when using text imports, the section must also exist.  When a section is imported, any existing data is replaced.</p>
+
+<p>The text imports are generally not meant to be edited by hand, although it is possible.  If you're savvy with programming, you could even generate fancy movement patterns for icons in XWA.  The import is not very robust, so there may be parsing errors and missing information if you make mistakes.</p>
+
+<p><i>Flightgroups</i>: TIE Fighter and XvT cannot directly interchange flightgroup icons, because icons come from flightgroup waypoints, and the list of flightgroups is central to the mission itself.  However because X-Wing uses a separate list of briefing flightgroups, and XWA dispenses with the flightgroup concept in favor of anonymous icons, it will allow you to transfer icons into, or from, those two platforms.</p>
+
+<p><i>Page Types (X-Wing only)</i>: This checkbox could be useful if you want to copy custom panel templates from one mission to another, rather than trying to recreate them manually.  See <a href="#tab_xwing">X-Wing Page Options Tab</a>.</p>
+
+
+
+<h3><a name="tab_options" class="anchor">Editor Options Tab</a></h3>
+
+<p>Customizes certain aspects of the briefing editor (not the briefing itself).  Also displays the load status report if something was wrong.</p>
+
+<p>NOTE: All options here, along with <a href="#quickoptions">Quick Options</a> and various other checkbox settings throughout the form, are stored per-platform.  You can have different map sizes for different games.</p>
+
+<h4>Map Scaling</h4>
+<p>Determines how to stretch the map to fit the size of the briefing window.</p>
+
+<p><i>Dynamic to window</i>: Stretches the map dynamically according to the window size according to available space.  Always preserves the aspect ratio of the map.</p>
+<p><i>Fixed size</i>: Uses the multiplier from the numeric box underneath.</p>
+<p><i>Auto nearest when whole</i>: Uses Nearest Neighbor filtering if the multiplier is exactly 1.0, 2.0, etc.</p>
+<p><i>Scaling Interpolation Mode</i>: Changes which scaling method is used by Windows when drawing the canvas.  Generally you'll want either Bicubic or Nearest Neighbor.</p>
+
+<p>Bicubic is anti-aliased, somewhat blurry but seems to have the best quality.  Nearest Neighbor does not have anti-aliasing.  If you want clean, sharp pixels, it's especially great for TIE Fighter, but it only looks good on fixed sizes with whole numbers, otherwise the stretching can look strange.</p>
+
+<p>Other scaling modes are available.  If you encounter performance problems on lower-end hardware, it might be worth experimenting.  High Quality Bilinear and High Quality Bicubic are actually worse, they're intended for scaling down, not up.</p>
+
+<h4>Timeline Scaling</h4>
+<p><i>Font size</i>: Changes the font and pip size in the timeline, independently from the window.</p>
+<p><i>Minimum rows</i>: Changes the number of rows which are always visible in the timeline, regardless of how the window is sized.</p>
+
+<h4>Other Options</h4>
+
+<p><i>Show Free Look Info</i>: Displays the position and zoom level for informational purposes.</p>
+
+<p><i>Timeline Playback</i>: If during playback, you find the animated timeline movement distracting, you can disable it here.  When unchecked, the timeline will become hidden during playback, and return when paused.</p>
+
+<p><i>Events auto extend duration</i>: Normally any changes to events will automatically extend the briefing duration, so that the total duration is long enough to display the last event.  This controls how far to extend the duration beyond the last event.  It can be disabled entirely if you want manual control over the duration.  Note: The duration can be assigned at specific value at any time, but further changes to any events may trigger automatic extension if enabled.</p>
+
+<h4>Load Status Report</h4>
+<p>Displays the status of loaded icon graphics and text fonts, and where they came from.  Useful if the editor is unable to load the original assets and you want to determine why.</p>
+
+
+
+<h3><a name="tab_xwing" class="anchor">X-Wing Page Options Tab</a></h3>
+
+<p>In this tab, there's full control over everything that's specific to X-Wing.  If you want to add text pages, this is the place.  If it's a Death Star surface mission, you can toggle that too.</p>
+
+<p>X-Wing is unique in the series, with a page template system that is fully customizable, even though it really isn't used much, and was removed in TIE Fighter onward.  Although you can customize the templates, it is recommended to leave it alone.</p>
+
+
+<h4>Pages</h4>
+<p>Think of the page number displayed in game.  A typical mission begins with a map on Page 1, and there are additional pages that display only text.  These are all pages, and this is where they're created.</p>
+
+<p>The list on the left displays the pages and their types.  The controls inside this panel will operate on the selected page.</p>
+
+<p><i>Arrow buttons</i>: Moves the selected page up or down, reordering the list.  NOTE: Although it's not strictly required, the first page should always be the map.</p>
+
+<p><i>Delete button</i>: Removes a page.  NOTE: you can't delete the last page, you must have at least one.</p>
+
+<p><i>Page Type</i>: This dropdown changes the template that the page uses, from the available templates displayed on the bottom half of the screen.  Generally you won't need to use this.</p>
+
+<p><i>Waypoint Set</i>:  Missions were designed to allow multiple sets of waypoints.  They function sort of like the team waypoints in XvT.  You can ignore them here.  LucasArts standard is to have 2 sets of waypoints, while only ever using the second set.  Recommended to leave this alone.</i>
+
+
+<h4>Add New Page</h4>
+
+<p>This is where you can create new pages.  Typically this is for creating text pages.  You can have a maximum of eight pages.</p>
+
+<p>Choose the page type in the drop down.  Either a map page, (title, map, caption).  Or a text page (title and caption only).</p>
+
+<p>A hint page is just a text page with some extra set up.  A string for the hint text is automatically generated, if it doesn't already exist.</p>
+
+<p>If the title and caption strings are already written, you can check <i>Use Strings Above</i> and choose the strings in the dropdown boxes.  Otherwise, if <i>Generate Placeholders</i> is selected, the page will be created, but with a placeholder string that you can edit later.</p>
+
+<p>When ready, click the <i>New</i> button to create the page.  The new page will appear in the <i>Pages</i> list on the left, and will now appear in the briefing list in bottom left corner of the footer.</p>
+
+
+<h4>Page Type Templates</h4>
+
+<p>This defines the layout of the pages.  Whether they're visible, and their size and location within the briefing screen.  These parameters can be changed, with some limitations.</p>
+
+<p><b>It is strongly recommended to leave the default settings!</b>
+
+<p>That said, the primary distinction of a page template is whether the map is visible or not.  Therefore a page is either Map or Text, regardless how the panels are defined.</p>
+
+<p>The map is one panel, and each textbox, like the title, and caption, are all different panels.</p>
+
+<p>New templates can be added or removed with the <i>Add</i> and <i>Del</i> buttons.  There are a maximum of 4 templates, and for the sake of simplicity, there is a minimum of 2.  Two is the standard for LucasArts briefings.</p>
+
+<p>Clicking on a template on the left will refresh the list on the right.  The right list displays the five possible panels.  There are four text panels, plus the map.  Title and Caption are always used.  Panels three and four are available but are typically deactivated.  Then finally the map panel.</p>
+
+<p>If you insist on customizing any of the templates, it's recommended to use <a href="#panel">Panel Mode</a> instead.  Go to the map tab and press <b>[P]</b> to toggle panel mode.  It's much easier to see how your changes will affect the final result, if at all.</p>
+
+<p>If you mess something up, or just want to return to defaults, select a template then click the <i>Map</i> button to restore the default settings for a Map page, or the <i>Text</i> button for a text page.  Clicking <i>Full Reset</i> will completely erase all templates and restore the two default Map and Text templates.</p>
+
+<p>See <a href="#template">Page Template Controls</a> for instructions on the panel controls, which are shared with Panel Mode.  <b>IMPORTANT!</b>  Warnings and version differences are also explained there.</p>
+
+
+<h4>Misc Settings</h4>
+<p>Here you can check whether it's a Death Star mission.  It simply changes the background color of the briefing.  That's it.</p>
+
+<p>You can also change the max waypoint sets, up to three, or down to one.  It's best to leave this alone.</p>
+
+
+
+<h3><a name="template" class="anchor">Page Template Controls</a></h3>
+
+<p>Clicking on any of the five panels in the panel list refreshes the parameter information.  Here you can define the location and size of the panel.  The values here correspond to pixels in the 1994 DOS CD version.  The full briefing canvas begins at (0, 0) and has a maximum size of (212, 138).</p>
+
+<p>The <i>Visible</i> checkbox determines whether the panel is displayed in the briefing, and the coordinates define the location of the rectangle.</p>
+
+<p>If you're designing missions for X-Wing 1994, <i>Text Lines</i> is probably the only feature you may want to use.  Typically the caption is large enough for two lines of text, but some missions increase the size to hold three lines.  Changing the <i>Text Lines</i> value will automatically adjust the <i>Top</i> and <i>Bottom</i> values to accommodate the requested number of lines.  The number of lines can be changed for any panel.  If using it for the caption, make sure the caption panel is selected first.</p>
+
+<p><b>WARNING!</b> Make sure the text panels are wide enough to hold <b>ENTIRE WORDS</b>.  Normally word-wrap allows you to write long sentences, but if any individual word is larger than the entire panel, the game may hang or crash.</p>
+
+<p><b>WARNING!</b> As mentioned, it is strongly recommended to leave these settings default.  But why, you ask?  X-Wing 1994 DOS CD, X-Wing 1998 Windows (Special Edition), and XWVM all have different rules for rendering the map and text!  This makes template customization much less useful, as every version treats it differently.</p>
+
+<p>In 1994, the panels are rendered in order, from top to bottom.  The map is rendered last, and will overlap any text panels underneath.</p>
+
+<p>In 1998, if the map is enabled, the rendering rules are changed to an explicit stacking order.  The title is always at the top, the map is underneath the title, and the caption is underneath the map.  The stacking order cannot be changed.  The caption is always extended to the very bottom of the display area.  There are also minimum heights enforced for the title and caption.  These rules make the <i>Top</i> and <i>Bottom</i> rectangle positions, and <i>Text Lines</i> control largely meaningless.</p>
+
+<p>XWVM presently ignores most of these properties, and has its own text rendering rules.  XWVM also expects the first page to be a map page.  If you insist on editing these, proceed with caution and test them well in their intended game.  Even if you make a custom mission intended for the original games, using crazy template layouts, someone may attempt to play it in XWVM too.</p>
+
+
+
+<h3><a name="tab_verify" class="anchor">Verify Tab</a></h3>
+
+<p>Verification attempts to find simple problems in the briefing.  Errors are usually severe problems that you should fix, as they can often crash the game or produce unexpected results.  Warnings are usually suggestions that something should be fixed.  Some warnings are quite mild or inconsequential.  Even LucasArts missions sometimes have mistakes.</p>
+
+<p>If any tag or caption strings are too long, they will be reported here.  If an X-Wing panel is oddly configured, it will be reported.  In XWA, if there's a <i>Ship Info</i> segment that isn't properly opened or closed, it will be reported.  Plus many more kinds of logic or data problems.</p>
+
+<p>The <i>Verify</i> button will scan for issues and display the results in the textbox below.</p>
+
+<p>The <i>Repair</i> button will attempt to automatically fix certain errors.  If a string is too long, it will be truncated to its safe length.  If a value is outside the acceptable range, like a negative IFF number, it will be clamped to an acceptable value.  When the repair is finished, the results will be displayed in the textbox.  Some errors may need to be fixed manually.</p>
+
+
+
+<h3><a name="quickoptions" class="anchor">Quick Toggle Options</a></h3>
+<p>In the map tab, when nothing is selected, these options will be available in the bottom right corner of the window.  They affect various aspects of map playback, for visual or audio purposes.  Some of them are platform dependent.</p>
+
+<p><i>High Def - XW98</i> (X-Wing only) - This selects the resolution of the map canvas.  If checked, it will use the high definition resolution and fonts.  High definition referring to the 1998 Windows Special Edition.  If not checked, it mimics the resolution of the  1994 DOS CD version.  Typically it won't matter which mode you're using for editing, however when finished you should test how it looks in both versions, especially if you're customizing the page templates.  Note that XWVM generally follows the design scheme of the 1998 version, but does not honor custom templates.</p>
+
+<p><i>Loop Playback</i> - Immediately loops back to the beginning when playback reaches the end of the briefing.  Useful to test the duration of the final caption, to make sure it appears long enough to read before the briefing restarts.  This can also be helpful when testing audio in XWA.</p>
+
+<p><i>Animate Move/Zoom</i> - Displays the authentic map position at every frame while scrolling the timeline, or during playback.  If not checked, the map will immediately jump to the target position and zoom.  Generally best to leave this checked.</p>
+
+<p><i>Animate Tags</i> - Displays icon convergence animations for flightgroup tags, and animated text scrolling for text tags.  If not checked, tags will always display their final frame.  Several flightgroup tags can introduce clutter, and unexpanded text tags can be hard to click on.  Unchecking this can make it easier to select things on the map in certain situations.</p>
+
+<p><i>Waypoint Shadows</i> (TIE, XvT only) - When this box is checked, flightgroups that have their briefing waypoint disabled will still appear grayed out on the map, allowing you to interact with them.</p>
+
+<p><i>Team and Player Labels</i> (XvT, XWA only) - Displays the team name in the top left corner, as it would appear in game.  Although the label obstructs part of the map, knowing where it is can be helpful to avoid putting something there like a text tag.  In XvT, it also displays the player numbers next to playable flightgroups.</p>
+
+<p><i>Play Caption Audio</i> (XWA only) - If a mission is loaded from the Missions folder, it attempt to automatically load and play the corresponding audio for every caption event.</p>
+
+<p><i>Animate XWA Effects</i> (XWA only) - Animates transition effects for <i>Region</i> events or <i>Ship Info</i> events.  Important for timing purposes when playing audio, but can be annoying if you want to quickly play through the briefing and focus on more important things.</p>
+
+<p><i>XWAU Framerate</i> (XWA only) - Mimics the 24 FPS framerate in XWAU.  Although vanilla XWA was apparently designed for 24 FPS, it actually runs slower around 21 FPS.  Important for timing if you're trying to set up caption audio.  If a mission is loaded from the Missions folder, it will attempt to auto-detect whether XWAU is installed and adjust this option accordingly.</p> 
+
+<p><i>MoveIcon Shadows</i> (XWA only) - Toggles the display of all shadow icons.  Shadow icons are very useful when planning icon movements.  However when you've finished placing icons and want to play back the briefing as it would appear in game, uncheck this.  The dropdown box underneath can be used to focus on a specific ship and hide the rest.</p>
+
+</body>
+</html>

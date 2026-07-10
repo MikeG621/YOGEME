@@ -1,0 +1,128 @@
+<HTML>
+<HEAD>
+  <link rel="stylesheet" type="text/css" href="../stylesheet.css" />
+  <title>Briefing, TIE</title>
+</HEAD>
+<BODY>
+<p align=center><h2>Briefing Dialog</h2></p>
+<ul>
+<li><a href="#tabbrief">Briefing Map</a>
+  <ul>
+  <li><a href="#eventcommands">Event Commands</a></li>
+  <li><a href="#flightgroups">Flightgroups</a></li>
+  <li><a href="#limits">Limitations</a></li>
+  <li><a href="#timeshift">Time Shift</a></li>
+  </ul>
+</li>
+<li><a href="#tabstring">Tags and Strings</a></li>
+<li><a href="#tabevent">Event List Tab</a></li>
+</ul>
+
+<p><b>NOTE:</b> The full manual for the briefing dialog is located <a href="../main/brief.html">here</a>.  It is far more comprehensive than anything listed in this document.  It covers navigation, hotkeys, and explains all the controls and event nuances in more detail.</p>
+
+<p>Opening the Briefing Dialog will bring you to the main Briefing Map tab.</p>
+
+<p align=center><img src="../../images/TIE/Brief2.png"></p>
+
+<h4>Intro</h4>
+<p>This is the pre-mission briefing just before you fly.  This will be a very brief overview of the editor and its main features.</p>
+
+<p>The map screen is front and center, hard to miss.  To the right of the map is the sidebar.  Below the map is the timeline.</p>
+
+<p>The sidebar changes dynamically depending on what is selected.<br/>
+When nothing is selected, there are buttons to create events, time shift buttons that can add or remove time between events, and some quick toggle options that affect how the map is displayed.<br/>
+When something is selected, there will be controls for manipulating the selected item.</p>
+
+<p>At the very bottom, in the footer area, there is a list of briefings.  Unlike other platforms, TIE Fighter only has a single briefing.<br/>
+The duration is how long the briefing will play before looping.<br/>
+All events consume event space, and there's a limited amount.  You normally won't have to worry about reaching the limit.  Most briefings aren't even close.<br/>
+Finally some status text.</p>
+
+<p>On an empty briefing, the status text should say "Assets Loaded OK".  If it doesn't, you need to assign the installation paths in YOGEME's Options menu.  See <a href="../main/brief.html#setup">setup</a> in the main manual.<br/>
+The status text may also report verification issues, to detect common problems in a briefing.  As you make changes, it will describe how many of those changes can be undone.</p>
+
+<h3><a name="tabbrief" class="anchor">Briefing Map</a></h3>
+<p>This is what you will see in-game.  It is nearly pixel accurate to the original games.  It displays craft icons (flightgroups), is capable of highlighting flightgroups, displaying lines of text, as well as moving and zooming the map.</p>
+
+<p>TIE Fighter animates at approximately 12 fps, faster than X-Wing.</p>
+
+<p>The internal canvas in TIE Fighter is extremely small.  In the <i>Editor Options</i> tab, under <i>Map Scaling</i>, it is recommended to use <i>Fixed Size</i> and a minimum of <b>2.0</b>, or higher like <b>3.0</b> or <b>4.0</b> if your desktop resolution is high enough.  <i>Fixed Size</i> with whole numbers is very nice for crystal clear, perfect pixel scaling.  It's especially amazing for TIE Fighter!</p>
+
+<p>You can select things by clicking on them in the map or timeline.  The blue areas with text are called panels.  The top is the title panel, and the bottom is the caption panel.  If any text is displayed within a panel, you can select the corresponding string event by left clicking the panel.</p>
+
+<h4><a name="eventcommands" class="anchor">Events</a></h4>
+<p>These are all the possible events to influence the briefing:</p>
+<ul>
+<li><i>Title</i>: Changes the text in the title panel.</li>
+<li><i>Caption</i>: Changes the text in the caption panel.</li>
+<li><i>Clear</i>: Allows clearing of FG or Text tags, depending on which one is selected.</li>
+<li><i>FG Tag</i>: Creates an animation that calls attention to a flightgroup craft icon, and highlights the icon.</li>
+<li><i>Text Tag</i>: Creates an animated line of text directly on the map.</li>
+<li><i>Move Map</i>: Repositions the map camera.</li>
+<li><i>Zoom Map</i>: Zooms the map camera in or out.  This is often used in conjunction with the map position to affect how much of the map is visible and the spacing between each element.</li>
+<li><i>New Page</i>: Inserts a "Page Break" which really just clears all text panels.  It is customary for a Page Break to appear before a new <i>Title</i> or <i>Caption</i> event.</li>
+<li><i>Marker</i>: Creates a stop point when skipping through the briefing in game.  It is customary to use a <i>Page Break</i> instead.</li>
+</ul>
+
+<p>When creating events, simple events like <i>New Page</i> will insert instantly when clicking the button.  <i>Title</i> requires you to choose a string slot, and write a string in the provided edit box.  <i>Text Tag</i> requires you to choose a position on the map, and a string.  <i>Move Map</i> and <i>Zoom Map</i> will produce scrollbars beside and beneath the map to facilitate scrolling, although you can use the mouse or numeric controls too.  All of these parameters, and the controls to modify them, are dynamically displayed in the sidebar depending on the kind of event you're creating.  When you're ready to insert the event, click <i>OK</i>.  To back out, just click <i>Cancel</i>.</p>
+
+<p>To modify existing events, select them and their information will appear in the sidebar.  All events can be freely modified after they've been created.</p>
+
+<p>To delete events, select them and press the <b>[Delete]</b> key.</p>
+
+<p align=center>Some examples of the dynamic sidebar controls, and their editable properties.</p>
+<table align=center>
+<tr>
+  <td><p align=center>FG Icon selected</p></td>
+  <td><p align=center>Caption selected</p></td>
+</tr>
+<tr>
+  <td><img src="../../images/TIE/Brief2-param1.png"></td>
+  <td><img src="../../images/TIE/Brief2-param2.png"></td>
+</tr>
+</table>
+
+
+<h4><a name="flightgroups" class="anchor">Flightgroups</a></h4>
+
+<p>All icons on the map are determined by the flightgroups in the mission, their briefing waypoint coordinates, and whether the waypoint is enabled.  The waypoint position and its activation status can be fully controlled here on the map.  In the quick toggle options, there is a new checkbox <i>Waypoint Shadows</i>.  If this is checked, deactivated icons will appear grayed out, allowing them to be selected and reactivated.  Deactivated icons are not visible in game.</p>
+
+<h4><a name="limits" class="anchor">TIE Fighter limitations</a></h4>
+<p>Improving on some of the limitations over X-Wing, TIE Fighter set the basic standard for briefings, with many behaviors persisting until the end of the series.</p>
+<ul>
+<li>A maximum of 8 flightgroup tags activated at once.</li>
+<li>A maximum of 8 text tags displayed at once.</li>
+<li>A <i>Page Break</i> event is customary (but not required) to include before before all <i>Title</i> and <i>Caption</i> changes, anywhere that isn't the first frame (Time = 0).</li>
+<li>Text tags have 4 standard IFF colors.  Overflow colors are available, but unintended for use by the game.  Their palettes weren't designed to be used as text tags, so the animations can be quite... colorful.  These overflow colors may not be compatible with XWVM, so keep that in mind when developing briefings.  Newer engines may not replicate every strange quirk of the original!</li>
+</ul>
+
+
+<h4><a name="timeshift" class="anchor">Time Shift</a></h4>
+<p>Time shift inserts or removes space at the current time.  Existing events that are on, or after, the current time will be pushed out or pulled in.</p>
+
+<h3><a name="tabstring" class="anchor">Tags and Strings</a></h3>
+<p align=center><img src="../../images/TIE/Brief2-strings.png"></p>
+<p>A full overview of all tag and strings slots.  There are a maximum of 32 tag strings and 32 caption strings.</p>
+
+<p>To modify a string, click on its list item, then use the edit boxes directly underneath.  The arrow buttons can move their respective strings up or down, useful to keep your captions in order.  <b>Tip:</b> to insert an empty slot, it's easier to move an empty string from the bottom up, rather than moving everything down.</p>
+
+<p>Tags are displayed on the map.  Captions are displayed in the text panels.  Captions allow special formatting.  Use "[ ]" brackets for green highlighting.  The title, which is usually the topmost caption, is usually prefixed with ">" which causes text to be centered with yellow text.  Tags can technically be given bracket "[ ]" highlighting for green text, but you can just set the tag color to green anyway.</p>
+
+<p>Watch the string lengths and make sure you don't exceed the maximum.  It can crash the game.</p>
+
+<p><b>Note:</b> If you replace any strings in an existing mission, or replace the mission entirely, the original briefing voices will play.  The audio is triggered when a <i>Caption</i> event activates a particular string number.  The string and its contents don't matter.  The audio cannot be controlled by the briefing.</p>
+
+
+<h3><a name="tabevent" class="anchor">Event List Tab</a></h3>
+<p align=center><img src="../../images/TIE/Brief2-events.png"></p>
+<p>This is a complete listing of all briefing events, with slightly more detailed information.</p>
+<p>If you select events here, the sidebar will appear with all editable properties, just as it does on the map.</p>
+
+<p>Events can be created here, but it's more tedious.  Clicking <i>New Event</i> defaults to <i>Page Break</i> and the event type must be manually changed with the dropdown.  It's much easier to use the map instead, when possible.</p>
+
+<p>The list allows multiple selection by dragging the mouse from one event to another.  Or by holding <b>[Shift]</b> and clicking a range of items.  Or by holding <b>[Control]</b> and clicking individual events to toggle.</p>
+
+<p>Events can be shifted up and down, which is equivalent to the Time Shift on the map, or dragging events around in the timeline.  One benefit of using this tab for shifting is having more options, like shifting to an exact time.</p>
+
+</body>
+</html>
