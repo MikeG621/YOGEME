@@ -3,9 +3,10 @@
  * Copyright (C) 2007-2026 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.17.7+
+ * VERSION: 1.18
  *
  * CHANGELOG
+ * v1.18, 260711
  * [UPD] FG Goal Summary now includes Globals
  * [UPD #137] switch to new BriefingForm
  * [NEW #137] FormScaler implemented

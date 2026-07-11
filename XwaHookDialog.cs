@@ -3,9 +3,10 @@
  * Copyright (C) 2007-2026 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.17+
+ * VERSION: 1.18
  *
  * CHANGELOG
+ * v1.18, 260711
  * [NEW] Stats modifiers SpeedIncrement and SpeedDecrement, MapIcon rect, CraftStats all markings Profile, CampaignCrafts*, weapon damages
  * [UPD] ExplosionDamage renamed to CriticalDamageThreshold per hook updates
  * [UPD] major refactor

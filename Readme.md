@@ -37,7 +37,7 @@ This will leave behind a single config file in AppData with your user settings.
 
 ## Latest Release
 
-#### WIP
+#### v1.18, 11 Jul 2026
 - The big update in this version: a brand new Briefing interface, thanks to a ton of work by Random [PR [#137](https://github.com/MikeG621/YOGEME/pull/137)].
   - Resizable window and briefing map.
   - Event timeline during playback.
@@ -46,7 +46,7 @@ This will leave behind a single config file in AppData with your user settings.
   - Error-checking and some repair abilities to prevent in-game crashes.
   - Improved visual accuracy.
   - Ability to select items on the briefing map and move/drag directly, pushing updates back to the Flightgroup.
-  - Free look to zoom/pan around the map without making even changes.
+  - Free look to zoom/pan around the map without making event changes.
   - Ability to show shadows/ghosts of other craft not present.
   - (XWA) Visible motion trail for Move events, showing the entire path.
   - Several QoL updates on the Events tab.
@@ -58,18 +58,11 @@ This will leave behind a single config file in AppData with your user settings.
   - ExplosionDamage CraftStats type renamed to CriticalDamageThreshold per hook updates.
   - Added CraftStats SpeedIncrement and SpeedDecrement modifiers.
   - Added CraftStats Profile options for "All" markings (last entry of the drop-down).
-  - Added Mission_Tie:MapIcon and all Mission_Tie:CampiagnCrafts* options.
+  - Added Mission_Tie:MapIcon and all Mission_Tie:CampaignCrafts* options.
   - Added WeaponRate:MaxSystemDamage and the WeaponRate:Weapon*_Damages options.
 - (XWA) Menu typo [Issue [#136](https://github.com/MikeG621/YOGEME/issues/136)].
 - (TIE-XWA) "FG Goal Summary" now includes Global goals, menu renamed to just "Goal Summary"
 - LfdReader v3 updates.
-
-#### 1.17.7, 27 Mar 2026
-- (TIE) Officer questions now strip new line characters ('\r\n') created by bad external copy/pastes [Issue [#134](https://github.com/MikeG621/YOGEME/issues/134)].
-- (TIE) Officer answers text box has had the WordWrap disabled, forcing the user to recognize the lack of line breaks.
-- (All) FG Delete message now indicates which FGs and Messages reference it, now handled in Common for consistency.
-- (XWA) Map interface now respects OPT replacement from the Objects hook [Issue [#135](https://github.com/MikeG621/YOGEME/issues/135)].
-    - NOTE: after making changes to the INI, you will need to force the OPT refresh by opening a different/new mission and opening the map once.
 ---
 ### Additional Information
 #### Dependencies
@@ -80,6 +73,13 @@ This will leave behind a single config file in AppData with your user settings.
 - [Idmr.LfdReader](https://github.com/MikeG621/LfdReader)
 
 ### Version History
+
+#### 1.17.7, 27 Mar 2026
+- (TIE) Officer questions now strip new line characters ('\r\n') created by bad external copy/pastes [Issue [#134](https://github.com/MikeG621/YOGEME/issues/134)].
+- (TIE) Officer answers text box has had the WordWrap disabled, forcing the user to recognize the lack of line breaks.
+- (All) FG Delete message now indicates which FGs and Messages reference it, now handled in Common for consistency.
+- (XWA) Map interface now respects OPT replacement from the Objects hook [Issue [#135](https://github.com/MikeG621/YOGEME/issues/135)].
+    - NOTE: after making changes to the INI, you will need to force the OPT refresh by opening a different/new mission and opening the map once.
 
 #### 1.17.6, 7 Mar 2026
 - (TIE) Fixed battle LFDs not writing anymore [Issue [#132](https://github.com/MikeG621/YOGEME/issues/132)].

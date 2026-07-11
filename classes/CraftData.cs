@@ -4,9 +4,10 @@
  * This file authored by "JB" (Random Starfighter) (randomstarfighter@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.17.7+
+ * VERSION: 1.18
  *
  * CHANGELOG
+ * v1.18, 260711
  * [UPD] HookFile implementation
  * v1.17.7, 260327
  * [NEW #135] Take into account Objects hook when loading OPTs (full swap, not profiles)

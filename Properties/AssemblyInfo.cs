@@ -20,8 +20,8 @@ using System.Reflection;
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]		
 
-[assembly: AssemblyVersion("1.17.7.*")]
-[assembly: AssemblyInformationalVersion("1.17.7 final")]
+[assembly: AssemblyVersion("1.18.*")]
+[assembly: AssemblyInformationalVersion("1.18 final")]
 
 [assembly: AssemblyDelaySign(false)]
 [assembly: AssemblyKeyFile("")]
