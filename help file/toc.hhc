@@ -137,7 +137,7 @@
 				</OBJECT>
 			<LI> <OBJECT type="text/sitemap">
 				<param name="Name" value="TIE">
-				<param name="Local" value="pages\main\opt.html#tie">
+				<param name="Local" value="pages\main\opt.html">
 				</OBJECT>
 			<LI> <OBJECT type="text/sitemap">
 				<param name="Name" value="XvT">
@@ -386,6 +386,24 @@
 			<param name="Name" value="Briefing Dialog">
 			<param name="Local" value="pages\XvT\brief2.html">
 			</OBJECT>
+		<UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Briefing Map">
+				<param name="Local" value="pages\XvT\brief2.html#tabbrief">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Tags and Strings">
+				<param name="Local" value="pages\XvT\brief2.html#tabstring">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Event List">
+				<param name="Local" value="pages\XvT\brief2.html#tabevent">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Briefing Options">
+				<param name="Local" value="pages\XvT\brief2.html#taboptions">
+				</OBJECT>
+		</UL>
 	</UL>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="XWA">
@@ -454,6 +472,24 @@
 			<param name="Name" value="Briefing Dialog">
 			<param name="Local" value="pages\XWA\brief2.html">
 			</OBJECT>
+		<UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Briefing Map">
+				<param name="Local" value="pages\XWA\brief2.html#tabbrief">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Tags and Strings">
+				<param name="Local" value="pages\XWA\brief2.html#tabstring">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Event List">
+				<param name="Local" value="pages\XWA\brief2.html#tabevent">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Briefing Options">
+				<param name="Local" value="pages\XWA\brief2.html#taboptions">
+				</OBJECT>
+		</UL>
 		<LI> <OBJECT type="text/sitemap">
 			<param name="Name" value="Hook Dialog">
 			<param name="Local" value="pages\XWA\hooks.html">

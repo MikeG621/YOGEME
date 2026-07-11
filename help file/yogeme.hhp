@@ -24,21 +24,18 @@ pages\main\map.html
 pages\main\menu.html
 pages\main\opt.html
 pages\TIE\battle.html
-pages\TIE\brief.html
 pages\TIE\flight.html
 pages\TIE\glob.html
 pages\TIE\main.html
 pages\TIE\mess.html
 pages\TIE\miss.html
 pages\TIE\off.html
-pages\XvT\brief.html
 pages\XvT\flight.html
 pages\XvT\glob.html
 pages\XvT\main.html
 pages\XvT\mess.html
 pages\XvT\miss.html
 pages\XvT\team.html
-pages\XWA\brief.html
 pages\XWA\flight.html
 pages\XWA\glob.html
 pages\XWA\main.html
@@ -46,11 +43,14 @@ pages\XWA\mess.html
 pages\XWA\miss.html
 pages\XWA\team.html
 pages\XWA\hyper.html
-pages\XW\brief.html
 pages\XW\flight.html
 pages\XW\main.html
 pages\XW\miss.html
 pages\XWA\hooks.html
+pages\TIE\brief2.html
+pages\XvT\brief2.html
+pages\XW\brief2.html
+pages\XWA\brief2.html
 
 [INFOTYPES]
 
