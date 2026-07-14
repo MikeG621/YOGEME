@@ -7112,7 +7112,8 @@ namespace Idmr.Yogeme
 				if (evt.Event >= start && evt.Event <= end)
 				{
 					int index = (evt.Event - start);
-					result[index] = evt.Time;
+					// Anything that's already in use must not be overwritten by a later time.
+					if (result[index] == -1) result[index] = evt.Time;
 				}
 				else if (evt.Event == clear || evt.Event == AbstractEventType.XwaChangeRegion)
 				{
@@ -9373,7 +9374,7 @@ namespace Idmr.Yogeme
 			for (int i = 0; i < count; i++)
 			{
 				// Prioritize empty slot, otherwise overwrite a future slot.
-				if (usage[i] == 0) return i;
+				if (usage[i] == -1) return i;
 				if (result == -1 && usage[i] > time) result = i;
 			}
 			return result;
