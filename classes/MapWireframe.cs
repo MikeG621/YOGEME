@@ -1187,7 +1187,7 @@ namespace Idmr.Yogeme.MapWireframe
 				}
 				def = new WireframeDefinition(craft);
 				def.Scale(scale);
-				craft.Craft.Dispose();
+				craft.Craft?.Dispose();
 			}
 			_wireframeDefinitions.Add(craftType, def);
 			return def;
