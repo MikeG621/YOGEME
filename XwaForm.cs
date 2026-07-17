@@ -3,9 +3,10 @@
  * Copyright (C) 2007-2026 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.18
+ * VERSION: 1.18+
  *
  * CHANGELOG
+ * [UPD #140] Aligned GG and GU numbers on the Mission2 tab with the FlightGroup interface
  * v1.18, 260711
  * [UPD] FG Goal Summary now includes Globals
  * [UPD #137] switch to new BriefingForm

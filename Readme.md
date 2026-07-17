@@ -39,6 +39,8 @@ This will leave behind a single config file in AppData with your user settings.
 
 #### WIP
 - (XWA) Aligned GG and GU numbers on the Mission2 tab with the FlightGroup interface [Issue [#140](https://github.com/MikeG621/YOGEME/issues/140)].
+- (Map) Null check to prevent crash when cleaning up wireframes (JB) [PR [#141](https://github.com/MikeG621/YOGEME/pull/141)].
+- (Briefing) Fixed a bug with the tags being marked as "used" (JB) [PR #141].
 
 #### v1.18, 11 Jul 2026
 - The big update in this version: a brand new Briefing interface, thanks to a ton of work by Random [PR [#137](https://github.com/MikeG621/YOGEME/pull/137)].

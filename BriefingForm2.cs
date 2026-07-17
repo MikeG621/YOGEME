@@ -4,9 +4,10 @@
  * This file authored by "JB" (Random Starfighter) (randomstarfighter@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.18
+ * VERSION: 1.18+
  *
  * CHANGELOG
+ * [FIX #141] Bug with tags always treated as "used", and also being overwritten (JB)
  * v1.18, 260711
  * [NEW #137] created
  */
