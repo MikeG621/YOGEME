@@ -8077,12 +8077,7 @@ namespace Idmr.Yogeme
 			// 
 			this.numGUIndex.Location = new System.Drawing.Point(56, 20);
 			this.numGUIndex.Maximum = new decimal(new int[] {
-            40,
-            0,
-            0,
-            0});
-			this.numGUIndex.Minimum = new decimal(new int[] {
-            1,
+            39,
             0,
             0,
             0});
@@ -8090,11 +8085,6 @@ namespace Idmr.Yogeme
 			this.numGUIndex.Size = new System.Drawing.Size(41, 20);
 			this.numGUIndex.TabIndex = 3;
 			this.numGUIndex.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-			this.numGUIndex.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
 			this.numGUIndex.ValueChanged += new System.EventHandler(this.numGUIndex_ValueChanged);
 			// 
 			// label89
@@ -8206,12 +8196,7 @@ namespace Idmr.Yogeme
 			// 
 			this.numGGIndex.Location = new System.Drawing.Point(56, 20);
 			this.numGGIndex.Maximum = new decimal(new int[] {
-            32,
-            0,
-            0,
-            0});
-			this.numGGIndex.Minimum = new decimal(new int[] {
-            1,
+            31,
             0,
             0,
             0});
@@ -8219,11 +8204,6 @@ namespace Idmr.Yogeme
 			this.numGGIndex.Size = new System.Drawing.Size(41, 20);
 			this.numGGIndex.TabIndex = 3;
 			this.numGGIndex.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-			this.numGGIndex.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
 			this.numGGIndex.ValueChanged += new System.EventHandler(this.numGGIndex_ValueChanged);
 			// 
 			// label81

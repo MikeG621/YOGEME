@@ -4819,9 +4819,9 @@ namespace Idmr.Yogeme
 			numGCIndex.Value = 2;
 			numGCIndex.Value = 1; // force the refresh
 			numGGIndex.Value = 2;
-			numGGIndex.Value = 1;
+			numGGIndex.Value = 0;
 			numGUIndex.Value = 2;
-			numGUIndex.Value = 1;
+			numGUIndex.Value = 0;
 			txtNotes.Text = _mission.MissionNotes;
 			#endregion
 		}
@@ -4889,7 +4889,7 @@ namespace Idmr.Yogeme
 			_mission.Regions[(int)t.Tag].Name = Common.Update(this, _mission.Regions[(int)t.Tag].Name, t.Text);
 		}
 
-		int _ggIndex => (int)numGGIndex.Value - 1;
+		int _ggIndex => (int)numGGIndex.Value;
 		void numGGIndex_ValueChanged(object sender, EventArgs e)
 		{
 			bool temp = _loading;
@@ -4917,7 +4917,7 @@ namespace Idmr.Yogeme
 			_mission.GlobalGroups[_ggIndex].RandomSpecialCraft = Common.Update(this, _mission.GlobalGroups[_ggIndex].RandomSpecialCraft, chkGGRandom.Checked);
 		}
 
-		int _guIndex => (int)numGUIndex.Value - 1;
+		int _guIndex => (int)numGUIndex.Value;
 		void numGUIndex_ValueChanged(object sender, EventArgs e)
 		{
 			bool temp = _loading;
