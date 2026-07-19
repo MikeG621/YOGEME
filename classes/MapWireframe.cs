@@ -4,9 +4,10 @@
  * This file authored by "JB" (Random Starfighter) (randomstarfighter@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.18+
+ * VERSION: 1.18.1
  *
  * CHANGELOG
+ * v1.18.1, 260719
  * [FIX #141] null check for wireframe craft on Dispose
  * v1.18, 260711
  * [UPD] LfdReader v3 updates

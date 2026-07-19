@@ -3,9 +3,11 @@
  * Copyright (C) 2007-2026 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.18
+ * VERSION: 1.18.1
  *
  * CHANGELOG
+ * v1.18.1, 260719
+ * [UPD] Added points total for Team 1 on Goal Summary
  * v1.18, 260711
  * [UPD] FG Goal Summary now includes Globals
  * [UPD] LfdReader v3 update
@@ -1766,6 +1768,7 @@ namespace Idmr.Yogeme
 			//4 elements:  Global Primary, Global Secondary, Global Bonus, Primary, Secondary, Bonus
 			//Each element contains a list of strings for each goal.
 			List<string>[] goalList = new List<string>[6];
+			int points = 0;
 
 			for (int i = 0; i < 6; i++) goalList[i] = new List<string>();
 
@@ -1783,6 +1786,7 @@ namespace Idmr.Yogeme
 				n = composeGoalString(c, fg.Goals.BonusAmount, fg.Goals.BonusCondition);
 				if (n != "")
 				{
+					points += fg.Goals.BonusPoints;
 					n += $" ({fg.Goals.BonusPoints} points)";
 					goalList[5].Add(n);
 				}
@@ -1825,6 +1829,7 @@ namespace Idmr.Yogeme
 				}
 				foreach (string s in goalList[i]) output += s + "\r\n";
 			}
+			if (points != 0) output += $"\r\nTotal Bonus Points: {points}";
 			if (output == "") output = "Nothing here.";
 			output += "\r\n";
 

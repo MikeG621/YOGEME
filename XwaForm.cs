@@ -3,10 +3,12 @@
  * Copyright (C) 2007-2026 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.18+
+ * VERSION: 1.18.1
  *
  * CHANGELOG
+ * v1.18.1, 260719
  * [UPD #140] Aligned GG and GU numbers on the Mission2 tab with the FlightGroup interface
+ * [UPD] Added points total for Team 1 on Goal Summary
  * v1.18, 260711
  * [UPD] FG Goal Summary now includes Globals
  * [UPD #137] switch to new BriefingForm
@@ -2560,6 +2562,7 @@ namespace Idmr.Yogeme
 			List<string>[] goalList = new List<string>[60];
 
 			for (int i = 0; i < 60; i++) goalList[i] = new List<string>();
+			int points = 0;
 
 			//Iterate FGs and their goals, adding them to the proper list
 			for (int i = 0; i < _mission.FlightGroups.Count; i++)
@@ -2573,6 +2576,7 @@ namespace Idmr.Yogeme
 					string n = goal.ToString().Replace("Flight Group", c);
 					int category = (goal.Argument <= 1) ? 0 : 2;  //0 = primary, 1 = prevent, 2 = bonus
 					for (int t = 0; t < 10; t++) if (goal.GetEnabledForTeam(t)) goalList[t * 6 + category].Add(n);
+					if (goal.GetEnabledForTeam(0)) points += goal.Points;
 				}
 			}
 
@@ -2589,12 +2593,14 @@ namespace Idmr.Yogeme
 
 					labelRefresh(goal.Triggers[0], dummy);
 					string global = dummy.Text;
+					if (i == 0) points += goal.GetPointsPerTrigger(0);
 					global += $" ({goal.GetPointsPerTrigger(0)} points)";
 					if (goal.Triggers[1].Condition != 0 && goal.Triggers[1].Condition != 10)
 					{
 						global += $"\r\n-{(goal.T1AndOrT2 ? "OR" : "AND")}-\r\n";
 						labelRefresh(goal.Triggers[1], dummy);
 						global += dummy.Text;
+						if (i == 0) points += goal.GetPointsPerTrigger(1);
 						global += $" ({goal.GetPointsPerTrigger(1)} points)";
 					}
 					if (goal.Triggers[2].Condition != 0 && goal.Triggers[2].Condition != 10)
@@ -2602,6 +2608,7 @@ namespace Idmr.Yogeme
 						global += $"\r\n-{(goal.T12AndOrT34 ? "OR" : "AND")}-\r\n";
 						labelRefresh(goal.Triggers[2], dummy);
 						global += dummy.Text;
+						if (i == 0) points += goal.GetPointsPerTrigger(2);
 						global += $" ({goal.GetPointsPerTrigger(2)} points)";
 					}
 					if (goal.Triggers[3].Condition != 0 && goal.Triggers[3].Condition != 10)
@@ -2609,8 +2616,10 @@ namespace Idmr.Yogeme
 						global += $"\r\n-{(goal.T3AndOrT4 ? "OR" : "AND")}-\r\n";
 						labelRefresh(goal.Triggers[3], dummy);
 						global += dummy.Text;
+						if (i == 0) points += goal.GetPointsPerTrigger(3);
 						global += $" ({goal.GetPointsPerTrigger(3)} points)";
 					}
+					if (i == 0) points += goal.Points;
 					global += $"\r\n({goal.Points} goal points)";
 					goalList[i * 6 + 3 + j].Add(global);
 				}
@@ -2656,6 +2665,7 @@ namespace Idmr.Yogeme
 					output += "\r\nBONUS:\r\n";
 					foreach (string s in goalList[i * 6 + 2]) output += s + "\r\n";
 				}
+				if (i == 0) output += $"\r\nTotal Points: {points}\r\n";
 			}
 			if (output == "") output = "Nothing here.";
 			output += "\r\n";

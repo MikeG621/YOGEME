@@ -3,9 +3,11 @@
  * Copyright (C) 2007-2026 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.18
+ * VERSION: 1.18.1
  *
  * CHANGELOG
+ * v1.18.1, 260719
+ * [UPD] Added points total for Team 1 on Goal Summary
  * v1.18, 260711
  * [UPD] FG Goal Summary now includes Globals
  * [UPD #137] switch to new BriefingForm
@@ -2153,6 +2155,7 @@ namespace Idmr.Yogeme
 			//60 elements:  FG Primary, FG Prevent, FG Bonus, Global Primary, Global Prevent, Global Secondary... (repeat for each team)
 			//Each element contains a list of strings for each line of text.
 			List<string>[] goalList = new List<string>[60];
+			int points = 0;
 
 			for (int i = 0; i < 60; i++) goalList[i] = new List<string>();
 
@@ -2172,6 +2175,7 @@ namespace Idmr.Yogeme
 						string n = goal.ToString().Replace("Flight Group", c);
 						int category = ((goal.Argument <= 1) ? 0 : 2);  //0 = primary, 1 = prevent, 2 = bonus
 						goalList[j * 6 + category].Add(n);
+						points += goal.Points;
 					}
 				}
 			}
@@ -2207,6 +2211,7 @@ namespace Idmr.Yogeme
 						labelRefresh(goal.Triggers[3].GoalTrigger, dummy);
 						global += dummy.Text;
 					}
+					if (i == 0) points += goal.Points;
 					global += $"\r\n({goal.Points} goal points)";
 					goalList[i * 6 + 3 + j].Add(global);
 				}
@@ -2252,6 +2257,7 @@ namespace Idmr.Yogeme
 					output += "\r\nBONUS:\r\n";
 					foreach (string s in goalList[i * 6 + 2]) output += s + "\r\n";
 				}
+				if (i == 0) output += $"\r\nTotal Points: {points}\r\n";
 			}
 			if (output == "") output = "Nothing here.";
 			output += "\r\n";

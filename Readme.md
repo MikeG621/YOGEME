@@ -37,10 +37,22 @@ This will leave behind a single config file in AppData with your user settings.
 
 ## Latest Release
 
-#### WIP
+#### v1.18.1, 19 Jul 2026
 - (XWA) Aligned GG and GU numbers on the Mission2 tab with the FlightGroup interface [Issue [#140](https://github.com/MikeG621/YOGEME/issues/140)].
 - (Map) Null check to prevent crash when cleaning up wireframes (JB) [PR [#141](https://github.com/MikeG621/YOGEME/pull/141)].
 - (Briefing) Fixed a bug with the tags being marked as "used" (JB) [PR #141].
+- (TIE-XWA) Added points total to Goal Summary.
+---
+
+### Additional Information
+#### Dependencies
+- [Idmr.Common](https://github.com/MikeG621/Common)
+- [Idmr.ImageFormat.Act](https://github.com/MikeG621/ImageFormat-Act)
+- [Idmr.ImageFormat.Dat](https://github.com/MikeG621/ImageFormat-Dat)
+- [Idmr.Platform](https://github.com/MikeG621/Platform)
+- [Idmr.LfdReader](https://github.com/MikeG621/LfdReader)
+
+### Version History
 
 #### v1.18, 11 Jul 2026
 - The big update in this version: a brand new Briefing interface, thanks to a ton of work by Random [PR [#137](https://github.com/MikeG621/YOGEME/pull/137)].
@@ -68,16 +80,6 @@ This will leave behind a single config file in AppData with your user settings.
 - (XWA) Menu typo [Issue [#136](https://github.com/MikeG621/YOGEME/issues/136)].
 - (TIE-XWA) "FG Goal Summary" now includes Global goals, menu renamed to just "Goal Summary"
 - LfdReader v3 updates.
----
-### Additional Information
-#### Dependencies
-- [Idmr.Common](https://github.com/MikeG621/Common)
-- [Idmr.ImageFormat.Act](https://github.com/MikeG621/ImageFormat-Act)
-- [Idmr.ImageFormat.Dat](https://github.com/MikeG621/ImageFormat-Dat)
-- [Idmr.Platform](https://github.com/MikeG621/Platform)
-- [Idmr.LfdReader](https://github.com/MikeG621/LfdReader)
-
-### Version History
 
 #### 1.17.7, 27 Mar 2026
 - (TIE) Officer questions now strip new line characters ('\r\n') created by bad external copy/pastes [Issue [#134](https://github.com/MikeG621/YOGEME/issues/134)].
