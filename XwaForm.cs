@@ -3,9 +3,10 @@
  * Copyright (C) 2007-2026 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.18.1
+ * VERSION: 1.18.1+
  *
  * CHANGELOG
+ * [FIX #147] IFF drop-down not refreshing on load
  * v1.18.1, 260719
  * [UPD #140] Aligned GG and GU numbers on the Mission2 tab with the FlightGroup interface
  * [UPD] Added points total for Team 1 on Goal Summary
@@ -830,6 +831,7 @@ namespace Idmr.Yogeme
 			bool btemp = _loading;
 			_loading = true;
 			updateMissionTabs();
+			comboReset(cboIFF, getIffStrings(), cboIFF.SelectedIndex);
 			cboGlobalTeam.SelectedIndex = -1;   // otherwise it doesn't trigger an index change
 			cboGlobalTeam.SelectedIndex = 0;
 			for (_activeTeamIndex = 0; _activeTeamIndex < 10; _activeTeamIndex++) teamRefresh();

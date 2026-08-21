@@ -37,6 +37,9 @@ This will leave behind a single config file in AppData with your user settings.
 
 ## Latest Release
 
+#### WIP
+- (XWA) Fixed the Craft IFF drop-down not loading properly when opening a mission [Issue [#147](https://github.com/MikeG621/YOGEME/issues/147)].
+
 #### v1.18.1, 19 Jul 2026
 - (XWA) Aligned GG and GU numbers on the Mission2 tab with the FlightGroup interface [Issue [#140](https://github.com/MikeG621/YOGEME/issues/140)].
 - (Map) Null check to prevent crash when cleaning up wireframes (JB) [PR [#141](https://github.com/MikeG621/YOGEME/pull/141)].
