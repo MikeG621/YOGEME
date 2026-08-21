@@ -39,6 +39,8 @@ This will leave behind a single config file in AppData with your user settings.
 
 #### WIP
 - (XWA) Fixed the Craft IFF drop-down not loading properly when opening a mission [Issue [#147](https://github.com/MikeG621/YOGEME/issues/147)].
+- (XWA) Fixed Message VoiceID drop-down not updating with FGs are shifted up or down (via Platform.dll) [Issue [#146](https://github.com/MikeG621/YOGEME/issues/146)].
+- (XWA) Fixed Message references not updating properly in numerous locations when shifted up or down [Issue #146].
 
 #### v1.18.1, 19 Jul 2026
 - (XWA) Aligned GG and GU numbers on the Mission2 tab with the FlightGroup interface [Issue [#140](https://github.com/MikeG621/YOGEME/issues/140)].

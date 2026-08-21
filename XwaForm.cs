@@ -6,6 +6,7 @@
  * VERSION: 1.18.1+
  *
  * CHANGELOG
+ * [FIX #146] moveMessage wasn't calling SwapMessage()
  * [FIX #147] IFF drop-down not refreshing on load
  * v1.18.1, 260719
  * [UPD #140] Aligned GG and GU numbers on the Mission2 tab with the FlightGroup interface
@@ -4391,9 +4392,7 @@ namespace Idmr.Yogeme
 				// Traverse the selection list forward if moving up, backward if moving down.
 				int accessIndex = ((direction == -1) ? i : selection.Count - 1 - i);
 				int msgIndex = selection[accessIndex];
-				Platform.Xwa.Message tmp = _mission.Messages[msgIndex];
-				_mission.Messages[msgIndex] = _mission.Messages[msgIndex + direction];
-				_mission.Messages[msgIndex + direction] = tmp;
+				_mission.SwapMessage(msgIndex, msgIndex + direction);
 				messRefreshItem(msgIndex);
 				messRefreshItem(msgIndex + direction);
 				selection[accessIndex] += direction;     // Adjust indices to new positions
