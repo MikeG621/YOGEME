@@ -3,9 +3,10 @@
  * Copyright (C) 2007-2026 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.18.1+
+ * VERSION: 1.18.2
  *
  * CHANGELOG
+ * v1.18.2, 260821
  * [FIX #146] moveMessage wasn't calling SwapMessage()
  * [FIX #147] IFF drop-down not refreshing on load
  * v1.18.1, 260719

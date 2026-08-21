@@ -36,17 +36,10 @@ To remove YOGEME, simply delete the directory where you placed it.
 This will leave behind a single config file in AppData with your user settings.
 
 ## Latest Release
-
-#### WIP
+#### v1.18.2, 21 Aug 2026
 - (XWA) Fixed the Craft IFF drop-down not loading properly when opening a mission [Issue [#147](https://github.com/MikeG621/YOGEME/issues/147)].
 - (XWA) Fixed Message VoiceID drop-down not updating with FGs are shifted up or down (via Platform.dll) [Issue [#146](https://github.com/MikeG621/YOGEME/issues/146)].
 - (XWA) Fixed Message references not updating properly in numerous locations when shifted up or down [Issue #146].
-
-#### v1.18.1, 19 Jul 2026
-- (XWA) Aligned GG and GU numbers on the Mission2 tab with the FlightGroup interface [Issue [#140](https://github.com/MikeG621/YOGEME/issues/140)].
-- (Map) Null check to prevent crash when cleaning up wireframes (JB) [PR [#141](https://github.com/MikeG621/YOGEME/pull/141)].
-- (Briefing) Fixed a bug with the tags being marked as "used" (JB) [PR #141].
-- (TIE-XWA) Added points total to Goal Summary.
 ---
 
 ### Additional Information
@@ -58,7 +51,12 @@ This will leave behind a single config file in AppData with your user settings.
 - [Idmr.LfdReader](https://github.com/MikeG621/LfdReader)
 
 ### Version History
-
+#### v1.18.1, 19 Jul 2026
+- (XWA) Aligned GG and GU numbers on the Mission2 tab with the FlightGroup interface [Issue [#140](https://github.com/MikeG621/YOGEME/issues/140)].
+- (Map) Null check to prevent crash when cleaning up wireframes (JB) [PR [#141](https://github.com/MikeG621/YOGEME/pull/141)].
+- (Briefing) Fixed a bug with the tags being marked as "used" (JB) [PR #141].
+- (TIE-XWA) Added points total to Goal Summary.
+- 
 #### v1.18, 11 Jul 2026
 - The big update in this version: a brand new Briefing interface, thanks to a ton of work by Random [PR [#137](https://github.com/MikeG621/YOGEME/pull/137)].
   - Resizable window and briefing map.
