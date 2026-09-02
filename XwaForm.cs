@@ -3,7 +3,7 @@
  * Copyright (C) 2007-2026 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.18.2
+ * VERSION: 1.18.2+
  *
  * CHANGELOG
  * v1.18.2, 260821
@@ -273,6 +273,7 @@ namespace Idmr.Yogeme
 		LstForm _fLST;
 		FlightGroupLibraryForm _fLibrary;
 		Mission _mission;
+		XwaLiconForm _fLicon;
 		XwaWavForm _fWav;
 		bool _applicationExit;
 		int _activeFGIndex = 0;
@@ -1886,6 +1887,12 @@ namespace Idmr.Yogeme
 			}
 		}
 		void menuIDMR_Click(object sender, EventArgs e) => Common.LaunchGithub();
+		void menuLicon_Click(object sender, EventArgs e)
+		{
+			_fLicon?.Close();
+			_fLicon = new XwaLiconForm();
+			_fLicon.Show();
+		}
 		void menuLST_Click(object sender, EventArgs e)
 		{
 			_fLST = new LstForm(Settings.Platform.XWA);
@@ -4962,6 +4969,6 @@ namespace Idmr.Yogeme
 		{
 			_mission.MissionNotes = Common.Update(this, _mission.MissionNotes, txtNotes.Text);
 		}
-        #endregion
+		#endregion
 	}
 }

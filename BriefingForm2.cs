@@ -2891,6 +2891,7 @@ namespace Idmr.Yogeme
 
 		bool loadXwaBitmaps(string bitmapFile, string shiplistfile, AssetSourceType sourceType)
 		{
+			// TODO: if Licon form is open, need a way to call this again
 			try
 			{
 				_craftIconImages.Clear();
@@ -2914,7 +2915,6 @@ namespace Idmr.Yogeme
 						{
 							data.Hidden = (tokens[0].StartsWith("*") || stringEqual(tokens[1], "Planet/asteroid"));
 
-							string shipClass = tokens[1];
 							int.TryParse(tokens[9].Trim(), out int x1);
 							int.TryParse(tokens[10].Trim(), out int y1);
 							int.TryParse(tokens[11].Trim(), out int x2);

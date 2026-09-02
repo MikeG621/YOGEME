@@ -731,6 +731,7 @@ namespace Idmr.Yogeme
 			this.dataOrders = new System.Data.DataView();
 			this.dataOrders_Raw = new System.Data.DataView();
 			this.ttActiveSequence = new System.Windows.Forms.ToolTip(this.components);
+			this.menuLicon = new System.Windows.Forms.MenuItem();
 			((System.ComponentModel.ISupportInitialize)(this.dataWaypoints)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.dataWaypoints_Raw)).BeginInit();
 			this.tabMain.SuspendLayout();
@@ -1104,7 +1105,8 @@ namespace Idmr.Yogeme
             this.menuHooks,
             this.menuWav,
             this.menuMissionCraft,
-            this.menuGlobalSummary});
+            this.menuGlobalSummary,
+            this.menuLicon});
 			this.menuTools.Text = "&Tools";
 			// 
 			// menuVerify
@@ -8427,6 +8429,12 @@ namespace Idmr.Yogeme
 			// 
 			this.ttActiveSequence.ToolTipTitle = "Active Sequence";
 			// 
+			// menuLicon
+			// 
+			this.menuLicon.Index = 14;
+			this.menuLicon.Text = "L&ICON/Shiplist Editor";
+			this.menuLicon.Click += new System.EventHandler(this.menuLicon_Click);
+			// 
 			// XwaForm
 			// 
 			this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
@@ -9341,5 +9349,6 @@ namespace Idmr.Yogeme
 		private Label lblOMCDelay;
 		private Label lblPMCDelay;
 		private Label lblOVar3Note;
+		private MenuItem menuLicon;
 	}
 }

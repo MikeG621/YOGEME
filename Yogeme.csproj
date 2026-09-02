@@ -357,6 +357,12 @@
     <Compile Include="XwaHookDialog.Designer.cs">
       <DependentUpon>XwaHookDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="XwaLiconForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="XwaLiconForm.Designer.cs">
+      <DependentUpon>XwaLiconForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="XwaWavForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -477,6 +483,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="XwaHookDialog.resx">
       <DependentUpon>XwaHookDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="XwaLiconForm.resx">
+      <DependentUpon>XwaLiconForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="XwaWavForm.resx">
       <DependentUpon>XwaWavForm.cs</DependentUpon>
