@@ -3,9 +3,10 @@
  * Copyright (C) 2007-2026 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.18.2
+ * VERSION: 1.18.2+
  *
  * CHANGELOG
+ * [UPD #148] Active Sequence now displays in Goal Summary
  * v1.18.2, 260821
  * [FIX #146] moveMessage wasn't calling SwapMessage()
  * [FIX #147] IFF drop-down not refreshing on load
@@ -2579,6 +2580,7 @@ namespace Idmr.Yogeme
 					string c = Strings.CraftAbbrv[fg.CraftType] + " " + fg.Name;
 					string n = goal.ToString().Replace("Flight Group", c);
 					int category = (goal.Argument <= 1) ? 0 : 2;  //0 = primary, 1 = prevent, 2 = bonus
+					if (goal.ActiveSequence != 0) n = $"#{goal.ActiveSequence}: {n}";
 					for (int t = 0; t < 10; t++) if (goal.GetEnabledForTeam(t)) goalList[t * 6 + category].Add(n);
 					if (goal.GetEnabledForTeam(0)) points += goal.Points;
 				}
@@ -2625,6 +2627,7 @@ namespace Idmr.Yogeme
 					}
 					if (i == 0) points += goal.Points;
 					global += $"\r\n({goal.Points} goal points)";
+					if (goal.ActiveSequence != 0) global = $"#{goal.ActiveSequence}: {global}";
 					goalList[i * 6 + 3 + j].Add(global);
 				}
 			}
