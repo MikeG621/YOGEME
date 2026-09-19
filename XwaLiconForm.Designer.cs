@@ -51,6 +51,7 @@
 			this.label5 = new System.Windows.Forms.Label();
 			this.lblCoords = new System.Windows.Forms.Label();
 			this.opnFile = new System.Windows.Forms.OpenFileDialog();
+			this.hsbIcons = new System.Windows.Forms.HScrollBar();
 			((System.ComponentModel.ISupportInitialize)(this.pctLicon)).BeginInit();
 			this.SuspendLayout();
 			// 
@@ -59,7 +60,7 @@
 			this.pctLicon.BackColor = System.Drawing.Color.Black;
 			this.pctLicon.Location = new System.Drawing.Point(12, 70);
 			this.pctLicon.Name = "pctLicon";
-			this.pctLicon.Size = new System.Drawing.Size(645, 318);
+			this.pctLicon.Size = new System.Drawing.Size(648, 298);
 			this.pctLicon.TabIndex = 0;
 			this.pctLicon.TabStop = false;
 			this.pctLicon.Paint += new System.Windows.Forms.PaintEventHandler(this.pctLicon_Paint);
@@ -74,7 +75,7 @@
 			this.btnOpenLicon.Location = new System.Drawing.Point(12, 12);
 			this.btnOpenLicon.Name = "btnOpenLicon";
 			this.btnOpenLicon.Size = new System.Drawing.Size(24, 23);
-			this.btnOpenLicon.TabIndex = 1;
+			this.btnOpenLicon.TabIndex = 7;
 			this.btnOpenLicon.Text = "...";
 			this.btnOpenLicon.UseVisualStyleBackColor = true;
 			this.btnOpenLicon.Click += new System.EventHandler(this.btnOpenLicon_Click);
@@ -84,7 +85,7 @@
 			this.btnOpenShiplist.Location = new System.Drawing.Point(12, 41);
 			this.btnOpenShiplist.Name = "btnOpenShiplist";
 			this.btnOpenShiplist.Size = new System.Drawing.Size(24, 23);
-			this.btnOpenShiplist.TabIndex = 1;
+			this.btnOpenShiplist.TabIndex = 8;
 			this.btnOpenShiplist.Text = "...";
 			this.btnOpenShiplist.UseVisualStyleBackColor = true;
 			this.btnOpenShiplist.Click += new System.EventHandler(this.btnOpenShiplist_Click);
@@ -127,10 +128,10 @@
 			// 
 			// vsbIcons
 			// 
-			this.vsbIcons.Location = new System.Drawing.Point(660, 70);
+			this.vsbIcons.Location = new System.Drawing.Point(663, 70);
 			this.vsbIcons.Name = "vsbIcons";
-			this.vsbIcons.Size = new System.Drawing.Size(20, 318);
-			this.vsbIcons.TabIndex = 4;
+			this.vsbIcons.Size = new System.Drawing.Size(17, 300);
+			this.vsbIcons.TabIndex = 1;
 			// 
 			// lstSpecies
 			// 
@@ -139,7 +140,8 @@
 			this.lstSpecies.Name = "lstSpecies";
 			this.lstSpecies.ScrollAlwaysVisible = true;
 			this.lstSpecies.Size = new System.Drawing.Size(668, 134);
-			this.lstSpecies.TabIndex = 5;
+			this.lstSpecies.TabIndex = 1;
+			this.lstSpecies.SelectedIndexChanged += new System.EventHandler(this.lstSpecies_SelectedIndexChanged);
 			// 
 			// label3
 			// 
@@ -155,7 +157,7 @@
 			this.btnZoomIn.Location = new System.Drawing.Point(55, 394);
 			this.btnZoomIn.Name = "btnZoomIn";
 			this.btnZoomIn.Size = new System.Drawing.Size(24, 23);
-			this.btnZoomIn.TabIndex = 1;
+			this.btnZoomIn.TabIndex = 2;
 			this.btnZoomIn.Text = "+";
 			this.btnZoomIn.UseVisualStyleBackColor = true;
 			this.btnZoomIn.Click += new System.EventHandler(this.btnZoomIn_Click);
@@ -166,7 +168,7 @@
 			this.btnZoomOut.Location = new System.Drawing.Point(85, 394);
 			this.btnZoomOut.Name = "btnZoomOut";
 			this.btnZoomOut.Size = new System.Drawing.Size(24, 23);
-			this.btnZoomOut.TabIndex = 1;
+			this.btnZoomOut.TabIndex = 3;
 			this.btnZoomOut.Text = "-";
 			this.btnZoomOut.UseVisualStyleBackColor = true;
 			this.btnZoomOut.Click += new System.EventHandler(this.btnZoomOut_Click);
@@ -187,7 +189,8 @@
 			this.optMove.Location = new System.Drawing.Point(209, 397);
 			this.optMove.Name = "optMove";
 			this.optMove.Size = new System.Drawing.Size(52, 17);
-			this.optMove.TabIndex = 8;
+			this.optMove.TabIndex = 4;
+			this.optMove.TabStop = true;
 			this.optMove.Text = "Move";
 			this.optMove.UseVisualStyleBackColor = true;
 			// 
@@ -197,7 +200,7 @@
 			this.optModify.Location = new System.Drawing.Point(267, 397);
 			this.optModify.Name = "optModify";
 			this.optModify.Size = new System.Drawing.Size(56, 17);
-			this.optModify.TabIndex = 8;
+			this.optModify.TabIndex = 5;
 			this.optModify.Text = "Modify";
 			this.optModify.UseVisualStyleBackColor = true;
 			// 
@@ -206,7 +209,7 @@
 			this.btnReset.Location = new System.Drawing.Point(605, 394);
 			this.btnReset.Name = "btnReset";
 			this.btnReset.Size = new System.Drawing.Size(75, 23);
-			this.btnReset.TabIndex = 9;
+			this.btnReset.TabIndex = 6;
 			this.btnReset.Text = "&Reset Craft";
 			this.btnReset.UseVisualStyleBackColor = true;
 			this.btnReset.Click += new System.EventHandler(this.btnReset_Click);
@@ -226,7 +229,7 @@
 			this.btnCancel.Location = new System.Drawing.Point(605, 565);
 			this.btnCancel.Name = "btnCancel";
 			this.btnCancel.Size = new System.Drawing.Size(75, 23);
-			this.btnCancel.TabIndex = 10;
+			this.btnCancel.TabIndex = 11;
 			this.btnCancel.Text = "&Cancel";
 			this.btnCancel.UseVisualStyleBackColor = true;
 			this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
@@ -236,7 +239,7 @@
 			this.btnApply.Location = new System.Drawing.Point(443, 565);
 			this.btnApply.Name = "btnApply";
 			this.btnApply.Size = new System.Drawing.Size(75, 23);
-			this.btnApply.TabIndex = 10;
+			this.btnApply.TabIndex = 9;
 			this.btnApply.Text = "&Apply";
 			this.btnApply.UseVisualStyleBackColor = true;
 			this.btnApply.Click += new System.EventHandler(this.btnApply_Click);
@@ -244,7 +247,7 @@
 			// label5
 			// 
 			this.label5.AutoSize = true;
-			this.label5.Location = new System.Drawing.Point(440, 401);
+			this.label5.Location = new System.Drawing.Point(395, 399);
 			this.label5.Name = "label5";
 			this.label5.Size = new System.Drawing.Size(43, 13);
 			this.label5.TabIndex = 11;
@@ -253,17 +256,25 @@
 			// lblCoords
 			// 
 			this.lblCoords.AutoSize = true;
-			this.lblCoords.Location = new System.Drawing.Point(489, 401);
+			this.lblCoords.Location = new System.Drawing.Point(444, 399);
 			this.lblCoords.Name = "lblCoords";
-			this.lblCoords.Size = new System.Drawing.Size(88, 13);
+			this.lblCoords.Size = new System.Drawing.Size(128, 13);
 			this.lblCoords.TabIndex = 12;
-			this.lblCoords.Text = "000 000 000 000";
+			this.lblCoords.Text = "L:000 T:000 R:000 B:000";
+			// 
+			// hsbIcons
+			// 
+			this.hsbIcons.Location = new System.Drawing.Point(12, 371);
+			this.hsbIcons.Name = "hsbIcons";
+			this.hsbIcons.Size = new System.Drawing.Size(645, 17);
+			this.hsbIcons.TabIndex = 13;
 			// 
 			// XwaLiconForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(688, 591);
+			this.Controls.Add(this.hsbIcons);
 			this.Controls.Add(this.lblCoords);
 			this.Controls.Add(this.label5);
 			this.Controls.Add(this.btnCancel);
@@ -319,5 +330,6 @@
 		private System.Windows.Forms.Label label5;
 		private System.Windows.Forms.Label lblCoords;
 		private System.Windows.Forms.OpenFileDialog opnFile;
+		private System.Windows.Forms.HScrollBar hsbIcons;
 	}
 }

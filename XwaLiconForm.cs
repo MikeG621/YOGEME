@@ -22,9 +22,12 @@ namespace Idmr.Yogeme
 	public partial class XwaLiconForm : Form
 	{
 		Bitmap _licon;
-		List<CraftIconImage> _icons = new List<CraftIconImage>();
-		int _x, _y, _zoom;
+		Bitmap _canvas;
+		readonly List<CraftIconImage> _icons = new List<CraftIconImage>();
+		int _zoom;
+		float _x, _y;
 		bool _mouseDown;
+		Point _mousePosition;
 
 		public XwaLiconForm()
 		{
@@ -47,17 +50,18 @@ namespace Idmr.Yogeme
 		bool loadBitmap(string bitmapFile)
 		{
 			if (!File.Exists(bitmapFile)) return false;
+
 			try
 			{
 				_licon = (Bitmap)Image.FromFile(bitmapFile);
 				lblLicon.Text = bitmapFile;
 			}
 			catch { return false; }
-			pctLicon.BackgroundImage = _licon;
-			// TODO: replace ^ with paint
 			_x = 0;
 			_y = 0;
 			_zoom = 1;
+			_canvas = new Bitmap(_licon);
+			updatePct();
 			return true;
 		}
 
@@ -118,6 +122,13 @@ namespace Idmr.Yogeme
 			return true;
 		}
 
+		void updatePct()
+		{
+			// TODO: adjust and draw
+			var g = Graphics.FromImage(_canvas);
+			pctLicon.Invalidate();
+		}
+
 		private void btnApply_Click(object sender, EventArgs e)
 		{
 			//TODO: save
@@ -138,7 +149,7 @@ namespace Idmr.Yogeme
 
 			loadBitmap(opnFile.FileName);
 			lstSpecies.SelectedItem = null;
-			// TODO: redraw
+			updatePct();
 		}
 		private void btnOpenShiplist_Click(object sender, EventArgs e)
 		{
@@ -150,7 +161,7 @@ namespace Idmr.Yogeme
 
 			loadShiplist(opnFile.FileName);
 			lstSpecies.SelectedItem = null;
-			// TODO: redraw
+			updatePct();
 		}
 		private void btnReset_Click(object sender, EventArgs e)
 		{
@@ -158,23 +169,45 @@ namespace Idmr.Yogeme
 
 			var icon = _icons[lstSpecies.SelectedIndex];
 			icon.Rect = icon.OriginalRect;
-			// TODO: redraw
+			updatePct();
 		}
 		private void btnZoomIn_Click(object sender, EventArgs e)
 		{
 			_zoom *= 2;
 			btnZoomOut.Enabled = true;
 			if (_zoom == 4) btnZoomIn.Enabled = false;
+			updatePct();
 		}
 		private void btnZoomOut_Click(object sender, EventArgs e)
 		{
 			_zoom /= 2;
 			btnZoomIn.Enabled = true;
 			if (_zoom == 1) btnZoomOut.Enabled = false;
+			if (_x < (pctLicon.Width - _licon.Width * _zoom) * 4 / _zoom) _x = (pctLicon.Width - _licon.Width * _zoom) * 4 / _zoom;
+			if (_y < (pctLicon.Height - _licon.Height * _zoom) * 4 / _zoom) _y = (pctLicon.Height - _licon.Height * _zoom) * 4 / _zoom;
+			updatePct();
 		}
 
-		private void pctLicon_MouseDown(object sender, MouseEventArgs e) => _mouseDown = true;
-		private void pctLicon_MouseEnter(object sender, EventArgs e) { if (optMove.Checked) Cursor = Cursors.Hand; }
+		private void lstSpecies_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			if (lstSpecies.SelectedIndex == -1)
+			{
+				lblCoords.Text = "L:000 T:000 R:000 B:000";
+				return;
+			}
+
+			var icon = _icons[lstSpecies.SelectedIndex];
+			lblCoords.Text = $"L:{icon.Rect.Left} T:{icon.Rect.Top} R:{icon.Rect.Right} B:{icon.Rect.Bottom}";
+			updatePct();
+		}
+
+		private void pctLicon_MouseDown(object sender, MouseEventArgs e)
+		{
+			_mouseDown = true;
+			_mousePosition = e.Location;
+		}
+
+		private void pctLicon_MouseEnter(object sender, EventArgs e) { if (optMove.Checked) Cursor = Cursors.SizeAll; }
 		private void pctLicon_MouseLeave(object sender, EventArgs e)
 		{
 			Cursor = Cursors.Default;
@@ -188,20 +221,32 @@ namespace Idmr.Yogeme
 		{
 			if (optModify.Checked)
 			{
-				// TODO: update cursor with arrows
+				// TODO: update cursor with arrows, drag outline
+				return;
 			}
-			// TODO: move
+
+			if (!_mouseDown) return;
+
+			_x += (e.X - _mousePosition.X) * 4 / _zoom;
+			if (_x < (pctLicon.Width - _licon.Width * _zoom) * 4 / _zoom) _x = (pctLicon.Width - _licon.Width * _zoom) * 4 / _zoom;
+			if (_x > 0) _x = 0;
+			_y += (e.Y - _mousePosition.Y) * 4 / _zoom;
+			if (_y < (pctLicon.Height - _licon.Height * _zoom) * 4 / _zoom) _y = (pctLicon.Height - _licon.Height * _zoom) * 4 / _zoom;
+			if (_y > 0) _y = 0;
+			_mousePosition = e.Location;
+			updatePct();
 		}
-
-		private void pctLicon_Paint(object sender, PaintEventArgs e)
-		{
-
-		}
-
 		private void pctLicon_MouseUp(object sender, MouseEventArgs e)
 		{
 			_mouseDown = false;
+			updatePct();
 			// TODO: drop
+		}
+		private void pctLicon_Paint(object sender, PaintEventArgs e)
+		{
+			e.Graphics.InterpolationMode = InterpolationMode.NearestNeighbor;
+			e.Graphics.ScaleTransform(_zoom, _zoom);
+			e.Graphics.DrawImage(_canvas, _x / 4, _y / 4);
 		}
 
 		// Modified version of the BriefingForm2 class
