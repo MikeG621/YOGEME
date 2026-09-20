@@ -93,15 +93,23 @@ namespace Idmr.Yogeme
 						if (tokens.Length >= 12)
 						{
 							icon.Hidden = (tokens[0].StartsWith("*") || string.Compare(tokens[1], "Planet/asteroid", StringComparison.OrdinalIgnoreCase) == 0);
+							icon.Name = tokens[0];
 
+							// Large icon coords. Small icon coords are tokens[5-8], but get replaced by "[9-12] / 2" per xemb
 							int.TryParse(tokens[9].Trim(), out int x1);
 							int.TryParse(tokens[10].Trim(), out int y1);
 							int.TryParse(tokens[11].Trim(), out int x2);
 							int.TryParse(tokens[12].Trim(), out int y2);
-							int width = x2 - x1;
-							int height = y2 - y1;
+							int width = x2 - x1 + 1;
+							int height = y2 - y1 + 1;
 							icon.OriginalRect = new Rectangle(x1, y1, width, height);
-							if (width == 0 || height == 0) continue;
+							if (width == 0 || height == 0)
+							{
+								icon.Rect = icon.OriginalRect;
+								icon.Icon = null;
+								_icons.Add(icon);
+								continue;
+							}
 
 							Rectangle destRect = new Rectangle(0, 0, width, height);
 							Bitmap temp = new Bitmap(width, height, PixelFormat.Format24bppRgb);
@@ -126,6 +134,23 @@ namespace Idmr.Yogeme
 		{
 			// TODO: adjust and draw
 			var g = Graphics.FromImage(_canvas);
+			if (lstSpecies.SelectedIndex != -1 && !_icons[lstSpecies.SelectedIndex].Hidden)
+			{
+				var icon = _icons[lstSpecies.SelectedIndex];
+				pctIcon.BackgroundImage = icon.Icon;
+				Pen outline = new Pen(Color.Yellow);
+				int len = 4;
+				g.DrawLine(outline, icon.Rect.Left - 1, icon.Rect.Top - 1, icon.Rect.Left - 1 + len, icon.Rect.Top - 1);
+				g.DrawLine(outline, icon.Rect.Right, icon.Rect.Top - 1, icon.Rect.Right - len, icon.Rect.Top - 1);
+				g.DrawLine(outline, icon.Rect.Left - 1, icon.Rect.Bottom, icon.Rect.Left - 1 + len, icon.Rect.Bottom);
+				g.DrawLine(outline, icon.Rect.Right, icon.Rect.Bottom, icon.Rect.Right - len, icon.Rect.Bottom);
+				g.DrawLine(outline, icon.Rect.Left - 1, icon.Rect.Top - 1, icon.Rect.Left - 1, icon.Rect.Top - 1 + len);
+				g.DrawLine(outline, icon.Rect.Right, icon.Rect.Top - 1, icon.Rect.Right, icon.Rect.Top - 1 + len);
+				g.DrawLine(outline, icon.Rect.Left - 1, icon.Rect.Bottom, icon.Rect.Left - 1, icon.Rect.Bottom - len);
+				g.DrawLine(outline, icon.Rect.Right, icon.Rect.Bottom, icon.Rect.Right, icon.Rect.Bottom - len);
+				// DaTech MapIcon displays L, T, B-1, R-1. This causes overlap. Sticking to L-1, T-1, B, R puts the bracket on the outside
+			}
+			else pctIcon.BackgroundImage = null;
 			pctLicon.Invalidate();
 		}
 
@@ -176,6 +201,7 @@ namespace Idmr.Yogeme
 			_zoom *= 2;
 			btnZoomOut.Enabled = true;
 			if (_zoom == 4) btnZoomIn.Enabled = false;
+			// TODO: pan to keep selected craft in view
 			updatePct();
 		}
 		private void btnZoomOut_Click(object sender, EventArgs e)
@@ -198,6 +224,8 @@ namespace Idmr.Yogeme
 
 			var icon = _icons[lstSpecies.SelectedIndex];
 			lblCoords.Text = $"L:{icon.Rect.Left} T:{icon.Rect.Top} R:{icon.Rect.Right} B:{icon.Rect.Bottom}";
+			// TODO: scroll to view
+			_canvas = new Bitmap(_licon);
 			updatePct();
 		}
 
@@ -234,6 +262,7 @@ namespace Idmr.Yogeme
 			if (_y < (pctLicon.Height - _licon.Height * _zoom) * 4 / _zoom) _y = (pctLicon.Height - _licon.Height * _zoom) * 4 / _zoom;
 			if (_y > 0) _y = 0;
 			_mousePosition = e.Location;
+			// TODO: update SBs
 			updatePct();
 		}
 		private void pctLicon_MouseUp(object sender, MouseEventArgs e)
@@ -255,6 +284,7 @@ namespace Idmr.Yogeme
 			public Rectangle OriginalRect;   // Position and dimensions from the original bitmap image it was sourced from
 			public Rectangle Rect;           // Current position and dimensions
 			public Bitmap Icon;              // The cropped source icon
+			public string Name;
 
 			public int Width;
 			public int Height;

@@ -52,7 +52,9 @@
 			this.lblCoords = new System.Windows.Forms.Label();
 			this.opnFile = new System.Windows.Forms.OpenFileDialog();
 			this.hsbIcons = new System.Windows.Forms.HScrollBar();
+			this.pctIcon = new System.Windows.Forms.PictureBox();
 			((System.ComponentModel.ISupportInitialize)(this.pctLicon)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.pctIcon)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// pctLicon
@@ -136,7 +138,7 @@
 			// lstSpecies
 			// 
 			this.lstSpecies.FormattingEnabled = true;
-			this.lstSpecies.Location = new System.Drawing.Point(12, 425);
+			this.lstSpecies.Location = new System.Drawing.Point(12, 391);
 			this.lstSpecies.Name = "lstSpecies";
 			this.lstSpecies.ScrollAlwaysVisible = true;
 			this.lstSpecies.Size = new System.Drawing.Size(668, 134);
@@ -146,7 +148,7 @@
 			// label3
 			// 
 			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(12, 399);
+			this.label3.Location = new System.Drawing.Point(683, 265);
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(37, 13);
 			this.label3.TabIndex = 6;
@@ -154,7 +156,7 @@
 			// 
 			// btnZoomIn
 			// 
-			this.btnZoomIn.Location = new System.Drawing.Point(55, 394);
+			this.btnZoomIn.Location = new System.Drawing.Point(732, 260);
 			this.btnZoomIn.Name = "btnZoomIn";
 			this.btnZoomIn.Size = new System.Drawing.Size(24, 23);
 			this.btnZoomIn.TabIndex = 2;
@@ -165,7 +167,7 @@
 			// btnZoomOut
 			// 
 			this.btnZoomOut.Enabled = false;
-			this.btnZoomOut.Location = new System.Drawing.Point(85, 394);
+			this.btnZoomOut.Location = new System.Drawing.Point(762, 260);
 			this.btnZoomOut.Name = "btnZoomOut";
 			this.btnZoomOut.Size = new System.Drawing.Size(24, 23);
 			this.btnZoomOut.TabIndex = 3;
@@ -176,7 +178,7 @@
 			// label4
 			// 
 			this.label4.AutoSize = true;
-			this.label4.Location = new System.Drawing.Point(166, 399);
+			this.label4.Location = new System.Drawing.Point(683, 307);
 			this.label4.Name = "label4";
 			this.label4.Size = new System.Drawing.Size(37, 13);
 			this.label4.TabIndex = 7;
@@ -186,7 +188,7 @@
 			// 
 			this.optMove.AutoSize = true;
 			this.optMove.Checked = true;
-			this.optMove.Location = new System.Drawing.Point(209, 397);
+			this.optMove.Location = new System.Drawing.Point(683, 323);
 			this.optMove.Name = "optMove";
 			this.optMove.Size = new System.Drawing.Size(52, 17);
 			this.optMove.TabIndex = 4;
@@ -197,7 +199,7 @@
 			// optModify
 			// 
 			this.optModify.AutoSize = true;
-			this.optModify.Location = new System.Drawing.Point(267, 397);
+			this.optModify.Location = new System.Drawing.Point(741, 323);
 			this.optModify.Name = "optModify";
 			this.optModify.Size = new System.Drawing.Size(56, 17);
 			this.optModify.TabIndex = 5;
@@ -206,7 +208,7 @@
 			// 
 			// btnReset
 			// 
-			this.btnReset.Location = new System.Drawing.Point(605, 394);
+			this.btnReset.Location = new System.Drawing.Point(708, 212);
 			this.btnReset.Name = "btnReset";
 			this.btnReset.Size = new System.Drawing.Size(75, 23);
 			this.btnReset.TabIndex = 6;
@@ -216,7 +218,7 @@
 			// 
 			// btnOK
 			// 
-			this.btnOK.Location = new System.Drawing.Point(524, 565);
+			this.btnOK.Location = new System.Drawing.Point(708, 473);
 			this.btnOK.Name = "btnOK";
 			this.btnOK.Size = new System.Drawing.Size(75, 23);
 			this.btnOK.TabIndex = 10;
@@ -226,7 +228,7 @@
 			// 
 			// btnCancel
 			// 
-			this.btnCancel.Location = new System.Drawing.Point(605, 565);
+			this.btnCancel.Location = new System.Drawing.Point(708, 502);
 			this.btnCancel.Name = "btnCancel";
 			this.btnCancel.Size = new System.Drawing.Size(75, 23);
 			this.btnCancel.TabIndex = 11;
@@ -236,7 +238,7 @@
 			// 
 			// btnApply
 			// 
-			this.btnApply.Location = new System.Drawing.Point(443, 565);
+			this.btnApply.Location = new System.Drawing.Point(708, 444);
 			this.btnApply.Name = "btnApply";
 			this.btnApply.Size = new System.Drawing.Size(75, 23);
 			this.btnApply.TabIndex = 9;
@@ -247,7 +249,7 @@
 			// label5
 			// 
 			this.label5.AutoSize = true;
-			this.label5.Location = new System.Drawing.Point(395, 399);
+			this.label5.Location = new System.Drawing.Point(683, 179);
 			this.label5.Name = "label5";
 			this.label5.Size = new System.Drawing.Size(43, 13);
 			this.label5.TabIndex = 11;
@@ -256,7 +258,7 @@
 			// lblCoords
 			// 
 			this.lblCoords.AutoSize = true;
-			this.lblCoords.Location = new System.Drawing.Point(444, 399);
+			this.lblCoords.Location = new System.Drawing.Point(683, 192);
 			this.lblCoords.Name = "lblCoords";
 			this.lblCoords.Size = new System.Drawing.Size(128, 13);
 			this.lblCoords.TabIndex = 12;
@@ -269,11 +271,21 @@
 			this.hsbIcons.Size = new System.Drawing.Size(645, 17);
 			this.hsbIcons.TabIndex = 13;
 			// 
+			// pctIcon
+			// 
+			this.pctIcon.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+			this.pctIcon.Location = new System.Drawing.Point(708, 70);
+			this.pctIcon.Name = "pctIcon";
+			this.pctIcon.Size = new System.Drawing.Size(88, 89);
+			this.pctIcon.TabIndex = 14;
+			this.pctIcon.TabStop = false;
+			// 
 			// XwaLiconForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(688, 591);
+			this.ClientSize = new System.Drawing.Size(813, 533);
+			this.Controls.Add(this.pctIcon);
 			this.Controls.Add(this.hsbIcons);
 			this.Controls.Add(this.lblCoords);
 			this.Controls.Add(this.label5);
@@ -301,6 +313,7 @@
 			this.Name = "XwaLiconForm";
 			this.Text = "XWA LICON/SHIPLIST Editor";
 			((System.ComponentModel.ISupportInitialize)(this.pctLicon)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.pctIcon)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -331,5 +344,6 @@
 		private System.Windows.Forms.Label lblCoords;
 		private System.Windows.Forms.OpenFileDialog opnFile;
 		private System.Windows.Forms.HScrollBar hsbIcons;
+		private System.Windows.Forms.PictureBox pctIcon;
 	}
 }
