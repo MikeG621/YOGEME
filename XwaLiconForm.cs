@@ -234,17 +234,8 @@ namespace Idmr.Yogeme
 			_mouseDown = true;
 			_mousePosition = e.Location;
 		}
-
 		private void pctLicon_MouseEnter(object sender, EventArgs e) { if (optMove.Checked) Cursor = Cursors.SizeAll; }
-		private void pctLicon_MouseLeave(object sender, EventArgs e)
-		{
-			Cursor = Cursors.Default;
-			if (_mouseDown)
-			{
-				_mouseDown = false;
-				// TODO: drop where it is.
-			}
-		}
+		private void pctLicon_MouseLeave(object sender, EventArgs e) => Cursor = Cursors.Default;
 		private void pctLicon_MouseMove(object sender, MouseEventArgs e)
 		{
 			if (optModify.Checked)
@@ -264,12 +255,16 @@ namespace Idmr.Yogeme
 			_mousePosition = e.Location;
 			// TODO: update SBs
 			updatePct();
+			if (!pctLicon.Bounds.Contains(e.Location))
+			{
+				_mouseDown = false;
+				Cursor = Cursors.Default;
+			}
 		}
 		private void pctLicon_MouseUp(object sender, MouseEventArgs e)
 		{
 			_mouseDown = false;
 			updatePct();
-			// TODO: drop
 		}
 		private void pctLicon_Paint(object sender, PaintEventArgs e)
 		{
