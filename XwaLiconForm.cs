@@ -39,10 +39,11 @@ namespace Idmr.Yogeme
 			loadBitmap(bitmapFile);
 			loadShiplist(shiplistfile);
 			_ignoreSBs = true;
+			// reminder: hsb has RTL so working with negatives is fine. vsb doesn't have an inverse, so run positive and flip the sign
 			hsbIcons.Minimum = (pctLicon.Width - _licon.Width * _zoom) * 4 / _zoom;
-			vsbIcons.Minimum = (pctLicon.Height - _licon.Height * _zoom) * 4 / _zoom;
-			hsbIcons.Value = hsbIcons.Minimum;
-			vsbIcons.Value = vsbIcons.Minimum;
+			vsbIcons.Maximum = (_licon.Height * _zoom - pctLicon.Height) * 4 / _zoom;
+			hsbIcons.Value = 0;
+			vsbIcons.Value = 0;
 			_ignoreSBs = false;
 		}
 
@@ -142,7 +143,7 @@ namespace Idmr.Yogeme
 			var g = Graphics.FromImage(_canvas);
 			if (lstSpecies.SelectedIndex != -1 && !_icons[lstSpecies.SelectedIndex].Hidden)
 			{
-				var icon = _icons[lstSpecies.SelectedIndex];
+				var icon = _curIcon;
 				pctIcon.BackgroundImage = icon.Icon;
 				Pen outline = new Pen(Color.Yellow);
 				int len = 4;
@@ -210,9 +211,9 @@ namespace Idmr.Yogeme
 			if (_zoom == 4) btnZoomIn.Enabled = false;
 			_ignoreSBs = true;
 			hsbIcons.Minimum = (pctLicon.Width - _licon.Width * _zoom) * 4 / _zoom;
-			vsbIcons.Minimum = (pctLicon.Height - _licon.Height * _zoom) * 4 / _zoom;
-			hsbIcons.Value = hsbIcons.Minimum - (int)_x;
-			vsbIcons.Value = vsbIcons.Minimum - (int)_y;
+			vsbIcons.Maximum = (_licon.Height * _zoom - pctLicon.Height) * 4 / _zoom;
+			hsbIcons.Value = (int)_x;
+			vsbIcons.Value = -(int)_y;
 			_ignoreSBs = false;
 			// TODO: pan to keep selected craft in view
 			updatePct();
@@ -224,11 +225,11 @@ namespace Idmr.Yogeme
 			if (_zoom == 1) btnZoomOut.Enabled = false;
 			_ignoreSBs = true;
 			hsbIcons.Minimum = (pctLicon.Width - _licon.Width * _zoom) * 4 / _zoom;
-			vsbIcons.Minimum = (pctLicon.Height - _licon.Height * _zoom) * 4 / _zoom;
+			vsbIcons.Maximum = (_licon.Height * _zoom - pctLicon.Height) * 4 / _zoom;
 			if (_x < hsbIcons.Minimum) _x = hsbIcons.Minimum;
-			if (_y < vsbIcons.Minimum) _y = vsbIcons.Minimum;
-			hsbIcons.Value = hsbIcons.Minimum - (int)_x;
-			vsbIcons.Value = vsbIcons.Minimum - (int)_y;
+			if (_y < -vsbIcons.Maximum) _y = -vsbIcons.Maximum;
+			hsbIcons.Value = (int)_x;
+			vsbIcons.Value = -(int)_y;
 			_ignoreSBs = false;
 			updatePct();
 		}
@@ -237,7 +238,7 @@ namespace Idmr.Yogeme
 		{
 			if (_ignoreSBs) return;
 
-			_x = hsbIcons.Minimum - hsbIcons.Value;
+			_x = hsbIcons.Value;
 			updatePct();
 		}
 
@@ -248,9 +249,16 @@ namespace Idmr.Yogeme
 				lblCoords.Text = "L:000 T:000 R:000 B:000";
 				return;
 			}
-
-			lblCoords.Text = $"L:{_curIcon.Rect.Left} T:{_curIcon.Rect.Top} R:{_curIcon.Rect.Right} B:{_curIcon.Rect.Bottom}";
-			// TODO: scroll to view
+			var icon = _curIcon;
+			lblCoords.Text = $"L:{icon.Rect.Left} T:{icon.Rect.Top} R:{icon.Rect.Right} B:{icon.Rect.Bottom}";
+			if (_x < -icon.Rect.Left * 4)
+				hsbIcons.Value = ((icon.Rect.Left == 0 ? 0 : 1) - icon.Rect.Left) * 4;
+			else if (_x > (pctLicon.Width - icon.Rect.Right * _zoom) * 4 / _zoom)
+				hsbIcons.Value = (pctLicon.Width - icon.Rect.Right * _zoom - (icon.Rect.Right == _licon.Width ? 0 : 1)) * 4 / _zoom;
+			if (_y < -icon.Rect.Top * 4)
+				vsbIcons.Value = (icon.Rect.Top - (icon.Rect.Top == 0 ? 0 : 1)) * 4;
+			else if (_y > (pctLicon.Height - icon.Rect.Bottom * _zoom) * 4 / _zoom)
+				vsbIcons.Value = (icon.Rect.Bottom * _zoom - pctLicon.Height + (icon.Rect.Bottom == _licon.Height ? 0 : 1)) * 4 / _zoom;
 			_canvas = new Bitmap(_licon);
 			updatePct();
 		}
@@ -276,12 +284,12 @@ namespace Idmr.Yogeme
 			if (_x < hsbIcons.Minimum) _x = hsbIcons.Minimum;
 			if (_x > 0) _x = 0;
 			_y += (e.Y - _mousePosition.Y) * 4 / _zoom;
-			if (_y < vsbIcons.Minimum) _y = vsbIcons.Minimum;
+			if (_y < -vsbIcons.Maximum) _y = -vsbIcons.Maximum;
 			if (_y > 0) _y = 0;
 			_mousePosition = e.Location;
 			_ignoreSBs = true;
-			hsbIcons.Value = hsbIcons.Minimum - (int)_x;
-			vsbIcons.Value = vsbIcons.Minimum - (int)_y;
+			hsbIcons.Value = (int)_x;
+			vsbIcons.Value =  -(int)_y;
 			_ignoreSBs = false;
 			updatePct();
 			if (!pctLicon.Bounds.Contains(e.Location))
@@ -306,7 +314,7 @@ namespace Idmr.Yogeme
 		{
 			if (_ignoreSBs) return;
 
-			_y = vsbIcons.Minimum - vsbIcons.Value;
+			_y = -vsbIcons.Value;
 			updatePct();
 		}
 
