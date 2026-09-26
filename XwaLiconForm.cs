@@ -26,7 +26,7 @@ namespace Idmr.Yogeme
 		readonly List<CraftIconImage> _icons = new List<CraftIconImage>();
 		int _zoom;
 		float _x, _y;
-		bool _mouseDown;
+		bool _mouseDown, _ignoreSBs;
 		Point _mousePosition;
 
 		public XwaLiconForm()
@@ -38,6 +38,12 @@ namespace Idmr.Yogeme
 			string shiplistfile = Path.Combine(installPath, "SHIPLIST.TXT");
 			loadBitmap(bitmapFile);
 			loadShiplist(shiplistfile);
+			_ignoreSBs = true;
+			hsbIcons.Minimum = (pctLicon.Width - _licon.Width * _zoom) * 4 / _zoom;
+			vsbIcons.Minimum = (pctLicon.Height - _licon.Height * _zoom) * 4 / _zoom;
+			hsbIcons.Value = hsbIcons.Minimum;
+			vsbIcons.Value = vsbIcons.Minimum;
+			_ignoreSBs = false;
 		}
 
 		string getInstallPath()
@@ -100,7 +106,7 @@ namespace Idmr.Yogeme
 							int.TryParse(tokens[10].Trim(), out int y1);
 							int.TryParse(tokens[11].Trim(), out int x2);
 							int.TryParse(tokens[12].Trim(), out int y2);
-							int width = x2 - x1 + 1;
+							int width = x2 - x1 + 1; // per xemb to include R px
 							int height = y2 - y1 + 1;
 							icon.OriginalRect = new Rectangle(x1, y1, width, height);
 							if (width == 0 || height == 0)
@@ -148,11 +154,13 @@ namespace Idmr.Yogeme
 				g.DrawLine(outline, icon.Rect.Right, icon.Rect.Top - 1, icon.Rect.Right, icon.Rect.Top - 1 + len);
 				g.DrawLine(outline, icon.Rect.Left - 1, icon.Rect.Bottom, icon.Rect.Left - 1, icon.Rect.Bottom - len);
 				g.DrawLine(outline, icon.Rect.Right, icon.Rect.Bottom, icon.Rect.Right, icon.Rect.Bottom - len);
-				// DaTech MapIcon displays L, T, B-1, R-1. This causes overlap. Sticking to L-1, T-1, B, R puts the bracket on the outside
+				// DaTech MapIcon displays L, T, B-1, R-1. This causes overlap all around. Sticking to L-1, T-1, B, R puts the bracket on the outside
 			}
 			else pctIcon.BackgroundImage = null;
 			pctLicon.Invalidate();
 		}
+
+		CraftIconImage _curIcon => lstSpecies.SelectedIndex == -1 ? null : _icons[lstSpecies.SelectedIndex];
 
 		private void btnApply_Click(object sender, EventArgs e)
 		{
@@ -192,8 +200,7 @@ namespace Idmr.Yogeme
 		{
 			if (lstSpecies.SelectedIndex == -1) return;
 
-			var icon = _icons[lstSpecies.SelectedIndex];
-			icon.Rect = icon.OriginalRect;
+			_curIcon.Rect = _curIcon.OriginalRect;
 			updatePct();
 		}
 		private void btnZoomIn_Click(object sender, EventArgs e)
@@ -201,6 +208,12 @@ namespace Idmr.Yogeme
 			_zoom *= 2;
 			btnZoomOut.Enabled = true;
 			if (_zoom == 4) btnZoomIn.Enabled = false;
+			_ignoreSBs = true;
+			hsbIcons.Minimum = (pctLicon.Width - _licon.Width * _zoom) * 4 / _zoom;
+			vsbIcons.Minimum = (pctLicon.Height - _licon.Height * _zoom) * 4 / _zoom;
+			hsbIcons.Value = hsbIcons.Minimum - (int)_x;
+			vsbIcons.Value = vsbIcons.Minimum - (int)_y;
+			_ignoreSBs = false;
 			// TODO: pan to keep selected craft in view
 			updatePct();
 		}
@@ -209,8 +222,22 @@ namespace Idmr.Yogeme
 			_zoom /= 2;
 			btnZoomIn.Enabled = true;
 			if (_zoom == 1) btnZoomOut.Enabled = false;
-			if (_x < (pctLicon.Width - _licon.Width * _zoom) * 4 / _zoom) _x = (pctLicon.Width - _licon.Width * _zoom) * 4 / _zoom;
-			if (_y < (pctLicon.Height - _licon.Height * _zoom) * 4 / _zoom) _y = (pctLicon.Height - _licon.Height * _zoom) * 4 / _zoom;
+			_ignoreSBs = true;
+			hsbIcons.Minimum = (pctLicon.Width - _licon.Width * _zoom) * 4 / _zoom;
+			vsbIcons.Minimum = (pctLicon.Height - _licon.Height * _zoom) * 4 / _zoom;
+			if (_x < hsbIcons.Minimum) _x = hsbIcons.Minimum;
+			if (_y < vsbIcons.Minimum) _y = vsbIcons.Minimum;
+			hsbIcons.Value = hsbIcons.Minimum - (int)_x;
+			vsbIcons.Value = vsbIcons.Minimum - (int)_y;
+			_ignoreSBs = false;
+			updatePct();
+		}
+
+		private void hsbIcons_ValueChanged(object sender, EventArgs e)
+		{
+			if (_ignoreSBs) return;
+
+			_x = hsbIcons.Minimum - hsbIcons.Value;
 			updatePct();
 		}
 
@@ -222,8 +249,7 @@ namespace Idmr.Yogeme
 				return;
 			}
 
-			var icon = _icons[lstSpecies.SelectedIndex];
-			lblCoords.Text = $"L:{icon.Rect.Left} T:{icon.Rect.Top} R:{icon.Rect.Right} B:{icon.Rect.Bottom}";
+			lblCoords.Text = $"L:{_curIcon.Rect.Left} T:{_curIcon.Rect.Top} R:{_curIcon.Rect.Right} B:{_curIcon.Rect.Bottom}";
 			// TODO: scroll to view
 			_canvas = new Bitmap(_licon);
 			updatePct();
@@ -247,13 +273,16 @@ namespace Idmr.Yogeme
 			if (!_mouseDown) return;
 
 			_x += (e.X - _mousePosition.X) * 4 / _zoom;
-			if (_x < (pctLicon.Width - _licon.Width * _zoom) * 4 / _zoom) _x = (pctLicon.Width - _licon.Width * _zoom) * 4 / _zoom;
+			if (_x < hsbIcons.Minimum) _x = hsbIcons.Minimum;
 			if (_x > 0) _x = 0;
 			_y += (e.Y - _mousePosition.Y) * 4 / _zoom;
-			if (_y < (pctLicon.Height - _licon.Height * _zoom) * 4 / _zoom) _y = (pctLicon.Height - _licon.Height * _zoom) * 4 / _zoom;
+			if (_y < vsbIcons.Minimum) _y = vsbIcons.Minimum;
 			if (_y > 0) _y = 0;
 			_mousePosition = e.Location;
-			// TODO: update SBs
+			_ignoreSBs = true;
+			hsbIcons.Value = hsbIcons.Minimum - (int)_x;
+			vsbIcons.Value = vsbIcons.Minimum - (int)_y;
+			_ignoreSBs = false;
 			updatePct();
 			if (!pctLicon.Bounds.Contains(e.Location))
 			{
@@ -271,6 +300,14 @@ namespace Idmr.Yogeme
 			e.Graphics.InterpolationMode = InterpolationMode.NearestNeighbor;
 			e.Graphics.ScaleTransform(_zoom, _zoom);
 			e.Graphics.DrawImage(_canvas, _x / 4, _y / 4);
+		}
+
+		private void vsbIcons_ValueChanged(object sender, EventArgs e)
+		{
+			if (_ignoreSBs) return;
+
+			_y = vsbIcons.Minimum - vsbIcons.Value;
+			updatePct();
 		}
 
 		// Modified version of the BriefingForm2 class

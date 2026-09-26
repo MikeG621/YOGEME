@@ -131,9 +131,13 @@
 			// vsbIcons
 			// 
 			this.vsbIcons.Location = new System.Drawing.Point(663, 70);
+			this.vsbIcons.Maximum = 0;
+			this.vsbIcons.Minimum = -100;
 			this.vsbIcons.Name = "vsbIcons";
 			this.vsbIcons.Size = new System.Drawing.Size(17, 300);
 			this.vsbIcons.TabIndex = 1;
+			this.vsbIcons.Value = -100;
+			this.vsbIcons.ValueChanged += new System.EventHandler(this.vsbIcons_ValueChanged);
 			// 
 			// lstSpecies
 			// 
@@ -267,9 +271,13 @@
 			// hsbIcons
 			// 
 			this.hsbIcons.Location = new System.Drawing.Point(12, 371);
+			this.hsbIcons.Maximum = 0;
+			this.hsbIcons.Minimum = -100;
 			this.hsbIcons.Name = "hsbIcons";
 			this.hsbIcons.Size = new System.Drawing.Size(645, 17);
 			this.hsbIcons.TabIndex = 13;
+			this.hsbIcons.Value = -100;
+			this.hsbIcons.ValueChanged += new System.EventHandler(this.hsbIcons_ValueChanged);
 			// 
 			// pctIcon
 			// 
