@@ -53,6 +53,7 @@
 			this.opnFile = new System.Windows.Forms.OpenFileDialog();
 			this.hsbIcons = new System.Windows.Forms.HScrollBar();
 			this.pctIcon = new System.Windows.Forms.PictureBox();
+			this.lblDebug = new System.Windows.Forms.Label();
 			((System.ComponentModel.ISupportInitialize)(this.pctLicon)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.pctIcon)).BeginInit();
 			this.SuspendLayout();
@@ -286,11 +287,21 @@
 			this.pctIcon.TabIndex = 14;
 			this.pctIcon.TabStop = false;
 			// 
+			// lblDebug
+			// 
+			this.lblDebug.AutoSize = true;
+			this.lblDebug.Location = new System.Drawing.Point(645, 26);
+			this.lblDebug.Name = "lblDebug";
+			this.lblDebug.Size = new System.Drawing.Size(49, 13);
+			this.lblDebug.TabIndex = 15;
+			this.lblDebug.Text = "lblDebug";
+			// 
 			// XwaLiconForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(813, 533);
+			this.Controls.Add(this.lblDebug);
 			this.Controls.Add(this.pctIcon);
 			this.Controls.Add(this.hsbIcons);
 			this.Controls.Add(this.lblCoords);
@@ -351,5 +362,6 @@
 		private System.Windows.Forms.OpenFileDialog opnFile;
 		private System.Windows.Forms.HScrollBar hsbIcons;
 		private System.Windows.Forms.PictureBox pctIcon;
+		private System.Windows.Forms.Label lblDebug;
 	}
 }

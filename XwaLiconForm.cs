@@ -16,6 +16,7 @@ using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Windows.Forms;
+using static Idmr.Platform.Xwa.Briefing;
 
 namespace Idmr.Yogeme
 {
@@ -28,6 +29,21 @@ namespace Idmr.Yogeme
 		float _x, _y;
 		bool _mouseDown, _ignoreSBs;
 		Point _mousePosition;
+		DragMode _dragMode;
+
+		enum DragMode
+		{
+			None,
+			CornerTL,
+			CornerBR,
+			CornerTR,
+			CornerBL,
+			Top,
+			Left,
+			Bottom,
+			Right,
+			Move
+		}
 
 		public XwaLiconForm()
 		{
@@ -45,6 +61,22 @@ namespace Idmr.Yogeme
 			hsbIcons.Value = 0;
 			vsbIcons.Value = 0;
 			_ignoreSBs = false;
+		}
+
+		bool isBetween(int value, int low, int high) => (value >= low && value <= high);
+
+		Bitmap getIcon(int height, int width, Rectangle iconRect)
+		{
+			if (height <= 0 || width <= 0) return null;
+
+			Rectangle destRect = new Rectangle(0, 0, width, height);
+			Bitmap temp = new Bitmap(width, height, PixelFormat.Format24bppRgb);
+			using (Graphics tg = Graphics.FromImage(temp))
+			{
+				tg.InterpolationMode = InterpolationMode.NearestNeighbor;
+				tg.DrawImage(_licon, destRect, iconRect, GraphicsUnit.Pixel);
+			}
+			return temp;
 		}
 
 		string getInstallPath()
@@ -118,16 +150,8 @@ namespace Idmr.Yogeme
 								continue;
 							}
 
-							Rectangle destRect = new Rectangle(0, 0, width, height);
-							Bitmap temp = new Bitmap(width, height, PixelFormat.Format24bppRgb);
-							using (Graphics tg = Graphics.FromImage(temp))
-							{
-								tg.InterpolationMode = InterpolationMode.NearestNeighbor;
-								tg.DrawImage(_licon, destRect, icon.OriginalRect, GraphicsUnit.Pixel);
-
-								icon.Icon = temp;
-								icon.Rect = icon.OriginalRect;
-							}
+							icon.Icon = getIcon(height, width, icon.OriginalRect);
+							icon.Rect = icon.OriginalRect;
 						}
 						_icons.Add(icon);
 					}
@@ -137,9 +161,88 @@ namespace Idmr.Yogeme
 			return true;
 		}
 
+		Point mouseToPixel(Point mouse)
+		{
+			Point px = new Point
+			{
+				X = (mouse.X - (int)(_x * _zoom / 4)) / _zoom,
+				Y = (mouse.Y - (int)(_y * _zoom / 4)) / _zoom
+			};
+			return px;
+		}
+
+		void panToView()
+		{
+			var icon = _curIcon;
+			if (icon == null) return;
+
+			if (_x < -icon.Rect.Left * 4)
+				hsbIcons.Value = ((icon.Rect.Left == 0 ? 0 : 1) - icon.Rect.Left) * 4;
+			else if (_x > (pctLicon.Width - icon.Rect.Right * _zoom) * 4 / _zoom)
+				hsbIcons.Value = (pctLicon.Width - icon.Rect.Right * _zoom - (icon.Rect.Right == _licon.Width ? 0 : 1)) * 4 / _zoom;
+			if (_y < -icon.Rect.Top * 4)
+				vsbIcons.Value = (icon.Rect.Top - (icon.Rect.Top == 0 ? 0 : 1)) * 4;
+			else if (_y > (pctLicon.Height - icon.Rect.Bottom * _zoom) * 4 / _zoom)
+				vsbIcons.Value = (icon.Rect.Bottom * _zoom - pctLicon.Height + (icon.Rect.Bottom == _licon.Height ? 0 : 1)) * 4 / _zoom;
+		}
+
+		void setSizeIcon(Point px, CraftIconImage icon)
+		{
+			int tol = 3;
+			if (isBetween(px.X, icon.Rect.Left - tol, icon.Rect.Left + tol) && isBetween(px.Y, icon.Rect.Top - tol, icon.Rect.Top + tol))
+			{
+				Cursor = Cursors.SizeNWSE;
+				_dragMode = DragMode.CornerTL;
+			}
+			else if (isBetween(px.X, icon.Rect.Left + tol, icon.Rect.Right - tol) && isBetween(px.Y, icon.Rect.Top - tol, icon.Rect.Top + tol))
+			{
+				Cursor = Cursors.SizeNS;
+				_dragMode = DragMode.Top;
+			}
+			else if (isBetween(px.X, icon.Rect.Right - tol, icon.Rect.Right + tol) && isBetween(px.Y, icon.Rect.Top - tol, icon.Rect.Top + tol))
+			{
+				Cursor = Cursors.SizeNESW;
+				_dragMode = DragMode.CornerTR;
+			}
+			else if (isBetween(px.X, icon.Rect.Right - tol, icon.Rect.Right + tol) && isBetween(px.Y, icon.Rect.Top + tol, icon.Rect.Bottom - tol))
+			{
+				Cursor = Cursors.SizeWE;
+				_dragMode = DragMode.Right;
+			}
+			else if (isBetween(px.X, icon.Rect.Right - tol, icon.Rect.Right + tol) && isBetween(px.Y, icon.Rect.Bottom - tol, icon.Rect.Bottom + tol))
+			{
+				Cursor = Cursors.SizeNWSE;
+				_dragMode = DragMode.CornerBR;
+			}
+			else if (isBetween(px.X, icon.Rect.Left + tol, icon.Rect.Right - tol) && isBetween(px.Y, icon.Rect.Bottom - tol, icon.Rect.Bottom + tol))
+			{
+				Cursor = Cursors.SizeNS;
+				_dragMode = DragMode.Bottom;
+			}
+			else if (isBetween(px.X, icon.Rect.Left - tol, icon.Rect.Left + tol) && isBetween(px.Y, icon.Rect.Bottom - tol, icon.Rect.Bottom + tol))
+			{
+				Cursor = Cursors.SizeNESW;
+				_dragMode = DragMode.CornerBL;
+			}
+			else if (isBetween(px.X, icon.Rect.Left - tol, icon.Rect.Left + tol) && isBetween(px.Y, icon.Rect.Top + tol, icon.Rect.Bottom - tol))
+			{
+				Cursor = Cursors.SizeWE;
+				_dragMode = DragMode.Left;
+			}
+			else if (isBetween(px.X, icon.Rect.Left + tol, icon.Rect.Right - tol) && isBetween(px.Y, icon.Rect.Top + tol, icon.Rect.Bottom - tol))
+			{
+				Cursor = Cursors.SizeAll;
+				_dragMode = DragMode.Move;
+			}
+			else
+			{
+				Cursor = Cursors.Default;
+				_dragMode = DragMode.None;
+			}
+		}
+
 		void updatePct()
 		{
-			// TODO: adjust and draw
 			var g = Graphics.FromImage(_canvas);
 			if (lstSpecies.SelectedIndex != -1 && !_icons[lstSpecies.SelectedIndex].Hidden)
 			{
@@ -202,6 +305,8 @@ namespace Idmr.Yogeme
 			if (lstSpecies.SelectedIndex == -1) return;
 
 			_curIcon.Rect = _curIcon.OriginalRect;
+			_curIcon.Icon = getIcon(_curIcon.Rect.Height, _curIcon.Rect.Width, _curIcon.Rect);
+			_canvas = new Bitmap(_licon);
 			updatePct();
 		}
 		private void btnZoomIn_Click(object sender, EventArgs e)
@@ -215,7 +320,7 @@ namespace Idmr.Yogeme
 			hsbIcons.Value = (int)_x;
 			vsbIcons.Value = -(int)_y;
 			_ignoreSBs = false;
-			// TODO: pan to keep selected craft in view
+			panToView();
 			updatePct();
 		}
 		private void btnZoomOut_Click(object sender, EventArgs e)
@@ -251,14 +356,7 @@ namespace Idmr.Yogeme
 			}
 			var icon = _curIcon;
 			lblCoords.Text = $"L:{icon.Rect.Left} T:{icon.Rect.Top} R:{icon.Rect.Right} B:{icon.Rect.Bottom}";
-			if (_x < -icon.Rect.Left * 4)
-				hsbIcons.Value = ((icon.Rect.Left == 0 ? 0 : 1) - icon.Rect.Left) * 4;
-			else if (_x > (pctLicon.Width - icon.Rect.Right * _zoom) * 4 / _zoom)
-				hsbIcons.Value = (pctLicon.Width - icon.Rect.Right * _zoom - (icon.Rect.Right == _licon.Width ? 0 : 1)) * 4 / _zoom;
-			if (_y < -icon.Rect.Top * 4)
-				vsbIcons.Value = (icon.Rect.Top - (icon.Rect.Top == 0 ? 0 : 1)) * 4;
-			else if (_y > (pctLicon.Height - icon.Rect.Bottom * _zoom) * 4 / _zoom)
-				vsbIcons.Value = (icon.Rect.Bottom * _zoom - pctLicon.Height + (icon.Rect.Bottom == _licon.Height ? 0 : 1)) * 4 / _zoom;
+			panToView();
 			_canvas = new Bitmap(_licon);
 			updatePct();
 		}
@@ -274,7 +372,77 @@ namespace Idmr.Yogeme
 		{
 			if (optModify.Checked)
 			{
-				// TODO: update cursor with arrows, drag outline
+				var icon = _curIcon;
+				if (icon == null) return;
+
+				var px = mouseToPixel(e.Location);
+				lblDebug.Text = px.ToString();
+				if (!_mouseDown)
+				{
+					setSizeIcon(px, icon);
+					return;
+				}
+
+				var r = icon.Rect.Right;
+				var b = icon.Rect.Bottom;
+				var preMod = icon.Rect;
+				if (_dragMode == DragMode.CornerTL)
+				{
+					icon.Rect.X = px.X;
+					icon.Rect.Width = r - px.X;
+					icon.Rect.Y = px.Y;
+					icon.Rect.Height = b - px.Y;
+				}
+				else if (_dragMode == DragMode.CornerBR)
+				{
+					icon.Rect.Width = px.X - icon.Rect.Left - 1;
+					icon.Rect.Height = px.Y - icon.Rect.Top - 1;
+				}
+				else if (_dragMode == DragMode.CornerTR)
+				{
+					icon.Rect.Width = px.X - icon.Rect.Left - 1;
+					icon.Rect.Y = px.Y;
+					icon.Rect.Height = b - px.Y;
+				}
+				else if (_dragMode == DragMode.CornerBL)
+				{
+					icon.Rect.X = px.X;
+					icon.Rect.Width = r - px.X;
+					icon.Rect.Height = px.Y - icon.Rect.Top - 1;
+				}
+				else if (_dragMode == DragMode.Left)
+				{
+					icon.Rect.X = px.X;
+					icon.Rect.Width = r - px.X;
+				}
+				else if (_dragMode == DragMode.Top)
+				{
+					icon.Rect.Y = px.Y;
+					icon.Rect.Height = b - px.Y;
+				}
+				else if (_dragMode == DragMode.Right) icon.Rect.Width = px.X - icon.Rect.Left - 1;
+				else if (_dragMode == DragMode.Bottom) icon.Rect.Height = px.Y - icon.Rect.Top - 1;
+				else if (_dragMode == DragMode.Move)
+				{
+					var oldPx = mouseToPixel(_mousePosition);
+					icon.Rect.X += (px.X - oldPx.X);
+					icon.Rect.Y += (px.Y - oldPx.Y);
+				}
+				_mousePosition = e.Location;
+				_canvas = new Bitmap(_licon);
+				icon.Icon = getIcon(icon.Rect.Height, icon.Rect.Width, icon.Rect);
+				if (icon.Icon == null)
+				{
+					icon.Rect = preMod;
+					icon.Icon = getIcon(icon.Rect.Height, icon.Rect.Width, icon.Rect);
+				}
+				lblCoords.Text = $"L:{icon.Rect.Left} T:{icon.Rect.Top} R:{icon.Rect.Right} B:{icon.Rect.Bottom}";
+				updatePct();
+				if (!pctLicon.Bounds.Contains(e.Location.X + pctLicon.Left, e.Location.Y + pctLicon.Top))
+				{
+					_mouseDown = false;
+					Cursor = Cursors.Default;
+				}
 				return;
 			}
 
@@ -292,7 +460,7 @@ namespace Idmr.Yogeme
 			vsbIcons.Value =  -(int)_y;
 			_ignoreSBs = false;
 			updatePct();
-			if (!pctLicon.Bounds.Contains(e.Location))
+			if (!pctLicon.Bounds.Contains(e.Location.X + pctLicon.Left, e.Location.Y + pctLicon.Top))
 			{
 				_mouseDown = false;
 				Cursor = Cursors.Default;
