@@ -370,73 +370,21 @@ namespace Idmr.Yogeme
 		private void pctLicon_MouseLeave(object sender, EventArgs e) => Cursor = Cursors.Default;
 		private void pctLicon_MouseMove(object sender, MouseEventArgs e)
 		{
-			if (optModify.Checked)
+			if (optMove.Checked)
 			{
-				var icon = _curIcon;
-				if (icon == null) return;
+				if (!_mouseDown) return;
 
-				var px = mouseToPixel(e.Location);
-				lblDebug.Text = px.ToString();
-				if (!_mouseDown)
-				{
-					setSizeIcon(px, icon);
-					return;
-				}
-
-				var r = icon.Rect.Right;
-				var b = icon.Rect.Bottom;
-				var preMod = icon.Rect;
-				if (_dragMode == DragMode.CornerTL)
-				{
-					icon.Rect.X = px.X;
-					icon.Rect.Width = r - px.X;
-					icon.Rect.Y = px.Y;
-					icon.Rect.Height = b - px.Y;
-				}
-				else if (_dragMode == DragMode.CornerBR)
-				{
-					icon.Rect.Width = px.X - icon.Rect.Left - 1;
-					icon.Rect.Height = px.Y - icon.Rect.Top - 1;
-				}
-				else if (_dragMode == DragMode.CornerTR)
-				{
-					icon.Rect.Width = px.X - icon.Rect.Left - 1;
-					icon.Rect.Y = px.Y;
-					icon.Rect.Height = b - px.Y;
-				}
-				else if (_dragMode == DragMode.CornerBL)
-				{
-					icon.Rect.X = px.X;
-					icon.Rect.Width = r - px.X;
-					icon.Rect.Height = px.Y - icon.Rect.Top - 1;
-				}
-				else if (_dragMode == DragMode.Left)
-				{
-					icon.Rect.X = px.X;
-					icon.Rect.Width = r - px.X;
-				}
-				else if (_dragMode == DragMode.Top)
-				{
-					icon.Rect.Y = px.Y;
-					icon.Rect.Height = b - px.Y;
-				}
-				else if (_dragMode == DragMode.Right) icon.Rect.Width = px.X - icon.Rect.Left - 1;
-				else if (_dragMode == DragMode.Bottom) icon.Rect.Height = px.Y - icon.Rect.Top - 1;
-				else if (_dragMode == DragMode.Move)
-				{
-					var oldPx = mouseToPixel(_mousePosition);
-					icon.Rect.X += (px.X - oldPx.X);
-					icon.Rect.Y += (px.Y - oldPx.Y);
-				}
+				_x += (e.X - _mousePosition.X) * 4 / _zoom;
+				if (_x < hsbIcons.Minimum) _x = hsbIcons.Minimum;
+				if (_x > 0) _x = 0;
+				_y += (e.Y - _mousePosition.Y) * 4 / _zoom;
+				if (_y < -vsbIcons.Maximum) _y = -vsbIcons.Maximum;
+				if (_y > 0) _y = 0;
 				_mousePosition = e.Location;
-				_canvas = new Bitmap(_licon);
-				icon.Icon = getIcon(icon.Rect.Height, icon.Rect.Width, icon.Rect);
-				if (icon.Icon == null)
-				{
-					icon.Rect = preMod;
-					icon.Icon = getIcon(icon.Rect.Height, icon.Rect.Width, icon.Rect);
-				}
-				lblCoords.Text = $"L:{icon.Rect.Left} T:{icon.Rect.Top} R:{icon.Rect.Right} B:{icon.Rect.Bottom}";
+				_ignoreSBs = true;
+				hsbIcons.Value = (int)_x;
+				vsbIcons.Value = -(int)_y;
+				_ignoreSBs = false;
 				updatePct();
 				if (!pctLicon.Bounds.Contains(e.Location.X + pctLicon.Left, e.Location.Y + pctLicon.Top))
 				{
@@ -446,19 +394,72 @@ namespace Idmr.Yogeme
 				return;
 			}
 
-			if (!_mouseDown) return;
+			var icon = _curIcon;
+			if (icon == null) return;
 
-			_x += (e.X - _mousePosition.X) * 4 / _zoom;
-			if (_x < hsbIcons.Minimum) _x = hsbIcons.Minimum;
-			if (_x > 0) _x = 0;
-			_y += (e.Y - _mousePosition.Y) * 4 / _zoom;
-			if (_y < -vsbIcons.Maximum) _y = -vsbIcons.Maximum;
-			if (_y > 0) _y = 0;
+			var px = mouseToPixel(e.Location);
+			lblDebug.Text = px.ToString();
+			if (!_mouseDown)
+			{
+				setSizeIcon(px, icon);
+				return;
+			}
+
+			var r = icon.Rect.Right;
+			var b = icon.Rect.Bottom;
+			var preMod = icon.Rect;
+			if (_dragMode == DragMode.CornerTL)
+			{
+				icon.Rect.X = px.X;
+				icon.Rect.Width = r - px.X;
+				icon.Rect.Y = px.Y;
+				icon.Rect.Height = b - px.Y;
+			}
+			else if (_dragMode == DragMode.CornerBR)
+			{
+				icon.Rect.Width = px.X - icon.Rect.Left;
+				icon.Rect.Height = px.Y - icon.Rect.Top;
+			}
+			else if (_dragMode == DragMode.CornerTR)
+			{
+				icon.Rect.Width = px.X - icon.Rect.Left;
+				icon.Rect.Y = px.Y;
+				icon.Rect.Height = b - px.Y;
+			}
+			else if (_dragMode == DragMode.CornerBL)
+			{
+				icon.Rect.X = px.X;
+				icon.Rect.Width = r - px.X;
+				icon.Rect.Height = px.Y - icon.Rect.Top;
+			}
+			else if (_dragMode == DragMode.Left)
+			{
+				icon.Rect.X = px.X;
+				icon.Rect.Width = r - px.X;
+			}
+			else if (_dragMode == DragMode.Top)
+			{
+				icon.Rect.Y = px.Y;
+				icon.Rect.Height = b - px.Y;
+			}
+			else if (_dragMode == DragMode.Right) icon.Rect.Width = px.X - icon.Rect.Left;
+			else if (_dragMode == DragMode.Bottom) icon.Rect.Height = px.Y - icon.Rect.Top;
+			else if (_dragMode == DragMode.Move)
+			{
+				var oldPx = mouseToPixel(_mousePosition);
+				icon.Rect.X += (px.X - oldPx.X);
+				icon.Rect.Y += (px.Y - oldPx.Y);
+			}
 			_mousePosition = e.Location;
-			_ignoreSBs = true;
-			hsbIcons.Value = (int)_x;
-			vsbIcons.Value =  -(int)_y;
-			_ignoreSBs = false;
+			_canvas = new Bitmap(_licon);
+			icon.Icon = getIcon(icon.Rect.Height, icon.Rect.Width, icon.Rect);
+			if (icon.Icon == null)
+			{
+				icon.Rect = preMod;
+				icon.Icon = getIcon(icon.Rect.Height, icon.Rect.Width, icon.Rect);
+			}
+			lblCoords.Text = $"L:{icon.Rect.Left} T:{icon.Rect.Top} R:{icon.Rect.Right} B:{icon.Rect.Bottom}";
+			// TODO: update lst
 			updatePct();
 			if (!pctLicon.Bounds.Contains(e.Location.X + pctLicon.Left, e.Location.Y + pctLicon.Top))
 			{
