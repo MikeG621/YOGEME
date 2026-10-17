@@ -36,6 +36,9 @@ To remove YOGEME, simply delete the directory where you placed it.
 This will leave behind a single config file in AppData with your user settings.
 
 ## Latest Release
+#### WIP
+- (XWA) Shiplist/Licon interface added. Drag/drop borders of individual craft outlines. Will load the set according to the current open mission [Issue [#143](https://github.com/MikeG621/YOGEME/issues/143)].
+
 #### v1.18.2, 21 Aug 2026
 - (XWA) Fixed the Craft IFF drop-down not loading properly when opening a mission [Issue [#147](https://github.com/MikeG621/YOGEME/issues/147)].
 - (XWA) Fixed Message VoiceID drop-down not updating with FGs are shifted up or down (via Platform.dll) [Issue [#146](https://github.com/MikeG621/YOGEME/issues/146)].
