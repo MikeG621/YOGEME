@@ -56,6 +56,7 @@ namespace Idmr.Yogeme
 			_ignoreSBs = true;
 			// reminder: hsb has RTL so working with negatives is fine. vsb doesn't have an inverse, so run positive and flip the sign
 			hsbIcons.Minimum = (pctLicon.Width - _licon.Width * _zoom) * 4 / _zoom;
+			if (hsbIcons.Minimum > 0) hsbIcons.Minimum = 0;
 			vsbIcons.Maximum = (_licon.Height * _zoom - pctLicon.Height) * 4 / _zoom;
 			hsbIcons.Value = 0;
 			vsbIcons.Value = 0;
@@ -128,30 +129,33 @@ namespace Idmr.Yogeme
 						}
 
 						string[] tokens = s.Split(',');
-						if (tokens.Length >= 12)
+						if (tokens.Length < 13)
 						{
-							icon.Hidden = (tokens[0].StartsWith("*") || string.Compare(tokens[1], "Planet/asteroid", StringComparison.OrdinalIgnoreCase) == 0);
-							icon.Name = tokens[0];
-
-							// Large icon coords. Small icon coords are tokens[5-8], but get replaced by "[9-12] / 2" per xemb
-							int.TryParse(tokens[9].Trim(), out int x1);
-							int.TryParse(tokens[10].Trim(), out int y1);
-							int.TryParse(tokens[11].Trim(), out int x2);
-							int.TryParse(tokens[12].Trim(), out int y2);
-							int width = x2 - x1;
-							int height = y2 - y1;
-							icon.OriginalRect = new Rectangle(x1, y1, width, height);
-							if (width == 0 || height == 0)
-							{
-								icon.Rect = icon.OriginalRect;
-								icon.Icon = null;
-								_icons.Add(icon);
-								continue;
-							}
-
-							icon.Icon = getIcon(height, width, icon.OriginalRect);
-							icon.Rect = icon.OriginalRect;
+							_icons.Add(icon);
+							continue;
 						}
+
+						icon.Hidden = (tokens[0].StartsWith("*") || string.Compare(tokens[1], "Planet/asteroid", StringComparison.OrdinalIgnoreCase) == 0);
+						icon.Name = tokens[0];
+
+						// Large icon coords. Small icon coords are tokens[5-8], but get replaced by "[9-12] / 2" per xemb
+						int.TryParse(tokens[9].Trim(), out int x1);
+						int.TryParse(tokens[10].Trim(), out int y1);
+						int.TryParse(tokens[11].Trim(), out int x2);
+						int.TryParse(tokens[12].Trim(), out int y2);
+						int width = x2 - x1;
+						int height = y2 - y1;
+						icon.OriginalRect = new Rectangle(x1, y1, width, height);
+						if (width == 0 || height == 0)
+						{
+							icon.Rect = icon.OriginalRect;
+							icon.Icon = null;
+							_icons.Add(icon);
+							continue;
+						}
+
+						icon.Icon = getIcon(height, width, icon.OriginalRect);
+						icon.Rect = icon.OriginalRect;
 						_icons.Add(icon);
 					}
 				}
@@ -267,7 +271,28 @@ namespace Idmr.Yogeme
 
 		private void btnApply_Click(object sender, EventArgs e)
 		{
-			//TODO: save
+			string path = Path.Combine(getInstallPath(), "SHIPLIST.TXT");
+			string backup = Path.ChangeExtension(path, ".bak");
+			File.Copy(path, backup, true);
+			try
+			{
+				using (StreamWriter sw = new StreamWriter(path))
+				{
+					for (int i = 0; i < lstSpecies.Items.Count; i++)
+					{
+						string[] tokens = lstSpecies.Items[i].ToString().Split(',');
+						tokens[5] = "\t\t\t\t\t" + tokens[5];
+						string line = string.Join(",", tokens);
+						sw.WriteLine(line);
+					}
+					sw.WriteLine("");
+					sw.Flush();
+					sw.BaseStream.SetLength(sw.BaseStream.Position);
+					sw.Close();
+				}
+			}
+			catch { File.Copy(backup, path, true); }
+			finally { File.Delete(backup); }
 		}
 		private void btnCancel_Click(object sender, EventArgs e) => Close();
 		private void btnOK_Click(object sender, EventArgs e)
@@ -397,7 +422,6 @@ namespace Idmr.Yogeme
 			if (icon == null) return;
 
 			var px = mouseToPixel(e.Location);
-			lblDebug.Text = px.ToString();
 			if (!_mouseDown)
 			{
 				setSizeIcon(px, icon);
@@ -502,10 +526,6 @@ namespace Idmr.Yogeme
 			public int Width;
 			public int Height;
 			public bool Hidden = false;      // For XWA, specifies if the shiplist species entry may be hidden.
-
-			// XWA icons were drawing incorrectly in TFTC 1.3, and getting the best positions and sizes requires knowing the exact information in the ship list.
-			public int GetWidth() => OriginalRect.Width + 1;
-			public int GetHeight() => OriginalRect.Height + 1;
 		}
 	}
 }

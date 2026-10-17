@@ -7,6 +7,7 @@
  *
  * CHANGELOG
  * [UPD #148] Active Sequence now displays in Goal Summary
+ * [NEW] Xwa Licon
  * v1.18.2, 260821
  * [FIX #146] moveMessage wasn't calling SwapMessage()
  * [FIX #147] IFF drop-down not refreshing on load
