@@ -16,7 +16,6 @@ using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Windows.Forms;
-using static Idmr.Platform.Xwa.Briefing;
 
 namespace Idmr.Yogeme
 {
@@ -139,8 +138,8 @@ namespace Idmr.Yogeme
 							int.TryParse(tokens[10].Trim(), out int y1);
 							int.TryParse(tokens[11].Trim(), out int x2);
 							int.TryParse(tokens[12].Trim(), out int y2);
-							int width = x2 - x1 + 1; // per xemb to include R px
-							int height = y2 - y1 + 1;
+							int width = x2 - x1;
+							int height = y2 - y1;
 							icon.OriginalRect = new Rectangle(x1, y1, width, height);
 							if (width == 0 || height == 0)
 							{
@@ -459,7 +458,12 @@ namespace Idmr.Yogeme
 				icon.Icon = getIcon(icon.Rect.Height, icon.Rect.Width, icon.Rect);
 			}
 			lblCoords.Text = $"L:{icon.Rect.Left} T:{icon.Rect.Top} R:{icon.Rect.Right} B:{icon.Rect.Bottom}";
-			// TODO: update lst
+			string[] tokens = lstSpecies.SelectedItem.ToString().Split(',');
+			tokens[9] = icon.Rect.Left.ToString().PadRight(3, ' ');
+			tokens[10] = icon.Rect.Top.ToString().PadRight(3, ' ');
+			tokens[11] = icon.Rect.Right.ToString().PadRight(3, ' ');
+			tokens[12] = icon.Rect.Bottom.ToString().PadRight(3, ' ');
+			lstSpecies.Items[lstSpecies.SelectedIndex] = string.Join(",", tokens);
 			updatePct();
 			if (!pctLicon.Bounds.Contains(e.Location.X + pctLicon.Left, e.Location.Y + pctLicon.Top))
 			{
