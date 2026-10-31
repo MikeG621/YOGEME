@@ -4,9 +4,10 @@
  * This file authored by "JB" (Random Starfighter) (randomstarfighter@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.18.1
+ * VERSION: 1.18.1+
  *
  * CHANGELOG
+ * [FIX #142] Can't Dispose the CRFT/CPLX while loading it...
  * v1.18.1, 260719
  * [FIX #141] null check for wireframe craft on Dispose
  * v1.18, 260711
@@ -606,13 +607,11 @@ namespace Idmr.Yogeme.MapWireframe
 			{
 				Crft crft = new Crft(lfdName, offset);
 				ship = crft;
-				crft.Dispose();
 			}
 			else
 			{
 				Cplx cplx = new Cplx(lfdName, offset);
 				ship = cplx;
-				cplx.Dispose();
             }
 
 			Craft = ship;
