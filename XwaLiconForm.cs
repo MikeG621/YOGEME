@@ -3,9 +3,10 @@
  * Copyright (C) 2007-2026 Michael Gaisser (mjgaisser@gmail.com)
  * Licensed under the MPL v2.0 or later
  * 
- * VERSION: 1.18.2+
+ * VERSION: 1.19
  *
  * CHANGELOG
+ * v1.19, 261108
  * [NEW] created
  */
 
