@@ -355,6 +355,7 @@ namespace Idmr.Yogeme
 			if (_zoom == 1) btnZoomOut.Enabled = false;
 			_ignoreSBs = true;
 			hsbIcons.Minimum = (pctLicon.Width - _licon.Width * _zoom) * 4 / _zoom;
+			if (hsbIcons.Minimum > 0) hsbIcons.Minimum = 0;
 			vsbIcons.Maximum = (_licon.Height * _zoom - pctLicon.Height) * 4 / _zoom;
 			if (_x < hsbIcons.Minimum) _x = hsbIcons.Minimum;
 			if (_y < -vsbIcons.Maximum) _y = -vsbIcons.Maximum;
@@ -472,7 +473,11 @@ namespace Idmr.Yogeme
 			{
 				var oldPx = mouseToPixel(_mousePosition);
 				icon.Rect.X += (px.X - oldPx.X);
+				if (icon.Rect.X < 0) icon.Rect.X = 0;
+				if (icon.Rect.Right > _licon.Width) icon.Rect.X -= icon.Rect.Right - _licon.Width;
 				icon.Rect.Y += (px.Y - oldPx.Y);
+				if (icon.Rect.Y < 0) icon.Rect.Y = 0;
+				if (icon.Rect.Bottom > _licon.Height) icon.Rect.Y -= icon.Rect.Bottom - _licon.Height;
 			}
 			_mousePosition = e.Location;
 			_canvas = new Bitmap(_licon);
