@@ -498,6 +498,10 @@
 			<param name="Name" value="Wave Manager">
 			<param name="Local" value="pages\XWA\wave.html">
 			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="LICON/Shiplist Editor">
+			<param name="Local" value="pages\XWA\licon.html">
+			</OBJECT>
 	</UL>
 </UL>
 </BODY></HTML>
